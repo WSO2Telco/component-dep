@@ -1,0 +1,62 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<deploy xmlns="http://www.apache.org/ode/schemas/dd/2007/03"
+	xmlns:subscriptions="http://org.wso2.carbon/subscriptions/"
+	xmlns:workflow.subscription.apimgt.carbon.wso2.org="http://workflow.subscription.apimgt.carbon.wso2.org"
+	xmlns:callback.workflow.apimgt.carbon.wso2.org="http://callback.workflow.apimgt.carbon.wso2.org"
+	xmlns:b4p="http://docs.oasis-open.org/ns/bpel4people/bpel4people/200803"
+	xmlns:axiata="http://org.wso2.carbon/axiata/workflow"
+	xmlns:axau="http://org.wso2.carbon/axiata/workflow"
+	xmlns:axnotify="http://org.wso2.carbon/axiata/workflow/notify">
+	<process
+		name="workflow.subscription.apimgt.carbon.wso2.org:SubscriptionApprovalWorkFlowProcess">
+		<active>true</active>
+		<retired>false</retired>
+		<process-events generate="all" />
+		<provide partnerLink="client">
+			<service
+				name="workflow.subscription.apimgt.carbon.wso2.org:SubscriptionApprovalWorkFlowProcess"
+				port="SubscriptionApprovalWorkFlowProcessPort"></service>
+		</provide>
+		<provide partnerLink="SAPL" correlationFilter="b4p:b4pFilter">
+			<service name="subscriptions:SubscriptionServiceCB" port="SubscriptionPortCB">
+				<endpoint xmlns="http://wso2.org/bps/bpel/endpoint/config"
+					endpointReference="./../../../../repository/conf/epr/SubscriptionCBService.epr"></endpoint>
+			</service>
+		</provide>
+		<invoke partnerLink="SAPL">
+			<service name="subscriptions:SubscriptionService" port="SubscriptionPort">
+				<endpoint xmlns="http://wso2.org/bps/bpel/endpoint/config"
+					endpointReference="./../../../../repository/conf/epr/SubscriptionService.epr"></endpoint>
+			</service>
+		</invoke>
+		<invoke partnerLink="CBPL">
+			<service
+				name="callback.workflow.apimgt.carbon.wso2.org:WorkflowCallbackService"
+				port="WorkflowCallbackServiceHttpsSoap11Endpoint">
+				<endpoint xmlns="http://wso2.org/bps/bpel/endpoint/config"
+					endpointReference="./../../../../repository/conf/epr/SubscriptionCallbackService.epr"></endpoint>
+			</service>
+		</invoke>
+		<invoke partnerLink="AXSAPL">
+			<service name="axiata:AxiataWorkflowApprovalService" port="AxiataWorkflowApprovalServiceSOAP">
+				<endpoint xmlns="http://wso2.org/bps/bpel/endpoint/config"
+					endpointReference="./../../../../repository/conf/epr/AxiataWorkflowApprovalService.epr">
+				</endpoint>
+			</service>
+		</invoke>
+		<invoke partnerLink="AAUPL">
+			<service name="axau:AxiataWorkflowApprovalService" port="AxiataWorkflowApprovalServiceSOAP">
+				<endpoint xmlns="http://wso2.org/bps/bpel/endpoint/config"
+					endpointReference="./../../../../repository/conf/epr/AxiataWorkflowApprovalService.epr">
+				</endpoint>
+			</service>
+		</invoke>
+		<invoke partnerLink="AXNOTIFYPL">
+			<service name="axnotify:AxiataWorkflowNotificationService" port="AxiataWorkflowNotificationServiceSOAP">
+				<endpoint xmlns="http://wso2.org/bps/bpel/endpoint/config"
+					endpointReference="./../../../../repository/conf/epr/AxiataWorkflowNotificationService.epr">
+				</endpoint>
+			</service>
+		</invoke>
+	</process>
+</deploy>
