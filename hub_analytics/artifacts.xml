@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?> 
+<artifacts>     
+	<artifact name="HUB_ANALYTICS" version="v1.0.0" type="carbon/application">
+    		<dependency artifact="Hub_Northbound_Request" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        	<dependency artifact="Hub_Northbound_Response" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        	<dependency artifact="Hub_Southbound_Response" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+			<dependency artifact="Hub_Southbound_Request" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+			
+        	<dependency artifact="Hub_Northbound_Request_Store" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        	<dependency artifact="Hub_Northbound_Response_Store" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        	<dependency artifact="Hub_Southbound_Response_Store" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        	<dependency artifact="Hub_Southbound_Request_Store" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        	
+        	<dependency artifact="Hub_Northbound_Request_Receiver" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        	<dependency artifact="Hub_Northbound_Response_Receiver" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        	<dependency artifact="Hub_Southbound_Response_Receiver" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        	<dependency artifact="Hub_Southbound_Request_Receiver" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+        	
+			<dependency artifact="Hub_Analytics_Script" version="1.0.0" include="true" serverRole="DataAnalyticsServer"/>
+	</artifact> 
+</artifacts> 
