@@ -1,0 +1,384 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?> 
+<Analytics>
+	<Name>Hub_Analytics_Script</Name> 
+        <Script> 
+        	 
+        	create temporary table NBAPIRequestSummaryData using CarbonJDBC options (dataSource "WSO2AM_STATS_DB", tableName "NB_API_REQUEST_SUMMARY");
+
+        	create temporary table NBAPIRequestData USING CarbonAnalytics OPTIONS(tableName "MIFE_STATISTICS_NORTHBOUND_REQUEST");
+
+        	CREATE TEMPORARY TABLE NB_API_REQUEST_SUMMARY_FINAL USING CarbonAnalytics OPTIONS (tableName "NB_API_REQUEST_SUMMARY",
+    		schema  "messageRowID facet,
+            api string,
+    		api_version string,
+    		version string,
+    		apiPublisher string,
+    		consumerKey string,
+    		userId string,
+   			context string,
+   			request_count int,
+   			hostName string,
+   			resourcePath string,
+   			method string,
+   			requestId string,
+   			chargeAmount string,
+   			purchaseCategoryCode string,
+   			jsonBody string,
+   			year int,
+   			month int,
+   			day int,
+   			time string",
+    		primaryKeys "messageRowID"
+    );
+
+    insert into table NB_API_REQUEST_SUMMARY_FINAL select
+    facet4(requestTime,userId,requestId,resourcePath),
+    api,
+    api_version,
+    version,
+    apiPublisher,
+    COALESCE(consumerKey,'-'),
+    userId,
+    context,
+    request as request_count,
+    hostName,
+    resourcePath,
+    method,
+    requestId,
+    chargeAmount,
+    purchaseCategoryCode,
+    jsonBody,
+    substring(cast(requestTime/1000 as BIGINT),0,4) as year,
+    substring(cast(requestTime/1000 as BIGINT),6,2) as month,
+    substring(cast(requestTime/1000 as BIGINT),9,2) as day,
+    substring(cast(requestTime/1000 as BIGINT),0,16) as time
+    from NBAPIRequestData;
+
+    INSERT OVERWRITE TABLE NBAPIRequestSummaryData SELECT 
+    messageRowID,
+    api,
+    api_version,
+    version,
+    apiPublisher,
+    consumerKey,
+    userId,
+    context,
+    request_count,
+    hostName,
+    resourcePath,
+    method,
+    requestId,
+    chargeAmount,
+    purchaseCategoryCode,
+    jsonBody,
+    year,
+    month,
+    day,
+    time
+    FROM NB_API_REQUEST_SUMMARY_FINAL;
+    
+    create temporary table SBAPIRequestSummaryData using CarbonJDBC options (dataSource "WSO2AM_STATS_DB", tableName "SB_API_REQUEST_SUMMARY");
+
+        	create temporary table SBAPIRequestData USING CarbonAnalytics OPTIONS(tableName "MIFE_STATISTICS_SOUTHBOUND_REQUEST");
+
+        	CREATE TEMPORARY TABLE SB_API_REQUEST_SUMMARY_FINAL USING CarbonAnalytics OPTIONS (tableName "SB_API_REQUEST_SUMMARY",
+    		schema  "messageRowID facet,
+    		api string,
+    		api_version string,
+    		version string,
+    		apiPublisher string,
+    		consumerKey string,
+    		userId string,
+   			context string,
+   			request_count int,
+   			hostName string,
+   			resourcePath string,
+   			method string,
+   			requestId string,
+   			operatorId string,
+   			chargeAmount string,
+   			purchaseCategoryCode string,
+   			jsonBody string,
+   			year int,
+   			month int,
+   			day int,
+   			time string",
+    		primaryKeys "messageRowID"
+    );
+
+    insert into table SB_API_REQUEST_SUMMARY_FINAL select
+    facet4(requestTime,userId,requestId,resourcePath),
+    api,
+    api_version,
+    version,
+    apiPublisher,
+    COALESCE(consumerKey,'-'),
+    userId,
+    context,
+    request as request_count,
+    hostName,
+    resourcePath,
+    method,
+    requestId,
+    operatorId,
+    chargeAmount,
+    purchaseCategoryCode,
+    jsonBody,
+    substring(cast(requestTime/1000 as BIGINT),0,4) as year,
+    substring(cast(requestTime/1000 as BIGINT),6,2) as month,
+    substring(cast(requestTime/1000 as BIGINT),9,2) as day,
+    substring(cast(requestTime/1000 as BIGINT),0,16) as time
+    from SBAPIRequestData;
+
+    INSERT OVERWRITE TABLE SBAPIRequestSummaryData SELECT 
+    messageRowID,
+    api,
+    api_version,
+    version,
+    apiPublisher,
+    consumerKey,
+    userId,
+    context,
+    request_count,
+    hostName,
+    resourcePath,
+    method,
+    requestId,
+    operatorId,
+    chargeAmount,
+    purchaseCategoryCode,
+    jsonBody,
+    year,
+    month,
+    day,
+    time
+    FROM SB_API_REQUEST_SUMMARY_FINAL;
+
+
+    create temporary table NBAPIResponseSummaryData using CarbonJDBC options (dataSource "WSO2AM_STATS_DB", tableName "NB_API_RESPONSE_SUMMARY");
+
+        	create temporary table NBAPIResponseData USING CarbonAnalytics OPTIONS(tableName "MIFE_STATISTICS_NORTHBOUND_RESPONSE");
+
+        	CREATE TEMPORARY TABLE NB_API_RESPONSE_SUMMARY_FINAL USING CarbonAnalytics OPTIONS (tableName "NB_API_RESPONSE_SUMMARY",
+    		schema  "messageRowID facet,
+    		api string,
+    		api_version string,
+    		version string,
+    		apiPublisher string,
+    		consumerKey string,
+    		userId string,
+   			context string,
+   			serviceTime int,
+   			response_count int,
+   			hostName string,
+   			resourcePath string,
+   			method string,
+   			requestId string,
+   			responseCode string,
+   			msisdn string,
+   			operatorRef string,
+   			chargeAmount string,
+   			purchaseCategoryCode string,
+   			exceptionId string,
+   			exceptionMessage string,
+   			jsonBody string,
+   			year int,
+   			month int,
+   			day int,
+   			time string,
+   			operationType int,
+   			merchantId string,
+   			category string,
+   			subCategory string",
+    		primaryKeys "messageRowID"
+    );
+
+    insert into table NB_API_RESPONSE_SUMMARY_FINAL select
+    facet4(responseTime,userId,requestId,resourcePath),
+    api,
+    api_version,
+    version,
+    apiPublisher,
+    COALESCE(consumerKey,'-'),
+    userId,
+    context,
+    serviceTime,
+    response as response_count,
+    hostName,
+    resourcePath,
+    method,
+    requestId,
+    responseCode,
+    msisdn,
+    operatorRef,
+    chargeAmount,
+    purchaseCategoryCode,
+    exceptionId,
+    exceptionMessage,
+    jsonBody,
+    substring(cast(responseTime/1000 as BIGINT),0,4) as year,
+    substring(cast(responseTime/1000 as BIGINT),6,2) as month,
+    substring(cast(responseTime/1000 as BIGINT),9,2) as day,
+    substring(cast(responseTime/1000 as BIGINT),0,16) as time,
+    operationType,
+    merchantId,
+    category,
+    subCategory
+    from NBAPIResponseData;
+
+    INSERT OVERWRITE TABLE NBAPIResponseSummaryData SELECT 
+    messageRowID,
+    api,
+    api_version,
+    version,
+    apiPublisher,
+    consumerKey,
+    userId,
+    context,
+    serviceTime,
+    response_count,
+    hostName,
+    resourcePath,
+    method,
+    requestId,
+    responseCode,
+    msisdn,
+    operatorRef,
+    chargeAmount,
+    purchaseCategoryCode,
+    exceptionId,
+    exceptionMessage,
+    jsonBody,
+    year,
+    month,
+    day,
+    time,
+    operationType,
+    merchantId,
+    category,
+    subCategory
+    FROM NB_API_RESPONSE_SUMMARY_FINAL;
+
+
+    create temporary table SBAPIResponseSummaryData using CarbonJDBC options (dataSource "WSO2AM_STATS_DB", tableName "SB_API_RESPONSE_SUMMARY");
+
+        	create temporary table SBAPIResponseData USING CarbonAnalytics OPTIONS(tableName "MIFE_STATISTICS_SOUTHBOUND_RESPONSE");
+
+        	CREATE TEMPORARY TABLE SB_API_RESPONSE_SUMMARY_FINAL USING CarbonAnalytics OPTIONS (tableName "SB_API_RESPONSE_SUMMARY",
+    		schema  "messageRowID facet,
+    		api string,
+    		api_version string,
+    		version string,
+    		apiPublisher string,
+    		consumerKey string,
+    		userId string,
+   			context string,
+   			serviceTime int,
+   			response_count int,
+   			hostName string,
+   			resourcePath string,
+   			method string,
+   			requestId string,
+   			operatorId string, 
+   			responseCode string,
+   			msisdn string,
+   			operatorRef string,
+   			chargeAmount string,
+   			purchaseCategoryCode string,
+   			exceptionId string,
+   			exceptionMessage string,
+   			jsonBody string,
+   			year int,
+   			month int,
+   			day int,
+   			time string,
+   			operationType int,
+   			merchantId string,
+   			category string,
+   			subCategory string",
+    		primaryKeys "messageRowID"
+    );
+
+    insert into table SB_API_RESPONSE_SUMMARY_FINAL select
+    facet4(responseTime,userId,requestId,resourcePath),
+    api,
+    api_version,
+    version,
+    apiPublisher,
+    COALESCE(consumerKey,'-'),
+    userId,
+    context,
+    serviceTime,
+    response as response_count,
+    hostName,
+    resourcePath,
+    method,
+    requestId,
+    operatorId,
+    responseCode,
+    msisdn,
+    operatorRef,
+    chargeAmount,
+    purchaseCategoryCode,
+    exceptionId,
+    exceptionMessage,
+    jsonBody,
+    substring(cast(responseTime/1000 as BIGINT),0,4) as year,
+    substring(cast(responseTime/1000 as BIGINT),6,2) as month,
+    substring(cast(responseTime/1000 as BIGINT),9,2) as day,
+    substring(cast(responseTime/1000 as BIGINT),0,16) as time,
+    operationType,
+    merchantId,
+    category,
+    subCategory
+    from SBAPIResponseData;
+
+    INSERT OVERWRITE TABLE SBAPIResponseSummaryData SELECT 
+    messageRowID,
+    api,
+    api_version,
+    version,
+    apiPublisher,
+    consumerKey,
+    userId,
+    context,
+    serviceTime,
+    response_count,
+    hostName,
+    resourcePath,
+    method,
+    requestId,
+    operatorId,
+    responseCode,
+    msisdn,
+    operatorRef,
+    chargeAmount,
+    purchaseCategoryCode,
+    exceptionId,
+    exceptionMessage,
+    jsonBody,
+    year,
+    month,
+    day,
+    time,
+    operationType,
+    merchantId,
+    category,
+    subCategory
+    FROM SB_API_RESPONSE_SUMMARY_FINAL;
+
+		
+                            
+
+
+
+    
+                            
+                            
+                            
+                            
+
+		</Script>
+        
+        <CronExpression>0 0/5 * 1/1 * ? *</CronExpression> 
+</Analytics> 
