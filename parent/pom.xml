@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!-- Copyright (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) 
+	All Rights Reserved. WSO2.Telco Inc. licences this file to you under the 
+	Apache License, Version 2.0 (the "License"); you may not use this file except 
+	in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
+	Unless required by applicable law or agreed to in writing, software distributed 
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+	the specific language governing permissions and limitations under the License. -->
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+
+	<modelVersion>4.0.0</modelVersion>
+	<!--groupId>org.wso2.carbon.identity</groupId> <artifactId>carbon-identity</artifactId> 
+		<packaging>pom</packaging> <version>5.0.8-SNAPSHOT</version> <name>WSO2 Carbon 
+		- Platform Aggregator Pom</name> <url>http://wso2.org</url -->
+	<parent>
+      		<groupId>org.wso2</groupId>
+       		<artifactId>wso2</artifactId>
+       		<version>1</version>
+	</parent>
+	<groupId>com.wso2telco.ids</groupId>
+	<artifactId>component-ids-parent</artifactId>
+	<packaging>pom</packaging>
+	<version>2.0.12-SNAPSHOT</version>
+	<name>WSO2Telco Core - Component</name>
+	<description>WSO2Telco Core Aggregate Perent pom</description>
+	<url>http://wso2telco.com</url>
+
+	<prerequisites>
+		<maven>3.0.0</maven>
+	</prerequisites>
+
+	<distributionManagement>
+                <snapshotRepository>
+                        <id>wso2Telco.snapshots</id>
+                        <name>Snapshot repo</name>
+                        <url>http://maven.wso2telco.com/nexus/content/repositories/snapshots</url>
+                </snapshotRepository>
+                <!-- Publish the versioned releases here -->
+                <repository>
+                        <id>wso2telco.releases</id>
+                        <name>release repo</name>
+                        <url>http://maven.wso2telco.com/nexus/content/repositories/releases/</url>
+                </repository>
+        </distributionManagement>
+
+	<scm>
+                <url>https://github.com/WSO2Telco/component-ids.git</url>
+                <developerConnection>scm:git:https://github.com/WSO2Telco/component-ids.git</developerConnection>
+                <connection>scm:git:https://github.com/WSO2Telco/component-ids.git</connection>
+                <tag>HEAD</tag>
+        </scm>
+
+
+	<repositories>
+
+  <repository>
+                        <id>wso2telco-nexus</id>
+                        <name>WSO2Telco internal Repository</name>
+                        <url>http://maven.wso2telco.com/nexus/content/groups/public/</url>
+                        <releases>
+                                <enabled>true</enabled>
+                                <updatePolicy>daily</updatePolicy>
+                                <checksumPolicy>ignore</checksumPolicy>
+                        </releases>
+                </repository>
+                <repository>
+                        <id>wso2telco.releases</id>
+                        <name>WSO2 internal Repository</name>
+                        <url>http://maven.wso2telco.com/nexus/content/repositories/releases/</url>
+                        <releases>
+                                <enabled>true</enabled>
+                                <updatePolicy>daily</updatePolicy>
+                                <checksumPolicy>ignore</checksumPolicy>
+                        </releases>
+                </repository>
+                <repository>
+                        <id>wso2Telco.snapshots</id>
+                        <name>WSO2Telco Snapshot Repository</name>
+                        <url>http://maven.wso2telco.com/nexus/content/repositories/snapshots/</url>
+                        <snapshots>
+                                <enabled>true</enabled>
+                                <updatePolicy>daily</updatePolicy>
+                        </snapshots>
+                        <releases>
+                                <enabled>false</enabled>
+                        </releases>
+                </repository>
+
+	</repositories>
+
+
+	<pluginRepositories>
+		<pluginRepository>
+			<id>wso2telco-nexus</id>
+			<name>WSO2Telco internal Repository</name>
+			<url>http://maven.wso2telco.com/nexus/content/groups/public/</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+				<checksumPolicy>ignore</checksumPolicy>
+			</releases>
+		</pluginRepository>
+
+		<pluginRepository>
+			<id>wso2telco.releases</id>
+			<name>WSO2 internal Repository</name>
+			<url>http://maven.wso2telco.com/nexus/content/repositories/releases/</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+				<checksumPolicy>ignore</checksumPolicy>
+			</releases>
+		</pluginRepository>
+		<pluginRepository>
+			<id>wso2Telco.snapshots</id>
+			<name>WSO2Telco Snapshot Repository</name>
+			<url>http://maven.wso2telco.com/nexus/content/repositories/snapshots/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</pluginRepository>
+	</pluginRepositories>
+
+	<dependencyManagement>
+		<dependencies>
+<!--
+		<dependency>
+			<groupId>com.sun.jersey</groupId>
+			<artifactId>jersey-client</artifactId>
+			<version>${com.sun.jersey.version}</version>
+		</dependency>
+
+		 <dependency>
+                        <groupId>org.codehaus.jettison.wso2</groupId>
+                        <artifactId>jettison</artifactId>
+                        <version>${org.codehaus.jettison.wso2.version}</version>
+                </dependency>
+-->
+
+
+		</dependencies>
+
+	</dependencyManagement>
+<properties>
+</properties>
+
+	<build>
+		<pluginManagement>
+			<plugins>
+				<!--plugin>
+				                     <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-checkstyle-plugin</artifactId>
+                <version>2.17</version>
+                <executions>
+                    <execution>
+                        <id>validate</id>
+                        <phase>validate</phase>
+                        <configuration>
+                        <configLocation>sun_checks.xml</configLocation>
+                        <encoding>UTF-8</encoding>
+                        <consoleOutput>true</consoleOutput>
+                            <failsOnError>false</failsOnError>
+                        <failOnViolation>false</failOnViolation>
+                        <outputFile>../Checkstyle-result.xml</outputFile>
+                        <outputFileFormat>xml</outputFileFormat>
+                        <linkXRef>false</linkXRef>
+                        </configuration>
+                        <goals>
+                        <goal>check</goal>
+                        </goals>
+                    </execution>
+                </executions>
+    			</plugin-->
+				<plugin>
+					<groupId>org.apache.felix</groupId>
+					<artifactId>maven-scr-plugin</artifactId>
+					<version>1.7.2</version>
+					<executions>
+						<execution>
+							<id>generate-scr-scrdescriptor</id>
+							<goals>
+								<goal>scr</goal>
+							</goals>
+						</execution>
+					</executions>
+				</plugin>
+				<plugin>
+					<groupId>org.apache.felix</groupId>
+					<artifactId>maven-bundle-plugin</artifactId>
+					<version>2.4.0</version>
+					<extensions>true</extensions>
+					<configuration>
+						<obrRepository>NONE</obrRepository>
+					</configuration>
+				</plugin>
+			</plugins>
+		</pluginManagement>
+
+		<plugins>
+			<plugin>
+                            <groupId>org.apache.felix</groupId>
+                            <artifactId>maven-scr-plugin</artifactId>
+                            <version>1.7.2</version>
+                                    <executions>
+                                          <execution>
+                                            <id>generate-scr-scrdescriptor</id>
+                                            <goals>
+                                                <goal>scr</goal>
+                                            </goals>
+                                        </execution>
+                                </executions>
+                        </plugin>
+			
+			<plugin>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<version>2.3.1</version>
+				<inherited>true</inherited>
+				<configuration>
+					<encoding>UTF-8</encoding>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
+
+			<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+						<configuration>
+                        			<!--additionalparam>-Xdoclint:none</additionalparam-->
+			                        </configuration>
+					</plugin>
+		</plugins>
+	</build>
+	<profiles>
+		<profile>
+			<id>release</id>
+			<build>
+				<plugins>
+					<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>docs</id>
+						<phase>compile</phase>
+						<goals>
+							<goal>javadoc</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-source-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-sources</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>attach-javadocs</id>
+								<goals>
+									<goal>jar</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+				</plugins>
+			</build>
+		</profile>
+	</profiles>
+</project>
