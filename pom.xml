@@ -19,8 +19,8 @@
        		<artifactId>wso2</artifactId>
        		<version>1</version>
    	</parent>
-	<groupId>com.wso2telco.dpe</groupId>
-	<artifactId>component-dpe</artifactId>
+	<groupId>com.wso2telco.dep</groupId>
+	<artifactId>component-dep</artifactId>
 	<packaging>pom</packaging>
 	<version>1.8.0-SNAPSHOT</version>
 	<name>WSO2Telco -Digital Enable Platform Component</name>
@@ -53,8 +53,8 @@
 
 	
 	<modules>
-		<!--module>components/authentication-endpoint</module>
-		<module>features</module--> 
+		<!--module>components/authentication-endpoint</module-->
+		<module>components/aggregator-blacklist</module> 
 	</modules>
 
 	<scm>
