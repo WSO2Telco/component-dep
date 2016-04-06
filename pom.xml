@@ -55,6 +55,7 @@
 	<modules>
 		<!--module>components/authentication-endpoint</module-->
 		<module>components/aggregator-blacklist</module> 
+		<module>components/oneapi-validation</module> 
 	</modules>
 
 	<scm>
