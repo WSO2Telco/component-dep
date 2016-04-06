@@ -19,8 +19,8 @@
        		<artifactId>wso2</artifactId>
        		<version>1</version>
    	</parent>
-	<groupId>com.wso2telco.ids</groupId>
-	<artifactId>component-ids</artifactId>
+	<groupId>com.wso2telco.dpe</groupId>
+	<artifactId>component-dpe</artifactId>
 	<packaging>pom</packaging>
 	<version>1.8.0-SNAPSHOT</version>
 	<name>WSO2Telco -Digital Enable Platform Component</name>

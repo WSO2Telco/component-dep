@@ -18,13 +18,13 @@
        		<artifactId>wso2</artifactId>
        		<version>1</version>
 	</parent>
-	<groupId>com.wso2telco.ids</groupId>
-	<artifactId>component-ids-parent</artifactId>
+	<groupId>com.wso2telco.dep</groupId>
+	<artifactId>component-ids-dep</artifactId>
 	<packaging>pom</packaging>
-	<version>2.0.12-SNAPSHOT</version>
-	<name>WSO2Telco Core - Component</name>
-	<description>WSO2Telco Core Aggregate Perent pom</description>
 	<url>http://wso2telco.com</url>
+        <version>1.8.0-SNAPSHOT</version>
+        <name>WSO2Telco -Digital Enable Platform Component</name>
+        <description>WSO2Telco DEP Aggregate Pom</description>
 
 	<prerequisites>
 		<maven>3.0.0</maven>
@@ -45,9 +45,9 @@
         </distributionManagement>
 
 	<scm>
-                <url>https://github.com/WSO2Telco/component-ids.git</url>
-                <developerConnection>scm:git:https://github.com/WSO2Telco/component-ids.git</developerConnection>
-                <connection>scm:git:https://github.com/WSO2Telco/component-ids.git</connection>
+                <url>https://github.com/WSO2Telco/component-dep.git</url>
+                <developerConnection>scm:git:https://github.com/WSO2Telco/component-dep.git</developerConnection>
+                <connection>scm:git:https://github.com/WSO2Telco/component-dep.git</connection>
                 <tag>HEAD</tag>
         </scm>
 
