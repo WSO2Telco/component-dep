@@ -1,10 +1,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	<groupId>aggregator-blacklist</groupId>
+
+	<parent>
+		<groupId>com.wso2telco.dep</groupId>
+		<artifactId>component-dep</artifactId>
+		<version>1.8.0-SNAPSHOT</version>
+		<relativePath>../../parent/pom.xml</relativePath>
+	</parent>
+
 	<artifactId>aggregator-blacklist</artifactId>
-	<version>1.0.0-SNAPSHOT</version>
 	<packaging>war</packaging>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -29,29 +36,24 @@
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>${log4j.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
-			<version>${google.code.gson.version}</version>
 		</dependency>
 		<dependency>
-			<groupId>com.axiata.dialog</groupId>
+			<groupId>com.wso2telco.core</groupId>
 			<artifactId>dbutils</artifactId>
-			<version>${com.axiata.dialog.version}</version>
 		</dependency>
 		<dependency>
 			<groupId>org.glassfish.jersey.core</groupId>
 			<artifactId>jersey-client</artifactId>
-			<version>${org.glassfish.jersey.core.version}</version>
 		</dependency>
 	</dependencies>
 	<properties>
-		<log4j.version>1.2.13</log4j.version>
-		<google.code.gson.version>2.3.1</google.code.gson.version>
+		
 		<com.axiata.dialog.version>1.0-SNAPSHOT</com.axiata.dialog.version>
-		<org.glassfish.jersey.core.version>2.4</org.glassfish.jersey.core.version>
+		
 	</properties>
 
 	<repositories>

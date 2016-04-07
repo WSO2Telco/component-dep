@@ -19,8 +19,8 @@
        		<artifactId>wso2</artifactId>
        		<version>1</version>
    	</parent>
-	<groupId>com.wso2telco.dpe</groupId>
-	<artifactId>component-dpe</artifactId>
+	<groupId>com.wso2telco.dep</groupId>
+	<artifactId>component-dep</artifactId>
 	<packaging>pom</packaging>
 	<version>1.8.0-SNAPSHOT</version>
 	<name>WSO2Telco -Digital Enable Platform Component</name>
@@ -53,8 +53,9 @@
 
 	
 	<modules>
-		<!--module>components/authentication-endpoint</module>
-		<module>features</module--> 
+		<!--module>components/authentication-endpoint</module-->
+		<module>components/aggregator-blacklist</module> 
+		<module>components/oneapi-validation</module> 
 	</modules>
 
 	<scm>
@@ -110,25 +111,6 @@
                     </execution>
                 </executions>
             </plugin>
-
-		<plugin>
-        <groupId>org.apache.maven.plugins</groupId>
-        <artifactId>maven-project-info-reports-plugin</artifactId>
-        <version>2.9</version>
-        <reportSets>
-          <reportSet>
-            <reports>
-              <report>dependencies</report>
-              <report>project-team</report>
-              <report>mailing-list</report>
-              <report>cim</report>
-              <report>issue-tracking</report>
-              <report>license</report>
-              <report>scm</report>
-            </reports>
-          </reportSet>
-        </reportSets>
-      </plugin>
 
         </plugins>
     </build>
