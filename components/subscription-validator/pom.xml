@@ -33,7 +33,7 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Export-Package>
-                            com.axiata.dialog.mife.validators.*
+                            com.wso2telco.subscriptionvalidator.*
                         </Export-Package>
                         <Import-Package>
                             javax.servlet;version="2.4.0",
