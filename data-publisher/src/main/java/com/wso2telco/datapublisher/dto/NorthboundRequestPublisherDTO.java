@@ -2,7 +2,7 @@ package com.wso2telco.datapublisher.dto;
 
 import org.wso2.carbon.apimgt.usage.publisher.dto.RequestPublisherDTO;
 
-import com.wso2telco.datapublisher.SouthboundPublisherConstants;
+import com.wso2telco.datapublisher.DataPublisherConstants;
 
 public class NorthboundRequestPublisherDTO extends RequestPublisherDTO {
 
@@ -64,8 +64,8 @@ public class NorthboundRequestPublisherDTO extends RequestPublisherDTO {
 
     public static String getStreamDefinition() {
         String streamDefinition = "{" +
-                "  'name':'" + SouthboundPublisherConstants.NORTHBOUND_REQUEST_STREAM_NAME + "'," +
-                "  'version':'" + SouthboundPublisherConstants.NORTHBOUND_REQUEST_STREAM_VERSION + "'," +
+                "  'name':'" + DataPublisherConstants.NORTHBOUND_REQUEST_STREAM_NAME + "'," +
+                "  'version':'" + DataPublisherConstants.NORTHBOUND_REQUEST_STREAM_VERSION + "'," +
                 "  'nickName': 'Northbound Request Data'," +
                 "  'description': 'Northbound Request Data'," +
                 "  'metaData':[" +

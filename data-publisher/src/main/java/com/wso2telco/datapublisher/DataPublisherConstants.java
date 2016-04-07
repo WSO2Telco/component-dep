@@ -1,7 +1,7 @@
 package com.wso2telco.datapublisher;
 
 
-public final class SouthboundPublisherConstants {
+public final class DataPublisherConstants {
 
     public static final String SOUTHBOUND_REQUEST_STREAM_NAME = "com.wso2telco.statistics.southbound.request";
     public static final String SOUTHBOUND_REQUEST_STREAM_VERSION = "1.0.0";

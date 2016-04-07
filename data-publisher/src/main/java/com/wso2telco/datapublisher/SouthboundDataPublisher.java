@@ -39,29 +39,29 @@ public class SouthboundDataPublisher {
             this.dataPublisher = getDataPublisher();
 
             //If Request Stream Definition does not exist.
-            if (!dataPublisher.isStreamDefinitionAdded(SouthboundPublisherConstants.SOUTHBOUND_REQUEST_STREAM_NAME,
-                    SouthboundPublisherConstants.SOUTHBOUND_REQUEST_STREAM_VERSION)) {
+            if (!dataPublisher.isStreamDefinitionAdded(DataPublisherConstants.SOUTHBOUND_REQUEST_STREAM_NAME,
+                    DataPublisherConstants.SOUTHBOUND_REQUEST_STREAM_VERSION)) {
 
                 //Get Request Stream Definition
                 String requestStreamDefinition = SouthboundRequestPublisherDTO.getStreamDefinition();
 
                 //Add Request Stream Definition.
                 dataPublisher.addStreamDefinition(requestStreamDefinition,
-                        SouthboundPublisherConstants.SOUTHBOUND_REQUEST_STREAM_NAME,
-                        SouthboundPublisherConstants.SOUTHBOUND_REQUEST_STREAM_VERSION);
+                        DataPublisherConstants.SOUTHBOUND_REQUEST_STREAM_NAME,
+                        DataPublisherConstants.SOUTHBOUND_REQUEST_STREAM_VERSION);
             }
 
             //If Response Stream Definition does not exist.
-            if(!dataPublisher.isStreamDefinitionAdded(SouthboundPublisherConstants.SOUTHBOUND_RESPONSE_STREAM_NAME,
-                     SouthboundPublisherConstants.SOUTHBOUND_RESPONSE_STREAM_VERSION)){
+            if(!dataPublisher.isStreamDefinitionAdded(DataPublisherConstants.SOUTHBOUND_RESPONSE_STREAM_NAME,
+                     DataPublisherConstants.SOUTHBOUND_RESPONSE_STREAM_VERSION)){
 
                 //Get Response Stream Definition.
                 String responseStreamDefinition = SouthboundResponsePublisherDTO.getStreamDefinition();
 
                 //Add Response Stream Definition.
                 dataPublisher.addStreamDefinition(responseStreamDefinition,
-                        SouthboundPublisherConstants.SOUTHBOUND_RESPONSE_STREAM_NAME,
-                        SouthboundPublisherConstants.SOUTHBOUND_RESPONSE_STREAM_VERSION);
+                        DataPublisherConstants.SOUTHBOUND_RESPONSE_STREAM_NAME,
+                        DataPublisherConstants.SOUTHBOUND_RESPONSE_STREAM_VERSION);
 
             }
 
@@ -73,8 +73,8 @@ public class SouthboundDataPublisher {
     public void publishEvent(SouthboundRequestPublisherDTO southboundRequestPublisherDTO) {
         try {
             //Publish Request Data
-            dataPublisher.publish(SouthboundPublisherConstants.SOUTHBOUND_REQUEST_STREAM_NAME,
-                    SouthboundPublisherConstants.SOUTHBOUND_REQUEST_STREAM_VERSION,
+            dataPublisher.publish(DataPublisherConstants.SOUTHBOUND_REQUEST_STREAM_NAME,
+                    DataPublisherConstants.SOUTHBOUND_REQUEST_STREAM_VERSION,
                     System.currentTimeMillis(), new Object[]{"external"}, null,
                     (Object[]) southboundRequestPublisherDTO.createPayload());
         } catch (AgentException e) {
@@ -85,8 +85,8 @@ public class SouthboundDataPublisher {
     public void publishEvent(SouthboundResponsePublisherDTO southboundResponsePublisherDTO) {
         try {
             //Publish Response Data
-            dataPublisher.publish(SouthboundPublisherConstants.SOUTHBOUND_RESPONSE_STREAM_NAME,
-                    SouthboundPublisherConstants.SOUTHBOUND_RESPONSE_STREAM_VERSION,
+            dataPublisher.publish(DataPublisherConstants.SOUTHBOUND_RESPONSE_STREAM_NAME,
+                    DataPublisherConstants.SOUTHBOUND_RESPONSE_STREAM_VERSION,
                     System.currentTimeMillis(), new Object[]{"external"}, null,
                     (Object[]) southboundResponsePublisherDTO.createPayload());
 
@@ -98,8 +98,8 @@ public class SouthboundDataPublisher {
     public void publishEvent(NorthboundResponsePublisherDTO northboundResponsePublisherDTO) {
         try {
             //Publish Response Data
-            dataPublisher.publish(SouthboundPublisherConstants.NORTHBOUND_RESPONSE_STREAM_NAME,
-                    SouthboundPublisherConstants.NORTHBOUND_REQUEST_STREAM_VERSION,
+            dataPublisher.publish(DataPublisherConstants.NORTHBOUND_RESPONSE_STREAM_NAME,
+                    DataPublisherConstants.NORTHBOUND_REQUEST_STREAM_VERSION,
                     System.currentTimeMillis(), new Object[]{"external"}, null,
                     (Object[]) northboundResponsePublisherDTO.createPayload());
 

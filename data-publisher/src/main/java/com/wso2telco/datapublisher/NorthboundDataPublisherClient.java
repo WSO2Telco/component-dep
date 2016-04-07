@@ -119,7 +119,7 @@ public class NorthboundDataPublisherClient {
         mc.setProperty(APIMgtGatewayConstants.RESOURCE, resource);
         mc.setProperty(APIMgtGatewayConstants.HTTP_METHOD, method);
         //using new property name for southbound request time
-        mc.setProperty(SouthboundPublisherConstants.REQUEST_TIME, currentTime);
+        mc.setProperty(DataPublisherConstants.REQUEST_TIME, currentTime);
         mc.setProperty(APIMgtGatewayConstants.USER_ID, requestPublisherDTO.getUsername());
         mc.setProperty(APIMgtGatewayConstants.HOST_NAME, hostName);
         mc.setProperty(APIMgtGatewayConstants.API_PUBLISHER, apiPublisher);
@@ -144,7 +144,7 @@ public class NorthboundDataPublisherClient {
         
         Long currentTime = System.currentTimeMillis();
 
-        Long serviceTime = currentTime - (Long) mc.getProperty(SouthboundPublisherConstants.REQUEST_TIME);
+        Long serviceTime = currentTime - (Long) mc.getProperty(DataPublisherConstants.REQUEST_TIME);
 
         NorthboundResponsePublisherDTO responsePublisherDTO = new NorthboundResponsePublisherDTO();
         responsePublisherDTO.setConsumerKey((String) mc.getProperty(APIMgtGatewayConstants.CONSUMER_KEY));
@@ -163,21 +163,21 @@ public class NorthboundDataPublisherClient {
         responsePublisherDTO.setApplicationName((String) mc.getProperty(APIMgtGatewayConstants.APPLICATION_NAME));
         responsePublisherDTO.setApplicationId((String) mc.getProperty(APIMgtGatewayConstants.APPLICATION_ID));
         
-        responsePublisherDTO.setRequestId((String) mc.getProperty(SouthboundPublisherConstants.REQUEST_ID));
-        responsePublisherDTO.setMsisdn((String) mc.getProperty(SouthboundPublisherConstants.MSISDN));
-        responsePublisherDTO.setChargeAmount((String) mc.getProperty(SouthboundPublisherConstants.CHARGE_AMOUNT));
-        responsePublisherDTO.setPurchaseCategoryCode((String) mc.getProperty(SouthboundPublisherConstants.PAY_CATEGORY));
-        responsePublisherDTO.setOperatorRef((String) mc.getProperty(SouthboundPublisherConstants.OPERATOR_REF));
+        responsePublisherDTO.setRequestId((String) mc.getProperty(DataPublisherConstants.REQUEST_ID));
+        responsePublisherDTO.setMsisdn((String) mc.getProperty(DataPublisherConstants.MSISDN));
+        responsePublisherDTO.setChargeAmount((String) mc.getProperty(DataPublisherConstants.CHARGE_AMOUNT));
+        responsePublisherDTO.setPurchaseCategoryCode((String) mc.getProperty(DataPublisherConstants.PAY_CATEGORY));
+        responsePublisherDTO.setOperatorRef((String) mc.getProperty(DataPublisherConstants.OPERATOR_REF));
 
-        responsePublisherDTO.setResponseCode((String) mc.getProperty(SouthboundPublisherConstants.RESPONSE_CODE));
-        responsePublisherDTO.setExceptionId((String) mc.getProperty(SouthboundPublisherConstants.EXCEPTION_ID));
-        responsePublisherDTO.setExceptionMessage((String) mc.getProperty(SouthboundPublisherConstants.EXCEPTION_MESSAGE));
+        responsePublisherDTO.setResponseCode((String) mc.getProperty(DataPublisherConstants.RESPONSE_CODE));
+        responsePublisherDTO.setExceptionId((String) mc.getProperty(DataPublisherConstants.EXCEPTION_ID));
+        responsePublisherDTO.setExceptionMessage((String) mc.getProperty(DataPublisherConstants.EXCEPTION_MESSAGE));
         responsePublisherDTO.setJsonBody(jsonBody);
         
-        responsePublisherDTO.setOperationType((Integer) mc.getProperty(SouthboundPublisherConstants.OPERATION_TYPE));
-        responsePublisherDTO.setMerchantId((String) mc.getProperty(SouthboundPublisherConstants.MERCHANT_ID));
-        responsePublisherDTO.setCategory((String) mc.getProperty(SouthboundPublisherConstants.CATEGORY));
-        responsePublisherDTO.setSubCategory((String) mc.getProperty(SouthboundPublisherConstants.SUB_CATEGORY));
+        responsePublisherDTO.setOperationType((Integer) mc.getProperty(DataPublisherConstants.OPERATION_TYPE));
+        responsePublisherDTO.setMerchantId((String) mc.getProperty(DataPublisherConstants.MERCHANT_ID));
+        responsePublisherDTO.setCategory((String) mc.getProperty(DataPublisherConstants.CATEGORY));
+        responsePublisherDTO.setSubCategory((String) mc.getProperty(DataPublisherConstants.SUB_CATEGORY));
         
         //added to get Subscriber in end User request scenario 
         String userIdToPublish = responsePublisherDTO.getUsername();

@@ -36,29 +36,29 @@ public class NorthboundDataPublisher {
             this.dataPublisher = getDataPublisher();
 
             //If Request Stream Definition does not exist.
-            if (!dataPublisher.isStreamDefinitionAdded(SouthboundPublisherConstants.NORTHBOUND_REQUEST_STREAM_NAME,
-                    SouthboundPublisherConstants.NORTHBOUND_REQUEST_STREAM_VERSION)) {
+            if (!dataPublisher.isStreamDefinitionAdded(DataPublisherConstants.NORTHBOUND_REQUEST_STREAM_NAME,
+                    DataPublisherConstants.NORTHBOUND_REQUEST_STREAM_VERSION)) {
 
                 //Get Request Stream Definition
                 String requestStreamDefinition = NorthboundRequestPublisherDTO.getStreamDefinition();
 
                 //Add Request Stream Definition.
                 dataPublisher.addStreamDefinition(requestStreamDefinition,
-                        SouthboundPublisherConstants.NORTHBOUND_REQUEST_STREAM_NAME,
-                        SouthboundPublisherConstants.NORTHBOUND_REQUEST_STREAM_VERSION);
+                        DataPublisherConstants.NORTHBOUND_REQUEST_STREAM_NAME,
+                        DataPublisherConstants.NORTHBOUND_REQUEST_STREAM_VERSION);
             }
 
             //If Response Stream Definition does not exist.
-            if(!dataPublisher.isStreamDefinitionAdded(SouthboundPublisherConstants.NORTHBOUND_RESPONSE_STREAM_NAME,
-                    SouthboundPublisherConstants.NORTHBOUND_RESPONSE_STREAM_VERSION)){
+            if(!dataPublisher.isStreamDefinitionAdded(DataPublisherConstants.NORTHBOUND_RESPONSE_STREAM_NAME,
+                    DataPublisherConstants.NORTHBOUND_RESPONSE_STREAM_VERSION)){
 
                 //Get Response Stream Definition.
                 String responseStreamDefinition = NorthboundResponsePublisherDTO.getStreamDefinition();
 
                 //Add Response Stream Definition.
                 dataPublisher.addStreamDefinition(responseStreamDefinition,
-                        SouthboundPublisherConstants.NORTHBOUND_RESPONSE_STREAM_NAME,
-                        SouthboundPublisherConstants.NORTHBOUND_RESPONSE_STREAM_VERSION);
+                        DataPublisherConstants.NORTHBOUND_RESPONSE_STREAM_NAME,
+                        DataPublisherConstants.NORTHBOUND_RESPONSE_STREAM_VERSION);
 
             }
 
@@ -70,8 +70,8 @@ public class NorthboundDataPublisher {
     public void publishEvent(NorthboundRequestPublisherDTO northboundRequestPublisherDTO) {
         try {
             //Publish Request Data
-            dataPublisher.publish(SouthboundPublisherConstants.NORTHBOUND_REQUEST_STREAM_NAME,
-                    SouthboundPublisherConstants.NORTHBOUND_REQUEST_STREAM_VERSION,
+            dataPublisher.publish(DataPublisherConstants.NORTHBOUND_REQUEST_STREAM_NAME,
+                    DataPublisherConstants.NORTHBOUND_REQUEST_STREAM_VERSION,
                     System.currentTimeMillis(), new Object[]{"external"}, null,
                     (Object[]) northboundRequestPublisherDTO.createPayload());
         } catch (AgentException e) {
@@ -82,8 +82,8 @@ public class NorthboundDataPublisher {
     public void publishEvent(NorthboundResponsePublisherDTO northboundResponsePublisherDTO) {
         try {
             //Publish Response Data
-            dataPublisher.publish(SouthboundPublisherConstants.NORTHBOUND_RESPONSE_STREAM_NAME,
-                    SouthboundPublisherConstants.NORTHBOUND_RESPONSE_STREAM_VERSION,
+            dataPublisher.publish(DataPublisherConstants.NORTHBOUND_RESPONSE_STREAM_NAME,
+                    DataPublisherConstants.NORTHBOUND_RESPONSE_STREAM_VERSION,
                     System.currentTimeMillis(), new Object[]{"external"}, null,
                     (Object[]) northboundResponsePublisherDTO.createPayload());
 
