@@ -1,0 +1,283 @@
+<RateCard>
+	<Operators>
+		<Operator name="DIALOG">
+			<API name="smsmessaging">
+				<Operation name="200">
+					<Rate default="true">
+						<Name>SM1</Name>
+						<Currency>Rs</Currency>
+						<Value>10</Value>
+						<Type>CONSTANT</Type>
+						<Category name="Game" rate="10">
+							<SubCategory name="Game01" rate="100" />
+							<SubCategory name="Game02" rate="200" />
+							<SubCategory name="Game03" rate="300" />
+						</Category>
+						<Taxes>
+							<Tax>VAT</Tax>
+							<Tax>ABC</Tax>
+						</Taxes>
+					</Rate>
+					<Rate>
+						<Name>SM2</Name>
+						<Currency>Rs</Currency>
+						<Value>20</Value>
+						<Type>PER_REQUEST</Type>
+						<Category name="Game" rate="10">
+							<SubCategory name="Game01" rate="100" />
+							<SubCategory name="Game02" rate="200" />
+							<SubCategory name="Game03" rate="300" />
+						</Category>
+					</Rate>
+					<Rate>
+						<Name>SM3</Name>
+						<Currency>Rs</Currency>
+						<Value>20</Value>
+						<Type>QUOTA</Type>
+						<Category name="Game" rate="10">
+							<Attributes>
+								<MaxCount>500</MaxCount>
+								<ExcessRate>10</ExcessRate>
+							</Attributes>
+							<SubCategory name="Game01" rate="10">
+								<Attributes>
+									<MaxCount>500</MaxCount>
+									<ExcessRate>10</ExcessRate>
+								</Attributes>
+							</SubCategory>
+							<SubCategory name="Game02" rate="20">
+								<Attributes>
+									<MaxCount>500</MaxCount>
+									<ExcessRate>10</ExcessRate>
+								</Attributes>
+							</SubCategory>
+							<SubCategory name="Game03" rate="30">
+								<Attributes>
+									<MaxCount>500</MaxCount>
+									<ExcessRate>10</ExcessRate>
+								</Attributes>
+							</SubCategory>
+						</Category>
+					</Rate>
+					<Rate>
+						<Name>SM4</Name>
+						<Currency>Rs</Currency>
+						<Value>20</Value>
+						<Type>SUBSCRIPTION</Type>
+						<Category name="Game" rate="10">
+							<SubCategory name="Game01" rate="10" />
+							<SubCategory name="Game02" rate="20" />
+							<SubCategory name="Game03" rate="30" />
+						</Category>
+					</Rate>
+					<Rate>
+						<Name>SM5</Name>
+						<Currency>Rs</Currency>
+						<Value>20</Value>
+						<Type>MULTITIER</Type>
+						<UsageTiers>
+							<Tier rate="RateID1">
+								<Min value="0" />
+								<Max value="100" />
+							</Tier>
+							<Tier rate="RateID2">
+								<Min value="101" />
+								<Max value="5000" />
+							</Tier>
+						</UsageTiers>
+						<Category name="Game" rate="10">
+							<UsageTiers>
+								<Tier rate="RateID1">
+									<Min value="0" />
+									<Max value="100" />
+								</Tier>
+								<Tier rate="RateID2">
+									<Min value="101" />
+									<Max value="5000" />
+								</Tier>
+							</UsageTiers>
+							<SubCategory name="Game01" rate="10">
+								<UsageTiers>
+									<Tier rate="RateID1">
+										<Min value="0" />
+										<Max value="100" />
+									</Tier>
+									<Tier rate="RateID2">
+										<Min value="101" />
+										<Max value="5000" />
+									</Tier>
+								</UsageTiers>
+							</SubCategory>
+							<SubCategory name="Game02" rate="20">
+								<UsageTiers>
+									<Tier rate="RateID1">
+										<Min value="0" />
+										<Max value="100" />
+									</Tier>
+									<Tier rate="RateID2">
+										<Min value="101" />
+										<Max value="5000" />
+									</Tier>
+								</UsageTiers>
+							</SubCategory>
+							<SubCategory name="Game03" rate="30">
+								<UsageTiers>
+									<Tier rate="RateID1">
+										<Min value="0" />
+										<Max value="100" />
+									</Tier>
+									<Tier rate="RateID2">
+										<Min value="101" />
+										<Max value="5000" />
+									</Tier>
+								</UsageTiers>
+							</SubCategory>
+						</Category>
+					</Rate>
+				</Operation>
+			</API>
+			<API name="payment">
+				<Operation name="100">
+					<Rate>
+						<Name>p1</Name>
+						<Currency>Rs</Currency>
+						<Value>20</Value>
+						<CategorBase>true</CategorBase>
+						<Commission>
+							<Sp>80</Sp>
+							<Ads>15</Ads>
+							<Opco>5</Opco>
+						</Commission>
+						<Type>PERCENTAGE</Type>
+						<Category name="Game">
+							<Commission>
+								<Sp>80</Sp>
+								<Ads>15</Ads>
+								<Opco>5</Opco>
+							</Commission>
+							<SubCategory name="Game01">
+								<Commission>
+									<Sp>80</Sp>
+									<Ads>15</Ads>
+									<Opco>5</Opco>
+								</Commission>
+							</SubCategory>
+							<SubCategory name="Game02">
+								<Commission>
+									<Sp>80</Sp>
+									<Ads>15</Ads>
+									<Opco>5</Opco>
+								</Commission>
+							</SubCategory>
+							<SubCategory name="Game03">
+								<Commission>
+									<Sp>80</Sp>
+									<Ads>15</Ads>
+									<Opco>5</Opco>
+								</Commission>
+							</SubCategory>
+						</Category>
+						<Taxes>
+							<Tax>VAT</Tax>
+							<Tax>ABC</Tax>
+						</Taxes>
+					</Rate>
+					<Rate>
+						<Name>p2</Name>
+						<Currency>Rs</Currency>
+						<Value>20</Value>
+						<CategorBase>false</CategorBase>
+						<Commission>
+							<Sp>80</Sp>
+							<Ads>15</Ads>
+							<Opco>5</Opco>
+						</Commission>
+						<Type>PERCENTAGE</Type>
+						<Taxes>
+							<Tax>VAT</Tax>
+							<Tax>ABC</Tax>
+						</Taxes>
+					</Rate>
+				</Operation>
+				<Operation name="101">
+					<Rate>
+						<Name>one</Name>
+						<Currency>Rs</Currency>
+						<Value>0</Value>
+						<Surcharge value="100" Ads="90" Opco="10" />
+						<Type>CONSTANT</Type>
+						<Taxes>
+							<Tax>VAT</Tax>
+							<Tax>ABC</Tax>
+						</Taxes>
+					</Rate>
+					<Rate>
+						<Name>two</Name>
+						<Currency>Rs</Currency>
+						<Value>20</Value>
+						<Type>PERCENTAGE</Type>
+						<Category name="Game">
+							<Commission>
+								<Sp>80</Sp>
+								<Ads>15</Ads>
+								<Opco>5</Opco>
+							</Commission>
+							<SubCategory name="Game01">
+								<Commission>
+									<Sp>80</Sp>
+									<Ads>15</Ads>
+									<Opco>5</Opco>
+								</Commission>
+							</SubCategory>
+							<SubCategory name="Game02">
+								<Commission>
+									<Sp>80</Sp>
+									<Ads>15</Ads>
+									<Opco>5</Opco>
+								</Commission>
+							</SubCategory>
+							<SubCategory name="Game03">
+								<Commission>
+									<Sp>80</Sp>
+									<Ads>15</Ads>
+									<Opco>5</Opco>
+								</Commission>
+							</SubCategory>
+						</Category>
+						<Taxes>
+							<Tax>VAT</Tax>
+							<Tax>ABC</Tax>
+						</Taxes>
+					</Rate>
+				</Operation>
+			</API>
+			<API name="location">
+				<Rate default="true">
+					<Name>one</Name>
+					<Currency>Rs</Currency>
+					<Value>10</Value>
+					<Type>CONSTANT</Type>
+					<Taxes>
+						<Tax>VAT</Tax>
+						<Tax>ABC</Tax>
+					</Taxes>
+				</Rate>
+				<Rate>
+					<Name>two</Name>
+					<Currency>Rs</Currency>
+					<Value>20</Value>
+					<Type>PER_REQUEST</Type>
+				</Rate>
+			</API>
+		</Operator>
+	</Operators>
+</RateCard>
+
+<!-- operation definition> 100,'payment','Charge' 101,'payment','Refund' 
+	102,'payment','Reserve amount' 103,'payment','Reserve additional amount' 
+	104,'payment','Charge against reservation' 105,'payment','Release Reservation' 
+	106,'payment','List transactions' 200,'sms','Send SMS' 201,'sms','Retrive 
+	SMS' 202,'sms','Query SMS Delivery' 203,'sms','Delivery Subscription' 204,'sms','Stop 
+	Delivery Subscription' 205,'sms','Retrive SMS Subscription' 206,'sms','Stop 
+	Retrive SMS Subscription' 300,'lbs','Location' 400,'ussd','Send USSD' 401,'ussd','USSD 
+	Subscription' 402,'ussd','Stop USSD Subscription' -->

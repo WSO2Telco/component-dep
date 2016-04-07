@@ -1,0 +1,159 @@
+<?xml version="1.0" encoding="windows-1252"?>
+
+<!--
+To change this template, choose Tools | Templates
+and open the template in the editor.
+-->
+
+<TxCard>
+<transactionlog>
+    <api type="200">
+    	<headerparams>
+    		<param>Transaction_Timestamp</param>
+    		<param>ServiceProviderID</param>
+    		<param>OperatorID</param>
+    		<param>EventType</param>
+    		<param>MIFE_ReferenceCode</param>
+    		<param>ClientCorrelator</param>
+    		<param>MSISDN</param>
+    		<param>Count</param>
+    		<param>ResponseCode</param>
+    	</headerparams>
+        <dataparams>
+        	<row><manipulation type="FIELD" field="time"></manipulation></row>
+        	<row><manipulation type="FIELD" field="userId"></manipulation></row>
+        	<row><manipulation type="FIELD" field="operatorId"></manipulation></row>
+        	<row><manipulation type="CONST" field="">Outbound</manipulation></row>
+        	<row><manipulation type="FIELD" field="requestId"></manipulation></row>
+        	<row><manipulation type="JSON" field="jsonBody">outboundSMSMessageRequest/clientCorrelator</manipulation></row>
+        	<row><manipulation type="FIELD" field="msisdn"></manipulation></row>
+        	<row><manipulation type="FIELD" field="response_count"></manipulation></row>
+        	<row><manipulation type="FIELD" field="responseCode"></manipulation></row>
+        </dataparams>
+    </api>
+    <api type="201">
+        <headerparams>
+    		<param>Transaction_Timestamp</param>
+    		<param>ServiceProviderID</param>
+    		<param>OperatorID</param>
+    		<param>EventType</param>
+    		<param>MIFE_ReferenceCode</param>
+    		<param>ClientCorrelator</param>
+    		<param>MSISDN</param>
+    		<param>Count</param>
+    		<param>ResponseCode</param>
+    	</headerparams>
+        <dataparams>
+        	<row><manipulation type="FIELD" field="time"></manipulation></row>
+        	<row><manipulation type="FIELD" field="userId"></manipulation></row>
+        	<row><manipulation type="FIELD" field="operatorId"></manipulation></row>
+        	<row><manipulation type="CONST" field="">Inbound</manipulation></row>
+        	<row><manipulation type="FIELD" field="requestId"></manipulation></row>
+        	<row><manipulation type="JSON" field="jsonBody">amountTransaction/clientCorrelator</manipulation></row>
+        	<row><manipulation type="FIELD" field="msisdn"></manipulation></row>
+        	<row><manipulation type="FIELD" field="response_count"></manipulation></row>
+        	<row><manipulation type="FIELD" field="responseCode"></manipulation></row>
+        </dataparams>
+    </api>
+	<api type="300">
+        <headerparams>
+    		<param>Transaction_Timestamp</param>
+    		<param>ServiceProviderID</param>
+    		<param>OperatorID</param>
+    		<param>EventType</param>
+    		<param>MIFE_ReferenceCode</param>
+    		<param>Address</param>
+    		<param>Count</param>
+    		<param>ResponseCode</param>
+    	</headerparams>
+        <dataparams>
+        	<row><manipulation type="FIELD" field="time"></manipulation></row>
+        	<row><manipulation type="FIELD" field="userId"></manipulation></row>
+        	<row><manipulation type="FIELD" field="operatorId"></manipulation></row>
+        	<row><manipulation type="CONST" field="">Locate</manipulation></row>
+        	<row><manipulation type="FIELD" field="requestId"></manipulation></row>
+        	<row><manipulation type="FIELD" field="msisdn"></manipulation></row>
+        	<row><manipulation type="FIELD" field="response_count"></manipulation></row>
+        	<row><manipulation type="FIELD" field="responseCode"></manipulation></row>
+        </dataparams>
+    </api>
+	<api type="100">
+        <headerparams>
+    		<param>Transaction_Timestamp</param>
+    		<param>ServiceProviderID</param>
+    		<param>OperatorID</param>
+    		<param>EventType</param>
+    		<param>MIFE_ReferenceCode</param>
+			<param>ClientCorrelator</param>
+    		<param>MSISDN</param>
+    		<param>Amount</param>
+			<param>Currency</param>
+    		<param>ResponseCode</param>
+    	</headerparams>
+        <dataparams>
+        	<row><manipulation type="FIELD" field="time"></manipulation></row>
+        	<row><manipulation type="FIELD" field="userId"></manipulation></row>
+        	<row><manipulation type="FIELD" field="operatorId"></manipulation></row>
+        	<row><manipulation type="CONST" field="">Charge_I</manipulation></row>
+        	<row><manipulation type="FIELD" field="requestId"></manipulation></row>
+        	<row><manipulation type="JSON" field="jsonBody">amountTransaction/clientCorrelator</manipulation></row>
+        	<row><manipulation type="FIELD" field="msisdn"></manipulation></row>
+        	<row><manipulation type="FIELD" field="chargeAmount"></manipulation></row>
+			<row><manipulation type="JSON" field="jsonBody">amountTransaction/paymentAmount/chargingInformation/currency</manipulation></row>
+        	<row><manipulation type="FIELD" field="responseCode"></manipulation></row>
+        </dataparams>
+    </api>
+	<api type="104">
+        <headerparams>
+    		<param>Transaction_Timestamp</param>
+    		<param>ServiceProviderID</param>
+    		<param>OperatorID</param>
+    		<param>EventType</param>
+    		<param>MIFE_ReferenceCode</param>
+			<param>ClientCorrelator</param>
+    		<param>MSISDN</param>
+    		<param>Amount</param>
+			<param>Currency</param>
+    		<param>ResponseCode</param>
+    	</headerparams>
+        <dataparams>
+        	<row><manipulation type="FIELD" field="time"></manipulation></row>
+        	<row><manipulation type="FIELD" field="userId"></manipulation></row>
+        	<row><manipulation type="FIELD" field="operatorId"></manipulation></row>
+        	<row><manipulation type="CONST" field="">Charge_R</manipulation></row>
+        	<row><manipulation type="FIELD" field="requestId"></manipulation></row>
+        	<row><manipulation type="JSON" field="jsonBody">amountTransaction/clientCorrelator</manipulation></row>
+        	<row><manipulation type="FIELD" field="msisdn"></manipulation></row>
+        	<row><manipulation type="FIELD" field="chargeAmount"></manipulation></row>
+			<row><manipulation type="JSON" field="jsonBody">amountTransaction/paymentAmount/chargingInformation/currency</manipulation></row>
+        	<row><manipulation type="FIELD" field="responseCode"></manipulation></row>
+        </dataparams>
+    </api>
+	<api type="101">
+        <headerparams>
+    		<param>Transaction_Timestamp</param>
+    		<param>ServiceProviderID</param>
+    		<param>OperatorID</param>
+    		<param>EventType</param>
+    		<param>MIFE_ReferenceCode</param>
+			<param>ClientCorrelator</param>
+    		<param>MSISDN</param>
+    		<param>Amount</param>
+			<param>Currency</param>
+    		<param>ResponseCode</param>
+    	</headerparams>
+        <dataparams>
+        	<row><manipulation type="FIELD" field="time"></manipulation></row>
+        	<row><manipulation type="FIELD" field="userId"></manipulation></row>
+        	<row><manipulation type="FIELD" field="operatorId"></manipulation></row>
+        	<row><manipulation type="CONST" field="">Refund</manipulation></row>
+        	<row><manipulation type="FIELD" field="requestId"></manipulation></row>
+        	<row><manipulation type="JSON" field="jsonBody">amountTransaction/clientCorrelator</manipulation></row>
+        	<row><manipulation type="FIELD" field="msisdn"></manipulation></row>
+        	<row><manipulation type="FIELD" field="chargeAmount"></manipulation></row>
+			<row><manipulation type="JSON" field="jsonBody">amountTransaction/paymentAmount/chargingInformation/currency</manipulation></row>
+        	<row><manipulation type="FIELD" field="responseCode"></manipulation></row>
+        </dataparams>
+    </api>
+</transactionlog>
+</TxCard>
