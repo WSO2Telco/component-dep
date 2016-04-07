@@ -161,7 +161,7 @@
 			<dependency>
 			    <groupId>org.apache.synapse</groupId>
 			    <artifactId>synapse-core</artifactId>
-			    <version>${org.apache.synapse.version}</version>
+			    <version>${org.apache.synapse.core.version}</version>
 			</dependency>
 			<dependency>
 			    <groupId>org.wso2.carbon</groupId>
@@ -184,7 +184,7 @@
 		<com.wso2telco.core.version>2.0.03-SNAPSHOT</com.wso2telco.core.version>
 		<org.json.wso2.version>3.0.0.wso2v1</org.json.wso2.version>
 		<junit.version>3.8.1</junit.version>
-		<org.apache.synapse.version>2.1.2-wso2v3</org.apache.synapse.version>
+		<org.apache.synapse.core.version>2.1.7-wso2v1</org.apache.synapse.core.version>
 		<org.wso2.carbon.apimgt.gateway.version>1.2.1</org.wso2.carbon.apimgt.gateway.version>
 		<org.wso2.carbon.utils>4.2.0</org.wso2.carbon.utils>
 	</properties>
