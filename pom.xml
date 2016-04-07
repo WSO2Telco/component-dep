@@ -57,6 +57,7 @@
 		<module>components/aggregator-blacklist</module> 
 		<module>components/oneapi-validation</module> 
 		<module>components/subscription-validator</module> 
+		<module>components/publish-events-data</module>
 	</modules>
 
 	<scm>
