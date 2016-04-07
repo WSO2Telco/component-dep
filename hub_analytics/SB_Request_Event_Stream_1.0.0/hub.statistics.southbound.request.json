@@ -1,9 +1,9 @@
 {
-                                         'streamId': 'mife.statistics.southbound.request:1.0.0',
-                                         'name':'mife.statistics.southbound.request',
+                                         'streamId': 'com.wso2telco.statistics.southbound.request:1.0.0',
+                                         'name':'com.wso2telco.statistics.southbound.request',
                                          'version':'1.0.0',
-                                         'nickName': 'MIFE Southbound Request Data',
-                                         'description': 'MIFE Southbound Request Data',
+                                         'nickName': 'Southbound Request Data',
+                                         'description': 'Southbound Request Data',
                                          'metaData':[
                                                  {'name':'clientType','type':'STRING'}
                                          ],

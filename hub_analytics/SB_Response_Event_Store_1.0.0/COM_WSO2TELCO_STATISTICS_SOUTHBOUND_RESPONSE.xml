@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <EventStoreConfiguration> 
 	<Source>        
-		<StreamId>mife.statistics.southbound.response:1.0.0</StreamId>    
+		<StreamId>com.wso2telco.statistics.southbound.response:1.0.0</StreamId>    
 	</Source>
     <MergeSchema>false</MergeSchema>
     <RecordStoreName>EVENT_STORE</RecordStoreName>     

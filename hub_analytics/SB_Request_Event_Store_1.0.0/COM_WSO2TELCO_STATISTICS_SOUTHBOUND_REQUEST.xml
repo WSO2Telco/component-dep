@@ -1,45 +1,45 @@
 <?xml version="1.0" encoding="UTF-8"?> 
 <EventStoreConfiguration> 
-	<Source>        
-		<StreamId>mife.statistics.northbound.response:1.0.0</StreamId>    
-	</Source> 
+    <Source>        
+        <StreamId>com.wso2telco.statistics.southbound.request:1.0.0</StreamId>    
+    </Source>
     <MergeSchema>false</MergeSchema>
-    <RecordStoreName>EVENT_STORE</RecordStoreName>    
+    <RecordStoreName>EVENT_STORE</RecordStoreName>     
 
     <TableSchema> 
-    	<ColumnDefinition>
+    <ColumnDefinition>
          <Name>meta_clientType</Name>
          <EnableIndexing>false</EnableIndexing>
          <IsPrimaryKey>false</IsPrimaryKey>
          <EnableScoreParam>false</EnableScoreParam>
          <Type>STRING</Type>
-      </ColumnDefinition>
-        <ColumnDefinition> 	
-            <Name>consumerKey</Name> 	
-            <EnableIndexing>false</EnableIndexing> 	
-            <IsPrimaryKey>false</IsPrimaryKey> 	
-            <EnableScoreParam>false</EnableScoreParam> 	
+      </ColumnDefinition>   
+  <ColumnDefinition>
+       <Name>consumerKey</Name>     
+            <EnableIndexing>false</EnableIndexing>  
+            <IsPrimaryKey>false</IsPrimaryKey>  
+            <EnableScoreParam>false</EnableScoreParam>  
             <Type>STRING</Type> 
         </ColumnDefinition> 
-        <ColumnDefinition> 	
-            <Name>context</Name> 	
-            <EnableIndexing>false</EnableIndexing> 	
-            <IsPrimaryKey>false</IsPrimaryKey> 	
-            <EnableScoreParam>false</EnableScoreParam> 	
+        <ColumnDefinition>  
+            <Name>context</Name>    
+            <EnableIndexing>false</EnableIndexing>  
+            <IsPrimaryKey>false</IsPrimaryKey>  
+            <EnableScoreParam>false</EnableScoreParam>  
             <Type>STRING</Type> 
         </ColumnDefinition> 
-        <ColumnDefinition> 	
-            <Name>api_version</Name> 	
-            <EnableIndexing>false</EnableIndexing> 	
-            <IsPrimaryKey>false</IsPrimaryKey> 	
-            <EnableScoreParam>false</EnableScoreParam> 	
+        <ColumnDefinition>  
+            <Name>api_version</Name>    
+            <EnableIndexing>false</EnableIndexing>  
+            <IsPrimaryKey>false</IsPrimaryKey>  
+            <EnableScoreParam>false</EnableScoreParam>  
             <Type>STRING</Type> 
         </ColumnDefinition> 
-        <ColumnDefinition> 	
-            <Name>api</Name> 	
-            <EnableIndexing>false</EnableIndexing> 	
-            <IsPrimaryKey>false</IsPrimaryKey> 	
-            <EnableScoreParam>false</EnableScoreParam> 	
+        <ColumnDefinition>  
+            <Name>api</Name>    
+            <EnableIndexing>false</EnableIndexing>  
+            <IsPrimaryKey>false</IsPrimaryKey>  
+            <EnableScoreParam>false</EnableScoreParam>  
             <Type>STRING</Type> 
         </ColumnDefinition>
         <ColumnDefinition>  
@@ -64,21 +64,14 @@
             <Type>STRING</Type> 
         </ColumnDefinition>
         <ColumnDefinition>  
-            <Name>response</Name>    
+            <Name>request</Name>    
             <EnableIndexing>false</EnableIndexing>   
             <IsPrimaryKey>false</IsPrimaryKey>  
             <EnableScoreParam>false</EnableScoreParam>  
             <Type>INTEGER</Type> 
         </ColumnDefinition>
         <ColumnDefinition>  
-            <Name>responseTime</Name>    
-            <EnableIndexing>false</EnableIndexing>   
-            <IsPrimaryKey>false</IsPrimaryKey>  
-            <EnableScoreParam>false</EnableScoreParam>  
-            <Type>LONG</Type> 
-        </ColumnDefinition>
-         <ColumnDefinition>  
-            <Name>serviceTime</Name>    
+            <Name>requestTime</Name>    
             <EnableIndexing>false</EnableIndexing>   
             <IsPrimaryKey>false</IsPrimaryKey>  
             <EnableScoreParam>false</EnableScoreParam>  
@@ -126,8 +119,6 @@
             <EnableScoreParam>false</EnableScoreParam>  
             <Type>STRING</Type> 
         </ColumnDefinition>
-
-
         <ColumnDefinition>  
             <Name>requestId</Name>    
             <EnableIndexing>false</EnableIndexing>   
@@ -136,20 +127,12 @@
             <Type>STRING</Type> 
         </ColumnDefinition>
         <ColumnDefinition>  
-            <Name>responseCode</Name>    
+            <Name>sbEndpoint</Name>    
             <EnableIndexing>false</EnableIndexing>   
             <IsPrimaryKey>false</IsPrimaryKey>  
             <EnableScoreParam>false</EnableScoreParam>  
             <Type>STRING</Type> 
         </ColumnDefinition>
-        <ColumnDefinition>  
-            <Name>msisdn</Name>    
-            <EnableIndexing>false</EnableIndexing>   
-            <IsPrimaryKey>false</IsPrimaryKey>  
-            <EnableScoreParam>false</EnableScoreParam>  
-            <Type>STRING</Type> 
-        </ColumnDefinition>
-
         <ColumnDefinition>  
             <Name>chargeAmount</Name>    
             <EnableIndexing>false</EnableIndexing>   
@@ -165,63 +148,19 @@
             <Type>STRING</Type> 
         </ColumnDefinition>
         <ColumnDefinition>  
-            <Name>operatorRef</Name>    
-            <EnableIndexing>false</EnableIndexing>   
-            <IsPrimaryKey>false</IsPrimaryKey>  
-            <EnableScoreParam>false</EnableScoreParam>  
-            <Type>STRING</Type> 
-        </ColumnDefinition>
-
-        <ColumnDefinition>  
-            <Name>exceptionId</Name>    
-            <EnableIndexing>false</EnableIndexing>   
-            <IsPrimaryKey>false</IsPrimaryKey>  
-            <EnableScoreParam>false</EnableScoreParam>  
-            <Type>STRING</Type> 
-        </ColumnDefinition>
-        <ColumnDefinition>  
-            <Name>exceptionMessage</Name>    
-            <EnableIndexing>false</EnableIndexing>   
-            <IsPrimaryKey>false</IsPrimaryKey>  
-            <EnableScoreParam>false</EnableScoreParam>  
-            <Type>STRING</Type> 
-        </ColumnDefinition>
-        <ColumnDefinition>  
             <Name>jsonBody</Name>    
             <EnableIndexing>false</EnableIndexing>   
             <IsPrimaryKey>false</IsPrimaryKey>  
             <EnableScoreParam>false</EnableScoreParam>  
             <Type>STRING</Type> 
         </ColumnDefinition>
-
         <ColumnDefinition>  
-            <Name>operationType</Name>    
+            <Name>operatorId</Name>    
             <EnableIndexing>false</EnableIndexing>   
             <IsPrimaryKey>false</IsPrimaryKey>  
             <EnableScoreParam>false</EnableScoreParam>  
             <Type>STRING</Type> 
         </ColumnDefinition>
-        <ColumnDefinition>  
-            <Name>category</Name>    
-            <EnableIndexing>false</EnableIndexing>   
-            <IsPrimaryKey>false</IsPrimaryKey>  
-            <EnableScoreParam>false</EnableScoreParam>  
-            <Type>STRING</Type> 
-        </ColumnDefinition>
-        <ColumnDefinition>  
-            <Name>merchantId</Name>    
-            <EnableIndexing>false</EnableIndexing>   
-            <IsPrimaryKey>false</IsPrimaryKey>  
-            <EnableScoreParam>false</EnableScoreParam>  
-            <Type>STRING</Type> 
-        </ColumnDefinition>
-        <ColumnDefinition>  
-            <Name>subCategory</Name>    
-            <EnableIndexing>false</EnableIndexing>   
-            <IsPrimaryKey>false</IsPrimaryKey>  
-            <EnableScoreParam>false</EnableScoreParam>  
-            <Type>STRING</Type> 
-        </ColumnDefinition>
-
-        </TableSchema>    
+              
+    </TableSchema>    
 </EventStoreConfiguration>

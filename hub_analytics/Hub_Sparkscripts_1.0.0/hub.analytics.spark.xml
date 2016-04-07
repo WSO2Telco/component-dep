@@ -5,7 +5,7 @@
         	 
         	create temporary table NBAPIRequestSummaryData using CarbonJDBC options (dataSource "WSO2AM_STATS_DB", tableName "NB_API_REQUEST_SUMMARY");
 
-        	create temporary table NBAPIRequestData USING CarbonAnalytics OPTIONS(tableName "MIFE_STATISTICS_NORTHBOUND_REQUEST");
+        	create temporary table NBAPIRequestData USING CarbonAnalytics OPTIONS(tableName "COM_WSO2TELCO_STATISTICS_NORTHBOUND_REQUEST");
 
         	CREATE TEMPORARY TABLE NB_API_REQUEST_SUMMARY_FINAL USING CarbonAnalytics OPTIONS (tableName "NB_API_REQUEST_SUMMARY",
     		schema  "messageRowID facet,
@@ -79,7 +79,7 @@
     
     create temporary table SBAPIRequestSummaryData using CarbonJDBC options (dataSource "WSO2AM_STATS_DB", tableName "SB_API_REQUEST_SUMMARY");
 
-        	create temporary table SBAPIRequestData USING CarbonAnalytics OPTIONS(tableName "MIFE_STATISTICS_SOUTHBOUND_REQUEST");
+        	create temporary table SBAPIRequestData USING CarbonAnalytics OPTIONS(tableName "COM_WSO2TELCO_STATISTICS_SOUTHBOUND_REQUEST");
 
         	CREATE TEMPORARY TABLE SB_API_REQUEST_SUMMARY_FINAL USING CarbonAnalytics OPTIONS (tableName "SB_API_REQUEST_SUMMARY",
     		schema  "messageRowID facet,
@@ -157,7 +157,7 @@
 
     create temporary table NBAPIResponseSummaryData using CarbonJDBC options (dataSource "WSO2AM_STATS_DB", tableName "NB_API_RESPONSE_SUMMARY");
 
-        	create temporary table NBAPIResponseData USING CarbonAnalytics OPTIONS(tableName "MIFE_STATISTICS_NORTHBOUND_RESPONSE");
+        	create temporary table NBAPIResponseData USING CarbonAnalytics OPTIONS(tableName "COM_WSO2TELCO_STATISTICS_NORTHBOUND_RESPONSE");
 
         	CREATE TEMPORARY TABLE NB_API_RESPONSE_SUMMARY_FINAL USING CarbonAnalytics OPTIONS (tableName "NB_API_RESPONSE_SUMMARY",
     		schema  "messageRowID facet,
@@ -262,7 +262,7 @@
 
     create temporary table SBAPIResponseSummaryData using CarbonJDBC options (dataSource "WSO2AM_STATS_DB", tableName "SB_API_RESPONSE_SUMMARY");
 
-        	create temporary table SBAPIResponseData USING CarbonAnalytics OPTIONS(tableName "MIFE_STATISTICS_SOUTHBOUND_RESPONSE");
+        	create temporary table SBAPIResponseData USING CarbonAnalytics OPTIONS(tableName "COM_WSO2TELCO_STATISTICS_SOUTHBOUND_RESPONSE");
 
         	CREATE TEMPORARY TABLE SB_API_RESPONSE_SUMMARY_FINAL USING CarbonAnalytics OPTIONS (tableName "SB_API_RESPONSE_SUMMARY",
     		schema  "messageRowID facet,

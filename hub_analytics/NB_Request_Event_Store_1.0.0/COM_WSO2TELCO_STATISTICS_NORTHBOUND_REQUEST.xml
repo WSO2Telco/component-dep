@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <EventStoreConfiguration>
 <Source>
-      <StreamId>mife.statistics.northbound.request:1.0.0</StreamId>
+      <StreamId>com.wso2telco.statistics.northbound.request:1.0.0</StreamId>
    </Source>
    <TableSchema>
       <ColumnDefinition>
