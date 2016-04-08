@@ -2,9 +2,17 @@
          xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
          xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>org.dialog.custom</groupId>
+
+    <parent>
+        <groupId>com.wso2telco.dep</groupId>
+        <artifactId>component-dep</artifactId>
+        <version>1.8.0-SNAPSHOT</version>
+        <relativePath>../../parent/pom.xml</relativePath>
+    </parent>
+
+    <groupId>com.wso2telco.reporting</groupId>
     <artifactId>com.wso2telco.reporting</artifactId>
-    <version>1.0-SNAPSHOT</version>
+    
     <packaging>bundle</packaging>
     <name>WSO2.Telco Billing and Reporting Module</name>
 
@@ -12,59 +20,42 @@
         <dependency>
             <groupId>rhino.wso2</groupId>
             <artifactId>js</artifactId>
-            <version>${js.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
-            <version>${gson.version}</version>
         </dependency>
         <dependency>
             <groupId>org.jaggeryjs</groupId>
             <artifactId>org.jaggeryjs.scriptengine</artifactId>
-            <version>${org.jaggeryjs.scriptengine.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon.apimgt</groupId>
             <artifactId>org.wso2.carbon.apimgt.api</artifactId>
-            <version>${org.wso2.carbon.apimgt.api.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon.apimgt</groupId>
             <artifactId>org.wso2.carbon.apimgt.impl</artifactId>
-            <version>${org.wso2.carbon.apimgt.impl.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jaggeryjs</groupId>
             <artifactId>org.jaggeryjs.hostobjects.web</artifactId>
-            <version>${org.jaggeryjs.hostobjects.web.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.jaggeryjs</groupId>
             <artifactId>org.jaggeryjs.hostobjects.file</artifactId>
-            <version>${org.jaggeryjs.hostobjects.file.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon.apimgt</groupId>
             <artifactId>org.wso2.carbon.apimgt.usage.client</artifactId>
-            <version>${org.wso2.carbon.apimgt.usage.client.version}</version>
         </dependency>
         <dependency>
             <groupId>commons-io.wso2</groupId>
             <artifactId>commons-io</artifactId>
-            <version>${commons-io.version}</version>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>joda-time.wso2</groupId>
             <artifactId>joda-time</artifactId>
-            <version>${joda-time.version}</version>
         </dependency>
     </dependencies>
 
@@ -165,16 +156,7 @@
     </repositories>
 
     <properties>
-        <js.version>1.7.0.R4.wso2v1</js.version>
-        <gson.version>2.3.1</gson.version>
         <org.wso2.carbon.governance.api.version>4.5.8</org.wso2.carbon.governance.api.version>
-        <org.jaggeryjs.scriptengine.version>0.12.0</org.jaggeryjs.scriptengine.version>
-        <org.wso2.carbon.apimgt.api.version>5.0.3</org.wso2.carbon.apimgt.api.version>
-        <org.wso2.carbon.apimgt.impl.version>5.0.3</org.wso2.carbon.apimgt.impl.version>
-        <org.jaggeryjs.hostobjects.web.version>0.12.0</org.jaggeryjs.hostobjects.web.version>
-        <org.jaggeryjs.hostobjects.file.version>0.12.0</org.jaggeryjs.hostobjects.file.version>
-        <org.wso2.carbon.apimgt.usage.client.version>5.0.3</org.wso2.carbon.apimgt.usage.client.version>
-        <commons-io.version>2.4.0.wso2v1</commons-io.version>
-        <joda-time.version>1.6.0.wso2v1</joda-time.version>
+        
     </properties>
 </project>
