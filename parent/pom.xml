@@ -164,9 +164,9 @@
 			    <version>${org.apache.synapse.core.version}</version>
 			</dependency>
 			<dependency>
-			    <groupId>org.wso2.carbon</groupId>
+			    <groupId>org.wso2.carbon.apimgt</groupId>
 			    <artifactId>org.wso2.carbon.apimgt.gateway</artifactId>
-			    <version>${org.wso2.carbon.apimgt.gateway.version}</version>
+			    <version>${org.wso2.carbon.apimgt.version}</version>
 			</dependency>
 			<dependency>
 			    <groupId>org.wso2.carbon</groupId>
@@ -196,6 +196,58 @@
 			    <artifactId>hazelcast</artifactId>
 			    <version>${org.wso2.hazelcast}</version>
 			</dependency>
+			<dependency>
+            	<groupId>rhino.wso2</groupId>
+	            <artifactId>js</artifactId>
+	            <version>${rhino.wso2.version}</version>
+	            <scope>provided</scope>
+        	</dependency>
+        	<dependency>
+	            <groupId>org.jaggeryjs</groupId>
+	            <artifactId>org.jaggeryjs.scriptengine</artifactId>
+	            <version>${org.jaggeryjs.version}</version>
+	            <scope>provided</scope>
+        	</dependency>
+        	<dependency>
+	            <groupId>org.wso2.carbon.apimgt</groupId>
+	            <artifactId>org.wso2.carbon.apimgt.api</artifactId>
+	            <version>${org.wso2.carbon.apimgt.version}</version>
+	            <scope>provided</scope>
+        	</dependency>
+        	<dependency>
+	            <groupId>org.wso2.carbon.apimgt</groupId>
+	            <artifactId>org.wso2.carbon.apimgt.impl</artifactId>
+	            <version>${org.wso2.carbon.apimgt.version}</version>
+	            <scope>provided</scope>
+        	</dependency>
+        	<dependency>
+	            <groupId>org.jaggeryjs</groupId>
+	            <artifactId>org.jaggeryjs.hostobjects.web</artifactId>
+	            <version>${org.jaggeryjs.version}</version>
+	            <scope>provided</scope>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.jaggeryjs</groupId>
+	            <artifactId>org.jaggeryjs.hostobjects.file</artifactId>
+	            <version>${org.jaggeryjs.version}</version>
+	            <scope>provided</scope>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.wso2.carbon.apimgt</groupId>
+	            <artifactId>org.wso2.carbon.apimgt.usage.client</artifactId>
+	            <version>${org.wso2.carbon.apimgt.version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>commons-io.wso2</groupId>
+	            <artifactId>commons-io</artifactId>
+	            <version>${commons-io.wso2.version}</version>
+	            <scope>provided</scope>
+	        </dependency>
+	        <dependency>
+	            <groupId>joda-time.wso2</groupId>
+	            <artifactId>joda-time</artifactId>
+	            <version>${joda-time.wso2.version}</version>
+	        </dependency>
 		</dependencies>
 
 	</dependencyManagement>
@@ -208,12 +260,14 @@
 		<org.json.wso2.version>3.0.0.wso2v1</org.json.wso2.version>
 		<junit.version>3.8.1</junit.version>
 		<org.apache.synapse.core.version>2.1.7-wso2v1</org.apache.synapse.core.version>
-		<org.wso2.carbon.apimgt.gateway.version>1.2.1</org.wso2.carbon.apimgt.gateway.version>
 		<org.wso2.carbon.utils>4.2.0</org.wso2.carbon.utils>
-		<org.wso2.carbon.apimgt.version>5.0.3</org.wso2.carbon.apimgt.version>
 		<org.wso2.carbon.commons.version>4.4.8</org.wso2.carbon.commons.version>
 		<org.wso2.carbon.apimgt.version>5.0.3</org.wso2.carbon.apimgt.version>
 		<org.wso2.hazelcast>3.5.2.wso2v1</org.wso2.hazelcast>
+		<rhino.wso2.version>1.7.0.R4.wso2v1</rhino.wso2.version>
+		<org.jaggeryjs.version>0.12.0</org.jaggeryjs.version>
+		<commons-io.wso2.version>2.4.0.wso2v1</commons-io.wso2.version>
+		<joda-time.wso2.version>1.6.0.wso2v1</joda-time.wso2.version>
 	</properties>
 
 	<build>
