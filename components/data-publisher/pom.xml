@@ -10,7 +10,6 @@
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
-    <groupId>com.wso2telco.datapublisher</groupId>
     <artifactId>data-publisher</artifactId>
 
 	<packaging>bundle</packaging>
