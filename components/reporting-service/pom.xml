@@ -10,7 +10,7 @@
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>com.wso2telco.reporting</artifactId>
+    <artifactId>reporting-service</artifactId>
     
     <packaging>bundle</packaging>
     <name>WSO2.Telco Billing and Reporting Module</name>
