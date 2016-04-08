@@ -52,13 +52,9 @@
 
 	
 	<modules>
-<<<<<<< HEAD
 		<!--module>components/authentication-endpoint</module>
 		<module>features</module-->
-    <module>blacklist-whitelist-Service</module>
-  </modules>
-=======
-		<!--module>components/authentication-endpoint</module-->
+        <!-- <module>blacklist-whitelist-Service</module> -->
 		<module>components/aggregator-blacklist</module> 
 		<module>components/oneapi-validation</module> 
 		<module>components/subscription-validator</module> 
@@ -66,7 +62,6 @@
         <module>components/data-publisher</module>
         <module>components/reporting-service</module>
 	</modules>
->>>>>>> dde0b4c56caf7e1b9b2db684f84070e720a76f5c
 
 	<scm>
 		<url>https://github.com/WSO2Telco/component-dep.git</url>
