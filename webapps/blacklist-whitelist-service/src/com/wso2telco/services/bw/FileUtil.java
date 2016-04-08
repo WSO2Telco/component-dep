@@ -4,7 +4,7 @@
  * Roshan.Saputhanthri
  */
 
-package com.axiata.dialog;
+package com.wso2telco.services.bw;
 
 import java.io.BufferedWriter;
 

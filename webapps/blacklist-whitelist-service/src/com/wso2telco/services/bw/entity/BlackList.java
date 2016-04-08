@@ -1,20 +1,17 @@
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
+ * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-
-package com.axiata.dialog.entity;
+package com.wso2telco.services.bw.entity;
 
 /**
  *
- * @author gayan
+ * @author tharanga_07219
  */
-public class BlackListBulk {
+public class BlackList {
     private String apiID;
     private String apiName;
     private String userID;
-    private String[] msisdnList;
     
     public String getAPIID(){
         return this.apiID;
@@ -38,13 +35,5 @@ public class BlackListBulk {
     
     public String setUserID(String userID){
         return this.userID = userID;
-    }
-    
-    public String[] getMsisdnList(){
-        return this.msisdnList;
-    }
-    
-    public String[] setMsisdnList(String[] msisdnList){
-        return this.msisdnList = msisdnList;
     }
 }

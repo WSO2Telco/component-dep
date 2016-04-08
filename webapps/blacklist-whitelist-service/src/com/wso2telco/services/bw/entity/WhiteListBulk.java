@@ -1,19 +1,19 @@
-package com.axiata.dialog.entity;
-//=====================================================PRIYANKA_06608
-public class WhiteListBulk {
-    private String apiId;
+package com.wso2telco.services.bw.entity;
+
+import java.io.Serializable;
+import java.util.Arrays;
+
+public class WhiteListBulk implements Serializable{
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -6079118123267474720L;
+	private String apiId;
     private String appId;
     private String apiName;
     private String userID;
     private String[] msisdnList;
-/*    
-    public String getAPIID(){
-        return this.apiID;
-    }
     
-    public String setAPIID(String apiID){
-        return this.apiID = apiID;
-    }*/
     
     public String getAPIName(){
         return this.apiName;
@@ -55,5 +55,12 @@ public class WhiteListBulk {
 		this.appId = appId;
 	}
 
+	@Override
+	public String toString() {
+		return "WhiteListBulk [apiId=" + apiId + ", appId=" + appId + ", apiName=" + apiName + ", userID=" + userID
+				+ ", msisdnList=" + Arrays.toString(msisdnList) + "]";
+	}
 
+
+	
 }

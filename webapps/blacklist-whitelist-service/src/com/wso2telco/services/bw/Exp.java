@@ -1,4 +1,4 @@
-package com.axiata.dialog;
+package com.wso2telco.services.bw;
 
 public class Exp {
 	public static void main(String[] args) {

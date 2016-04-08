@@ -2,14 +2,16 @@
  * To change this template, choose Tools | Templates
  * and open the template in the editor.
  */
-package com.axiata.dialog.entity;
+package com.wso2telco.services.bw.entity;
 
-/**
- *
- * @author tharanga_07219
- */
-public class WhiteList {
-    private String subscriptionID;
+import java.io.Serializable;
+
+public class WhiteList implements Serializable{
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -9154995737075601217L;
+	private String subscriptionID;
     private String apiID;
     private String applicationID;
     
