@@ -5,5 +5,5 @@
 	</from>
     
     <mapping customMapping="disable" type="wso2event"/>
-    <to streamName="mife.statistics.northbound.request" version="1.0.0"/> 
+    <to streamName="com.wso2telco.statistics.northbound.request" version="1.0.0"/> 
 </eventReceiver> 

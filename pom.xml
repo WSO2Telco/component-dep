@@ -18,8 +18,8 @@
        		<artifactId>wso2</artifactId>
        		<version>1</version>
    	</parent>
-	<groupId>com.wso2telco.dpe</groupId>
-	<artifactId>component-dpe</artifactId>
+	<groupId>com.wso2telco.dep</groupId>
+	<artifactId>component-dep</artifactId>
 	<packaging>pom</packaging>
 	<version>1.8.0-SNAPSHOT</version>
 	<name>WSO2Telco -Digital Enable Platform Component</name>
@@ -52,10 +52,21 @@
 
 	
 	<modules>
+<<<<<<< HEAD
 		<!--module>components/authentication-endpoint</module>
 		<module>features</module-->
     <module>blacklist-whitelist-Service</module>
   </modules>
+=======
+		<!--module>components/authentication-endpoint</module-->
+		<module>components/aggregator-blacklist</module> 
+		<module>components/oneapi-validation</module> 
+		<module>components/subscription-validator</module> 
+		<module>components/publish-events-data</module>
+        <module>components/data-publisher</module>
+        <module>components/com.wso2telco.reporting</module>
+	</modules>
+>>>>>>> dde0b4c56caf7e1b9b2db684f84070e720a76f5c
 
 	<scm>
 		<url>https://github.com/WSO2Telco/component-dep.git</url>

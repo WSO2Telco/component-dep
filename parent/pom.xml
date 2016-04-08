@@ -19,7 +19,7 @@
        		<version>1</version>
 	</parent>
 	<groupId>com.wso2telco.dep</groupId>
-	<artifactId>component-ids-dep</artifactId>
+	<artifactId>component-dep</artifactId>
 	<packaging>pom</packaging>
 	<url>http://wso2telco.com</url>
         <version>1.8.0-SNAPSHOT</version>
@@ -54,7 +54,7 @@
 
 	<repositories>
 
-  <repository>
+  		<repository>
                         <id>wso2telco-nexus</id>
                         <name>WSO2Telco internal Repository</name>
                         <url>http://maven.wso2telco.com/nexus/content/groups/public/</url>
@@ -90,7 +90,7 @@
 	</repositories>
 
 
-	<pluginRepositories>
+	<pluginRepositories> 
 		<pluginRepository>
 			<id>wso2telco-nexus</id>
 			<name>WSO2Telco internal Repository</name>
@@ -128,26 +128,147 @@
 
 	<dependencyManagement>
 		<dependencies>
-<!--
-		<dependency>
-			<groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-client</artifactId>
-			<version>${com.sun.jersey.version}</version>
-		</dependency>
-
-		 <dependency>
-                        <groupId>org.codehaus.jettison.wso2</groupId>
-                        <artifactId>jettison</artifactId>
-                        <version>${org.codehaus.jettison.wso2.version}</version>
-                </dependency>
--->
-
-
+			<dependency>
+				<groupId>log4j</groupId>
+				<artifactId>log4j</artifactId>
+				<version>${log4j.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.google.code.gson</groupId>
+				<artifactId>gson</artifactId>
+				<version>${google.code.gson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.glassfish.jersey.core</groupId>
+				<artifactId>jersey-client</artifactId>
+				<version>${org.glassfish.jersey.core.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.wso2telco.core</groupId>
+				<artifactId>dbutils</artifactId>
+				<version>${com.wso2telco.core.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.json.wso2</groupId>
+				<artifactId>json</artifactId>
+				<version>${org.json.wso2.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>junit</groupId>
+				<artifactId>junit</artifactId>
+				<version>${junit.version}</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.apache.synapse</groupId>
+			    <artifactId>synapse-core</artifactId>
+			    <version>${org.apache.synapse.core.version}</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.wso2.carbon.apimgt</groupId>
+			    <artifactId>org.wso2.carbon.apimgt.gateway</artifactId>
+			    <version>${org.wso2.carbon.apimgt.version}</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.wso2.carbon</groupId>
+			    <artifactId>org.wso2.carbon.utils</artifactId>
+			    <version>${org.wso2.carbon.utils}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.wso2.carbon.apimgt</groupId>
+				<artifactId>org.wso2.carbon.apimgt.usage.publisher</artifactId>
+				<version>${org.wso2.carbon.apimgt.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.wso2.carbon.commons</groupId>
+				<artifactId>org.wso2.carbon.databridge.agent.thrift</artifactId>
+				<version>${org.wso2.carbon.commons.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.wso2.carbon.apimgt</groupId>
+				<artifactId>org.wso2.carbon.apimgt.impl</artifactId>
+				<version>${org.wso2.carbon.apimgt.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+			    <groupId>org.wso2.orbit.com.hazelcast</groupId>
+			    <artifactId>hazelcast</artifactId>
+			    <version>${org.wso2.hazelcast}</version>
+			</dependency>
+			<dependency>
+            	<groupId>rhino.wso2</groupId>
+	            <artifactId>js</artifactId>
+	            <version>${rhino.wso2.version}</version>
+	            <scope>provided</scope>
+        	</dependency>
+        	<dependency>
+	            <groupId>org.jaggeryjs</groupId>
+	            <artifactId>org.jaggeryjs.scriptengine</artifactId>
+	            <version>${org.jaggeryjs.version}</version>
+	            <scope>provided</scope>
+        	</dependency>
+        	<dependency>
+	            <groupId>org.wso2.carbon.apimgt</groupId>
+	            <artifactId>org.wso2.carbon.apimgt.api</artifactId>
+	            <version>${org.wso2.carbon.apimgt.version}</version>
+	            <scope>provided</scope>
+        	</dependency>
+        	<dependency>
+	            <groupId>org.wso2.carbon.apimgt</groupId>
+	            <artifactId>org.wso2.carbon.apimgt.impl</artifactId>
+	            <version>${org.wso2.carbon.apimgt.version}</version>
+	            <scope>provided</scope>
+        	</dependency>
+        	<dependency>
+	            <groupId>org.jaggeryjs</groupId>
+	            <artifactId>org.jaggeryjs.hostobjects.web</artifactId>
+	            <version>${org.jaggeryjs.version}</version>
+	            <scope>provided</scope>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.jaggeryjs</groupId>
+	            <artifactId>org.jaggeryjs.hostobjects.file</artifactId>
+	            <version>${org.jaggeryjs.version}</version>
+	            <scope>provided</scope>
+	        </dependency>
+	        <dependency>
+	            <groupId>org.wso2.carbon.apimgt</groupId>
+	            <artifactId>org.wso2.carbon.apimgt.usage.client</artifactId>
+	            <version>${org.wso2.carbon.apimgt.version}</version>
+	        </dependency>
+	        <dependency>
+	            <groupId>commons-io.wso2</groupId>
+	            <artifactId>commons-io</artifactId>
+	            <version>${commons-io.wso2.version}</version>
+	            <scope>provided</scope>
+	        </dependency>
+	        <dependency>
+	            <groupId>joda-time.wso2</groupId>
+	            <artifactId>joda-time</artifactId>
+	            <version>${joda-time.wso2.version}</version>
+	        </dependency>
 		</dependencies>
 
 	</dependencyManagement>
-<properties>
-</properties>
+
+	<properties>
+		<log4j.version>1.2.13</log4j.version>
+		<google.code.gson.version>2.3.1</google.code.gson.version>
+		<org.glassfish.jersey.core.version>2.4</org.glassfish.jersey.core.version>
+		<com.wso2telco.core.version>2.0.03-SNAPSHOT</com.wso2telco.core.version>
+		<org.json.wso2.version>3.0.0.wso2v1</org.json.wso2.version>
+		<junit.version>3.8.1</junit.version>
+		<org.apache.synapse.core.version>2.1.7-wso2v1</org.apache.synapse.core.version>
+		<org.wso2.carbon.utils>4.2.0</org.wso2.carbon.utils>
+		<org.wso2.carbon.commons.version>4.4.8</org.wso2.carbon.commons.version>
+		<org.wso2.carbon.apimgt.version>5.0.3</org.wso2.carbon.apimgt.version>
+		<org.wso2.hazelcast>3.5.2.wso2v1</org.wso2.hazelcast>
+		<rhino.wso2.version>1.7.0.R4.wso2v1</rhino.wso2.version>
+		<org.jaggeryjs.version>0.12.0</org.jaggeryjs.version>
+		<commons-io.wso2.version>2.4.0.wso2v1</commons-io.wso2.version>
+		<joda-time.wso2.version>1.6.0.wso2v1</joda-time.wso2.version>
+	</properties>
 
 	<build>
 		<pluginManagement>
