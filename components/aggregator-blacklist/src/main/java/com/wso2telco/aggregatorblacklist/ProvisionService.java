@@ -14,16 +14,21 @@ import com.wso2telco.aggregatorblacklist.model.ProvisionReq;
 import com.wso2telco.dbutils.AxiataDbService;
 
 
+// TODO: Auto-generated Javadoc
 /**
- * <TO-DO>
- * <code>ProvisionService</code>
- *
- * @version $Id: ProvisionService.java,v 1.00.000
+ * The Class ProvisionService.
  */
 public class ProvisionService {
 
+    /** The Constant LOG. */
     private static final Logger LOG = Logger.getLogger(ProvisionService.class.getName());
     
+     /**
+      * Provisionapp.
+      *
+      * @param provisionreq the provisionreq
+      * @throws Exception the exception
+      */
      public void provisionapp(ProvisionReq provisionreq) throws Exception {
            
            Integer applicationid = (provisionreq.getProvisioninfo().getApplicationid() != null) ? Integer.parseInt(provisionreq.getProvisioninfo().getApplicationid()) : null;

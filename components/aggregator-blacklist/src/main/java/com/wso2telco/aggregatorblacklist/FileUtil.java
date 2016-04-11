@@ -1,11 +1,18 @@
-/*
- * FileUtil.java
- * Apr 2, 2013  11:20:38 AM
- * Roshan.Saputhanthri
- *
- * Copyright (C) Dialog Axiata PLC. All Rights Reserved.
- */
-
+/*******************************************************************************
+ * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+ * 
+ * WSO2.Telco Inc. licences this file to you under  the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.wso2telco.aggregatorblacklist;
 
 import java.io.BufferedWriter;
@@ -20,16 +27,22 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.util.Properties;
 
+// TODO: Auto-generated Javadoc
 /**
- * <TO-DO>
- * <code>FileUtil</code>
- *
- * @version $Id: FileUtil.java,v 1.00.000
+ * The Class FileUtil.
  */
 public class FileUtil {
 
+    /** The props. */
     private static Properties props = new Properties();
 
+    /**
+     * Creates the directory.
+     *
+     * @param directoryName the directory name
+     * @param directoryPath the directory path
+     * @return true, if successful
+     */
     public static boolean createDirectory(String directoryName, String directoryPath) {
         if ((new File(directoryPath + "\\" + directoryName)).exists()) {
             return true;
@@ -39,6 +52,11 @@ public class FileUtil {
         }
     }
 
+    /**
+     * Delete file.
+     *
+     * @param filename the filename
+     */
     public static void deleteFile(String filename) {
 
         try {
@@ -54,6 +72,12 @@ public class FileUtil {
         }
     }
 
+    /**
+     * Gets the correct file name.
+     *
+     * @param fileName the file name
+     * @return the correct file name
+     */
     public static String getCorrectFileName(String fileName) {
 
         // REPLACING ILLEGAL CHARACTERS, Replacing characters with an underscore '_'
@@ -63,6 +87,13 @@ public class FileUtil {
         return fileName;
     }
 
+    /**
+     * File write.
+     *
+     * @param filePath the file path
+     * @param data the data
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void fileWrite(String filePath, String data) throws IOException {
         BufferedWriter out = null;
         try {
@@ -94,16 +125,23 @@ public class FileUtil {
         }
     }
 
+
     /**
-     * This method return value from property file of corresponding key passed.
+     * Gets the application property.
      *
-     * @param s String
-     * @return String
+     * @param key the key
+     * @return the application property
      */
     public static String getApplicationProperty(String key) {
         return props.getProperty(key);
     }
 
+    /**
+     * Read fully into var.
+     *
+     * @param fullpath the fullpath
+     * @return the string
+     */
     public static String ReadFullyIntoVar(String fullpath) {
 
         String result = "";
@@ -121,6 +159,13 @@ public class FileUtil {
         return result;
     }
 
+    /**
+     * Copy.
+     *
+     * @param src the src
+     * @param dst the dst
+     * @throws IOException Signals that an I/O exception has occurred.
+     */
     public static void copy(String src, String dst) throws IOException {
 
         String fileName = src.substring(src.lastIndexOf("/") + 1);
