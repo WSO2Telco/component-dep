@@ -54,13 +54,13 @@
 	<modules>
 		<!--module>components/authentication-endpoint</module>
 		<module>features</module-->
-        <!-- <module>blacklist-whitelist-Service</module> -->
+	        <module>webapps/blacklist-whitelist-service</module>
 		<module>components/aggregator-blacklist</module> 
 		<module>components/oneapi-validation</module> 
 		<module>components/subscription-validator</module> 
 		<module>components/publish-events-data</module>
-        <module>components/data-publisher</module>
-        <module>components/reporting-service</module>
+       		<module>components/data-publisher</module>
+       		<module>components/reporting-service</module>
 	</modules>
 
 	<scm>
