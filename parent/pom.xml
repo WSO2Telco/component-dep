@@ -197,57 +197,62 @@
 			    <version>${org.wso2.hazelcast}</version>
 			</dependency>
 			<dependency>
-            	<groupId>rhino.wso2</groupId>
-	            <artifactId>js</artifactId>
-	            <version>${rhino.wso2.version}</version>
-	            <scope>provided</scope>
-        	</dependency>
-        	<dependency>
-	            <groupId>org.jaggeryjs</groupId>
-	            <artifactId>org.jaggeryjs.scriptengine</artifactId>
-	            <version>${org.jaggeryjs.version}</version>
-	            <scope>provided</scope>
-        	</dependency>
-        	<dependency>
-	            <groupId>org.wso2.carbon.apimgt</groupId>
-	            <artifactId>org.wso2.carbon.apimgt.api</artifactId>
-	            <version>${org.wso2.carbon.apimgt.version}</version>
-	            <scope>provided</scope>
-        	</dependency>
-        	<dependency>
-	            <groupId>org.wso2.carbon.apimgt</groupId>
-	            <artifactId>org.wso2.carbon.apimgt.impl</artifactId>
-	            <version>${org.wso2.carbon.apimgt.version}</version>
-	            <scope>provided</scope>
-        	</dependency>
-        	<dependency>
-	            <groupId>org.jaggeryjs</groupId>
-	            <artifactId>org.jaggeryjs.hostobjects.web</artifactId>
-	            <version>${org.jaggeryjs.version}</version>
-	            <scope>provided</scope>
-	        </dependency>
-	        <dependency>
-	            <groupId>org.jaggeryjs</groupId>
-	            <artifactId>org.jaggeryjs.hostobjects.file</artifactId>
-	            <version>${org.jaggeryjs.version}</version>
-	            <scope>provided</scope>
-	        </dependency>
-	        <dependency>
-	            <groupId>org.wso2.carbon.apimgt</groupId>
-	            <artifactId>org.wso2.carbon.apimgt.usage.client</artifactId>
-	            <version>${org.wso2.carbon.apimgt.version}</version>
-	        </dependency>
-	        <dependency>
-	            <groupId>commons-io.wso2</groupId>
-	            <artifactId>commons-io</artifactId>
-	            <version>${commons-io.wso2.version}</version>
-	            <scope>provided</scope>
-	        </dependency>
-	        <dependency>
-	            <groupId>joda-time.wso2</groupId>
-	            <artifactId>joda-time</artifactId>
-	            <version>${joda-time.wso2.version}</version>
-	        </dependency>
+			    <groupId>rhino.wso2</groupId>
+			    <artifactId>js</artifactId>
+			    <version>${rhino.wso2.version}</version>
+			    <scope>provided</scope>
+			</dependency>
+			<dependency>
+			    <groupId>org.jaggeryjs</groupId>
+			    <artifactId>org.jaggeryjs.scriptengine</artifactId>
+			    <version>${org.jaggeryjs.version}</version>
+			    <scope>provided</scope>
+			</dependency>
+			<dependency>
+			    <groupId>org.wso2.carbon.apimgt</groupId>
+			    <artifactId>org.wso2.carbon.apimgt.api</artifactId>
+			    <version>${org.wso2.carbon.apimgt.version}</version>
+			    <scope>provided</scope>
+			</dependency>
+			<dependency>
+			    <groupId>org.wso2.carbon.apimgt</groupId>
+			    <artifactId>org.wso2.carbon.apimgt.impl</artifactId>
+			    <version>${org.wso2.carbon.apimgt.version}</version>
+			    <scope>provided</scope>
+			</dependency>
+			<dependency>
+			    <groupId>org.jaggeryjs</groupId>
+			    <artifactId>org.jaggeryjs.hostobjects.web</artifactId>
+			    <version>${org.jaggeryjs.version}</version>
+			    <scope>provided</scope>
+			</dependency>
+			<dependency>
+			    <groupId>org.jaggeryjs</groupId>
+			    <artifactId>org.jaggeryjs.hostobjects.file</artifactId>
+			    <version>${org.jaggeryjs.version}</version>
+			    <scope>provided</scope>
+			</dependency>
+			<dependency>
+			    <groupId>org.wso2.carbon.apimgt</groupId>
+			    <artifactId>org.wso2.carbon.apimgt.usage.client</artifactId>
+			    <version>${org.wso2.carbon.apimgt.version}</version>
+			</dependency>
+			<dependency>
+			    <groupId>commons-io.wso2</groupId>
+			    <artifactId>commons-io</artifactId>
+			    <version>${commons-io.wso2.version}</version>
+			    <scope>provided</scope>
+			</dependency>
+			<dependency>
+			    <groupId>joda-time.wso2</groupId>
+			    <artifactId>joda-time</artifactId>
+			    <version>${joda-time.wso2.version}</version>
+			</dependency>
+			<dependency>
+			    <groupId>org.wso2.carbon.governance</groupId>
+			    <artifactId>org.wso2.carbon.governance.api</artifactId>
+			    <version>${carbon.governance.version}</version>
+			</dependency>
 		</dependencies>
 
 	</dependencyManagement>
@@ -268,6 +273,7 @@
 		<org.jaggeryjs.version>0.12.0</org.jaggeryjs.version>
 		<commons-io.wso2.version>2.4.0.wso2v1</commons-io.wso2.version>
 		<joda-time.wso2.version>1.6.0.wso2v1</joda-time.wso2.version>
+		<carbon.governance.version>4.5.8</carbon.governance.version>
 	</properties>
 
 	<build>
