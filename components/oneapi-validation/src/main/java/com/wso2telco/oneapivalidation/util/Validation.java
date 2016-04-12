@@ -1,53 +1,92 @@
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+/*******************************************************************************
+ * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+ * 
+ * WSO2.Telco Inc. licences this file to you under  the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.wso2telco.oneapivalidation.util;
 
 import java.util.HashSet;
 import java.util.Set;
 import org.apache.log4j.Logger;
 
-import com.wso2telco.oneapivalidation.exceptions.AxiataException;
+import com.wso2telco.oneapivalidation.exceptions.CustomException;
 
 
 
+ 
+// TODO: Auto-generated Javadoc
 /**
- *
- * @author User
+ * The Class Validation.
  */
 public class Validation {
 
+    /** The logger. */
     static Logger logger = Logger.getLogger(Validation.class);
+    
+    /** The Constant serialVersionUID. */
     public static final long serialVersionUID = -8195763247832284073L;
+    
+    /** The Constant BAD_REQUEST. */
     public static final int BAD_REQUEST = 400;
+    
+    /** The Constant AUTHENTICATION_FAILURE. */
     public static final int AUTHENTICATION_FAILURE = 401;
+    
+    /** The Constant FORBIDDEN. */
     public static final int FORBIDDEN = 403;
+    
+    /** The Constant NOT_FOUND. */
     public static final int NOT_FOUND = 404;
+    
+    /** The Constant METHOD_NOT_SUPPORTED. */
     public static final int METHOD_NOT_SUPPORTED = 405;
+    
+    /** The Constant OK. */
     public static final int OK = 200;
+    
+    /** The Constant CREATED. */
     public static final int CREATED = 201;
+    
+    /** The Constant ACCEPTED. */
     public static final int ACCEPTED = 202;
+    
+    /** The Constant NONAUTHORITATIVE. */
     public static final int NONAUTHORITATIVE = 203;
+    
+    /** The Constant NOCONTENT. */
     public static final int NOCONTENT = 204;
+    
+    /** The dump request and response. */
     public static boolean dumpRequestAndResponse = false;
 
-    /*private static final String[] telFormats = {
-        "tel\\:\\+[0-9]+", "tel\\:[0-9]+"
-    };*/
+     
     
+    /** The Constant telFormats. */
     private static final String[] telFormats = {
         "tel\\:\\+[a-zA-Z0-9]+", "tel\\:[a-zA-Z0-9]+" 
     };
 
+    /** The Constant urlFormats. */
     private static final String[] urlFormats = {
         "http\\:\\/\\/.+", "https\\:\\/\\/.+"
     };
 
+     
     /**
-     * Check on valid telephone number formats. Extend the regular expression
-     * rules in telFormats if needed.
+     * Checks if is correctly formatted number.
+     *
+     * @param tel the tel
+     * @return true, if is correctly formatted number
      */
     public static boolean isCorrectlyFormattedNumber(String tel) {
         boolean matched = false;
@@ -62,8 +101,12 @@ public class Validation {
         return matched;
     }
 
-    /*
-     ****** This method is used to identify duplicate values in address array
+     
+    /**
+     * Check duplicated address.
+     *
+     * @param addressTemp the address temp
+     * @return the string
      */
     private static String checkDuplicatedAddress(String[] addressTemp) {
         Set<String> addressValueSet = new HashSet<String>();
@@ -77,9 +120,12 @@ public class Validation {
         return "false";
     }
 
+     
     /**
-     * Check on valid URL formats. Extend the regular expression rules in
-     * urlFormats if needed.
+     * Checks if is correctly formatted url.
+     *
+     * @param url the url
+     * @return true, if is correctly formatted url
      */
     public static boolean isCorrectlyFormattedURL(String url) {
         boolean matched = false;
@@ -94,14 +140,12 @@ public class Validation {
         return matched;
     }
 
+     
     /**
-     * This function implements the specific parameter validation rules applying
-     * to each OneAPI servlet (specifically request parameters).
+     * Check request params.
      *
-     * @param response
-     * @param rules
-     * @return true if all parameter validation rules have been passed
-     * @see ValidationRule
+     * @param rules the rules
+     * @return true, if successful
      */
     public static boolean checkRequestParams(ValidationRule[] rules) {
         boolean valid = true;
@@ -158,7 +202,7 @@ public class Validation {
 
             if (!valid) {
                 //sendError(response, BAD_REQUEST, RequestError.SERVICEEXCEPTION, "SVC0002", "Invalid input value for message part %1", "Missing mandatory parameter: " + missingList);
-                throw new AxiataException("SVC0002", "Invalid input value for message part %1", new String[]{"Missing mandatory parameter: " + missingList});
+                throw new CustomException("SVC0002", "Invalid input value for message part %1", new String[]{"Missing mandatory parameter: " + missingList});
             } else {
                 logger.debug("Starting second pass");
                 // Pass 2 - other validations - stop on the first error 
@@ -172,20 +216,20 @@ public class Validation {
                                 if (!(pv.equalsIgnoreCase(current.specificValue))) {
                                     logger.debug("Parameter " + current.parameterName + " does not match expected value " + current.specificValue);
                                     //sendError(response, BAD_REQUEST, RequestError.SERVICEEXCEPTION, "SVC0002", "Invalid input value for message part %1", "Parameter " + current.parameterName + " expected " + current.specificValue + " received " + pv);
-                                    throw new AxiataException("SVC0002", "Invalid input value for message part %1", new String[]{"Parameter " + current.parameterName + " expected " + current.specificValue + " received " + pv});
+                                    throw new CustomException("SVC0002", "Invalid input value for message part %1", new String[]{"Parameter " + current.parameterName + " expected " + current.specificValue + " received " + pv});
                                 }
                             } else if (parameterValue != null) {
 
                                 String parameterValueString = parameterValue.toString();
                                 int msgChaCount = parameterValueString.length();
-                                /*previously this value set as 150. but we change that to the 160 because of a request made by David Rempe in 2015-08-28*/
-                                /*we change this again to 800 in 2015-09-01*/
+                                 
+                                 
                                 if (msgChaCount > 800) {
 
                                     valid = false;
                                     logger.debug("Message too long. " + msgChaCount);
                                     //sendError(response, BAD_REQUEST, RequestError.SERVICEEXCEPTION, "SVC0280", "Message too long. Maximum length is %1 characters", "150");
-                                    throw new AxiataException("SVC0280", "Message too long. Maximum length is %1 characters", new String[]{"800"});
+                                    throw new CustomException("SVC0280", "Message too long. Maximum length is %1 characters", new String[]{"800"});
                                 }
                             }
                             break;
@@ -196,7 +240,7 @@ public class Validation {
                                 if (!(pv.equalsIgnoreCase(current.specificValue))) {
                                     logger.debug("Parameter " + current.parameterName + " does not match expected value " + current.specificValue);
                                     //sendError(response, BAD_REQUEST, RequestError.SERVICEEXCEPTION, "SVC0002", "Invalid input value for message part %1", "Parameter " + current.parameterName + " expected " + current.specificValue + " received " + pv);
-                                    throw new AxiataException("SVC0002", "Invalid input value for message part %1", new String[]{"Parameter " + current.parameterName + " expected " + current.specificValue + " received " + pv});
+                                    throw new CustomException("SVC0002", "Invalid input value for message part %1", new String[]{"Parameter " + current.parameterName + " expected " + current.specificValue + " received " + pv});
                                 }
                             }
                             break;
@@ -211,7 +255,7 @@ public class Validation {
                                         valid = false;
                                         logger.debug("Rejecting phone number " + current.parameterName + " : " + (String) parameterValue);
                                         //sendError(response, BAD_REQUEST, RequestError.SERVICEEXCEPTION, "SVC0271", "endUserId format invalid. Expected format is %1", "tel:+94771211212");
-                                        throw new AxiataException("SVC0004", "endUserId format invalid. %1", new String[]{(String) parameterValue});
+                                        throw new CustomException("SVC0004", "endUserId format invalid. %1", new String[]{(String) parameterValue});
                                     }
                                 } else if (parameterValue instanceof String[]) {
                                     String[] sa = (String[]) parameterValue;
@@ -225,7 +269,7 @@ public class Validation {
                                                     valid = false;
                                                     logger.debug("Rejecting phone number " + current.parameterName + " : " + sa[j]);
                                                     //sendError(response, BAD_REQUEST, RequestError.SERVICEEXCEPTION, "SVC0271", "endUserId format invalid. Expected format is %1", "tel:+94771211212");
-                                                    throw new AxiataException("SVC0004", "endUserId format invalid. %1", new String[]{sa[j]});
+                                                    throw new CustomException("SVC0004", "endUserId format invalid. %1", new String[]{sa[j]});
                                                 }
                                             }
                                         }
@@ -239,7 +283,7 @@ public class Validation {
                                 if (!(pv.equalsIgnoreCase(current.specificValue))) {
                                     logger.debug("Parameter " + current.parameterName + " does not match expected value " + current.specificValue);
                                     //sendError(response, BAD_REQUEST, RequestError.SERVICEEXCEPTION, "SVC0002", "Invalid input value for message part %1", "Parameter " + current.parameterName + " expected " + current.specificValue + " received " + pv);
-                                    throw new AxiataException("SVC0002", "Invalid input value for message part %1", new String[]{"Parameter " + current.parameterName + " expected " + current.specificValue + " received " + pv});
+                                    throw new CustomException("SVC0002", "Invalid input value for message part %1", new String[]{"Parameter " + current.parameterName + " expected " + current.specificValue + " received " + pv});
                                 }
                             }
                             break;
@@ -250,19 +294,11 @@ public class Validation {
                                 if (((Double) current.parameterValue) <= 0.0) {
                                     valid = false;
                                     //logger.debug("Rejecting double value " + current.parameterName + " : " + ((Double) parameterValue) + " should be > 0");
-                                    /*
-                                     ***** Comment this and use the new exception message because charge amount need exception type SVC0007
-                                     */
+                                     
                                     //sendError(response, BAD_REQUEST, RequestError.SERVICEEXCEPTION, "SVC0002", "Invalid input value for message part %1", "Parameter " + current.parameterName + " value " + ((Double) current.parameterValue));
                                     //sendError(response, BAD_REQUEST, RequestError.SERVICEEXCEPTION, "SVC0007", "Invalid charging information", "");
-                                    throw new AxiataException("SVC0007", "Invalid charging information", new String[]{""});
-                                } /* else if (((Double) current.parameterValue) > 2500) {
-
-                                    valid = false;
-                                    logger.debug("Invalid charge amount " + current.parameterName + " : " + ((Double) parameterValue) + " should be <= 2500");
-                                    //sendError(response, FORBIDDEN, RequestError.POLICYEXCEPTION, "POL0254", "The amount exceeds the operator limit for a single charge", "");
-                                    throw new AxiataException("POL0254", "The amount exceeds the operator limit for a single charge", new String[]{""});
-                                } */
+                                    throw new CustomException("SVC0007", "Invalid charging information", new String[]{""});
+                                }  
                             }
                             break;
                         case ValidationRule.VALIDATION_TYPE_MANDATORY_DOUBLE_GE_ZERO:
@@ -272,7 +308,7 @@ public class Validation {
                                     valid = false;
                                     logger.debug("Rejecting double value " + current.parameterName + " : " + ((Double) parameterValue) + " should be >= 0");
                                     //sendError(response, BAD_REQUEST, RequestError.SERVICEEXCEPTION, "SVC0002", "Invalid input value for message part %1", "Parameter " + current.parameterName + " value " + ((Double) current.parameterValue));
-                                    throw new AxiataException("SVC0002", "Invalid input value for message part %1", new String[]{"Parameter " + current.parameterName + " value " + ((Double) current.parameterValue)});
+                                    throw new CustomException("SVC0002", "Invalid input value for message part %1", new String[]{"Parameter " + current.parameterName + " value " + ((Double) current.parameterValue)});
                                 }
                             }
                             break;
@@ -285,7 +321,7 @@ public class Validation {
                                         valid = false;
                                         logger.debug("Rejecting phone number " + current.parameterName + " : " + (String) parameterValue);
                                         //sendError(response, BAD_REQUEST, RequestError.SERVICEEXCEPTION, "SVC0004", "No valid addresses provided in message part %1", ((String) current.parameterValue));
-                                        throw new AxiataException("SVC0004", "No valid addresses provided in message part %1", new String[]{((String) current.parameterValue)});
+                                        throw new CustomException("SVC0004", "No valid addresses provided in message part %1", new String[]{((String) current.parameterValue)});
                                     }
                                 } else if (parameterValue instanceof String[]) {
                                     String[] sa = (String[]) parameterValue;
@@ -296,13 +332,13 @@ public class Validation {
                                             valid = false;
                                             logger.debug("Num of addresses in array" + sa.length);
                                             //sendError(response, FORBIDDEN, RequestError.POLICYEXCEPTION, "POL0003", "Too many addresses specified in message part %1", current.parameterName);
-                                            throw new AxiataException("POL0003", "Too many addresses specified in message part %1", new String[]{(String) current.parameterValue});
+                                            throw new CustomException("POL0003", "Too many addresses specified in message part %1", new String[]{(String) current.parameterValue});
                                         } else if (duplicatedAddress != "false") {
 
                                             valid = false;
                                             logger.debug("Duplicated addresses in array" + duplicatedAddress);
                                             //sendError(response, FORBIDDEN, RequestError.POLICYEXCEPTION, "POL0013", "Duplicated addresses", duplicatedAddress);
-                                            throw new AxiataException("POL0013", "Duplicated addresses", new String[]{duplicatedAddress});
+                                            throw new CustomException("POL0013", "Duplicated addresses", new String[]{duplicatedAddress});
                                         } else {
                                             // See if there is at least one non null string present
                                             for (int j = 0; j < sa.length && valid; j++) {
@@ -312,7 +348,7 @@ public class Validation {
                                                         valid = false;
                                                         logger.debug("Rejecting phone number " + current.parameterName + " : " + sa[j]);
                                                         //sendError(response, BAD_REQUEST, RequestError.SERVICEEXCEPTION, "SVC0004", "No valid addresses provided in message part %1", sa[j]);
-                                                        throw new AxiataException("SVC0004", "No valid addresses provided in message part %1", new String[]{sa[j]});
+                                                        throw new CustomException("SVC0004", "No valid addresses provided in message part %1", new String[]{sa[j]});
                                                     }
                                                 }
                                             }
@@ -330,7 +366,7 @@ public class Validation {
                                         valid = false;
                                         logger.debug("Bad URL " + current.parameterName + " : " + (String) parameterValue);
                                         //sendError(response, BAD_REQUEST, RequestError.SERVICEEXCEPTION, "SVC0002", "Invalid input value for message part %1", "Parameter " + current.parameterName + " expected URL " + ((String) parameterValue));
-                                        throw new AxiataException("SVC0002", "Invalid input value for message part %1", new String[]{"Parameter " + current.parameterName + " expected URL " + ((String) parameterValue)});
+                                        throw new CustomException("SVC0002", "Invalid input value for message part %1", new String[]{"Parameter " + current.parameterName + " expected URL " + ((String) parameterValue)});
                                     }
                                 }
                             }
@@ -342,7 +378,7 @@ public class Validation {
                                     if (((Integer) parameterValue).intValue() < 0) {
                                         logger.debug("Rejecting int value " + current.parameterName + " : " + ((Integer) parameterValue) + " should be >= 0");
                                         //sendError(response, BAD_REQUEST, RequestError.SERVICEEXCEPTION, "SVC0002", "Invalid input value for message part %1", "Parameter " + current.parameterName + " less than zero: " + ((String) parameterValue));
-                                        throw new AxiataException("SVC0002", "Invalid input value for message part %1", new String[]{"Parameter " + current.parameterName + " less than zero: " + ((String) parameterValue)});
+                                        throw new CustomException("SVC0002", "Invalid input value for message part %1", new String[]{"Parameter " + current.parameterName + " less than zero: " + ((String) parameterValue)});
                                     }
                                 }
                             }
@@ -354,7 +390,7 @@ public class Validation {
                                     if (((Integer) parameterValue).intValue() <= 1) {
                                         logger.debug("Rejecting int value " + current.parameterName + " : " + ((Integer) parameterValue) + " should be > 1");
                                         //sendError(response, BAD_REQUEST, RequestError.SERVICEEXCEPTION, "SVC0002", "Invalid input value for message part %1", "Parameter " + current.parameterName + " must be greater than 1: " + ((String) parameterValue));
-                                        throw new AxiataException("SVC0002", "Invalid input value for message part %1", new String[]{"Parameter " + current.parameterName + " must be greater than 1: " + ((String) parameterValue)});
+                                        throw new CustomException("SVC0002", "Invalid input value for message part %1", new String[]{"Parameter " + current.parameterName + " must be greater than 1: " + ((String) parameterValue)});
                                     }
                                 }
                             }
@@ -366,7 +402,7 @@ public class Validation {
                                     if (!((String) parameterValue).equalsIgnoreCase("JSON")) {
                                         logger.debug("Rejecting parameter " + current.parameterName + " : " + ((String) parameterValue) + " should be 'JSON'");
                                         //sendError(response, BAD_REQUEST, RequestError.SERVICEEXCEPTION, "SVC0002", "Invalid input value for message part %1", "Parameter " + current.parameterName + " expected 'JSON': " + ((String) parameterValue));
-                                        throw new AxiataException("SVC0002", "Invalid input value for message part %1", new String[]{"Parameter " + current.parameterName + " expected 'JSON': " + ((String) parameterValue)});
+                                        throw new CustomException("SVC0002", "Invalid input value for message part %1", new String[]{"Parameter " + current.parameterName + " expected 'JSON': " + ((String) parameterValue)});
                                     }
                                 }
                             }
@@ -378,7 +414,7 @@ public class Validation {
                                     if (!(((String) parameterValue).equalsIgnoreCase("WAP") || ((String) parameterValue).equalsIgnoreCase("WEB") || ((String) parameterValue).equalsIgnoreCase("SMS"))) {
                                         logger.debug("Rejecting parameter " + current.parameterName + " : " + ((String) parameterValue) + " should be 'Web', 'Wap' or 'SMS'");
                                         //sendError(response, BAD_REQUEST, RequestError.SERVICEEXCEPTION, "SVC0002", "Invalid input value for message part %1", "Parameter " + current.parameterName + " expected 'Wap', 'Web' or 'SMS': " + ((String) parameterValue));
-                                        throw new AxiataException("SVC0002", "Invalid input value for message part %1", new String[]{"Parameter " + current.parameterName + " expected 'Wap', 'Web' or 'SMS': " + ((String) parameterValue)});
+                                        throw new CustomException("SVC0002", "Invalid input value for message part %1", new String[]{"Parameter " + current.parameterName + " expected 'Wap', 'Web' or 'SMS': " + ((String) parameterValue)});
                                     }
                                 }
                             }
@@ -390,7 +426,7 @@ public class Validation {
                                 } catch (NumberFormatException e) {
                                     logger.debug("Rejecting int value " + current.parameterName);
                                     //sendError(response, BAD_REQUEST, RequestError.SERVICEEXCEPTION, "SVC0002", "Invalid input value for message part %1", "Parameter " + current.parameterName);
-                                    throw new AxiataException("SVC0002", "Invalid input value for message part %1", new String[]{"Parameter " + current.parameterName });
+                                    throw new CustomException("SVC0002", "Invalid input value for message part %1", new String[]{"Parameter " + current.parameterName });
                                 }
                             }
                             break;
