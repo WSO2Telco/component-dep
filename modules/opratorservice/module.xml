@@ -1,0 +1,7 @@
+<module name="axiatastore" namespace="ns" expose="true" xmlns="http://wso2.org/projects/jaggery/module.xml">    
+        <hostObject>
+            <className>com.wso2telco.operatorservice.StoreHostObject</className>
+            <name>AxiataStore</name>
+        </hostObject>
+</module>
+
