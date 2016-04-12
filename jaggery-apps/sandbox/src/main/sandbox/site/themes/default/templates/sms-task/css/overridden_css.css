@@ -1,0 +1,25 @@
+@CHARSET "ISO-8859-1";
+
+#data_tbl_body .editable_td input {
+	margin-bottom: 0px;
+	width: 90%;
+}
+
+#data_tbl_body .da-icon-column {
+	text-align: center;
+	vertical-align: middle;
+}
+
+#data_tbl_body .da-icon-column img{
+	padding: 2px;
+}
+.pagination{
+	text-align: right;
+}
+.well{
+	margin-bottom: 0px;
+}
+
+form{
+	margin: 0 0 0px;
+}

@@ -1,0 +1,32 @@
+<%
+jagg.module("api-wise-traffic", {
+	getAllSubscribers:function () {
+		return jagg.require(jagg.getModulesDir() + "api-wise-traffic/api-wise-traffic.jag").getAllSubscribers.apply(this, arguments);
+	},
+	getAllOperators:function () {
+		return jagg.require(jagg.getModulesDir() + "api-wise-traffic/api-wise-traffic.jag").getAllOperators.apply(this, arguments);
+	},
+	getAllAPIs:function () {
+		return jagg.require(jagg.getModulesDir() + "api-wise-traffic/api-wise-traffic.jag").getAllAPIs.apply(this, arguments);
+	},
+	getOperatorWiseAPITraffic:function () {
+		return jagg.require(jagg.getModulesDir() + "api-wise-traffic/api-wise-traffic.jag").getOperatorWiseAPITraffic.apply(this, arguments);
+	},
+	getOperatorsBySubscriber:function () {
+		return jagg.require(jagg.getModulesDir() + "api-wise-traffic/api-wise-traffic.jag").getOperatorsBySubscriber.apply(this, arguments);
+	},
+	getSubscribersByOperator:function () {
+		return jagg.require(jagg.getModulesDir() + "api-wise-traffic/api-wise-traffic.jag").getSubscribersByOperator.apply(this, arguments);
+	},
+	getAPIsBySubscriber:function () {
+		return jagg.require(jagg.getModulesDir() + "api-wise-traffic/api-wise-traffic.jag").getAPIsBySubscriber.apply(this, arguments);
+	},
+	getReportFileContent:function () {
+		return jagg.require(jagg.getModulesDir() + "api-wise-traffic/api-wise-traffic.jag").getReportFileContent.apply(this, arguments);
+	},
+	getAllOperations:function () {
+		return jagg.require(jagg.getModulesDir() + "api-wise-traffic/api-wise-traffic.jag").getAllOperations.apply(this, arguments);
+	}
+});
+%>
+

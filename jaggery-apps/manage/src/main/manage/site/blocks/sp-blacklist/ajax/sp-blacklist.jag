@@ -1,0 +1,53 @@
+<%
+include("/jagg/jagg.jag");
+
+(function () {
+	var mod, obj, result;
+
+	var action = request.getParameter("action");
+	var user = jagg.getUser();
+
+	var log = new Log();
+	if (action =="getSPforBlacklist"){
+		var api = request.getParameter("api");
+
+		var blacklistModule = jagg.module("spblacklist");
+		result = blacklistModule.getSPforBlacklist(api);
+
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.error
+			};
+		} else {
+			obj = {
+				error:false,
+				blacklist:result
+			}
+		}
+		print(obj);
+	} else if (action =="addNewSPToBlacklist"){
+			var sp = request.getParameter("spList");
+			var blacklistModule = jagg.module("spblacklist");
+			result = blacklistModule.addNewSPToBlacklist(sp);
+			if (result.error) {
+				obj = {
+					error:result.error,
+					message:result.error
+				};
+			} else {
+				obj = {
+					error:false,
+					message:'successfully revoked'
+				}
+			}
+			print(obj);
+		}
+	else{
+		print({
+			error:true,
+			message:invalidAction(action)
+		});
+	}
+}());
+%>

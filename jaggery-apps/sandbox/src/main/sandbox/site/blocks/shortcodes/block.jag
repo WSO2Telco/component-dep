@@ -1,0 +1,20 @@
+<%
+jagg.block("shortcodes", {
+initializer:function (data) {},
+getInputs:function () {},
+getOutputs:function (inputs) {
+
+        var codes, descriptions, resultCode, resultDesc, user = inputs.user, mod = jagg.module("shortcodes");
+        
+        resultCode = mod.getCodesList(1); //Have to edit parameter to userid
+        resultDesc = mod.getDescriptionList(1);
+        codes = resultCode.data;
+        descriptions = resultDesc.data;
+
+        return {
+            "codes":codes,
+        	"descriptions":descriptions
+        };
+    },
+});
+%>

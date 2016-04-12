@@ -1,0 +1,81 @@
+<%
+include("/jagg/jagg.jag");
+(function () {
+	var log = new Log();
+	var action = request.getParameter("action");
+	log.info("Action: " + action);
+	user =jagg.getUser();
+
+	if(action == "saveLocationRequest") {
+		var address = request.getParameter("address");
+		var requestedAccuracy = request.getParameter("requestedAccuracy");
+
+		user =jagg.getUser();
+
+		var mod = jagg.module("location-track");
+		var result = mod.saveLocationRequest(address, requestedAccuracy, user.username);
+		//log.info("Response json string in block: " + stringify(result));
+		if (result.reqerr == false) {
+
+			var locreqtxn = {
+				address : address,
+				requestedAccuracy : requestedAccuracy
+			};
+			var locreqtxns = session.get("locreqtxns");
+			locreqtxns.push(locreqtxn);
+			session.put("locreqtxns",locreqtxns);
+		}
+
+		if (result.error==true) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		}else{
+			obj = {
+				error:false,
+				data: result.data,
+				table: session.get("locreqtxns")
+			}
+		}
+		print(obj);
+
+	} else if (action === "performSettingsAction") {
+
+		user =jagg.getUser();
+
+		var alt = request.getParameter("altitude");
+		var lat = request.getParameter("latitude");
+		var longi = request.getParameter("longitude");
+		var state = request.getParameter("lbsStatus");
+
+		var mod = jagg.module("location-track");
+		var result = mod.performLocationAction(user.username, alt, lat, longi, state);
+
+		if (result.error==true) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		}else{
+			obj = {
+				error:false,
+				data: result.data
+			}
+		}
+		print(obj);
+	}else if (action === "getSessionData") {
+		var locreqtxns = session.get("locreqtxns");
+		if(locreqtxns.length > 0){
+			obj = {
+				table:locreqtxns
+			};
+		}else{
+			obj = {
+				table:"null"
+			};
+		}
+		print(obj);
+	}
+}());
+%>

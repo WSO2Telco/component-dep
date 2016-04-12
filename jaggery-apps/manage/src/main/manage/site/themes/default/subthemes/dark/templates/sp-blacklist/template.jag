@@ -1,0 +1,46 @@
+<% jagg.template("sp-blacklist", function(inputs, outputs, jagg) {
+	var usage=outputs.usage;
+	var length;
+	if (usage!=null){
+		length=outputs.usage.length;
+	}
+	var log = new Log();
+	log.info(stringify(outputs));
+	var isAdmin = jagg.getUser().isAdmin;
+	var isOperator = jagg.getUser().operator;
+	log.info(isAdmin);
+	log.info(isOperator);
+	%>
+<div class="title-section">
+	<% if(isAdmin == true){ %>
+	<h2>SP Blacklist</h2>
+	<%
+	}  else {%>
+	<h2>SP Blacklist</h2>
+	<% } %>
+</div>
+<div class="content-section shadow-up">
+	<div class="content-data">
+		<div id="userKey">
+			<!-- label class="control-label"><b>Period:</b></label-->
+			<div class="well form-inline">
+				<table>
+					<tr>
+						<td><b>SP :</b></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>
+							<select id="spSelect" style="width: 150px;" name="api"></select>
+						</td>
+						<td style="width: 140px;">
+							<button class="btn btn-primary" id="add-new">Blacklist</button>
+						</td>
+					</tr>
+				</table>
+			</div>
+
+		</div>
+	</div>
+</div>
+<%});%>

@@ -1,0 +1,14 @@
+<% jagg.template("home", function(inputs, outputs, jagg) { %>
+<div id="listing">
+    <div class="title-section">
+        <h2>Welcome</h2>
+    </div>
+    <div class="content-section shadow-up">
+        <div class="content-data">
+			<h4>
+			<br> 
+			 </h4>
+		</div>
+	</div>
+</div>
+<% }); %>

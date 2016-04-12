@@ -1,0 +1,11 @@
+<%
+jagg.initializer("apiwise-whitelist", {
+
+    preInitialize:function () {
+        jagg.addHeaderJS("apiwise-whitelist", "dojo", "templates/utils/dojo-release-1.8.3/dojo/dojo.js");
+        jagg.addHeaderJS("apiwise-whitelist", "apiwise-whitelist", "templates/apiwise-whitelist/js/apiwise-whitelist.js");
+
+    }
+
+});
+%>

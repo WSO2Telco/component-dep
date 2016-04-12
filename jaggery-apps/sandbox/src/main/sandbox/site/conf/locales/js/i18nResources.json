@@ -1,0 +1,6 @@
+{
+    "errorMsgs":{
+        "login":"Unable to log you in!",
+        "invalidUsernameSyntax":"Invalid username."
+    }
+}

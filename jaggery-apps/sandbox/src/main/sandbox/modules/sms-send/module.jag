@@ -1,0 +1,12 @@
+<%
+jagg.module("sms-send", {
+
+	getSMSSendResponse:function () {
+		return jagg.require(jagg.getModulesDir() + "sms-send/sms-send.jag").loadSMSSendResponse.apply(this, arguments);
+	},
+	 
+	getSenderAddresses:function () {
+		return jagg.require(jagg.getModulesDir() + "sms-send/sms-send.jag").loadSenderAddresses.apply(this, arguments);
+	}
+});
+%>

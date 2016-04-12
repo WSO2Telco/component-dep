@@ -1,0 +1,89 @@
+<%
+include("/jagg/jagg.jag");
+
+(function () {
+	var mod, obj, result;
+
+	var action = request.getParameter("action");
+	var user = jagg.getUser();
+
+	var log = new Log();
+
+		log.info("55555555555555666>" + action);		
+	if (action =="addNewToWhitelist") {
+		log.info("55555555555555");		
+		var subscriberList = request.getParameter("subscriberList");
+		var appId = request.getParameter("appId");
+		var apiId = request.getParameter("apiId");
+		
+		var whitelistModule = jagg.module("whitelist");
+		
+		result = whitelistModule.addNewToWhitelist(subscriberList, appId, apiId);
+		
+		var obj = parse(result);
+		
+		print(result);
+	} else if (action =="getSubscribers") {
+		var whitelistModule = jagg.module("whitelist");
+		result = whitelistModule.getSubscribers();
+		print(result);
+	} else if (action =="getApps") {
+		var subscriberId = request.getParameter("subscriberId");
+		var whitelistModule = jagg.module("whitelist");
+		result = whitelistModule.getApps(subscriberId);
+		print(result);
+	} else if (action =="getApis") {
+		var appId = request.getParameter("appId");
+		var whitelistModule = jagg.module("whitelist");
+		result = whitelistModule.getApis(appId);
+		print(result);
+	} else if (action =="getWhitelistNumbers") {
+		var whiteListModule = jagg.module("whitelist");
+       		result = whiteListModule.getWhitelist();
+
+        	log.info("::: Whitelist result: >> "+ stringify(result));
+
+		if (result.error) {
+
+		 log.info("resulterror" + result);
+		    obj = {
+		    	error:result.error,
+		    	message:result.error
+		    };
+		  } else {
+
+		    obj = {
+		    	error:false,
+		    	whitelist:result
+		    }
+		  }
+        	  print(obj);
+
+	} else if (action =="removeFromWhiteList") {
+
+           var subscriber = request.getParameter("subscriber");
+	   log.info("::: Removing " + subscriber);
+	   var whiteListModule = jagg.module("whitelist");
+           result = whiteListModule.removeFromWhiteListNumbers(subscriber);
+
+        		if (result.error) {
+        			obj = {
+        				error:result.error,
+        				message:result.error
+        			};
+        		} else {
+        			obj = {
+        				error:false,
+        				code:result
+        			}
+        		}
+        		print(obj); 
+
+	} else {
+		print({
+			error:true,
+			message:invalidAction(action)
+		});
+	}
+}());
+%>

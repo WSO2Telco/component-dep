@@ -1,0 +1,196 @@
+<%
+include("/jagg/jagg.jag");
+
+(function () {
+	var mod = jagg.module("shortcodes"), obj, result, action = request.getParameter("action"),
+	site = require("/site/conf/site.json"),
+	msg = require("/site/conf/ui-messages.jag");
+
+	if(jagg.getUser() == null){
+		print({
+			error:true,
+			message:'timeout'
+		});
+	} else {
+	
+	var log = new Log();
+	log.info("------------------ Shortcodefunctions executing ---------------");
+
+	if (action == "GetTableData"){
+		var userid = request.getParameter("userid");
+		log.info("GetTableData :: "+userid);
+
+		result = mod.GetTableData(userid);
+
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		} else {
+			obj = {
+				error:false,
+				message:result.message,
+				data: result.data
+			}
+		}
+		print(obj);
+	} else if (action == "SaveShortCode"){
+		var userid = request.getParameter("userid");
+		var shortcode = request.getParameter("shortcode");
+		var description = request.getParameter("description");
+		log.info("SaveShortCode :: "+userid+" :: "+shortcode+"  :: "+description);
+
+		result = mod.SaveShortCode(userid, shortcode, description);
+
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		} else {
+			obj = {
+				error:false,
+				message:result.message,
+				data: result.data
+			}
+		}
+		print(obj);
+	} else if (action == "DeleteShortCode"){
+		var rowid = request.getParameter("id");
+		log.info("DeleteShortCode :: "+rowid);
+			
+		result = mod.DeleteShortCode(rowid);
+			
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		} else {
+			obj = {
+				error:false,
+				message:result.message,
+				data: result.data
+			}
+		}
+		print(obj);
+	} else if (action == "EditShortCode"){
+		var rowid = request.getParameter("id");
+		var code = request.getParameter("code");
+		var description = request.getParameter("description");
+		log.info("EditShortCode :: "+rowid+" :: "+code+" :: "+description);
+			
+		result = mod.EditShortCode(rowid, code, description);
+			
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		} else {
+			obj = {
+				error:false,
+				message:result.message,
+				data: result.data
+			}
+		}
+		print(obj);
+	} else if (action == "SearchCode"){
+		var rowid = request.getParameter("id");
+		log.info("SearchCode :: "+rowid);
+
+		result = mod.SearchCode(rowid);
+
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		} else {
+			obj = {
+				error:false,
+				message:result.message,
+				data: result.data
+			}
+		}
+		print(obj);
+	} else if (action == "FilterCodesTable"){
+		var rowid = request.getParameter("userid");
+		var code = request.getParameter("shortcode");
+		var desc = request.getParameter("description");
+		log.info("FilterCodesTable :: "+rowid+"  :: "+code+"  :: "+desc);
+
+		result = mod.FilterNumberTable(rowid, code, desc);
+
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		} else {
+			obj = {
+				error:false,
+				message:result.message,
+				data: result.data
+			}
+		}
+		print(obj);
+	} else if (action == "CheckShortCodeExist"){
+		var code = request.getParameter("shortcode");
+		log.info("CheckShortCodeExist :: "+code);
+
+		result = mod.CheckShortCodeExist(code);
+		log.info('result data '+result.data);
+
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		} else {
+			obj = {
+				error:false,
+				message:result.message,
+				data:'true'
+			}
+		}
+		print(obj);
+	} else if(action == "loadSearchShortCodes"){
+		result = mod.getCodesList(1);
+		log.info('result data '+result.data);
+
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		} else {
+			obj = {
+				error:false,
+				message:result.message,
+				data:result.data
+			}
+		}
+		print(obj);
+	}else if(action == "loadSearchDes"){
+		result = mod.getDescriptionList(1);
+		log.info('result data '+result.data);
+
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		} else {
+			obj = {
+				error:false,
+				message:result.message,
+				data:result.data
+			}
+		}
+		print(obj);
+	}
+	}
+}());
+%>

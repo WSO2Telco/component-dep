@@ -1,0 +1,11 @@
+<%
+jagg.initializer("authorization-api", {
+
+    preInitialize:function () {
+        jagg.addFooterCSS("application", "jagg", "templates/authorization-api/css/overridden_css.css");
+        jagg.addFooterJS("application", "jagg", "templates/authorization-api/js/authorization-api.js");
+
+    }
+});
+%>
+

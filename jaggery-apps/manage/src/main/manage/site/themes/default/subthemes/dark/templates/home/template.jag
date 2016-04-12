@@ -1,0 +1,83 @@
+<% jagg.template("home", function(inputs, outputs, jagg) {
+
+    var user = jagg.getUser();
+    var log = new Log();
+    this.subscribeOperators = outputs.operators;
+    var site = require("/site/conf/site.json");
+    var chart1 = site.chart1;
+    var chart2 = site.chart2;
+    var chart3 = site.chart3;
+    var chart4 = site.chart4;
+    var chart5 = site.chart5;
+    var chart6 = site.chart6;
+	var isCustomerCare = jagg.getUser().isCustomerCare;
+	if(isCustomerCare != null){
+		isCustomerCare =true;
+	}
+%>
+<script type="text/javascript">
+    $(document).addClass("tundra");
+</script>
+  <script type="text/javascript" src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("lib//d3/d3.min.js"))%>"></script>
+  <script type="text/javascript" src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("lib//d3/radialProgress.js"))%>"></script>
+  <link type="text/css" rel="stylesheet" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("lib//d3/radialProgress.css"))%>">
+
+
+<link rel="stylesheet"  href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("templates/utils/dojo-release-1.8.3/dijit/themes/tundra/tundra.css"))%>"  />
+<script type="text/javascript" src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("templates/utils/dojo-release-1.8.3/dojo/dojo.js"))%>" data-dojo-config="isDebug: true,parseOnLoad: true"></script>
+<script type="text/javascript" src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("lib/amplify/amplify.min.js"))%>"></script>
+<script type="text/javascript" src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("templates/home/js/home.js"))%>"></script>
+
+
+
+
+<link rel="stylesheet" type="text/css" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("templates/utils/font-awesome/css/font-awesome.min.css"))%>" media="all"/>
+<link rel="stylesheet" type="text/css" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("css/styles-axiata.css"))%>" media="all"/>
+<div id="listing">
+    <div class="title-section">
+        <h2>Home</h2>
+    </div>
+	<% if (!isCustomerCare) { %>
+      <div class="container-fluid chart-container">
+     <div class="row-fluid">
+        <% if(chart1 == "true"){ %>
+            <div class="span6 diagram-wrappers" id="r1_c1_wrapper">
+                <% include(jagg.getThemeFile("templates/home/chart_r1_c1/chart_r1_c1.jag")); %>
+            </div>
+          <% } %>
+             <% if(chart2 == "true"){ %>
+             <div class="span6 diagram-wrappers" id="r1_c2_wrapper">
+                <% include(jagg.getThemeFile("templates/home/chart_r1_c2/chart_r1_c2.jag"));%>
+            </div>
+           <% } %>
+        </div>
+     <%if(user.operator == null){%>
+        <div class="row-fluid">
+          <% if(chart3 == "true"){ %>
+            <div class="span6 diagram-wrappers" id="r2_c1_wrapper">
+                <% include(jagg.getThemeFile("templates/home/chart_r2_c1/chart_r2_c1.jag"));%>
+            </div>
+             <% } if(chart4 == "true"){ %>
+            <div class="span6 diagram-wrappers" id="r2_c2_wrapper">
+                <% include(jagg.getThemeFile("templates/home/chart_r2_c2/chart_r2_c2.jag"));%>
+            </div>
+            <% } %>
+        </div>
+        <%}%>
+        <div class="row-fluid">
+         <% if(chart5 == "true"){ %>
+            <div class="span6 diagram-wrappers" id="r3_c1_wrapper">
+                <% include(jagg.getThemeFile("templates/home/chart_r3_c1/chart_r3_c1.jag"));%>
+            </div>
+         <% } if(chart6 == "true"){ %>
+            <div class="span6 diagram-wrappers" id="r3_c2_wrapper">
+                <% include(jagg.getThemeFile("templates/home/chart_r3_c2/chart_r3_c2.jag"));%>
+            </div>
+           <% } %>
+        </div>
+
+        </div>
+		<% } %>
+    </div>
+</div>
+<% }); %>

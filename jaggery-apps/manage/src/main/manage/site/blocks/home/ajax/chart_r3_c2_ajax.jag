@@ -1,0 +1,54 @@
+<%
+include("/jagg/jagg.jag");
+
+(function () {
+    var mod, obj, result;
+
+    var action = request.getParameter("action");
+    var user = jagg.getUser();
+
+    var log = new Log();
+    if(action == "getAPITrafic"){
+        var operator = request.getParameter("vendor");
+        var timeRange = request.getParameter("time");
+        var subscriber;
+
+        var totalTrafficModule = jagg.module("total-traffic");
+        var rowData = totalTrafficModule.getDashboardTotalResponseTimeLineChart(timeRange, operator, subscriber)
+      
+        var apiRespData = rowData.lineChart.responseTimes;
+
+        var apiServiceTimes = apiRespData.apiServiceTimes;
+        var apiHitsDates = apiRespData.apiHitDates;
+        var apiAvgServiceTime = apiRespData.apiAvgServiceTime;
+        var apiResponseCount = apiRespData.apiResponseCount
+
+
+        var data =new Object();
+        data.pts = new Array();
+     
+
+        for(var i =0; i < apiHitsDates.length; i ++) {
+            var individual = {};
+            individual.x = apiHitsDates[i];                
+            individual.y = apiAvgServiceTime[i];
+             
+        data.pts.push(individual);
+        }
+
+        var startdate = new Date();
+        var currentTime = startdate.getTime();
+
+        data.startDate = rowData.lineChart.startDate;
+        data.endDate = currentTime;
+
+        print(data);
+    }
+    else{
+        print({
+            error:true,
+            message:msg.error.invalidAction(action)
+        });
+    }
+}());
+%>

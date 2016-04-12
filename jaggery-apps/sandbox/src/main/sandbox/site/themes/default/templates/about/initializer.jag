@@ -1,0 +1,8 @@
+<%
+jagg.initializer("about", {
+	preInitialize:function () {
+	        jagg.addFooterJS("about", "jagg", "templates/about/js/about_actions.js");
+			jagg.addFooterCSS("about", "jagg", "templates/about/css/overridden_css.css");
+	    }
+});
+%>

@@ -1,0 +1,460 @@
+<% jagg.template("performance-error-rates", function(inputs, outputs, jagg) {
+	var usage=outputs.usage;
+	var length;
+	if (usage!=null){
+		length=outputs.usage.length;
+	}
+	var log = new Log();
+	var isAdmin = jagg.getUser().isAdmin;
+	var isOperator = jagg.getUser().operator;
+	var operator_n = jagg.getUser().operator;
+	var isCustomerCare = jagg.getUser().isCustomerCare;
+	var customerCare_n = jagg.getUser().isCustomerCare;
+	log.info(isAdmin);
+	log.info(isOperator);
+
+	var isSp = false;
+
+	if(isAdmin){
+		isAdmin =true;
+	}
+	if(operator_n != null){
+		operator_n =true;
+	}
+	if(customerCare_n != null){
+		customerCare_n =true;
+	}
+	if(isAdmin == false && operator_n == null){
+		isSp =true;
+	}
+
+%>
+<META HTTP-EQUIV="CACHE-CONTROL" CONTENT="NO-CACHE">
+<META HTTP-EQUIV="EXPIRES" CONTENT="Mon, 22 Jul 2002 11:12:01 GMT">
+<link href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("lib/jquery-ui/css/smoothness/jquery-ui-1.9.2.custom.css"))%>" rel="stylesheet">
+<script type="text/javascript" src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("lib/jquery-ui/js/jquery-ui-1.9.2.custom.min.js"))%>"></script>
+
+<% if (isAdmin || operator_n) { %>
+<div class="title-section">
+	<h2>Performance Error Rates</h2>
+</div>
+<div class="content-section shadow-up">
+	<div class="content-data">
+		<div id="userKey">
+			<div class="well form-inline">
+				<table>
+					<tr>
+						<td><b>From:</b></td>
+						<td><b>To:</b></td>
+						
+						<%
+							if(isAdmin == true || isOperator == null){
+						%>
+						<td><b>Operator:</b></td>
+						<%
+							}
+						%>
+						
+						<%
+							if(isAdmin == true || isOperator != null){
+						%>
+						<td><b>Service Provider:</b></td>
+						<%
+							}
+						%>
+						
+						<td><b>Application:</b></td>
+						<td><b>API:</b></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>
+							<input type="text" id="from_date" class="input-large" style="margin-bottom: 0px; width: 150px;"> 	
+						</td>
+						<td>
+							<input type="text" id="to_date" class="input-large" style="margin-bottom: 0px; width: 150px;"> 
+						</td>
+							
+						<%
+							if(isAdmin == true || isOperator == null){
+								var operatorList = outputs.operators;
+						%>
+						<td>
+							<select id="operator" style="width: 150px;">
+								<option value="__ALL__">All</option>
+								<%
+								if(operatorList != null){
+								for (i = 0; i < operatorList.length; i++) {									
+								%>
+								<option value="<%=operatorList[i]%>"><%=operatorList[i]%></option>
+								<%	
+								}
+								}
+								%>
+							</select>
+						</td>
+						<%
+							}
+						%>	
+							
+						<%
+							if(isAdmin == true || isOperator != null){
+							  	var subscriberList = outputs.subscribers;
+						%>				
+						<td>
+							<select id="subscriber" size="1" style="width: 150px" onchange="getSelectedSubscriber()" name="subscriber">
+								<option value="__ALL__">All</option> 
+								<%
+								if(subscriberList != null){
+								for (i = 0; i < subscriberList.length; i++) {									
+									var subscriber = subscriberList[i];										
+								%>
+								<option value="<%=subscriber%>"><%=subscriber%></option>
+								<%	
+									}
+									}
+								%>
+							</select>
+						</td>
+						<%
+							}
+						%>
+						
+						<td>
+							<select id="app" style="width: 150px;" autofocus="autofocus">
+								<%
+								if(isAdmin == true || isOperator != null){
+								%>
+								<option value="0">All</option>
+								<%		
+								}
+								%>
+								<%
+								if(isAdmin != true && isOperator == null){
+									var applicationList = outputs.applications;
+								%>
+								<option value="0">All</option>
+								<%
+								if(applicationList != null){
+								for (i = 0; i < applicationList.length; i++) {
+									var app = applicationList[i];
+								%>
+								<option value="<%=app.id%>"><%=app.name%></option>
+								<%		
+								}
+								}
+								}
+								%>
+							</select>
+						</td>
+												
+						<td><%		
+						var apiList = outputs.apis;
+							%> <select id="api" style="width: 150px;" autofocus="autofocus">
+								<option value="__ALL__">All</option>
+								<%
+								if(apiList != null){								
+								for (i = 0; i < apiList.length; i++) {
+									var api = apiList[i];
+									%>
+								<option value="<%=api.name%>"><%=api.name%></option>
+								<%		
+									}
+									}
+									%>
+						</select> <%
+							%>
+						</td>
+						<td>
+							<button class="btn btn-primary" id="generate" onclick="getErrorResponseCodes()">Generate</button>
+						</td>
+					</tr>
+				</table>					
+			</div>
+			
+			<div id="error-response-codes-pie-chart" style="width: 700px; height: 400px"></div> <br/> <br/>
+			
+			<div id="error-response-codes-histogram" style="width: 700px; height: 400px; float:left;"></div> <br/> <br/>
+			<style>
+						.dojoxLegendNode {width:150px; border: 1px solid #ccc; margin: 0px 10px 5px 10px; padding: 3px}
+						.dojoxLegendText {padding-right: 10px}
+					</style>
+			<div id="legend"></div>
+			<div style="height: 320px;"></div>
+			
+			<br/>
+			<div id="error-details" style="display:none;">
+			
+			
+			<!-- PRIYANKA -->
+			<div style="height: 300px;overflow: auto; color:grey;">
+			<h3>Common Service Exceptions</h3>
+			<table style="width: 100%;" class="table table-bordered">
+			<thead>
+				<th>Id</th>
+				<th width="50%">Exception Text</th>
+				<th>Variables</th>
+				<th>HTTP code</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>SVC0001</td>
+					<td>A service error occurred. Error code is %1</td>
+					<td>%1 - explanation of the error</td>
+					<td>400 Bad Request</td>
+				</tr>
+				<tr>
+					<td>SVC0002</td>
+					<td>Invalid input value for message part %1</td>
+					<td>%1 - the part of the request that is invalid</td>
+					<td>400 Bad Request</td>
+				</tr>
+				<tr>
+					<td>SVC0003</td>
+					<td>Invalid input value for message part %1, valid values are %2</td>
+					<td>%1 - message part<br/> %2 - list of valid values</td>
+					<td>400 Bad Request</td>
+				</tr>
+				<tr>
+					<td>SVC0004</td>
+					<td>No valid addresses provided in message part %1 Addresses means phone numbers, etc. So this may be thrown if the MSISDN does not follow the correct tel:+441234567890 format (including URL encoding where necessary). If the address is part of the resource URL, the status code 404 SHOULD be used; otherwise the status code 400 SHOULD be used.</td>
+					<td>%1 - message part. </td>
+					<td>404 Not Found, <br/> 400 Bad Request</td>
+				</tr>
+				<tr>
+					<td>SVC0005</td>
+					<td>Correlator %1 specified in message part %2 is a duplicate This would be thrown if the clientCorrelator has already been used (e.g. when creating a previous resource)</td>
+					<td>%1 - Correlator <br/> %2 - message part</td>
+					<td>409 Conflict</td>
+				</tr>
+				<tr>
+					<td>SVC0006</td>
+					<td>Group %1 in message part %2 is not a valid group</td>
+					<td>%1 - identifier for the invalid group <br/> %2 - message part</td>
+					<td>400 Bad Request</td>
+				</tr>
+				<tr>
+					<td>SVC0007</td>
+					<td>Invalid charging information</td>
+					<td>None</td>
+					<td>400 Bad Request</td>
+				</tr>
+				<tr>
+					<td>SVC0008</td>
+					<td>Overlapped criteria %1</td>
+					<td>%1 Message Part with the overlapped criteria</td>
+					<td>400 Bad Request</td>
+				</tr>
+				<tr>
+					<td>SVC1000</td>
+					<td>No resources This exception is thrown if there are no server resources available to process the request</td>
+					<td>None</td>
+					<td>503 Service unavailable</td>
+				</tr>
+				<tr>
+					<td>SVC0270</td>
+					<td>Charging operation failed, the charge was not applied</td>
+					<td>None</td>
+					<td>400 Bad Request</td>
+				</tr>
+				<tr>
+					<td>SVC0280</td>
+					<td>Message too long. Maximum length is %1 characters</td>
+					<td>%1 - number of characters allowed in a message.</td>
+					<td>400 Bad Request</td>
+				</tr>
+				<tr>
+					<td>SCV0283</td>
+					<td>Delivery receipt notification not supported</td>
+					<td>None</td>
+					<td>400 Bad Request</td>
+				</tr>
+			</tbody>
+			</table>
+			<br/>
+			<h3>Common Policy Exceptions</h3>
+			<table style="width: 100%;" class="table table-bordered">
+			<thead>
+				<th>Id</th>
+				<th>Exception Text</th>
+				<th>Variables</th>
+				<th width="15%">HTTP code</th>
+			</thead>
+			<tbody>
+				<tr>
+					<td>POL0001</td>
+					<td>A policy error occurred. Error code is %1</td>
+					<td>%1 - explanation of the error</td>
+					<td>403 - Forbidden</td>
+				</tr>
+				<tr>
+					<td>POL0002</td>
+					<td>Privacy verification failed for address %1, request is refused</td>
+					<td>%1 - address privacy verification failed for</td>
+					<td>403 - Forbidden</td>
+				</tr>
+				<tr>
+					<td>POL0003</td>
+					<td>Too many addresses specified in message part %1</td>
+					<td>%1 - message part</td>
+					<td>403 - Forbidden</td>
+				</tr>
+				<tr>
+					<td>POL0004</td>
+					<td>Unlimited notification request not supported</td>
+					<td>None</td>
+					<td>403 - Forbidden</td>
+				</tr>
+				<tr>
+					<td>POL0005</td>
+					<td>Too many notifications requested</td>
+					<td>None</td>
+					<td>403 - Forbidden</td>
+				</tr>
+				<tr>
+					<td>POL0006</td>
+					<td>Group specified in message part %1 not allowed</td>
+					<td>%1 - message part. Note: group means an address which refers to more than one end user.</td>
+					<td>403 - Forbidden</td>
+				</tr>
+				<tr>
+					<td>POL0007</td>
+					<td>Nested groups specified in message part %1 not allowed</td>
+					<td>%1 - message part. Note: group means an address which refers to more than one end user. Groups cannot contain addresses which are themselves groups.</td>
+					<td></td>
+				</tr>
+				<tr>
+					<td>POL0008</td>
+					<td>Charging is not supported</td>
+					<td>None</td>
+					<td>403 - Forbidden</td>
+				</tr>
+				<tr>
+					<td>POL0009</td>
+					<td>Invalid frequency requested</td>
+					<td>None</td>
+					<td>403 - Forbidden</td>
+				</tr>
+				<tr>
+					<td>POL0010</td>
+					<td>Requested information unavailable as the retention time interval has expired.</td>
+					<td>None.<br/> Note: this could apply if e.g. you requested the delivery status of an old SMS, i.e. the server no longer maintains the resource. In case the information that has become unavailable is addressed by a resource URL, the following applies: If the resource URL refers to a resource that has existed in the past and the server is aware of that fact, the status code 410 SHOULD be used; otherwise (if the server is not aware), the status code 404 SHOULD be used.<br>
+					In all other cases, the status code 403 SHOULD be used.
+					</td>
+					<td>403 - Forbidden,<br/>  404 - Not Found,<br/>  410 - Gone</td>
+				</tr>
+				<tr>
+					<td>POL0011</td>
+					<td>Media type not supported</td>
+					<td>None</td>
+					<td>403 - Forbidden,<br/> 406 - Not Acceptable</td>
+				</tr>
+				<tr>
+					<td>POL0012</td>
+					<td>Too many description entries specified in message part %1</td>
+					<td>%1 - message part</td>
+					<td>403 - Forbidden</td>
+				</tr>
+				<tr>
+					<td>POL0013</td>
+					<td>Duplicated addresses %1</td>
+					<td>%1 - duplicated addresses</td>
+					<td>400 - Bad Request</td>
+				</tr>
+				<tr>
+					<td>POL1009</td>
+					<td>User has not been provisioned for %1</td>
+					<td>%1 - name of the service</td>
+					<td>403 - Forbidden</td>
+				</tr>
+				<tr>
+					<td>POL1010</td>
+					<td>User has been suspended from %1</td>
+					<td>%1 - the name of the service</td>
+					<td>403 - Forbidden</td>
+				</tr>
+				
+				<tr>
+					<td>POL0230</td>
+					<td>Requested accuracy is not supported</td>
+					<td>None</td>
+					<td>403 - Forbidden</td>
+				</tr>
+				<tr>
+					<td>POL0253</td>
+					<td>Payment operation refused by user</td>
+					<td>None</td>
+					<td>403 - Forbidden</td>
+				</tr>
+				<tr>
+					<td>POL0254</td>
+					<td>The amount exceeds the operator limit for a single charge</td>
+					<td>None</td>
+					<td>403 - Forbidden</td>
+				</tr>
+				<tr>
+					<td>POL1000</td>
+					<td>User has insufficient credit for transaction</td>
+					<td>None</td>
+					<td>403 - Forbidden</td>
+				</tr>
+				<tr>
+					<td>POL1001</td>
+					<td>The %1 operator charging limit for this user has been exceeded</td>
+					<td>%1 - the time period for which the charging limit has been reached, e.g. hourly, daily, weekly, monthly.</td>
+					<td>403 - Forbidden</td>
+				</tr>
+				<tr>
+					<td>POL1002</td>
+					<td>The charge happened too soon after the previous one</td>
+					<td>None</td>
+					<td>403 - Forbidden</td>
+				</tr>
+				<tr>
+					<td>POL1003</td>
+					<td>The refund exceeds the original amount charged %1</td>
+					<td>%1 - the original amount charged</td>
+					<td>403 - Forbidden</td>
+				</tr>
+				<tr>
+					<td>POL1004</td>
+					<td>Refund below minimum refundable amount supported %1</td>
+					<td>%1 - the minimum refundable amount supported</td>
+					<td>403 - Forbidden</td>
+				</tr>
+				<tr>
+					<td>POL1005</td>
+					<td>A refund request requires the originalServerReferenceCode for the charge that is being refunded</td>
+					<td>None</td>
+					<td>403 - Forbidden</td>
+				</tr>
+				<tr>
+					<td>POL1006</td>
+					<td>originalServerReferenceCode not valid</td>
+					<td>None</td>
+					<td>403 - Forbidden</td>
+				</tr>
+				<tr>
+					<td>POL1007</td>
+					<td>Refunds not supported</td>
+					<td>None</td>
+					<td>403 - Forbidden</td>
+				</tr>
+				<tr>
+					<td>POL1008</td>
+					<td>Alternative payment (credit card / other non-operator payment) method was declined</td>
+					<td>None</td>
+					<td>403 - Forbidden</td>
+				</tr>
+			</tbody>
+			</table>
+			</div>
+			</div>
+			<br/><br/>
+		</div>
+	</div>
+</div>
+<% } else { %>
+		<p> Access Denied..!</p>
+	<% } %>
+<%});%>

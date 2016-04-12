@@ -1,0 +1,261 @@
+<%
+var isAdmin = jagg.getUser().isAdmin;
+var isOperator = jagg.getUser().operator;
+%>
+
+<%
+function getAllSubscribers(){
+	var log = new Log();
+	var billing = jagg.module("manager").getCustomBilling();
+	var subscribers = [];
+	try {
+		subscribers = billing.getAllSubscribers();
+		return {error:false, data : subscribers};
+
+	} catch (e) {
+		log.error(e.message);
+		return { error:true,message:e.message};
+	}
+}
+
+function getAllOperators(){
+	var log = new Log();
+	//log.info("*************************Get All Operators from Host Object***************************");
+
+	var billing = jagg.module("manager").getCustomBilling();
+	var operators = [];
+	try {
+		operators = billing.getAllOperators();
+		log.info("Operator List: " + stringify(operators));
+		return {error:false, data : operators};
+
+	} catch (e) {
+		log.error(e.message);
+		return { error:true,message:e.message};
+	}
+}
+
+function getAppsBySubscriber(selectedSubscriber){
+	var log = new Log();
+	log.info("Selected Subscriber: " + stringify(selectedSubscriber));
+	//log.info("*************************Get All Apps from Host Object***************************");
+
+	var store = jagg.module("manager").getAPIStoreObj();
+	var apps = [];
+	try {
+		apps = store.getApplications(selectedSubscriber);
+		log.info("Application List: " + stringify(apps));
+		return {error:false, data : apps};
+
+	} catch (e) {
+		log.error(e.message);
+		return { error:true,message:e.message};
+	}
+}
+
+function getAllAPIs(){
+	var log = new Log();
+	//log.info("*************************Get All APIs from Host Object***************************");
+
+	var store = jagg.module("manager").getAPIStoreObj();
+	var apis = [];
+	try {
+		apis = store.getAllPublishedAPIs("carbon.super");
+		log.info("API List: " + stringify(apis));
+		return {error:false, data : apis};
+
+	} catch (e) {
+		log.error(e.message);
+		return { error:true,message:e.message};
+	}
+}
+
+function getOperatorsBySubscriber(subscriberName){
+	var log = new Log();
+	log.info("Subscriber Name:" + stringify(subscriberName));
+
+	var billing = jagg.module("manager").getCustomBilling();
+	var operators = [];
+	try {
+		operators = billing.getOperatorsBySubscriber(subscriberName);
+		log.info("Operator List: " + stringify(operators));
+		return {error:false, data : operators};
+
+	} catch (e) {
+		log.error(e.message);
+		return { error:true,message:e.message};
+	}
+}
+
+function getSubscribersByOperator(operatorName){
+	var log = new Log();
+	log.info("Operator Name: " + stringify(operatorName));
+	var billing = jagg.module("manager").getCustomBilling();
+	var subscribers = [];
+	try {
+		subscribers = billing.getSubscribersByOperator(operatorName);
+		return {error:false, data : subscribers};
+
+	} catch (e) {
+		log.error(e.message);
+		return { error:true,message:e.message};
+	}
+}
+function getAPITraffic(fromDate, toDate, subscriber, application, operator, api){
+	var log = new Log();
+	log.info("*****************************************");
+	
+	/*Identify the Operator*/
+	if(isAdmin != true && isOperator != null){
+		operator = isOperator;
+	}
+	
+	/*Identify the Subscriber*/
+	if (isAdmin != true && isOperator == null) {
+		subscriber = jagg.getUser().username;
+	}
+	log.info("From: " + stringify(fromDate));
+	log.info("To: " + stringify(toDate));
+	log.info("Subscriber: " + stringify(subscriber));
+	log.info("Application: " + stringify(application));
+	log.info("Operator: " + stringify(operator));
+	log.info("API: " + stringify(api));
+
+	var billing = jagg.module("manager").getCustomBilling();
+	var api_requests_for_pieChart = [];
+	var api_requests_for_histogram = [];
+	try {
+		api_requests_for_pieChart = billing.getTotalAPITrafficForPieChart(fromDate, toDate, subscriber, application, operator);
+		log.info("API Requests Data for Pie Chart: " + stringify(api_requests_for_pieChart));
+		
+		api_requests_for_histogram = billing.getTotalAPITrafficForHistogram(fromDate, toDate, subscriber, application, operator, api);
+		log.info("API Requests Data for Histogram: " + stringify(api_requests_for_histogram));
+		
+		return {error:false, pieChart : api_requests_for_pieChart, histogram : api_requests_for_histogram};
+	} catch (e) {
+		log.error(e.message);
+		return { error:true,message:e.message};
+	}
+
+
+}
+
+function getDashboardTotalTraficPiechart(timeRange, operator, subscriber) {
+
+	/*Identify the Operator*/
+	if(isAdmin != true && isOperator != null){
+		operator = isOperator;
+	}
+	
+	/*Identify the Subscriber*/
+	if (isAdmin != true && isOperator == null) {
+		subscriber = jagg.getUser().username;
+	} else {
+		subscriber = "All"
+	}
+
+	var billing = jagg.module("manager").getCustomBilling();
+	var log = new Log();
+
+	var api_requests_for_pieChart = [];
+	try {
+		api_requests_for_pieChart = billing.getDashboardAPITrafficForPieChart(timeRange, operator, subscriber);
+		if(log.isDebugEnabled()){
+			log.debug("API Requests Data for Pie Chart: " + stringify(api_requests_for_pieChart));
+		}		
+		return {error:false, pieChart : api_requests_for_pieChart};
+	} catch (e) {
+		log.error(e.message);
+		return { error:true,message:e.message};
+	}
+}
+
+function getDashboardTotalAPITrafficLineChart(timeRange, operator, subscriber) {
+	/*Identify the Operator*/
+	if(isAdmin != true && isOperator != null){
+		operator = isOperator;
+	}
+	
+	/*Identify the Subscriber*/
+	if (isAdmin != true && isOperator == null) {
+		subscriber = jagg.getUser().username;
+	} else {
+		subscriber = "All"
+	}
+
+	var billing = jagg.module("manager").getCustomBilling();
+	var log = new Log();
+
+	var api_requests_for_lineChart = [];
+	try {
+		api_requests_for_lineChart = billing.getDashboardAPITrafficForLineChart(timeRange, operator, subscriber);
+		if(log.isDebugEnabled()){
+			log.debug("API Requests Data for Line Chart: " + stringify(api_requests_for_lineChart));
+		}		
+		return {error:false, lineChart : api_requests_for_lineChart};
+	} catch (e) {
+		log.error(e.message);
+		return { error:true,message:e.message};
+	}
+}
+
+function getDashboardTotalResponseTimeLineChart(timeRange, operator, subscriber) {
+	/*Identify the Operator*/
+	if(isAdmin != true && isOperator != null){
+		operator = isOperator;
+	}
+	
+	/*Identify the Subscriber*/
+	if (isAdmin != true && isOperator == null) {
+		subscriber = jagg.getUser().username;
+	} else {
+		subscriber = "All"
+	}
+
+	var billing = jagg.module("manager").getCustomBilling();
+	var log = new Log();
+
+	var apiResponsesForLineChart = [];
+	try {
+		apiResponsesForLineChart = billing.getDashboardAPIResponseTimeForLineChart(timeRange, operator, subscriber);
+		if(log.isDebugEnabled()){
+			log.debug("API response Data for Line Chart: " + stringify(apiResponsesForLineChart));
+		}		
+		return {error:false, lineChart : apiResponsesForLineChart};
+	} catch (e) {
+		log.error(e.message);
+		return { error:true,message:e.message};
+	}
+}
+
+function getDashboardTimeConsumerData(timeRange, operator, subscriber) {
+	/*Identify the Operator*/
+	if(isAdmin != true && isOperator != null){
+		operator = isOperator;
+	}
+	
+	/*Identify the Subscriber*/
+	if (isAdmin != true && isOperator == null) {
+		subscriber = jagg.getUser().username;
+	} else {
+		subscriber = "All"
+	}
+
+	var billing = jagg.module("manager").getCustomBilling();
+	var log = new Log();
+
+	var apiResponses = [];
+	try {
+	
+		apiResponses= billing.getDashboardTimeConsumersByAPI(timeRange, operator, subscriber);
+		if(log.isDebugEnabled()) {
+			log.debug("API Time comsumer Data for apis " + stringify(apiResponses));		
+		}
+				
+		return {error:false, chartData : apiResponses};
+	} catch (e) {
+		log.error(e.message);
+		return { error:true,message:e.message};
+	}
+}
+%>

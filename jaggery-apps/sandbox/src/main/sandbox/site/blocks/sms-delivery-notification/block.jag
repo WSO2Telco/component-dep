@@ -1,0 +1,6 @@
+<%
+	jagg.block("sms-delivery-notification", {
+		initializer:function (data) {},
+		getInputs:function () {}
+	});
+%>

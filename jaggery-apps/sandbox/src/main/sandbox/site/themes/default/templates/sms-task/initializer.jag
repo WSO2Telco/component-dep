@@ -1,0 +1,11 @@
+<%
+jagg.initializer("sms-task", {
+
+    preInitialize:function () {
+		jagg.addFooterCSS("subscription", "jagg", "templates/sms-task/css/overridden_css.css");
+        jagg.addFooterJS("subscription", "jagg", "templates/sms-task/js/sms.js");
+
+    }
+});
+%>
+

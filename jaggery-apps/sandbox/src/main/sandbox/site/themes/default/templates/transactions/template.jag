@@ -1,0 +1,50 @@
+<% jagg.template("transactions", function(inputs, outputs, jagg) { %>
+<div class="title-section">
+	<h2>Transactions</h2>
+</div>
+
+<link href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("lib/jquery-ui/css/smoothness/jquery-ui-1.9.2.custom.css"))%>" rel="stylesheet">
+<script type="text/javascript" src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("lib/jquery-ui/js/jquery-ui-1.9.2.custom.min.js"))%>"></script>
+
+<div class="content-section shadow-up">
+	<div class="content-data">
+
+		<div class="">
+			Type &nbsp<select id="transactionType" class="input-large"
+				style="margin-bottom: 0px; width: 210px;">
+				<option value="1" selected="selected">Send SMS</option>
+				<option value="2">Retrieve message</option>
+				<option value="3">SMS subscription</option>
+				<option value="4">Cancel subscription</option>
+				<option value="5">Charge amount</option>
+				<option value="6">Reserve amount</option>
+				<option value="7">Reserve additional amount</option>
+				<option value="8">Charge against the reservation</option>
+				<option value="9">Release reservation</option>
+				<option value="10">Refund the user</option>
+				<option value="11">LBS</option>
+				<option value="12">USSD Send</option>
+				<option value="13">USSD Receive</option>
+				<option value="14">USSD Subscriptions</option>
+			</select> 
+			&nbsp From &nbsp
+			<input type="text" id="from_date" class="input-large" style="margin-bottom: 0px; width: 80px;"> 
+			&nbsp To &nbsp
+			<input type="text" id="to_date" class="input-large" style="margin-bottom: 0px; width: 80px;"> 
+			&nbsp <input
+				type="button" class="btn" id="filter_table_button" value="Filter"
+				onclick="generateTransactionGrid()" /> <input type="button"
+				class="btn" id="reset_table_button" value="Reset"
+				onclick="resetValues()" />
+		</div>
+		</br> </br>
+		<div id="transactionGrid" style="overflow:scroll;"></div>
+		<div class="pagination" style="text-align: right;"></div>
+	</div>
+</div>
+
+<script type="text/javascript">
+$("#mainnavi").find('li.subnavi').removeClass("active");
+$("#mainnavi").find('li.subnavi:nth-child(4)').addClass("active");
+</script>
+<% }); %>

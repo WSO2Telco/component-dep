@@ -1,0 +1,65 @@
+<%
+include("/jagg/jagg.jag");
+include("header.jag");
+var site = require("/site/conf/site.json");
+
+var i18n = require("i18n");
+var localeResourcesBasePath="/site/conf/locales/jaggery/";
+i18n.init(request,localeResourcesBasePath);
+
+var middlePage="authorization-api";
+
+var pageName=request.getParameter("task");
+if(pageName=="mobile-id-api"){
+	middlePage="mobile-id-task";
+}else if (pageName=="create-auth-code-task") {
+	middlePage="create-auth-code-task";
+} else if(pageName=="authorization-task"){
+    middlePage = "authorization-api";
+}
+
+(function () {
+    var user = jagg.getUser();
+    if (!user) {
+        response.sendRedirect(getRedirectPathForNonAuthenticatedUser());
+        return;
+    }
+
+    jagg.render({
+        "name":"page/base",
+        "inputs":{
+            "title":"Home",
+            "header":{
+                "name":"menu/primary",
+                "inputs":{
+   					"pagePath":"/site/pages/mobile-api.jag"
+    			}
+            },
+            "body":[
+                {
+                    "name":"layout/base",
+                    "inputs":{
+                        "middle":[{
+                            "name":middlePage,
+                			"inputs":{
+								"user":user
+                	           }
+                        	}
+                        ],
+                        "left":[{
+                        	"name":"menu/left-mobile-api"
+                     		}
+                        ]
+                    }
+                }
+            ],"footer":[
+                {
+                    "name":"footer"
+                }
+            ]
+        }
+    });
+}());
+
+
+%>

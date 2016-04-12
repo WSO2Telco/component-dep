@@ -1,0 +1,6 @@
+<%
+	jagg.block("ussd-send", {
+		initializer:function (data) {},
+		getInputs:function () {}
+	});
+%>

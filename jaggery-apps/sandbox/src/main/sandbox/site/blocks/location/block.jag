@@ -1,0 +1,39 @@
+<%
+jagg.block("location", {
+	initializer:function (data) {
+	},
+	getInputs:function () {
+	},
+
+	getOutputs:function (inputs) {
+		
+		var mod,params;
+		mod = jagg.module("location-track");
+		var user =jagg.getUser();
+		result = mod.getLocData(user.username);
+		var log = new Log();
+		log.info(result);
+
+		var alt = "", lat = "", longi = "", lbsStatus = "Error";
+
+		var responseData = result.data;
+		//log = new Log();
+		if(result != null){
+			if(responseData.trim() != "NODATA"){
+				alt = responseData.split(",")[0];
+				lat = responseData.split(",")[1];
+				longi = responseData.split(",")[2];
+				lbsStatus = responseData.split(",")[3];
+			}
+		}
+
+		return {
+			"altitude":alt,
+			"latitude":lat,
+			"longitude":longi,
+			"lbsStatus":lbsStatus
+		};
+	},
+
+});
+%>

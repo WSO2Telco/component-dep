@@ -1,0 +1,87 @@
+<%
+include("/jagg/jagg.jag");
+(function () {
+	var log = new Log();
+	var action = request.getParameter("action");
+	log.info("Action: " + action);
+	user =jagg.getUser();
+
+	if(action == "saveMobileIdApiRequest") {
+		
+		var sub = request.getParameter("sub");
+		var email = request.getParameter("email");
+		var name = request.getParameter("name");
+		var family_name = request.getParameter("family_name");
+		var preferred_username = request.getParameter("preferred_username");
+		var given_name = request.getParameter("given_name");
+		
+		user =jagg.getUser();
+		var mod = jagg.module("mobile-id-task");
+		var result = mod.saveMobileIdApiRequest(sub,email,name,family_name,preferred_username,given_name, user.username);
+		log.info('GGGGGGGGGGGGGGGGGGGGGGGGG result'+result);
+		if (result.reqerr == false) {
+			//{"MobileIdApiRequest":{""mobIdApiId":14,"sub":"ty","email":"tyt","given_name":"tytytytytyty"}}
+			var locreqtxn = {
+				name : name,
+				family_name : family_name,
+				preferred_username : preferred_username,
+				sub : sub,
+				email : email,
+				given_name : given_name
+				
+			};
+			var locreqtxns = session.get("locreqtxns");
+			locreqtxns.push(locreqtxn);
+			session.put("locreqtxns",locreqtxns);
+		}
+
+		if (result.error==true) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		}else{
+			obj = {
+				error:false,
+				data: result.data,
+				table: session.get("locreqtxns")
+			}
+		}
+		print(obj);
+
+	} else if (action === "sendMobileIdApiRequestWithToken") {
+
+		user =jagg.getUser();
+
+		var authorization = request.getParameter("authorization");
+
+		var mod = jagg.module("mobile-id-task");
+		var result = mod.sendMobileIdApiRequestWithToken(authorization,user.username);
+
+		if (result.error==true) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		}else{
+			obj = {
+				error:false,
+				data: result.data
+			}
+		}
+		print(obj);
+	}else if (action === "getSessionData") {
+		var locreqtxns = session.get("locreqtxns");
+		if(locreqtxns.length > 0){
+			obj = {
+				table:locreqtxns
+			};
+		}else{
+			obj = {
+				table:"null"
+			};
+		}
+		print(obj);
+	}
+}());
+%>

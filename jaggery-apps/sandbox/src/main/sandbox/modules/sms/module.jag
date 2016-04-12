@@ -1,0 +1,26 @@
+<%
+jagg.module("sms", {
+
+    addparam:function () {
+        return jagg.require(jagg.getModulesDir() + "sms/sms.jag").addparam.apply(this, arguments);
+    },
+    getparam:function () {
+	return jagg.require(jagg.getModulesDir() + "sms/sms.jag").getparam.apply(this, arguments);
+    },
+    addsmsnotify:function () {
+	return jagg.require(jagg.getModulesDir() + "sms/sms.jag"). addsmsnotify.apply(this, arguments);
+    },
+    GetSMSParamData:function () {
+    	return jagg.require(jagg.getModulesDir() + "sms/sms.jag").GetSMSParamData.apply(this, arguments);
+    },
+    DeleteSubscribeData:function () {
+    return jagg.require(jagg.getModulesDir() + "sms/sms.jag").DeleteSubscribeData.apply(this, arguments);
+    },
+    EditSubscribeDataTbl:function () {
+    return jagg.require(jagg.getModulesDir() + "sms/sms.jag").EditSubscribeDataTbl.apply(this, arguments);
+    },
+    SearchSubscribeData:function () {
+        return jagg.require(jagg.getModulesDir() + "sms/sms.jag").SearchSubscribeData.apply(this, arguments);
+        }
+});
+%>

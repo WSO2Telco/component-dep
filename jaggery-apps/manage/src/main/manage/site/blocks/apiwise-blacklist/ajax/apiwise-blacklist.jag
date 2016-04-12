@@ -1,0 +1,82 @@
+<%
+include("/jagg/jagg.jag");
+
+(function () {
+	var mod, obj, result;
+
+	var action = request.getParameter("action");
+	var user = jagg.getUser();
+
+	var log = new Log();
+
+	if (action =="getBlacklistByAPI"){
+		var api = request.getParameter("api");
+
+		var blacklistModule = jagg.module("blacklist");
+		result = blacklistModule.getApiwiseBlacklist(api);
+
+		log.info("::: Blacklist result: >> "+ stringify(result));
+
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.error
+			};
+		} else {
+			obj = {
+				error:false,
+				blacklist:result
+			}
+		}
+		print(obj);
+	} else if (action =="addNewToBlacklist"){
+		var api = request.getParameter("api");
+		var subscriberList = request.getParameter("subscriberList");
+
+		var blacklistModule = jagg.module("blacklist");
+		result = blacklistModule.addNewToBlacklist(api, subscriberList);
+
+		log.info("::: Adding to Blacklist - result: >> "+ stringify(result));
+		var resultObject = JSON.parse(result);
+
+		if (resultObject.Failed) {
+			obj = {
+				error:resultObject.Failed,
+				message:resultObject.Failed.text
+			};
+		} else {
+			obj = {
+				error:false,
+				code:1
+			}
+		}
+		print(obj);
+	} else if (action =="removeFromBlacklist"){
+		var api = request.getParameter("api");
+		var subscriber = request.getParameter("subscriber");
+
+		var blacklistModule = jagg.module("blacklist");
+		result = blacklistModule.removeFromBlacklist(api, subscriber);
+
+		log.info("::: Removing from Blacklist - result: >> "+ stringify(result));
+
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.error
+			};
+		} else {
+			obj = {
+				error:false,
+				code:result
+			}
+		}
+		print(obj);
+	} else{
+		print({
+			error:true,
+			message:invalidAction(action)
+		});
+	}
+}());
+%>

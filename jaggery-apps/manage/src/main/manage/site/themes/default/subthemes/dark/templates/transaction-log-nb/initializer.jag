@@ -1,0 +1,9 @@
+<%
+jagg.initializer("transaction-log-nb", {
+
+    preInitialize:function () {
+        jagg.addHeaderJS("transaction-log-nb", "dojo", "templates/utils/dojo-release-1.8.3/dojo/dojo.js");
+        jagg.addHeaderJS("transaction-log-nb", "transaction-log-nb", "templates/transaction-log-nb/js/transaction-log-nb.js");
+    }
+});
+%>

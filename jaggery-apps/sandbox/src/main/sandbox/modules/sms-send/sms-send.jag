@@ -1,0 +1,63 @@
+<%
+include("/jagg/jagg.jag");
+var loadSMSSendResponse = function (senderAddress, requestJsonString) {
+	var user = jagg.getUser();
+	var log = new Log();
+	try {
+		var xhr = new XMLHttpRequest();
+		var endpoint =  jagg.getSandboxurl()+"SendSMSService/smsmessaging/1/outbound/"+senderAddress+"/requests";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-Type", "application/json");
+		xhr.setRequestHeader("User-Id", user.username);
+		var payload = requestJsonString;
+		xhr.send(payload);
+		var result = xhr.responseText.toString();
+
+		var reqerr=true
+		if (xhr.status =='201') {
+			var reqerr =false;
+		}
+
+		log.info('response :'+result);
+			
+		return {
+			error:false,
+			message:"OK",
+			data:result,
+			reqerr:reqerr
+		};
+	} catch (Exception) {
+		log.error(e.message);
+		return {
+			error:true,
+			message:e.message.split("Exception:")[2]
+		};
+	}
+};
+
+var loadSenderAddresses = function(){
+
+	var log = new Log();
+	try {
+		var xhr = new XMLHttpRequest();
+		var endpoint =  jagg.getSandboxurl()+"SenderAddressServlet/GetShortCodesArray";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		//xhr.setRequestHeader("User-Id", "1");
+		var payload = "userid="+user.username;
+		xhr.send(payload);
+		var result = xhr.responseText.toString();
+		//log.info("Result: "+result);
+		return {
+			error:false,
+			data:result
+		};
+	} catch (Exception e) {
+		log.error(e.message);
+		return {
+			error:true,
+			message:e.message.split("Exception:")[2]
+		};
+	}
+};
+%>

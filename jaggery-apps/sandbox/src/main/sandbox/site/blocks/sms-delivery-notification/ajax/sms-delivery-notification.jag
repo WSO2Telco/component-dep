@@ -1,0 +1,47 @@
+<%
+include("/jagg/jagg.jag");
+(function () {
+	var log = new Log();
+	var action = request.getParameter("action");
+	//log.info("Action: " + action);
+	user =jagg.getUser();
+	
+	if (action == "getSenderAddresses") {
+		var mod = jagg.module("sms-delivery");
+		var result = mod.loadSenderAddresses(user.username);
+
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		} else {
+			obj = {
+				error:false,
+				data: result.data
+			}
+		}
+		print(obj);
+	} else if(action == "getDeliveryStateResponse"){
+		
+		var senderAddress = request.getParameter("senderAddress");
+		var requestId = request.getParameter("requestId");
+		
+		var mod = jagg.module("sms-delivery");
+		var result = mod.getDeliveryStateResponse(senderAddress, requestId);
+				
+				if (result.error==true) {
+					obj = {
+						error:result.error,
+						message:result.message
+					};
+				}else{
+					obj = {
+						error:false,
+						data: result.data
+					}
+				}
+				print(obj);
+	}
+}());
+%>

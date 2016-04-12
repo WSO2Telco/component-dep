@@ -1,0 +1,89 @@
+<%
+include("/jagg/jagg.jag");
+var saveSendSMSToApplication = function (senderAddress, destinationAddress, message, username) {
+
+	var log = new Log();
+	try {
+		var xhr = new XMLHttpRequest();
+		var endpoint =  jagg.getSandboxurl()+"SendSMSToApplicationService/smsmessaging/1/outbound/requests";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		xhr.setRequestHeader("sandbox", username);
+		var payload = "senderAddress=" + encodeURIComponent(senderAddress) + "&destinationAddress=" + encodeURIComponent(destinationAddress) +"&message=" + message;
+		xhr.send(payload);
+		var result = xhr.status;
+
+		var reqerr=true
+		if (xhr.status =='200') {
+			var reqerr =false;
+		}
+
+		log.info('response :'+result);
+			
+		return {
+			error:false,
+			message:"OK",
+			data:result,
+			reqerr:reqerr
+		};
+	} catch (e) {
+		log.error(e.message);
+		return {
+			error:true,
+			message:e.message.split("Exception:")[2]
+		};
+	}
+};
+
+var loadSenderAddresses = function(username){
+
+	var log = new Log();
+	try {
+		var xhr = new XMLHttpRequest();
+		var endpoint =  jagg.getSandboxurl()+"ManageNumberServlet/GetNumberList";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		//xhr.setRequestHeader("User-Id", "1");
+		var payload = "userid="+username;
+		xhr.send(payload);
+		var result = xhr.responseText.toString();
+		log.info("Sender Addresses: "+result);
+		return {
+			error:false,
+			data:result
+		};
+	} catch (e) {
+		log.error(e.message);
+		return {
+			error:true,
+			message:e.message.split("Exception:")[2]
+		};
+	}
+};
+
+var loadDestinationAddresses = function(username){
+
+	var log = new Log();
+	try {
+		var xhr = new XMLHttpRequest();
+		var endpoint =  jagg.getSandboxurl()+"SenderAddressServlet/GetShortCodesArray";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		//xhr.setRequestHeader("User-Id", );
+		var payload = "userid="+username;
+		xhr.send(payload);
+		var result = xhr.responseText.toString();
+		log.info("Destination Addresses: "+result);
+		return {
+			error:false,
+			data:result
+		};
+	} catch (e) {
+		log.error(e.message);
+		return {
+			error:true,
+			message:e.message.split("Exception:")[2]
+		};
+	}
+};
+%>

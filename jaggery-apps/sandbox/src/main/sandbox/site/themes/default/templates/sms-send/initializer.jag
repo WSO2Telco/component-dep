@@ -1,0 +1,7 @@
+<%
+	jagg.initializer("sms-send", {
+		preInitialize:function () {
+			jagg.addFooterJS("application", "jagg", "templates/sms-send/js/sms-send-request.js");
+		}
+	});
+%>

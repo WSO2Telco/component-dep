@@ -1,0 +1,116 @@
+<%
+var isAdmin = jagg.getUser().isAdmin;
+var isOperator = jagg.getUser().operator;
+%>
+
+<%
+function getAllSubscribers(){
+	var log = new Log();
+	var billing = jagg.module("manager").getCustomBilling();
+	var subscribers = [];
+	try {
+		subscribers = billing.getAllSubscribers();
+		return {error:false, data : subscribers};
+
+	} catch (e) {
+		log.error(e.message);
+		return { error:true,message:e.message};
+	}
+}
+
+function getAllAPIs(){
+	var log = new Log();
+	//log.info("*************************Get All APIs from Host Object***************************");
+
+	var store = jagg.module("manager").getAPIStoreObj();
+	var apis = [];
+	try {
+		apis = store.getAllPublishedAPIs("carbon.super");
+		log.info("API List: " + stringify(apis));
+		return {error:false, data : apis};
+
+	} catch (e) {
+		log.error(e.message);
+		return { error:true,message:e.message};
+	}
+}
+
+function getAppsBySubscriber(selectedSubscriber){
+	var log = new Log();
+	log.info("Selected Subscriber: " + stringify(selectedSubscriber));
+	//log.info("*************************Get All Apps from Host Object***************************");
+
+	var store = jagg.module("manager").getAPIStoreObj();
+	var apps = [];
+	try {
+		apps = store.getApplications(selectedSubscriber);
+		log.info("Application List: " + stringify(apps));
+		return {error:false, data : apps};
+
+	} catch (e) {
+		log.error(e.message);
+		return { error:true,message:e.message};
+	}
+}
+
+function getAPIsBySubscriber(subscriberName){
+	var log = new Log();
+	log.info("Subscriber Name: " + stringify(subscriberName));
+
+	var billing = jagg.module("manager").getCustomBilling();
+	var apis = [];
+	try {
+		apis = billing.getAPIsBySubscriber(subscriberName);
+		log.info("API List: " + stringify(apis));
+		return {error:false, data : apis};
+
+	} catch (e) {
+		log.error(e.message);
+		return { error:true,message:e.message};
+	}
+}
+
+function getApprovalHistoryApp(applicationid,operator){
+	var log = new Log();
+	
+	var billing = jagg.module("manager").getCustomBilling();
+	var apis = [];
+	try {
+		log.info("operator: " + operator);
+		apis = billing.getApprovalHistoryApp(applicationid,operator);
+		log.info("App history: " + stringify(apis));
+		return {error:false, data : apis};
+
+	} catch (e) {
+		log.error(e.message);
+		return { error:true,message:e.message};
+	}
+}
+
+function getApprovalHistory(fromDate, toDate, subscriber, application, operator, api){
+	var log = new Log();
+	log.info("*****************************************");
+	
+	/*Identify the Subscriber*/
+	if (isAdmin != true && isOperator == null) {
+		subscriber = jagg.getUser().username;
+	}
+	
+	log.info("Subscriber: " + stringify(subscriber));
+	log.info("Application: " + stringify(application));
+	
+
+	var billing = jagg.module("manager").getCustomBilling();
+	var api_requests_for_pieChart = [];
+	var api_requests_for_histogram = [];
+	try {
+		applist = billing.getApprovalHistory(fromDate, toDate, subscriber, application, operator, api);
+		log.info("API history: " + stringify(api_requests_for_pieChart));
+			
+		return {error:false, applist : applist};
+	} catch (e) {
+		log.error(e.message);
+		return { error:true,message:e.message};
+	}
+}
+%>

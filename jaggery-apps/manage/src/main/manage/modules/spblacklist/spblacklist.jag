@@ -1,0 +1,165 @@
+<%
+
+var log = new Log();
+
+var store = jagg.module("manager").getAPIStoreObj();
+var serverUrl =  store.getAuthServerURL()+"UserIdentityManagementAdminService";
+log.info("serverUrl : " + stringify(serverUrl));
+var ws = require("ws");
+var webService = new ws.WSRequest();
+
+var isAdmin;
+
+function getSPforBlacklist(sp){
+	var log = new Log();
+	var billing = jagg.module("manager").getCustomBilling();
+	var apps = [];
+	try {
+		sp="testParam";
+		apps = billing.getSPforBlacklist(sp,jagg.getUser().isAdmin,jagg.getUser().operator);
+		return {error:false, data : apps};
+
+	} catch (e) {
+		log.error(e.message);
+		return { error:true,message:e.message};
+	}
+}
+
+function addNewSPToBlacklist(sp){
+	var log = new Log();
+	var token;var key;var scret;
+	var appObj = jagg.module("manager").getCustomBilling();
+	try {
+		sp=sp;
+		appObj = appObj.getAppforBlacklist(sp);
+		revokeAppToken(appObj.token,appObj.secret,appObj.key);
+		//return {error:false, data : appObj};
+
+	} catch (e) {
+		log.error(e.message);
+		return { error:true,message:e.message};
+	}
+	
+	log.info("Selected User: " + stringify(appObj.userName));
+	var userForLock=appObj.userName;
+	var lockUserAccount = "<ser:lockUserAccount xmlns:ser=\"http://services.mgt.identity.carbon.wso2.org\">\n" +
+	                         "<ser:userName>"+userForLock+"</ser:userName>\n" +
+	                      "</ser:lockUserAccount>";
+	isAdmin=true;
+	log.info("lockUserAccount WEB SERVICE ############################ 01 : "+lockUserAccount);
+	log.info("lockUserAccount WEB SERVICE ############################ 02 : "+serverUrl);
+	
+	
+    callWSInOnly(webService, serverUrl, "urn:lockUserAccount", lockUserAccount);
+    return {error:false, data : appObj};
+ 
+
+}
+
+function revokeAppToken(token,secret,key){
+	var log = new Log();
+	log.info("token WEB SERVICE ############################ 03 : "+token);
+	log.info("secret WEB SERVICE ############################ 04 : "+secret);
+	log.info("key WEB SERVICE ############################ 05 : "+key);
+	
+	var result, message,
+	log = new Log();
+	try {
+		var xhr = new XMLHttpRequest();
+		var endpoint = "http://localhost:8280/revoke";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		var keysecret=key+":"+secret;
+		xhr.setRequestHeader("Authorization","Basic "+base64_encode(keysecret));
+		var payload = "token="+token;
+		
+		log.info("payload WEB SERVICE ############################ 06 : "+payload);
+		
+		xhr.send(payload);
+		result = xhr.status.toString();
+		
+		log.info("result WEB SERVICE ############################ 07 : "+result);
+		
+		return {
+			error:false,
+			message:"OK",
+			data:result
+		};
+	} catch (e) {
+		log.error(e.message);
+		return {
+			error:true,
+			message:e.message.split("Exception:")[2]
+		};
+	}
+};
+
+function callWSInOnly(webService, serverUrl, action, payload){
+	var log = new Log();
+	var options = new Array();
+	options.useSOAP = 1.1;
+	options.action = action;
+	options.mep = 'in-only';
+	try {
+		call(webService, serverUrl, options, payload);
+	}
+	catch (e) {
+		log.error(e);
+		throw e;
+	}
+}
+
+var amConfig;
+
+function getAdminData() {
+	var configPath = "file://" + Packages.java.lang.System.getProperty("carbon.config.dir.path");
+	var amConfigPath = configPath + "/api-manager.xml";
+	var file = new File(amConfigPath);
+	file.open("r");
+	amConfig = new XML(file.readAll());
+	file.close();
+	return amConfig;
+}
+
+
+function call(webService, serverUrl, options, payload){
+	var amConfig = getAdminData();
+	var adminUserName = String(amConfig.AuthManager.Username.text());
+	var adminPwd = String(amConfig.AuthManager.Password.text());
+	webService.open(options, serverUrl, false, adminUserName, adminPwd);
+	webService.send(payload);
+}
+
+function base64_encode(data) {
+ var b64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+  var o1, o2, o3, h1, h2, h3, h4, bits, i = 0,
+    ac = 0,
+    enc = '',
+    tmp_arr = [];
+
+  if (!data) {
+    return data;
+  }
+
+  do { // pack three octets into four hexets
+    o1 = data.charCodeAt(i++);
+    o2 = data.charCodeAt(i++);
+    o3 = data.charCodeAt(i++);
+
+    bits = o1 << 16 | o2 << 8 | o3;
+
+    h1 = bits >> 18 & 0x3f;
+    h2 = bits >> 12 & 0x3f;
+    h3 = bits >> 6 & 0x3f;
+    h4 = bits & 0x3f;
+
+    // use hexets to index into b64, and append result to encoded string
+    tmp_arr[ac++] = b64.charAt(h1) + b64.charAt(h2) + b64.charAt(h3) + b64.charAt(h4);
+  } while (i < data.length);
+ enc = tmp_arr.join('');
+ var r = data.length % 3;
+ var ret = (r ? enc.slice(0, r - 3) : enc) + '==='.slice(r || 3);
+ return ret;
+}
+
+%>

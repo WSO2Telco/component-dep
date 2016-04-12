@@ -1,0 +1,32 @@
+<%
+jagg.block("billing", {
+    initializer:function (data) {
+
+    } ,
+ getInputs:function () {
+        return {
+            "usage":null
+        }
+    }
+      ,
+ getOutputs:function (inputs) {
+       
+ 	var data, user = inputs.user;
+	var isOperator = jagg.getUser().operator;
+ 	if (user.isAdmin){
+ 		var dialogbillingModule = jagg.module("dialogbilling");
+ 		var result = dialogbillingModule.getAllSubscribers();
+ 		data = result.data;
+ 	} 
+ 	else if(isOperator != null){
+		var dialogbillingModule = jagg.module("dialogbilling");
+		var result = dialogbillingModule.getSubscribersByOperator(isOperator);
+		data = result.data;
+	} 
+ 	return {
+ 		"subscribers" : data
+ 	};
+ }
+
+});
+%>

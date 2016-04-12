@@ -1,0 +1,11 @@
+<%
+jagg.initializer("billing-nb", {
+
+    preInitialize:function () {
+        jagg.addHeaderJS("billing-nb", "dojo", "templates/utils/dojo-release-1.8.3/dojo/dojo.js");
+        jagg.addHeaderJS("billing-nb", "billing-nb", "templates/billing-nb/js/billing.js");
+        jagg.addHeaderJS("billing-nb", "loadYears", "templates/utils/commons/loadYears.js");
+    }
+
+});
+%>

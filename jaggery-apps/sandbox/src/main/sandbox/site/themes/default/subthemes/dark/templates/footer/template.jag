@@ -1,0 +1,51 @@
+<% jagg.template("footer", function(inputs, outputs, jagg) { %>
+
+<link rel="stylesheet" type="text/css" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("css/styles-axiata.css"))%>" media="all"/>
+
+ <div id="footer" class="container-fluid footer-main">
+   		<div class="row-fluid">
+               <div class="span12">
+			<div class="span3 footer-left-most">
+                              <ul class="help-links footer-left-most">
+                                <li><h5><a href="http://wso2telco.com" target="_blank">About Us</a></h5></li>
+                               <!-- <li><h5><a href="<%=jagg.getAbsoluteUrl("/../store")%>" target="_blank">Our APIs</a></h5></li>-->
+                                <!--<h5><li><a href="<%=jagg.getAbsoluteUrl("/site/pages/branding.jag?pageId=tutorials")%>" target="_blank">Tutorials</a></li></h5>-->
+                              </ul>
+			</div>
+			<div class="span9 help-and-links">
+			<div class="span3">
+                              <ul class="help-links">
+	    			<h5><a href="http://wso2.com/privacy-policy" target="_blank">Privacy Policy</a></h5></li>
+                                <li><h5><a href="http://wso2.com/terms-of-use" target="_blank">Terms and Conditions</a></h5></li>
+                                                               
+                              </ul>
+			</div>
+			<div class="span2">
+                              <ul class="help-links">
+                                <li><h5>Social Networking</h5></li>
+                                <li>
+                                <h5>
+                                <table class="share-pane">
+                                   <tr>
+                                               <td><a class="facebook" target="_blank" rel="external nofollow" href="https://www.facebook.com/wso2telco" title="Share with your friends on Facebook"></a></td>
+                                               <td><a class="twitter" target="_blank" rel="external nofollow" href="http://twitter.com/wso2telco" title="Twitter"></a></td>
+                                               <td><a class="linkedin" target="_blank" rel="external nofollow" href="https://www.linkedin.com/groups/WSO2-Telco-8263390?gid=8263390&mostPopular=&trk=tyah&trkInfo=idx%3A1-1-1%2CtarId%3A1425100882984%2Ctas%3Awso2.telco" title="Share this post on linkedin" title="Share this post on linkedin"></a></td>
+                                   </tr>  
+	                        </table>
+                                </h5>
+                                </li>
+                               </ul>
+			</div>
+			<div class="span2">
+                             <ul class="help-links">
+                                    <li><h5><a href="http://wso2telco.com" target="_blank">Contact Us</a></h5></li>
+                                    <li><h5><a href="http://wso2.com/support" target="_blank">Support</a></h5></li>
+                             </ul>
+			</div>
+                        <div  style="clear:both"></div>   <hr />  <a class="powered-by-logo pull-right" href="http://wso2telco.com" target="_blank"></a>   
+			</div>
+                   </div>
+               </div>
+   </div>
+
+<% }); %>

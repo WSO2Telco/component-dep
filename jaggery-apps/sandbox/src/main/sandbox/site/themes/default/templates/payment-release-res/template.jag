@@ -1,0 +1,109 @@
+<% jagg.template("payment-release-res", function(inputs, outputs, jagg) {
+	%>
+<div id="listing">
+	<div class="title-section">
+		<h2>Release the Reservation</h2>
+	</div>
+	<div class="content-section shadow-up">
+		<div class="content-data"></div>
+	</div>
+
+	<div class="content-section shadow-up">
+		<div class="content-data">
+
+			<form novalidate="novalidate" id="reqAddForm">
+
+				<table style="width: 100%;">
+					<tbody>
+						<tr>
+							<td valign="top">
+								<div class="ParameterGroupHeading">
+									<strong>Mandatory Parameters</strong>
+								</div>
+								
+								<div class="ParameterRow">
+									<div class="ParameterLabel">endUserId</div>
+									<div class="ParameterValue">
+										<input type="text" value="tel:+94773852147" id="endUsertp"
+											name="endUsertp">
+									</div>
+								</div>
+								
+								<div class="ParameterRow">
+									<div class="ParameterLabel">transactionId</div>
+									<div class="ParameterValue">
+										<input type="text" value="" id="transactionId"
+											name="transactionId">
+									</div>
+								</div>
+								
+								<div class="ParameterRow">
+									<div class="ParameterLabel">transactionOperationStatus</div>
+									<!--div class="ParameterValue"><input type="text" value="" id="transactionOperationStatus" name="transactionOperationStatus"></div-->
+									<div class="controls">
+										<select class="valid" id="transactionOperationStatus"
+											name="transactionOperationStatus">
+										<!--	<option value="Reserved">Reserved</option>
+											<option value="Charged">Charged</option>
+											<option value="Processing">Processing</option>
+											<option value="Refunded">Refunded</option>
+											<option value="Denied">Denied</option>
+											<option value="Refused">Refused</option> -->
+											<option value="Released" selected>Released</option>
+										</select>
+									</div>
+								</div>
+							</td>
+							<td valign="top">
+								<div class="ParameterGroupHeading">
+									<strong>Optional Parameters</strong>
+								</div>
+								
+								<div class="ParameterRow">
+									<div class="ParameterLabel">referenceSequence</div>
+									<div class="ParameterValue">
+										<input type="text" value="4" id="referenceSequence" name="referenceSequence">
+									</div>
+									<input id="payment-add-button" class="btn btn-primary"
+										value="Send Request" type="button">
+								</div>
+								
+							</td>
+
+							<td valign="top">
+								<div class="ParameterRow">
+									<div class="ParameterLabel">
+										<strong>Request:</strong>
+									</div>
+									<div class="ParameterValue">
+										<textarea style="height: 400px; background-color: #e3e3e3;"
+											id="request" name="request"></textarea>
+									</div>
+								</div>
+							</td>
+							<td valign="top">
+								<div class="ParameterRow">
+									<div class="ParameterLabel">
+										<strong>Response:</strong>
+									</div>
+									<div class="ParameterValue">
+										<textarea style="height: 400px; background-color: #E7F0F7;"
+											id="response" name="response"></textarea>
+									</div>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</form>
+			<div id="payment_table_content"></div>
+			<div class="pagination" style="text-align: right;"></div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+$("#mainnavi").find('li.subnavi').removeClass("active");
+$("#mainnavi").find('li.subnavi:nth-child(3)').addClass("active");
+</script>
+<% }); %>

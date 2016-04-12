@@ -1,0 +1,261 @@
+<%
+include("/jagg/jagg.jag");
+var urlPath = jagg.getSandboxurl()+"SenderAddressServlet";
+var user = jagg.getUser();
+var GetTableData = function(userid){
+	var result, message, log = new Log();
+
+	try{
+		var xhr = new XMLHttpRequest();
+		var endpoint =  urlPath+"/GetShortCodesData";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		var payload = "userid="+user.username;
+		xhr.send(payload);
+		log.info(payload);
+		result = xhr.responseText.toString();
+		//log.info(result);
+
+		return {
+			error:false,
+			message:"OK",
+			data:result
+		};
+
+	} catch (e) {
+		log.error(e.message);
+		return {
+			error:true,
+			message:e.message.split("Exception:")[2]
+		};
+	}
+};
+
+var SaveShortCode = function(userid, shortcode, description){
+	var log = new Log();
+		try{
+			var xhr = new XMLHttpRequest();
+			var endpoint =  urlPath+"/CreateSenderAddress";
+			xhr.open("POST", endpoint);
+			xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			var payload = "userid="+user.username+"&shortcode="+encodeURIComponent(shortcode)+"&description="+encodeURIComponent(description);
+			xhr.send(payload);
+	
+			result = xhr.responseText.toString();
+			log.info(result);
+				
+			return {
+				error:false,
+				message:"OK",
+				data:result
+			};
+			 
+		} catch (e) {
+			log.error(e.message);
+			return {
+				error:true,
+				message:e.message.split("Exception:")[2]
+			};
+		}
+};
+
+var DeleteShortCode = function(id){
+	var log = new Log();
+		try{
+			var xhr = new XMLHttpRequest();
+			var endpoint =  urlPath+"/DeleteShortCode";
+			xhr.open("POST", endpoint);
+			xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			var payload = "id="+id;
+			xhr.send(payload);
+	
+			result = xhr.responseText.toString();
+			log.info(result);
+				
+			return {
+				error:false,
+				message:"OK",
+				data:result
+			};
+			 
+		} catch (e) {
+			log.error(e.message);
+			return {
+				error:true,
+				message:e.message.split("Exception:")[2]
+			};
+		}
+};
+
+var EditShortCode = function(id, shortcode, description){
+	var log = new Log();
+		try{
+			var xhr = new XMLHttpRequest();
+			var endpoint =  urlPath+"/EditShortCode";
+			xhr.open("POST", endpoint);
+			xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			var payload = "id="+id+"&shortcode="+encodeURIComponent(shortcode)+"&description="+encodeURIComponent(description);
+			xhr.send(payload);
+	
+			result = xhr.responseText.toString();
+			log.info(result);
+				
+			return {
+				error:false,
+				message:"OK",
+				data:result
+			};
+			 
+		} catch (e) {
+			log.error(e.message);
+			return {
+				error:true,
+				message:e.message.split("Exception:")[2]
+			};
+		}
+};
+
+var SearchCode = function(id){
+	var log = new Log();
+		try{
+			var xhr = new XMLHttpRequest();
+			var endpoint =  urlPath+"/SearchShortCode";
+			xhr.open("POST", endpoint);
+			xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			var payload = "id="+id;
+			xhr.send(payload);
+	
+			result = xhr.responseText.toString();
+			log.info(result);
+				
+			return {
+				error:false,
+				message:"OK",
+				data:result
+			};
+			 
+		} catch (e) {
+			log.error(e.message);
+			return {
+				error:true,
+				message:e.message.split("Exception:")[2]
+			};
+		}
+};
+
+var FilterNumberTable = function(id, code, desc){
+	var log = new Log();
+	log.info("FilterNumberTable module");
+	try{
+		var xhr = new XMLHttpRequest();
+		var endpoint =  urlPath+"/FileterShortCodeData";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		var payload = "userid="+user.username+"&shortcode="+encodeURIComponent(code)+"&description="+encodeURIComponent(desc);
+		xhr.send(payload);
+			
+		result = xhr.responseText.toString();
+			
+		return {
+			error:false,
+			message:"OK",
+			data:result
+		};
+			
+	} catch (e) {
+		log.error(e.message);
+		return {
+			error:true,
+			message:e.message.split("Exception:")[2]
+		};
+	}
+};
+
+var getCodesList = function(id){
+	var log = new Log();
+	log.info("getCodesList module");
+	try{
+		var xhr = new XMLHttpRequest();
+		var endpoint =  urlPath+"/GetShortCodesArray";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		var payload = "userid="+user.username;
+		xhr.send(payload);
+			
+		result = parse(xhr.responseText.toString());
+		log.info("getCodesList"+result);
+			
+		return {
+			error:false,
+			message:"OK",
+			data:result
+		};
+			
+	} catch (e) {
+		log.error(e.message);
+		return {
+			error:true,
+			message:e.message.split("Exception:")[2]
+		};
+	}
+};
+
+var getDescriptionList = function(id){
+	var log = new Log();
+	log.info("getCodesList module");
+	try{
+		var xhr = new XMLHttpRequest();
+		var endpoint =  urlPath+"/GetDescriptionsArray";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		var payload = "userid="+user.username;
+		xhr.send(payload);
+			
+		result = parse(xhr.responseText.toString());
+		log.info("GetDescriptionsArray"+result);
+			
+		return {
+			error:false,
+			message:"OK",
+			data:result
+		};
+			
+	} catch (e) {
+		log.error(e.message);
+		return {
+			error:true,
+			message:e.message.split("Exception:")[2]
+		};
+	}
+};
+
+
+var CheckShortCodeExist = function(shortcode){
+	var log = new Log();
+		try{
+			var xhr = new XMLHttpRequest();
+			var endpoint =  urlPath+"/CheckShortCodeExistance";
+			xhr.open("POST", endpoint);
+			xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			var payload = "userid="+user.username+"&searchcode="+encodeURIComponent(shortcode);
+			xhr.send(payload);
+	
+			result = xhr.responseText.toString();
+			log.info(result);
+				
+			return {
+				error:false,
+				message:"OK",
+				data:result
+			};
+			 
+		} catch (e) {
+			log.error(e.message);
+			return {
+				error:true,
+				message:e.message.split("Exception:")[2]
+			};
+		}
+};
+
+%>

@@ -1,0 +1,56 @@
+<% jagg.template("menu/left-api-payment", function(inputs, outputs, jagg) { %>
+<%  var site = require("/site/conf/site.json");
+var ssoEnabled = site.ssoConfiguration.enabled;
+
+var reqUrl = request.getRequestURI();
+var baseUrl=jagg.getAbsoluteUrl("/site/pages/api-payment.jag");
+//var listUrl=jagg.getAbsoluteUrl("/site/pages/billing-metering.jag");
+//var listMappedUrl=jagg.getMappedUrl("/site/pages/billing-metering.jag");
+//var subsUrl=jagg.getAbsoluteUrl("/site/pages/billing-metering.jag");
+//var subsMappedUrl=jagg.getMappedUrl("/site/pages/billing-metering.jag");
+
+var isAdmin = jagg.getUser().isAdmin;
+var isOperator = jagg.getUser().operator;
+// log.info(isAdmin);
+// log.info(isOperator);
+%>
+<div id="listing">
+<div class="sidebar-nav left-menu-back01">
+	<ul class="nav nav-list">
+		<li class="nav-header">Payment Services</li>
+
+		<li
+		<% if(request.getParameter("task")==null || request.getParameter("task")=="charge"){%>
+			class="active" <% } %>><a
+			href="<%=baseUrl%>?task=charge"
+			onclick="jagg.sessionAwareJS({redirect:'<%=baseUrl%>?task=sms-send',e:event,ssoEnabled:<%=ssoEnabled%>})">Charge a User
+		</a></li>
+		<li <%if(request.getParameter("task")=="reserve-amount"){%>
+			class="active" <% } %>><a
+			href="<%=baseUrl%>?task=reserve-amount"
+			onclick="jagg.sessionAwareJS({redirect:'<%=baseUrl%>?task=delivery-status',e:event,ssoEnabled:<%=ssoEnabled%>})">Reserve Amount
+		</a></li>
+		<li <%if(request.getParameter("task")=="reserve-aditional-amount"){%>
+			class="active" <% } %>><a
+			href="<%=baseUrl%>?task=reserve-aditional-amount"
+			onclick="jagg.sessionAwareJS({redirect:'<%=baseUrl%>?task=delivery-sub',e:event,ssoEnabled:<%=ssoEnabled%>})">Reserve Additional Amount
+		</a></li>
+		<li <%if(request.getParameter("task")=="charge-reservation"){%>
+			class="active" <% } %>><a
+			href="<%=baseUrl%>?task=charge-reservation"
+			onclick="jagg.sessionAwareJS({redirect:'<%=baseUrl%>?task=sms-retrieve',e:event,ssoEnabled:<%=ssoEnabled%>})">Charge Against Reservation
+		</a></li>
+		<li <%if(request.getParameter("task")=="release-reservation"){%>
+			class="active" <% } %>><a
+			href="<%=baseUrl%>?task=release-reservation"
+			onclick="jagg.sessionAwareJS({redirect:'<%=baseUrl%>?task=sms-sub-notifications',e:event,ssoEnabled:<%=ssoEnabled%>})">Release Reservation
+		</a></li>
+		<li <%if(request.getParameter("task")=="refund"){%>
+			class="active" <% } %>><a
+			href="<%=baseUrl%>?task=refund"
+			onclick="jagg.sessionAwareJS({redirect:'<%=baseUrl%>?task=sms-sub-notifications',e:event,ssoEnabled:<%=ssoEnabled%>})">Refund the User
+		</a></li>
+	</ul>
+</div>
+</div>
+<%});%>

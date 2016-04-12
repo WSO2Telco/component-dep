@@ -1,0 +1,161 @@
+<%
+include("/jagg/jagg.jag");
+
+var getDeliverySubscriptionResponse = function (senderAddress, requestJsonString) {
+	var user = jagg.getUser();
+	var log = new Log();
+	try {
+		var xhr = new XMLHttpRequest();
+		var endpoint =  jagg.getSandboxurl()+"SMSDeliveryService/smsmessaging/V1/outbound/"+senderAddress+"/subscriptions";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-Type", "application/json");
+		xhr.setRequestHeader("sandbox", user.username);
+		var payload = requestJsonString;
+		xhr.send(payload);
+		var result = xhr.responseText.toString();
+
+		var reqerr=true
+		if (xhr.status =='201') {
+			var reqerr =false;
+		}
+
+		log.info('response :'+result);
+			
+		return {
+			error:false,
+			message:"OK",
+			data:result,
+			reqerr:reqerr
+		};
+	} catch (e) {
+		log.error(e.message);
+		return {
+			error:true,
+			message:e.message.split("Exception:")[2]
+		};
+	}
+};
+
+var getDeliveryStateResponse = function (senderAddress, requestId) {
+	var user = jagg.getUser();
+	var log = new Log();
+	var sender_address = "tel:+"+senderAddress;
+	try {
+		var xhr = new XMLHttpRequest();
+		var endpoint =  jagg.getSandboxurl()+"QuerySMSService/smsmessaging/V1/outbound/"+encodeURIComponent(sender_address)+"/requests/"+requestId+"/deliveryInfos";
+		
+		xhr.open("GET", endpoint);
+		xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		xhr.setRequestHeader("sandbox", user.username);
+		xhr.send();
+		
+		var result = xhr.responseText.toString();
+		var reqerr=true
+		if (xhr.status =='200') {
+			var reqerr =false;
+		}
+
+		log.info('response :'+result);
+			
+		return {
+			error:false,
+			message:"OK",
+			data:result,
+			reqerr:reqerr
+		};
+	} catch (Exception) {
+		log.error(Exception.message);
+		return {
+			error:true,
+			message:Exception.message.split("Exception:")[2]
+		};
+	}
+};
+
+
+var loadSenderAddresses = function(username){
+
+	var log = new Log();
+	try {
+		var xhr = new XMLHttpRequest();
+		var endpoint =  jagg.getSandboxurl()+"SenderAddressServlet/GetShortCodesArray";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		//xhr.setRequestHeader("User-Id", "1");
+		var payload = "userid="+username;
+		xhr.send(payload);
+		var result = xhr.responseText.toString();
+		log.info("Sender Addresses: "+result);
+		return {
+			error:false,
+			data:result
+		};
+	} catch (e) {
+		log.error(e.message);
+		return {
+			error:true,
+			message:e.message.split("Exception:")[2]
+		};
+	}
+};
+
+
+var deliverySubData = function(){
+	var result, message, log = new Log();
+	var urlPath = jagg.getSandboxurl()+"DeliverySubscriptionServlet";
+	var user = jagg.getUser();
+		try{
+			var xhr = new XMLHttpRequest();
+			var endpoint =  urlPath+"/GetActiveSubscriptions";
+			xhr.open("POST", endpoint);
+			xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			var payload = "userid="+user.username;
+			xhr.send(payload);
+			log.info(payload);
+			result = xhr.responseText.toString();
+			log.info(result);
+	
+			return {
+				error:false,
+				message:"OK",
+				data:result
+			};
+	
+		} catch (e) {
+			log.error(e.message);
+			return {
+				error:true,
+				message:e.message.split("Exception:")[2]
+			};
+		}
+};
+
+var removeSubscription = function(rowId){
+	var urlPath = jagg.getSandboxurl()+"DeliverySubscriptionServlet";
+	var log = new Log();
+	try{
+				var xhr = new XMLHttpRequest();
+				var endpoint =  urlPath+"/RemoveDeliverySub";
+				xhr.open("POST", endpoint);
+				xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+				var payload = "rowid="+rowId;
+				xhr.send(payload);
+				log.info(payload);
+				result = xhr.responseText.toString();
+				log.info(result);
+		
+				return {
+					error:false,
+					message:"OK",
+					data:result
+				};
+		
+			} catch (e) {
+				log.error(e.message);
+				return {
+					error:true,
+					message:e.message.split("Exception:")[2]
+				};
+			}
+};
+%>

@@ -1,0 +1,64 @@
+<%
+include("/jagg/jagg.jag");
+include("header.jag");
+var site = require("/site/conf/site.json");
+
+var i18n = require("i18n");
+var localeResourcesBasePath="/site/conf/locales/jaggery/";
+i18n.init(request,localeResourcesBasePath);
+
+var middlePage="ussd-send";
+
+var pageName=request.getParameter("task");
+if(pageName=="ussd-send"){
+middlePage="ussd-send";
+}else if(pageName=="ussd-sub"){
+middlePage="ussd-sub";
+}
+
+
+(function () {
+    var user = jagg.getUser();
+    if (!user) {
+        response.sendRedirect(getRedirectPathForNonAuthenticatedUser());
+        return;
+    }
+
+    jagg.render({
+        "name":"page/base",
+        "inputs":{
+            "title":"Home",
+            "header":{
+                "name":"menu/primary",
+                "inputs":{
+   					"pagePath":"/site/pages/api-ussd.jag"
+    			}
+            },
+            "body":[
+                {
+                    "name":"layout/base",
+                    "inputs":{
+                        "middle":[{
+                            "name":middlePage,
+                			"inputs":{
+								"user":user
+                	           }
+                        	}
+                        ],
+                        "left":[{
+                        	"name":"menu/left-api-ussd"
+                     		}
+                        ]
+                    }
+                }
+            ],"footer":[
+                {
+                    "name":"footer"
+                }
+            ]
+        }
+    });
+}());
+
+
+%>

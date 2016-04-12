@@ -1,0 +1,68 @@
+<%
+include("/jagg/jagg.jag");
+
+(function () {
+    var mod, obj, result;
+
+    var action = request.getParameter("action");
+    var user = jagg.getUser();
+
+    var log = new Log();
+    if(action == "getAPITrafic"){
+        var vendor = request.getParameter("vendor");
+        var timeRange = request.getParameter("time");
+
+        var data = {};
+
+        var date = new Date();
+
+        //default last month
+        date.setMonth(date.getMonth()-1);
+        var period = date.getFullYear() + "-" + (date.getMonth() + 1);
+
+        var username = user.username;
+
+        var selectedSubscriber = username;
+        if(user.isAdmin){
+            selectedSubscriber = "__ALL__";
+        }
+
+        var app = "0";
+
+        var financeReportModule = jagg.module("finance-report");
+        result = financeReportModule.getRevenueChartData(selectedSubscriber, period, vendor.toUpperCase(), app, username);
+       
+		if (log.isDebugEnabled()) {
+			log.debug("::: Dashboard Revenue result: >> "+ stringify(result));
+		}
+		 
+
+        var pie = [];
+        for(var i =0 ; i < result.usage.length; i ++) {
+            var apiData =  result.usage[i];
+            var apiName = Object.keys(apiData)[0];
+            var val = apiData[apiName];
+
+            var pieValue =  {
+                                y: val,
+                                text: apiName + " <br>" + val,
+                                tooltip:  val
+                              }
+            pie.push(pieValue);
+        }
+        data.pie = pie;     
+
+		if (log.isDebugEnabled()) {
+			log.debug("Revenue breakdown chart data >> "+ stringify(data));
+		}
+      
+        print(data);
+    }
+    else{
+        print({
+            error:true,
+            message:msg.error.invalidAction(action)
+        });
+    }
+}());
+%>

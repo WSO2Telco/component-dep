@@ -1,0 +1,94 @@
+<%
+include("/jagg/jagg.jag");
+include("header.jag");
+var site = require("/site/conf/site.json");
+
+var i18n = require("i18n");
+var localeResourcesBasePath="/site/conf/locales/jaggery/";
+i18n.init(request,localeResourcesBasePath);
+var log = new Log();
+    var user = jagg.getUser();
+	if (user == null) {
+	        response.sendRedirect(getRedirectPathForNonAuthenticatedUser());
+	        //return;
+	    } else {
+	
+var middlePage="total-traffic";
+
+var pageName=request.getParameter("task");
+if(pageName=="finance"){
+	middlePage="finance";
+}else if(pageName=="finance-nb"){
+	middlePage="finance-nb";
+}else if(pageName=="billing-nb"){
+	middlePage="billing-nb";
+}else if(pageName=="billing"){
+	middlePage="billing";
+}else if (pageName=="total-traffic"){
+	middlePage="total-traffic";
+}else if (pageName=="operator-wise-traffic"){
+	middlePage="operator-wise-traffic";
+}else if (pageName=="api-wise-traffic"){
+	middlePage="api-wise-traffic";
+}else if (pageName=="customer-care"){
+	middlePage="customer-care";
+}else if (pageName=="performance-error-rates"){
+	middlePage="performance-error-rates";
+}else if (pageName=="response-times"){
+	middlePage="response-times";
+}else if (pageName=="transaction-log-nb"){
+	middlePage="transaction-log-nb";
+}
+var isCustomerCare = jagg.getUser().isCustomerCare;
+if(isCustomerCare != null){
+	var middlePage="customer-care";
+}
+
+var usage, user = jagg.getUser();
+
+(function () {
+    if (!user) {
+        response.sendRedirect(getRedirectPathForNonAuthenticatedUser());
+        return;
+    }
+
+    jagg.render({
+        "name":"page/base",
+        "inputs":{
+            "title":"Billing & Metering",
+            "header":{
+                "name":"menu/primary",
+                "inputs":{
+   			"pagePath":"/site/pages/billing-metering.jag"
+    		}
+            },
+            "body":[	
+                {
+                    "name":"layout/base",
+                    "inputs":{
+                        "middle":[{
+                            "name":middlePage,
+                			"inputs":{
+								"user":user,
+								"usage":usage
+                	           }
+                        	}
+                        ],
+                        "left":[{
+                        	"name":"menu/left-billing-metering"
+                     		}
+                        ]
+                    }
+                }
+            ],
+            "footer":[
+                {
+                    "name":"footer"
+                }
+            ]
+        }
+    });
+}());
+	    }
+
+%>

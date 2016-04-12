@@ -1,0 +1,39 @@
+<%
+jagg.module("total-traffic", {
+	getAllSubscribers:function () {
+		return jagg.require(jagg.getModulesDir() + "total-traffic/total-traffic.jag").getAllSubscribers.apply(this, arguments);
+	},
+	getAllOperators:function () {
+		return jagg.require(jagg.getModulesDir() + "total-traffic/total-traffic.jag").getAllOperators.apply(this, arguments);
+	},
+	getAppsBySubscriber:function () {
+		return jagg.require(jagg.getModulesDir() + "total-traffic/total-traffic.jag").getAppsBySubscriber.apply(this, arguments);
+	},
+	getAPITraffic:function () {
+		return jagg.require(jagg.getModulesDir() + "total-traffic/total-traffic.jag").getAPITraffic.apply(this, arguments);
+	},
+	getOperatorsBySubscriber:function () {
+		return jagg.require(jagg.getModulesDir() + "total-traffic/total-traffic.jag").getOperatorsBySubscriber.apply(this, arguments);
+	},
+	getSubscribersByOperator:function () {
+		return jagg.require(jagg.getModulesDir() + "total-traffic/total-traffic.jag").getSubscribersByOperator.apply(this, arguments);
+	},
+	getAllAPIs:function () {
+		return jagg.require(jagg.getModulesDir() + "api-wise-traffic/api-wise-traffic.jag").getAllAPIs.apply(this, arguments);
+	},
+
+	getDashboardTotalTraficPiechart:function() {
+		return jagg.require(jagg.getModulesDir() + "total-traffic/total-traffic.jag").getDashboardTotalTraficPiechart.apply(this, arguments);
+	},
+	getDashboardTotalAPITrafficLineChart:function() {
+		return jagg.require(jagg.getModulesDir() + "total-traffic/total-traffic.jag").getDashboardTotalAPITrafficLineChart.apply(this, arguments);
+	},
+	getDashboardTotalResponseTimeLineChart:function() {
+		return jagg.require(jagg.getModulesDir() + "total-traffic/total-traffic.jag").getDashboardTotalResponseTimeLineChart.apply(this, arguments);
+	},	
+	getDashboardTimeConsumerData: function() {
+		return jagg.require(jagg.getModulesDir() + "total-traffic/total-traffic.jag").getDashboardTimeConsumerData.apply(this, arguments);
+	} 
+});
+%>
+

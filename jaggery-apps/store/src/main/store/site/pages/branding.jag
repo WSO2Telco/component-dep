@@ -1,0 +1,63 @@
+<%
+include("/jagg/jagg.jag");
+include("header.jag");
+var site = require("/site/conf/site.json");
+        
+(function () {
+
+	var pageId = request.getParameter("pageId");
+	var title, middle;
+	
+	if(pageId == "about-us") {
+		title = "About Us";
+		middle = "branding/about-us"
+				
+	} else if (pageId == "privacy-policy") {
+		title = "Privacy Policy";
+		middle = "branding/privacy-policy"
+				
+	} else if (pageId == "tutorials") {
+		title = "Tutorials";
+		middle = "branding/tutorials"
+				
+	} else if (pageId == "support") {
+		title = "Support";
+		middle = "branding/support"
+	
+	} else if (pageId == "terms-conditions") {
+		title = "Terms & Conditions";
+		middle = "branding/terms-conditions"
+
+	} else {
+		title = "About Us";
+                middle = "branding/about-us"
+	}
+	
+    jagg.render({
+        "name":"page/base-branding",
+        "inputs":{
+            "title":title,
+            "pagePath":"/site/pages/branding.jag",
+            "body":[
+                {
+                    "name":"layout/base",
+                    "inputs":{
+                        "title":title,
+                        "top":[
+                            {
+                                "name":"banner/featured",
+                                "inputs":null
+                            }
+                        ],
+                        "middle":[
+                            {
+                                "name":middle,
+                            }
+                        ]
+                    }
+                }
+            ]
+        }
+    });
+}());
+%>

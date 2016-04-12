@@ -1,0 +1,194 @@
+<% jagg.template("billing-nb", function(inputs, outputs, jagg) {
+	var usage=outputs.usage;
+	var length;
+	if (usage!=null){
+		length=outputs.usage.length;
+	}
+	var log = new Log();
+
+	var isAdmin = jagg.getUser().isAdmin;
+	var isOperator = jagg.getUser().operator;
+	var isCustomerCare = jagg.getUser().isCustomerCare;
+	log.info(isAdmin);
+	log.info(isOperator);
+
+	var isSp = false;
+	if(isOperator != null){
+			var operatorName=isOperator;
+		} else {
+			var operatorName="__All__";
+		}
+
+	if(isAdmin){
+		isAdmin =true;
+	}
+	if(isOperator != null){
+		isOperator =true;
+	}
+	if(isCustomerCare != null){
+		isCustomerCare =true;
+	}
+	if(isAdmin == false && isOperator == null){
+		isSp =true;
+	}
+
+	%>
+
+	<link
+	href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("lib/jquery-ui/css/smoothness/jquery-ui-1.9.2.custom.css"))%>"
+	rel="stylesheet">
+<script
+	type="text/javascript"
+	src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("lib/jquery-ui/js/jquery-ui-1.9.2.custom.min.js"))%>"></script>
+
+<% if (isAdmin || isSp) { %>
+
+<div class="title-section">
+	<h2>Monthly Invoice - Northbound</h2>
+</div>
+<div class="content-section shadow-up">
+	<div class="content-data">
+		<div id="userKey">
+			<div class="well form-inline">
+				<table>
+					<tr>
+						<td><b>Year:</b></td>
+						<td><b>Month:</b></td>
+						
+						<% if(isAdmin == true){ %>
+						<td><b>Service Provider:</b></td>
+						<%
+	}
+	%>
+						<td><input type="hidden" value="<%=operatorName%>" id="isOperator"></td>
+					</tr>
+					<td><!--input type="text" name="month" id="month" class="monthPicker" /-->
+					<select id="year" style="WIDTH: 100px" name="year">
+							<!-- Populate dropdown list of years -->
+							<script type="text/Javascript">
+								loadYearDropDownList(document,"year");
+							</script>
+					</select>
+					</td>
+					<td><select id="month" size="1" name="month">
+							<option value="1">January</option>
+							<option value="2">February</option>
+							<option value="3">March</option>
+							<option value="4">April</option>
+							<option value="5">May</option>
+							<option value="6">June</option>
+							<option value="7">July</option>
+							<option value="8">August</option>
+							<option value="9">September</option>
+							<option value="10">October</option>
+							<option value="11">November</option>
+							<option value="12">December</option>
+					</select>
+					</td>
+					<% if(isAdmin == true){ %>
+					<%
+					var isAdmin=jagg.getUser().isAdmin, subLength=0, subscribers=outputs.subscribers, subscriber;
+					if (subscribers!=null) {
+subLength=subscribers.length;
+}
+%>
+					<td><select id="subscriber" size="1" name="subscriber">
+							<option value="__ALL__">All</option>
+							<%
+					  for (i = 0; i < subLength; i++) {
+					  	subscriber = subscribers[i];
+					  	%>
+							<option value="<%=subscriber%>"><%=subscriber%></option>
+							<% } %>
+					</select>
+					</td>
+					<% } %>
+					<td>
+						<button class="btn btn-primary" id="generate">Generate</button>
+
+					</td>
+				</table>
+			</div>
+
+						<button class="btn btn-primary" name="download_file"
+							onclick="downloadReports()" type="button">Download Report</button>
+
+
+			<div id="showMsg" style="display: none;">
+				<label><b>No usage details available for the user: &nbsp;<%=jagg.getUser().username%>
+						(for provided month).
+				</b> </label>
+			</div>
+			<div id="loader"></div>
+			<div id="usageDiv" class="row-fluid" style="display: none;">
+				<div class="span12">
+					<!--table id="usageSummary" class="table table-bordered"
+						style="width: 411px;">
+						<thead>
+							<tr>
+
+								<th style="width: 120px;">API</th>
+								<th style="width: 120px;">Version</th>
+								<th><span class="pull-right">Invocations</span></th>
+							</tr>
+						</thead>
+						<tbody id="usageSummaryBody">
+						</tbody>
+					</table-->
+
+
+					<h3>Billing Summary</h3>
+					<div class="control-group">
+						<label class="control-label"><div class="help-block">
+								<strong>Billing Scheme</strong>: No. of API Invocations
+							</div> </label>
+					</div>
+					<table id="reportTable" class="table table-bordered" style="width: 1000px;" >
+						<thead>
+							<tr>
+								<th style="width: 100px;">Subscriber</th>
+								<th style="width: 100px;">Application</th>
+								<th style="width: 100px;">API</th>
+								<th style="width: 50px;">Version</th>
+								<th style="width: 70px;">Operation</th>
+								<th style="width: 100px;">Charging Plan</th>
+								<th style="width: 80px;">Count</th>
+								<th style="width: 100px;">Usage Charge</th>
+								<th style="width: 100px;">Tax</th>
+								<th style="width: 100px;">Credit</th>
+								<th style="width: 100px;">Grand Total</th>
+							</tr>
+						</thead>
+						<tbody id="billingBody">
+						</tbody>
+					</table>
+					<p>&nbsp</p>
+
+					<!-- h4>API Usage</h4>
+					<div id="apiUsageGraph" style="width: 700px; height: 400px;"></div>
+					  <p>&nbsp</p>
+					  <p>&nbsp</p>
+					 <h4>API Response Times</h4>
+					 <script type="text/javascript" src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("lib/jquery-ui/js/jquery-ui-1.9.2.custom.min.js"))%>"></script>
+					<div id="responseTimesGraph" style="width: 700px; height: 400px; float: left;"></div>
+					<style>
+						.dojoxLegendNode {width:150px; border: 1px solid #ccc; margin: 0px 10px 5px 10px; padding: 3px}
+						.dojoxLegendText {padding-right: 10px}
+					</style>
+					<div id="responseTimesLegend"></div -->
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<form action="../blocks/billing-nb/ajax/billing.jag" id="logDownloadForm"
+	name="logDownloadForm" style="display: none">
+	<input type="hidden" name="action" value="getReportFileContent" /> <input
+		type="hidden" id="download_period" name="period" value="" /> <input
+		type="hidden" id="selected_subscriber" name="subscriber" value="" />
+</form>
+
+<% } else { %>
+		<p> Access Denied..!</p>
+	<% } %>
+<%});%>

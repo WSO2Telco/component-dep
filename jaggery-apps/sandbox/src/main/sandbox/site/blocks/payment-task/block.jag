@@ -1,0 +1,34 @@
+<%
+jagg.block("payment-task", {
+ initializer:function (data) {
+    },
+
+     getInputs:function () {
+            return {
+                "params":null
+            }
+        },
+
+        getOutputs:function (inputs) {
+        var mod,params;
+        mod = jagg.module("payment");
+        var user =jagg.getUser();
+        result = mod.getparam(user.username);
+        var log = new Log();
+        log.info(result);
+        var paytxns = session.get("paytxns");        
+        
+        if(result==null){
+                params=null;
+                }
+                else{
+                params = result;
+                }
+                    return {
+                        "params":params.data,
+                        "txns":paytxns
+                    }
+                }
+
+});
+%>

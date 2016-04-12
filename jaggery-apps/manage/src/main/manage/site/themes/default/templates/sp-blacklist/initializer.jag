@@ -1,0 +1,11 @@
+<%
+jagg.initializer("sp-blacklist", {
+
+    preInitialize:function () {
+        jagg.addHeaderJS("sp-blacklist", "dojo", "templates/utils/dojo-release-1.8.3/dojo/dojo.js");
+        jagg.addHeaderJS("sp-blacklist", "sp-blacklist", "templates/sp-blacklist/js/sp-blacklist.js");
+
+    }
+
+});
+%>

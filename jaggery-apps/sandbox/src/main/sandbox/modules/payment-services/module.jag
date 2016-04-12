@@ -1,0 +1,21 @@
+<%
+jagg.module("payment-services", {
+
+    releaseReservationRequest:function () {
+        return jagg.require(jagg.getModulesDir() + "payment-services/payment-services.jag").releaseReservationRequest.apply(this, arguments);
+    },
+    reserveRequest:function () {
+        return jagg.require(jagg.getModulesDir() + "payment-services/payment-services.jag").reserveRequest.apply(this, arguments);
+    },
+    reserveAdditionalRequest:function () {
+            return jagg.require(jagg.getModulesDir() + "payment-services/payment-services.jag").reserveAdditionalRequest.apply(this, arguments);
+    },
+    chargeReservationRequest:function () {
+        return jagg.require(jagg.getModulesDir() + "payment-services/payment-services.jag").chargeReservationRequest.apply(this, arguments);
+    },
+    refundRequest:function () {
+            return jagg.require(jagg.getModulesDir() + "payment-services/payment-services.jag").refundRequest.apply(this, arguments);
+        }
+    
+});
+%>

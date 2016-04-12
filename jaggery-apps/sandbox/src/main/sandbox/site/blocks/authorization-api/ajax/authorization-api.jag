@@ -1,0 +1,173 @@
+<%
+include("/jagg/jagg.jag");
+(function () {
+    var log = new Log();
+    var action = request.getParameter("action");
+    log.info("Action: " + action);
+    user = jagg.getUser();
+
+    if (action == "createAuthCodeRequest") {
+
+        var key = request.getParameter("key");
+        var secret = request.getParameter("secret");
+
+        user = jagg.getUser();
+        var mod = jagg.module("authorization-api");
+        var result = mod.createAuthCodeRequest(key, secret, user.username);
+        log.info('GGGGGGGGGGGGGGGGGGGGGGGGG result  ' + result.data);
+        if (result.reqerr == false) {
+            //{"MobileIdApiRequest":{""mobIdApiId":14,"sub":"ty","email":"tyt","given_name":"tytytytytyty"}}
+            var locreqtxn = {
+                key: key,
+                secret: secret
+
+            };
+            var locreqtxns = session.get("locreqtxns");
+            locreqtxns.push(locreqtxn);
+            session.put("locreqtxns", locreqtxns);
+        }
+
+        if (result.error == true) {
+            obj = {
+                error: result.error,
+                message: result.message
+            };
+        } else {
+            obj = {
+                error: false,
+                data: result.data,
+                table: session.get("locreqtxns")
+            }
+        }
+        print(obj);
+
+    } else if (action == "generateRefreshToken") {
+
+        var granttype = request.getParameter("granttype");
+        var username = request.getParameter("username");
+        var password = request.getParameter("password");
+        var scope = request.getParameter("scope");
+        var token = request.getParameter("token");
+
+
+        user = jagg.getUser();
+        var mod = jagg.module("authorization-api");
+        var result = mod.generateRefreshToken(granttype, username, password, scope, user.username, token);
+        log.info('result' + result);
+        if (result.reqerr == false) {
+            var locreqtxn = {
+                granttype: granttype,
+                username: username,
+                password: password,
+                scope: scope
+
+            };
+            var locreqtxns = session.get("locreqtxns");
+            locreqtxns.push(locreqtxn);
+            session.put("locreqtxns", locreqtxns);
+        }
+
+        if (result.error == true) {
+            obj = {
+                error: result.error,
+                message: result.message
+            };
+        } else {
+            obj = {
+                error: false,
+                data: result.data,
+                table: session.get("locreqtxns")
+            }
+        }
+        print(obj);
+
+    } else if (action === "getRefreshToken") {
+
+        var url = request.getParameter("url");
+
+
+        user = jagg.getUser();
+        var mod = jagg.module("authorization-api");
+        var result = mod.getRefreshToken(url, user.username);
+        log.info('result' + result);
+        if (result.reqerr == false) {
+            var locreqtxn = {
+                granttype: granttype,
+                username: username,
+                password: password,
+                scope: scope
+
+            };
+            var locreqtxns = session.get("locreqtxns");
+            locreqtxns.push(locreqtxn);
+            session.put("locreqtxns", locreqtxns);
+        }
+
+        if (result.error == true) {
+            obj = {
+                error: result.error,
+                message: result.message
+            };
+        } else {
+            obj = {
+                error: false,
+                data: result.data,
+                table: session.get("locreqtxns")
+            }
+        }
+        print(obj);
+
+    } else if (action === "getSessionData") {
+        var locreqtxns = session.get("locreqtxns");
+        if (locreqtxns.length > 0) {
+            obj = {
+                table: locreqtxns
+            };
+        } else {
+            obj = {
+                table: "null"
+            };
+        }
+        print(obj);
+
+    } else if (action == "generateAccessTokenRequest") {
+
+        var grant_type = request.getParameter("grant_type");
+        var refresh_token = request.getParameter("refresh_token");
+        var scope = request.getParameter("scope");
+        var auth_code = request.getParameter("auth_code");
+
+        user = jagg.getUser();
+        var mod = jagg.module("authorization-api");
+        var result = mod.generateAccessTokenRequest(grant_type, refresh_token, scope, auth_code, user.username);
+        log.info('GGGGGGGGGGGGGGGGGGGGGGGGG result  ' + result);
+        if (result.reqerr == false) {
+
+            var locreqtxn = {
+                grant_type: grant_type,
+                refresh_token: refresh_token,
+                scope: scope,
+                auth_code: auth_code
+            };
+            var locreqtxns = session.get("locreqtxns");
+            locreqtxns.push(locreqtxn);
+            session.put("locreqtxns", locreqtxns);
+        }
+
+        if (result.error == true) {
+            obj = {
+                error: result.error,
+                message: result.message
+            };
+        } else {
+            obj = {
+                error: false,
+                data: result.data,
+                table: session.get("locreqtxns")
+            }
+        }
+        print(obj);
+    }
+
+}());
+%>

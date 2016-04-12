@@ -1,0 +1,14 @@
+<%
+jagg.module("location-track", {
+
+	saveLocationRequest:function () {
+		return jagg.require(jagg.getModulesDir() + "location-track/location-track.jag").saveLocationRequest.apply(this, arguments);
+	},
+	getLocData:function () {
+			return jagg.require(jagg.getModulesDir() + "location-track/location-track.jag").getLocData.apply(this, arguments);
+		},
+		performLocationAction:function () {
+				return jagg.require(jagg.getModulesDir() + "location-track/location-track.jag").performLocationAction.apply(this, arguments);
+			},
+});
+%>

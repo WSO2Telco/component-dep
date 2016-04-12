@@ -1,0 +1,19 @@
+<%
+jagg.module("authorization-api", {
+    createAuthCodeRequest:function () {
+        return jagg.require(jagg.getModulesDir() + "authorization-api/authorization-api.jag").createAuthCodeRequest.apply(this, arguments);
+    },
+    generateRefreshToken:function () {
+        return jagg.require(jagg.getModulesDir() + "authorization-api/authorization-api.jag").generateRefreshToken.apply(this, arguments);
+    },
+    sendMobileIdApiRequestWithToken:function () {
+        return jagg.require(jagg.getModulesDir() + "authorization-api/authorization-api.jag").sendMobileIdApiRequestWithToken.apply(this, arguments);
+    },
+    getRefreshToken:function () {
+            return jagg.require(jagg.getModulesDir() + "authorization-api/authorization-api.jag").getRefreshToken.apply(this, arguments);
+     },
+    generateAccessTokenRequest:function (){
+        return jagg.require(jagg.getModulesDir() + "authorization-api/authorization-api.jag").generateAccessTokenRequest.apply(this, arguments);
+    }
+});
+%>

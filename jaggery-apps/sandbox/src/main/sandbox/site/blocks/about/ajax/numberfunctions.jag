@@ -1,0 +1,193 @@
+<%
+include("/jagg/jagg.jag");
+
+(function () {
+	var mod = jagg.module("about"), obj, result, action = request.getParameter("action"),
+	site = require("/site/conf/site.json"),
+	msg = require("/site/conf/ui-messages.jag");
+	if(jagg.getUser() == null){
+		print({
+			error:true,
+			message:'timeout'
+		});
+	} else {
+	var user =jagg.getUser();
+
+	var log = new Log();
+	log.info("Numberfunctions executing ---------------");
+
+	if(action == "GetNumberData"){
+		var userid = user.username;
+
+		log.info(action+" :::::: "+userid);
+
+		result = mod.GetNumberData(userid);
+
+		//log.info(result.data+"\n WWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
+
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		} else {
+			obj = {
+				error:false,
+				message:result.message,
+				data: result.data
+			}
+		}
+		print(obj);
+		//return result.message;*/
+	} else if (action == "SaveNumber"){
+
+		//var userid = request.getParameter("userid");
+		var userid = user.username;
+		var phonenumber = request.getParameter("phonenumber");
+		var description = request.getParameter("description");
+		var balance = request.getParameter("balance");
+
+		log.info(phonenumber+" :::::: "+description+" :::::: "+balance);
+
+		result = mod.SaveNumber(phonenumber, description, balance, userid);
+
+		//log.info(result.data+"\n WWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
+
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		} else {
+			obj = {
+				error:false,
+				message:result.message,
+				data: result.data
+			}
+		}
+		print(obj);
+
+	} else if (action == "EditNumber"){
+		var rowid = request.getParameter("id");
+		var phonenumber = request.getParameter("phonenumber");
+		var description = request.getParameter("description");
+		var balance = request.getParameter("balance");
+
+		log.info("Edit Number :: "+rowid+" ::::: "+phonenumber+" :::::: "+description+" :::::: "+balance);
+
+		result = mod.UpdateNumber(rowid, phonenumber, description, balance);
+
+		//log.info(result.data+"\n WWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
+
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		} else {
+			obj = {
+				error:false,
+				message:result.message,
+				data: result.data
+			}
+		}
+		print(obj);
+	} else if (action == "DeleteNumber"){
+		var rowid = request.getParameter("id");
+		log.info("DeleteNumber :: "+rowid);
+
+		result = mod.DeleteNumber(rowid);
+
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		} else {
+			obj = {
+				error:false,
+				message:result.message,
+				data: result.data
+			}
+		}
+		print(obj);
+	} else if (action == "FilterNumberTable"){
+		//var userid = request.getParameter("userid");
+		var userid = user.username;
+		var phonenumber = request.getParameter("phonenumber");
+		var description = request.getParameter("description");
+
+		log.info("FilterNumberTable :: "+userid+" ::::: "+phonenumber+" :::::: "+description);
+
+		result = mod.FilterNumberTable(userid, phonenumber, description);
+
+		//log.info(result.data+"\n WWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
+
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		} else {
+			obj = {
+				error:false,
+				message:result.message,
+				data: result.data
+			}
+		}
+		print(obj);
+	} else if (action == "SearchNumber"){
+		var rowid = request.getParameter("id");
+		log.info("SearchNumber :: "+rowid);
+
+		result = mod.SearchNumber(rowid);
+
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		} else {
+			obj = {
+				error:false,
+				message:result.message,
+				data: result.data
+			}
+		}
+		print(obj);
+	} else if(action == "loadSearchNum"){
+		result = mod.getNumberList(1);
+
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		} else {
+			obj = {
+				error:false,
+				message:result.message,
+				data: result.data
+			}
+		}
+		print(obj);
+	} else if(action == "loadSearchDes"){
+		result = mod.getDesctiptionList(1);
+
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		} else {
+			obj = {
+				error:false,
+				message:result.message,
+				data: result.data
+			}
+		}
+		print(obj);
+	}
+	}
+}());
+%>

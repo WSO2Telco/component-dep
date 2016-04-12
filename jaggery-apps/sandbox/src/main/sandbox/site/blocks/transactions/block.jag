@@ -1,0 +1,6 @@
+<%
+	jagg.block("transactions", {
+		initializer:function (data) {},
+		getInputs:function () {}
+	});
+%>

@@ -1,0 +1,95 @@
+<%
+include("/jagg/jagg.jag");
+
+(function () {
+    var mod, obj, result;
+
+    var action = request.getParameter("action");
+    var user = jagg.getUser();
+
+    var log = new Log();
+    if(action == "getAPITrafic"){
+        var vendor = request.getParameter("vendor");
+        var timeRange = request.getParameter("time");
+        var username = user.username;
+
+        var data =[];
+
+        var date = new Date();
+
+        //default last month
+        date.setMonth(date.getMonth()-1);
+        var period = date.getFullYear() + "-" + (date.getMonth() + 1);
+
+        var dialogbillingModule = jagg.module("dialogbilling");
+        var subscriber = username;
+
+        if(user.isAdmin) {
+            subscriber = "__ALL__";
+        }
+        //result = dialogbillingModule.getDashboardProviderAPIUsage(subscriber, vendor.toUpperCase(), timeRange);
+        result = dialogbillingModule.getDashboardProviderAPIUsage(subscriber, vendor.toUpperCase(), period);
+
+        var total = 0;
+
+        var rawData = result.usage;
+        for(var i = 0; i < rawData.length; i ++) {
+            total += rawData[i].price + rawData[i].credit + rawData[i].tax; 
+        }
+        if(log.isDebugEnabled()){
+            log.debug("Revenue total api usage " + total);      
+
+        }
+     
+        for(var i = 0; i < rawData.length; i ++) {
+            var item = rawData[i];
+            var tax = item.tax.toFixed(2);
+            var credit = item.credit.toFixed(2);
+            var price = item.price.toFixed(2);
+
+            var totalForApi = item.tax + item.credit + item.price;
+            var temp = {};
+            temp.api = item.apiName;
+            temp.amount = totalForApi.toFixed(2);
+   
+            if(total == 0 ){
+                temp.pt = 0
+            } else {
+                temp.pt = (totalForApi * 100)/total;
+            }
+            
+            temp.currency = item.currency;
+
+            temp.breakdown = [{
+                        y: item.price,
+                        text: "Usage Charge <br> "+price,
+                        tooltip: price 
+                    },{
+                        y: item.credit,
+                        text: "Credit <br>  "+credit,
+                        tooltip: credit
+                    }, {
+                        y: item.tax,
+                        text: "Tax <br> "+tax,
+                        tooltip: tax
+                    }]
+
+
+            data.push(temp);
+        }
+
+
+        if(log.isDebugEnabled()){
+            log.debug("Revenue chart data " + stringify(data));      
+
+        }
+        print(data);
+    }
+    else{
+        print({
+            error:true,
+            message:msg.error.invalidAction(action)
+        });
+    }
+}());
+%>

@@ -1,0 +1,100 @@
+<%
+include("/jagg/jagg.jag");
+
+(function () {
+	var mod, obj, result, user,
+	action = request.getParameter("action"),
+	site = require("/site/conf/site.json"),log = new Log(),
+	msg = require("/site/conf/ui-messages.jag");
+
+	if(jagg.getUser() == null){
+		print({
+			error:true,
+			message:'timeout'
+		});
+	}else{
+			
+		if (action === "getReserveAdditionalResponse") {
+			
+			mod = jagg.module("payment-services");
+			user =jagg.getUser();
+
+			var endUserId = request.getParameter("endUserId");
+			var referenceCode = request.getParameter("referenceCode");
+			var description = request.getParameter("description");
+			var currency = request.getParameter("currency");
+			var amount = request.getParameter("amount");
+			var transactionId = request.getParameter("transactionId");
+			var transactionOperationStatus = request.getParameter("transactionOperationStatus");
+				
+			var callbackData = request.getParameter("callbackData");
+			var channel = request.getParameter("channel");
+			var mandateId = request.getParameter("mandateId");
+			var notificationFormat = request.getParameter("notificationFormat");
+			var notifyURL = request.getParameter("notifyURL");
+			var onBehalfOf = request.getParameter("onBehalfOf");
+			var productId = request.getParameter("productId");
+			var purchaseCategoryCode = request.getParameter("purchaseCategoryCode");
+			var referenceSequence = request.getParameter("referenceSequence");
+			var serviceID = request.getParameter("serviceID");
+			var taxAmount = request.getParameter("taxAmount");
+				
+			var chargingInformation = {
+				"amount":amount,
+				"currency":currency,
+				"description":description
+			};
+
+			var chargingMetaData = {
+				"onBehalfOf":onBehalfOf,
+				"purchaseCategoryCode":purchaseCategoryCode,
+				"channel":channel,
+				"taxAmount":taxAmount,
+				"mandateId":mandateId,
+				"productId":productId,
+				"serviceId":serviceID
+			};
+				
+			var paymentAmount = {
+				"chargingInformation":chargingInformation,
+				"chargingMetaData":chargingMetaData
+			};
+
+			var amountReservationTransaction = {
+				"endUserId":endUserId,
+				"referenceCode":referenceCode,
+				
+				"paymentAmount":paymentAmount,
+				
+				"notificationFormat":notificationFormat,
+				"notifyURL":notifyURL,
+				"callbackData":callbackData,
+				"referenceSequence":referenceSequence,
+				"transactionOperationStatus":transactionOperationStatus
+			};
+				
+			var jsonRequest = {
+				"amountReservationTransaction":amountReservationTransaction
+			};
+				
+			log.info('Request Json :'+stringify(jsonRequest));
+			result = mod.reserveAdditionalRequest(stringify(jsonRequest), endUserId, transactionId);
+			
+			if (result.error) {
+				obj = {
+					error:true,
+					message:result.message
+				};
+			} else {
+				obj = {
+					error:false,
+					requestData: stringify(jsonRequest),
+					data: result.data
+				}
+			}
+			print(obj);
+		}
+
+	}
+}());
+%>

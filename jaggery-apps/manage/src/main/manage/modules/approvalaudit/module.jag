@@ -1,0 +1,23 @@
+<%
+jagg.module("approvalaudit", {
+	getAllSubscribers:function () {
+		return jagg.require(jagg.getModulesDir() + "approvalaudit/approvalaudit.jag").getAllSubscribers.apply(this, arguments);
+	},
+	getAllAPIs:function () {
+		return jagg.require(jagg.getModulesDir() + "approvalaudit/approvalaudit.jag").getAllAPIs.apply(this, arguments);
+	},
+	getAppsBySubscriber:function () {
+		return jagg.require(jagg.getModulesDir() + "approvalaudit/approvalaudit.jag").getAppsBySubscriber.apply(this, arguments);
+	},
+	getApprovalHistory:function () {
+		return jagg.require(jagg.getModulesDir() + "approvalaudit/approvalaudit.jag").getApprovalHistory.apply(this, arguments);
+	},
+	getApprovalHistoryApp:function () {
+			return jagg.require(jagg.getModulesDir() + "approvalaudit/approvalaudit.jag").getApprovalHistoryApp.apply(this, arguments);
+	},
+	getAPIsBySubscriber:function () {
+		return jagg.require(jagg.getModulesDir() + "approvalaudit/approvalaudit.jag").getAPIsBySubscriber.apply(this, arguments);
+	}
+});
+%>
+

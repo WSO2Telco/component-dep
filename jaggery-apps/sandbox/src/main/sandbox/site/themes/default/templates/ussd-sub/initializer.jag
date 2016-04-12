@@ -1,0 +1,7 @@
+<%
+	jagg.initializer("ussd-sub", {
+		preInitialize:function () {
+			jagg.addFooterJS("application", "jagg", "templates/ussd-sub/js/ussd-sub.js");
+		}
+	});
+%>

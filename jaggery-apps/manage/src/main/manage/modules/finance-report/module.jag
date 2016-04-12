@@ -1,0 +1,32 @@
+<%
+jagg.module("finance-report", {
+	getAllSubscribers:function () {
+		return jagg.require(jagg.getModulesDir() + "finance-report/finance-report.jag").getAllSubscribers.apply(this, arguments);
+	},
+	getAllOperators:function () {
+		return jagg.require(jagg.getModulesDir() + "finance-report/finance-report.jag").getAllOperators.apply(this, arguments);
+	},
+	getAllAPIs:function () {
+		return jagg.require(jagg.getModulesDir() + "finance-report/finance-report.jag").getAllAPIs.apply(this, arguments);
+	},
+	getAppsBySubscriber:function () {
+		return jagg.require(jagg.getModulesDir() + "finance-report/finance-report.jag").getAppsBySubscriber.apply(this, arguments);
+	},
+	getBillingData:function () {
+		return jagg.require(jagg.getModulesDir() + "finance-report/finance-report.jag").getBillingData.apply(this, arguments);
+	},
+	getRevenueChartData:function () {
+		return jagg.require(jagg.getModulesDir() + "finance-report/finance-report.jag").getRevenueChartData.apply(this, arguments);
+	},
+	getOperatorsBySubscriber:function () {
+		return jagg.require(jagg.getModulesDir() + "api-wise-traffic/api-wise-traffic.jag").getOperatorsBySubscriber.apply(this, arguments);
+	},
+	getAppsByOperator:function () {
+			return jagg.require(jagg.getModulesDir() + "finance-report/finance-report.jag").getAppsByOperator.apply(this, arguments);
+		},
+		getSubscribersByOperator:function () {
+					return jagg.require(jagg.getModulesDir() + "finance-report/finance-report.jag").getSubscribersByOperator.apply(this, arguments);
+				},
+});
+%>
+

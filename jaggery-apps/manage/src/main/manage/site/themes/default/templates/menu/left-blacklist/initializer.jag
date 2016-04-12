@@ -1,0 +1,8 @@
+<%
+jagg.initializer("menu/left-blacklist", {
+
+    preInitialize:function (){
+    }
+});
+%>
+

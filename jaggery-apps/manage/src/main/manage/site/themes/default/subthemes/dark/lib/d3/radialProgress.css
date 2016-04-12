@@ -1,0 +1,90 @@
+.radial-wrapper .arc2 {
+    stroke-weight:0.1;
+    fill: #3660b0;
+}
+
+.radial-wrapper .arc {
+    stroke-weight: 0.1;
+    fill: #ff00ee;
+}
+
+.radial-wrapper .arc2 {
+    stroke-weight: 0.1;
+    fill: #b00d08;
+}
+
+
+.component path{
+    fill:#cccccc;
+}
+
+.selectedRadial {
+    border-radius: 3px;
+    background: #f4f4f4;
+    color: #000;
+    box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+    -moz-box-shadow: 0 1px 5px rgba(0,0,0,0.4);
+    border: 1px solid rgba(200,200,200,0.85);
+}
+
+.radial {
+    border-radius: 3px;
+    background: #FFFFFF;
+    color: #000;
+
+}
+.label{
+    margin-left:-20px;
+}
+.background {
+    fill: #ffffff;
+    fill-opacity: 0.01;
+}
+.radial-wrapper div.radial-box{
+    display: inline-block;
+}
+.radial-box{
+    margin-right:5px;
+}
+.radial-top{
+    background: #f2f2f2;
+    padding-left:10px;
+    padding-top:10px;
+}
+.radial-bottom{
+    background: #e7e7e7;
+    padding:10px 5px;
+    text-align: center;
+    font-weight: bold;
+}
+.radial-box-big{
+    width: 100%;
+    margin-bottom: 20px;
+}
+.radial-container{
+    width:200px;
+    float: left;
+}
+.pie-container{
+    width:300px;
+    float:left;
+}
+.legend-container{
+    width:300px;
+    float:left;
+    margin-left: 10px;
+}
+
+.radial-wrapper-black div.radial-top{
+    background: #181818;
+}
+.radial-wrapper-black .label{
+    fill: #fff;
+}
+.radial-wrapper-black  .radial-bottom{
+    color:#fff;
+    background: #000;
+}
+.pie-container rect{
+    fill:transparent;
+}

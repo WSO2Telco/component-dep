@@ -1,0 +1,31 @@
+<%
+include("/jagg/jagg.jag");
+(function () {
+	var log = new Log();
+	var user = jagg.getUser();
+	var type = request.getParameter("type");
+	var from_date = request.getParameter("from_date");
+	var to_date = request.getParameter("to_date");
+
+	//log.info("Type: " + type);
+	//log.info("User Id: " + userId);
+	//log.info("From Date: " + from_date);
+	//log.info("To Date: " + to_date);
+
+	var mod = jagg.module("transactions");
+	var result = mod.getTransactions(type, from_date, to_date, user.username);
+	//log.info("Result: " + result)
+	if (result.error) {
+		obj = {
+			error:result.error,
+			message:result.message
+		};
+	} else {
+		obj = {
+			error:false,
+			data: result.data
+		}
+	}
+	print(obj);
+}());
+%>

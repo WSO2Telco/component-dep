@@ -1,0 +1,6 @@
+<% jagg.template("menu/left", function(inputs, outputs, jagg) { %>
+
+<div class="row-fluid">
+</div>
+
+<%});%>

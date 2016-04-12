@@ -1,0 +1,14 @@
+<%
+jagg.module("payment", {
+
+    addparam:function () {
+        return jagg.require(jagg.getModulesDir() + "payment/payment.jag").addparam.apply(this, arguments);
+    },
+    getparam:function () {
+	return jagg.require(jagg.getModulesDir() + "payment/payment.jag").getparam.apply(this, arguments);
+    },
+    addpayment:function () {
+	return jagg.require(jagg.getModulesDir() + "payment/payment.jag").addpayment.apply(this, arguments);
+    }
+});
+%>

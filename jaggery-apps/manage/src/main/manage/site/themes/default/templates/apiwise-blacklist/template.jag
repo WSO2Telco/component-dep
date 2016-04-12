@@ -1,0 +1,88 @@
+<% jagg.template("apiwise-blacklist", function(inputs, outputs, jagg) {
+	var usage=outputs.usage;
+	var length;
+	if (usage!=null){
+		length=outputs.usage.length;
+	}
+	var log = new Log();
+	log.info(stringify(outputs));
+	var isAdmin = jagg.getUser().isAdmin;
+	var isOperator = jagg.getUser().operator;
+	log.info(isAdmin);
+	log.info(isOperator);
+	%>
+<div class="title-section">
+	<% if(isAdmin == true){ %>
+	<h2>APIwise Blacklist</h2>
+	<%
+	}  else {%>
+	<h2>APIwise Blacklist</h2>
+	<% } %>
+</div>
+<div class="content-section shadow-up">
+	<div class="content-data">
+		<div id="userKey">
+			<!-- label class="control-label"><b>Period:</b></label-->
+			<div class="well form-inline">
+				<table>
+					<tr>
+						<td><b>API:</b></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td><select id="apiSelect" style="width: 150px;" name="api">
+								<option value="USSD">USSD</option>
+								<option value="SMS">SMS</option>
+								<option value="LBS">LBS</option>
+								<option value="Payment">Payment</option>
+						</select>
+						</td>
+
+						<td style="width: 140px;">
+							<button class="btn btn-primary" id="view">View</button>
+						</td>
+					</tr>
+				</table>
+			</div>
+
+			<div id="usageDiv" class="row-fluid">
+				<div class="span12">
+					<div id="blacklist-header">
+						<h3>Blacklisted subscribers</h3>
+					</div>
+					<table>
+						<thead>
+							<th style="width: 550px;"></th>
+							<th style="width: 200px; vertical-align: top;"></th>
+						</thead>
+						<tbody>
+							<tr>
+								<td>
+									<table class="table table-bordered" style="width: 550px;">
+										<thead>
+											<tr>
+												<th style="width: 400px;">Subscriber</th>
+												<th style="width: 150px;">Remove from blacklist</th>
+											</tr>
+										</thead>
+										<tbody id="billingBody">
+										</tbody>
+									</table>
+								</td>
+								<td style="vertical-align: top;">
+									<button class="btn btn-primary"
+										style="margin-left: 15px; margin-top: 3px;" id="add-new">Add
+										new</button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+
+					<p>&nbsp</p>
+				</div>
+			</div>
+
+		</div>
+	</div>
+</div>
+<%});%>

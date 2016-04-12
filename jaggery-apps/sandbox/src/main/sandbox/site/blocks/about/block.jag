@@ -1,0 +1,20 @@
+<%
+jagg.block("about", {
+initializer:function (data) {},
+getInputs:function () {},
+getOutputs:function (inputs) {
+
+        var numbers, descriptions, resultNum, resultDesc, user = inputs.user, mod = jagg.module("about");
+        
+        resultNum = mod.getNumberList(1); //Have to edit parameter to userid
+        resultDesc = mod.getDesctiptionList(1);
+        numbers = resultNum.data;
+        descriptions = resultDesc.data;
+
+        return {
+            "numbers":numbers,
+        	"descriptions":descriptions
+        };
+    },
+});
+%>

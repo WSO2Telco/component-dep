@@ -1,0 +1,56 @@
+<%
+include("/jagg/jagg.jag");
+include("header.jag");
+var site = require("/site/conf/site.json");
+
+var i18n = require("i18n");
+var localeResourcesBasePath="/site/conf/locales/jaggery/";
+i18n.init(request,localeResourcesBasePath);
+
+(function () {
+    var usage, site,  result, mod, user = jagg.getUser();
+    if (!user) {
+        response.sendRedirect(getRedirectPathForNonAuthenticatedUser());
+        return;
+    }
+
+    jagg.render({
+        "name":"page/base",
+        "inputs":{
+            "title":"Billing Information",
+            "header":{
+                "name":"menu/primary",
+                "inputs":{
+    			"pagePath":"/site/pages/billing.jag"
+    		}
+            },
+            "body":[
+                {
+                    "name":"layout/base",
+                    "inputs":{
+                        "middle":[{
+                                "name":"billing",
+                                "inputs":{
+                                    "user":user,
+                                    "usage":usage
+                                }
+                            }
+                        ],
+                        "left":[{
+                        	"name":"menu/left"
+                        	}
+						]
+                    }
+                }
+            ],
+            "footer":[
+                {
+                    "name":"footer"
+                }
+            ]
+        }
+    });
+}());
+
+
+%>

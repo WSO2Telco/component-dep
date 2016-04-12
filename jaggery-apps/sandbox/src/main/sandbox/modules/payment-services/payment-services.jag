@@ -1,0 +1,179 @@
+<%
+include("/jagg/jagg.jag");
+var releaseReservationRequest = function (requestJsonString, enduserid, transId) {
+	var user = jagg.getUser();
+		var log = new Log();
+		try {
+			var xhr = new XMLHttpRequest();
+			var endpoint =  jagg.getSandboxurl()+"AmountReserveReleaseService/payment/1/"+enduserid+"/transactions/amountReservation/"+transId;
+			xhr.open("POST", endpoint);
+			xhr.setRequestHeader("Content-Type", "application/json");
+			xhr.setRequestHeader("sandbox", user.username);
+			var payload = requestJsonString;
+			xhr.send(payload);
+			var result = xhr.responseText.toString();
+	
+			var reqerr=true
+			if (xhr.status =='200') {
+				var reqerr =false;
+			}
+	
+			log.info('response :'+result);
+				
+			return {
+				error:false,
+				message:"OK",
+				data:result,
+				reqerr:reqerr
+			};
+		} catch (e) {
+			log.error(e.message);
+			return {
+				error:true,
+				message:e.message.split("Exception:")[2]
+			};
+		}
+};
+
+var reserveRequest = function (requestJsonString, enduserid) {
+	var user = jagg.getUser();
+		var log = new Log();
+		try {
+			var xhr = new XMLHttpRequest();
+			var endpoint =  jagg.getSandboxurl()+"AmountReserveService/payment/1/"+enduserid+"/transactions/amountReservation";
+			xhr.open("POST", endpoint);
+			xhr.setRequestHeader("Content-Type", "application/json");
+			xhr.setRequestHeader("sandbox", user.username);
+			var payload = requestJsonString;
+			xhr.send(payload);
+			var result = xhr.responseText.toString();
+
+			var header = xhr.getResponseHeader("Location");
+			var reqerr=true
+			if (xhr.status =='201') {
+				var reqerr =false;
+			}
+			var dataToShow = result;
+			if(header != null){
+				dataToShow = header+"\n\n\n"+result;
+			}
+	
+			return {
+				error:false,
+				message:"OK",
+				data:dataToShow,
+				reqerr:reqerr
+			};
+		} catch (e) {
+			log.error(e.message);
+			return {
+				error:true,
+				message:e.message.split("Exception:")[2]
+			};
+		}
+};
+
+var reserveAdditionalRequest = function (requestJsonString, enduserid, transId) {
+	var user = jagg.getUser();
+		var log = new Log();
+		try {
+			var xhr = new XMLHttpRequest();
+			var endpoint =  jagg.getSandboxurl()+"AmountReserveAdditionalService/payment/1/"+enduserid+"/transactions/amountReservation/"+transId;
+			xhr.open("POST", endpoint);
+			xhr.setRequestHeader("Content-Type", "application/json");
+			xhr.setRequestHeader("sandbox", user.username);
+			var payload = requestJsonString;
+			xhr.send(payload);
+			var result = xhr.responseText.toString();
+			var reqerr=true
+			if (xhr.status =='200') {
+				var reqerr =false;
+			}
+	
+			log.info('response :'+endpoint);
+				
+			return {
+				error:false,
+				message:"OK",
+				data:result,
+				reqerr:reqerr
+			};
+		} catch (e) {
+			log.error(e.message);
+			return {
+				error:true,
+				message:e.message.split("Exception:")[2]
+			};
+		}
+};
+
+
+var chargeReservationRequest = function (requestJsonString, enduserid, transId) {
+	var user = jagg.getUser();
+		var log = new Log();
+		try {
+			var xhr = new XMLHttpRequest();
+			var endpoint =  jagg.getSandboxurl()+"AmountReserveChargeService/payment/1/"+enduserid+"/transactions/amountReservation/"+transId;
+			xhr.open("POST", endpoint);
+			xhr.setRequestHeader("Content-Type", "application/json");
+			xhr.setRequestHeader("sandbox", user.username);
+			var payload = requestJsonString;
+			xhr.send(payload);
+			var result = xhr.responseText.toString();
+			var reqerr=true;
+			if (xhr.status =='200') {
+				var reqerr =false;
+			}
+	
+			log.info('response :'+endpoint);
+				
+			return {
+				error:false,
+				message:"OK",
+				data:result,
+				reqerr:reqerr
+			};
+		} catch (e) {
+			log.error(e.message);
+			return {
+				error:true,
+				message:e.message.split("Exception:")[2]
+			};
+		}
+};
+
+var refundRequest = function (requestJsonString, enduserid) {
+	var user = jagg.getUser();
+		var log = new Log();
+		try {
+			var xhr = new XMLHttpRequest();
+			var endpoint =  jagg.getSandboxurl()+"AmountRefundService/payment/1/"+enduserid+"/transactions/amount";
+			xhr.open("POST", endpoint);
+			xhr.setRequestHeader("Content-Type", "application/json");
+			xhr.setRequestHeader("sandbox", user.username);
+			var payload = requestJsonString;
+			xhr.send(payload);
+			var result = xhr.responseText.toString();
+			var reqerr=true;
+			if (xhr.status =='201') {
+				var reqerr =false;
+			}
+	
+			log.info('response :'+endpoint);
+				
+			return {
+				error:false,
+				message:"OK",
+				data:result,
+				reqerr:reqerr
+			};
+		} catch (e) {
+			log.error(e.message);
+			return {
+				error:true,
+				message:e.message.split("Exception:")[2]
+			};
+		}
+};
+
+%>

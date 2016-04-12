@@ -1,0 +1,91 @@
+<%
+include("/jagg/jagg.jag");
+
+(function () {
+	var mod, obj, result;
+
+	var action = request.getParameter("action");
+	var user = jagg.getUser();
+
+	var log = new Log();
+
+	if(action == "getAPIWiseTraffic"){
+		var fromDate = request.getParameter("fromDate");
+		var toDate = request.getParameter("toDate");
+		var subscriber = request.getParameter("subscriber");
+		var operator = request.getParameter("operator");
+		var api = request.getParameter("api");
+
+		// 		log.info("From: " + stringify(fromDate));
+		// 		log.info("To: " + stringify(toDate));
+		// 		log.info("Subscriber: " + stringify(subscriber));
+		// 		log.info("Operator: " + stringify(operator));
+		// 		log.info("API: " + stringify(api));
+
+		var mod = jagg.module("api-wise-traffic");
+		var result = mod.getOperatorWiseAPITraffic(fromDate, toDate, subscriber, operator, api);
+		//log.info(result.data);
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		} else {
+			obj = {
+				error:false,
+				histogram: result.histogram
+			}
+		}
+		//log.info(obj);
+		print(obj);
+	} else if (action == "getCustomReportFileContent"){ 
+		
+    	if (!user) {
+            print({
+                error:true,
+                message:msg.error.loginRequired(action)
+            });
+            return;
+        }
+        
+        var fromDate = request.getParameter("fromdate");
+        var toDate = request.getParameter("todate");
+        var operator = request.getParameter("operator");
+        var subscriber = request.getParameter("subscriber");
+        var api = request.getParameter("api");
+        var timeOffset = request.getParameter("timeOffset");
+        var resType = request.getParameter("resType");
+        var isNorthbound = false;
+        
+        //log.info("From: " + stringify(fromDate));
+        //log.info("To: " + stringify(toDate));
+        //log.info("Subscriber: " + stringify(subscriber));
+        //log.info("Operator: " + stringify(operator));
+        //log.info("API: " + stringify(api));
+        
+        username = user.username;
+        
+        var mod = jagg.module("api-wise-traffic");
+        var result = mod.getReportFileContent(fromDate, toDate, subscriber, operator, api, timeOffset, resType, isNorthbound);
+        
+        response.addHeader("Pragma", "public");
+        response.addHeader("Expires", "0"); 
+        response.addHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
+        response.addHeader("Content-Type", "application/csv");
+        response.addHeader("Content-Disposition", "attachment;filename="+fromDate+"-"+toDate+"-"+subscriber+"-"+operator+"-"+api+".csv"); 
+        
+        //response.contentType = 'application/csv';
+        //response.addHeader('Content-Disposition', 'attachment;filename='+fromDate+'-'+toDate+'-'+subscriber+'-'+operator+'-'+api+'.csv');
+		
+        //log.info(result);
+        print(result.trim());
+        
+	}
+	else{
+		print({
+			error:true,
+			message:msg.error.invalidAction(action)
+		});
+	}
+}());
+%>

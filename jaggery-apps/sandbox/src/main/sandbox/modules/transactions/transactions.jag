@@ -1,0 +1,28 @@
+<%
+include("/jagg/jagg.jag");
+	var loadTransactions = function (type, from_date, to_date, username) {
+		var log = new Log();		
+		try {
+			var xhr = new XMLHttpRequest();
+			var endpoint =  jagg.getSandboxurl()+"TransactionsServlet?type=" + type;
+			xhr.open("POST", endpoint);
+			xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+			xhr.setRequestHeader("userid", username);
+			var payload = "from_date=" + from_date + "&to_date=" + to_date;
+			xhr.send(payload);
+			var result = xhr.responseText.toString();
+			//log.info(result);
+			
+			return {
+		       error:false,
+		       data:result
+			};
+		} catch (e) {
+			log.error(e.message);
+			return {
+				error:true,
+				message:e.message.split("Exception:")[2]
+			};						
+		}		
+	};
+%>

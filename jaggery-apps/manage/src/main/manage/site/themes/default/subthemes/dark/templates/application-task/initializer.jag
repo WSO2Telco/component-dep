@@ -1,0 +1,11 @@
+<%
+jagg.initializer("application-task", {
+
+    preInitialize:function () {
+        jagg.addFooterJS("application", "jagg", "templates/application-task/js/application.js");
+        jagg.addFooterJS("popup", "jagg", "templates/application-task/js/jquery.popupoverlay.js");
+        jagg.addFooterJS("tiers", "jagg", "templates/application-task/js/tiers.js");
+    }
+});
+%>
+

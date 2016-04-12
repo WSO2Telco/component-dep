@@ -1,0 +1,9 @@
+<%
+jagg.initializer("home", {
+    preInitialize:function () {
+
+
+    }
+
+});
+%>

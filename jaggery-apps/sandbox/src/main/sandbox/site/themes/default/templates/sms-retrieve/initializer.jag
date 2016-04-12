@@ -1,0 +1,7 @@
+<%
+	jagg.initializer("sms-retrieve", {
+		preInitialize:function () {
+			jagg.addFooterJS("application", "jagg", "templates/sms-retrieve/js/sms-retrieve.js");
+		}
+	});
+%>

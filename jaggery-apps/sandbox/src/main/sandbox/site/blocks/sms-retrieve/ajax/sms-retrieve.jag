@@ -1,0 +1,66 @@
+<%
+include("/jagg/jagg.jag");
+(function () {
+	var log = new Log();
+	
+	var action = request.getParameter("action");
+	//log.info("Action: " + action);
+	if (action == "getRegistrationIds") {
+		var user =jagg.getUser();
+		var mod = jagg.module("sms-retrieve");
+		var result = mod.getRegistrationIds(user.username);
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		} else {
+			obj = {
+				error:false,
+				data: result.data
+			}
+		}
+		print(obj);
+	} else if(action == "getSMSRetrieveResponse") {
+		var user =jagg.getUser();
+		var registrationId = request.getParameter("registrationId");
+		var maxBatchSize = request.getParameter("maxBatchSize");
+
+		var mod = jagg.module("sms-retrieve");
+		var result = mod.getSMSRetrieveResponse(registrationId, maxBatchSize,user.username);
+		
+		if (result.reqerr == false) {
+// 			var resobj = parse(result.data);
+// 			var deliveryInfoArray = new Array();
+// 			deliveryInfoArray = resobj.outboundSMSMessageRequest.deliveryInfoList.deliveryInfo;
+			
+// 			var smstxn = {
+// 				senderAddress : senderAddress,
+// 				deliveryInfoArray : deliveryInfoArray,
+// 				message : message,
+// 				clientCorrelator : clientCorrelator,
+// 				senderName : senderName,
+// 				notifyURL : notifyURL,
+// 				callbackData : callbackData
+// 			};
+			
+// 			var smstxns = session.get("smstxns");
+// 			smstxns.push(smstxn);
+// 			session.put("smstxns",smstxns);
+		}
+
+		if (result.error==true) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		}else{
+			obj = {
+				error:false,
+				data: result.data
+			}
+		}
+		print(obj);
+	}
+}());
+%>

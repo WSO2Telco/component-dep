@@ -1,0 +1,214 @@
+<% jagg.template("payment-refund", function(inputs, outputs, jagg) {
+	%>
+<div id="listing">
+	<div class="title-section">
+		<h2>Refund the User</h2>
+	</div>
+	<div class="content-section shadow-up">
+		<div class="content-data"></div>
+	</div>
+
+	<div class="content-section shadow-up">
+		<div class="content-data">
+
+			<form novalidate="novalidate" id="reqAddForm">
+
+				<table style="width: 100%;">
+					<tbody>
+						<tr>
+							<td valign="top">
+								<div class="ParameterGroupHeading">
+									<strong>Mandatory Parameters</strong>
+								</div>
+								
+								<div class="ParameterRow">
+									<div class="ParameterLabel">endUserId</div>
+									<div class="ParameterValue">
+										<input type="text" value="tel:+94773852147" id="endUsertp"
+											name="endUsertp">
+									</div>
+								</div>
+								<div class="ParameterRow">
+									<div class="ParameterLabel">description</div>
+									<div class="ParameterValue">
+											<textarea style="height: 80px;" id="description"
+											name="description">Alien Invaders Game</textarea>
+									</div>
+								</div>
+								
+								<div class="ParameterRow">
+									<div class="ParameterLabel">referenceCode</div>
+									<div class="ParameterValue">
+										<input type="text" value="REF-12345" id="referenceCode"
+											name="referenceCode">
+									</div>
+								</div>
+								
+								<div class="ParameterRow">
+									<div class="ParameterLabel">transactionOperationStatus</div>
+									<!--div class="ParameterValue"><input type="text" value="" id="transactionOperationStatus" name="transactionOperationStatus"></div-->
+									<div class="controls">
+										<select class="valid" id="transactionOperationStatus"
+											name="transactionOperationStatus">
+										<!--	<option value="Charged">Charged</option>
+											<option value="Processing">Processing</option> -->
+											<option value="Refunded" selected>Refunded</option>
+										<!--	<option value="Denied">Denied</option>
+											<option value="Refused">Refused</option> -->
+										</select>
+									</div>
+								</div>
+							</td>
+							<td valign="top">
+								<div class="ParameterGroupHeading">
+									<strong>Optional Parameters</strong>
+								</div>
+								
+								<div class="ParameterRow">
+									<div class="ParameterLabel">amount</div>
+									<div class="ParameterValue">
+										<input type="text" value="10.0" id="amount" name="amount">
+									</div>
+								</div>
+								<div class="ParameterRow">
+									<div class="ParameterLabel">callbackData</div>
+									<div class="ParameterValue">
+										<input type="text" value="54321" id="callbackData"
+											name="callbackData">
+									</div>
+								</div>
+								<div class="ParameterRow">
+									<div class="ParameterLabel">channel</div>
+									<div class="ParameterValue">
+										<input type="text" value="WAP" id="channel" name="channel">
+									</div>
+								</div>
+								
+								<div class="ParameterRow">
+									<div class="ParameterLabel">clientCorrelator</div>
+									<div class="ParameterValue">
+										<input type="text" value="54321" id="clientCorrelator"
+											name="clientCorrelator">
+									</div>
+								</div>
+								
+								<div class="ParameterRow">
+									<div class="ParameterLabel">code</div>
+									<div class="ParameterValue">
+										<input type="text" value="ABC" id="code" name="code">
+									</div>
+								</div>
+								<div class="ParameterRow">
+									<div class="ParameterLabel">currency</div>
+									<div class="ParameterValue">
+										<input type="text" value="USD" id="currency" name="currency">
+									</div>
+								</div>
+								<div class="ParameterRow">
+									<div class="ParameterLabel">mandateId</div>
+									<div class="ParameterValue">
+										<input type="text" value="0000" id="mandateId"
+											name="mandateId">
+									</div>
+								</div>
+								<div class="ParameterRow">
+									<div class="ParameterLabel">notificationFormat</div>
+									<div class="ParameterValue">
+										<input type="text" value="54321" id="notificationFormat"
+											name="notificationFormat">
+									</div>
+								</div>
+								<div class="ParameterRow">
+									<div class="ParameterLabel">notifyURL</div>
+									<div class="ParameterValue">
+										
+										<input type="text" value="http://localhost:8080/mifeapiserver/callback.jsp"
+											id="notifyURL" name="notifyURL">
+									</div>
+								</div>
+								<div class="ParameterRow">
+									<div class="ParameterLabel">onBehalfOf</div>
+									<div class="ParameterValue">
+										<input type="text" value="Example Games Inc" id="onBehalfOf"
+											name="onBehalfOf">
+									</div>
+								</div>
+								
+								<div class="ParameterRow">
+									<div class="ParameterLabel">originalServerReferenceCode</div>
+									<div class="ParameterValue">
+										<input type="text" value="54321" id="originalServerRef"
+											name="originalServerRef">
+									</div>
+								</div>
+								<div class="ParameterRow">
+									<div class="ParameterLabel">productId</div>
+									<div class="ParameterValue">
+										<input type="text" value="0000" id="productId"
+											name="productId">
+									</div>
+								</div>
+								
+								<div class="ParameterRow">
+									<div class="ParameterLabel">purchaseCategoryCode</div>
+									<div class="ParameterValue">
+										<input type="text" value="Game" id="purchaseCategoryCode"
+											name="purchaseCategoryCode">
+									</div>
+								</div>
+								
+								<div class="ParameterRow">
+									<div class="ParameterLabel">serviceID</div>
+									<div class="ParameterValue">
+										<input type="text" value="0000" id="serviceID" name="serviceID">
+									</div>
+								</div>
+								
+								<div class="ParameterRow">
+									<div class="ParameterLabel">taxAmount</div>
+									<div class="ParameterValue">
+										<input type="text" value="0.15" id="taxAmount"
+											name="taxAmount">
+									</div>
+									<input id="payment-add-button" class="btn btn-primary"
+										value="Send Request" type="button">
+								</div>
+							</td>
+
+							<td valign="top">
+								<div class="ParameterRow">
+									<div class="ParameterLabel">
+										<strong>Request:</strong>
+									</div>
+									<div class="ParameterValue">
+										<textarea style="height: 500px; background-color: #e3e3e3;"
+											id="request" name="request"></textarea>
+									</div>
+								</div>
+							</td>
+							<td valign="top">
+								<div class="ParameterRow">
+									<div class="ParameterLabel">
+										<strong>Response:</strong>
+									</div>
+									<div class="ParameterValue">
+										<textarea style="height: 500px; background-color: #E7F0F7;"
+											id="response" name="response"></textarea>
+									</div>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</form>
+			<div id="payment_table_content"></div>
+			<div class="pagination" style="text-align: right;"></div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+$("#mainnavi").find('li.subnavi').removeClass("active");
+$("#mainnavi").find('li.subnavi:nth-child(3)').addClass("active");
+</script>
+<% }); %>

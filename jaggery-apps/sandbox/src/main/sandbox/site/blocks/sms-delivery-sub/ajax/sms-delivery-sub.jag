@@ -1,0 +1,84 @@
+<%
+include("/jagg/jagg.jag");
+(function () {
+	var log = new Log();
+	var action = request.getParameter("action");
+	log.info("Action: " + action);
+	var mod = jagg.module("sms-delivery");
+	
+	if(action == "getDeliverySubResponse") {
+		var filterCriteria = request.getParameter("filterCriteria");
+		var notifyUrl = request.getParameter("notifyUrl");
+		var callbackData = request.getParameter("callbackData");
+		var clientCorrelator = request.getParameter("clientCorrelator");
+		
+		var callbackReference = {
+			"callbackData":callbackData,
+			"notifyURL": notifyUrl
+		};
+		
+		var deliveryReceiptSubscription = {
+			"callbackReference": callbackReference,
+			"clientCorrelator": clientCorrelator,
+			"filterCriteria": filterCriteria
+		};
+		
+		var jsonString = {
+			"deliveryReceiptSubscription": deliveryReceiptSubscription
+		};
+		
+		var senderAddress = "tel:+94773333428"; //This is dummy
+		
+		var result = mod.getDeliverySubResponse(senderAddress, stringify(jsonString));
+		
+		if (result.error==true) {
+			obj = {
+				error:result.error,
+				requestData: stringify(jsonString),
+				message:result.message
+			};
+		}else{
+			obj = {
+				error:false,
+				requestData: stringify(jsonString),
+				data: result.data
+			}
+		}
+		print(obj);
+		
+	} else if (action == "GetDeliverySubData"){
+		result = mod.deliverySubData();
+		
+				if (result.error) {
+					obj = {
+						error:result.error,
+						message:result.message
+					};
+				} else {
+					obj = {
+						error:false,
+						message:result.message,
+						data: result.data
+					}
+				}
+				print(obj);
+	} else if (action == "UnsubscribeDelivery"){
+		var rowid = request.getParameter("id");
+		result = mod.removeSubscription(rowid);
+		//log.info("XXXXXXXXXXXXXXXXXXX:: "+rowid);
+						if (result.error) {
+							obj = {
+								error:result.error,
+								message:result.message
+							};
+						} else {
+							obj = {
+								error:false,
+								message:result.message,
+								data: result.data
+							}
+						}
+						print(obj);
+	}
+}());
+%>

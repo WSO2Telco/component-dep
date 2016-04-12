@@ -1,0 +1,429 @@
+<% jagg.template("branding/terms-conditions", function(inputs, outputs, jagg) {
+%>
+<link rel="stylesheet" type="text/css" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("css/styles-axiata.css"))%>" media="all"/>
+<div id="listing">
+    <div class="title-section">
+        <h2>Terms and Conditions</h2>
+    </div>
+    <div class="content-section shadow-up">
+        <div class="content-data span5">
+			<p lang="en-GB" align="JUSTIFY">
+    <h3><strong>Terms of Service – IdeaBiz</strong></h3>
+<p lang="en-GB" align="JUSTIFY">
+    <strong>1. Introduction</strong>
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    IdeaBiz is an online platform (the “Service”) provided by Dialog Axiata PLC (Dialog), that acts as a Platform through which Developers create applications
+    (the “App(s)”) using the given API toolkits or perform other functionalities provided by the platform for use by other users (the “Users”) within or
+    outside the organization.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    The Developers shall be an individual or a company that uses the IdeaBiz platform provided by Dialog Axiata PLC.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    By using the Service, The Developer agrees to be bound by the following terms and conditions (the "Terms of Service"). The Dialog shall not be responsible
+    or liable for any breaches of third party agreements by any Apps developed or published by The Developer.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    Dialog reserves the right to change these Terms of Service in any way and at any time at its sole discretion. It is The Developer’s responsibility to
+    review the Terms of Service from time to time so The Developer is aware of any changes or updates. Any new features that augment or enhance the current
+    Service shall also be subject to the Terms of Service. Continued use of the Service after any such changes shall constitute The Developer’s consent to such
+    changes. Please read the Terms of Service very carefully.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    <br/>
+    <br/>
+    <strong>2. Account Terms</strong>
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    Violation of any of the Terms of Service may result in the termination of The Developer account without notice. Dialog prohibits inappropriate, obscene,
+    offensive and illegal conduct and content while using its Service—this includes both conduct and content while using its Service and conduct and content in
+    any product resulting from use of the Service. In using the Service, The Developer understands and agrees that Dialog is not responsible for the content
+    posted, shared or produced using the Service. The Developer agrees to use the Service at The Developer’s own risk.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    A. The Developer must be a registered entity by permitted Law in Sri Lanka.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    <strong>
+        B. The Developer will sign a legal contract with Dialog separate to this online agreement with regard to financial considerations and other solution
+        related matter.
+    </strong>
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    C. The Developer must provide valid information for the registration process in order to access the Service.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    D. The Developer is responsible for maintaining the security of The Developer’s account and passwords created by staff attached to The Developer. The
+    Developer is solely responsible for any and all use of The Developer’s account and actions taken under The Developer’s account. The Developer agree to
+    notify Dialog immediately if The Developer suspect or believe The Developer’s account has been accessed or used without The Developer’s permission. The
+    Developer will also be responsible for the maintenance of any devices used in conjunction with The Developer’s account. The Developer agree to notify the
+    Dialog immediately if The Developer believe The Developer’s device(s) may have been stolen or is otherwise being used by a third party without The
+    Developer’s permission. Dialog cannot and will not be liable for any loss or damage from The Developer’s failure to comply with this security obligation.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    E. The Developer is responsible for all material The Developer produces using the Service and activity that occurs under The Developer’s account (even when
+    content is posted by others who have access to The Developer’s account).
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    F. The Developer shall not use the Service for any purposes illegal or otherwise in conflict with these Terms of Service. The Developer must not, in the
+    use of the Service, violate any laws in the legal jurisdiction to which The Developer are subject to (including but not limited to any state, local,
+    provincial, regional, federal or international laws). Take special heed of copyright laws when using the Service.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    G. The Developer shall not use Content with malicious intent or falsify, manipulate, or tamper with data related to but not limited to App usage,
+    downloads, sessions, impressions, click trough or other end-user generated data. Developer should not use any Dialog subscriber numbers, personal data (Ex.
+    Names, locations etc.) and misuse any of the data obtained for any other purpose than the purpose of the application created.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    H. The Developer shall not use any unlicensed software for the developments of The Developer’s application or as a component of The Developers application
+    and any App or Content developed by The Developer shall not violate any third party intellectual property rights. Any legal liability associated with The
+    Developer’s applications shall be the sole responsibility of the Developer.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    H. App name used by The Developer must be relevant and unique to the App being created. Branding/Trademarks need license or permission to use.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    I. The Developer must not use other App names or Dialog names as keywords.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    J. The Developer understand and agree that Dialog holds the right to review and approve any content or App and any Content or App will be made available in
+    the Service only upon prior approval by the Dialog, provided nothing herein shall limit the Developer’s responsibility with respect to the content or the
+    App. The Developer understand and agree that the Dialog may take minimum 3 working days for the approval of The Developer’s registration or App from the
+    submission date for web services based applications and 5 working days for downloadable applications. However depending on the complexity this minimum time
+    period might vary.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    K. The Developer agree that Dialog shall not generate any short message or distribute any content among its subscribers or The Developer’s end users
+    between 22:00 hours to 06:00 hours or any other time decided by Dialog.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    L. The Developer understand and agree that the maintenance of the App shall be the Developer’s responsibility and the Dialog may withhold or refuse to make
+    any payment hereunder, if Dialog in its sole discretion determines that the Developer has not maintained the App to Dialog’s expected standards.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    <strong>3. Ownership and Licenses</strong>
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    A. With the exception of Developer Content (as defined below), all content and intellectual property available through the Service, including, without
+    limitation, all software code and builds relating to Apps, all data compiled by Dialog from the Service and the Apps, and all information derived by Dialog
+    from such compiled data is the proprietary content and property of, and is solely owned provided by, Dialog and/or is used by Dialog under license. Such
+    content is protected by laws relating to copyright, patent, trade secret and/or other forms of intellectual property and by other applicable laws, and
+    Dialog reserves and retains all rights with respect thereto. The look and feel of the Service is copyright of Dialog. Dialog hereby grants to The Developer
+    a non-exclusive, non-transferable, revocable, limited license to use the Service and the content conditioned upon The Developer’s adherences to the terms
+    and restrictions set forth herein.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    B. The Developer shall not duplicate, copy, or reuse any portion of the HTML/CSS or visual design elements related to the content without express written
+    permission from Dialog or for any other purpose not protected by fair use. The Developer is authorized to use the content as long as The Developer abides
+    by these Terms of Service. The Developer agree not to copy, alter, modify, reverse engineer, or create derivative works of the content, including, without
+    limitation, the Apps, in any way that violates the use restrictions contained in these Terms of Service. Any unauthorized use of the content may violate
+    copyright law, trade mark law, or other applicable laws and regulations and will result in the termination of the license granted hereunder. Except as
+    expressly set forth in these Terms of Service, these Terms of Service do not, and will not be interpreted or construed to, grant to The Developer any
+    license to any intellectual property rights or other proprietary rights.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    C. Subject to the rights of Dialog in the Service itself and the content, The Developer shall retain ownership of: (i) all materials, source code, content
+    and intellectual property that The Developer provide to Dialog in connection with the Apps; and (ii) any modules that The Developer build on The
+    Developer’s own in connection with Apps (collectively, the “Developer Content”). By using the Service, The Developer grant to Dialog a perpetual,
+    non-exclusive, transferable, sub-licensable, royalty-free, worldwide license to use any Developer Content in connection with the operation, maintenance,
+    and optimization of the IdeaBiz services and its apps publishing environment.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    D. By using the Service, The Developer represent and warrant that The Developer have full right and ownership of or are otherwise legally allowed to use or
+    license or sublicense any and all Developer Content and other material The Developer upload to or distribute through the Service and that such Developer
+    Content does not infringe any third party rights, including, without limitation, intellectual property rights.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    E. If the materials The Developer use in connection with the Service requires licensing or licensing fees in exchange for its use, The Developer shall be
+    solely responsible for securing and paying for all digital delivery licenses, mechanical licenses, any public performance licenses, synchronization
+    licenses and any other licenses from all copyright owners (or their agents).
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    <strong>4. Trademarks</strong>
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    The name and mark IDEA MART IDEA BIZ or DIALOG or DIALOG AXIATA and any other logos, graphics, designs, web/page designs, and icons of the Dialog used in
+    connection with the Service are registered or unregistered trademarks, service marks or trade dress of the Dialog (the "Marks"). The Developer shall not
+    use the Marks in any form or in any media without the prior written consent of Dialog.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    The Developer shall retain all right, title and interest in and to all of The Developer’s logos, promotional graphics and related marketing designs
+    (collectively, the “Developer Art”); provided, however, that Developer hereby grants to Dialog a worldwide, perpetual, royalty-free, fully sublicenseable,
+    non-exclusive license to use the Developer Art, as well as Developer’s corporate and/or trade name for purposes of marketing Dialog’s products and services
+    to third parties.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    <strong>5. Developer’s End Users</strong>
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    Developer shall be responsible for the End Users’ access to the Apps and the Service including the terms of use and privacy.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    If applicable, The Developer shall clearly communicate the price charged for the use of the Apps and the nature and method of using the App and the
+    frequency of messages passed to the end user device to the End Users in all advertising material used to publicise the APP and in all confirmation messages
+    provided to the end user at the time of initial subscriptions.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    The Developer at all times will respect the privacy of the end user and agrees not to use the mobile numbers and private data of end users for any spamming
+    purposes or other illegal or harmful causes.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    <strong>6. Payments and Refund Terms</strong>
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    A. Dialog in a separate agreement will indicated the pricing and charges for use of the Services discussed in this Terms and Conditions sheet.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    B. If applicable, the fee chargeable from the End Users for the use of an App shall be indicated by the Developer to the end user. The Developer shall be
+    responsible for communicating and obtaining the consent of the End User for the fees charged from the End Users for using the App at the time of first
+    registration of each end user.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    C. All payments and charges to be made shall be in Sri Lanka Rupees (SLR)
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    D. Where appropriate and legally required, all taxes applicable under Agreements on any payments made shall be borne or paid by the Party charged with the
+    tax.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    <strong>7. Modifications to the Service and Prices</strong>
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    A. Dialog reserves the right at any time and from time to time to modify or discontinue—temporarily or permanently —the Service (or any part thereof) with
+    or without notice at any time.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    B. Prices of all Services, including but not limited to any monthly subscription-plan fees, are subject to change at any time, with or without notice.
+    Notice may be provided at any time by posting the changes to <a href="http://www.IdeaBiz.lk" target="_blank">http://www.IdeaBiz.lk</a>
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    C. Dialog shall not be liable to The Developer or to any third party for any modification, price change, suspension or discontinuance of the Service or any
+    other related service.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    D. From time to time, Dialog may issue an update to the Service that may add, modify, and/or remove features. These updates may be pushed out automatically
+    with little or no notice, although Dialog may notify The Developer in advance of an upcoming update, including details on what the update includes.
+    <br/>
+    <br/>
+    <strong>8. Deactivation and Termination</strong>
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    A. Dialog may deactivate an account at The Developer’s request and reserves the right, in its sole discretion, to terminate The Developer’s account or
+    access to the Service at any time, with or without notice or explanation, for any or no reason, and without liability.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+B. The Developer is solely responsible for properly deactivating The Developer’s account. Account deactivation requests must be submitted in writing to    <a href="mailto:admin@ideamart.lk">admin@IdeaBiz.lk</a><strong>.</strong> Deactivations by phone or sent to any other email address will not be
+    considered valid.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    C. Dialog has the right to suspend or terminate The Developer’s account and refuse any and all current or future use of the Service or that of any other
+    service provided by the Dialog for any reason, at any time, with or without notice, and without any refund of monies paid. Such termination of service will
+    result in the deactivation or termination of The Developer’s account. The Developer will no longer be able to access The Developer’s account and any
+    Content stored with the Service in relation to the account.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    D. Dialog reserves the right to refuse service to anyone for any reason at any time. Such refusal may include, but is not limited to, Apps involving
+    materials that the Dialog determines to be violent, obscene, or offensive; to advocate violent or illegal activity; to contain (or have the potential to
+    contain) any malware; or to contravene any law, statute, or ordinance; or to violate these Terms of Service; or to violate any third parties’ terms of
+    service.
+    <br/>
+    <br/>
+    <strong>9. Privacy</strong>
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    The privacy of users is important to the Dialog and The Developer shall keep all and any information of the users of the app and the content in strict
+    confidence and shall not disclose unless required by a court of law or government authority with competent jurisdiction.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    The Developer shall keep customer / user mobile numbers provided by Dialog in strict confidence and shall not disclose unless required by a court of law or
+    government authority with competent jurisdiction. .
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    <strong>10. Quality of Service</strong>
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    While reasonable efforts are made to keep the Service accurate and current, Dialog assumes no liability for any inaccuracies in the Service or any of its
+    services or for any damages that may result from the use of information posted to the Service.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    A. The Developer understand and agree that The Developer’s
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    use of the Service is at The Developer’s own risk and on an as-is basis.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    B. Dialog does <u>not</u> warrant that:
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    · The Service will meet The Developer’s specific requirements;
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    · The Service will be uninterrupted, timely, secure or error-free;
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    · The results that may be obtained from the use of the Service will be accurate or reliable;
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    · The quality of any products, services, information, or other material purchased or obtained by The Developer through the Service will meet The
+    Developer’s expectations and any errors in the Service will be corrected.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    C. At no time is Dialog obligated to issue a monetary refund, nor is it liable for damages in connection with any use of the Service or any related defect,
+    perceived or real, in the services rendered.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    D. The Developer understands that the words and opinions of other Developers using the Service are not those of Dialog and Dialog does not and cannot
+    accept responsibility of such words or opinions.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    <strong>11. Indemnification</strong>
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    The Developer agree to indemnify and hold Dialog and its employees, suppliers, licensors, agents and service providers (and its and their successors,
+    officers, directors, and employees) harmless from and against any and all claims, demands, costs, liabilities, judgment, losses, expenses and damages
+    (including attorneys’ fees) arising out of, in connection with, or related to:
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    · The Developer’s use of the Service, including without limitation any problems arising from technical difficulties (including but not limited to, the
+    transmission of computer viruses and the interruption of services), any fraudulent use of a credit card or other payment method used to purchases services,
+    or any violation of these Terms of Service;
+</p>
+<ul>
+    <li lang="en-GB" align="JUSTIFY">
+        The Developer’s Content; or
+    </li>
+</ul>
+<p lang="en-GB" align="JUSTIFY">
+    · Any data, software, services or other materials that The Developer use in connection with The Developer’s access or use of the Service, including without
+    limitation any claim that such data, software, services, or other materials, or any part thereof, infringes, misappropriates, or otherwise violates any
+    copyright, patent, trade secret, trademark or other legal right of any third party.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    <strong>12. Disclaimers and Warranties</strong>
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    The Developer expressly agrees that the use of the Service is at The Developer’s sole risk. The Service, including any content, applications, or materials
+    provided thereunder, are provided on an "as is" basis and Dialog hereby expressly disclaims all representations and warranties of any kind, whether express
+    or implied, including, but not limited to, warranties of title, merchantability, fitness for a particular purpose, or non infringement. Without limiting
+    the foregoing: (a) Dialog cannot and does not guarantee any specific results from the use of the Service and Dialog specifically does not make any claim or
+    warranty that the Services will be uninterrupted or error-free and assumes no responsibility for any error, omission, interruption, deletion, defect, delay
+    in operation or transmission, communications line failure, theft or destruction or unauthorized access to, or alteration of, any content or any user
+    communication or message; (b) Dialog does not represent or warrant that applications, content, data or materials on the Service are accurate, complete,
+    reliable, current or error-free or that the Services are free of viruses or other harmful components and, accordingly, The Developer should always exercise
+    caution in the use and downloading or use of any such applications, content, data or materials and use industry-recognized software to detect and disable
+    or block viruses, malware and other malicious code; (c) The Developer understand and agree that The Developer download, access or otherwise obtain
+    applications, content, data and materials from the Service at The Developer’s own discretion and risk and that The Developer are solely responsible for The
+    Developer’s use thereof and any damages to The Developer’s mobile phone or mobile device or computer system, any loss of data, and any other damage or harm
+    of any kind that may result therefrom; (d) Dialog is not responsible for any problems or technical malfunction of any mobile phone or mobile device,
+    telephone network or lines, computer online systems, servers or providers, computer equipment, software, failure of any email or players due to technical
+    problems or traffic congestion on the internet or on any of the Service or combination thereof, including any injury or damage to users or to any person's
+    mobile phone or mobile device or computer related to or resulting from participation or downloading materials in connection with the Service; (e) under no
+    circumstances will Dialog be responsible for any loss or damage, including personal injury or death, resulting from use of the Service, from any user
+    content posted on or through the Service; and (f) Dialog is not responsible for the conduct, whether online or offline, of any user of the Service.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    <br/>
+    To the extent that the applicable law does not allow the exclusions and disclaimers of warranties as set forth above, some or all of the above exclusions
+    and disclaimers may not apply to The Developer, in which case all warranties will be limited to the fullest extent permitted by applicable law. The
+    Developer acknowledges that the disclaimers, limitations and waivers of liability contained herein will survive any termination of The Developer’s
+    account(s) or any services. The exclusions and disclaimers set forth in this section will survive any termination or expiration of The Developer’s
+    registered user account or The Developer’s use of the Service.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    <strong>13. Limitation of liability</strong>
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    In no event will Dialog, its affiliates, or its and their respective directors, officers, employees, agents, successors and assigns be liable for any
+    indirect, consequential, exemplary, incidental, special or punitive damages, including damages for lost profits or loss of data, arising out of or
+    resulting from, The Developer’s use of the Service, even if Dialog is aware of or has been advised of the possibility of such damages. Without prejudice to
+    the above, Dialog's aggregate liability to The Developer for any cause whatsoever, regardless of the form of the action, will at all times be limited to
+    the revenue earned by Dialog through the relevant App of the Developer during the year (or part thereof) immediately before the claim. To the extent
+    applicable law does not allow the exclusions and limitations of damages as set forth above, some or all of the above exclusions and limitations may not
+    apply to The Developer, in which case Dialog's liability to The Developer will be limited to the fullest extent permitted by applicable law. The
+    limitations and exclusions set forth in this section will survive any termination or expiration of The Developer’s registered user account or The
+    Developer’s use of the Service.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    <strong>14. Exclusions and Limitations</strong>
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    Some jurisdictions do not allow the exclusion of certain warranties or the limitation or exclusion of liability for incidental or consequential damages.
+    Accordingly, some of the above limitations may not apply to The Developer. The exclusions and limitations of liability in these Terms of Service will apply
+    notwithstanding any failure of essential purpose of any limited remedy.
+    <br/>
+    <br/>
+    <br/>
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    <strong>15. Entire Agreement and Severability</strong>
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    These Terms of Service are the entire agreement between The Developer and Dialog with respect to the Service, and supersede all prior or contemporaneous
+    communications and proposals (whether oral, written or electronic) between The Developer and Dialog with respect to the Service (including but not limited
+    to any prior versions of the Terms of Service. If, any of the terms and conditions of these Terms of Service shall be or become unenforceable for any cause
+    or reason whatsoever, the ensuing lack of enforceability shall not affect the other provisions hereof, and in such event the Parties hereto shall endeavour
+    to substitute forthwith such other enforceable provisions as will most closely correspond to the legal and economic contents of the said terms and
+    conditions.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    <strong>16. General Conditions</strong>
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    A. These Terms of Service shall be governed by the laws of Sri Lanka and any dispute or interpretation arising out of these Terms of Service shall be
+    referred to a court of law with competent jurisdiction in Colombo, Sri Lanka
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    B. The Developer understand that Dialog uses third party vendors and hosting partners to provide the necessary hardware, software, networking, storage, and
+    related technologies required to maintain the Service.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    C. Technical support is available through community forums and other means which will be communicated through a signed legal document. Dialog reserves the
+    right to change the way it offers technical support at any time with or without notice.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    <a name="_GoBack"></a>
+    D. Dialog may use third party services to augment or enhance its Service. Dialog is not responsible for such services offered by other companies and cannot
+    be held liable for their actions, including to any resulting damages, defects or failures.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    E. The Developer agree not to reproduce, duplicate, copy, sell, resell or exploit any portion of the Service, use of the Service, access to the Service, or
+    its resulting Apps or any other resulting product without permission.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    F. The Developer must not modify, reproduce, mimic, adapt or hack the Service or modify another website so as to falsely imply or mislead that it is
+    associated with Dialog, including any other services or brands under Dialog’s name.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    G. The Developer understand that the technical processing and transmission of the Service, including The Developer’s content, may be transferred
+    unencrypted and involve (a) transmissions over various networks; and (b) changes to conform and adapt to technical requirements of connecting networks or
+    devices.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    H. Any verbal, physical, written or other abuse (including threats of abuse or retribution) of any of Dialog’s customers, employees, members, or officers
+    may result in immediate account termination. This includes abuse in any form of communication, both online or offline.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    I. The Developer may not impersonate any Dialog employee or suggest in any way that The Developer are employed by Dialog. The Developer may not represent
+    The Developer’s services or product as part of the Service or mislead other Developers to believe The Developer is an official extension of the Service or
+    any Dialog brand.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    J. The Developer are solely responsible for compliance with local laws, if and to the extent local laws are applicable.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    K. By using the Service, The Developer expressly consent to Dialog building The Developer’s App on multiple platforms and multiple mobile operating systems
+    with multiple data carriers, even if these aforementioned entities are not available or known today.
+</p>
+<p lang="en-GB" align="JUSTIFY">
+    L. User understands that any Apps created with the Service is through their own volition and therefore indemnify and hold harmless Dialog and all its
+    subsidiaries, employees, and any agent acting on their behalf from any and all liabilities, claims, demands, that may be sustained, due to or relating in
+    any way but not limited to copyright infringement, fraudulence, or trademark violation by way of creating and/or using of any Apps created by Dialog.
+</p>
+<p lang="en-GB">
+    M. The failure of Dialog to exercise or enforce any right or provision of the Terms of Service shall not constitute a waiver of such right or provision.
+</p>
+        </div>
+    </div>
+</div>
+<% }); %>

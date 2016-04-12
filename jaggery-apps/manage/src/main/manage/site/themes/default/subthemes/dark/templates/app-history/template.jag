@@ -1,0 +1,239 @@
+<% jagg.template("app-history", function(inputs, outputs, jagg) {
+
+	// Obtain input parameter values.
+	var reqUrl = request.getRequestURI();
+	var appId = request.getParameter("AppId");
+	var appname = request.getParameter("appname");
+
+	var tasks=outputs.tasks;
+	var log = new Log();
+	var application = tasks.data.application;
+	var opcoapps = tasks.data.opcoapps;
+	var Subscriptions = tasks.data.Subscriptions;
+	var opcosubs = tasks.data.opcosubs;
+
+	//var application = tasks.application;
+
+	%>
+
+<div class="title-section">
+	<h2>Application - <%=appname%></h2>
+</div>
+
+<div id="tierattribute_tooltip" class="well" style="display: none;"></div>
+
+<div class="content-section shadow-up">
+	<div class="content-data">
+
+		<h6></h6>
+
+		<div class="api-info">
+			<div class="row-fluid">
+				<div class="span12">
+                    <div class="thumbnail span2">
+                        <img width="100" src="/store/site/themes/fancy/subthemes/dark/images/api-default.png">
+					</div>
+					<div class="span6">
+						<table cellspacing="0" cellpadding="0" class="table">
+							<tbody>
+								<!-- 
+                            <tr>
+                                <th>Rating:</th>
+                                
+                                
+                                <td colspan="2">
+                                    <div class="star-ratings">
+                                        <div style="width:100px;" class="dynamic-rating"><span>Your rating:</span><span class="dynamic-rating-stars"><a class="star-0"></a><a class="star-0"></a><a class="star-0"></a><a class="star-0"></a><a class="star-0"></a></span>N/A</div>
+                                        
+                                    </div>
+                                </td>
+
+                            </tr>
+                            
+                            <tr>
+                                <th>Version:</th>
+                                <td colspan="2">v1</td>
+                            </tr>  -->
+								<tr>
+									<th>Application Status:</th>
+									<td colspan="2"><%=application.status%></td>
+								</tr>
+								<tr>
+									<th>OPERATOR:</th>
+									<td colspan="2"></td>
+								</tr>
+								
+								
+								<% if(opcoapps.length==0){%>
+								<tr>
+								<th>
+									<div class="alert alert-info">
+										<div style="padding-bottom: 10px">
+											<b><%=i18n.localize("noOperatorApv")%> </b>
+										</div
+									</div>
+									</th>
+								</tr>	
+								<%} else {for (var i = 0; i < opcoapps.length; i++){%>
+								<tr>
+									<%if (opcoapps[i].operatorid==1) {%>
+									<th>Dialog:</th>
+									<%} else if (opcoapps[i].operatorid==2) {%>
+									<th>Celcom:</th>
+									<%} else if (opcoapps[i].operatorid==3) {%>
+									<th>Robi:</th>
+                                 <%}%>
+									<td colspan="2"><%=opcoapps[i].status%></td>
+								</tr>
+                            <%}}%>                            
+                            
+
+							</tbody>
+						</table>
+					</div>
+
+                       <div class="span4 appStyleFix">
+
+                    </div>
+					<div class="span12 tabs-section">
+
+						<div class="ui-tab">
+
+							<ul class="nav nav-tabs all-tabs">
+
+
+        <li class="first active"><a href="#tab0">Subscribed APIs</a>
+								</li>
+
+								<!-- 
+        <li class="">
+            <a href="#tab1">Documentation</a>
+        </li>
+    
+    
+        <li class="last">
+            <a href="#tab2">API Console</a>
+        </li> -->
+
+							</ul>
+
+							<div class="tab-content">
+
+								<div id="tab0" class="tab-pane active">
+
+
+
+									<div id="overview">
+										
+										<% if (Subscriptions.length==0) {%> 
+										<div class="alert alert-info">
+											<div style="padding-bottom: 10px">
+												<b><%=i18n.localize("noSubscriptions")%> </b>
+											</div
+									    </div>
+									    <%}										
+										for (var i = 0; i < Subscriptions.length; i++){%>
+
+										<h5>
+											<%=Subscriptions[i].api%>
+											-
+											<%=Subscriptions[i].apiversion%>
+											[<a style="display: inline;" id="tierLbl_<%=Subscriptions[i].api%>" class="tierattribute_tooltip_open"
+											 onclick="getLblText(this);"><%=Subscriptions[i].tier%></a>] Subscription - <span style="font-weight: normal"><%=Subscriptions[i].status%>
+											</span>
+										</h5>
+
+										<div class="content-section shadow-up">
+
+											<div class="content-data">
+
+            <div>
+							</div><table class="table table-bordered table-striped">
+													<thead>
+														<tr>
+															<th>Operator</th>
+															<th>Status</th>
+															<th class="date-time-col">Last Updated</th>
+
+														</tr>
+													</thead>
+													<tbody>
+
+														<%for (var j = 0; j < opcosubs.length; j++){
+
+															if (opcosubs[j].api == Subscriptions[i].api ) {
+                		%>
+														<tr>
+
+															<%if (opcosubs[j].operatorid==1) {%>
+															<td>Dialog:</td>
+															<%} else if (opcosubs[j].operatorid==2) {%>
+															<td>Celcom:</td>
+															<%} else if (opcosubs[j].operatorid==3) {%>
+															<td>Robi:</td>
+                                 <%}%>
+                                 
+							<td id="status0"><%=opcosubs[j].status%></td>
+							<td><%=opcosubs[j].lastupdated%></td>
+ 							 
+                    					
+                    </td>
+                    
+                </tr>
+                                
+                <%}}%>  
+                </tbody>
+            </table>
+            
+              <!--START Pagination links-->
+              
+
+												<!--START Pagination links-->
+
+
+
+
+												<!--END Pagination links-->
+											</div>
+										</div>
+										<br />
+
+           <%}%>   
+
+										<div id="comment-add">
+											<!--   <div style="display:none" id="commentAdd-error" class="alert alert-error">
+        <button data-dismiss="alert" class="close" type="button">×</button>
+        <strong>Comment exceeds character limit</strong>
+      </div>
+    <span class="counter">Characters left: 450</span><textarea class="span12 comment-box" id="comment-text"></textarea>
+    <button class="btn" id="comment-add-button"><i class=" icon-plus-sign"></i>Add</button> -->
+										</div>
+
+
+
+
+
+<div id="comment-list">
+    
+    
+</div>
+
+
+									</div>
+								</div>
+
+
+
+							</div>
+
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+	</div>
+
+</div>
+</div>
+<%});%>

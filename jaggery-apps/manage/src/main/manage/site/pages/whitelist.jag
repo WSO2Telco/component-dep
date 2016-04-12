@@ -1,0 +1,82 @@
+<%
+include("/jagg/jagg.jag");
+include("header.jag");
+var site = require("/site/conf/site.json");
+
+var i18n = require("i18n");
+var localeResourcesBasePath="/site/conf/locales/jaggery/";
+i18n.init(request,localeResourcesBasePath);
+
+var middlePage="apiwise-whitelist";
+
+var pageName=request.getParameter("task");
+if(pageName=="apiwise-whitelist"){
+	middlePage="apiwise-whitelist";
+}
+
+var log = new Log();
+//log.info(stringify(outputs));
+var isAdmin = jagg.getUser().isAdmin;
+var isOperator = jagg.getUser().operator;
+var isCustomerCare = jagg.getUser().isCustomerCare;
+var errorCode="";
+
+if(isAdmin == false){
+    middlePage="errors";
+    errorCode="401"
+}
+if(isCustomerCare != null){
+    middlePage="errors";
+    errorCode="401"
+}
+
+var usage, user = jagg.getUser();
+
+(function () {
+    var user = jagg.getUser();
+    if (!user) {
+        response.sendRedirect(getRedirectPathForNonAuthenticatedUser());
+        return;
+    }
+
+    jagg.render({
+        "name":"page/base",
+        "inputs":{
+            "title":"Whitelist",
+            "header":{
+                "name":"menu/primary",
+                "inputs":{
+   			"pagePath":"/site/pages/whitelist.jag"
+    		}
+            },
+            "body":[	
+                {
+                    "name":"layout/base",
+                    "inputs":{
+                        "middle":[{
+                            "name":middlePage,
+                			"inputs":{
+								"user":user,
+								"usage":usage,
+                                "error":errorCode
+                	           }
+                        	}
+                        ],
+                        "left":[{
+                        	"name":"menu/left-whitelist"
+                     		}
+                        ]
+                    }
+                }
+            ],
+            "footer":[
+                {
+                    "name":"footer"
+                }
+            ]
+        }
+    });
+}());
+
+
+%>

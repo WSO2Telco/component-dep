@@ -1,0 +1,7 @@
+<%
+	jagg.initializer("transactions", {
+		preInitialize:function () {
+		    jagg.addFooterJS("application", "jagg", "templates/transactions/js/transactions.js");		
+		}
+	});
+%>

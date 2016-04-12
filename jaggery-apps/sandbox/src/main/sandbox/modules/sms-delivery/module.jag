@@ -1,0 +1,20 @@
+<%
+jagg.module("sms-delivery", {
+
+	getDeliverySubResponse:function () {
+		return jagg.require(jagg.getModulesDir() + "sms-delivery/sms-delivery.jag").getDeliverySubscriptionResponse.apply(this, arguments);
+	},
+	deliverySubData:function () {
+		return jagg.require(jagg.getModulesDir() + "sms-delivery/sms-delivery.jag").deliverySubData.apply(this, arguments);
+	},
+	removeSubscription:function () {
+			return jagg.require(jagg.getModulesDir() + "sms-delivery/sms-delivery.jag").removeSubscription.apply(this, arguments);
+	},
+	loadSenderAddresses:function () {
+		return jagg.require(jagg.getModulesDir() + "sms-delivery/sms-delivery.jag").loadSenderAddresses.apply(this, arguments);
+	}, 
+	getDeliveryStateResponse:function () {
+		return jagg.require(jagg.getModulesDir() + "sms-delivery/sms-delivery.jag").getDeliveryStateResponse.apply(this, arguments);
+	}
+});
+%>

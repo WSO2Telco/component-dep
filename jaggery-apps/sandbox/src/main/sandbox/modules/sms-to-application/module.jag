@@ -1,0 +1,16 @@
+<%
+jagg.module("sms-to-application", {
+
+	saveSendSMSToApplication:function () {
+		return jagg.require(jagg.getModulesDir() + "sms-to-application/sms-to-application.jag").saveSendSMSToApplication.apply(this, arguments);
+	},
+
+	getSenderAddresses:function () {
+		return jagg.require(jagg.getModulesDir() + "sms-to-application/sms-to-application.jag").loadSenderAddresses.apply(this, arguments);
+	},
+
+	getDestinationAddresses:function () {
+		return jagg.require(jagg.getModulesDir() + "sms-to-application/sms-to-application.jag").loadDestinationAddresses.apply(this, arguments);
+	}
+});
+%>

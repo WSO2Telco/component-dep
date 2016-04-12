@@ -1,0 +1,234 @@
+<%
+include("/jagg/jagg.jag");
+
+var addparam = function (user,delstatus,notifydelay,maxallowed) {
+    var result, message,
+            log = new Log();
+
+try {
+ 
+ log.info('user: '+user);   
+
+ var xhr = new XMLHttpRequest();
+		var endpoint =  jagg.getSandboxurl()+"/SmsSandboxService";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+                xhr.setRequestHeader("payact","addparam");
+		var payload = "userid="+user+"&delstatus="+delstatus+"&notifydelay="+notifydelay+"&maxallowed="+maxallowed;
+		xhr.send(payload);
+
+		result = xhr.responseText.toString();
+		log.info('backend result :'+result);
+		
+		return {
+		        error:false,
+		        message:"OK",
+		        data:result
+		    };
+
+} catch (e) {
+        log.error(e.message);
+        return {
+            error:true,
+            message:e.message.split("Exception:")[2]
+        };
+}
+};
+
+var getparam = function (user) {
+    var result, message,
+    log = new Log();
+
+try {
+ 
+ log.info('user: '+user);   
+ var xhr = new XMLHttpRequest();
+		var endpoint =  jagg.getSandboxurl()+"/SmsSandboxService";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+                xhr.setRequestHeader("payact","queryparam");
+		var payload = "userid="+user;
+		xhr.send(payload);
+
+		result = xhr.responseText.toString();
+                log.info(result);
+		
+		return {
+		        error:false,
+		        message:"OK",
+		        data:result                        
+		    };
+
+} catch (e) {
+        log.error(e.message);
+ return {
+        error:true,
+        message:e.message.split("Exception:")[2]
+    };
+}
+};
+
+var addsmsnotify = function (user,notifyobj) {
+    var result, message,
+            log = new Log();
+
+try {
+ 
+ log.info('user: '+user);   
+ log.info('payobj :'+stringify(notifyobj));
+ 
+ var xhr = new XMLHttpRequest();
+		var endpoint =  jagg.getSandboxurl()+"SMSReceiptService/smsmessaging/1/inbound/subscriptions";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-type","application/json");
+                xhr.setRequestHeader("sandbox",user);
+                var payload = notifyobj;
+		xhr.send(payload);
+
+		result = xhr.responseText.toString();
+                log.info('backend result :'+result);
+                var reqerr=true
+                
+                if ( (xhr.status =='200') || (xhr.status =='201') ) {
+                    var reqerr =false;
+                } 
+                
+		log.info('response :'+result);
+                
+		return {
+		        error:false,
+		        message:stringify(notifyobj),
+		        data:result,
+                        reqerr:reqerr
+		    };
+
+} catch (e) {
+        log.error(e.message);
+        return {
+            error:true,
+            message:e.message.split("Exception:")[2]
+        };
+}
+};
+
+var GetSMSParamData = function(userid){
+	var result, message, log = new Log();
+
+	try{
+		var xhr = new XMLHttpRequest();
+		var endpoint =  jagg.getSandboxurl()+"SmsSandboxService";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		xhr.setRequestHeader("payact","getTableData");
+		var payload = "userid="+userid;
+		xhr.send(payload);
+
+		result = xhr.responseText.toString();
+		log.info(result);
+
+		return {
+			error:false,
+			message:"OK",
+			data:result
+		};
+
+	} catch (e) {
+		log.error(e.message);
+		return {
+			error:true,
+			message:e.message.split("Exception:")[2]
+		};
+	}
+};
+
+var DeleteSubscribeData = function(subid,username){
+	var result, message, log = new Log();
+
+	try{
+		var xhr = new XMLHttpRequest();
+		var endpoint =  jagg.getSandboxurl()+"/CancelSMSReceiptService/smsmessaging/1/inbound/subscriptions/"+subid
+		xhr.open("DELETE", endpoint);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		xhr.setRequestHeader("sandbox",username);
+		var payload = "subscribeid="+subid;
+		xhr.send(payload);
+
+		result = xhr.responseText.toString();
+		log.info(result);
+
+		return {
+			error:false,
+			message:"OK",
+			data:result
+		};
+
+	} catch (e) {
+		log.error(e.message);
+		return {
+			error:true,
+			message:e.message.split("Exception:")[2]
+		};
+	}
+};
+
+
+var EditSubscribeDataTbl = function(subid, callback, criteria, notifyurl){
+	var result, message, log = new Log();
+
+	try{
+		var xhr = new XMLHttpRequest();
+		var endpoint =  jagg.getSandboxurl()+"SubscribeSMSRequestServlet/EditSubscribeRequest"
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-type","application/json");
+		var payload = {"id":subid, "callbackData":callback,"criteria":criteria,"notifyURL":notifyurl};
+		xhr.send(payload);
+
+		result = xhr.responseText.toString();
+		log.info(result);
+
+		return {
+			error:false,
+			message:"OK",
+			data:result
+		};
+
+	} catch (e) {
+		log.error(e.message);
+		return {
+			error:true,
+			message:e.message.split("Exception:")[2]
+		};
+	}
+};
+
+var SearchSubscribeData = function(subid){
+	var result, message, log = new Log();
+
+	try{
+		var xhr = new XMLHttpRequest();
+		var endpoint =  jagg.getSandboxurl()+"SubscribeSMSRequestServlet/SearchSubscribeRequest"
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		var payload = "subscribeid="+subid;
+		xhr.send(payload);
+
+		result = xhr.responseText.toString();
+		//var parsedResult = parse(xhr.responseText.toString());
+		
+		return {
+			error:false,
+			message:"OK",
+			data:result
+		};
+
+	} catch (e) {
+		log.error(e.message);
+		return {
+			error:true,
+			message:e.message.split("Exception:")[2]
+		};
+	}
+};
+
+
+%>

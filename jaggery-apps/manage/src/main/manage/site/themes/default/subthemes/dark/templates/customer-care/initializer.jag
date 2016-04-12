@@ -1,0 +1,11 @@
+<%
+jagg.initializer("customer-care", {
+
+    preInitialize:function () {
+    	//jagg.addHeaderJS("customer-care", "dojo", "templates/utils/dojo-release-1.8.3/dojo/dojo.js");
+        jagg.addHeaderJS("customer-care", "customer-care", "templates/customer-care/js/customer-care.js");
+		jagg.addFooterJS("customer-care", "customer-care", "lib/customer-care/json.human.js");
+    }
+
+});
+%>

@@ -1,0 +1,134 @@
+<% jagg.template("performance", function(inputs, outputs, jagg) {
+	var usage=outputs.usage;
+	var length;
+	if (usage!=null){
+		length=outputs.usage.length;
+	}
+	var log = new Log();
+	log.info(stringify(outputs));
+%>
+<div class="title-section">
+	<h2>Performance Report</h2>
+</div>
+<div class="content-section shadow-up">
+	<div class="content-data">
+		<div id="userKey">
+			<label class="control-label"><b>Period:</b></label>
+			<div class="well form-inline">
+				<table>
+					<tr>
+						<td><b>Year:</b></td>
+						<td><b>Month:</b></td>
+						<td><b>Subscriber:</b></td>
+						<td><b>Application:</b></td>
+						<td><b>API:</b></td>
+						<td><b>Operator:</b></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>
+							<select id="year" style="width: 100px" name="year" >
+								<!-- Populate dropdown list of years -->
+								<script type="text/Javascript">
+									loadYearDropDownList(document,"year");
+								</script>	
+							</select>	
+						</td>
+						<td>
+							<select id="month" size="1" name="month" style="width: 150px">
+								<option value="1">January</option>
+								<option value="2">February</option>
+								<option value="3">March</option>
+								<option value="4">April</option>
+								<option value="5">May</option>
+								<option value="6">June</option>
+								<option value="7">July</option>
+								<option value="8">August</option>
+								<option value="9">September</option>
+								<option value="10">October</option>
+								<option value="11">November</option>
+								<option value="12">December</option>
+							</select>
+						</td>							
+						<td>
+							<%
+							  var isAdmin=jagg.getUser().isAdmin, subLength=0, subscribers=outputs.subscribers, subscriber;
+							  if (subscribers!=null) {subLength=subscribers.length;}				
+							%>
+							<select id="subscriber" size="1" style="width: 150px" onchange="getSelectedSubscriber()" <% if(!isAdmin){ %> disabled="disabled" style="display: none" <% } %> name="subscriber">
+								<option value="__ALL__">All</option>
+								<%
+								  for (i = 0; i < subLength; i++) {
+								  	subscriber = subscribers[i];
+								%>
+									<option value="<%=subscriber%>"><%=subscriber%></option>
+								<% } %> 
+							</select>
+						</td>
+						<td>
+							<%
+							if(true){
+							%>
+							<select id="app" style="width: 150px;" autofocus="autofocus">
+								<option value="0">All</option>
+							</select>
+							<%
+							}
+							%>
+						</td>
+						<td>
+							<%		
+							var apiList = outputs.apis;
+							if(true){
+								if(apiList != null){
+							%>
+							<select id="api" style="width: 150px;" autofocus="autofocus">
+								<option value="0">All</option>
+								<%
+								for (i = 0; i < apiList.length; i++) {
+									var api = apiList[i];
+								%>
+								<option value="<%=api.name%>"><%=api.name%></option>
+								<%		
+									}
+									%>
+							</select>
+							<%
+							}
+							}
+							%>
+						</td>
+						<td>
+							<%
+							var operatorList = outputs.operators;
+							if(true){
+								if(operatorList != null){
+							%>
+							<select id="operator" style="width: 150px;">
+								<option value="0">All</option>
+								<%
+								for (i = 0; i < operatorList.length; i++) {
+									var operator = operatorList[i];										
+								%>
+								<option value="<%=operator[0]%>"><%=operator[1]%></option>
+								<%	
+									}
+									%>
+							</select>
+							<%
+							}
+							}
+							%>
+						</td>
+						<td>
+							<button class="btn btn-primary" id="generate">Generate</button>
+						</td>
+					</tr>
+				</table>					
+			</div>
+			
+			<button class="btn btn-primary" name="download_file" onclick="downloadReports()" type="button">Download Report</button>
+		</div>
+	</div>
+</div>
+<%});%>

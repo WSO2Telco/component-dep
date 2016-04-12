@@ -1,0 +1,87 @@
+<%
+include("/jagg/jagg.jag");
+include("header.jag");
+var site = require("/site/conf/site.json");
+
+var i18n = require("i18n");
+var localeResourcesBasePath="/site/conf/locales/jaggery/";
+i18n.init(request,localeResourcesBasePath);
+
+var middlePage="application-task";
+
+var pageName=request.getParameter("task");
+if(pageName=="subscription"){
+middlePage="subscription-task";
+}else if(pageName=="signup"){
+middlePage="signup-task";
+}else if(pageName=="application"){
+middlePage="application-task";
+}else if(pageName=="appRegistration"){
+middlePage="app-registration-task";
+}else if(pageName=="workflowaudit"){
+middlePage="approvalaudit";
+}
+
+var log = new Log();
+//log.info(stringify(outputs));
+var isAdmin = jagg.getUser().isAdmin;
+var isOperator = jagg.getUser().operator;
+var isCustomerCare = jagg.getUser().isCustomerCare;
+
+if(isAdmin == false && isOperator == null){
+    middlePage="errors";
+}
+if(isCustomerCare != null){
+    middlePage="errors";
+}
+
+
+var usage, user = jagg.getUser();
+
+(function () {
+    var user = jagg.getUser();
+    if (!user) {
+        response.sendRedirect(getRedirectPathForNonAuthenticatedUser());
+        return;
+    }
+
+    jagg.render({
+        "name":"page/base",
+        "inputs":{
+            "title":"Tasks Listing",
+            "header":{
+                "name":"menu/primary",
+                "inputs":{
+   			"pagePath":"/site/pages/workflow.jag"
+    		}
+            },
+            "body":[
+                {
+                    "name":"layout/base",
+                    "inputs":{
+                        "middle":[{
+                            "name":middlePage,
+                			"inputs":{
+								"user":user,
+								"usage":usage
+                	           }
+                        	}
+                        ],
+                        "left":[{
+                        	"name":"menu/left-workflow"
+                        	}
+						]
+                    }
+                }
+            ],
+            "footer":[
+                {
+                    "name":"footer"
+                }
+            ]
+        }
+    });
+}());
+
+
+%>

@@ -1,0 +1,161 @@
+<% jagg.template("location", function(inputs, outputs, jagg) {
+	var locreqtxns = session.get("locreqtxns");
+
+	var lat='', longi='', alt='', state = '';
+
+	if(outputs.altitude!=null){
+		alt = outputs.altitude;
+	}
+	if(outputs.latitude!=null){
+		lat = outputs.latitude;
+	}
+	if(outputs.longitude!=null){
+		longi = outputs.longitude;
+	}
+	if(outputs.lbsStatus!=null){
+		state = outputs.lbsStatus.trim();
+	}
+	%>
+<div id="listing">
+	<div class="title-section">
+		<h2>Location</h2>
+	</div>
+	<div class="content-section shadow-up">
+		<div class="content-data">
+			<div class="alert alert-error" id="errorMessage"
+				style="display: none">
+				<button type="button" class="close" data-dismiss="alert">×</button>
+				<strong>Error location request!</strong>
+			</div>
+
+			<form novalidate="novalidate" id="appAddForm">
+				<!-- h3>Add New Application</h3-->
+
+				<div class="application-add well form-horizontal">
+
+					<div class="control-group">
+						<label class="control-label" for="altitudefield"
+							style="padding-top: 5px;">Altitude</label>
+						<div class="controls">
+							<input class="formtxt" style="width: 400px;" maxlength="70"
+								name="altitude" id="altitude" type="text" value=<%=alt%>>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="latitudefield"
+							style="padding-top: 5px;">Latitude</label>
+						<div class="controls">
+							<input class="formtxt" style="width: 400px;" maxlength="70"
+								name="latitude" id="latitude" type="text" value=<%=lat%>>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="longitudefield"
+							style="padding-top: 5px;">Longitude</label>
+						<div class="controls">
+							<input class="formtxt" style="width: 400px;" maxlength="70"
+								name="longitude" id="longitude" type="text" value=<%=longi%>>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="lbsstatus"
+							style="padding-top: 5px;">Location Retrieval Status</label>
+						<div class="controls">
+							<div>
+								<select class="valid" id="retState" name="retState">
+									<option value="Retrieved"
+									<% if(state.equals("Retrieved")){ print("selected"); } %>>
+										Retrieved</option>
+
+									<option value="NotRetrieved"
+									<% if(state == "NotRetrieved"){ print("selected"); } %>>
+										NotRetrieved</option>
+
+									<option value="Error"
+									<% if(state == "Error"){ print("selected"); } %>>Error</option>
+								</select>
+							</div>
+
+						</div>
+					</div>
+					<div class="form-actions">
+						<input id="param-add-button" class="btn btn-primary" value="Save"
+							onclick="performSettingsAction();" type="button">
+					</div>
+
+				</div>
+				<div class="alert alert-success" id="lbsAddMessage"
+					style="display: none">
+					<button type="button" class="close" data-dismiss="alert">×</button>
+					<strong>LBS Parameters Successfully Updated!</strong>
+				</div>
+				<div class="alert alert-error" id="lbsErrorMessage"
+					style="display: none">
+					<button type="button" class="close" data-dismiss="alert">×</button>
+					<strong>Error in LBS parameters Updated!</strong>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<br>
+	<div class="content-section shadow-up">
+		<div class="content-data">
+
+			<form novalidate="novalidate" id="reqAddForm">
+
+				<h4>Location Request</h4>
+				<br>
+				<table style="width: 100%;">
+					<tbody>
+						<tr>
+							<td valign="top">
+								<div class="ParameterGroupHeading">
+									<strong>Mandatory Parameters</strong>
+								</div>
+								<div class="ParameterRow">
+									<div class="ParameterLabel">address</div>
+									<div class="ParameterValue">
+										<input type="text" value="tel:+94773852147" id="address"
+											name="address">
+									</div>
+									<div class="ParameterRow">
+										<div class="ParameterLabel">requestedAccuracy</div>
+										<div class="ParameterValue">
+											<input type="text" value="1000" id="requestedAccuracy"
+												name="requestedAccuracy">
+										</div>
+										<input id="location-request-button" class="btn btn-primary"
+											value="Send Request" type="button"
+											onclick="sendlocationRequest()">
+									</div>
+								</div>
+							</td>
+							<td valign="top">
+								<div class="ParameterRow">
+									<div class="ParameterLabel">
+										<strong>Response:</strong>
+									</div>
+									<div class="ParameterValue">
+										<textarea
+											style="height: 450px; width: 400px; background-color: #E7F0F7;"
+											id="json-response" name="json-response"></textarea>
+									</div>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</form>
+			
+			<div id="location_table_content"></div>
+			
+			<div class="pagination" style="text-align: right;"></div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$("#mainnavi").find('li.subnavi').removeClass("active");
+$("#mainnavi").find('li.subnavi:nth-child(3)').addClass("active");
+</script>
+<% }); %>
