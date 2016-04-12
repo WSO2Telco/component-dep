@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+ *  
+ *  WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.wso2telco.custom.hostobjects;
 
 import org.apache.commons.logging.Log;
@@ -26,7 +41,7 @@ import javax.naming.InitialContext;
 import javax.naming.NamingException;
 import javax.sql.DataSource;
 
-import static com.wso2telco.custom.hostobjects.AxiataDataAccessObject.getApprovedOperatorsByApplication;
+import static com.wso2telco.custom.hostobjects.DataAccessObject.getApprovedOperatorsByApplication;
 
 import java.math.BigDecimal;
 import java.sql.*;
@@ -36,18 +51,44 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 import java.util.Date;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class BillingDataAccessObject.
+ */
 public class BillingDataAccessObject {
 
+    /** The stat datasource. */
     private static volatile DataSource statDatasource = null;
+    
+    /** The apimgt datasource. */
     private static volatile DataSource apimgtDatasource = null;
+    
+    /** The Constant API_USAGE_TRACKING. */
     private static final String API_USAGE_TRACKING = "APIUsageTracking.";
+    
+    /** The Constant STAT_SOURCE_NAME. */
     private static final String STAT_SOURCE_NAME = API_USAGE_TRACKING + "DataSourceName";
+    
+    /** The Constant APIMGT_SOURCE_NAME. */
     private static final String APIMGT_SOURCE_NAME = "DataSourceName";
+    
+    /** The Constant log. */
     private static final Log log = LogFactory.getLog(BillingDataAccessObject.class);
+    
+    /** The db. */
     private static TableDataUtils db = new TableDataUtils();
+    
+    /** The stats_db. */
     private static String stats_db = db.getStatsDB();
+    
+    /** The am_db. */
     private static String am_db = db.getAmDB();
 
+    /**
+     * Initialize data source.
+     *
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     */
     public static void initializeDataSource() throws APIMgtUsageQueryServiceClientException {
         if (statDatasource != null && apimgtDatasource != null) {
             return;
@@ -83,6 +124,13 @@ public class BillingDataAccessObject {
         }
     }
 
+    /**
+     * Prints the api request summary.
+     *
+     * @throws SQLException the SQL exception
+     * @throws APIManagementException the API management exception
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     */
     public static void printAPIRequestSummary() throws SQLException, APIManagementException,
             APIMgtUsageQueryServiceClientException {
         String sql = "select * from API_REQUEST_SUMMARY";
@@ -107,6 +155,13 @@ public class BillingDataAccessObject {
 
     }
 
+    /**
+     * Prints the southbound traffic.
+     *
+     * @throws SQLException the SQL exception
+     * @throws APIManagementException the API management exception
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     */
     public static void printSouthboundTraffic() throws SQLException, APIManagementException,
             APIMgtUsageQueryServiceClientException {
         String sql = "select * from TEST_DB";
@@ -134,6 +189,14 @@ public class BillingDataAccessObject {
 
     }
 
+    /**
+     * Gets the response time for api.
+     *
+     * @param apiVersion the api version
+     * @return the response time for api
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws APIManagementException the API management exception
+     */
     public static String getResponseTimeForAPI(String apiVersion) throws APIMgtUsageQueryServiceClientException, APIManagementException {
         Connection connection = null;
         PreparedStatement ps = null;
@@ -161,6 +224,18 @@ public class BillingDataAccessObject {
         return null;
     }
 
+    /**
+     * Gets the all response times for api.
+     *
+     * @param operator the operator
+     * @param appId the app id
+     * @param apiVersion the api version
+     * @param fromDate the from date
+     * @param toDate the to date
+     * @return the all response times for api
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws APIManagementException the API management exception
+     */
     public static List<APIResponseDTO> getAllResponseTimesForAPI(String operator, String appId, String apiVersion, String fromDate,
             String toDate) throws APIMgtUsageQueryServiceClientException, APIManagementException {
 
@@ -209,6 +284,17 @@ public class BillingDataAccessObject {
         return responseTimes;
     }
 
+    /**
+     * Gets the API counts for application.
+     *
+     * @param consumerKey the consumer key
+     * @param year the year
+     * @param month the month
+     * @param userId the user id
+     * @return the API counts for application
+     * @throws APIManagementException the API management exception
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     */
     public static Map<String, Integer> getAPICountsForApplication(String consumerKey, String year,
             String month, String userId)
             throws APIManagementException,
@@ -245,6 +331,15 @@ public class BillingDataAccessObject {
         return apiCount;
     }
 
+    /**
+     * Gets the applicationconsumer.
+     *
+     * @param applicationid the applicationid
+     * @param keytype the keytype
+     * @return the applicationconsumer
+     * @throws APIManagementException the API management exception
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     */
     public static String getApplicationconsumer(Integer applicationid, String keytype)
             throws APIManagementException,
             APIMgtUsageQueryServiceClientException {
@@ -274,6 +369,15 @@ public class BillingDataAccessObject {
         return consumerKey;
     }
 
+    /**
+     * Gets the application name.
+     *
+     * @param applicationid the applicationid
+     * @param keytype the keytype
+     * @return the application name
+     * @throws APIManagementException the API management exception
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     */
     public static String getApplicationName(Integer applicationid, String keytype)
             throws APIManagementException,
             APIMgtUsageQueryServiceClientException {
@@ -303,6 +407,15 @@ public class BillingDataAccessObject {
         return appName;
     }
 
+    /**
+     * Gets the operator details of subscription.
+     *
+     * @param applicationId the application id
+     * @param apiId the api id
+     * @return the operator details of subscription
+     * @throws APIManagementException the API management exception
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     */
     public static List<OperatorDetailsEntity> getOperatorDetailsOfSubscription(int applicationId, int apiId) throws APIManagementException,
             APIMgtUsageQueryServiceClientException {
         Connection connection = null;
@@ -340,6 +453,15 @@ public class BillingDataAccessObject {
         return operatorDetails;
     }
     
+    /**
+     * Gets the details of subscription.
+     *
+     * @param applicationId the application id
+     * @param apiId the api id
+     * @return the details of subscription
+     * @throws APIManagementException the API management exception
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     */
     public static List<OperatorDetailsEntity> getDetailsOfSubscription(int applicationId, int apiId) throws APIManagementException,
             APIMgtUsageQueryServiceClientException {
         Connection connection = null;
@@ -380,6 +502,20 @@ public class BillingDataAccessObject {
         return operatorDetails;
     }
 
+    /**
+     * Gets the API counts for subscription.
+     *
+     * @param consumerKey the consumer key
+     * @param year the year
+     * @param month the month
+     * @param apiName the api name
+     * @param apiVersion the api version
+     * @param operatorId the operator id
+     * @param operationId the operation id
+     * @return the API counts for subscription
+     * @throws APIManagementException the API management exception
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     */
     public static Map<CategoryCharge,BilledCharge> getAPICountsForSubscription (String consumerKey, short year, short month, String apiName, String apiVersion, String operatorId, int operationId)
             throws APIManagementException, APIMgtUsageQueryServiceClientException {
         Connection connection = null;
@@ -421,6 +557,19 @@ public class BillingDataAccessObject {
         return apiCount;
     }
     
+        /**
+         * Gets the northbound api counts for subscription.
+         *
+         * @param consumerKey the consumer key
+         * @param year the year
+         * @param month the month
+         * @param apiName the api name
+         * @param apiVersion the api version
+         * @param operationId the operation id
+         * @return the northbound api counts for subscription
+         * @throws APIManagementException the API management exception
+         * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+         */
         public static Map<CategoryCharge,BilledCharge> getNorthboundAPICountsForSubscription (String consumerKey, short year, short month, String apiName, String apiVersion,int operationId)
             throws APIManagementException, APIMgtUsageQueryServiceClientException {
         Connection connection = null;
@@ -462,6 +611,18 @@ public class BillingDataAccessObject {
     }
     
 
+    /**
+     * Gets the API counts for application opco.
+     *
+     * @param consumerKey the consumer key
+     * @param year the year
+     * @param month the month
+     * @param userId the user id
+     * @param api the api
+     * @return the API counts for application opco
+     * @throws APIManagementException the API management exception
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     */
     public static Map<String, Integer> getAPICountsForApplicationOpco(String consumerKey, String year, String month, String userId, String api)
             throws APIManagementException,
             APIMgtUsageQueryServiceClientException {
@@ -501,6 +662,12 @@ public class BillingDataAccessObject {
         return apiCount;
     }
 
+    /**
+     * Prints the api subscriber table.
+     *
+     * @throws SQLException the SQL exception
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     */
     @Deprecated
     public static void printAPISubscriberTable() throws SQLException,
             APIMgtUsageQueryServiceClientException {
@@ -526,6 +693,13 @@ public class BillingDataAccessObject {
         }
     }
 
+    /**
+     * Gets the stats db connection.
+     *
+     * @return the stats db connection
+     * @throws SQLException the SQL exception
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     */
     public static Connection getStatsDBConnection() throws SQLException,
             APIMgtUsageQueryServiceClientException {
         initializeDataSource();
@@ -536,6 +710,13 @@ public class BillingDataAccessObject {
         }
     }
 
+    /**
+     * Gets the api mgt db connection.
+     *
+     * @return the api mgt db connection
+     * @throws SQLException the SQL exception
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     */
     public static Connection getApiMgtDBConnection() throws SQLException,
             APIMgtUsageQueryServiceClientException {
         initializeDataSource();
@@ -546,6 +727,13 @@ public class BillingDataAccessObject {
         }
     }
 
+    /**
+     * Gets the all subscriptions.
+     *
+     * @return the all subscriptions
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws SQLException the SQL exception
+     */
     public static List<String> getAllSubscriptions() throws APIMgtUsageQueryServiceClientException,
             SQLException {
         String sql = "select USER_ID from AM_SUBSCRIBER";
@@ -570,6 +758,14 @@ public class BillingDataAccessObject {
         return subscriber;
     }
 
+    /**
+     * Gets the subscriberkey.
+     *
+     * @param userid the userid
+     * @return the subscriberkey
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws SQLException the SQL exception
+     */
     public static int getSubscriberkey(String userid) throws APIMgtUsageQueryServiceClientException,
             SQLException {
         String sql = "select subscriber_id from AM_SUBSCRIBER WHERE USER_ID = ?";
@@ -595,11 +791,28 @@ public class BillingDataAccessObject {
         return subscriber;
     }
 
+    /**
+     * Handle exception.
+     *
+     * @param msg the msg
+     * @param t the t
+     * @throws APIManagementException the API management exception
+     */
     private static void handleException(String msg, Throwable t) throws APIManagementException {
         log.error(msg, t);
         throw new APIManagementException(msg, t);
     }
 
+    /**
+     * Gets the no of subscribers.
+     *
+     * @param subscriber the subscriber
+     * @param app the app
+     * @param apiName the api name
+     * @return the no of subscribers
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws APIManagementException the API management exception
+     */
     //Retriving number of Subscribers for each API
     public static int getNoOfSubscribers(String subscriber, String app, String apiName) throws APIMgtUsageQueryServiceClientException, APIManagementException {
         int noOfSubscribers = 0;
@@ -633,6 +846,21 @@ public class BillingDataAccessObject {
         return noOfSubscribers;
     }
 
+    /**
+     * Gets the payment amounts.
+     *
+     * @param year the year
+     * @param month the month
+     * @param consumerKey the consumer key
+     * @param api_version the api_version
+     * @param operatorId the operator id
+     * @param operation the operation
+     * @param category the category
+     * @param subcategory the subcategory
+     * @return the payment amounts
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws APIManagementException the API management exception
+     */
     //Retriving amount charged from end-user through payment API
     public static Set<PaymentRequestDTO> getPaymentAmounts(short year, short month, String consumerKey,
                                                            String api_version, String operatorId, int operation, String category, String subcategory) throws
@@ -689,6 +917,20 @@ public class BillingDataAccessObject {
         return requestSet;
     }
     
+    /**
+     * Gets the nb payment amounts.
+     *
+     * @param year the year
+     * @param month the month
+     * @param consumerKey the consumer key
+     * @param api_version the api_version
+     * @param operation the operation
+     * @param category the category
+     * @param subcategory the subcategory
+     * @return the nb payment amounts
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws APIManagementException the API management exception
+     */
     //Retriving amount charged from end-user through payment API
     public static Set<PaymentRequestDTO> getNbPaymentAmounts(short year, short month, String consumerKey,
                                                            String api_version, int operation, String category, String subcategory) throws
@@ -744,6 +986,14 @@ public class BillingDataAccessObject {
         return requestSet;
     }
 
+    /**
+     * Gets the api id.
+     *
+     * @param apiIdent the api ident
+     * @return the api id
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws APIManagementException the API management exception
+     */
     public static int getApiId(APIIdentifier apiIdent) throws APIMgtUsageQueryServiceClientException,
             APIManagementException {
         Connection conn = null;
@@ -759,6 +1009,15 @@ public class BillingDataAccessObject {
         return apiId;
     }
 
+    /**
+     * Gets the subscription id for application api.
+     *
+     * @param appId the app id
+     * @param apiIdent the api ident
+     * @return the subscription id for application api
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws APIManagementException the API management exception
+     */
     public static int getSubscriptionIdForApplicationAPI(int appId, APIIdentifier apiIdent) throws
             APIMgtUsageQueryServiceClientException, APIManagementException {
         String sql = "select SUBSCRIPTION_ID from AM_SUBSCRIPTION where APPLICATION_ID=? AND API_ID=?";
@@ -791,6 +1050,19 @@ public class BillingDataAccessObject {
         return subscriptionId;
     }
 
+    /**
+     * Gets the total api traffic for pie chart.
+     *
+     * @param fromDate the from date
+     * @param toDate the to date
+     * @param subscriber the subscriber
+     * @param operator the operator
+     * @param applicationId the application id
+     * @return the total api traffic for pie chart
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws APIManagementException the API management exception
+     * @throws SQLException the SQL exception
+     */
     public static List<String[]> getTotalAPITrafficForPieChart(String fromDate, String toDate, String subscriber, String operator, int applicationId) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
         String consumerKey = null;
         if (subscriber.equals("__ALL__")) {
@@ -834,6 +1106,20 @@ public class BillingDataAccessObject {
         return api_request;
     }
 
+    /**
+     * Gets the total api traffic for histogram.
+     *
+     * @param fromDate the from date
+     * @param toDate the to date
+     * @param subscriber the subscriber
+     * @param operator the operator
+     * @param applicationId the application id
+     * @param api the api
+     * @return the total api traffic for histogram
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws APIManagementException the API management exception
+     * @throws SQLException the SQL exception
+     */
     public static List<String[]> getTotalAPITrafficForHistogram(String fromDate, String toDate, String subscriber, String operator, int applicationId, String api) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
         String consumerKey = null;
         if (subscriber.equals("__ALL__")) {
@@ -900,6 +1186,19 @@ public class BillingDataAccessObject {
         return api_list;
     }
 
+    /**
+     * Gets the operator wise api traffic for pie chart.
+     *
+     * @param fromDate the from date
+     * @param toDate the to date
+     * @param subscriber the subscriber
+     * @param api the api
+     * @param applicationId the application id
+     * @return the operator wise api traffic for pie chart
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws APIManagementException the API management exception
+     * @throws SQLException the SQL exception
+     */
     public static List<String[]> getOperatorWiseAPITrafficForPieChart(String fromDate, String toDate, String subscriber, String api, int applicationId) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
         String consumerKey = null;
         if (subscriber.equals("__ALL__")) {
@@ -946,6 +1245,20 @@ public class BillingDataAccessObject {
         return api_request;
     }
 
+    /**
+     * Gets the approval history.
+     *
+     * @param fromDate the from date
+     * @param toDate the to date
+     * @param subscriber the subscriber
+     * @param api the api
+     * @param applicationId the application id
+     * @param operator the operator
+     * @return the approval history
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws APIManagementException the API management exception
+     * @throws SQLException the SQL exception
+     */
     public static List<String[]> getApprovalHistory(String fromDate, String toDate, String subscriber, String api, int applicationId, String operator) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
 
         Connection conn = null;
@@ -1009,6 +1322,16 @@ public class BillingDataAccessObject {
         return applist;
     }
 
+    /**
+     * Gets the approval history app.
+     *
+     * @param applicationId the application id
+     * @param operatorid the operatorid
+     * @return the approval history app
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws APIManagementException the API management exception
+     * @throws SQLException the SQL exception
+     */
     public static List<Approval> getApprovalHistoryApp(int applicationId, String operatorid) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
 
         Connection conn = null;
@@ -1031,7 +1354,7 @@ public class BillingDataAccessObject {
             
             applist.add(new Approval(String.valueOf(applicationId), "1", application.getName(), 0, appstatus, "", "", "", null, null));
 
-            AxiataDataAccessObject.fillOperatorTrace(applicationId, operatorid, applist);
+            DataAccessObject.fillOperatorTrace(applicationId, operatorid, applist);
 
             conn = getApiMgtDBConnection();
             ps = conn.prepareStatement(sql);
@@ -1055,6 +1378,12 @@ public class BillingDataAccessObject {
         return applist;
     }
     
+    /**
+     * Gets the all operation types.
+     *
+     * @return the all operation types
+     * @throws APIManagementException the API management exception
+     */
     public static List<String[]> getAllOperationTypes() throws APIManagementException{
         
         List<String[]> txTypes = new ArrayList<String[]>();
@@ -1082,6 +1411,20 @@ public class BillingDataAccessObject {
         return txTypes;
     }
 
+    /**
+     * Gets the all ap is.
+     *
+     * @param fromDate the from date
+     * @param toDate the to date
+     * @param subscriber the subscriber
+     * @param operator the operator
+     * @param applicationId the application id
+     * @param api the api
+     * @return the all ap is
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws APIManagementException the API management exception
+     * @throws SQLException the SQL exception
+     */
     public static List<String[]> getAllAPIs(String fromDate, String toDate, String subscriber, String operator, int applicationId, String api) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
         String consumerKey = null;
         if (subscriber.equals("__ALL__")) {
@@ -1129,6 +1472,20 @@ public class BillingDataAccessObject {
         return apis;
     }
 
+    /**
+     * Gets the all error response codes.
+     *
+     * @param fromDate the from date
+     * @param toDate the to date
+     * @param subscriber the subscriber
+     * @param operator the operator
+     * @param applicationId the application id
+     * @param api the api
+     * @return the all error response codes
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws APIManagementException the API management exception
+     * @throws SQLException the SQL exception
+     */
     public static List<String[]> getAllErrorResponseCodes(String fromDate, String toDate, String subscriber, String operator, int applicationId, String api) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
         String consumerKey = null;
         if (subscriber.equals("__ALL__")) {
@@ -1178,6 +1535,24 @@ public class BillingDataAccessObject {
         return resCodes;
     }
 
+    /**
+     * Gets the customer care report data.
+     *
+     * @param fromDate the from date
+     * @param toDate the to date
+     * @param msisdn the msisdn
+     * @param subscriber the subscriber
+     * @param operator the operator
+     * @param app the app
+     * @param api the api
+     * @param startLimit the start limit
+     * @param endLimit the end limit
+     * @param timeOffset the time offset
+     * @return the customer care report data
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws APIManagementException the API management exception
+     * @throws SQLException the SQL exception
+     */
     public static List<String[]> getCustomerCareReportData(String fromDate, String toDate, String msisdn, String subscriber, String operator, String app, String api, String startLimit, String endLimit, String timeOffset) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
 
         String consumerKey = "";
@@ -1230,6 +1605,21 @@ public class BillingDataAccessObject {
         return api_request_data;
     }
     
+     /**
+      * Gets the customer care report data count.
+      *
+      * @param fromDate the from date
+      * @param toDate the to date
+      * @param msisdn the msisdn
+      * @param subscriber the subscriber
+      * @param operator the operator
+      * @param app the app
+      * @param api the api
+      * @return the customer care report data count
+      * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+      * @throws APIManagementException the API management exception
+      * @throws SQLException the SQL exception
+      */
      public static String getCustomerCareReportDataCount(String fromDate, String toDate, String msisdn, String subscriber, String operator, String app, String api) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
 
         String consumerKey = "";
@@ -1280,6 +1670,19 @@ public class BillingDataAccessObject {
         return count;
     }
 
+    /**
+     * Gets the API wise traffic for report.
+     *
+     * @param fromDate the from date
+     * @param toDate the to date
+     * @param subscriber the subscriber
+     * @param operator the operator
+     * @param api the api
+     * @return the API wise traffic for report
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws APIManagementException the API management exception
+     * @throws SQLException the SQL exception
+     */
     public static List<String[]> getAPIWiseTrafficForReport(String fromDate, String toDate, String subscriber, String operator, String api) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
         if (subscriber.equals("__ALL__")) {
             subscriber = "%";
@@ -1382,6 +1785,20 @@ public class BillingDataAccessObject {
         return api_request;
     }
 
+    /**
+     * Gets the tx log data.
+     *
+     * @param fromDate the from date
+     * @param toDate the to date
+     * @param subscriber the subscriber
+     * @param operator the operator
+     * @param opType the op type
+     * @param dataType the data type
+     * @return the tx log data
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws APIManagementException the API management exception
+     * @throws SQLException the SQL exception
+     */
     public static ResultSet getTxLogData(String fromDate, String toDate, String subscriber, String operator, int opType, String dataType)
     		throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
         if (subscriber.equals("__ALL__")) {
@@ -1424,6 +1841,20 @@ public class BillingDataAccessObject {
         return results;
     }
 
+    /**
+     * Gets the tx log data nb.
+     *
+     * @param fromDate the from date
+     * @param toDate the to date
+     * @param subscriber the subscriber
+     * @param operator the operator
+     * @param opType the op type
+     * @param dataType the data type
+     * @return the tx log data nb
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws APIManagementException the API management exception
+     * @throws SQLException the SQL exception
+     */
     public static ResultSet getTxLogDataNB(String fromDate, String toDate, String subscriber, String operator, int opType, String dataType)
     		throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
         if (subscriber.equals("__ALL__")) {
@@ -1465,6 +1896,19 @@ public class BillingDataAccessObject {
         return results;
     }
     
+    /**
+     * Gets the API wise traffic for report charging.
+     *
+     * @param fromDate the from date
+     * @param toDate the to date
+     * @param subscriber the subscriber
+     * @param operator the operator
+     * @param api the api
+     * @return the API wise traffic for report charging
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws APIManagementException the API management exception
+     * @throws SQLException the SQL exception
+     */
     public static List<String[]> getAPIWiseTrafficForReportCharging(String fromDate, String toDate, String subscriber, String operator, String api) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
         if (subscriber.equals("__ALL__")) {
             subscriber = "%";
@@ -1574,6 +2018,20 @@ public class BillingDataAccessObject {
         return api_request;
     }
 
+    /**
+     * Gets the error response codes for pie chart.
+     *
+     * @param fromDate the from date
+     * @param toDate the to date
+     * @param subscriber the subscriber
+     * @param operator the operator
+     * @param applicationId the application id
+     * @param api the api
+     * @return the error response codes for pie chart
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws APIManagementException the API management exception
+     * @throws SQLException the SQL exception
+     */
     public static List<String[]> getErrorResponseCodesForPieChart(String fromDate, String toDate, String subscriber, String operator, int applicationId, String api) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
         String consumerKey = null;
         if (subscriber.equals("__ALL__")) {
@@ -1624,6 +2082,20 @@ public class BillingDataAccessObject {
         return api_response_codes;
     }
 
+    /**
+     * Gets the error response codes for histogram.
+     *
+     * @param fromDate the from date
+     * @param toDate the to date
+     * @param subscriber the subscriber
+     * @param operator the operator
+     * @param applicationId the application id
+     * @param api the api
+     * @return the error response codes for histogram
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws APIManagementException the API management exception
+     * @throws SQLException the SQL exception
+     */
     public static List<String[]> getErrorResponseCodesForHistogram(String fromDate, String toDate, String subscriber, String operator, int applicationId, String api) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
         String consumerKey = null;
         if (subscriber.equals("__ALL__")) {
@@ -1683,6 +2155,13 @@ public class BillingDataAccessObject {
         return api_response_codes;
     }
 
+    /**
+     * Find api type.
+     *
+     * @param ResourceURL the resource url
+     * @param requested_api the requested_api
+     * @return the string
+     */
     private static String findAPIType(String ResourceURL , String requested_api) {
 
         String apiType = null;
@@ -1746,6 +2225,13 @@ public class BillingDataAccessObject {
         return apiType;
     }
 
+    /**
+     * Gets the app name by consumer key.
+     *
+     * @param key the key
+     * @return the app name by consumer key
+     * @throws APIManagementException the API management exception
+     */
     private static String getAppNameByConsumerKey(String key) throws APIManagementException {
         String appName = "";
         Connection conn = null;
@@ -1772,6 +2258,13 @@ public class BillingDataAccessObject {
         return appName;
     }
 
+    /**
+     * Gets the consumer key by app id.
+     *
+     * @param appId the app id
+     * @return the consumer key by app id
+     * @throws APIManagementException the API management exception
+     */
     private static String getConsumerKeyByAppId(String appId) throws APIManagementException {
         String key = "";
 
@@ -1799,6 +2292,13 @@ public class BillingDataAccessObject {
         return key;
     }
 
+    /**
+     * Generate sp list.
+     *
+     * @return the array list
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws APIManagementException the API management exception
+     */
     public static ArrayList<SPObject> generateSPList() throws APIMgtUsageQueryServiceClientException, APIManagementException {
         Connection connection = null;
         PreparedStatement ps = null;
@@ -1830,6 +2330,14 @@ public class BillingDataAccessObject {
     
     
     
+    /**
+     * Generate sp object.
+     *
+     * @param appId the app id
+     * @return the SP object
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws APIManagementException the API management exception
+     */
     public static SPObject generateSPObject(String appId) throws APIMgtUsageQueryServiceClientException, APIManagementException {
         Connection connection = null;
         PreparedStatement ps = null;
@@ -1863,6 +2371,20 @@ public class BillingDataAccessObject {
     }  
     
     
+    /**
+     * Gets the total api traffic for line chart.
+     *
+     * @param fromDate the from date
+     * @param toDate the to date
+     * @param subscriber the subscriber
+     * @param operator the operator
+     * @param applicationId the application id
+     * @param api the api
+     * @return the total api traffic for line chart
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws APIManagementException the API management exception
+     * @throws SQLException the SQL exception
+     */
     public static List<String[]> getTotalAPITrafficForLineChart(String fromDate, String toDate, String subscriber, String operator, int applicationId, String api) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
         String consumerKey = null;
         if (subscriber.equals("__ALL__")) {
@@ -1920,6 +2442,18 @@ public class BillingDataAccessObject {
         return api_request;
     }
     
+    /**
+     * Gets the all response times for all ap is.
+     *
+     * @param operator the operator
+     * @param userId the user id
+     * @param fromDate the from date
+     * @param toDate the to date
+     * @param timeRange the time range
+     * @return the all response times for all ap is
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws APIManagementException the API management exception
+     */
     public static List<APIResponseDTO> getAllResponseTimesForAllAPIs(String operator, String userId, String fromDate,
             String toDate, String timeRange) throws APIMgtUsageQueryServiceClientException, APIManagementException {
 
@@ -1972,6 +2506,18 @@ public class BillingDataAccessObject {
         return responseTimes;
     }
     
+    /**
+     * Gets the all response times for ap iby date.
+     *
+     * @param operator the operator
+     * @param userId the user id
+     * @param fromDate the from date
+     * @param toDate the to date
+     * @param api the api
+     * @return the all response times for ap iby date
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws APIManagementException the API management exception
+     */
     public static List<APIResponseDTO> getAllResponseTimesForAPIbyDate(String operator, String userId, String fromDate,
             String toDate, String api) throws APIMgtUsageQueryServiceClientException, APIManagementException {
 
@@ -2028,6 +2574,18 @@ public class BillingDataAccessObject {
 
 
     
+    /**
+     * Gets the time consumption by api.
+     *
+     * @param operator the operator
+     * @param userId the user id
+     * @param fromDate the from date
+     * @param toDate the to date
+     * @param api the api
+     * @return the time consumption by api
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws APIManagementException the API management exception
+     */
     public static String[] getTimeConsumptionByAPI(String operator, String userId, String fromDate,
             String toDate, String api) throws APIMgtUsageQueryServiceClientException, APIManagementException {
 
@@ -2085,13 +2643,15 @@ public class BillingDataAccessObject {
         return timeConsumerData;
     }
 
+     
     /**
-     * Get Subscription workflow Creation Time
-     * @param appId Application ID
-     * @param apiIdent API Identifier
-     * @return Time of subscription workflow creation
-     * @throws APIManagementException
-     * @throws APIMgtUsageQueryServiceClientException
+     * Gets the subscription created time.
+     *
+     * @param appId the app id
+     * @param apiIdent the api ident
+     * @return the subscription created time
+     * @throws APIManagementException the API management exception
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
      */
     public static Date getSubscriptionCreatedTime(int appId, APIIdentifier apiIdent)
             throws APIManagementException, APIMgtUsageQueryServiceClientException {
@@ -2134,6 +2694,15 @@ public class BillingDataAccessObject {
         return (wfCreatedTime != null) ? new Date(wfCreatedTime.getTime()) : null;
     }
     
+	/**
+	 * Gets the commission percentages.
+	 *
+	 * @param spId the sp id
+	 * @param appId the app id
+	 * @return the commission percentages
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws APIManagementException the API management exception
+	 */
 	public static Map<String,CommissionPercentagesDTO> getCommissionPercentages(String spId, Integer appId) throws APIMgtUsageQueryServiceClientException,APIManagementException {
 		Connection connection = null;
 		PreparedStatement ps = null;
@@ -2172,6 +2741,14 @@ public class BillingDataAccessObject {
 		return requestSet;
 	}
     
+    /**
+     * Gets the operation name by id.
+     *
+     * @param operationId the operation id
+     * @return the operation name by id
+     * @throws APIManagementException the API management exception
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     */
     public static String getOperationNameById(int operationId) throws APIManagementException,
             APIMgtUsageQueryServiceClientException {
 
@@ -2202,11 +2779,13 @@ public class BillingDataAccessObject {
         return operationName;
     }
 
+     
     /**
-     * Convert system time to local time
-     * @param timeOffset time difference in minutes to UTC
-     * @param time system Time
-     * @return String converted into local Time
+     * Convert to local time.
+     *
+     * @param timeOffset the time offset
+     * @param time the time
+     * @return the string
      */
     public static String convertToLocalTime(String timeOffset, String time){
         Integer offsetValue = Integer.parseInt(timeOffset);

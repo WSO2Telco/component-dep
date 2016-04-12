@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+ *  
+ *  WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.wso2telco.custom.hostobjects;
 
 import org.apache.commons.logging.Log;
@@ -10,7 +25,7 @@ import org.wso2.carbon.apimgt.impl.APIManagerFactory;
 import org.wso2.carbon.apimgt.impl.dao.ApiMgtDAO;
 import org.wso2.carbon.apimgt.impl.dto.WorkflowDTO;
 
-import com.wso2telco.custom.dao.AxiataWorkflowDAO;
+import com.wso2telco.custom.dao.WorkflowDAO;
 import com.wso2telco.custom.hostobjects.southbound.SbHostObjectUtils;
 import com.wso2telco.custom.hostobjects.util.ChargeRate;
 
@@ -19,33 +34,50 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
+ 
+// TODO: Auto-generated Javadoc
 /**
- * Host object to hanled Axiata workflow related tasks. 
+ * The Class WorkflowHostObject.
  */
 public class WorkflowHostObject extends ScriptableObject {
 
+	/** The Constant log. */
 	private static final Log log = LogFactory.getLog(WorkflowHostObject.class);
+	
+	/** The hostobject name. */
 	private String hostobjectName = "AxiataWorkflow";
+	
+	/** The const failure. */
 	private static String CONST_FAILURE = "FAILURE";
+	
+	/** The const success. */
 	private static String CONST_SUCCESS = "SUCCESS";
 
+	/* (non-Javadoc)
+	 * @see org.mozilla.javascript.ScriptableObject#getClassName()
+	 */
 	@Override
 	public String getClassName() {
 		return hostobjectName;
 	}
 
+	/**
+	 * Instantiates a new workflow host object.
+	 */
 	public WorkflowHostObject() {
 		log.info("::: Initialized HostObject ");
 	}
 
+	 
 	/**
-	 * This method sets the specified tier for a given subscription.
-	 * @param cx
-	 * @param thisObj
-	 * @param args
-	 * @param funObj
-	 * @return
-	 * @throws APIManagementException
+	 * Js function_set subscription tier.
+	 *
+	 * @param cx the cx
+	 * @param thisObj the this obj
+	 * @param args the args
+	 * @param funObj the fun obj
+	 * @return the string
+	 * @throws APIManagementException the API management exception
 	 */
 	public static String jsFunction_setSubscriptionTier(Context cx,
 													Scriptable thisObj, Object[] args, Function funObj)
@@ -67,7 +99,7 @@ public class WorkflowHostObject extends ScriptableObject {
 			if(workflowDTO != null) {
 				
 				String subscriptionId = workflowDTO.getWorkflowReference();
-				AxiataWorkflowDAO axiataWorkflowDAO = new AxiataWorkflowDAO();
+				WorkflowDAO axiataWorkflowDAO = new WorkflowDAO();
 				axiataWorkflowDAO.updateSubscriptionTier(subscriptionId, tierId);
 				
 				status = CONST_SUCCESS;
@@ -82,6 +114,16 @@ public class WorkflowHostObject extends ScriptableObject {
 	}
         
         
+        /**
+         * Js function_set subscription charge rate.
+         *
+         * @param cx the cx
+         * @param thisObj the this obj
+         * @param args the args
+         * @param funObj the fun obj
+         * @return the string
+         * @throws APIManagementException the API management exception
+         */
         public static String jsFunction_setSubscriptionChargeRate(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws APIManagementException {
             if (args == null || args.length == 0) {
                 handleException("Invalid number of parameters.");
@@ -93,7 +135,7 @@ public class WorkflowHostObject extends ScriptableObject {
             
             String status = "";
             try {
-                AxiataWorkflowDAO axiataWorkflowDAO = new AxiataWorkflowDAO();
+                WorkflowDAO axiataWorkflowDAO = new WorkflowDAO();
                 axiataWorkflowDAO.saveSubscriptionChargeRate(appId, apiId, opName);
                 status = CONST_SUCCESS;
             } catch (Exception e) {
@@ -102,6 +144,16 @@ public class WorkflowHostObject extends ScriptableObject {
             return status;
 	}
 
+    /**
+     * Js function_set subscription charge rate nb.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the string
+     * @throws APIManagementException the API management exception
+     */
     public static String jsFunction_setSubscriptionChargeRateNB(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws APIManagementException {
         if (args == null || args.length == 0) {
             handleException("Invalid number of parameters.");
@@ -112,7 +164,7 @@ public class WorkflowHostObject extends ScriptableObject {
 
         String status = "";
         try {
-            AxiataWorkflowDAO axiataWorkflowDAO = new AxiataWorkflowDAO();
+            WorkflowDAO axiataWorkflowDAO = new WorkflowDAO();
             axiataWorkflowDAO.saveSubscriptionChargeRateNB(appId, apiId);
             status = CONST_SUCCESS;
         } catch (Exception e) {
@@ -121,6 +173,16 @@ public class WorkflowHostObject extends ScriptableObject {
         return status;
     }
         
+    /**
+     * Js function_get subscription rates for operator.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the native array
+     * @throws APIManagementException the API management exception
+     */
     public static NativeArray jsFunction_getSubscriptionRatesForOperator(Context cx,
             Scriptable thisObj, Object[] args, Function funObj)
             throws APIManagementException {    
@@ -148,6 +210,16 @@ public class WorkflowHostObject extends ScriptableObject {
         return nativeArray;
     }
         
+    /**
+     * Js function_get tier details.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the native array
+     * @throws APIManagementException the API management exception
+     */
     public static NativeArray jsFunction_getTierDetails(Context cx,
             Scriptable thisObj, Object[] args, Function funObj)
             throws APIManagementException {    
@@ -182,6 +254,12 @@ public class WorkflowHostObject extends ScriptableObject {
         return nativeArray;
     }
     
+    /**
+     * Gets the tier attributes string.
+     *
+     * @param tierAttributesMap the tier attributes map
+     * @return the tier attributes string
+     */
     private static NativeArray getTierAttributesString(Map<String, Object> tierAttributesMap) {
         NativeArray tierAttributesList = new NativeArray(0);
         Iterator tierAttributesIterator = tierAttributesMap.entrySet().iterator();
@@ -196,14 +274,16 @@ public class WorkflowHostObject extends ScriptableObject {
         }
         return tierAttributesList;
     }
+	 
 	/**
-	 * This method sets the specified tier for a given application.
-	 * @param cx
-	 * @param thisObj
-	 * @param args
-	 * @param funObj
-	 * @return
-	 * @throws APIManagementException
+	 * Js function_set application tier.
+	 *
+	 * @param cx the cx
+	 * @param thisObj the this obj
+	 * @param args the args
+	 * @param funObj the fun obj
+	 * @return the string
+	 * @throws APIManagementException the API management exception
 	 */
 	public static String jsFunction_setApplicationTier(Context cx,
 													Scriptable thisObj, Object[] args, Function funObj)
@@ -225,7 +305,7 @@ public class WorkflowHostObject extends ScriptableObject {
 			if(workflowDTO != null) {
 				
 				String applicationId = workflowDTO.getWorkflowReference();
-				AxiataWorkflowDAO axiataWorkflowDAO = new AxiataWorkflowDAO();
+				WorkflowDAO axiataWorkflowDAO = new WorkflowDAO();
 				axiataWorkflowDAO.updateApplicationTier(applicationId, tierId);
 				
 				status = CONST_SUCCESS;
@@ -239,21 +319,25 @@ public class WorkflowHostObject extends ScriptableObject {
 		return status;
 	}
 	
+	 
 	/**
-	 * Handle expection.
-	 * @param msg
-	 * @throws APIManagementException
+	 * Handle exception.
+	 *
+	 * @param msg the msg
+	 * @throws APIManagementException the API management exception
 	 */
 	private static void handleException(String msg) throws APIManagementException {
 		log.error(msg);
 		throw new APIManagementException(msg);
 	}
 
+	 
 	/**
-	 * Handle expection.
-	 * @param msg
-	 * @param t
-	 * @throws APIManagementException
+	 * Handle exception.
+	 *
+	 * @param msg the msg
+	 * @param t the t
+	 * @throws APIManagementException the API management exception
 	 */
 	private static void handleException(String msg, Throwable t) throws APIManagementException {
 		log.error(msg, t);

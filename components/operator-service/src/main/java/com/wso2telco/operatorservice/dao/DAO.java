@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+ *  
+ *  WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.wso2telco.operatorservice.dao;
 
 import java.sql.Connection;
@@ -19,13 +34,26 @@ import com.wso2telco.operatorservice.model.Operator;
 import org.wso2.carbon.apimgt.api.APIManagementException;
 import org.wso2.carbon.apimgt.impl.utils.APIMgtDBUtil;
 
-public class AxiataDAO {
+// TODO: Auto-generated Javadoc
+/**
+ * The Class DAO.
+ */
+public class DAO {
 
-	private static final Log log = LogFactory.getLog(AxiataDAO.class);
+	/** The Constant log. */
+	private static final Log log = LogFactory.getLog(DAO.class);
 
+	/** The axiata datasource. */
 	private static volatile DataSource axiataDatasource = null;
+	
+	/** The Constant axiataDataSourceName. */
 	private static final String axiataDataSourceName = "jdbc/AXIATA_MIFE_DB";
 
+	/**
+	 * Initialize data source.
+	 *
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 */
 	public static void initializeDataSource()
 			throws APIMgtUsageQueryServiceClientException {
 		if (axiataDatasource != null) {
@@ -46,6 +74,13 @@ public class AxiataDAO {
 		}
 	}
 
+	/**
+	 * Gets the axiata db connection.
+	 *
+	 * @return the axiata db connection
+	 * @throws SQLException the SQL exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 */
 	public static Connection getAxiataDBConnection() throws SQLException,
 			APIMgtUsageQueryServiceClientException {
 
@@ -60,6 +95,13 @@ public class AxiataDAO {
 		}
 	}
 
+	/**
+	 * Retrieve operator list.
+	 *
+	 * @return the list
+	 * @throws APIManagementException the API management exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 */
 	public static List<Operator> retrieveOperatorList() throws APIManagementException, APIMgtUsageQueryServiceClientException {
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -91,6 +133,17 @@ public class AxiataDAO {
 		return operatorList;
 	}
 	
+	/**
+	 * Persist operators.
+	 *
+	 * @param apiName the api name
+	 * @param apiVersion the api version
+	 * @param apiProvider the api provider
+	 * @param appId the app id
+	 * @param operatorList the operator list
+	 * @throws APIManagementException the API management exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 */
 	public static void persistOperators(String apiName, String apiVersion, String apiProvider, int appId, 
 			String operatorList) throws APIManagementException, APIMgtUsageQueryServiceClientException {
 		
@@ -119,12 +172,13 @@ public class AxiataDAO {
 		}
 	}
 
+	 
 	/**
 	 * Handle exception.
-	 * 
-	 * @param msg
-	 * @param t
-	 * @throws APIManagementException
+	 *
+	 * @param msg the msg
+	 * @param t the t
+	 * @throws APIManagementException the API management exception
 	 */
 	private static void handleException(String msg, Throwable t)
 			throws APIManagementException {

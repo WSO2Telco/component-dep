@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+ *  
+ *  WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.wso2telco.publisheventsdata.publisher;
 
 import org.apache.commons.logging.Log;
@@ -21,11 +36,21 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Properties;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SpendLimitDataPublisher.
+ */
 public class SpendLimitDataPublisher {
+    
+    /** The log. */
     private static Log log = LogFactory.getLog(SpendLimitDataPublisher.class);
 
+    /** The data publisher. */
     private LoadBalancingDataPublisher dataPublisher;
 
+    /**
+     * Inits the.
+     */
     public void init() {
         try {
             if (log.isDebugEnabled()) {
@@ -51,6 +76,11 @@ public class SpendLimitDataPublisher {
         }
     }
 
+    /**
+     * Publish event.
+     *
+     * @param spendLimitDataPublisherDTO the spend limit data publisher dto
+     */
     public void publishEvent(SpendLimitDataPublisherDTO spendLimitDataPublisherDTO) {
         try {
             //Publish Response Data
@@ -64,6 +94,15 @@ public class SpendLimitDataPublisher {
         }
     }
 
+    /**
+     * Gets the data publisher.
+     *
+     * @return the data publisher
+     * @throws AgentException the agent exception
+     * @throws MalformedURLException the malformed url exception
+     * @throws AuthenticationException the authentication exception
+     * @throws TransportException the transport exception
+     */
     private static LoadBalancingDataPublisher getDataPublisher() throws AgentException, MalformedURLException,
             AuthenticationException, TransportException {
 

@@ -1,4 +1,18 @@
-
+/*******************************************************************************
+ * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+ *  
+ *  WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.wso2telco.custom.hostobjects;
 
 import org.apache.commons.logging.Log;
@@ -16,12 +30,26 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class AMDataAccessObject.
+ */
 public class AMDataAccessObject {
 
+    /** The am datasource. */
     private static volatile DataSource amDatasource = null;
+    
+    /** The Constant AM_DATA_SOURCE. */
     private static final String AM_DATA_SOURCE = "jdbc/WSO2AM_DB";
+    
+    /** The Constant log. */
     private static final Log log = LogFactory.getLog(AMDataAccessObject.class);
 
+    /**
+     * Initialize datasources.
+     *
+     * @throws ValidatorException the validator exception
+     */
     public static void initializeDatasources() throws ValidatorException {
         if (amDatasource != null) {
             return;
@@ -35,11 +63,24 @@ public class AMDataAccessObject {
         }
     }
 
+    /**
+     * Gets the api mgt db connection.
+     *
+     * @return the api mgt db connection
+     * @throws SQLException the SQL exception
+     */
     public static Connection getApiMgtDBConnection() throws SQLException {
 
         return APIMgtDBUtil.getConnection();
     }
 
+    /**
+     * Gets the AMDB connection.
+     *
+     * @return the AMDB connection
+     * @throws SQLException the SQL exception
+     * @throws ValidatorException the validator exception
+     */
     public static Connection getAMDBConnection() throws SQLException, ValidatorException {
         initializeDatasources();
 
@@ -49,11 +90,26 @@ public class AMDataAccessObject {
         throw new SQLException("Axiata Datasource not initialized properly");
     }
 
+    /**
+     * Handle exception.
+     *
+     * @param msg the msg
+     * @param t the t
+     * @throws ValidatorException the validator exception
+     */
     private static void handleException(String msg, Throwable t) throws ValidatorException {
         log.error(msg, t);
         throw new ValidatorException(msg, t);
     }
 
+    /**
+     * Gets the consumer key by application.
+     *
+     * @param applicationId the application id
+     * @return the consumer key by application
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws SQLException the SQL exception
+     */
     public static String getConsumerKeyByApplication(int applicationId) throws APIMgtUsageQueryServiceClientException, SQLException {
         Connection conn = null;
         PreparedStatement ps = null;
@@ -79,6 +135,16 @@ public class AMDataAccessObject {
         return consumerKey;
     }
 
+    /**
+     * Gets the API list for api traffic histogram.
+     *
+     * @param fromDate the from date
+     * @param toDate the to date
+     * @param api the api
+     * @return the API list for api traffic histogram
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws SQLException the SQL exception
+     */
     public static List<String[]> getAPIListForAPITrafficHistogram(String fromDate, String toDate, String api) throws APIMgtUsageQueryServiceClientException, SQLException {
         Connection conn = null;
         PreparedStatement ps = null;
@@ -116,6 +182,14 @@ public class AMDataAccessObject {
         return api_list;
     }
 
+    /**
+     * Gets the api name by id.
+     *
+     * @param apiid the apiid
+     * @return the api name by id
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws SQLException the SQL exception
+     */
     public static String getApiNameById(int apiid) throws APIMgtUsageQueryServiceClientException, SQLException {
         Connection conn = null;
         PreparedStatement ps = null;

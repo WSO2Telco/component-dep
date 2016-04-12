@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+ *  
+ *  WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.wso2telco.custom.hostobjects.southbound;
 
 import org.apache.axiom.om.OMElement;
@@ -36,14 +51,32 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.*;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class SbHostObjectUtils.
+ */
 public class SbHostObjectUtils {
 
+	/** The Constant log. */
 	private static final Log log = LogFactory.getLog(SbHostObjectUtils.class);
+	
+	/** The Constant ALL_SUBSCRIBERS_KEYWORD. */
 	private static final String ALL_SUBSCRIBERS_KEYWORD = "__ALL__";
+	
+	/** The Constant ALL_APPLICATIONS_KEYWORD. */
 	private static final String ALL_APPLICATIONS_KEYWORD = "__ALL__";
+	
+	/** The Constant CAT_DEFAULT. */
 	private static final String CAT_DEFAULT = "__default__";
+	
+	/** The Constant DISPLAY_DEFAULT. */
 	private static final String DISPLAY_DEFAULT = "Default";
 
+	/**
+	 * Check data publishing enabled.
+	 *
+	 * @return true, if successful
+	 */
 	public static boolean checkDataPublishingEnabled() {
 
 		APIManagerConfiguration configuration = HostObjectComponent
@@ -53,6 +86,16 @@ public class SbHostObjectUtils {
 		return enabledStr != null && Boolean.parseBoolean(enabledStr);
 	}
 
+	/**
+	 * Gets the billing subscriptions for user.
+	 *
+	 * @param username the username
+	 * @param year the year
+	 * @param month the month
+	 * @return the billing subscriptions for user
+	 * @throws APIManagementException the API management exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 */
 	public static Map<Application, Set<BillingSubscription>> getBillingSubscriptionsForUser(
 			String username, String year, String month)
 			throws APIManagementException,
@@ -88,6 +131,16 @@ public class SbHostObjectUtils {
 		return billingDetails;
 	}
 
+	/**
+	 * Checks if is subscription valid for month.
+	 *
+	 * @param subAPI the sub api
+	 * @param year the year
+	 * @param month the month
+	 * @return true, if is subscription valid for month
+	 * @throws APIManagementException the API management exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 */
 	private static boolean isSubscriptionValidForMonth(SubscribedAPI subAPI,
 			String year, String month) throws APIManagementException,
 			APIMgtUsageQueryServiceClientException {
@@ -110,6 +163,15 @@ public class SbHostObjectUtils {
 
 	}
 
+	/**
+	 * Gets the billing subscriptions for user app.
+	 *
+	 * @param username the username
+	 * @param application the application
+	 * @param txnapi the txnapi
+	 * @return the billing subscriptions for user app
+	 * @throws APIManagementException the API management exception
+	 */
 	public static SubscribedAPI getBillingSubscriptionsForUserApp(
 			String username, String application, String txnapi)
 			throws APIManagementException {
@@ -137,11 +199,25 @@ public class SbHostObjectUtils {
 		return retSub;
 	}
 
+	/**
+	 * Gets the app key.
+	 *
+	 * @param app the app
+	 * @param keyType the key type
+	 * @return the app key
+	 */
 	public static APIKey getAppKey(Application app, String keyType) {
 		List<APIKey> apiKeys = app.getKeys();
 		return getKeyOfType(apiKeys, keyType);
 	}
 
+	/**
+	 * Gets the key of type.
+	 *
+	 * @param apiKeys the api keys
+	 * @param keyType the key type
+	 * @return the key of type
+	 */
 	public static APIKey getKeyOfType(List<APIKey> apiKeys, String keyType) {
 		for (APIKey key : apiKeys) {
 			if (keyType.equals(key.getType())) {
@@ -151,6 +227,16 @@ public class SbHostObjectUtils {
 		return null;
 	}
 
+	/**
+	 * Apply charging plan.
+	 *
+	 * @param billingSubs the billing subs
+	 * @param rateCard the rate card
+	 * @param year the year
+	 * @param month the month
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws APIManagementException the API management exception
+	 */
 	public static void applyChargingPlan(
 			Map<Application, Set<BillingSubscription>> billingSubs,
 			Map<RateKey, ChargeRate> rateCard, String year, String month)
@@ -186,6 +272,24 @@ public class SbHostObjectUtils {
 		}
 	}
 
+	/**
+	 * Bill component.
+	 *
+	 * @param rate the rate
+	 * @param rateCard the rate card
+	 * @param operatorSubscription the operator subscription
+	 * @param subsYear the subs year
+	 * @param subsMonth the subs month
+	 * @param application the application
+	 * @param ApiName the api name
+	 * @param apiVersion the api version
+	 * @param categoryEntry the category entry
+	 * @param appId the app id
+	 * @param apiId the api id
+	 * @param subsId the subs id
+	 * @throws APIManagementException the API management exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 */
 	private static void billComponent(ChargeRate rate,
 			Map<RateKey, ChargeRate> rateCard,
 			BillingSubscription.OperatorSubscription operatorSubscription,
@@ -319,6 +423,15 @@ public class SbHostObjectUtils {
 
 	}
 
+	/**
+	 * Gets the rate subcategory.
+	 *
+	 * @param rate the rate
+	 * @param billCategory the bill category
+	 * @param billSubCategory the bill sub category
+	 * @return the rate subcategory
+	 * @throws APIManagementException the API management exception
+	 */
 	private static Object getRateSubcategory(ChargeRate rate,
 			String billCategory, String billSubCategory)
 			throws APIManagementException {
@@ -351,6 +464,14 @@ public class SbHostObjectUtils {
 		return categoryRate;
 	}
 
+	/**
+	 * Calculate charge for subscription.
+	 *
+	 * @param subscription the subscription
+	 * @param rateCard the rate card
+	 * @throws APIManagementException the API management exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 */
 	private static void calculateChargeForSubscription(
 			BillingSubscription subscription, Map<RateKey, ChargeRate> rateCard)
 			throws APIManagementException,
@@ -400,6 +521,18 @@ public class SbHostObjectUtils {
 
 	}
 
+	/**
+	 * Apply charges for payment api.
+	 *
+	 * @param opSubscription the op subscription
+	 * @param paymentRequestSet the payment request set
+	 * @param categoryEntry the category entry
+	 * @param appId the app id
+	 * @param apiId the api id
+	 * @param subId the sub id
+	 * @throws APIManagementException the API management exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 */
 	private static void applyChargesForPaymentApi(
 			BillingSubscription.OperatorSubscription opSubscription,
 			Set<PaymentRequestDTO> paymentRequestSet,
@@ -536,6 +669,15 @@ public class SbHostObjectUtils {
 		categoryEntry.getValue().setTax(totalTax);
 	}
 
+	/**
+	 * Apply payment charges by category.
+	 *
+	 * @param opSubscription the op subscription
+	 * @param categoryCharge the category charge
+	 * @param paymentRequestSet the payment request set
+	 * @throws APIManagementException the API management exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 */
 	private static void applyPaymentChargesByCategory(
 			BillingSubscription.OperatorSubscription opSubscription,
 			CategoryCharge categoryCharge,
@@ -579,6 +721,20 @@ public class SbHostObjectUtils {
 		// apply category wise charge percentage
 	}
 
+	/**
+	 * Apply charges with tax.
+	 *
+	 * @param apiYear the api year
+	 * @param apiMonth the api month
+	 * @param application the application
+	 * @param apiName the api name
+	 * @param apiVersion the api version
+	 * @param operatorSub the operator sub
+	 * @param CatEntry the cat entry
+	 * @param rate the rate
+	 * @throws APIManagementException the API management exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 */
 	private static void applyChargesWithTax(String apiYear, String apiMonth,
 			Application application, String apiName, String apiVersion,
 			BillingSubscription.OperatorSubscription operatorSub,
@@ -674,6 +830,16 @@ public class SbHostObjectUtils {
 
 	}
 
+	/**
+	 * Apply tax for block charging.
+	 *
+	 * @param CatEntry the cat entry
+	 * @param rate the rate
+	 * @param year the year
+	 * @param month the month
+	 * @throws APIManagementException the API management exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 */
 	private static void applyTaxForBlockCharging(
 			Map.Entry<CategoryCharge, BilledCharge> CatEntry, ChargeRate rate,
 			String year, String month) throws APIManagementException,
@@ -701,6 +867,18 @@ public class SbHostObjectUtils {
 		CatEntry.getValue().setTax(totalTax);
 	}
 
+	/**
+	 * Charge subscriber for month.
+	 *
+	 * @param subscriber the subscriber
+	 * @param year the year
+	 * @param month the month
+	 * @param rateCard the rate card
+	 * @return the map
+	 * @throws APIManagementException the API management exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws SQLException the SQL exception
+	 */
 	public static Map<Application, Set<BillingSubscription>> chargeSubscriberForMonth(
 			String subscriber, String year, String month,
 			Map<RateKey, ChargeRate> rateCard) throws APIManagementException,
@@ -713,6 +891,14 @@ public class SbHostObjectUtils {
 		return billingSubs;
 	}
 
+	/**
+	 * Populate operator details of subscription.
+	 *
+	 * @param subscription the subscription
+	 * @param rateCard the rate card
+	 * @throws APIManagementException the API management exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 */
 	private static void populateOperatorDetailsOfSubscription(
 			BillingSubscription subscription, Map<RateKey, ChargeRate> rateCard)
 			throws APIManagementException,
@@ -748,6 +934,13 @@ public class SbHostObjectUtils {
 		subscription.setOperatorSubscriptionList(opSubscriptionList);
 	}
 
+	/**
+	 * Populate category vise api counts.
+	 *
+	 * @param subscription the subscription
+	 * @throws APIManagementException the API management exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 */
 	private static void populateCategoryViseAPICounts(
 			BillingSubscription subscription) throws APIManagementException,
 			APIMgtUsageQueryServiceClientException {
@@ -780,6 +973,14 @@ public class SbHostObjectUtils {
 		}
 	}
 
+	/**
+	 * Gets the response times for subscriber.
+	 *
+	 * @param username the username
+	 * @return the response times for subscriber
+	 * @throws APIManagementException the API management exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 */
 	public static Map<String, String> getResponseTimesForSubscriber(
 			String username) throws APIManagementException,
 			APIMgtUsageQueryServiceClientException {
@@ -811,6 +1012,19 @@ public class SbHostObjectUtils {
 		return responseTimes;
 	}
 
+	/**
+	 * Gets the all response times.
+	 *
+	 * @param opName the op name
+	 * @param username the username
+	 * @param application the application
+	 * @param appId the app id
+	 * @param fromDate the from date
+	 * @param toDate the to date
+	 * @return the all response times
+	 * @throws APIManagementException the API management exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 */
 	public static Map<String, List<APIResponseDTO>> getAllResponseTimes(
 			String opName, String username, String application, String appId,
 			String fromDate, String toDate) throws APIManagementException,
@@ -862,6 +1076,14 @@ public class SbHostObjectUtils {
 		return responseTimes;
 	}
 
+	/**
+	 * Gets the report location.
+	 *
+	 * @param subscriber the subscriber
+	 * @param period the period
+	 * @return the report location
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static FileWriter getReportLocation(String subscriber, String period)
 			throws IOException {
 		String year = null;
@@ -888,6 +1110,17 @@ public class SbHostObjectUtils {
 		return new FileWriter(reports.getAbsolutePath());
 	}
 
+	/**
+	 * Gets the custom api traffic report location.
+	 *
+	 * @param fromDate the from date
+	 * @param toDate the to date
+	 * @param subscriberName the subscriber name
+	 * @param operator the operator
+	 * @param api the api
+	 * @return the custom api traffic report location
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	public static FileWriter getCustomApiTrafficReportLocation(String fromDate,
 			String toDate, String subscriberName, String operator, String api)
 			throws IOException {
@@ -910,6 +1143,14 @@ public class SbHostObjectUtils {
 		return new FileWriter(reports.getAbsolutePath());
 	}
 
+	/**
+	 * Gets the CSV file.
+	 *
+	 * @param subscriber the subscriber
+	 * @param period the period
+	 * @return the CSV file
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private static File getCSVFile(String subscriber, String period)
 			throws IOException {
 
@@ -930,6 +1171,17 @@ public class SbHostObjectUtils {
 		return reports;
 	}
 
+	/**
+	 * Gets the custom csv file.
+	 *
+	 * @param fromDate the from date
+	 * @param toDate the to date
+	 * @param subscriberName the subscriber name
+	 * @param operator the operator
+	 * @param api the api
+	 * @return the custom csv file
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 */
 	private static File getCustomCSVFile(String fromDate, String toDate,
 			String subscriberName, String operator, String api)
 			throws IOException {
@@ -952,6 +1204,20 @@ public class SbHostObjectUtils {
 		return reports;
 	}
 
+	/**
+	 * Generate costper apisummary.
+	 *
+	 * @param isPersistReport the is persist report
+	 * @param subscriberName the subscriber name
+	 * @param period the period
+	 * @param opcode the opcode
+	 * @param application the application
+	 * @return the native array
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws SQLException the SQL exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws APIManagementException the API management exception
+	 */
 	public static NativeArray generateCostperApisummary(
 			boolean isPersistReport, String subscriberName, String period,
 			String opcode, String application) throws IOException,
@@ -968,6 +1234,25 @@ public class SbHostObjectUtils {
 		return null;
 	}
 
+	/**
+	 * Generate customr care data report.
+	 *
+	 * @param isPersistReport the is persist report
+	 * @param fromDate the from date
+	 * @param toDate the to date
+	 * @param msisdn the msisdn
+	 * @param subscriberName the subscriber name
+	 * @param operator the operator
+	 * @param app the app
+	 * @param api the api
+	 * @param stLimit the st limit
+	 * @param endLimit the end limit
+	 * @param timeOffset the time offset
+	 * @return the native array
+	 * @throws SQLException the SQL exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws APIManagementException the API management exception
+	 */
 	public static NativeArray generateCustomrCareDataReport(
 			boolean isPersistReport, String fromDate, String toDate,
 			String msisdn, String subscriberName, String operator, String app,
@@ -994,6 +1279,23 @@ public class SbHostObjectUtils {
 		return nativeArray;
 	}
 
+	/**
+	 * Generate customr care data record count.
+	 *
+	 * @param isPersistReport the is persist report
+	 * @param fromDate the from date
+	 * @param toDate the to date
+	 * @param msisdn the msisdn
+	 * @param subscriberName the subscriber name
+	 * @param operator the operator
+	 * @param app the app
+	 * @param api the api
+	 * @return the string
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws SQLException the SQL exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws APIManagementException the API management exception
+	 */
 	public static String generateCustomrCareDataRecordCount(
 			boolean isPersistReport, String fromDate, String toDate,
 			String msisdn, String subscriberName, String operator, String app,
@@ -1007,6 +1309,23 @@ public class SbHostObjectUtils {
 		return user_data_count;
 	}
 
+	/**
+	 * Generate custom traffic report.
+	 *
+	 * @param isPersistReport the is persist report
+	 * @param fromDate the from date
+	 * @param toDate the to date
+	 * @param subscriberName the subscriber name
+	 * @param operator the operator
+	 * @param api the api
+	 * @param timeOffset the time offset
+	 * @param resType the res type
+	 * @return the native array
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws SQLException the SQL exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws APIManagementException the API management exception
+	 */
 	public static NativeArray generateCustomTrafficReport(
 			boolean isPersistReport, String fromDate, String toDate,
 			String subscriberName, String operator, String api,
@@ -1126,6 +1445,20 @@ public class SbHostObjectUtils {
 
 	}
 
+	/**
+	 * Generate reportof subscriber.
+	 *
+	 * @param isPersistReport the is persist report
+	 * @param subscriberName the subscriber name
+	 * @param period the period
+	 * @param rateCard the rate card
+	 * @param operatorName the operator name
+	 * @return the native array
+	 * @throws IOException Signals that an I/O exception has occurred.
+	 * @throws SQLException the SQL exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws APIManagementException the API management exception
+	 */
 	public static NativeArray generateReportofSubscriber(
 			boolean isPersistReport, String subscriberName, String period,
 			Map<RateKey, ChargeRate> rateCard, String operatorName)
@@ -1735,6 +2068,12 @@ public class SbHostObjectUtils {
 		return subscribers;
 	}
 
+	/**
+	 * Checks if is user admin user.
+	 *
+	 * @param username the username
+	 * @return true, if is user admin user
+	 */
 	public static boolean isUserAdminUser(String username) {
 		String adminUserName = HostObjectComponent.getRealmService()
 				.getBootstrapRealmConfiguration().getAdminUserName();
@@ -1742,6 +2081,13 @@ public class SbHostObjectUtils {
 		return adminUserName.equals(username);
 	}
 
+	/**
+	 * Gets the all subscribers.
+	 *
+	 * @return the all subscribers
+	 * @throws SQLException the SQL exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 */
 	public static List<String> getAllSubscribers() throws SQLException,
 			APIMgtUsageQueryServiceClientException {
 		List<String> subscriptions = BillingDataAccessObject
@@ -1750,18 +2096,46 @@ public class SbHostObjectUtils {
 		return subscriptions;
 	}
 
+	/**
+	 * Gets the operation types.
+	 *
+	 * @return the operation types
+	 * @throws SQLException the SQL exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws APIManagementException the API management exception
+	 */
 	public static List<String[]> getOperationTypes() throws SQLException,
 			APIMgtUsageQueryServiceClientException, APIManagementException {
 		List<String[]> txTypes = BillingDataAccessObject.getAllOperationTypes();
 		return txTypes;
 	}
 
+	/**
+	 * Gets the all operators.
+	 *
+	 * @return the all operators
+	 * @throws SQLException the SQL exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 */
 	public static List<String> getAllOperators() throws SQLException,
 			APIMgtUsageQueryServiceClientException {
-		List<String> operators = AxiataDataAccessObject.getAllOperators();
+		List<String> operators = DataAccessObject.getAllOperators();
 		return operators;
 	}
 
+	/**
+	 * Gets the operatorbreakdown.
+	 *
+	 * @param applicationid the applicationid
+	 * @param year the year
+	 * @param month the month
+	 * @param subscriber the subscriber
+	 * @param api the api
+	 * @return the operatorbreakdown
+	 * @throws SQLException the SQL exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws APIManagementException the API management exception
+	 */
 	public static Map<String, Integer> getOperatorbreakdown(
 			String applicationid, String year, String month, String subscriber,
 			String api) throws SQLException,
@@ -1782,6 +2156,15 @@ public class SbHostObjectUtils {
 
 	}
 
+	/**
+	 * Gets the application name by id.
+	 *
+	 * @param applicationid the applicationid
+	 * @return the application name by id
+	 * @throws SQLException the SQL exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws APIManagementException the API management exception
+	 */
 	public static String getApplicationNameById(String applicationid)
 			throws SQLException, APIMgtUsageQueryServiceClientException,
 			APIManagementException {
@@ -1794,6 +2177,19 @@ public class SbHostObjectUtils {
 
 	}
 
+	/**
+	 * Gets the total api traffic for pie chart.
+	 *
+	 * @param fromDate the from date
+	 * @param toDate the to date
+	 * @param subscriber the subscriber
+	 * @param operator the operator
+	 * @param applicationId the application id
+	 * @return the total api traffic for pie chart
+	 * @throws SQLException the SQL exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws APIManagementException the API management exception
+	 */
 	public static List<String[]> getTotalAPITrafficForPieChart(String fromDate,
 			String toDate, String subscriber, String operator, int applicationId)
 			throws SQLException, APIMgtUsageQueryServiceClientException,
@@ -1804,6 +2200,20 @@ public class SbHostObjectUtils {
 		return api_request;
 	}
 
+	/**
+	 * Gets the total api traffic for histogram.
+	 *
+	 * @param fromDate the from date
+	 * @param toDate the to date
+	 * @param subscriber the subscriber
+	 * @param operator the operator
+	 * @param applicationId the application id
+	 * @param api the api
+	 * @return the total api traffic for histogram
+	 * @throws SQLException the SQL exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws APIManagementException the API management exception
+	 */
 	public static List<String[]> getTotalAPITrafficForHistogram(
 			String fromDate, String toDate, String subscriber, String operator,
 			int applicationId, String api) throws SQLException,
@@ -1814,6 +2224,19 @@ public class SbHostObjectUtils {
 		return api_request;
 	}
 
+	/**
+	 * Gets the operator wise api traffic for pie chart.
+	 *
+	 * @param fromDate the from date
+	 * @param toDate the to date
+	 * @param subscriber the subscriber
+	 * @param api the api
+	 * @param applicationId the application id
+	 * @return the operator wise api traffic for pie chart
+	 * @throws SQLException the SQL exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws APIManagementException the API management exception
+	 */
 	public static List<String[]> getOperatorWiseAPITrafficForPieChart(
 			String fromDate, String toDate, String subscriber, String api,
 			int applicationId) throws SQLException,
@@ -1824,6 +2247,20 @@ public class SbHostObjectUtils {
 		return api_request;
 	}
 
+	/**
+	 * Gets the approval history.
+	 *
+	 * @param fromDate the from date
+	 * @param toDate the to date
+	 * @param subscriber the subscriber
+	 * @param api the api
+	 * @param applicationId the application id
+	 * @param operator the operator
+	 * @return the approval history
+	 * @throws SQLException the SQL exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws APIManagementException the API management exception
+	 */
 	public static List<String[]> getApprovalHistory(String fromDate,
 			String toDate, String subscriber, String api, int applicationId,
 			String operator) throws SQLException,
@@ -1834,6 +2271,16 @@ public class SbHostObjectUtils {
 		return api_request;
 	}
 
+	/**
+	 * Gets the approval history app.
+	 *
+	 * @param applicationId the application id
+	 * @param operator the operator
+	 * @return the approval history app
+	 * @throws SQLException the SQL exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws APIManagementException the API management exception
+	 */
 	public static List<Approval> getApprovalHistoryApp(int applicationId,
 			String operator) throws SQLException,
 			APIMgtUsageQueryServiceClientException, APIManagementException {
@@ -1842,6 +2289,20 @@ public class SbHostObjectUtils {
 		return api_request;
 	}
 
+	/**
+	 * Gets the all ap is.
+	 *
+	 * @param fromDate the from date
+	 * @param toDate the to date
+	 * @param subscriber the subscriber
+	 * @param operator the operator
+	 * @param applicationId the application id
+	 * @param api the api
+	 * @return the all ap is
+	 * @throws SQLException the SQL exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws APIManagementException the API management exception
+	 */
 	public static List<String[]> getAllAPIs(String fromDate, String toDate,
 			String subscriber, String operator, int applicationId, String api)
 			throws SQLException, APIMgtUsageQueryServiceClientException,
@@ -1851,6 +2312,20 @@ public class SbHostObjectUtils {
 		return apis;
 	}
 
+	/**
+	 * Gets the all error response codes.
+	 *
+	 * @param fromDate the from date
+	 * @param toDate the to date
+	 * @param subscriber the subscriber
+	 * @param operator the operator
+	 * @param applicationId the application id
+	 * @param api the api
+	 * @return the all error response codes
+	 * @throws SQLException the SQL exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws APIManagementException the API management exception
+	 */
 	public static List<String[]> getAllErrorResponseCodes(String fromDate,
 			String toDate, String subscriber, String operator,
 			int applicationId, String api) throws SQLException,
@@ -1861,10 +2336,19 @@ public class SbHostObjectUtils {
 		return resCodes;
 	}
 
+	/**
+	 * Gets the subscribers by operator.
+	 *
+	 * @param operatorName the operator name
+	 * @return the subscribers by operator
+	 * @throws SQLException the SQL exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws APIManagementException the API management exception
+	 */
 	public static List<String> getSubscribersByOperator(String operatorName)
 			throws SQLException, APIMgtUsageQueryServiceClientException,
 			APIManagementException {
-		List<Integer> applicationIds = AxiataDataAccessObject
+		List<Integer> applicationIds = DataAccessObject
 				.getApplicationsByOperator(operatorName);
 		List<String> subscribers = new ArrayList<String>();
 		List<String> tempSubscribers = new ArrayList<String>();
@@ -1885,6 +2369,15 @@ public class SbHostObjectUtils {
 		return subscribers;
 	}
 
+	/**
+	 * Gets the applications by subscriber.
+	 *
+	 * @param subscriberName the subscriber name
+	 * @return the applications by subscriber
+	 * @throws SQLException the SQL exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws APIManagementException the API management exception
+	 */
 	public static List<String[]> getApplicationsBySubscriber(
 			String subscriberName) throws SQLException,
 			APIMgtUsageQueryServiceClientException, APIManagementException {
@@ -1902,6 +2395,15 @@ public class SbHostObjectUtils {
 		return applicationsList;
 	}
 
+	/**
+	 * Gets the operators by subscriber.
+	 *
+	 * @param subscriberName the subscriber name
+	 * @return the operators by subscriber
+	 * @throws SQLException the SQL exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws APIManagementException the API management exception
+	 */
 	public static List<String> getOperatorsBySubscriber(String subscriberName)
 			throws SQLException, APIMgtUsageQueryServiceClientException,
 			APIManagementException {
@@ -1915,7 +2417,7 @@ public class SbHostObjectUtils {
 			for (Application application : applications) {
 				int tempApplicationId = application.getId();
 				List<String> tempOperatorNames = new ArrayList<String>();
-				tempOperatorNames = AxiataDataAccessObject
+				tempOperatorNames = DataAccessObject
 						.getOperatorNamesByApplication(tempApplicationId);
 				for (String operator : tempOperatorNames) {
 					String tempOperator = operator;
@@ -1929,6 +2431,12 @@ public class SbHostObjectUtils {
 		return operatorList;
 	}
 
+	/**
+	 * Removes the duplicate with order.
+	 *
+	 * @param arlList the arl list
+	 * @return the list
+	 */
 	public static List<String> removeDuplicateWithOrder(List<String> arlList) {
 		Set set = new HashSet();
 		List newList = new ArrayList();
@@ -1943,6 +2451,16 @@ public class SbHostObjectUtils {
 		return arlList;
 	}
 
+	/**
+	 * Gets the AP is by subscriber.
+	 *
+	 * @param subscriberName the subscriber name
+	 * @return the AP is by subscriber
+	 * @throws SQLException the SQL exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws APIManagementException the API management exception
+	 * @throws IdentityException the identity exception
+	 */
 	public static List<String> getAPIsBySubscriber(String subscriberName)
 			throws SQLException, APIMgtUsageQueryServiceClientException,
 			APIManagementException, IdentityException {
@@ -1959,6 +2477,19 @@ public class SbHostObjectUtils {
 		return apiList;
 	}
 
+	/**
+	 * Gets the API wise traffic for report.
+	 *
+	 * @param fromDate the from date
+	 * @param toDate the to date
+	 * @param subscriber the subscriber
+	 * @param operator the operator
+	 * @param api the api
+	 * @return the API wise traffic for report
+	 * @throws SQLException the SQL exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws APIManagementException the API management exception
+	 */
 	public static List<String[]> getAPIWiseTrafficForReport(String fromDate,
 			String toDate, String subscriber, String operator, String api)
 			throws SQLException, APIMgtUsageQueryServiceClientException,
@@ -1969,6 +2500,24 @@ public class SbHostObjectUtils {
 		return api_request_data;
 	}
 
+	/**
+	 * Gets the filtered customer care report.
+	 *
+	 * @param fromDate the from date
+	 * @param toDate the to date
+	 * @param msisdn the msisdn
+	 * @param subscriber the subscriber
+	 * @param operator the operator
+	 * @param app the app
+	 * @param api the api
+	 * @param stLimit the st limit
+	 * @param endLimit the end limit
+	 * @param timeOffset the time offset
+	 * @return the filtered customer care report
+	 * @throws SQLException the SQL exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws APIManagementException the API management exception
+	 */
 	public static List<String[]> getFilteredCustomerCareReport(String fromDate,
 			String toDate, String msisdn, String subscriber, String operator,
 			String app, String api, String stLimit, String endLimit,
@@ -1981,6 +2530,19 @@ public class SbHostObjectUtils {
 		return api_request_data;
 	}
 
+	/**
+	 * Gets the API wise traffic for report charging.
+	 *
+	 * @param fromDate the from date
+	 * @param toDate the to date
+	 * @param subscriber the subscriber
+	 * @param operator the operator
+	 * @param api the api
+	 * @return the API wise traffic for report charging
+	 * @throws SQLException the SQL exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws APIManagementException the API management exception
+	 */
 	public static List<String[]> getAPIWiseTrafficForReportCharging(
 			String fromDate, String toDate, String subscriber, String operator,
 			String api) throws SQLException,
@@ -1991,13 +2553,13 @@ public class SbHostObjectUtils {
 		return charging_request_data;
 	}
 
+	 
 	/**
-	 * 
-	 * Reading report file from file system
-	 * 
-	 * @param suscriber
-	 * @param period
-	 * @return
+	 * Gets the report.
+	 *
+	 * @param suscriber the suscriber
+	 * @param period the period
+	 * @return the report
 	 */
 	public static String getReport(String suscriber, String period) {
 		String fileContent = "";
@@ -2029,6 +2591,16 @@ public class SbHostObjectUtils {
 		return fileContent;
 	}
 
+	/**
+	 * Gets the custom report.
+	 *
+	 * @param fromDate the from date
+	 * @param toDate the to date
+	 * @param subscriberName the subscriber name
+	 * @param operator the operator
+	 * @param api the api
+	 * @return the custom report
+	 */
 	public static String getCustomReport(String fromDate, String toDate,
 			String subscriberName, String operator, String api) {
 		String fileContent = "";
@@ -2060,6 +2632,20 @@ public class SbHostObjectUtils {
 		return fileContent;
 	}
 
+	/**
+	 * Gets the error response codes for pie chart.
+	 *
+	 * @param fromDate the from date
+	 * @param toDate the to date
+	 * @param subscriber the subscriber
+	 * @param operator the operator
+	 * @param applicationId the application id
+	 * @param api the api
+	 * @return the error response codes for pie chart
+	 * @throws SQLException the SQL exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws APIManagementException the API management exception
+	 */
 	public static List<String[]> getErrorResponseCodesForPieChart(
 			String fromDate, String toDate, String subscriber, String operator,
 			int applicationId, String api) throws SQLException,
@@ -2070,6 +2656,20 @@ public class SbHostObjectUtils {
 		return api_request;
 	}
 
+	/**
+	 * Gets the error response codes for histogram.
+	 *
+	 * @param fromDate the from date
+	 * @param toDate the to date
+	 * @param subscriber the subscriber
+	 * @param operator the operator
+	 * @param applicationId the application id
+	 * @param api the api
+	 * @return the error response codes for histogram
+	 * @throws SQLException the SQL exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws APIManagementException the API management exception
+	 */
 	public static List<String[]> getErrorResponseCodesForHistogram(
 			String fromDate, String toDate, String subscriber, String operator,
 			int applicationId, String api) throws SQLException,
@@ -2080,13 +2680,12 @@ public class SbHostObjectUtils {
 		return api_response_codes;
 	}
 
+	 
 	/**
-	 * Returns a map of rates as defined in the rate-card in the underlying
-	 * governance registry.
-	 * 
-	 * @return a Map of RateKey objects and ChargeRate objects
-	 * @throws APIManagementException
-	 *             if an error occurs when loading rate card from the registry
+	 * Gets the rate card.
+	 *
+	 * @return the rate card
+	 * @throws APIManagementException the API management exception
 	 */
 	public static Map<RateKey, ChargeRate> getRateCard()
 			throws APIManagementException {
@@ -2566,13 +3165,14 @@ public class SbHostObjectUtils {
 		return ratecard;
 	}
 
+	 
 	/**
-	 * Returns a list of rates for the given Operator and API as defined in the
-	 * rate-card in the underlying governance registry.
-	 * 
-	 * @return a List of ChargeRate objects
-	 * @throws APIManagementException
-	 *             if an error occurs when loading rate card from the registry
+	 * Gets the rates for operator api.
+	 *
+	 * @param operatorName the operator name
+	 * @param apiName the api name
+	 * @return the rates for operator api
+	 * @throws APIManagementException the API management exception
 	 */
 	public static List<ChargeRate> getRatesForOperatorApi(String operatorName,
 			String apiName) throws APIManagementException {
@@ -2698,6 +3298,20 @@ public class SbHostObjectUtils {
 		return rateList;
 	}
 
+	/**
+	 * Gets the total api traffic for line chart.
+	 *
+	 * @param fromDate the from date
+	 * @param toDate the to date
+	 * @param subscriber the subscriber
+	 * @param operator the operator
+	 * @param applicationId the application id
+	 * @param api the api
+	 * @return the total api traffic for line chart
+	 * @throws SQLException the SQL exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws APIManagementException the API management exception
+	 */
 	public static List<String[]> getTotalAPITrafficForLineChart(
 			String fromDate, String toDate, String subscriber, String operator,
 			int applicationId, String api) throws SQLException,
@@ -2709,6 +3323,19 @@ public class SbHostObjectUtils {
 		return api_request;
 	}
 
+	/**
+	 * Gets the total api response time for line chart.
+	 *
+	 * @param fromDate the from date
+	 * @param toDate the to date
+	 * @param subscriber the subscriber
+	 * @param operator the operator
+	 * @param timeRange the time range
+	 * @return the total api response time for line chart
+	 * @throws SQLException the SQL exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws APIManagementException the API management exception
+	 */
 	public static List<APIResponseDTO> getTotalAPIResponseTimeForLineChart(
 			String fromDate, String toDate, String subscriber, String operator,
 			String timeRange) throws SQLException,
@@ -2720,6 +3347,17 @@ public class SbHostObjectUtils {
 		return apiResponse;
 	}
 
+	/**
+	 * Gets the all response times by date.
+	 *
+	 * @param opName the op name
+	 * @param username the username
+	 * @param fromDate the from date
+	 * @param toDate the to date
+	 * @return the all response times by date
+	 * @throws APIManagementException the API management exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 */
 	public static Map<String, List<APIResponseDTO>> getAllResponseTimesByDate(
 			String opName, String username, String fromDate, String toDate)
 			throws APIManagementException,
@@ -2738,6 +3376,17 @@ public class SbHostObjectUtils {
 		return responseTimes;
 	}
 
+	/**
+	 * Gets the time consumption for all ap is.
+	 *
+	 * @param opName the op name
+	 * @param username the username
+	 * @param fromDate the from date
+	 * @param toDate the to date
+	 * @return the time consumption for all ap is
+	 * @throws APIManagementException the API management exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 */
 	public static Map<String, String[]> getTimeConsumptionForAllAPIs(
 			String opName, String username, String fromDate, String toDate)
 			throws APIManagementException,
@@ -2756,11 +3405,37 @@ public class SbHostObjectUtils {
 		return responseTimes;
 	}
 
+	/**
+	 * Gets the rate card north bound.
+	 *
+	 * @return the rate card north bound
+	 * @throws APIManagementException the API management exception
+	 */
 	public static Map<RateKey, ChargeRate> getRateCardNorthBound()
 			throws APIManagementException {
 		return null;
 	}
 
+	/**
+	 * Calculate tiers charges.
+	 *
+	 * @param selectedUsageTier the selected usage tier
+	 * @param rateCard the rate card
+	 * @param totalRequestCount the total request count
+	 * @param tierCount the tier count
+	 * @param operatorSubscription the operator subscription
+	 * @param subsYear the subs year
+	 * @param subsMonth the subs month
+	 * @param application the application
+	 * @param ApiName the api name
+	 * @param apiVersion the api version
+	 * @param categoryEntry the category entry
+	 * @param appId the app id
+	 * @param apiId the api id
+	 * @param subsId the subs id
+	 * @throws APIManagementException the API management exception
+	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 */
 	private static void calculateTiersCharges(
 			List<UsageTiers> selectedUsageTier,
 			Map<RateKey, ChargeRate> rateCard, int totalRequestCount,
@@ -2838,6 +3513,12 @@ public class SbHostObjectUtils {
 
 	}
 
+	/**
+	 * Nvl default.
+	 *
+	 * @param val the val
+	 * @return the string
+	 */
 	private static String nvlDefault(String val) {
 		return (val == null || val.isEmpty()) ? DISPLAY_DEFAULT : val;
 	}

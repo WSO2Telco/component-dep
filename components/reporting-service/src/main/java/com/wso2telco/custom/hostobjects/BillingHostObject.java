@@ -1,20 +1,18 @@
-/*
- * Copyright (c) 2005-2010, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
- * 
- * WSO2 Inc. licenses this file to you under the Apache License,
- * Version 2.0 (the "License"); you may not use this file except
- * in compliance with the License.
+/*******************************************************************************
+ * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+ *  
+ *  WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
- * http://www.apache.org/licenses/LICENSE-2.0
+ *   http://www.apache.org/licenses/LICENSE-2.0
  * 
- * Unless required by applicable law or agreed to in writing,
- * software distributed under the License is distributed on an
- * "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
- * KIND, either express or implied. See the License for the
- * specific language governing permissions and limitations
- * under the License.
- */
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.wso2telco.custom.hostobjects;
 
 import java.io.IOException;
@@ -50,37 +48,83 @@ import com.wso2telco.custom.hostobjects.southbound.SbHostObjectUtils;
 import com.wso2telco.custom.hostobjects.util.ChargeRate;
 import com.wso2telco.custom.hostobjects.util.RateKey;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class BillingHostObject.
+ */
 public class BillingHostObject extends ScriptableObject {
 
+    /** The Constant log. */
     private static final Log log = LogFactory.getLog(BillingHostObject.class);
+    
+    /** The hostobject name. */
     private String hostobjectName = "DialogBilling";
+    
+    /** The api consumer. */
     private APIConsumer apiConsumer;
+    
+    /** The tier pricing. */
     private static Map<String, Float> tierPricing = new HashMap<String, Float>();
+    
+    /** The tier maximum count. */
     private static Map<String, Integer> tierMaximumCount = new HashMap<String, Integer>();
+    
+    /** The tier unit time. */
     private static Map<String, Integer> tierUnitTime = new HashMap<String, Integer>();
 
+    /**
+     * Gets the tier pricing.
+     *
+     * @return the tier pricing
+     */
     public static Map<String, Float> getTierPricing() {
         return tierPricing;
     }
 
+    /**
+     * Gets the tier maximum count.
+     *
+     * @return the tier maximum count
+     */
     public static Map<String, Integer> getTierMaximumCount() {
         return tierMaximumCount;
     }
 
+    /**
+     * Gets the tier unit time.
+     *
+     * @return the tier unit time
+     */
     public static Map<String, Integer> getTierUnitTime() {
         return tierUnitTime;
     }
 
+    /**
+     * Gets the username.
+     *
+     * @return the username
+     */
     public String getUsername() {
         return username;
     }
+    
+    /** The username. */
     private String username;
 
+    /* (non-Javadoc)
+     * @see org.mozilla.javascript.ScriptableObject#getClassName()
+     */
     @Override
     public String getClassName() {
         return hostobjectName;
     }
 
+    /**
+     * Instantiates a new billing host object.
+     *
+     * @param username the username
+     * @throws APIManagementException the API management exception
+     */
     public BillingHostObject(String username) throws APIManagementException {
         log.info("::: Initialized HostObject for : " + username);
         if (username != null) {
@@ -91,18 +135,42 @@ public class BillingHostObject extends ScriptableObject {
         }
     }
 
+    /**
+     * Instantiates a new billing host object.
+     */
     public BillingHostObject() {
         log.info("::: Initialized HostObject ");
     }
 
+    /**
+     * Gets the api consumer.
+     *
+     * @return the api consumer
+     */
     public APIConsumer getApiConsumer() {
         return apiConsumer;
     }
 
+    /**
+     * Gets the API consumer.
+     *
+     * @param thisObj the this obj
+     * @return the API consumer
+     */
     private static APIConsumer getAPIConsumer(Scriptable thisObj) {
         return ((BillingHostObject) thisObj).getApiConsumer();
     }
 
+    /**
+     * Js function_get report file content.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the string
+     * @throws APIManagementException the API management exception
+     */
     public static String jsFunction_getReportFileContent(Context cx, Scriptable thisObj,
             Object[] args, Function funObj)
             throws APIManagementException {
@@ -120,6 +188,16 @@ public class BillingHostObject extends ScriptableObject {
         return fileContent;
     }
 
+    /**
+     * Js function_get custom care data report.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the native array
+     * @throws APIManagementException the API management exception
+     */
     public static NativeArray jsFunction_getCustomCareDataReport(Context cx, Scriptable thisObj,
             Object[] args, Function funObj)
             throws APIManagementException {
@@ -145,6 +223,16 @@ public class BillingHostObject extends ScriptableObject {
         return dataArray;
     }
 
+    /**
+     * Js function_get custom care data records count.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the string
+     * @throws APIManagementException the API management exception
+     */
     public static String jsFunction_getCustomCareDataRecordsCount(Context cx, Scriptable thisObj,
             Object[] args, Function funObj)
             throws APIManagementException {
@@ -165,6 +253,16 @@ public class BillingHostObject extends ScriptableObject {
         return dataString;
     }
 
+    /**
+     * Js function_get custom api traffic report file content.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the string
+     * @throws APIManagementException the API management exception
+     */
     public static String jsFunction_getCustomApiTrafficReportFileContent(Context cx, Scriptable thisObj,
             Object[] args, Function funObj)
             throws APIManagementException {
@@ -187,6 +285,16 @@ public class BillingHostObject extends ScriptableObject {
         return fileContent;
     }
 
+    /**
+     * Js function_get api usagefor subscriber.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the native array
+     * @throws APIManagementException the API management exception
+     */
     public static NativeArray jsFunction_getAPIUsageforSubscriber(Context cx, Scriptable thisObj,
             Object[] args, Function funObj)
             throws APIManagementException {
@@ -219,6 +327,16 @@ public class BillingHostObject extends ScriptableObject {
 
     }
 
+    /**
+     * Js function_get cost per api.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the native array
+     * @throws APIManagementException the API management exception
+     */
     public static NativeArray jsFunction_getCostPerAPI(Context cx, Scriptable thisObj,
             Object[] args, Function funObj)
             throws APIManagementException {
@@ -334,6 +452,17 @@ public class BillingHostObject extends ScriptableObject {
         return apiPriceResponse;
     }
 
+    /**
+     * Generate report.
+     *
+     * @param subscriberName the subscriber name
+     * @param period the period
+     * @param persistReport the persist report
+     * @param isNorthbound the is northbound
+     * @param operatorName the operator name
+     * @return the native array
+     * @throws APIManagementException the API management exception
+     */
     private static NativeArray generateReport(String subscriberName, String period, boolean persistReport, boolean isNorthbound, String operatorName) throws APIManagementException {
 
         //createTierPricingMap();
@@ -352,6 +481,20 @@ public class BillingHostObject extends ScriptableObject {
         return ret;
     }
 
+    /**
+     * Generate custom api traffic report.
+     *
+     * @param fromDate the from date
+     * @param toDate the to date
+     * @param subscriberName the subscriber name
+     * @param operator the operator
+     * @param api the api
+     * @param timeOffset the time offset
+     * @param resType the res type
+     * @param isNorthbound the is northbound
+     * @return the native array
+     * @throws APIManagementException the API management exception
+     */
     private static NativeArray generateCustomApiTrafficReport(String fromDate, String toDate, String subscriberName, String operator, String api, String timeOffset, String resType, boolean isNorthbound) throws APIManagementException {
 
         NativeArray ret = null;
@@ -371,6 +514,22 @@ public class BillingHostObject extends ScriptableObject {
         return ret;
     }
 
+    /**
+     * Gets the custom care data report.
+     *
+     * @param fromDate the from date
+     * @param toDate the to date
+     * @param msisdn the msisdn
+     * @param subscriberName the subscriber name
+     * @param operator the operator
+     * @param app the app
+     * @param api the api
+     * @param stLimit the st limit
+     * @param endLimit the end limit
+     * @param timeOffset the time offset
+     * @return the custom care data report
+     * @throws APIManagementException the API management exception
+     */
     private static NativeArray getCustomCareDataReport(String fromDate, String toDate, String msisdn, String subscriberName, String operator, String app, String api, String stLimit, String endLimit, String timeOffset) throws APIManagementException {
 
         NativeArray ret = null;
@@ -384,6 +543,19 @@ public class BillingHostObject extends ScriptableObject {
         return ret;
     }
 
+    /**
+     * Gets the custom care data record count.
+     *
+     * @param fromDate the from date
+     * @param toDate the to date
+     * @param msisdn the msisdn
+     * @param subscriberName the subscriber name
+     * @param operator the operator
+     * @param app the app
+     * @param api the api
+     * @return the custom care data record count
+     * @throws APIManagementException the API management exception
+     */
     private static String getCustomCareDataRecordCount(String fromDate, String toDate, String msisdn, String subscriberName, String operator, String app, String api) throws APIManagementException {
 
         String ret = null;
@@ -399,6 +571,16 @@ public class BillingHostObject extends ScriptableObject {
         return ret;
     }
 
+    /**
+     * Generate financial report.
+     *
+     * @param subscriberName the subscriber name
+     * @param period the period
+     * @param opcode the opcode
+     * @param application the application
+     * @return the native array
+     * @throws APIManagementException the API management exception
+     */
     private static NativeArray generateFinancialReport(String subscriberName, String period,
             String opcode, String application) throws APIManagementException {
 
@@ -415,6 +597,16 @@ public class BillingHostObject extends ScriptableObject {
         return ret;
     }
 
+    /**
+     * Js function_get response time data.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the native array
+     * @throws APIManagementException the API management exception
+     */
     public static NativeArray jsFunction_getResponseTimeData(Context cx, Scriptable thisObj,
             Object[] args, Function funObj)
             throws APIManagementException {
@@ -447,6 +639,16 @@ public class BillingHostObject extends ScriptableObject {
         return nativeArray;
     }
 
+    /**
+     * Js function_get all response times.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the native array
+     * @throws APIManagementException the API management exception
+     */
     public static NativeArray jsFunction_getAllResponseTimes(Context cx, Scriptable thisObj, Object[] args, Function funObj)
             throws APIManagementException {
         String operatorName = (String) args[0];
@@ -503,6 +705,16 @@ public class BillingHostObject extends ScriptableObject {
         return apis;
     }
 
+    /**
+     * Js function_get all subscribers.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the native array
+     * @throws APIManagementException the API management exception
+     */
     public static NativeArray jsFunction_getAllSubscribers(Context cx, Scriptable thisObj, Object[] args,
             Function funObj) throws APIManagementException {
         NativeArray nativeArray = new NativeArray(0);
@@ -526,6 +738,12 @@ public class BillingHostObject extends ScriptableObject {
         return nativeArray;
     }
 
+    /**
+     * Js function_get all operators.
+     *
+     * @return the native array
+     * @throws APIManagementException the API management exception
+     */
     public static NativeArray jsFunction_getAllOperators() throws APIManagementException {
         NativeArray nativeArray = new NativeArray(0);
 
@@ -547,6 +765,16 @@ public class BillingHostObject extends ScriptableObject {
         return nativeArray;
     }
 
+    /**
+     * Js function_get total api traffic for pie chart.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the native array
+     * @throws APIManagementException the API management exception
+     */
     public static NativeArray jsFunction_getTotalAPITrafficForPieChart(Context cx, Scriptable thisObj, Object[] args,
             Function funObj) throws APIManagementException {
         NativeArray nativeArray = new NativeArray(0);
@@ -575,13 +803,23 @@ public class BillingHostObject extends ScriptableObject {
         return nativeArray;
     }
 
+    /**
+     * Js function_get operator app list.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the native array
+     * @throws APIManagementException the API management exception
+     */
     public static NativeArray jsFunction_getOperatorAppList(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws APIManagementException {
         NativeArray nativeArray = new NativeArray(0);
 
         String operator = args[0].toString();
 
         try {
-            List<Integer> opertatorAppIds = AxiataDataAccessObject.getApplicationsByOperator(operator);
+            List<Integer> opertatorAppIds = DataAccessObject.getApplicationsByOperator(operator);
             int i = 0;
             if (opertatorAppIds != null) {
                 for (Integer temp : opertatorAppIds) {
@@ -604,6 +842,16 @@ public class BillingHostObject extends ScriptableObject {
         return nativeArray;
     }
 
+    /**
+     * Js function_get total api traffic for histogram.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the native array
+     * @throws APIManagementException the API management exception
+     */
     public static NativeArray jsFunction_getTotalAPITrafficForHistogram(Context cx, Scriptable thisObj, Object[] args,
             Function funObj) throws APIManagementException {
         NativeArray nativeArray = new NativeArray(0);
@@ -648,6 +896,16 @@ public class BillingHostObject extends ScriptableObject {
         return nativeArray;
     }
 
+    /**
+     * Js function_get operator wise api traffic for pie chart.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the native array
+     * @throws APIManagementException the API management exception
+     */
     public static NativeArray jsFunction_getOperatorWiseAPITrafficForPieChart(Context cx, Scriptable thisObj, Object[] args,
             Function funObj) throws APIManagementException {
         NativeArray nativeArray = new NativeArray(0);
@@ -676,6 +934,16 @@ public class BillingHostObject extends ScriptableObject {
         return nativeArray;
     }
 
+    /**
+     * Js function_get subscribers by operator.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the native array
+     * @throws APIManagementException the API management exception
+     */
     public static NativeArray jsFunction_getSubscribersByOperator(Context cx, Scriptable thisObj, Object[] args,
             Function funObj) throws APIManagementException {
         NativeArray nativeArray = new NativeArray(0);
@@ -700,6 +968,16 @@ public class BillingHostObject extends ScriptableObject {
         return nativeArray;
     }
 
+    /**
+     * Js function_get applications by subscriber.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the native array
+     * @throws APIManagementException the API management exception
+     */
     public static NativeArray jsFunction_getApplicationsBySubscriber(Context cx, Scriptable thisObj, Object[] args,
             Function funObj) throws APIManagementException {
         NativeArray nativeArray = new NativeArray(0);
@@ -724,6 +1002,16 @@ public class BillingHostObject extends ScriptableObject {
         return nativeArray;
     }
 
+    /**
+     * Js function_get operators by subscriber.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the native array
+     * @throws APIManagementException the API management exception
+     */
     public static NativeArray jsFunction_getOperatorsBySubscriber(Context cx, Scriptable thisObj, Object[] args,
             Function funObj) throws APIManagementException {
         NativeArray nativeArray = new NativeArray(0);
@@ -748,6 +1036,16 @@ public class BillingHostObject extends ScriptableObject {
         return nativeArray;
     }
 
+    /**
+     * Js function_get ap is by subscriber.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the native array
+     * @throws APIManagementException the API management exception
+     */
     public static NativeArray jsFunction_getAPIsBySubscriber(Context cx, Scriptable thisObj, Object[] args,
             Function funObj) throws APIManagementException {
         NativeArray nativeArray = new NativeArray(0);
@@ -772,6 +1070,16 @@ public class BillingHostObject extends ScriptableObject {
         return nativeArray;
     }
 
+    /**
+     * Js function_get all operation types.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the native array
+     * @throws APIManagementException the API management exception
+     */
     public static NativeArray jsFunction_getAllOperationTypes(Context cx, Scriptable thisObj, Object[] args,
             Function funObj) throws APIManagementException {
         NativeArray nativeArray = new NativeArray(0);
@@ -794,6 +1102,16 @@ public class BillingHostObject extends ScriptableObject {
         return nativeArray;
     }
 
+    /**
+     * Js function_get approval history.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the native array
+     * @throws APIManagementException the API management exception
+     */
     public static NativeArray jsFunction_getApprovalHistory(Context cx, Scriptable thisObj, Object[] args,
             Function funObj) throws APIManagementException {
         NativeArray nativeArray = new NativeArray(0);
@@ -823,6 +1141,16 @@ public class BillingHostObject extends ScriptableObject {
         return nativeArray;
     }
 
+    /**
+     * Js function_get approval history app.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the native object
+     * @throws APIManagementException the API management exception
+     */
     public static NativeObject jsFunction_getApprovalHistoryApp(Context cx, Scriptable thisObj, Object[] args,
             Function funObj) throws APIManagementException {
         NativeArray nativeArray = new NativeArray(0);
@@ -912,6 +1240,16 @@ public class BillingHostObject extends ScriptableObject {
         return Application;
     }
 
+    /**
+     * Js function_get error response codes for pie chart.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the native array
+     * @throws APIManagementException the API management exception
+     */
     public static NativeArray jsFunction_getErrorResponseCodesForPieChart(Context cx, Scriptable thisObj, Object[] args,
             Function funObj) throws APIManagementException {
         NativeArray nativeArray = new NativeArray(0);
@@ -941,6 +1279,16 @@ public class BillingHostObject extends ScriptableObject {
         return nativeArray;
     }
 
+    /**
+     * Js function_get error response codes for histogram.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the native array
+     * @throws APIManagementException the API management exception
+     */
     public static NativeArray jsFunction_getErrorResponseCodesForHistogram(Context cx, Scriptable thisObj, Object[] args,
             Function funObj) throws APIManagementException {
         NativeArray nativeArray = new NativeArray(0);
@@ -986,6 +1334,13 @@ public class BillingHostObject extends ScriptableObject {
         return nativeArray;
     }
 
+    /**
+     * Gets the max count.
+     *
+     * @param tier the tier
+     * @return the max count
+     * @throws XMLStreamException the XML stream exception
+     */
     private static int getMaxCount(Tier tier) throws XMLStreamException {
         OMElement policy = AXIOMUtil.stringToOM(new String(tier.getPolicyContent()));
         OMElement maxCount = policy.getFirstChildWithName(APIConstants.POLICY_ELEMENT)
@@ -999,6 +1354,13 @@ public class BillingHostObject extends ScriptableObject {
         return -1;
     }
 
+    /**
+     * Gets the time unit.
+     *
+     * @param tier the tier
+     * @return the time unit
+     * @throws XMLStreamException the XML stream exception
+     */
     private static int getTimeUnit(Tier tier) throws XMLStreamException {
         OMElement policy = AXIOMUtil.stringToOM(new String(tier.getPolicyContent()));
         OMElement timeUnit = policy.getFirstChildWithName(APIConstants.POLICY_ELEMENT)
@@ -1011,6 +1373,11 @@ public class BillingHostObject extends ScriptableObject {
         return -1;
     }
 
+    /**
+     * Creates the tier pricing map.
+     *
+     * @throws APIManagementException the API management exception
+     */
     private static void createTierPricingMap() throws APIManagementException {
         Map<String, Tier> tierMap = APIUtil.getTiers();
         for (Map.Entry<String, Tier> entry : tierMap.entrySet()) {
@@ -1034,6 +1401,11 @@ public class BillingHostObject extends ScriptableObject {
         }
     }
 
+    /**
+     * Prints the tier pricing.
+     *
+     * @throws APIManagementException the API management exception
+     */
     private static void printTierPricing() throws APIManagementException {
         createTierPricingMap();
         System.out.println("Print Tier Pricings");
@@ -1042,16 +1414,40 @@ public class BillingHostObject extends ScriptableObject {
         }
     }
 
+    /**
+     * Handle exception.
+     *
+     * @param msg the msg
+     * @throws APIManagementException the API management exception
+     */
     private static void handleException(String msg) throws APIManagementException {
         log.error(msg);
         throw new APIManagementException(msg);
     }
 
+    /**
+     * Handle exception.
+     *
+     * @param msg the msg
+     * @param t the t
+     * @throws APIManagementException the API management exception
+     */
     private static void handleException(String msg, Throwable t) throws APIManagementException {
         log.error(msg, t);
         throw new APIManagementException(msg, t);
     }
 
+    /**
+     * Js function_get s pfor blacklist.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the native array
+     * @throws APIManagementException the API management exception
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     */
     @SuppressWarnings("null")
     public static NativeArray jsFunction_getSPforBlacklist(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws APIManagementException, APIMgtUsageQueryServiceClientException {
         if (args == null || args.length == 0) {
@@ -1061,7 +1457,7 @@ public class BillingHostObject extends ScriptableObject {
         Boolean isadmin = Boolean.valueOf(String.valueOf(args[1]));
 
         List<SPObject> spList = BillingDataAccessObject.generateSPList();
-        List<SPObject> spListoperator = AxiataDataAccessObject.getSPList(operator);
+        List<SPObject> spListoperator = DataAccessObject.getSPList(operator);
         NativeArray nativeArray = new NativeArray(0);
         NativeObject nativeObject;
         if (spList != null) {
@@ -1088,6 +1484,17 @@ public class BillingHostObject extends ScriptableObject {
         return nativeArray;
     }
 
+    /**
+     * Js function_get appfor blacklist.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the native object
+     * @throws APIManagementException the API management exception
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     */
     public static NativeObject jsFunction_getAppforBlacklist(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws APIManagementException, APIMgtUsageQueryServiceClientException {
         if (args == null || args.length == 0) {
             handleException("Invalid number of parameters.");
@@ -1107,6 +1514,16 @@ public class BillingHostObject extends ScriptableObject {
         return row;
     }
 
+    /**
+     * Js function_get dashboard api traffic for pie chart.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the native array
+     * @throws APIManagementException the API management exception
+     */
     public static NativeArray jsFunction_getDashboardAPITrafficForPieChart(Context cx, Scriptable thisObj, Object[] args,
             Function funObj) throws APIManagementException {
         NativeArray nativeArray = new NativeArray(0);
@@ -1159,13 +1576,13 @@ public class BillingHostObject extends ScriptableObject {
         return nativeArray;
     }
 
+     
     /**
-     * Subtract the timerange from the current time and return in "yyyy-mm-dd"
-     * format
+     * Subtract time range.
      *
-     * @param date
-     * @param range
-     * @return
+     * @param date the date
+     * @param timeRange the time range
+     * @return the string
      */
     private static String subtractTimeRange(Calendar date, String timeRange) {
         String fromDate = null;
@@ -1183,21 +1600,23 @@ public class BillingHostObject extends ScriptableObject {
         return fromDate;
     }
 
+     
     /**
-     * Get the current time in "yyyy-mm-dd" as string
+     * Gets the current time.
      *
-     * @param date
-     * @return
+     * @param date the date
+     * @return the current time
      */
     private static String getCurrentTime(Calendar date) {
         return date.get(Calendar.YEAR) + "-" + (date.get(Calendar.MONTH) + 1) + "-" + date.get(Calendar.DATE);
     }
 
+     
     /**
-     * create date string in miliseconds for date format "yyyy-mm-dd"
+     * Gets the time in milli.
      *
-     * @param date
-     * @return
+     * @param date the date
+     * @return the time in milli
      */
     private static String getTimeInMilli(String date) {
         SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
@@ -1213,6 +1632,16 @@ public class BillingHostObject extends ScriptableObject {
         return dateString;
     }
 
+    /**
+     * Js function_get dashboard api traffic for line chart.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the native array
+     * @throws APIManagementException the API management exception
+     */
     public static NativeArray jsFunction_getDashboardAPITrafficForLineChart(Context cx, Scriptable thisObj, Object[] args,
             Function funObj) throws APIManagementException {
         NativeArray nativeArray = new NativeArray(0);
@@ -1268,6 +1697,16 @@ public class BillingHostObject extends ScriptableObject {
         return nativeArray;
     }
 
+    /**
+     * Js function_get dashboard api response time for line chart.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the native object
+     * @throws APIManagementException the API management exception
+     */
     public static NativeObject jsFunction_getDashboardAPIResponseTimeForLineChart(Context cx, Scriptable thisObj, Object[] args,
             Function funObj) throws APIManagementException {
         NativeObject nativeObject = new NativeObject();
@@ -1339,6 +1778,16 @@ public class BillingHostObject extends ScriptableObject {
         return nativeObject;
     }
 
+    /**
+     * Js function_get dashboard response times by api.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the native array
+     * @throws APIManagementException the API management exception
+     */
     public static NativeArray jsFunction_getDashboardResponseTimesByAPI(Context cx, Scriptable thisObj, Object[] args, Function funObj)
             throws APIManagementException {
 
@@ -1403,6 +1852,16 @@ public class BillingHostObject extends ScriptableObject {
         return apis;
     }
 
+    /**
+     * Js function_get dashboard time consumers by api.
+     *
+     * @param cx the cx
+     * @param thisObj the this obj
+     * @param args the args
+     * @param funObj the fun obj
+     * @return the native object
+     * @throws APIManagementException the API management exception
+     */
     public static NativeObject jsFunction_getDashboardTimeConsumersByAPI(Context cx, Scriptable thisObj, Object[] args, Function funObj)
             throws APIManagementException {
 
