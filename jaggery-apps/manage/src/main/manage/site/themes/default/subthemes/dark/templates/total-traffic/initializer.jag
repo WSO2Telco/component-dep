@@ -1,0 +1,11 @@
+<%
+jagg.initializer("total-traffic", {
+
+    preInitialize:function () {
+        jagg.addHeaderJS("total-traffic", "dojo", "templates/utils/dojo-release-1.8.3/dojo/dojo.js");
+        jagg.addHeaderJS("total-traffic", "total-traffic", "templates/total-traffic/js/total-traffic.js");
+
+    }
+
+});
+%>

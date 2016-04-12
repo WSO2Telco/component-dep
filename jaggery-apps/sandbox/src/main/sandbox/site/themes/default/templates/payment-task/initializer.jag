@@ -1,0 +1,11 @@
+<%
+jagg.initializer("payment-task", {
+
+    preInitialize:function () {
+    	jagg.addFooterCSS("application", "jagg", "templates/payment-task/css/overridden_css.css");
+        jagg.addFooterJS("application", "jagg", "templates/payment-task/js/payment.js");
+
+    }
+});
+%>
+

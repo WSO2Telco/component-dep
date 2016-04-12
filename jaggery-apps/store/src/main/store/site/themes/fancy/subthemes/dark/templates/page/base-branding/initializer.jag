@@ -1,0 +1,8 @@
+<%
+jagg.initializer("page/base-branding", {
+
+    preInitialize:function () {
+
+    }
+});
+%>

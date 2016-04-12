@@ -1,0 +1,51 @@
+<% jagg.template("menu/left-api-sms", function(inputs, outputs, jagg) { %>
+<%  var site = require("/site/conf/site.json");
+var ssoEnabled = site.ssoConfiguration.enabled;
+
+var reqUrl = request.getRequestURI();
+var baseUrl=jagg.getAbsoluteUrl("/site/pages/api-sms.jag");
+//var listUrl=jagg.getAbsoluteUrl("/site/pages/billing-metering.jag");
+//var listMappedUrl=jagg.getMappedUrl("/site/pages/billing-metering.jag");
+//var subsUrl=jagg.getAbsoluteUrl("/site/pages/billing-metering.jag");
+//var subsMappedUrl=jagg.getMappedUrl("/site/pages/billing-metering.jag");
+
+var isAdmin = jagg.getUser().isAdmin;
+var isOperator = jagg.getUser().operator;
+// log.info(isAdmin);
+// log.info(isOperator);
+%>
+<div id="listing">
+<div class="sidebar-nav left-menu-back01">
+	<ul class="nav nav-list">
+		<li class="nav-header">SMS Services</li>
+
+		<li
+		<% if(request.getParameter("task")==null || request.getParameter("task")=="sms-send" || request.getParameter("task")=="sms-to-application"){%>
+			class="active" <% } %>><a
+			href="<%=baseUrl%>?task=sms-send"
+			onclick="jagg.sessionAwareJS({redirect:'<%=baseUrl%>?task=sms-send',e:event,ssoEnabled:<%=ssoEnabled%>})">Send SMS
+		</a></li>
+		<li <%if(request.getParameter("task")=="delivery-status"){%>
+			class="active" <% } %>><a
+			href="<%=baseUrl%>?task=delivery-status"
+			onclick="jagg.sessionAwareJS({redirect:'<%=baseUrl%>?task=delivery-status',e:event,ssoEnabled:<%=ssoEnabled%>})">Delivery Status
+		</a></li>
+		<li <%if(request.getParameter("task")=="delivery-sub"){%>
+			class="active" <% } %>><a
+			href="<%=baseUrl%>?task=delivery-sub"
+			onclick="jagg.sessionAwareJS({redirect:'<%=baseUrl%>?task=delivery-sub',e:event,ssoEnabled:<%=ssoEnabled%>})">Delivery Subscriptions
+		</a></li>
+		<li <%if(request.getParameter("task")=="sms-retrieve"){%>
+			class="active" <% } %>><a
+			href="<%=baseUrl%>?task=sms-retrieve"
+			onclick="jagg.sessionAwareJS({redirect:'<%=baseUrl%>?task=sms-retrieve',e:event,ssoEnabled:<%=ssoEnabled%>})">Receiving SMS
+		</a></li>
+		<li <%if(request.getParameter("task")=="sms-sub-notifications"){%>
+			class="active" <% } %>><a
+			href="<%=baseUrl%>?task=sms-sub-notifications"
+			onclick="jagg.sessionAwareJS({redirect:'<%=baseUrl%>?task=sms-sub-notifications',e:event,ssoEnabled:<%=ssoEnabled%>})">Subscription Notifications
+		</a></li>
+	</ul>
+</div>
+</div>
+<%});%>

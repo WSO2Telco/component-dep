@@ -1,0 +1,167 @@
+<%
+include("/jagg/jagg.jag");
+
+(function () {
+    var mod, obj, result, user, delstatus, notifydelay, maxallowed, 
+            action = request.getParameter("action"),
+            site = require("/site/conf/site.json"),log = new Log(),
+            msg = require("/site/conf/ui-messages.jag");
+   
+     if(jagg.getUser() == null){
+        print({
+            error:true,
+            message:'timeout'
+        });
+    }else{        
+   
+        if (action === "saveparam") {
+        
+        mod = jagg.module("sms");
+        user =jagg.getUser();
+        delstatus = request.getParameter("delstatus");
+        notifydelay = request.getParameter("notifydelay");
+        maxallowed = request.getParameter("maxallowed");
+
+        result = mod.addparam(user.username,delstatus,notifydelay,maxallowed); 
+        if (result.error) {
+        obj = {
+                      error:true,
+                      message:result.message
+              };
+              } else {
+                    obj = {
+                        error:false,
+                        tasks:result
+                    }
+              }
+              print(obj);
+    } else if (action === "deletenotifirecord") {
+    	
+    	user =jagg.getUser();
+    	var notifyid = request.getParameter("id");
+    	log.info("deletenotifirecord :: "+notifyid);
+    	mod = jagg.module("sms");
+    	result = mod.DeleteSubscribeData(notifyid,user.username);
+    		
+    				if (result.error) {
+    					obj = {
+    						error:result.error,
+    						message:result.message
+    					};
+    				} else {
+    					obj = {
+    						error:false,
+    						message:result.message,
+    						data: result.data
+    					}
+    				}
+    				print(obj);
+    	
+    }else if (action === "updateNotifyData") {
+    	
+    	var notifyid = request.getParameter("id");
+    	var callback = request.getParameter("callbackData");
+    	var criteria = request.getParameter("criteria");
+    	var notifyurl = request.getParameter("notifyURL");
+    	
+    	log.info("updateNotifyData :: "+notifyid+" :: "+callback+" :: "+criteria+" :: "+notifyurl);
+    	
+    	mod = jagg.module("sms");
+    	result = mod.EditSubscribeDataTbl(notifyid,callback,criteria,notifyurl);
+    		
+    				if (result.error) {
+    					obj = {
+    						error:result.error,
+    						message:result.message
+    					};
+    				} else {
+    					obj = {
+    						error:false,
+    						message:result.message,
+    						data: result.data
+    					}
+    				}
+    				print(obj);
+    	
+    }else if (action === "SearchSubscribeSMS") {
+    	
+    	var notifyid = request.getParameter("id");
+    	
+    	log.info("updateNotifyData :: "+notifyid);
+    	
+    	mod = jagg.module("sms");
+    	result = mod.SearchSubscribeData(notifyid,callback,criteria,notifyurl);
+    		
+    				if (result.error) {
+    					obj = {
+    						error:result.error,
+    						message:result.message
+    					};
+    				} else {
+    					obj = {
+    						error:false,
+    						message:result.message,
+    						data: result.data
+    					}
+    				}
+    				print(obj);
+    	
+    }else if (action === "addnotify") {
+        mod = jagg.module("sms");
+        user =jagg.getUser();
+       
+        var senderaddr = request.getParameter("senderaddr");
+        var notifyURL = request.getParameter("notifyURL");
+        var callbackData = request.getParameter("callbackData");
+        var criteria = request.getParameter("criteria");
+        var clientCorrelator = request.getParameter("clientCorrelator");
+        
+        log.info('add notify *********** :'+senderaddr);
+        log.info('add notify *********** :'+notifyURL);
+        log.info('add notify *********** :'+callbackData);
+        log.info('add notify *********** :'+criteria);
+        log.info('add notify *********** :'+clientCorrelator);
+        
+
+        var callbackReference = {
+                    "notifyURL" : notifyURL,
+                    "callbackData" : callbackData
+                  };
+          
+        var subscription = {
+              "clientCorrelator" : clientCorrelator,
+              "criteria" : criteria,
+              "destinationAddress" : senderaddr,
+              "callbackReference" : callbackReference,
+              "notificationFormat" : "JSON"
+              };
+           
+        var notifyobj = {
+            "subscription" : subscription
+            };
+       
+        result = mod.addsmsnotify(user.username,notifyobj); 
+        
+        if (result.error==true) {
+        obj = {
+                      error:true,
+                      message:result.message
+              };
+              } else {
+                    obj = {
+                        error:false,
+                        message:result.message,
+                        tasks:result.data
+                    }
+              }
+              print(obj);
+        
+    } else {
+        print({
+            error:true,
+            message:msg.error.invalidAction(action)
+        });
+    }
+   }
+}());
+%>

@@ -1,0 +1,11 @@
+<%
+jagg.initializer("subscription-task", {
+
+    preInitialize:function () {
+        jagg.addFooterJS("underscore", "jagg", "templates/subscription-task/js/subscription.js");
+        jagg.addFooterJS("popup", "jagg", "templates/subscription-task/js/jquery.popupoverlay.js");
+        jagg.addFooterJS("tiers", "jagg", "templates/subscription-task/js/tiers.js");
+    }
+});
+%>
+

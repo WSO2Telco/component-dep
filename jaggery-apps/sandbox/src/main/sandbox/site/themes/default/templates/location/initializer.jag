@@ -1,0 +1,10 @@
+<%
+jagg.initializer("location", {
+
+    preInitialize:function () {
+    	jagg.addFooterJS("location", "jagg", "templates/location/js/location.js");
+    	jagg.addFooterCSS("location", "jagg", "templates/location/css/overridden_css.css");   
+    }
+});
+%>
+

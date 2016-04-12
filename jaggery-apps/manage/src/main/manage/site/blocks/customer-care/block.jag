@@ -1,0 +1,50 @@
+<%
+jagg.block("customer-care", {
+	initializer:function (data) {
+
+	} ,
+	// 	getInputs:function () {
+	// 		return {
+	// 			"usage":null
+	// 		}
+	// 	},
+
+	getOutputs:function (inputs) {
+			
+		var data, user = inputs.user;
+		var isOperator = jagg.getUser().operator;
+		var data_subscribers;
+		var data_operators;
+		var data_applications;
+		if (user.isAdmin){
+			var financeReportModule = jagg.module("finance-report");
+			var result_subscribers = financeReportModule.getAllSubscribers();
+			var result_operators = financeReportModule.getAllOperators();
+
+			data_subscribers = result_subscribers.data;
+			data_operators = result_operators.data;
+		} else if(isCustomerCare != null){
+			var customerCareModule = jagg.module("customer-care");
+			var result_applications = customerCareModule.getAppsByOperator(isCustomerCare);
+			data_applications = result_applications.data;
+		} else if(isOperator == null){
+			var financeReportModule = jagg.module("finance-report");
+			var result_operators = financeReportModule.getOperatorsBySubscriber(jagg.getUser().username);
+			var result_applications = financeReportModule.getAppsBySubscriber(jagg.getUser().username);
+			
+			data_operators = result_operators.data;
+			data_applications = result_applications.data;
+		} else if(isOperator != null){
+			var customerCareModule = jagg.module("customer-care");
+			var result_applications = customerCareModule.getAppsByOperator(isOperator);
+			data_applications = result_applications.data;
+		}
+		return {
+			"subscribers" : data_subscribers,
+			"operators" : data_operators,
+			"applications" : data_applications
+		};
+	}
+
+});
+%>

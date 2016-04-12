@@ -1,0 +1,125 @@
+<%
+include("/jagg/jagg.jag");
+
+var sendUssd = function (payload, number, user) {
+    var result, message,
+    log = new Log();
+
+	try {
+ 		var xhr = new XMLHttpRequest();
+        var endpoint = jagg.getSandboxurl()+"UssdSendService/ussd/V1/outbound";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-type","application/json");
+        xhr.setRequestHeader("sandbox", user.username);
+		xhr.send(payload);
+
+		//log.info('EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE :'+user.username);
+		result = xhr.responseText.toString();
+		log.info(result);
+		
+		return {
+		        error:false,
+		        message:"OK",
+		        data:result
+		    };
+
+	} catch (e) {
+        log.error(e.message);
+        return {
+            error:true,
+            message:e.message.split("Exception:")[2]
+        };
+	}
+};
+
+var subscribeUssd = function (payload, user) {
+    var result, message,
+    log = new Log();
+
+	try {
+ 		var xhr = new XMLHttpRequest();
+        var endpoint = jagg.getSandboxurl()+"UssdSubscriptionService/ussd/v1/inbound/subscriptions";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-type","application/json");
+        xhr.setRequestHeader("sandbox", user.username);
+		xhr.send(payload);
+
+		result = xhr.responseText.toString();
+		log.info(result);
+		
+		return {
+		        error:false,
+		        message:"OK",
+		        data:result
+		    };
+
+	} catch (e) {
+        log.error(e.message);
+        return {
+            error:true,
+            message:e.message.split("Exception:")[2]
+        };
+	}
+};
+
+var getUssdSubscriptionData = function (userid) {
+	
+	var result, message, log = new Log();
+	try{
+			var xhr = new XMLHttpRequest();
+			var endpoint =  jagg.getSandboxurl()+"UssdService/getSubTableData";
+			xhr.open("POST", endpoint);
+			xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			xhr.setRequestHeader("payact","getSubTableData");
+			var payload = "userid="+userid;
+			xhr.send(payload);
+	
+			result = xhr.responseText.toString();
+			log.info(result);
+	
+			return {
+				error:false,
+				message:"OK",
+				data:result
+			};
+	
+		} catch (e) {
+			log.error(e.message);
+			return {
+				error:true,
+				message:e.message.split("Exception:")[2]
+			};
+		}
+	
+};
+
+var deleteUssdSub = function (subId){
+	var log = new Log();
+		log.info("Delete number module");
+		try{
+			var xhr = new XMLHttpRequest();
+			var endpoint =  jagg.getSandboxurl()+"/UssdService/CancelUssdSub";
+			xhr.open("POST", endpoint);
+			xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+			var payload = "subId="+subId;
+			xhr.send(payload);
+				
+			result = xhr.responseText.toString();
+			log.info("RowDelete"+result);
+				
+			return {
+				error:false,
+				message:"OK",
+				data:result
+			};
+				
+		} catch (e) {
+			log.error(e.message);
+			return {
+				error:true,
+				message:e.message.split("Exception:")[2]
+			};
+		}
+};
+
+%>

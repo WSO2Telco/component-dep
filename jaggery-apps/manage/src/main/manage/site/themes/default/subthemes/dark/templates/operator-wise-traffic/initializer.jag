@@ -1,0 +1,11 @@
+<%
+jagg.initializer("operator-wise-traffic", {
+
+    preInitialize:function () {
+        jagg.addHeaderJS("operator-wise-traffic", "dojo", "templates/utils/dojo-release-1.8.3/dojo/dojo.js");
+        jagg.addHeaderJS("operator-wise-traffic", "operator-wise-traffic", "templates/operator-wise-traffic/js/operator-wise-traffic.js");
+
+    }
+
+});
+%>

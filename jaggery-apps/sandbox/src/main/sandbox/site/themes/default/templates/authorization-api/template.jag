@@ -1,0 +1,249 @@
+<% jagg.template("authorization-api", function (inputs, outputs, jagg) {
+    var locreqtxns = session.get("locreqtxns");
+
+    var key = '', secret = '', authCode = '',grant_type='', refresh_token='', access_token='', auth_header='', content_type = 'application/x-www-form-urlencoded';
+    var access_token_url='https://ideabiz.lk/apicall/token?grant_type=', token_scope='';
+
+    if (outputs.key != null) {
+        key = outputs.key;
+    }
+    if (outputs.secret != null) {
+        secret = outputs.secret;
+    }
+    if (outputs.authCode != null) {
+        authCode = outputs.authCode;
+    }
+    if (outputs.grant_type != null) {
+        grant_type = outputs.grant_type;
+    }
+    if (outputs.refresh_token != null) {
+        refresh_token = outputs.refresh_token;
+    }
+    if (outputs.access_token != null) {
+        access_token = outputs.access_token;
+    }
+    if (outputs.token_scope != null) {
+        token_scope = outputs.token_scope;
+    }
+
+    var sub = '', email = '';
+    var granttype = '', username = '', password = '', scope = '', contenttype = 'application/x-www-form-urlencoded', authorization = 'Basic ', token = '', url = '';
+
+    if (outputs.granttype != null) {
+        granttype = outputs.granttype;
+    }
+    if (outputs.username != null) {
+        username = outputs.username;
+    }
+    if (outputs.password != null) {
+        password = outputs.password;
+    }
+    if (outputs.scope != null) {
+        scope = outputs.scope;
+    }
+
+    if (outputs.contenttype != null) {
+        contenttype = outputs.contenttype;
+    }
+    if (outputs.authorization != null) {
+        authorization = outputs.authorization;
+    }
+    if (outputs.token != null) {
+        token = outputs.token;
+    }
+    if (outputs.url != null) {
+        url = outputs.url;
+    }
+    %>
+<div id="listing" xmlns="http://www.w3.org/1999/html">
+    <div class="title-section">
+        <h3>Create Authorization Code</h3>
+    </div>
+    <div class="content-section shadow-up">
+        <div class="content-data">
+            <div class="alert alert-error" id="errorMessage" style="display: none">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <strong>Error Mobile ID API request!</strong>
+            </div>
+
+            <form novalidate="novalidate" id="appAddForm">
+                <div class="application-add well form-horizontal">
+
+                    <div class="control-group">
+                        <label class="control-label" for="key" style="padding-top: 5px;">Consumer Key</label>
+                        <div class="controls">
+                            <input class="formtxt" style="width: 400px;" maxlength="70" name="key" id="key" type="text" value=<%=key%>>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="secret" style="padding-top: 5px;">Consumer Secret</label>
+						<div class="controls">
+							<input class="formtxt" style="width: 400px;" maxlength="70" name="secret" id="secret" type="text" value=<%=secret%>>
+                            </div>
+                            </div>
+                        <div>
+                            <label style="padding-left: 180px;"><font id="error_message" color="red"></font></label>
+                        </div>
+                        <div class="form-actions">
+                            <input id="param-add-button" class="btn btn-primary" value="Create Authorization Code" onclick="createAuthorizationCode();" type="button">
+                        </div>
+                    <div class="control-group">
+                        <label class="control-label" for="authCode" style="padding-top: 5px;">Authorization code</label>
+                        <div class="controls">
+                            <input class="formtxt" style="width: 400px;" maxlength="70" name="authCode" id="authCode" type="text" value="<%=authCode%>" readonly>
+						</div>
+					</div>
+                    </div>
+
+                </form>
+
+            </div>
+        </div>
+
+    <div class="title-section">
+        <h3>Generate Refresh token</h3>
+    </div>
+    <div class="content-section shadow-up">
+        <div class="content-data">
+            <div class="alert alert-error" id="errorMessage" style="display: none">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <strong>Error Mobile ID API request!</strong>
+            </div>
+
+            <form novalidate="novalidate" id="appAddForm">
+<div class="application-add well form-horizontal">
+					<strong>Params for Refresh token</strong>
+
+					<div class="control-group">
+                        <label class="control-label" for="token" style="padding-top: 5px;">Token</label>
+                        <div class="controls"><input class="formtxt" style="width: 400px;" maxlength="70" name="token" id="token" type="text" value="<%=token%>" readonly></div>
+					</div>
+					
+                    <div class="control-group">
+                        <label class="control-label" for="granttype" style="padding-top: 5px;">Grant Type</label>
+                        <div class="controls"><input class="formtxt" style="width: 400px;" maxlength="70" name="granttype" id="granttype" type="text" value=<%=granttype%>></div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="username" style="padding-top: 5px;">Username</label>
+						<div class="controls"><input class="formtxt" style="width: 400px;" maxlength="70" name="username" id="username" type="text" value=<%=username%>></div>
+                     </div>
+                    <div class="control-group">
+                        <label class="control-label" for="password" style="padding-top: 5px;">Password</label>
+                        <div class="controls"><input class="formtxt" style="width: 400px;" maxlength="70" name="password" id="password" type="text" value=<%=password%>></div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="scope" style="padding-top: 5px;">Scope</label>
+						<div class="controls"><input class="formtxt" style="width: 400px;" maxlength="70" name="scope" id="scope" type="text" value=<%=scope%>></div>
+                     </div>                     
+                     <div class="form-actions">
+                            <input id="param-add-button" class="btn btn-primary" value="Save" onclick="saveRefreshToken();" type="button">
+                     </div>
+                    
+                    <strong>Request URL</strong>
+                    
+                  	<div class="control-group">
+                        <label class="control-label" for="url" style="padding-top: 5px;">URL</label>
+                        <div class="controls"><input class="formtxt" style="width: 600px"  name="url" id="url" type="text" value=<%=url%>></div>
+					</div>	
+                    <strong>Header details</strong>
+                    
+                    <div class="control-group">
+                        <label class="control-label" for="contenttype" style="padding-top: 5px;">Content Type</label>
+                        <div class="controls"><input clss="formtxt" style="width: 400px;" readonly="readonly" maxlength="70" name="contenttype" id="contenttype" type="text" value=<%=contenttype%>></div>
+					</div>
+					<div class="control-group">
+                        <label class="control-label" for="authorization" style="padding-top: 5px;">Authorization</label>
+                        <div class="controls"><input class="formtxt" style="width: 400px;" maxlength="70" name="authorization" readonly="readonly" id="authorization" type="text" value=<%=authorization
+    %>></div>
+                        </div>
+
+                        <div class="form-actions">
+                                <input id="param-add-button" class="btn btn-primary" value="Request" onclick="generateRefreshToken();" type="button">
+                         </div>
+
+                        <div class="ParameterRow">
+                            <div class="ParameterLabel">
+                                <strong>Response:</strong>
+                            </div>
+                            <div class="ParameterValue">
+                                <textarea style="height: 250px; width: 400px; background-color: #E7F0F7;" id="json-response" name="json-response"></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+                    </form>
+
+                </div>
+            </div>
+
+
+    <div class="title-section">
+        <h3>Generate Access token</h3>
+    </div>
+    <div class="content-section shadow-up">
+        <div class="content-data">
+            <div class="alert alert-error" id="errorMessage" style="display: none">
+                <button type="button" class="close" data-dismiss="alert">×</button>
+                <strong>Error Mobile ID API request!</strong>
+            </div>
+
+            <form novalidate="novalidate" id="appAddForm">
+<div class="application-add well form-horizontal">
+					<strong>Params for Access token</strong>
+
+					<div class="control-group">
+                        <label class="control-label" for="grant_type" style="padding-top: 5px;">Grant type</label>
+                        <div class="controls"><input class="formtxt" style="width: 400px;" maxlength="70" name="grant_type" id="grant_type" type="text" value=<%=grant_type%>></div>
+					</div>
+
+                    <div class="control-group">
+                        <label class="control-label" for="refresh_token" style="padding-top: 5px;">Refresh Token</label>
+                        <div class="controls"><input class="formtxt" style="width: 400px;" maxlength="70" name="refresh_token" id="refresh_token" type="text" value="<%=refresh_token%>" readonly></div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="token_scope" style="padding-top: 5px;">Scope</label>
+						<div class="controls"><input class="formtxt" style="width: 400px;" maxlength="70" name="token_scope" id="token_scope" type="text" value=<%=token_scope%>></div>
+                     </div>
+                    <div>
+                    <label style="padding-left: 180px;"><font id="access_token_error_message" color="red"></font></label>
+                  </div>
+                     <div class="form-actions">
+                            <input id="param-add-button" class="btn btn-primary" value="Generate Access Code" onclick="generateAccessToken();" type="button">
+                     </div>
+
+                    <strong>Request URL</strong>
+
+                  	<div class="control-group">
+                        <label class="control-label" for="access_token_url" style="padding-top: 5px;">URL</label>
+                        <div class="controls"><input class="formtxt" style="width: 600px"  name="access_token_url" id="access_token_url" type="text" value=<%=access_token_url%>></div>
+					</div>
+                    <strong>Header details</strong>
+                    <div class="control-group">
+                        <label class="control-label" for="content_type" style="padding-top: 5px;">Content Type</label>
+                        <div class="controls"><input clss="formtxt" style="width: 400px;" readonly="readonly" maxlength="70" name="content_type" id="content_type" type="text" value=<%=content_type%>></div>
+					</div>
+					<div class="control-group">
+                        <label class="control-label" for="auth_header" style="padding-top: 5px;">Authorization</label>
+                        <div class="controls"><input clss="formtxt" style="width: 400px;" readonly="readonly" maxlength="70" name="auth_header" id="auth_header" type="text" value="<%=auth_header%>"></div>
+					</div>
+                        <div class="ParameterRow">
+                            <div class="ParameterLabel">
+                                <strong>Response:</strong>
+                            </div>
+                            <div>
+                                <textarea style="height: 250px; width: 400px; background-color: #E7F0F7;" id="json-response-token" name="json-response-token"></textarea>
+                            </div>
+                        </div>
+
+                    </div>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+        <script type="text/javascript">
+        $("#mainnavi").find('li.subnavi').removeClass("active");
+        $("#mainnavi").find('li.subnavi:nth-child(3)').addClass("active");
+        </script>
+        <%
+}); %>

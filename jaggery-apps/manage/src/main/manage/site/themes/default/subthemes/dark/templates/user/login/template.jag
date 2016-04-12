@@ -1,0 +1,63 @@
+<% jagg.template("user/login", function(inputs, outputs, jagg) { %>
+
+<%      if(request.isSecure()){
+
+            if(jagg.getUser() != null){
+                response.sendRedirect('home.jag');
+            }
+%>
+
+<div class="container login-container">
+    <div class="row-fluid">
+
+        <div class="span12">
+            <div class="clear"></div>
+            <div class="">
+                <div class="content-data">
+                        <h2 class="login-title">Manager</h2>
+                       <div class="alert alert-error" id="loginError" style="display:none">
+                           <span id="loginErrorSpan"></span>
+                       </div>
+                       <form class="" action="home.jag" id="loginForm">
+                           <label><%=i18n.localize("username")%>:<span class="requiredAstrix">*</span></label>
+                           <input type="text" id="username" autofocus="autofocus" validation="required"  />
+
+                           <label><%=i18n.localize("password")%>:<span class="requiredAstrix">*</span></label>
+                           <input type="password" id="pass" />
+                           <input type="hidden"  id="tenant" value="<%=request.getParameter("tenant")%>"/>
+                           <div>
+                               <input type="button" class="btn btn-primary" onclick="login()"  value="<%=i18n.localize("login")%>" id="loginButton" />
+                               <input type="reset" class="btn" value="<%=i18n.localize("reset")%>" />
+                           </div>
+                       </form>
+                </div>
+            </div>
+            <style>
+                .api-count-display {
+                    color: #747474;
+                    font-size: 15px;
+                    padding: 10px 20px 5px;
+                }
+
+                .api-count-display span {
+                    font-size: 16px;
+                    font-weight: bold;
+                }
+                #middle{
+                    width: 100%;
+                }
+                body{
+                    background: none;
+                }
+            </style>
+        </div>
+    </div>
+</div>
+
+<% } else {
+        var mod,httpsUrl;
+        mod = jagg.module("manager");
+        httpsUrl= mod.getHTTPsURL();
+        response.sendRedirect(httpsUrl+site.context);
+} %>
+<%});%>

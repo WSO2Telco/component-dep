@@ -1,0 +1,139 @@
+<%
+var isAdmin = jagg.getUser().isAdmin;
+var isOperator = jagg.getUser().operator;
+var site = require("/site/conf/site.json");
+
+//var addBulkURL = "http://10.62.96.185:8280/customerProfile/queries/Whitelist";
+
+var addBulkURL = getLocationRestUrl();//"http://localhost:8090/locationrest/queries/Whitelist";
+
+function getLocationRestUrl() {
+	//var site = require("/site/conf/site.json");
+	var hostPort = site.externalServicesUrl;
+	return hostPort + "locationrest/queries/Whitelist";
+}
+%>
+<%
+//     {
+//     "apiID":"1", "apiName":"USSD", "userID":"admin"
+//     "msisdnList":["94777000001","94777000002","94777000003"] 
+//     }
+
+function addNewToWhitelist(subscriberList, appId, apiId){
+	var log = new Log();
+	var addBulkURL = site.externalServicesUrl + "locationrest/queries/Whitelist";
+	var subscribers = subscriberList.split(",");
+// 	log.info("Whitelist Log 004: subscribers >> "+ stringify(subscribers));
+	
+	subscribers = urlEncode(subscribers);
+// 	log.info("Whitelist Log 005: subscribers >> "+ stringify(subscribers));
+	
+	// Invoke bulk-add API
+	log.info(subscribers);
+	var data = {
+		/*"apiID":"1",*/
+		/* "apiName":api, */
+		"appId" : appId,
+		"apiId" : apiId,
+		"userID":jagg.getUser().username,
+		"msisdnList":subscribers
+	};
+	var response = postJSON(addBulkURL, data);
+	return response;//return 1;
+}
+
+function getWhitelist() {
+	var log = new Log();
+	var url = site.externalServicesUrl + "locationrest/queries/GetWhiteList";
+	var data = {};
+	var response = postJSON(url, data);	
+
+		try{	
+			response = JSON.parse(response);	
+			log.info("response.Success.variables = " + response.Success.variables);
+			var whitelist =response.Success.variables;
+			
+			return whitelist;
+
+		} catch(e) {
+			log.info("error: " + e);
+			return [];
+		}
+	
+	
+}
+
+function removeFromWhiteListNumbers(subscriber){
+	
+	var log = new Log();
+	var subscribe = "tel3A+"+subscriber;
+	log.info("subscriber: " + subscribe);
+	var newURL = site.externalServicesUrl + "locationrest/queries/RemoveFromWhiteList/" + subscribe;
+
+	var response = postJSON(newURL);
+	log.info("response = " + response);
+
+	return 1;
+}
+
+
+function getSubscribers() {
+	var url = site.externalServicesUrl + "locationrest/queries/getSubscribers";
+	var data = {};
+	var response = postJSON(url, data);
+	return response;
+}
+
+function getApps(subscriberId) {
+	var url = site.externalServicesUrl + "locationrest/queries/getApps";
+// 	var response = postJSON(url, "{\"id\":\"" + subscriberId + "\"}");
+	var data = {
+			"id":subscriberId
+		};
+	var response = postJSON(url, data);
+	return response;
+}
+
+function getApis(appId) {
+	var url = site.externalServicesUrl + "locationrest/queries/getApis";
+	var data = {
+				"id":appId
+			};
+	var response = postJSON(url, data);
+	return response;
+}
+
+function postJSON(url, data) {
+	var log = new Log();
+	log.info("data = " + JSON.stringify(data));
+	var request = {
+		url: url, payload: JSON.stringify(data), handler: function(response) {
+			return JSON.parse(response).result;
+		}
+	};
+	log.info("request = " + JSON.stringify(request));
+	var ajax = new XMLHttpRequest();
+	ajax.open("POST", request.url, false);
+	ajax.onreadystatechange = function() {
+		if (ajax.readyState == 4) {
+			log.info("ajax onreadystatechange");
+			request.handler.call(request, ajax.responseText);
+		}
+	};
+	ajax.send(request.payload);
+	return ajax.responseText;
+}
+
+function urlEncode(subscribers){
+	var validSubscribers = new Array();
+	for (i = 0; i < subscribers.length; i++) {
+		if(subscribers[i] != null && subscribers[i].length > 0) {
+// 	    	subscribers[i] = "tel3A+" + subscribers[i];
+	    	validSubscribers[validSubscribers.length] = "tel3A+" + subscribers[i];
+	    }
+	}
+// 	return subscribers;
+	return validSubscribers;
+}
+
+%>

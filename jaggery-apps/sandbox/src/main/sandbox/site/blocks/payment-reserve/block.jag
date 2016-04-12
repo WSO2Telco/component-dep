@@ -1,0 +1,6 @@
+<%
+	jagg.block("payment-reserve", {
+		initializer:function (data) {},
+		getInputs:function () {}
+	});
+%>

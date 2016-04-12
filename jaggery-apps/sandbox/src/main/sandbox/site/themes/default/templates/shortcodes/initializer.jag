@@ -1,0 +1,8 @@
+<%
+jagg.initializer("shortcodes", {
+	preInitialize:function () {
+	        jagg.addFooterJS("shortcodes", "jagg", "templates/shortcodes/js/shortcodes_actions.js");
+			jagg.addFooterCSS("shortcodes", "jagg", "templates/shortcodes/css/overridden_css.css");
+	    }
+});
+%>

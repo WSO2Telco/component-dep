@@ -1,0 +1,6 @@
+<%
+	jagg.block("sms-send", {
+		initializer:function (data) {},
+		getInputs:function () {}
+	});
+%>

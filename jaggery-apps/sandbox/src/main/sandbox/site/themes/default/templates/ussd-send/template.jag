@@ -1,0 +1,168 @@
+<% jagg.template("ussd-send", function(inputs, outputs, jagg) { 
+	%>
+<div class="title-section">
+	<h2>USSD Send</h2>
+</div>
+
+<!-- <div class="content-section shadow-up"> -->
+	<div class="content-data">
+		<!-- 		<div class="application-add well form-horizontal"> -->
+		<form id="sendSMSRequestForm">
+			<h4>USSD Api</h4>
+			
+			<table id="sms_send_request_parameters" border="0" width="100%">
+			<tbody>
+				<tr>
+					<td valign="top">
+						<div class="ParameterGroupHeading">
+							<strong>Mandatory Parameters</strong>
+						</div>
+						<div class="ParameterRow">
+							<div class="ParameterLabel">address</div>
+							<div class="ParameterValue">
+								<input type="text" value="tel:+94773852147" id="address" name="address"/>
+							</div>
+						</div>
+						<div class="ParameterRow">
+							<div class="ParameterLabel">shortCode</div>
+							<div class="ParameterValue">
+								<input type="text" value="1234" id="shortCode"
+											name="shortCode"/>
+							</div>
+						</div>
+						<div class="ParameterRow">
+							<div class="ParameterLabel">outboundUSSDMessage</div>
+							<div class="ParameterValue">
+								<textarea style="height: 80px;" id="outboundUSSDMessage"
+											name="outboundUSSDMessage">Streaming video of the big fight</textarea>
+							</div>
+						</div>
+						<div class="ParameterRow">
+							<div class="ParameterLabel">clientCorrelator</div>
+							<div class="ParameterValue">
+								<input type="text" value="1234" id="clientCorrelator"
+											name="clientCorrelator"/>
+							</div>
+						</div>
+						<div class="ParameterRow">
+							<div class="ParameterLabel">ussdAction</div>
+							<div class="controls">
+								<select class="valid" id="ussdAction" name="ussdAction">
+									<option value="mtinit" selected>mtinit</option>
+									<option value="mtcont">mtcont (MT)</option>
+									<option value="moinit">moinit</option>
+									<option value="mocont">mocont (MO)</option>
+									<option value="mtfin">mtfin</option>
+								</select>
+							</div>
+						</div>
+					</td>
+					<td valign="top">
+						<div class="ParameterGroupHeading">
+							<strong>Optional Parameters</strong>
+						</div>
+						<div class="ParameterRow">
+							<div class="ParameterLabel">callbackData</div>
+							<div class="ParameterValue">
+								<input type="text" value="some-data-useful-to-the-requester" id="callbackData" name="callbackData"/>
+							</div>
+						</div>
+						<div class="ParameterRow">
+							<div class="ParameterLabel">notifyURL</div>
+							<div class="ParameterValue">
+								<textarea style="height: 80px;" id="notifyURL"
+											name="notifyURL">http://localhost:8080/mifeapiserver/callback.jsp</textarea>
+							</div>
+						</div>
+						<div class="ParameterRow">
+							<div class="ParameterLabel">keyword</div>
+							<div class="ParameterValue">
+								<input type="text" value="1234" id="keyword" name="keyword"/>
+							</div>
+							<input id="ussd-submit-add-button" class="btn btn-primary"
+										value="Send Request" type="button">
+						</div>
+					</td>
+					<td valign="top">
+						<div class="ParameterRow">
+							<div class="ParameterLabel">
+								<strong>Request:</strong>
+							</div>
+							<div class="ParameterValue">
+								<textarea style="height: 300px; background-color: #e3e3e3;"
+										id="request" name="request"></textarea>
+							</div>
+						</div>
+					</td>
+					
+							<td valign="top">
+								<div class="ParameterRow">
+									<div class="ParameterLabel">
+										<strong>Response:</strong>
+									</div>
+									<div class="ParameterValue">
+										<textarea style="height: 300px; background-color: #E7F0F7;"
+											id="response" name="response"></textarea>
+									</div>
+								</div>
+							</td>
+				</tr>
+			</tbody>
+		</table>
+		</form>
+
+		<div>
+		<div id="ussd_request_data_container" style="display: none;">
+		<hr/>
+		<h4>Requests</h4>
+		<div id="ussd_table_cont">
+		<!-- 
+			<table class="table table-bordered table-striped" id="ussd_request_table" cellpadding="0" cellspacing="0">
+				<thead>
+					<tr class="alt first last">
+						<th value="senderAddress">Sender Address</th>
+						<th value="shortcode">Shortcode</th>
+						<th value="message" style="width: 40%;">Message</th>
+						<th value="clientCorrelator">Client Correlator</th>
+						<th value="ussdAction">UssdAction</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+			 -->
+			<div class="pagination" style="text-align: right;"></div>
+			</div>
+			<br/>
+		</div>
+		
+		<div id="ussd_response_data_container" style="display: none;">
+		<hr/>
+		<h4>Responses</h4>
+			<table class="table table-bordered table-striped" id="ussd_response_table" cellpadding="0" cellspacing="0">
+				<thead>
+					<tr class="alt first last">
+						<th value="senderAddress">Sender Address</th>
+						<th value="shortcode">Shortcode</th>
+						<th value="message" style="width: 40%;">Message</th>
+						<th value="clientCorrelator">Client Correlator</th>
+						<th value="ussdAction">UssdAction</th>
+					</tr>
+				</thead>
+				<tbody>
+				</tbody>
+			</table>
+
+			<div class="pagination" style="text-align: right;"></div>
+			</div>
+			<br/>
+		</div>
+	</div>
+	
+	
+<script type="text/javascript">
+$("#mainnavi").find('li.subnavi').removeClass("active");
+$("#mainnavi").find('li.subnavi:nth-child(3)').addClass("active");
+</script>
+<!-- </div> -->
+<% }); %>

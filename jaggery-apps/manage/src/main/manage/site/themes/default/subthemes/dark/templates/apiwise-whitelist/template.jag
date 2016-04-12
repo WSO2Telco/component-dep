@@ -1,0 +1,173 @@
+<% jagg.template("apiwise-whitelist", function(inputs, outputs, jagg) {
+	var usage=outputs.usage;
+	var length;
+	if (usage!=null){
+		length=outputs.usage.length;
+	}
+	var log = new Log();
+	log.info(stringify(outputs));
+	var isAdmin = jagg.getUser().isAdmin;
+	var isOperator = jagg.getUser().operator;
+	log.info(isAdmin);
+	log.info(isOperator);
+%>
+	
+<div class="title-section">
+	<% if(isAdmin == true){ %>
+	<h2>APIwise Whitelist</h2>
+	<%
+	}  else {%>
+	<h2>APIwise Whitelist</h2>
+	<% } %>
+</div>
+<div class="content-section shadow-up">
+	<div class="content-data">
+		<div id="userKey">
+			<div id="usageDiv" class="row-fluid">
+				<div class="span12">
+					<div id="whitelist-header">
+						<h3>Whitelist subscribers</h3>
+					</div>
+						<table>
+						<thead>
+							<th style="width: 250px;"></th>
+							<th style="width: 200px; vertical-align: top;"></th>
+						</thead>
+						<tbody>
+						
+						<!-- -------------------------------------------------------------------- -->
+
+							<tr id="listRow3">
+								<td>
+									<span>Subscriber: </span>
+									<select id="subsSelect" style="width: 150px;" name="subsSelect">
+									</select>
+								</td>
+								<td style="vertical-align: top;width:500px;">
+									<span>Application: </span>
+									<select id="appSelect" style="width: 150px;" name="appSelect">
+									</select>
+									<span>API:</span>
+									<select id="apiSelect" style="width: 150px;" name="apiSelect">
+									</select>
+								</td>
+							</tr>
+						<!-- -------------------------------------------------------------------- -->
+							
+							<tr id="manualRow1">
+								<td>&nbsp;</td>
+								<td><input type="radio" name="uploadOptions" value="isManual" id="isManual" onchange="radioButton1();">&nbsp;Upload number Manually</td>
+							</tr>
+							
+							<tr id="manualRow2">
+								<td>Number</td>
+								<td><input type="text" name="manualNumber" id="manualNumber">
+								<label style="color:grey;">e.g.94777333100</label>
+								</td>
+							</tr>
+							<tr id="manualRow3">
+								<td></td>
+								<td style="vertical-align: top;">
+									<button class="btn btn-primary" style="margin-left: 15px; margin-top: 3px;" id="add-manual">Upload Number</button>
+								</td>
+							</tr>
+														
+							<tr id="manualRow4">
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+						
+						<!-- -------------------------------------------------------------------- -->
+							<tr id="rangeRow1">
+								<td>&nbsp;</td>
+								<td><input type="radio" name="uploadOptions" value="isRange" id="isRange" onchange="radioButton2();">&nbsp;Whitelist numbers range</td>
+							</tr>
+							
+							<tr id="rangeRow2">
+								<td>Min number</td>
+								<td><input type="text" name="minnumber" id="minnumber"></td>
+							</tr>
+							<tr id="rangeRow3">
+								<td>Max number</td>
+								<td><input type="text" name="maxnumber" id="maxnumber">
+								<label style="color:grey;">e.g.94777333100 to 94777333200</label>
+								</td>
+							</tr>
+							<tr id="rangeRow4">
+								<td></td>
+								<td style="vertical-align: top;">
+									<button class="btn btn-primary" style="margin-left: 15px; margin-top: 3px;" id="add-range">Upload Numbers List</button>
+								</td>
+							</tr>
+														
+							<tr id="rangeRow5">
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+							
+							<!-- -------------------------------------------------------------------- -->
+							
+							<tr id="listRow1">
+								<td>&nbsp;</td>
+								<td><input type="radio" name="uploadOptions" value="isList" id="isList" onchange="radioButton3();">&nbsp;Upload White list number list 
+								<label style="color:grey;">e.g.94777333100,94777333105</label>
+								</td>
+							</tr>
+							<tr id="listRow2">
+								<td></td>
+								<td style="vertical-align: top;">
+									<button class="btn btn-primary" style="margin-left: 15px; margin-top: 3px;" id="add-new">Add Number List</button>
+								</td>
+							</tr>
+						</tbody>
+					</table>
+
+					<p>&nbsp;</p>
+				</div>
+
+				  <div id="usageDiv" class="row-fluid">
+                    <div class="span12">
+                      <div id="blacklist-header">
+                        <h3>Whitelisted subscribers</h3>
+                      </div>
+
+<div  style="width:566px;height:200px; overflow:scroll;" >
+                      <table>
+                        <thead>
+                          <tr>
+                            <th style="width: 550px;"></th>
+
+                            <th style="width: 200px; vertical-align: top;"></th>
+                          </tr>
+                        </thead>
+
+                        <tbody>
+                          <tr>
+                            <td>
+                              <table class="table table-bordered" style="width: 550px;">
+                                <thead>
+                                  <tr>
+                                    <th style="width: 400px;">Subscriber</th>
+
+                                    <th style="width: 150px;">Remove from whitelist</th>
+                                  </tr>
+                                </thead>
+
+                                <tbody id="billingBody"></tbody>
+                              </table>
+                            </td>
+                          </tr>
+                        </tbody>
+                      </table>
+
+                    </div>
+                  </div>
+</div>
+
+
+			</div>
+
+		</div>
+	</div>
+</div>
+<%});%>

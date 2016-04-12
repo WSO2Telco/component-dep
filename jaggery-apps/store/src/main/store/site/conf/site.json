@@ -1,0 +1,37 @@
+{
+    "theme" : {
+        "base" : "fancy",
+        "subtheme" : "dark"
+
+    },
+    "context" : "/store",
+    "request_url":"READ_FROM_REQUEST",
+    "showPublicStoreURL":true,
+    "tagWiseMode" :"false",
+    "tagGroupKey" :"-group",
+    "ssoConfiguration" : {
+        "enabled" : "false",
+        "issuer" : "API_STORE",
+        "identityProviderURL" : "https://localhost:9443/samlsso",
+        "keyStorePassword" : "wso2carbon",
+        "identityAlias" : "wso2carbon",
+        "responseSigningEnabled":"true",
+        "keyStoreName" :"repository/resources/security/wso2carbon.jks"
+    },
+    "application":{
+     "IS_URL": "https://localhost:9443/services/",
+    },
+    "forum" : {
+        "topicsPerPage" : "5",
+        "repliesPerPage" : "5",
+        "resourceIdentifier" : "common"
+    },
+     "AM_URL" : "https://localhost:9443/",
+
+     "reverseProxy" : {
+        "enabled" : false,    // values true , false , "auto" - will look for  X-Forwarded-* headers
+        "host" : "sample.proxydomain.com", // If reverse proxy do not have a domain name use IP
+        "context":"",
+      //"regContext":"" // Use only if different path is used for registry
+    }
+}

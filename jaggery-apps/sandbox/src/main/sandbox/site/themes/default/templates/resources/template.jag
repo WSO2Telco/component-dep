@@ -1,0 +1,17 @@
+<% jagg.template("resources", function(inputs, outputs, jagg) { %>
+<div id="listing">
+    <div class="title-section">
+        <h2>Resources</h2>
+    </div>
+    <div class="content-section shadow-up">
+        <div class="content-data">
+			
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+$("#mainnavi").find('li.subnavi').removeClass("active");
+$("#mainnavi").find('li.subnavi:nth-child(5)').addClass("active");
+</script>
+<% }); %>

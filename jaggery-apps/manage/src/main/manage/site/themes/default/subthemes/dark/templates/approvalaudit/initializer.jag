@@ -1,0 +1,9 @@
+<%
+jagg.initializer("approvalaudit", {
+
+    preInitialize:function () {
+        //jagg.addHeaderJS("api-wise-traffic", "dojo", "templates/utils/dojo-release-1.8.3/dojo/dojo.js");
+        jagg.addHeaderJS("approvalaudit", "approvalaudit", "templates/approvalaudit/js/approvalaudit.js");
+    }
+});
+%>

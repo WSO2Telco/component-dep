@@ -1,0 +1,7 @@
+<%
+jagg.initializer("payment-charge-reservation", {
+	preInitialize:function () {
+		jagg.addFooterJS("application", "jagg", "templates/payment-charge-reservation/js/charge-reservation.js");
+	}
+});
+%>

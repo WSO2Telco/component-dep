@@ -1,0 +1,60 @@
+<%
+include("/jagg/jagg.jag");
+
+(function () {
+	var mod, obj, result, user,
+	action = request.getParameter("action"),
+	site = require("/site/conf/site.json"),log = new Log(),
+	msg = require("/site/conf/ui-messages.jag");
+
+	if(jagg.getUser() == null){
+		print({
+			error:true,
+			message:'timeout'
+		});
+	}else{
+			
+		if (action === "getReleaseReservationResponse") {
+
+			mod = jagg.module("payment-services");
+			user =jagg.getUser();
+				
+				
+			var endUserId = request.getParameter("endUserId");
+			var transactionOperationStatus = request.getParameter("transactionOperationStatus");
+			var referenceSequence = request.getParameter("referenceSequence");
+			var transactionId = request.getParameter("transactionId");
+
+			var amountReservationTransaction = {
+				"endUserId":endUserId,
+				"referenceSequence":referenceSequence,
+				"transactionOperationStatus":transactionOperationStatus
+			};
+			
+			var jsonRequest = {
+				"amountReservationTransaction":amountReservationTransaction
+			};
+			
+
+			var log = new Log();
+			log.info('Request Json :'+stringify(jsonRequest));
+
+			result = mod.releaseReservationRequest(stringify(jsonRequest), endUserId, transactionId);
+			if (result.error) {
+				obj = {
+					error:true,
+					message:result.message
+				};
+			} else {
+				obj = {
+					error:false,
+					requestData: stringify(jsonRequest),
+					data: result.data
+				}
+			}
+			print(obj);
+		}
+
+	}
+}());
+%>

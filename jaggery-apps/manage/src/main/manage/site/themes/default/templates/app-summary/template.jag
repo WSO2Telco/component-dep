@@ -1,0 +1,52 @@
+<% jagg.template("app-summary", function(inputs, outputs, jagg) {
+	
+	// Obtain input parameter values.
+	var reqUrl = request.getRequestURI();
+	var appName = request.getParameter("AppName");
+	var subscriber = request.getParameter("subscriber");
+	var year = request.getParameter("year");
+	var month = request.getParameter("month");
+	
+%>
+
+<div class="title-section">
+	<h2>App Summary - <%=appName%> for <%=year%>-<%=month%></h2>
+</div>
+<div class="content-section shadow-up">
+	<div class="content-data">
+		<div id="userKey">
+			<div id="usageDiv" class="row-fluid" style="display: none;">
+				<div class="span12">
+					<input type="hidden" name="appName" id="appName" value="<%=appName%>"/>
+					<input type="hidden" name="subscriber" id="subscriber" value="<%=subscriber%>"/>
+					<input type="hidden" name="year" id="year" value="<%=year%>"/>
+					<input type="hidden" name="month" id="month" value="<%=month%>"/>
+										  
+                    <h4>API Usage</h4>
+					<div id="apiUsageGraph" style="width: 700px; height: 400px;"></div>
+					<p>&nbsp</p>
+					<p>&nbsp</p>
+
+					<link href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("lib/jquery-ui/css/smoothness/jquery-ui-1.9.2.custom.css"))%>" rel="stylesheet">
+					<script type="text/javascript" src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("lib/jquery-ui/js/jquery-ui-1.9.2.custom.min.js"))%>"></script>
+
+					<h4>API Response Times</h4>
+					<div class="well form-inline">
+						<label class="control-label"><b>From</b></label>
+						<input class="span2" id="fromDatePick" size="12" type="text" value="" />
+						<label class="control-label"><b>To</b></label>
+						<input class="span2" id="toDatePick" size="12" type="text" value="" />
+						<button class="btn btn-primary" id="update">Update</button>
+					</div>
+					<div id="responseTimesGraph" style="width: 700px; height: 400px; float: left;"></div>
+					<style>
+						.dojoxLegendNode {width:150px; border: 1px solid #ccc; margin: 0px 10px 5px 10px; padding: 3px}
+						.dojoxLegendText {padding-right: 10px}
+					</style>
+					<div id="responseTimesLegend"></div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+<%});%>

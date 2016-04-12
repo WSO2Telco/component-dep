@@ -1,0 +1,11 @@
+<%
+jagg.initializer("create-auth-code-task", {
+
+    preInitialize:function () {
+    	jagg.addFooterCSS("application", "jagg", "templates/create-auth-code-task/css/overridden_css.css");
+        jagg.addFooterJS("application", "jagg", "templates/create-auth-code-task/js/create_auth_code.js");
+
+    }
+});
+%>
+

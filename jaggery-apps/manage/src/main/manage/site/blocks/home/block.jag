@@ -1,0 +1,65 @@
+<%
+jagg.block("home", {
+    initializer:function (data) {
+
+    } ,
+ 	getInputs:function () {
+        return {
+        }
+    } ,
+    getOutputs:function (inputs) {
+			
+		var data, user = jagg.getUser();
+		var isOperator = jagg.getUser().operator; 
+		var isCustomerCare = jagg.getUser().isCustomerCare;
+		var data_subscribers;
+		var data_operators;
+		var data_applications;
+		var data_apis;
+		var log = new Log();
+
+    	if (user.isAdmin){
+			var totalTrafficModule = jagg.module("total-traffic");
+			var result_subscribers = totalTrafficModule.getAllSubscribers();
+			var result_operators = totalTrafficModule.getAllOperators();
+			var result_apis = totalTrafficModule.getAllAPIs();
+
+			data_subscribers = result_subscribers.data;
+			data_operators = result_operators.data;
+			data_apis = result_apis.data;
+		}else if(isOperator != null){
+			var totalTrafficModule = jagg.module("total-traffic");
+			var result_subscribers = totalTrafficModule.getSubscribersByOperator(isOperator);
+			var result_apis = totalTrafficModule.getAllAPIs();
+
+			data_subscribers = result_subscribers.data;
+			data_apis = result_apis.data;
+			data_operators = isOperator;
+		}else if(isCustomerCare != null){
+			var totalTrafficModule = jagg.module("total-traffic");
+			var result_subscribers = totalTrafficModule.getSubscribersByOperator(isCustomerCare);
+			var result_apis = totalTrafficModule.getAllAPIs();
+
+			data_subscribers = result_subscribers.data;
+			data_apis = result_apis.data;
+			data_operators = isCustomerCare;
+		}else if(isOperator == null & isCustomerCare == null){
+			var totalTrafficModule = jagg.module("total-traffic");
+			var result_operators = totalTrafficModule.getOperatorsBySubscriber(jagg.getUser().username);
+			var result_applications = totalTrafficModule.getAppsBySubscriber(jagg.getUser().username);
+			var result_apis = totalTrafficModule.getAllAPIs();
+
+			data_applications = result_applications.data;
+			data_operators = result_operators.data;
+			data_apis = result_apis.data;
+		} 
+		return {
+			"subscribers" : data_subscribers,
+			"operators" : data_operators,
+			"apis" : data_apis,
+			"applications" : data_applications
+		};
+	}
+
+});
+%>

@@ -1,0 +1,100 @@
+<%
+include("/jagg/jagg.jag");
+
+(function () {
+	var mod, obj, result, user,
+	action = request.getParameter("action"),
+	site = require("/site/conf/site.json"),log = new Log(),
+	msg = require("/site/conf/ui-messages.jag");
+
+	if(jagg.getUser() == null){
+		print({
+			error:true,
+			message:'timeout'
+		});
+	}else{
+			
+		if (action === "sendMTUSSD") {
+			
+			mod = jagg.module("ussd-services");
+			user =jagg.getUser();
+
+			var endUserId = request.getParameter("endUserId");
+			var shortCode = request.getParameter("shortCode");
+			var outboundUSSDMessage = request.getParameter("outboundUSSDMessage");
+			var clientCorrelator = request.getParameter("clientCorrelator");
+			var ussdAction = request.getParameter("ussdAction");
+			var callbackData = request.getParameter("callbackData");
+			var notifyURL = request.getParameter("notifyURL");
+			var keyword = request.getParameter("keyword");
+				
+				
+			var responseRequest = {
+				"notifyURL":notifyURL,
+				"callbackData":callbackData
+			};
+
+			var outboundUSSDMessageRequest = {
+				"address":endUserId,
+				"shortCode":shortCode,
+				"keyword":keyword,
+				"outboundUSSDMessage":outboundUSSDMessage,
+				"clientCorrelator":clientCorrelator,
+				"responseRequest":responseRequest,
+				"ussdAction":ussdAction
+			};
+			var jsonRequest = {
+				"outboundUSSDMessageRequest":outboundUSSDMessageRequest
+			};
+				
+			log.info('Request Json :'+stringify(jsonRequest));
+			result = mod.sendUssd(stringify(jsonRequest), endUserId, user);
+			
+
+			var ussdReq = {
+								senderAddress : endUserId,
+								shortCode : shortCode,
+								message : outboundUSSDMessage,
+								clientCorrelator : clientCorrelator,
+								ussdAction : ussdAction
+							};
+											
+							var ussdRequests = session.get("ussdRequests");
+							ussdRequests.push(ussdReq);
+							session.put("ussdRequests",ussdRequests);
+											
+							
+			if (result.error) {
+				obj = {
+					error:true,
+					requestData: result.message,
+					message:result.message
+				};
+			} else {
+
+				obj = {
+					error:false,
+					requestData: stringify(jsonRequest),
+					data: result.data,
+					table:session.get("ussdRequests")
+				}
+			}
+			print(obj);
+			
+		} else if(action === "getSessionData"){
+			var ussdReqs = session.get("ussdRequests");
+			if(ussdReqs.length > 0){
+				obj = {
+					table:ussdReqs
+				};
+			}else{
+				obj = {
+					table:"null"
+				};
+			}
+			print(obj);
+		}
+
+	}
+}());
+%>

@@ -1,0 +1,76 @@
+<% jagg.template("mobile-id-task", function(inputs, outputs, jagg) {
+	var locreqtxns = session.get("locreqtxns");
+
+	var key = '', secret = '';
+	
+		if(outputs.key!=null){
+			key = outputs.key;
+		}
+		if(outputs.secret!=null){
+			secret = outputs.secret;
+		}
+		if(outputs.base64Encode!=null){
+			base64Encode = outputs.base64Encode;
+		}
+	%>
+<div id="listing">
+	<div class="title-section">
+		<h2>Create Authorization Code</h2>
+	</div>
+	<div class="content-section shadow-up">
+		<div class="content-data">
+			<div class="alert alert-error" id="errorMessage" style="display: none">
+				<button type="button" class="close" data-dismiss="alert">×</button>
+				<strong>Error in Create Authorization Code!</strong>
+			</div>
+
+			<form novalidate="novalidate" id="createAuthCodeForm">
+				<div class="createAuthCodeForm well form-horizontal">
+
+					<div class="control-group">
+						<label class="control-label" for="key" style="padding-top: 5px;">Key</label>
+						<div class="controls">
+							<input class="formtxt" style="width: 400px;" maxlength="70" name="key" id="key" type="text" value=<%=key%>>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="secret" style="padding-top: 5px;">Secret</label>
+						<div class="controls">
+							<input class="formtxt" style="width: 400px;" maxlength="70" name="secret" id="secret" type="text" value=<%=secret%>>
+						</div>
+					</div>
+					
+					<div class="control-group">
+						<label class="control-label" for="base64Encode" style="padding-top: 5px;">base64Encode</label>
+						<div class="controls">
+							<input class="formtxt" readonly="readonly" style="width: 400px;" maxlength="70" name="base64Encode" id="base64Encode" type="text" value=<%=base64Encode%>>
+						</div>
+					</div>
+					
+					<div class="form-actions">
+						<input id="createAuthCode-button" class="btn btn-primary" value="Save" onclick="createAuthCode();" type="button">
+					</div>
+
+				</div>
+				<div class="alert alert-success" id="lbsAddMessage"
+					style="display: none">
+					<button type="button" class="close" data-dismiss="alert">×</button>
+					<strong>Authorization Code Successfully Created!</strong>
+				</div>
+				<div class="alert alert-error" id="lbsErrorMessage"
+					style="display: none">
+					<button type="button" class="close" data-dismiss="alert">×</button>
+					<strong>Error in Authorization Code Creation!</strong>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<br>
+	
+</div>
+<script type="text/javascript">
+$("#mainnavi").find('li.subnavi').removeClass("active");
+$("#mainnavi").find('li.subnavi:nth-child(3)').addClass("active");
+</script>
+<% }); %>

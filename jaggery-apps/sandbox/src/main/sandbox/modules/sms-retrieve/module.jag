@@ -1,0 +1,12 @@
+<%
+jagg.module("sms-retrieve", {
+
+	getSMSRetrieveResponse:function () {
+		return jagg.require(jagg.getModulesDir() + "sms-retrieve/sms-retrieve.jag").loadSMSRetrieveResponse.apply(this, arguments);
+	},
+	 
+	getRegistrationIds:function () {
+		return jagg.require(jagg.getModulesDir() + "sms-retrieve/sms-retrieve.jag").loadRegistrationIds.apply(this, arguments);
+	}
+});
+%>

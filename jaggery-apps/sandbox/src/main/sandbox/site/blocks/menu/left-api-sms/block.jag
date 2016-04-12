@@ -1,0 +1,8 @@
+<%
+jagg.block("menu/left-api-sms", {
+    initializer:function (data) {
+
+    }
+
+});
+%>

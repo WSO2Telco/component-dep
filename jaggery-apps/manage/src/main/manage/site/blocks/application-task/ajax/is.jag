@@ -1,0 +1,165 @@
+<% include("/jagg/jagg.jag");
+var ws = require("ws");
+var log = new Log();
+
+(function () {
+	var action = request.getParameter("action");
+	var user = jagg.getUser();
+	
+	var subscriber = request.getParameter("subscriber_username");
+	var appName = request.getParameter("appName");
+	var appDescription = request.getParameter("appDesc");
+	var oauthConsumerKeyvalue = request.getParameter("consumerKeyval");
+	var oauthconsumerSecretvalvalue = request.getParameter("consumerSecretval");
+	
+	var spAppName = subscriber + "_" + appName;
+	
+	var amConfig = getAmConfig();
+	var adminUsername = String(amConfig.AuthManager.Username.text());
+	var adminPassword = String(amConfig.AuthManager.Password.text());
+	
+	if(action == "createSpAppIs") {
+		//var oauthData = getOAuthConsumerKeyOfApp(appName, adminUsername, adminPassword);
+		
+		//var oauthConsumerKey = oauthData.oauthConsumerKey;
+		//var oauthConsumerSecret = oauthData.oauthConsumerSecret;
+
+		createApplication(spAppName, appDescription, adminUsername, adminPassword);
+
+		var appData = getApplicationID(spAppName, adminPassword, adminPassword);
+		var appID = appData.applicationID;
+		
+		updateApplication(appID, spAppName, appDescription, oauthConsumerKeyvalue, oauthconsumerSecretvalvalue, adminPassword, adminPassword);
+				        
+	} else if (action == "removeSpAppIs") {
+        removeApplication(spAppName, adminUsername, adminPassword);
+    }
+}());
+
+function createApplication(appName, description, adminUsername, adminPassword) {
+	var payload = '<xsd:createApplication xmlns:xsd=\"http://org.apache.axis2/xsd\">' + 
+			         '<xsd:serviceProvider xmlns:xsd=\"http://org.apache.axis2/xsd\">' + 			         	
+			            '<xsd1:applicationName xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\">' + appName + '</xsd1:applicationName>' + 
+			            '<xsd1:description xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\"></xsd1:description>' +  
+			         '</xsd:serviceProvider>' + 
+			      '</xsd:createApplication>';
+	
+	var webService = new ws.WSRequest();
+	var profileName = 'default';
+	
+	var site = require("/site/conf/site.json");
+	var identityServerUrl = site.IS_URL;
+	
+	var serverUrl =  identityServerUrl + "services/IdentityApplicationManagementService/";
+
+	var wsUtil = require('wsUtil.jag');
+	wsUtil.callWSInOnly(webService, serverUrl, "urn:createApplication", payload, adminUsername, adminPassword);
+}
+
+function updateApplication(appId, appName, description, oauthConsumerKey, oauthConsumerSecret, adminUsername, adminPassword) {
+	var payload = '<xsd:updateApplication xmlns:xsd=\"http://org.apache.axis2/xsd\">' + 
+			         '<xsd:serviceProvider xmlns:xsd=\"http://org.apache.axis2/xsd\">' + 
+			         	'<xsd1:applicationId xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\">' + appId + '</xsd1:applicationId>' + 
+			            '<xsd1:applicationName xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\">' + appName + '</xsd1:applicationName>' + 
+			            '<xsd1:description xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\"></xsd1:description>' + 
+			            '<xsd1:inboundAuthenticationConfig xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\">' + 
+			               '<xsd1:inboundAuthenticationRequestConfigs xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\">' + 
+			                  '<xsd1:inboundAuthKey xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\">' + oauthConsumerKey + '</xsd1:inboundAuthKey>' + 
+			                  '<xsd1:inboundAuthType xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\">oauth2</xsd1:inboundAuthType>' + 
+			                  '<xsd1:properties xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\">' +
+			                  	'<xsd1:confidential xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\">false</xsd1:confidential>' +
+			                  	'<xsd1:name xmlns:x1001=\"http://dto.oauth.identity.carbon.wso2.org/xsd\">oauthConsumerSecret</xsd1:name>' +
+			                  	'<xsd1:required xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\">false</xsd1:required>' +
+			                  	'<xsd1:value xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\">' + oauthConsumerSecret + '</xsd1:value>' +
+			                  '</xsd1:properties>' +
+			               '</xsd1:inboundAuthenticationRequestConfigs>' + 
+			               '</xsd1:inboundAuthenticationConfig>' +
+			               '<xsd1:outboundProvisioningConfig xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\"></xsd1:outboundProvisioningConfig>' +	
+			            '<xsd1:permissionAndRoleConfig xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\" />' + 			            
+			            '<xsd1:saasApp xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\">false</xsd1:saasApp>' +			            
+			         '</xsd:serviceProvider>' + 
+			      '</xsd:updateApplication>';
+	
+	var webService = new ws.WSRequest();
+	var profileName = 'default';
+	
+	var site = require("/site/conf/site.json");
+	var identityServerUrl = site.IS_URL;
+	
+	var serverUrl =  identityServerUrl + "services/IdentityApplicationManagementService/";
+
+	var wsUtil = require('wsUtil.jag');
+	wsUtil.callWSInOnly(webService, serverUrl, "urn:updateApplication", payload, adminUsername, adminPassword);
+}
+
+function removeApplication(appName, adminUsername, adminPassword) {
+
+    var payload = '<xsd:deleteApplication xmlns:xsd=\"http://org.apache.axis2/xsd\">' + 
+					'<xsd1:applicationName xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\">' + appName + '</xsd1:applicationName>' + 
+          		  '</xsd:deleteApplication>';
+
+	var webService = new ws.WSRequest();
+	var profileName = 'default';
+	
+	var site = require("/site/conf/site.json");
+	var identityServerUrl = site.IS_URL;
+    var serverUrl = identityServerUrl + "services/IdentityApplicationManagementService/";
+
+	var wsUtil = require('wsUtil.jag');
+	wsUtil.callWSInOnly(webService, serverUrl, "urn:deleteApplication", payload, adminUsername, adminPassword);
+}
+
+function getApplicationID(appName, adminUsername, adminPassword) {
+	
+
+	var payload = '<xsd:getApplication xmlns:xsd=\"http://org.apache.axis2/xsd\">' +
+			         '<xsd:applicationName xmlns:xsd=\"http://org.apache.axis2/xsd\">' + appName + '</xsd:applicationName>' +
+			      '</xsd:getApplication>';
+
+		var webService = new ws.WSRequest();
+		var profileName = 'default';
+		
+		var site = require("/site/conf/site.json");
+		var identityServerUrl = site.IS_URL;
+		
+		var serverUrl =  identityServerUrl + "services/IdentityApplicationManagementService/";
+	
+		var wsUtil = require('wsUtil.jag');
+		var result = wsUtil.callWSReturnXML(webService, serverUrl, "urn:getApplication", payload, adminUsername, adminPassword);
+	    var json = wsUtil.E4XtoJSON(result);
+	
+// 	return json.return.oauthConsumerKey;
+	return json.return;
+}
+
+function getOAuthConsumerKeyOfApp(appName, adminUsername, adminPassword) {
+	var payload = '<xsd:getOAuthApplicationDataByAppName xmlns:xsd=\"http://org.apache.axis2/xsd\">' +
+			         '<xsd:appName xmlns:xsd=\"http://org.apache.axis2/xsd\">' + appName + '</xsd:appName>' +
+			      '</xsd:getOAuthApplicationDataByAppName>';
+		var webService = new ws.WSRequest();
+		var profileName = 'default';
+		
+		var site = require("/site/conf/site.json");
+		var identityServerUrl = site.IS_URL;
+		
+		var serverUrl =  identityServerUrl + "services/OAuthAdminService/";
+	
+		var wsUtil = require('wsUtil.jag');
+		var result = wsUtil.callWSReturnXML(webService, serverUrl, "urn:getOAuthApplicationDataByAppName", payload, adminUsername, adminPassword);
+	var json = wsUtil.E4XtoJSON(result);
+	
+// 	return json.return.oauthConsumerKey;
+	return json.return;
+}
+
+function getAmConfig() {
+	//get AuthManager admin credentials from api-manager.xml (source copied from /manage/modules/user/login.jag)
+	var configPath = "file://" + Packages.java.lang.System.getProperty("carbon.config.dir.path");
+	var amConfigPath = configPath + "/api-manager.xml";
+	var file = new File(amConfigPath);
+	file.open("r");
+	var amConfig = new XML(file.readAll());
+	file.close();
+	return amConfig;
+}
+%>

@@ -1,0 +1,26 @@
+<%
+jagg.module("performance-error-rates", {
+	getAllSubscribers:function () {
+		return jagg.require(jagg.getModulesDir() + "performance-error-rates/performance-error-rates.jag").getAllSubscribers.apply(this, arguments);
+	},
+	getAllOperators:function () {
+		return jagg.require(jagg.getModulesDir() + "performance-error-rates/performance-error-rates.jag").getAllOperators.apply(this, arguments);
+	},
+	getAllAPIs:function () {
+		return jagg.require(jagg.getModulesDir() + "performance-error-rates/performance-error-rates.jag").getAllAPIs.apply(this, arguments);
+	},
+	getAppsBySubscriber:function () {
+		return jagg.require(jagg.getModulesDir() + "performance-error-rates/performance-error-rates.jag").getAppsBySubscriber.apply(this, arguments);
+	},
+	getErrorResponseCodes:function () {
+		return jagg.require(jagg.getModulesDir() + "performance-error-rates/performance-error-rates.jag").getErrorResponseCodes.apply(this, arguments);
+	},
+	getOperatorsBySubscriber:function () {
+			return jagg.require(jagg.getModulesDir() + "performance-error-rates/performance-error-rates.jag").getOperatorsBySubscriber.apply(this, arguments);
+	},
+	getSubscribersByOperator:function () {
+			return jagg.require(jagg.getModulesDir() + "performance-error-rates/performance-error-rates.jag").getSubscribersByOperator.apply(this, arguments);
+	}
+});
+%>
+

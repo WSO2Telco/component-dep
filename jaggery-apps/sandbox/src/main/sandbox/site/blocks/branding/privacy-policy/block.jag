@@ -1,0 +1,12 @@
+<%
+jagg.block("branding/privacy-policy", {
+    initializer:function (data) {
+
+    } ,
+ getInputs:function () {
+        return {
+        }
+    }
+
+});
+%>

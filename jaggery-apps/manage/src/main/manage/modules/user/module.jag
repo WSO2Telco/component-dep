@@ -1,0 +1,24 @@
+<%
+jagg.module("user", {
+
+    login:function () {
+        return jagg.require(jagg.getModulesDir() + "user/login.jag").login.apply(this, arguments);
+    },
+
+    loginWithSAMLToken:function () {
+        return jagg.require(jagg.getModulesDir() + "user/login.jag").loginWithSAMLToken.apply(this, arguments);
+    },
+
+    logout:function () {
+        return jagg.require(jagg.getModulesDir() + "user/logout.jag").logout.apply(this, arguments);
+    },
+
+    validateUser:function () {
+        return jagg.require(jagg.getModulesDir() + "user/login.jag").validateUser.apply(this, arguments);
+    },
+
+    loginToBPSWithSAMLToken:function () {
+        return jagg.require(jagg.getModulesDir() + "user/login.jag").loginToBPSWithSAMLToken.apply(this, arguments);
+    }
+});
+%>

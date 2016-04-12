@@ -1,0 +1,14 @@
+<%
+jagg.module("blacklist", {
+	getApiwiseBlacklist:function () {
+		return jagg.require(jagg.getModulesDir() + "blacklist/blacklist.jag").getApiwiseBlacklist.apply(this, arguments);
+	},
+	addNewToBlacklist:function () {
+		return jagg.require(jagg.getModulesDir() + "blacklist/blacklist.jag").addNewToBlacklist.apply(this, arguments);
+	},
+	removeFromBlacklist:function () {
+		return jagg.require(jagg.getModulesDir() + "blacklist/blacklist.jag").removeFromBlacklist.apply(this, arguments);
+	}
+});
+%>
+

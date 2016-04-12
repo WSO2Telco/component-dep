@@ -1,0 +1,117 @@
+<%
+include("/jagg/jagg.jag");
+
+var addparam = function (user,paystatus,maxtrn,maxamt) {
+    var result, message,
+            log = new Log();
+
+try {
+ 
+ log.info('user: '+user);   
+ log.info('paystatus: '+paystatus);   
+ log.info('maxtrn :'+maxtrn);   
+ 
+ var xhr = new XMLHttpRequest();
+                var endpoint = jagg.getSandboxurl()+"PaymentSandboxService";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+                xhr.setRequestHeader("payact","addparam");
+		var payload = "userid="+user+"&paystatus="+paystatus+"&maxtrn="+maxtrn+"&maxamt="+maxamt;
+		xhr.send(payload);
+
+		result = xhr.responseText.toString();
+		log.info(result);
+		
+		return {
+		        error:false,
+		        message:"OK",
+		        data:result
+		    };
+
+} catch (e) {
+        log.error(e.message);
+        return {
+            error:true,
+            message:e.message.split("Exception:")[2]
+        };
+}
+};
+
+var getparam = function (user) {
+    var result, message,
+    log = new Log();
+
+try {
+ 
+ log.info('user: '+user);
+
+ var xhr = new XMLHttpRequest();
+		var endpoint = jagg.getSandboxurl()+"PaymentSandboxService";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+                xhr.setRequestHeader("payact","queryparam");
+		var payload = "userid="+user;
+		xhr.send(payload);
+
+		result = xhr.responseText.toString();
+                var resobj = parse(result);                                
+		log.info(result);
+		
+		return {
+		        error:false,
+		        message:"OK",
+		        data:resobj                        
+		    };
+
+} catch (e) {
+        log.error(e.message);
+ return {
+        error:true,
+        message:e.message.split("Exception:")[2]
+    };
+}
+};
+
+var addpayment = function (user,payobj,enduserid) {
+    var result, message,
+            log = new Log();
+
+try {
+ 
+ log.info('user: '+user);   
+ log.info('payobj :'+stringify(payobj));
+ log.info('enduserid "'+enduserid);
+ var xhr = new XMLHttpRequest();
+		var endpoint =  jagg.getSandboxurl()+"AmountChargeService/payment/1/"+enduserid+"/transactions/amount";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-type","application/json");
+                xhr.setRequestHeader("sandbox",user);
+                var payload = payobj;
+		xhr.send(payload);
+
+		result = xhr.responseText.toString();
+                log.info('backend result :'+result);
+                var reqerr=true
+                
+                if ( (xhr.status =='200') || (xhr.status =='201') ) {
+                    var reqerr =false;
+                } 
+                
+		log.info('response :'+result);
+                
+		return {
+		        error:false,
+		        message:stringify(payobj),
+		        data:result,
+                        reqerr:reqerr
+		    };
+
+} catch (e) {
+        log.error(e.message);
+        return {
+            error:true,
+            message:e.message.split("Exception:")[2]
+        };
+}
+};
+%>

@@ -1,0 +1,31 @@
+<%
+jagg.module("whitelist", {
+	getApiwiseWhitelist:function () {
+		return jagg.require(jagg.getModulesDir() + "whitelist/whitelist.jag").getApiwiseWhitelist.apply(this, arguments);
+	},
+	addNewToWhitelist:function () {
+		return jagg.require(jagg.getModulesDir() + "whitelist/whitelist.jag").addNewToWhitelist.apply(this, arguments);
+	},/* 
+	removeFromWhitelist:function () {
+		return jagg.require(jagg.getModulesDir() + "whitelist/whitelist.jag").removeFromWhitelist.apply(this, arguments);
+	} */
+	getSubscribers:function () {
+		return jagg.require(jagg.getModulesDir() + "whitelist/whitelist.jag").getSubscribers.apply(this, arguments);
+	},
+	getApps:function () {
+		return jagg.require(jagg.getModulesDir() + "whitelist/whitelist.jag").getApps.apply(this, arguments);
+	},
+	getApis:function () {
+		return jagg.require(jagg.getModulesDir() + "whitelist/whitelist.jag").getApis.apply(this, arguments);
+	},
+   	getWhitelist:function () {
+        	return jagg.require(jagg.getModulesDir() + "whitelist/whitelist.jag").getWhitelist.apply(this, arguments);
+    	},
+	removeFromWhiteListNumbers:function () {
+        	return jagg.require(jagg.getModulesDir() + "whitelist/whitelist.jag").removeFromWhiteListNumbers.apply(this, arguments);
+    	}
+	
+    
+});
+%>
+

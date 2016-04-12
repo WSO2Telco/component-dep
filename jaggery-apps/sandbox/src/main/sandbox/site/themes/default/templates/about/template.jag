@@ -1,0 +1,58 @@
+<% jagg.template("about", function(inputs, outputs, jagg) { %>
+<script src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("templates/utils/custom-validation/hira-validations.js"))%>"></script>
+<div id="listing">
+    <div class="title-section">
+        <h2>Manage Numbers</h2>
+    </div>
+    <div class="alert alert-error" id="tableError" style="display:none">
+         <span id="tableErrorSpan"></span>
+    </div>
+    <div class="alert alert-success" id="tableSuccess" style="display:none">
+         <span id="tableSuccessSpan"></span>
+    </div>
+    <div class="content-section shadow-up">
+        <div class="content-data">
+			<input type="button" class="btn btn-primary"
+				id="add_number_row_button" value="Add New" />
+			<div class="" style="float: right;">
+				<link rel="stylesheet" type="text/css" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("lib/select2-3.4.2/select2.css"))%>" />
+				<script src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("lib/select2-3.4.2/select2.js"))%>"></script>
+
+				<select id="filter_txt_num" class="input-large"	style="margin-bottom: 0px;">
+					<option value="dummy_num" selected disabled="disabled">Number</option>
+				</select>
+				 
+				<select id="filter_txt_desc" class="input-large" style="margin-bottom: 0px;">
+					<option value="dummy_des" selected disabled="disabled">Description</option>
+				</select>
+				
+				<input type="button" class="btn" id="filter_table_button" value="Filter" />
+				<input type="button" class="btn" id="reset_table_button" value="Reset" />
+			</div>
+			<br /> <br />
+
+			<table class="table table-bordered table-striped" id="numbers_data_table">
+				<thead>
+					<tr class="alt first last">
+						<th>Number</th>
+						<th style="width: 40%;">Description</th>
+						<th>Balance</th>
+						<th width="10%;">Actions</th>
+					</tr>
+				</thead>
+				<tbody id="data_class_body">
+
+				</tbody>
+			</table>
+			<!--START Pagination links-->
+			<div class="pagination"></div>
+			<!--END Pagination links-->
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript">
+$("#mainnavi").find('li.subnavi').removeClass("active");
+$("#mainnavi").find('li.subnavi:nth-child(2)').addClass("active");
+</script>
+<% }); %>

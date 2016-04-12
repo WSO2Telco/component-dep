@@ -1,0 +1,7 @@
+<%
+	jagg.initializer("ussd-send", {
+		preInitialize:function () {
+			jagg.addFooterJS("application", "jagg", "templates/ussd-send/js/ussd.js");
+		}
+	});
+%>

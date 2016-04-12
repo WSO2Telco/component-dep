@@ -1,0 +1,11 @@
+<%
+jagg.initializer("mobile-id-task", {
+
+    preInitialize:function () {
+    	jagg.addFooterCSS("application", "jagg", "templates/mobile-id-task/css/overridden_css.css");
+        jagg.addFooterJS("application", "jagg", "templates/mobile-id-task/js/mobile-id-api.js");
+
+    }
+});
+%>
+

@@ -1,0 +1,44 @@
+<%
+jagg.module("taskmanager", {
+
+	getTasks:function () {
+		return jagg.require(jagg.getModulesDir() + "taskmanager/get.jag").getTasks.apply(this, arguments);
+	},
+	startTask:function () {
+		return jagg.require(jagg.getModulesDir() + "taskmanager/start.jag").startTask.apply(this, arguments);
+	},
+	assignTask:function () {
+		return jagg.require(jagg.getModulesDir() + "taskmanager/assign.jag").assignTask.apply(this, arguments);
+	},
+	completeTask:function () {
+		return jagg.require(jagg.getModulesDir() + "taskmanager/complete.jag").completeTask.apply(this, arguments);
+	},
+	getSubscriptionTiers:function () {
+		return jagg.require(jagg.getModulesDir() + "taskmanager/get.jag").getSubscriptionTiers.apply(this, arguments);
+	},
+	setSubscriptionTier:function () {
+		return jagg.require(jagg.getModulesDir() + "taskmanager/complete.jag").setSubscriptionTier.apply(this, arguments);
+	},
+	setApplicationTier:function () {
+		return jagg.require(jagg.getModulesDir() + "taskmanager/complete.jag").setApplicationTier.apply(this, arguments);
+	},
+	getApplicationDetails:function () {
+		return jagg.require(jagg.getModulesDir() + "taskmanager/get.jag").getApplicationDetails.apply(this, arguments);
+	},
+	getSubscriptionDetails:function () {
+		return jagg.require(jagg.getModulesDir() + "taskmanager/get.jag").getSubscriptionDetails.apply(this, arguments);
+	},
+	getAllTiers:function () {
+		return jagg.require(jagg.getModulesDir() + "taskmanager/get.jag").getAllTiers.apply(this, arguments);
+	},
+	setSubscriptionChargeRate:function () {
+		return jagg.require(jagg.getModulesDir() + "taskmanager/complete.jag").setSubscriptionChargeRate.apply(this, arguments);
+	},
+	setSubscriptionChargeRateNB:function () {
+		return jagg.require(jagg.getModulesDir() + "taskmanager/complete.jag").setSubscriptionChargeRateNB.apply(this, arguments);
+	},
+	getRatesList:function () {
+			return jagg.require(jagg.getModulesDir() + "taskmanager/get.jag").getRatesList.apply(this, arguments);
+		},
+});
+%>

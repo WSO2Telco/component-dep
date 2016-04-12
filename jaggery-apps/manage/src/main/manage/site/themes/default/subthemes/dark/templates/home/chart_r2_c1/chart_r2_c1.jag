@@ -1,0 +1,60 @@
+<%
+include("/jagg/jagg.jag");
+//var operators = ["Dialog","Celcom"];
+var operators = [];
+
+var operatorList = this.subscribeOperators;//Object.keys(site.operators);
+var op;
+for(var i =0; i < operatorList.length; i ++){ 
+    operators.push( operatorList[i].charAt(0).toUpperCase() + operatorList[i].substr(1).toLowerCase())
+}
+
+var dateRanges = ["last day" , "last week","last month","last year"];
+
+var operator = jagg.getUser().operator;
+var isOperator = true;
+if(operator == null) {
+    //default operatore to show when the page loads first
+    isOperator = false;
+    operator = operators[0];
+} else {
+    //convert to first letter capital word
+    operator = operator.charAt(0).toUpperCase() + operator.substr(1).toLowerCase();  
+}
+
+
+%>
+<script type="text/javascript" src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("templates/home/chart_r2_c1/chart_r2_c1.js"))%>"></script>
+
+<h3>
+<span class="dropdown" id="operator_r2_c1">
+    <a data-toggle="dropdown" class="arrow-dropdown"><span class="selected-label" data-field-name="vendor"> <%=operator%> </span> <i  class="fa fa-caret-square-o-down"></i></a>
+    <ul class="dropdown-menu">
+        <% if(isOperator){%>
+             <li><a href="#"><%=operator%></a></li>
+        <% } else {        
+             
+             for(var i=0;i<operators.length;i++){ %>
+                <li><a href="#"><%=operators[i]%></a></li>
+        <%   } 
+           } 
+        %>
+    </ul>
+</span>
+ Revenue
+
+ <span class="dropdown" id="time_r2_c1">
+    <a data-toggle="dropdown" class="arrow-dropdown"><span class="selected-label" data-field-name="time"> <%=dateRanges[2]%></span> <i  class="fa fa-caret-square-o-down"></i></a>
+    <ul class="dropdown-menu">
+       <li><a href="#"><%=dateRanges[2]%></a></li>
+    </ul>
+</span>
+
+ </h3>
+
+
+<div id="r2_c1" class="radial-wrapper"></div>
+
+
+
+

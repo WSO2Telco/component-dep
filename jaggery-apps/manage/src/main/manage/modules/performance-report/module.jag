@@ -1,0 +1,17 @@
+<%
+jagg.module("performance-report", {
+	getAllSubscribers:function () {
+		return jagg.require(jagg.getModulesDir() + "performance-report/performance-report.jag").getAllSubscribers.apply(this, arguments);
+	},
+	getAllOperators:function () {
+		return jagg.require(jagg.getModulesDir() + "performance-report/performance-report.jag").getAllOperators.apply(this, arguments);
+	},
+	getAllAPIs:function () {
+		return jagg.require(jagg.getModulesDir() + "performance-report/performance-report.jag").getAllAPIs.apply(this, arguments);
+	},
+	getAppsBySubscriber:function () {
+		return jagg.require(jagg.getModulesDir() + "performance-report/performance-report.jag").getAppsBySubscriber.apply(this, arguments);
+	}
+});
+%>
+

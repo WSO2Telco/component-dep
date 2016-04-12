@@ -1,0 +1,36 @@
+<% jagg.template("menu/left-api-ussd", function(inputs, outputs, jagg) { %>
+<%  var site = require("/site/conf/site.json");
+var ssoEnabled = site.ssoConfiguration.enabled;
+
+var reqUrl = request.getRequestURI();
+var baseUrl=jagg.getAbsoluteUrl("/site/pages/api-ussd.jag");
+//var listUrl=jagg.getAbsoluteUrl("/site/pages/billing-metering.jag");
+//var listMappedUrl=jagg.getMappedUrl("/site/pages/billing-metering.jag");
+//var subsUrl=jagg.getAbsoluteUrl("/site/pages/billing-metering.jag");
+//var subsMappedUrl=jagg.getMappedUrl("/site/pages/billing-metering.jag");
+
+var isAdmin = jagg.getUser().isAdmin;
+var isOperator = jagg.getUser().operator;
+// log.info(isAdmin);
+// log.info(isOperator);
+%>
+
+<div class="sidebar-nav left-menu-back01">
+	<ul class="nav nav-list">
+		<li class="nav-header">USSD Services</li>
+
+		<li
+		<% if(request.getParameter("task")==null || request.getParameter("task")=="ussd-send"){%>
+			class="active" <% } %>><a
+			href="<%=baseUrl%>?task=ussd-send"
+			onclick="jagg.sessionAwareJS({redirect:'<%=baseUrl%>?task=ussd-send',e:event,ssoEnabled:<%=ssoEnabled%>})">USSD
+		</a></li>
+		<li <%if(request.getParameter("task")=="ussd-sub"){%>
+			class="active" <% } %>><a
+			href="<%=baseUrl%>?task=ussd-sub"
+			onclick="jagg.sessionAwareJS({redirect:'<%=baseUrl%>?task=ussd-sub',e:event,ssoEnabled:<%=ssoEnabled%>})">USSD Subscriptions
+		</a></li>
+	</ul>
+</div>
+
+<%});%>

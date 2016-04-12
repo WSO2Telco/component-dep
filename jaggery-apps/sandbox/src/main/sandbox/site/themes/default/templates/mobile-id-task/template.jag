@@ -1,0 +1,137 @@
+<% jagg.template("mobile-id-task", function(inputs, outputs, jagg) {
+	var locreqtxns = session.get("locreqtxns");
+
+	var sub = '', email = '', name = '', family_name = '', preferred_username = '', given_name = '';
+	
+	if(outputs.subject!=null){
+			sub = outputs.subject;
+	}if(outputs.emailAddress!=null){
+				email = outputs.emailAddress;
+	}if(outputs.uname!=null){
+			name = outputs.uname;
+	}if(outputs.familyname!=null){
+				family_name = outputs.familyname;
+	}if(outputs.preferredusername!=null){
+			preferred_username = outputs.preferredusername;
+	}if(outputs.givenname!=null){
+				given_name = outputs.givenname;
+	}
+	
+	%>
+<div id="listing">
+	<div class="title-section">
+		<h2>User Info</h2>
+	</div>
+	<div class="content-section shadow-up">
+		<div class="content-data">
+			<div class="alert alert-error" id="errorMessage" style="display: none">
+				<button type="button" class="close" data-dismiss="alert">×</button>
+				<strong>Error Mobile ID API request!</strong>
+			</div>
+
+			<form novalidate="novalidate" id="appAddForm">
+				<div class="application-add well form-horizontal">
+
+					<div class="control-group">
+						<label class="control-label" for="sub" style="padding-top: 5px;">Subject</label>
+						<div class="controls">
+							<input class="formtxt" style="width: 400px;" maxlength="70" name="sub" id="sub" type="text" value=<%=sub%>>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="email" style="padding-top: 5px;">Email</label>
+						<div class="controls">
+							<input class="formtxt" style="width: 400px;" maxlength="70" name="email" id="email" type="text" value=<%=email%>>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="name" style="padding-top: 5px;">Name</label>
+						<div class="controls">
+							<input class="formtxt" style="width: 400px;" maxlength="70" name="name" id="name" type="text" value=<%=name%>>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="family_name" style="padding-top: 5px;">Family Name</label>
+						<div class="controls">
+							<input class="formtxt" style="width: 400px;" maxlength="70" name="family_name" id="family_name" type="text" value=<%=family_name%>>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="preferred_username" style="padding-top: 5px;">Preferred Username</label>
+						<div class="controls">
+							<input class="formtxt" style="width: 400px;" maxlength="70" name="preferred_username" id="preferred_username" type="text" value=<%=preferred_username%>>
+						</div>
+					</div>
+					<div class="control-group">
+						<label class="control-label" for="given_name" style="padding-top: 5px;">Given Name</label>
+						<div class="controls">
+							<input class="formtxt" style="width: 400px;" maxlength="70" name="given_name" id="given_name" type="text" value=<%=given_name%>>
+						</div>
+					</div>
+															
+					<div class="form-actions">
+						<input id="param-add-button" class="btn btn-primary" value="Save" onclick="saveMobileIdApiRequest();" type="button">
+					</div>
+
+				</div>
+				<div class="alert alert-success" id="lbsAddMessage"
+					style="display: none">
+					<button type="button" class="close" data-dismiss="alert">×</button>
+					<strong>Mobile ID API Parameters Successfully Updated!</strong>
+				</div>
+				<div class="alert alert-error" id="lbsErrorMessage"
+					style="display: none">
+					<button type="button" class="close" data-dismiss="alert">×</button>
+					<strong>Error in Mobile ID API parameters Updated!</strong>
+				</div>
+			</form>
+		</div>
+	</div>
+
+	<br>
+	<div class="content-section shadow-up">
+		<div class="content-data">
+
+			<form novalidate="novalidate" id="reqAddForm">
+
+				<h4>Mobile ID API Request</h4>
+				<br>
+				<table style="width: 100%;">
+					<tbody>
+						<tr>
+							<td valign="top">
+								<div class="ParameterGroupHeading">
+									<strong>Mandatory Parameters</strong>
+								</div>
+								<div class="ParameterRow">
+									<div class="ParameterLabel">Authorization</div>
+									<div class="ParameterValue"> <input type="text" value="Bearer 4164157d677a6cd3a22e26e24c30135d" id="authorization" name="authorization"> </div>
+									<input id="location-request-button" class="btn btn-primary" value="Send Request" type="button" onclick="sendMobileIdApiRequest()">
+								</div>									
+							</td>
+							<td valign="top">
+								<div class="ParameterRow">
+									<div class="ParameterLabel">
+										<strong>Response:</strong>
+									</div>
+									<div class="ParameterValue">
+										<textarea style="height: 450px; width: 400px; background-color: #E7F0F7;" id="json-response" name="json-response"></textarea>
+									</div>
+								</div>
+							</td>
+						</tr>
+					</tbody>
+				</table>
+			</form>
+			
+			<div style="visibility: hidden;" id="mobileidapi_table_content"></div>
+			
+			<div class="pagination" style="text-align: right;"></div>
+		</div>
+	</div>
+</div>
+<script type="text/javascript">
+$("#mainnavi").find('li.subnavi').removeClass("active");
+$("#mainnavi").find('li.subnavi:nth-child(3)').addClass("active");
+</script>
+<% }); %>

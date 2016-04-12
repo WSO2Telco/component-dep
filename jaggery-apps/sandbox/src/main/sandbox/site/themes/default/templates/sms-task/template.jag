@@ -1,0 +1,221 @@
+<% jagg.template("sms-task", function(inputs, outputs, jagg) {
+var params=outputs.params;
+var tabledata = outputs.tabledata;
+
+var deliveryStatus,notificationDelay,maxNotifications;
+if (params != null) {
+    deliveryStatus = params.deliveryStatus;
+    notificationDelay = (params.notificationDelay != null) ? params.notificationDelay : '';
+    maxNotifications = (params.maxNotifications != null) ? params.maxNotifications : '';
+}
+
+%>
+<div id="listing">
+    <div class="title-section">
+        <h2>SMS Parameters</h2>
+    </div>
+    <div class="content-section shadow-up">
+        <div class="content-data">
+
+    <form novalidate="novalidate" id="smsAddForm">
+        <!-- h3>Add New Application</h3-->
+
+        <div class="application-add well form-horizontal">
+                <div class="control-group">
+                    <label class="control-label" for="diliveryStatus" style="padding-top: 5px;">Delivery Status</label>
+                    <div class="controls">
+                        <div>
+                            <select class="valid" id="delstatus" name="delstatus">
+
+                              <option value="DeliveredToTerminal" <% if(deliveryStatus == "DeliveredToTerminal"){ print("selected"); } %>>
+                                DeliveredToTerminal
+                              </option>
+
+                              <option value="DeliveryUncertain" <% if(deliveryStatus == "DeliveryUncertain"){ print("selected"); } %>>
+                                DeliveryUncertain
+                              </option>
+
+                              <option value="DeliveryImpossible" <% if(deliveryStatus == "DeliveryImpossible"){ print("selected"); } %>>
+                                DeliveryImpossible
+                              </option>
+
+                              <option value="MessageWaiting" <% if(deliveryStatus == "MessageWaiting"){ print("selected"); } %>>
+                                MessageWaiting
+                              </option>
+                              <option value="DeliveredToNetwork" <% if(deliveryStatus == "DeliveredToNetwork"){ print("selected"); } %>>
+                                DeliveredToNetwork
+                              </option>
+                              </select>
+                        </div>
+
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="notifydelay" style="padding-top: 5px;">Notification Delay</label>
+                    <div class="controls">
+                        <input class="notifydelay" style="width:400px;" maxlength="70" name="notifydelay" id="notifydelay" type="text" value=<%=notificationDelay%>>
+                    </div>
+                </div>
+                <div class="control-group">
+                    <label class="control-label" for="maxallowed" style="padding-top: 5px;">Max Notifications Allowed</label>
+                    <div class="controls">
+                        <input class="maxallowed" style="width:400px;" maxlength="70" name="maxallowed" id="maxallowed" type="text" value=<%=maxNotifications%>>
+                    </div>
+                </div>
+                <div class="form-actions">
+                    <input id="param-add-button" class="btn btn-primary" value="Save" type="button">
+                </div>
+
+            </div>
+            <div class="alert alert-success" id="appAddMessage" style="display:none">
+                    <button type="button" class="close" data-dismiss="alert">×</button>
+                    <strong>SMS Parameters Successfully added!</strong>
+            </div>
+    </form>
+    </div>
+    </div>
+    <br>
+    <div class="content-section shadow-up">
+    <div class="content-data">
+    <form novalidate="novalidate" id="reqAddForm">
+        <h4> Subscription Notifications</h4>
+        <br>
+        <table style="width:100%;">
+        	<tbody>
+        		<tr>
+        			<td valign="top">
+                                    <div class="ParameterGroupHeading"><strong>Mandatory Parameters</strong></div>
+                                     <div class="ParameterLabel">senderAddress</div>
+                                        
+                                        <div class="controls">
+                                        <select class="valid" id="senderaddr" name="senderaddr">
+                              
+                              </select> 
+                              </div>
+                                    </div>
+                                    <div class="ParameterRow">
+                                        <div class="ParameterLabel">notifyURL</div>
+                                        <div class="ParameterValue"><input type="text" value="http://www.yoururl.here/notifications/DeliveryInfoNotification" id="notifyURL" name="notifyURL"></div>
+                                    </div>
+                                    <div class="ParameterRow">
+                                        <div class="ParameterLabel">callbackData</div>
+                                        <div class="ParameterValue"><input type="text" value="doSomething()" id="callbackData" name="callbackData"></div>
+                                    </div>
+                                    
+                         </td>
+                         <td valign="top">
+                                    <div class="ParameterGroupHeading"><strong>Optional Parameters</strong></div>
+                                    <div class="ParameterRow">
+                                        <div class="ParameterLabel">criteria</div>
+                                        <div class="ParameterValue"><input type="text" value="Vote" id="criteria" name="criteria"></div>
+                                    </div>
+                                    <div class="ParameterRow">
+                                        <div class="ParameterLabel">clientCorrelator</div>
+                                        <div class="ParameterValue"><input type="text" value="12345" id="clientCorrelator" name="clientCorrelator"></div>
+                                        <input id="nofify-add-button" class="btn btn-primary" value="Send Request" type="button">
+                                    </div>
+                                    
+                         </td>
+                         <td valign="top">
+                                        <div class="ParameterRow">
+                                        <div class="ParameterLabel"><strong>Request:</strong></div>
+                                        <div class="ParameterValue"><textarea style="height:300px;background-color: #e3e3e3;" id="request" name="request"></textarea></div>
+                                    </div>
+                         </td>
+                         <td valign="top">
+                                        <div class="ParameterRow">
+                                        <div class="ParameterLabel"><strong>Response:</strong></div>
+                                        <div class="ParameterValue"><textarea style="height:300px;background-color: #E7F0F7;" id="response" name="response"></textarea></div>
+                                    </div>
+                         </td>
+                                    
+    </tbody>
+   
+    </table>
+
+    </form>
+    </div>
+    <div class="content-data">
+     <%  var length;
+if(tabledata!=null){
+    length = tabledata.length;
+    var itemsPerPage = site.tasksPerPage; //reduce this number to preview the pagination
+
+    var currentPage = 1;
+    var numberOfPages = parseInt(length / itemsPerPage);
+
+    if (length % itemsPerPage != 0) {
+    numberOfPages++;
+    }
+
+    if (request.getParameter('page') != null) {
+    currentPage = parseInt(request.getParameter('page'));
+    }
+    var from = (currentPage - 1)*itemsPerPage;
+    var to = currentPage*itemsPerPage;
+    if(currentPage == numberOfPages){
+    to = length%(itemsPerPage*currentPage);
+    if(to == 0){
+    to=itemsPerPage*currentPage;
+    }
+    }
+    if(length==0){
+    to=0;
+    }
+
+if(length==0){%>
+<!--div class="alert alert-info"-->
+<!--div style="padding-bottom:10px"><b><%=i18n.localize("noTasksMsg")%></b></div-->
+<%}
+else{
+%>
+	<div class="form-actions"</div>
+    <table class="table table-bordered table-striped" id="sms_notification_table">
+    	<thead>
+    		<tr class="alt first last">
+    			<th>Transaction Id</th>
+    			<th>Callback Data</th>
+    			<th>Client Correlator</th>
+    			<th>Criteria</th>
+    			<th>Destination Address</th>
+    			<th>Notification Format</th>
+    			<th>Notify URL</th>
+    			<th>Created Data</th>
+    			<th>Actions</th>
+    		</tr>
+    	</thead>
+    	<tbody id="data_tbl_body">
+    		<%for(var i=from;i<to;i++){%>
+                <tr>
+                    <td><%=String(i+1)%></td>
+                    <td class="editable_td"><%if(tabledata[i].callbackData != null){print(tabledata[i].callbackData)} %></td>
+                    <td><%if(tabledata[i].clientCorrelator != null){print(tabledata[i].clientCorrelator)} %></td>
+                    <td class="editable_td"><%if(tabledata[i].criteria != null){print(tabledata[i].criteria)} %></td>
+                    <td><%if(tabledata[i].destinationAddress != null){print(tabledata[i].destinationAddress)} %></td>
+                    <td><%if(tabledata[i].notificationFormat != null){print(tabledata[i].notificationFormat)} %></td>
+                    <td class="editable_td"><%if(tabledata[i].notifyURL != null){print(tabledata[i].notifyURL)} %></td>
+                    <td><%if(tabledata[i].date != null){print(tabledata[i].date)} %></td>
+                    <td>
+                    	<input type="hidden" value="<%=tabledata[i].subscribeId %>" class="row_data_key" />
+                    	<a title="Save" class="save_edit_icon" style="display: none;"><img src="/sandbox/site/themes/default/images/icons/color/disk.png"></a>
+						<a title="Reset" class="reset_edit_icon" style="display: none;"><img src="/sandbox/site/themes/default/images/icons/color/arrow_redo.png"></a>
+						<a title="Edit" class="edit_tbl_icon"><img src="/sandbox/site/themes/default/images/icons/color/pencil.png"></a>
+						<a title="Delete" class="delete_tbl_icon"><img src="/sandbox/site/themes/default/images/icons/color/cross.png"></a>
+                    </td>
+                </tr>
+            <%}%>
+    	</tbody>
+    </table>
+    <% }} %>
+    <!--START Pagination links-->
+               <% jagg.includeBlock("paginator", {currentPage:currentPage,numberOfPages:numberOfPages,taskType:"subscription"}); %>
+             <!--END Pagination links-->
+    </div>
+    </div>
+</div>
+
+<script type="text/javascript">
+$("#mainnavi").find('li.subnavi').removeClass("active");
+$("#mainnavi").find('li.subnavi:nth-child(3)').addClass("active");
+</script>
+<% }); %>

@@ -1,0 +1,10 @@
+<%
+jagg.module("mobile-id-task", {
+    saveMobileIdApiRequest:function () {
+		return jagg.require(jagg.getModulesDir() + "mobile-id-task/mobile-id-task.jag").saveMobileIdApiRequest.apply(this, arguments);
+    },    
+    sendMobileIdApiRequestWithToken:function () {
+    	return jagg.require(jagg.getModulesDir() + "mobile-id-task/mobile-id-task.jag").sendMobileIdApiRequestWithToken.apply(this, arguments);
+    }
+});
+%>

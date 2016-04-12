@@ -1,0 +1,33 @@
+<%
+jagg.block("performance", {
+	initializer:function (data) {
+
+	} ,
+// 	getInputs:function () {
+// 		return {
+// 			"usage":null
+// 		}
+// 	},
+	
+	getOutputs:function (inputs) {
+			
+		var data, user = inputs.user;
+		if (user.isAdmin){
+			var performanceReportModule = jagg.module("performance-report");
+			var result_subscribers = performanceReportModule.getAllSubscribers();
+			var result_operators = performanceReportModule.getAllOperators();
+			var result_apis = performanceReportModule.getAllAPIs();
+
+			data_subscribers = result_subscribers.data;
+			data_operators = result_operators.data;
+			data_apis = result_apis.data;
+		}
+		return {
+			"subscribers" : data_subscribers,
+			"operators" : data_operators,
+			"apis" : data_apis
+		};
+	}
+
+});
+%>

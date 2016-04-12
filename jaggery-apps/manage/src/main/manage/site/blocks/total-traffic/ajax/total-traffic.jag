@@ -1,0 +1,69 @@
+<%
+include("/jagg/jagg.jag");
+
+(function () {
+	var mod, obj, result;
+
+	var action = request.getParameter("action");
+	var user = jagg.getUser();
+
+	var log = new Log();
+
+	if(action == "getAppsBySubscriber"){
+		var selectedSubscriber = request.getParameter("subscriber");
+			
+		//log.info("getAppsBySubscriber");
+		var mod = jagg.module("total-traffic");
+		var result = mod.getAppsBySubscriber(selectedSubscriber);
+		//log.info(result.data);
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		} else {
+			obj = {
+				error:false,
+				data: result.data
+			}
+		}
+		print(obj);
+	}else if(action == "getAPITraffic"){
+		var fromDate = request.getParameter("fromDate");
+		var toDate = request.getParameter("toDate");
+		var subscriber = request.getParameter("subscriber");
+		var application = request.getParameter("application");
+		var operator = request.getParameter("operator");
+		var api = request.getParameter("api");
+
+		// 		log.info("From: " + stringify(fromDate));
+		// 		log.info("To: " + stringify(toDate));
+		// 		log.info("Subscriber: " + stringify(subscriber));
+		// 		log.info("Application: " + stringify(application));
+		// 		log.info("Operator: " + stringify(operator));
+
+		var mod = jagg.module("total-traffic");
+		var result = mod.getAPITraffic(fromDate, toDate, subscriber, application, operator, api);
+		//log.info(result.data);
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		} else {
+			obj = {
+				error:false,
+				pieChart: result.pieChart,
+				histogram: result.histogram
+			}
+		}
+		//log.info(obj);
+		print(obj);
+	}else{
+		print({
+			error:true,
+			message:msg.error.invalidAction(action)
+		});
+	}
+}());
+%>

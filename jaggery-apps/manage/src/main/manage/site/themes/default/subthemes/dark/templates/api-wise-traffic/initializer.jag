@@ -1,0 +1,9 @@
+<%
+jagg.initializer("api-wise-traffic", {
+
+    preInitialize:function () {
+        jagg.addHeaderJS("api-wise-traffic", "dojo", "templates/utils/dojo-release-1.8.3/dojo/dojo.js");
+        jagg.addHeaderJS("api-wise-traffic", "api-wise-traffic", "templates/api-wise-traffic/js/api-wise-traffic.js");
+    }
+});
+%>

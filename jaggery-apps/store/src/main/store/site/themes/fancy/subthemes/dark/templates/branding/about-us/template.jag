@@ -1,0 +1,29 @@
+<% jagg.template("branding/about-us", function(inputs, outputs, jagg) {
+%>
+<div id="listing">
+    <div class="title-section">
+        <h2>About Us</h2>
+    </div>
+    <div class="content-section shadow-up">
+        <div class="content-data span5">
+			<p>IdeaBiz is the Enterprise arm of <a href="http://www.ideamart.lk/" target="_blank">Ideamart</a>, the Service Delivery Platform of <a href="http://www.dialog.lk/" target="_blank">Dialog Axiata PLC</a>.</p>
+			
+			<p>Dialog’s Service Delivery Platform enables interested parties to use of Dialog’s network features and make mobile applications that satisfy various needs. Whilst Ideamart platform enables monetization of applications, IdeaBiz enables enterprises to create applications for internal purposes as well as customer engagement.</p>
+
+			<p>Functionally, IdeaBiz enables enterprises to build their own applications using their own software development resources or paid external resource. This empowers an enterprise to create applications to suit their organizational needs and customize accordingly.</p> 
+
+			<p>IdeaBiz Platform provides many <a href="<%=jagg.getAbsoluteUrl("/../store")%>" target="_blank">API’s</a> and <a href="" target="_blank">Tutorials</a> on how these API’s could be used to develop applications. In addition, the <a href="http://www.ideamart.lk/content/solutions" target="_blank">App Store</a> provides organizations with insight to applications created by Software Developers that could be purchased and customized to their own organization. The main benefit factors on using IdeaBiz for organizational purposes are,</p>
+			<ol>
+				<li>Reduced costs on App development with creating your own apps</li>
+				<li>Access to already created apps at cost effective prices</li>
+				<li>Customizable to suit organizations requirements</li>
+				<li>Ease of creation and time saving factor on creation of applications</li>
+				<li>Easy access to using Dialog’s Telco network.</li>
+				<li>Support and Idea Enrichment by Dialog IdeaBiz team to support your operation</li>
+			</ol>
+
+			<p>Please <a href="http://www.ideamart.lk/content/contactus" target="_blank">contact us</a> for further information and support required to build applications for your organizational purposes.</p> 
+        </div>
+    </div>
+</div>
+<% }); %>

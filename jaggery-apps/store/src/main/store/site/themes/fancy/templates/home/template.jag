@@ -1,0 +1,27 @@
+<% jagg.template("home", function(inputs, outputs, jagg) {
+%>
+<link rel="stylesheet" type="text/css" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("css/styles-axiata.css"))%>" media="all"/>
+<div id="listing">
+    <div class="title-section">
+        <h2>Home</h2>
+    </div>
+    <div class="content-section shadow-up">
+        <div class="content-data span10">
+        	<p>Create mobile applications to suit your company requirements. It is cheap, faster and could be custom built.<br>
+				Engage with your employees and customers equally – empower them to better your business.<br>
+				We can enable your organization to use features of an array of Mobile Network Operators to best suit your company requirements. Create your own applications here.</p>
+			
+			<div class="container-fluid span12">
+				<div class="row-fluid">
+				</div>
+			</div>
+			
+			<div class="row-fluid">
+				<div class="content-data span12">
+					<img src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("images/BizBannerWeb2.png"))%>">
+				</div>
+			</div>
+        </div>
+    </div>
+</div>
+<% }); %>

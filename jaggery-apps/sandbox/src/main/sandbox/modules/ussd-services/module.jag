@@ -1,0 +1,17 @@
+<%
+jagg.module("ussd-services", {
+
+    sendUssd:function () {
+        return jagg.require(jagg.getModulesDir() + "ussd-services/ussd-services.jag").sendUssd.apply(this, arguments);
+    },
+    subscribeUssd:function () {
+            return jagg.require(jagg.getModulesDir() + "ussd-services/ussd-services.jag").subscribeUssd.apply(this, arguments);
+        },
+    getUssdSubscriptionData:function () {
+        return jagg.require(jagg.getModulesDir() + "ussd-services/ussd-services.jag").getUssdSubscriptionData.apply(this, arguments);
+    },
+    deleteUssdSub:function () {
+        return jagg.require(jagg.getModulesDir() + "ussd-services/ussd-services.jag").deleteUssdSub.apply(this, arguments);
+    }
+});
+%>

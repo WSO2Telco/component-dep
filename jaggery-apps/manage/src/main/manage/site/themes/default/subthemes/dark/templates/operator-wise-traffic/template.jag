@@ -1,0 +1,171 @@
+<% jagg.template("operator-wise-traffic", function(inputs, outputs, jagg) {
+	var usage=outputs.usage;
+	var length;
+	if (usage!=null){
+		length=outputs.usage.length;
+	}
+	var log = new Log();
+	//log.info(stringify(outputs));
+	var isAdmin = jagg.getUser().isAdmin;
+	var isOperator = jagg.getUser().operator;
+	var operator_n = jagg.getUser().operator;
+	var isCustomerCare = jagg.getUser().isCustomerCare;
+	var customerCare_n = jagg.getUser().isCustomerCare;
+	log.info(isAdmin);
+	log.info(isOperator);
+
+	var isSp = false;
+
+	if(isAdmin){
+		isAdmin =true;
+	}
+	if(operator_n != null){
+		operator_n =true;
+	}
+	if(customerCare_n != null){
+		customerCare_n =true;
+	}
+	if(isAdmin == false && operator_n == null){
+		isSp =true;
+	}
+
+%>
+<link href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("lib/jquery-ui/css/smoothness/jquery-ui-1.9.2.custom.css"))%>" rel="stylesheet">
+<script type="text/javascript" src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("lib/jquery-ui/js/jquery-ui-1.9.2.custom.min.js"))%>"></script>
+
+<% if (isAdmin || isSp ) { %>
+
+<div class="title-section">
+	<h2>Operator Wise Traffic</h2>
+</div>
+<div class="content-section shadow-up">
+	<div class="content-data">
+		<div id="userKey">
+			<div class="well form-inline">
+				<table>
+					<tr>
+						<td><b>From:</b></td>
+						<td><b>To:</b></td>
+						
+						<%
+							if(isAdmin == true || isOperator != null){
+						%>
+						<td><b>Service Provider:</b></td>
+						<%
+							}
+						%>
+						
+						<td><b>Application:</b></td>
+						<td><b>API:</b></td>
+						<td></td>
+					</tr>
+					<tr>
+						<td>
+							<input type="text" id="from_date" class="input-large" style="margin-bottom: 0px; width: 150px;">	
+						</td>
+						<td>
+							<input type="text" id="to_date" class="input-large" style="margin-bottom: 0px; width: 150px;">
+						</td>
+						
+						<%
+							if(isAdmin == true || isOperator != null){
+							  	var subscriberList = outputs.subscribers;				
+						%>							
+						<td>
+							<select id="subscriber" size="1" style="width: 150px" onchange="getSelectedSubscriber()" name="subscriber">
+								<option value="__ALL__">All</option>
+								<%
+								if(subscriberList != null){
+								for (i = 0; i < subscriberList.length; i++) {
+									var subscriber = subscriberList[i];										
+								%>
+								<option value="<%=subscriber%>"><%=subscriber%></option>
+								<%	
+									}
+									}
+								%>
+							</select>
+						</td>
+						<%
+							}
+						%>
+						
+						<td>
+							<select id="app" style="width: 150px;" autofocus="autofocus">
+								<%
+								if(isAdmin == true || isOperator != null){
+								%>
+								<option value="0">All</option>
+								<%		
+								}
+								%>
+								<%
+								if(isAdmin != true && isOperator == null){
+									var applicationList = outputs.applications;
+								%>
+								<option value="0">All</option>
+								<%
+								if(applicationList != null){
+								for (i = 0; i < applicationList.length; i++) {
+									var app = applicationList[i];
+								%>
+								<option value="<%=app.id%>"><%=app.name%></option>
+								<%		
+								}
+								}
+								}
+								%>
+							</select>
+						</td>
+						<td>
+							<%		
+							var apiList = outputs.apis;
+							%>
+							<select id="api" style="width: 150px;" autofocus="autofocus">
+								<option value="__ALL__">All</option>
+								<%
+								if(isAdmin == true || isOperator != null){
+								if(apiList != null){
+								for (i = 0; i < apiList.length; i++) {
+									var api = apiList[i];
+								%>
+								<option value="<%=api.name%>"><%=api.name%></option>
+								<%		
+									}
+									}
+									}
+								%>
+								
+								<%
+								if(isAdmin != true && isOperator == null){
+								if(apiList != null){
+								for (i = 0; i < apiList.length; i++) {
+								%>
+								<option value="<%=apiList[i]%>"><%=apiList[i]%></option>
+								<%		
+									}
+									}
+								}
+								%>
+									
+							</select>
+							<%
+							%>
+						</td>
+						<td>
+							<button class="btn btn-primary" id="generate" onclick="getOperatorWiseAPITraffic()">Generate</button>
+						</td>
+					</tr>
+				</table>					
+			</div>
+			
+			<!-- button class="btn btn-primary" name="download_file" onclick="downloadReports()" type="button">Download Report</button> <br/> <br/ -->
+			<div id="loader"></div>
+			<div id="operator-wise-api-traffic-pie-chart" style="width: 700px; height: 400px"></div> <br/> <br/>
+		</div>
+	</div>
+</div>
+<% } else { %>
+		<p> Access Denied..!</p>
+	<% } %>
+<%});%>

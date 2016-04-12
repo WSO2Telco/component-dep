@@ -1,0 +1,32 @@
+<%
+jagg.module("shortcodes", {
+
+	GetTableData:function () {
+		return jagg.require(jagg.getModulesDir() + "shortcodes/shortcodes.jag").GetTableData.apply(this, arguments);
+	},
+	SaveShortCode:function () {
+		return jagg.require(jagg.getModulesDir() + "shortcodes/shortcodes.jag").SaveShortCode.apply(this, arguments);
+	}, 
+	DeleteShortCode:function () {
+		return jagg.require(jagg.getModulesDir() + "shortcodes/shortcodes.jag").DeleteShortCode.apply(this, arguments);
+	},
+	EditShortCode:function () {
+			return jagg.require(jagg.getModulesDir() + "shortcodes/shortcodes.jag").EditShortCode.apply(this, arguments);
+		},
+	SearchCode:function () {
+		return jagg.require(jagg.getModulesDir() + "shortcodes/shortcodes.jag").SearchCode.apply(this, arguments);
+	},
+	getCodesList:function () {
+		return jagg.require(jagg.getModulesDir() + "shortcodes/shortcodes.jag").getCodesList.apply(this, arguments);
+	},
+	getDescriptionList:function () {
+		return jagg.require(jagg.getModulesDir() + "shortcodes/shortcodes.jag").getDescriptionList.apply(this, arguments);
+	},
+	FilterNumberTable:function () {
+		return jagg.require(jagg.getModulesDir() + "shortcodes/shortcodes.jag").FilterNumberTable.apply(this, arguments);
+	},
+	CheckShortCodeExist:function () {
+		return jagg.require(jagg.getModulesDir() + "shortcodes/shortcodes.jag").CheckShortCodeExist.apply(this, arguments);
+	}
+});
+%>

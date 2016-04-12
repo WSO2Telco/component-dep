@@ -1,0 +1,152 @@
+<%
+include("/jagg/jagg.jag");
+
+(function () {
+	var mod, obj, result, user, paystatus, maxtrn, maxamt,
+	action = request.getParameter("action"),
+	site = require("/site/conf/site.json"),log = new Log(),
+	msg = require("/site/conf/ui-messages.jag");
+	 
+	if(jagg.getUser() == null){
+		print({
+			error:true,
+			message:'timeout'
+		});
+	}else{
+		 
+		if (action === "saveparam") {
+
+			mod = jagg.module("payment");
+			user =jagg.getUser();
+			paystatus = request.getParameter("paystatus");
+			maxtrn = request.getParameter("maxtrn");
+			maxamt = request.getParameter("maxamt");
+
+			log.info('add param :'+maxamt);
+
+			result = mod.addparam(user.username,paystatus,maxtrn,maxamt);
+			if (result.error) {
+				obj = {
+					error:true,
+					message:result.message
+				};
+			} else {
+				obj = {
+					error:false,
+					tasks:result
+				}
+			}
+			print(obj);
+		}else if (action === "addpayment") {
+			mod = jagg.module("payment");
+			user =jagg.getUser();
+
+			log.info('add payment :'+user.username);
+
+			var endUserId = request.getParameter("endUserId");
+
+			log.info('enduser '+endUserId);
+			var transactionOperationStatus = request.getParameter("transactionOperationStatus");
+			var referenceCode = request.getParameter("referenceCode");
+			var description = request.getParameter("description");
+			var currency = request.getParameter("currency");
+			var amount = request.getParameter("amount");
+			var clientCorrelator = request.getParameter("clientCorrelator");
+			var callbackURL = request.getParameter("callbackURL");
+			var onBehalfOf = request.getParameter("onBehalfOf");
+			var purchaseCategoryCode = request.getParameter("purchaseCategoryCode");
+			var channel = request.getParameter("channel");
+			var taxAmount = request.getParameter("taxAmount");
+
+
+			var chargimd = {
+				"taxAmount" : taxAmount,
+				"purchaseCategoryCode" : purchaseCategoryCode ,
+				"channel" : channel,
+				"onBehalfOf" : onBehalfOf
+			};
+
+			var charginfo = {
+				"amount" : amount,
+				"description" : description,
+				"currency" : currency
+			};
+
+			var objamount= {
+				"chargingMetaData" : chargimd,
+				"chargingInformation" : charginfo
+			};
+
+
+			var amountxn = {
+				"paymentAmount" : objamount,
+				"endUserId" : endUserId,
+				"transactionOperationStatus" : transactionOperationStatus,
+				"clientCorrelator" : clientCorrelator,
+				"referenceCode" : referenceCode
+			};
+			 
+			var payobj = {
+				"amountTransaction" : amountxn
+			};
+			 
+			result = mod.addpayment(user.username,payobj,endUserId);
+
+			if (result.reqerr == false) {
+				var resobj = parse(result.data);
+				var paytxn = {
+					endUserId : endUserId,
+					transactionOperationStatus : resobj.amountTransaction.transactionOperationStatus,
+					referenceCode : referenceCode,
+					description : description,
+					currency : currency,
+					amount : amount,
+					clientCorrelator : clientCorrelator,
+					callbackURL : callbackURL,
+					onBehalfOf : onBehalfOf,
+					purchaseCategoryCode : purchaseCategoryCode,
+					channel : channel,
+					taxAmount : taxAmount
+				};
+
+				var paytxns = session.get("paytxns");
+				paytxns.push(paytxn);
+				session.put("paytxns",paytxns);
+			}
+
+			if (result.error==true) {
+				obj = {
+					error:true,
+					message:result.message
+				};
+			} else {
+				obj = {
+					error:false,
+					tasks:result.data,
+					req:result.message,
+					table:session.get("paytxns")
+				}
+			}
+			print(obj);
+
+		}else if(action === "getSessionData"){
+			var paytxns = session.get("paytxns");
+			if(paytxns.length > 0){
+				obj = {
+					table:paytxns
+				};
+			}else{
+				obj = {
+					table:"null"
+				};
+			}
+			print(obj);
+		}else {
+			print({
+				error:true,
+				message:msg.error.invalidAction(action)
+			});
+		}
+	}
+}());
+%>

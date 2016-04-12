@@ -1,0 +1,8 @@
+<%
+jagg.initializer("menu/primary-branding", {
+
+    preInitialize:function () {
+
+    }
+});
+%>

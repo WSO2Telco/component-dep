@@ -1,0 +1,8 @@
+<%
+jagg.initializer("menu/left-billing-metering", {
+
+    preInitialize:function (){
+    }
+});
+%>
+

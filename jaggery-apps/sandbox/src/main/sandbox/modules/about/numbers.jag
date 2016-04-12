@@ -1,0 +1,242 @@
+<%
+include("/jagg/jagg.jag");
+var urlPath = jagg.getSandboxurl()+"ManageNumberServlet";
+
+var GetNumberData = function(userid){
+	var result, message, log = new Log();
+	var user = jagg.getUser();
+
+	try{
+		var xhr = new XMLHttpRequest();
+		var endpoint =  urlPath+"/GetNumberData";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		var payload = "userid="+user.username;
+		xhr.send(payload);
+
+		result = xhr.responseText.toString();
+		//log.info(result);
+
+		return {
+			error:false,
+			message:"OK",
+			data:result
+		};
+
+	} catch (e) {
+		log.error(e.message);
+		return {
+			error:true,
+			message:e.message.split("Exception:")[2]
+		};
+	}
+};
+
+var SaveNumber = function(phonenumber, description, balance, userid){
+	var log = new Log();
+	var user = jagg.getUser();
+	
+	try{
+		var xhr = new XMLHttpRequest();
+		var endpoint =  urlPath+"/SaveNumber";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		var payload = "phonenumber="+encodeURIComponent(phonenumber)+"&description="+encodeURIComponent(description)+"&balance="+balance+"&userid="+user.username;
+		xhr.send(payload);
+
+		result = xhr.responseText.toString();
+		log.info(result);
+			
+		return {
+			error:false,
+			message:"OK",
+			data:result
+		};
+		 
+	} catch (e) {
+		log.error(e.message);
+		return {
+			error:true,
+			message:e.message.split("Exception:")[2]
+		};
+	}
+};
+
+var UpdateNumber = function(id, phonenumber, description, balance){
+	var log = new Log();
+	log.info("update number module");
+	try{
+		var xhr = new XMLHttpRequest();
+		var endpoint =  urlPath+"/EditNumber";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		var payload = "id="+id+"&phonenumber="+encodeURIComponent(phonenumber)+"&description="+encodeURIComponent(description)+"&balance="+balance;
+		xhr.send(payload);
+
+		result = xhr.responseText.toString();
+		log.info(result);
+
+		return {
+			error:false,
+			message:"OK",
+			data:result
+		};
+
+	} catch (e) {
+		log.error(e.message);
+		return {
+			error:true,
+			message:e.message.split("Exception:")[2]
+		};
+	}
+};
+
+var FilterNumberTable = function(id, phonenumber, description){
+	var log = new Log();
+	log.info("Filter table module");
+	try{
+		var xhr = new XMLHttpRequest();
+		var endpoint =  urlPath+"/FilterNumbers";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		var payload = "userid="+id+"&phonenumber="+encodeURIComponent(phonenumber)+"&description="+encodeURIComponent(description);
+		xhr.send(payload);
+
+		result = xhr.responseText.toString();
+		log.info(result);
+
+		return {
+			error:false,
+			message:"OK",
+			data:result
+		};
+
+	} catch (e) {
+		log.error(e.message);
+		return {
+			error:true,
+			message:e.message.split("Exception:")[2]
+		};
+	}
+};
+
+var DeleteNumber = function(id){
+	var log = new Log();
+	log.info("Delete number module");
+	try{
+		var xhr = new XMLHttpRequest();
+		var endpoint =  urlPath+"/DeleteNumber";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		var payload = "id="+id;
+		xhr.send(payload);
+			
+		result = xhr.responseText.toString();
+		log.info("RowDelete"+result);
+			
+		return {
+			error:false,
+			message:"OK",
+			data:result
+		};
+			
+	} catch (e) {
+		log.error(e.message);
+		return {
+			error:true,
+			message:e.message.split("Exception:")[2]
+		};
+	}
+};
+
+var SearchNumber = function(id){
+	var log = new Log();
+	log.info("Search number module");
+	try{
+		var xhr = new XMLHttpRequest();
+		var endpoint =  urlPath+"/SearchNumber";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		var payload = "numberid="+id;
+		xhr.send(payload);
+			
+		result = xhr.responseText.toString();
+		log.info("SearchNumber"+result);
+			
+		return {
+			error:false,
+			message:"OK",
+			data:result
+		};
+			
+	} catch (e) {
+		log.error(e.message);
+		return {
+			error:true,
+			message:e.message.split("Exception:")[2]
+		};
+	}
+};
+
+var getNumberList = function(id){
+	var log = new Log();
+	log.info("getNumberList module");
+	var user = jagg.getUser();
+	
+	try{
+		var xhr = new XMLHttpRequest();
+		var endpoint =  urlPath+"/GetNumberList";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		var payload = "userid="+user.username;
+		xhr.send(payload);
+			
+		result = parse(xhr.responseText.toString());
+		log.info("getNumberList"+result);
+			
+		return {
+			error:false,
+			message:"OK",
+			data:result
+		};
+			
+	} catch (e) {
+		log.error(e.message);
+		return {
+			error:true,
+			message:e.message.split("Exception:")[2]
+		};
+	}
+};
+
+var getDescriptionList = function(id){
+	var log = new Log();
+	log.info("getDescriptionList module");
+	var user = jagg.getUser();
+	
+	try{
+		var xhr = new XMLHttpRequest();
+		var endpoint =  urlPath+"/GetDescriptionsList";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		var payload = "userid="+user.username;
+		xhr.send(payload);
+			
+		result = parse(xhr.responseText.toString());
+		log.info("getDescriptionList"+result);
+			
+		return {
+			error:false,
+			message:"OK",
+			data:result
+		};
+			
+	} catch (e) {
+		log.error(e.message);
+		return {
+			error:true,
+			message:e.message.split("Exception:")[2]
+		};
+	}
+};
+%>

@@ -1,0 +1,51 @@
+<%
+jagg.block("response-times", {
+	initializer:function (data) {
+
+	} ,
+	// 	getInputs:function () {
+	// 		return {
+	// 			"usage":null
+	// 		}
+	// 	},
+
+	getOutputs:function (inputs) {
+			
+		var data, user = inputs.user;
+		var isOperator = jagg.getUser().operator;
+		var data_subscribers;
+		var data_operators;
+		var data_apis;
+		if (user.isAdmin){
+			var apiWiseTrafficModule = jagg.module("api-wise-traffic");
+			var result_subscribers = apiWiseTrafficModule.getAllSubscribers();
+			var result_operators = apiWiseTrafficModule.getAllOperators();
+			var result_apis = apiWiseTrafficModule.getAllAPIs();
+
+			data_subscribers = result_subscribers.data;
+			data_operators = result_operators.data;
+			data_apis = result_apis.data;
+		}else if(isOperator != null){
+			var apiWiseTrafficModule = jagg.module("api-wise-traffic");
+			var result_subscribers = apiWiseTrafficModule.getSubscribersByOperator(isOperator);
+			var result_apis = apiWiseTrafficModule.getAllAPIs();
+			
+			data_subscribers = result_subscribers.data;
+			data_apis = result_apis.data;
+		}else if(isOperator == null){
+			var apiWiseTrafficModule = jagg.module("api-wise-traffic");
+			var result_operators = apiWiseTrafficModule.getOperatorsBySubscriber(jagg.getUser().username);
+			var result_apis = apiWiseTrafficModule.getAPIsBySubscriber(jagg.getUser().username);
+			
+			data_operators = result_operators.data;
+			data_apis = result_apis.data;
+		}
+		return {
+			"subscribers" : data_subscribers,
+			"operators" : data_operators,
+			"apis" : data_apis
+		};
+	}
+
+});
+%>

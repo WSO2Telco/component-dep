@@ -1,0 +1,97 @@
+<%
+include("/jagg/jagg.jag");
+
+(function () {
+	var mod, obj, result;
+
+	var action = request.getParameter("action");
+	var user = jagg.getUser();
+
+	var log = new Log();
+
+	if(action == "getAppsBySubscriber"){
+		var selectedSubscriber = request.getParameter("subscriber");
+			
+		//log.info("getAppsBySubscriber");
+		var mod = jagg.module("finance-report");
+		var result = mod.getAppsBySubscriber(selectedSubscriber);
+		//log.info(result.data);
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		} else {
+			obj = {
+				error:false,
+				data: result.data
+			}
+		}
+		print(obj);
+	}  else if (action =="getCustomerCareData"){
+		
+		var fromDate = request.getParameter("fromDate");
+		var toDate = request.getParameter("toDate");
+		var msisdn = request.getParameter("msisdn");
+		var selectedSubscriber = request.getParameter("subscriber");
+		var selectedOperator = request.getParameter("operator");
+		var app = request.getParameter("application");
+		var api = request.getParameter("api");
+		var startLimit = request.getParameter("startLimit");
+		var endLimit = request.getParameter("endLimit");
+		var timeOffset = request.getParameter("timeOffset");
+		var username = user.username;
+
+		var financeReportModule = jagg.module("customer-care");
+		result = financeReportModule.getCustomerCareData(fromDate, toDate, msisdn, selectedSubscriber, selectedOperator, app, api, username, startLimit, endLimit,timeOffset);
+
+		//log.info("::: Customer Care report result: >> "+ stringify(result));
+
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.error.authError(action, username)
+			};
+		} else {
+			obj = {
+				error:false,
+				usage:result.usage
+			}
+		}
+		print(obj);
+	} else if (action =="getCustomerCareDataCount"){
+		
+		var fromDate = request.getParameter("fromDate");
+		var toDate = request.getParameter("toDate");
+		var msisdn = request.getParameter("msisdn");
+		var selectedSubscriber = request.getParameter("subscriber");
+		var selectedOperator = request.getParameter("operator");
+		var app = request.getParameter("application");
+		var api = request.getParameter("api");
+		var username = user.username;
+
+		var financeReportModule = jagg.module("customer-care");
+		result = financeReportModule.getCustomerCareDataCount(fromDate, toDate, msisdn, selectedSubscriber, selectedOperator, app, api, username);
+
+		//log.info("::: Customer Care report result: >> "+ stringify(result));
+
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.error.authError(action, username)
+			};
+		} else {
+			obj = {
+				error:false,
+				data:result.data
+			}
+		}
+		print(obj);
+	} else{
+		print({
+			error:true,
+			message:invalidAction(action)
+		});
+	}
+}());
+%>

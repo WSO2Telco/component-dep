@@ -1,0 +1,18 @@
+<%
+jagg.module("dialogbilling", {
+
+    testDialogBilling:function () {
+        return jagg.require(jagg.getModulesDir() + "dialogbilling/dialogusage.jag").testDialogBilling.apply(this, arguments);
+    },
+    getProviderAPIUsage:function () {
+        return jagg.require(jagg.getModulesDir() + "dialogbilling/dialogusage.jag").getProviderAPIUsage.apply(this, arguments);
+    },
+    getReportFileContent:function () {
+        return jagg.require(jagg.getModulesDir() + "dialogbilling/dialogusage.jag").getReportFileContent.apply(this, arguments);
+    },
+    executeDummyQuery:function () {
+        return jagg.require(jagg.getModulesDir() + "dialogbilling/dialogusage.jag").executeDummyQuery.apply(this, arguments);
+    }
+});
+%>
+

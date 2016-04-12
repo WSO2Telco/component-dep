@@ -1,0 +1,148 @@
+<% jagg.template("menu/left-billing-metering", function(inputs, outputs, jagg) { %>
+<%  var site = require("/site/conf/site.json");
+var ssoEnabled = site.ssoConfiguration.enabled;
+
+var reqUrl = request.getRequestURI();
+var listUrl=jagg.getAbsoluteUrl("/site/pages/billing-metering.jag");
+var listMappedUrl=jagg.getMappedUrl("/site/pages/billing-metering.jag");
+var subsUrl=jagg.getAbsoluteUrl("/site/pages/billing-metering.jag");
+var subsMappedUrl=jagg.getMappedUrl("/site/pages/billing-metering.jag");
+
+var log = new Log();
+var isAdmin = jagg.getUser().isAdmin;
+var isOperator = jagg.getUser().operator;
+var isCustomerCare = jagg.getUser().isCustomerCare;
+// log.info(isAdmin);
+// log.info(isOperator);
+log.info("--------------------------------isCustomerCare" + isCustomerCare);
+%>
+
+<div class="sidebar-nav left-menu-back01">
+	<ul class="nav nav-list">
+		<li class="nav-header"><%=i18n.localize("report")%></li>
+		<%
+		if(isCustomerCare != null){
+		%>
+		<li class="active"><a
+			href="<%=listMappedUrl%>?task=customer-care"
+			onclick="jagg.sessionAwareJS({redirect:'<%=listMappedUrl%>?task=customer-care',e:event,ssoEnabled:<%=ssoEnabled%>})"><%=i18n.localize("customer-care")%>
+		</a></li>
+		<%
+		} else {
+		%>
+		<li
+		<% if(request.getParameter("task")==null || request.getParameter("task")=="total-traffic"){%>
+			class="active" <% } %>><a
+			href="<%=subsMappedUrl%>?task=total-traffic"
+			onclick="jagg.sessionAwareJS({redirect:'<%=subsMappedUrl%>?task=total-traffic',e:event,ssoEnabled:<%=ssoEnabled%>})"><%=i18n.localize("total-traffic")%>
+		</a></li>
+		<li <%if(request.getParameter("task")=="api-wise-traffic"){%>
+			class="active" <% } %>><a
+			href="<%=listMappedUrl%>?task=api-wise-traffic"
+			onclick="jagg.sessionAwareJS({redirect:'<%=listMappedUrl%>?task=api-wise-traffic',e:event,ssoEnabled:<%=ssoEnabled%>})"><%=i18n.localize("api-wise-traffic")%>
+		</a></li>
+		<%
+		if(isAdmin == true || isOperator == null){
+		%>
+		<li <%if(request.getParameter("task")=="transaction-log-nb"){%>
+			class="active" <% } %>><a
+			href="<%=listMappedUrl%>?task=transaction-log-nb"
+			onclick="jagg.sessionAwareJS({redirect:'<%=listMappedUrl%>?task=transaction-log-nb',e:event,ssoEnabled:<%=ssoEnabled%>})"><%=i18n.localize("transaction-log-nb")%>
+		</a></li>
+		<li <%if(request.getParameter("task")=="operator-wise-traffic"){%>
+			class="active" <% } %>><a
+			href="<%=listMappedUrl%>?task=operator-wise-traffic"
+			onclick="jagg.sessionAwareJS({redirect:'<%=listMappedUrl%>?task=operator-wise-traffic',e:event,ssoEnabled:<%=ssoEnabled%>})"><%=i18n.localize("operator-wise-traffic")%>
+		</a></li>
+		<%
+			}
+			%>
+		<%
+		if(isAdmin == true || isOperator == null){
+		%>
+
+		<%
+		if(isAdmin == true){
+		%>
+		<li <%if(request.getParameter("task")=="finance"){%> class="active"
+		<% } %>><a href="<%=listMappedUrl%>?task=finance"
+			onclick="jagg.sessionAwareJS({redirect:'<%=listMappedUrl%>?task=finance',e:event,ssoEnabled:<%=ssoEnabled%>})"><%=i18n.localize("financeAdmin-sb")%>
+		</a>
+		</li>
+		
+		
+		<li <%if(request.getParameter("task")=="finance-nb"){%> class="active"
+		<% } %>><a href="<%=listMappedUrl%>?task=finance-nb"
+			onclick="jagg.sessionAwareJS({redirect:'<%=listMappedUrl%>?task=finance-nb',e:event,ssoEnabled:<%=ssoEnabled%>})"><%=i18n.localize("financeAdmin-nb")%>
+		</a></li>
+		
+		<% } else { %>
+		
+		
+		<li <%if(request.getParameter("task")=="finance-nb"){%> class="active"
+		<% } %>><a href="<%=listMappedUrl%>?task=finance-nb"
+			onclick="jagg.sessionAwareJS({redirect:'<%=listMappedUrl%>?task=finance-nb',e:event,ssoEnabled:<%=ssoEnabled%>})"><%=i18n.localize("finance")%>
+		</a></li>
+		
+		<% } %>
+			
+			
+		<li <%if(request.getParameter("task")=="billing-nb"){%> class="active"
+		<% } %>><a href="<%=listMappedUrl%>?task=billing-nb"
+			onclick="jagg.sessionAwareJS({redirect:'<%=listMappedUrl%>?task=billing-nb',e:event,ssoEnabled:<%=ssoEnabled%>})"><%=i18n.localize("billing-nb")%>
+		</a></li>
+
+		<%
+			}
+			%>
+		<%
+		if(isAdmin == true || isOperator != null){
+		%>
+		<%
+		if(isOperator != null){
+		%>
+		<li <%if(request.getParameter("task")=="finance"){%> class="active"
+		<% } %>><a href="<%=listMappedUrl%>?task=finance"
+			onclick="jagg.sessionAwareJS({redirect:'<%=listMappedUrl%>?task=finance',e:event,ssoEnabled:<%=ssoEnabled%>})"><%=i18n.localize("financeAdmin")%>
+		</a>
+		</li>
+		<% } %>
+		<li <%if(request.getParameter("task")=="billing"){%> class="active"
+		<% } %>><a href="<%=listMappedUrl%>?task=billing"
+			onclick="jagg.sessionAwareJS({redirect:'<%=listMappedUrl%>?task=billing',e:event,ssoEnabled:<%=ssoEnabled%>})"><%=i18n.localize("billing")%>
+		</a></li>
+
+		<!--li <%if(request.getParameter("task")=="performance"){%>class="active"<% } %>><a href="<%=listMappedUrl%>?task=performance"  onclick="jagg.sessionAwareJS({redirect:'<%=listMappedUrl%>?task=performance',e:event,ssoEnabled:<%=ssoEnabled%>})"><%=i18n.localize("performance")%></a></li-->
+		<li <%if(request.getParameter("task")=="customer-care"){%>
+			class="active" <% } %>><a
+			href="<%=listMappedUrl%>?task=customer-care"
+			onclick="jagg.sessionAwareJS({redirect:'<%=listMappedUrl%>?task=customer-care',e:event,ssoEnabled:<%=ssoEnabled%>})"><%=i18n.localize("customer-care")%>
+		</a></li>
+		<%
+			}
+			%>
+
+		<li class="nav-header"><%=i18n.localize("report-two")%></li>
+		<li <% if(request.getParameter("task")=="response-times"){%>
+			class="active" <% } %>><a
+			href="<%=subsMappedUrl%>?task=response-times"
+			onclick="jagg.sessionAwareJS({redirect:'<%=subsMappedUrl%>?task=response-times',e:event,ssoEnabled:<%=ssoEnabled%>})"><%=i18n.localize("response-times")%>
+		</a></li>
+		<%
+		if(isAdmin == true || isOperator != null){
+        %>
+		<li <%if(request.getParameter("task")=="performance-error-rates"){%>
+			class="active" <% } %>><a
+			href="<%=listMappedUrl%>?task=performance-error-rates"
+			onclick="jagg.sessionAwareJS({redirect:'<%=listMappedUrl%>?task=performance-error-rates',e:event,ssoEnabled:<%=ssoEnabled%>})"><%=i18n.localize("performance-error-rates")%>
+		</a></li>
+		<%
+        }
+        %>
+		<%
+		}
+		%>
+	</ul>
+</div>
+
+<%});%>

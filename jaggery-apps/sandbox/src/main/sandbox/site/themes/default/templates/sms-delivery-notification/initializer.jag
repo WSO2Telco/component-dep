@@ -1,0 +1,7 @@
+<%
+	jagg.initializer("sms-delivery-notification", {
+		preInitialize:function () {
+			jagg.addFooterJS("application", "jagg", "templates/sms-delivery-notification/js/delivery-notify.js");
+		}
+	});
+%>

@@ -1,0 +1,216 @@
+<%
+include("/jagg/jagg.jag");
+var createAuthCodeRequest = function (key,secret,username) {
+    var log = new Log();
+    log.info('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZparams :'+key+' & '+secret);
+    try {
+        var xhr = new XMLHttpRequest();
+        var endpoint =  jagg.getSandboxurl()+"MobileIdApiAuthorizationServlet/mobileidapi/1/queries/mobileidapi?key="+key+"&secret="+secret;
+        xhr.open("GET", endpoint);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.setRequestHeader("sandbox", username);
+        //var payload = requestJsonString;
+        xhr.send();
+        var result = xhr.responseText.toString();
+
+        var reqerr=true;
+        if (xhr.status =='200') {
+            var reqerr =false;
+        }
+
+        log.info("endpoint: >>>>>>>>>>>>>>> "+endpoint);
+        log.info('response :'+result);
+
+        return {
+            error:false,
+            message:"OK",
+            data:result,
+            reqerr:reqerr
+        };
+    } catch (e) {
+        log.error(e.message);
+        return {
+            error:true,
+            message:e.message.split("Exception:")[2]
+        };
+    }
+};
+var generateRefreshToken = function (granttype,username,password,scope,user,token) {
+    var log = new Log();
+    
+    try {
+        var xhr = new XMLHttpRequest();
+        var endpoint =  jagg.getSandboxurl()+"GenerateRefreshToken/mobileidapi/1/queries/mobileidapi?granttype="+granttype+"&username="+username+"&password="+password+"&scope="+scope+"&user="+user+"&token="+token;
+        xhr.open("GET", endpoint);
+        //xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.setRequestHeader("user", user);
+        //xhr.setRequestHeader("Authorization", "Basic "+authCode);
+        //var payload = requestJsonString;
+        xhr.send();
+        var result = xhr.responseText.toString();
+
+        var reqerr=true;
+        if (xhr.status =='200') {
+            var reqerr =false;
+        }
+
+        log.info('response :'+result);
+
+        return {
+            error:false,
+            message:"OK",
+            data:result,
+            reqerr:reqerr
+        };
+    } catch (e) {
+        log.error(e.message);
+        return {
+            error:true,
+            message:e.message.split("Exception:")[2]
+        };
+    }
+};
+
+var getRefreshToken = function (url,user) {
+    var log = new Log();
+    log.info('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYXZ : '+url);
+    try {
+        var xhr = new XMLHttpRequest();
+        var endpoint =  jagg.getSandboxurl()+"GetRefreshToken/mobileidapi/1/queries/mobileidapi?url="+url+"&user="+user;
+        xhr.open("GET", endpoint);
+        //xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.setRequestHeader("user", user);
+        //xhr.setRequestHeader("Authorization", "Basic "+authCode);
+        //var payload = requestJsonString;
+        xhr.send();
+        var result = xhr.responseText.toString();
+
+        var reqerr=true;
+        if (xhr.status =='200') {
+            var reqerr =false;
+        }
+
+        log.info('response :'+result);
+
+        return {
+            error:false,
+            message:"OK",
+            data:result,
+            reqerr:reqerr
+        };
+    } catch (e) {
+        log.error(e.message);
+        return {
+            error:true,
+            message:e.message.split("Exception:")[2]
+        };
+    }
+};
+
+var getLocData = function (user) {
+    var result, message,
+            log = new Log();
+
+    try {
+
+        log.info('user: '+user);
+
+        var xhr = new XMLHttpRequest();
+        var endpoint = jagg.getSandboxurl()+"LocationSettingsService/GetLocData";
+        xhr.open("POST", endpoint);
+        xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+        xhr.setRequestHeader("payact","queryparam");
+        var payload = "userid="+user;
+        xhr.send(payload);
+
+        result = xhr.responseText.toString();
+        log.info(result);
+
+        return {
+            error:false,
+            message:"OK",
+            data:result
+        };
+
+    } catch (e) {
+        log.error(e.message);
+        return {
+            error:true,
+            message:e.message.split("Exception:")[2]
+        };
+    }
+};
+
+var sendMobileIdApiRequestWithToken = function (authorization, username) {
+    var result, message,
+            log = new Log();
+
+    try {
+
+        log.info('authorization: '+authorization);
+        var xhr = new XMLHttpRequest();
+        var endpoint = jagg.getSandboxurl()+"MobileIdApiServletResponse/mobileidapi/1/queries/mobileidapi?authorization="+authorization;
+        xhr.open("GET", endpoint);
+        xhr.setRequestHeader("Content-Type", "application/json");
+        xhr.setRequestHeader("sandbox", username);
+        //var payload = "userid="+user+"&altitude="+alt+"&latitude="+lat+"&longitude="+longi+"&locStatus="+status;
+        //xhr.send(payload);
+        xhr.send();
+        var result = xhr.responseText.toString();
+        //result = xhr.responseText.toString();
+        log.info(result);
+
+        return {
+            error:false,
+            message:"OK",
+            data:result
+        };
+
+    } catch (e) {
+        log.error(e.message);
+        return {
+            error:true,
+            message:e.message.split("Exception:")[2]
+        };
+    }
+};
+
+var generateAccessTokenRequest = function (grant_type, refresh_token, scope, authCode, username) {
+    var log = new Log();
+    log.info('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZparams :' + grant_type + ' & ' + refresh_token + ' & ' + scope + ' & ' + authCode);
+    try {
+        var xhr = new XMLHttpRequest();
+        var endpoint = jagg.getSandboxurl() + "MobileIdApiGenerateAccessTokenServlet/mobileidapi/1/queries/mobileidapi?grant_type=" +
+                grant_type + "&refresh_token=" + refresh_token + "&scope=" + scope + "&authCode=" + authCode;
+        xhr.open("GET", endpoint);
+        xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+        //xhr.setRequestHeader("Authorization", "Basic " + authCode);
+        xhr.setRequestHeader("sandbox", username);
+        xhr.send();
+        var result = xhr.responseText.toString();
+
+        var reqerr = true;
+        if (xhr.status == '200') {
+            var reqerr = false;
+        }
+
+        log.info("endpoint: >>>>>>>>>>>>>>> " + endpoint);
+        log.info('response :' + result);
+
+        return {
+            error: false,
+            message: "OK",
+            data: result,
+            reqerr: reqerr
+        };
+    } catch (e) {
+        log.error(e.message);
+        return {
+            error: true,
+            message: e.message.split("Exception:")[2]
+        };
+    }
+};
+%>

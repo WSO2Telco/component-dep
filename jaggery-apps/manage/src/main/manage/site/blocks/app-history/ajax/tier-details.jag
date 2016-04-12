@@ -1,0 +1,48 @@
+<%
+include("/jagg/jagg.jag");
+
+(function () {
+	var mod, obj, result;
+
+	var action = request.getParameter("action");
+
+	var log = new Log();
+
+	if(action == "getAllTiers"){
+		var lblText = request.getParameter("lblText");
+		var mod = jagg.module("taskmanager");
+		var result = mod.getAllTiers();
+		//log.info(result.data);
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+			//log.info("Error");
+		} else {
+			var tierAttributevalue;
+			for (var i = 0; i < result.data.length; i++) {
+				if(result.data[i].tierName == lblText){
+					var tierAttributes = result.data[i].tierAttributes;
+					for (var j = 0; j < tierAttributes.length; j++) {
+						var tierAttributeName = tierAttributes[j].tierAttributeName;
+						if(tierAttributeName == "Description"){
+							tierAttributevalue = tierAttributes[j].tierAttributevalue.trim();
+						}
+					}
+				}
+			}
+			obj = {
+				error:false,
+				"data":tierAttributevalue
+			}
+		}
+		print(obj);
+	}else{
+		print({
+			error:true,
+			message:msg.error.invalidAction(action)
+		});
+	}
+}());
+%>

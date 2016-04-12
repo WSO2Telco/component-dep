@@ -1,0 +1,67 @@
+<% jagg.template("sms-delivery-notification", function(inputs, outputs, jagg) {
+	var smstoapptxns = session.get("smstoapptxns");
+
+	var listMappedUrl=jagg.getMappedUrl("/site/pages/index.jag");	
+	var smsretrieveUrl=jagg.getMappedUrl("/site/pages/sms-retrieve.jag");
+	
+	%>
+<div class="title-section">
+	<h2>Query Delivery Status</h2>
+</div>
+
+<div class="content-section shadow-up">
+<div class="content-data">
+	<div class="alert alert-error" id="errorMessage" style="display:none">
+    	<button type="button" class="close" data-dismiss="alert">×</button>
+   		<strong>Error send sms to application!</strong>
+	</div>
+	<h4>Outbound SMS API - Query the delivery status of an SMS</h4>
+	<form id="sendSMSRequestForm">
+		<table id="sms_send_request_parameters"  style="width:100%;">
+			<tbody>
+				<tr>
+					<td valign="top">
+						<div class="ParameterGroupHeading">
+							<strong>Mandatory Parameters</strong>
+						</div>
+						<div class="ParameterRow">
+							<div class="ParameterLabel">senderAddress</div>
+							<div class="controls">
+								<select id="sender-address" autofocus="autofocus">
+								</select>
+							</div>
+						</div>
+
+						<div class="ParameterRow">
+							<div class="ParameterLabel">Request ID</div>
+                                        <div class="ParameterValue"><input type="text" value="26451" id="requestId" name="requestId"></div>
+							<input type="button" id="send-sms-to-application-button"
+								class="btn btn-primary" value="Send Request"
+								onclick="sendDeliveryStateRequest()" />
+						</div>
+					</td>
+					<td>
+						<div class="ParameterRow">
+							<div class="ParameterLabel">
+								<strong>Response:</strong>
+							</div>
+							<div class="ParameterValue">
+								<textarea id="json-response" maxlength="70"
+									style="width: 400px; height: 250px; background-color: #E7F0F7;"
+									type="text"></textarea>
+							</div>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</form>
+</div>
+</div>
+
+<script type="text/javascript">
+$("#mainnavi").find('li.subnavi').removeClass("active");
+$("#mainnavi").find('li.subnavi:nth-child(3)').addClass("active");
+</script>
+<!-- </div> -->
+<% }); %>

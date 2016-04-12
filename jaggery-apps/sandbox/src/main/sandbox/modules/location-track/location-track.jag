@@ -1,0 +1,110 @@
+<%
+include("/jagg/jagg.jag");
+var saveLocationRequest = function (address, requestedAccuracy, username) {
+
+	var log = new Log();
+	try {
+		var xhr = new XMLHttpRequest();
+		var endpoint =  jagg.getSandboxurl()+"LocationService/location/1/queries/location?address="+encodeURIComponent(address)+"&requestedAccuracy="+requestedAccuracy;
+		//var endpoint =  "http://localhost:8081/mifesandbox/LocationService/1/location/queries/location?address="+address+"&requestedAccuracy="+requestedAccuracy;
+		xhr.open("GET", endpoint);
+		xhr.setRequestHeader("Content-Type", "application/json");
+		xhr.setRequestHeader("sandbox", username);
+		//var payload = requestJsonString;
+		xhr.send();
+		var result = xhr.responseText.toString();
+
+		var reqerr=true;
+		if (xhr.status =='200') {
+			var reqerr =false;
+		}
+
+		log.info('response :'+result);
+			
+		return {
+			error:false,
+			message:"OK",
+			data:result,
+			reqerr:reqerr
+		};
+	} catch (e) {
+		log.error(e.message);
+		return {
+			error:true,
+			message:e.message.split("Exception:")[2]
+		};
+	}
+};
+
+var getLocData = function (user) {
+	var result, message,
+	log = new Log();
+
+	try {
+
+		log.info('user: '+user);
+
+		var xhr = new XMLHttpRequest();
+		var endpoint = jagg.getSandboxurl()+"LocationSettingsService/GetLocData";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		xhr.setRequestHeader("payact","queryparam");
+		var payload = "userid="+user;
+		xhr.send(payload);
+
+		result = xhr.responseText.toString();
+		log.info(result);
+
+		return {
+			error:false,
+			message:"OK",
+			data:result
+		};
+
+	} catch (e) {
+		log.error(e.message);
+		return {
+			error:true,
+			message:e.message.split("Exception:")[2]
+		};
+	}
+};
+
+var performLocationAction = function (user,alt,lat,longi,status) {
+	var result, message,
+	log = new Log();
+
+	try {
+
+		log.info('user: '+user);
+		log.info('alt: '+alt);
+		log.info('lat: '+lat);
+		log.info('longi: '+longi);
+		log.info('status :'+status);
+
+		var xhr = new XMLHttpRequest();
+		var endpoint = jagg.getSandboxurl()+"LocationSettingsService/PerformLocationSettings";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
+		xhr.setRequestHeader("payact","addparam");
+		var payload = "userid="+user+"&altitude="+alt+"&latitude="+lat+"&longitude="+longi+"&locStatus="+status;
+		xhr.send(payload);
+
+		result = xhr.responseText.toString();
+		log.info(result);
+
+		return {
+			error:false,
+			message:"OK",
+			data:result
+		};
+
+	} catch (e) {
+		log.error(e.message);
+		return {
+			error:true,
+			message:e.message.split("Exception:")[2]
+		};
+	}
+};
+%>

@@ -1,0 +1,173 @@
+<% jagg.template("subscription-task", function(inputs, outputs, jagg) {
+	var tasks=outputs.tasks;
+	var log = new Log();
+	var isAdmin = jagg.getUser().isAdmin;
+	var isOperator = jagg.getUser().operator;
+	log.info("Is Admin: " + stringify(isAdmin));
+	log.info("Operator: " + stringify(isOperator));
+%>
+<div id="listing">
+    <div class="title-section">
+        <h2><%=i18n.localize("myTasks")%></h2>
+    </div>
+
+    <div class="content-section shadow-up">
+
+        <div class="content-data">
+        <%  var length;
+if(tasks!=null){
+    length = tasks.length;
+    var itemsPerPage = site.tasksPerPage; //reduce this number to preview the pagination
+
+    var currentPage = 1;
+    var numberOfPages = parseInt(length / itemsPerPage);
+
+    if (length % itemsPerPage != 0) {
+    numberOfPages++;
+    }
+
+    if (request.getParameter('page') != null) {
+    currentPage = parseInt(request.getParameter('page'));
+    }
+    var from = (currentPage - 1)*itemsPerPage;
+    var to = currentPage*itemsPerPage;
+    if(currentPage == numberOfPages){
+    to = length%(itemsPerPage*currentPage);
+    if(to == 0){
+    to=itemsPerPage*currentPage;
+    }
+    }
+    if(length==0){
+    to=0;
+    }
+
+if(length==0){%>
+<div class="alert alert-info">
+<div style="padding-bottom:10px"><b><%=i18n.localize("noTasksMsg")%></b></div>
+</div>
+<%}
+else{
+%>
+			<div id="my_tooltip" class="well popup_content" style="display:none;min-width:250px;">
+				<div style="margin-left:30px;">
+					<a href="#" class="my_tooltip_close" style="float:right;padding:0 0.4em;">x</a>
+				    <p><h4>Profile Details</h4></p>
+				    <p><b>Username :</b><label id="my_tooltip_username" style="display: inline;">No data found.</label></p>
+				    <p><b>First Name :</b><label id="my_tooltip_fname" style="display: inline;">No data found.</label></p>
+				    <p><b>Last Name :</b><label id="my_tooltip_lname" style="display: inline;">No data found.</label></p>
+				    <p><b>Address :</b><label id="my_tooltip_address" style="display: inline;">No data found.</label></p>
+				    <p><b>Country :</b><label id="my_tooltip_country" style="display: inline;">No data found.</label></p>
+				    <p><b>Organization :</b><label id="my_tooltip_org" style="display: inline;">No data found.</label></p>
+				    <p><b>Email :</b><label id="my_tooltip_email" style="display: inline;">No data found.</label></p>
+				    <p><b>Telephone :</b><label id="my_tooltip_phone" style="display: inline;">No data found.</label></p>
+				    <p><b>Mobile :</b><label id="my_tooltip_mobile" style="display: inline;">No data found.</label></p>
+				    <button class="my_tooltip_close btn btn-default">Close</button>
+				   </div>
+			</div>
+			
+			<div id="tierRateCard_tooltip" class="well popup_content" style="display: none;"></div>
+			
+            <table class="table table-bordered table-striped">
+                <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Description</th>
+                    <th>Status</th>
+                    <th class="date-time-col">Created On</th>
+                    <th class="manage-col">Action</th>
+                </tr>
+                </thead>
+                <tbody>
+                <%for(var i=from;i<to;i++){%>
+                <tr>
+                    <td><%=tasks[i].id%></td>
+					<input type="hidden" id="<%=tasks[i].id%>" name="subscription_task"
+							value="<%=tasks[i].id%>" />
+                        <div>
+							<td id="desc<%=String(i)%>" style="width: 850px;">
+								<div>
+								<input type="hidden" id="desc_appId_<%=tasks[i].id%>"/>
+								<input type="hidden" id="desc_apiId_<%=tasks[i].id%>"/>
+								<input type="hidden" id="desc_apiName_<%=tasks[i].id%>"/>
+								<input type="hidden" id="desc_operatorId_<%=tasks[i].id%>"/>
+								<b>Name:</b><label style="display: inline;" id="desc_name_<%=tasks[i].id%>"/>
+								</div>
+								<div>
+								<b>Description:</b><label style="display: inline;" id="desc_desc_<%=tasks[i].id%>"/>
+								</div>
+								<div>
+								<b>Api:</b><label style="display: inline;" id="desc_api_<%=tasks[i].id%>"/>
+								</div>
+								<div>
+								<b>User:</b>
+									<a style="display: inline;" id="desc_user_<%=tasks[i].id%>"
+										class="my_tooltip_open" 
+										onclick="showProfileDetailsPopup($(this), $('#desc_user_' + <%=tasks[i].id%>).html());"></a>
+								</div>
+							
+								<!-- <%=tasks[i].presentationSubject%> -->
+								<%
+								if(isAdmin == true){
+								%>
+								<label data-section="tiers-section" class="js_toggle"
+								id="<%=tasks[i].id%>">
+								<label data-section="tiers-section" class="js_toggle" id="<%=tasks[i].id%>"><b>Subscription Details</b><i class="icon-chevron-right icon-keys"></i></label>
+								<div style="display:none">
+									<div id="tiersDiv_<%=tasks[i].id%>" style="display:block">
+										<label><b>Tiers:</b></label>
+										<select id="tiers_list_<%=tasks[i].id%>" name="tiers_list_<%=tasks[i].id%>" onchange="getSelectedTier(this);" style="float: left;">
+                        				</select>
+                        				<div id="tierAttributesDiv_<%=tasks[i].id%>" style="margin-left: 38%">								
+										</div>
+									</div>		
+								</div>	
+								<%
+								}
+								%>			
+							</td>
+							<td id="status<%=String(i)%>"><%=tasks[i].status%></td>
+							<td><%=tasks[i].createdTime%></td>
+ 							<td><%if((tasks[i].status=="RESERVED")){%>
+                              <button class="btn js_startBtn btn-primary" id="js_startBtn<%=String(i)%>" data="<%=tasks[i].id%>" iteration="<%=String(i)%>">Start</button>
+                              <select class="js_stateDropDown pull-left" style="display: none; margin-right: 6px; width :150px;">
+                                  <option value="APPROVED">Approve</option>
+                                  <option value="REJECTED">Reject</option>
+                              </select>
+                              <button class="btn js_completeBtn pull-left btn-primary" id="js_completeBtn<%=String(i)%>" style="display: none" data="<%=tasks[i].id%>" iteration="<%=String(i)%>">Complete</button>
+                              </td>
+                              <%}else if (tasks[i].status=='COMPLETED'){%>
+                              <label>Completed</label>
+                              <%}else if(tasks[i].status=='IN_PROGRESS'){%>
+                               <input type="hidden" id="<%=tasks[i].id%>" name="in_progress_task" value="<%=tasks[i].id%>" />
+                               <select class="js_stateDropDown pull-left" style="margin-right: 6px; width :150px;">
+                                <option value="APPROVED">Approve</option>
+                                <option value="REJECTED">Reject</option>
+                               </select>
+                               <button class="btn js_completeBtn pull-left btn-primary" id="js_completeBtn<%=String(i)%>" data="<%=tasks[i].id%>" iteration="<%=String(i)%>">Complete</button>
+                              <%}else if (tasks[i].status=='READY'){%>
+                              <button class="btn js_assignBtn pull-left btn-primary" id="js_assignBtn<%=String(i)%>" data="<%=tasks[i].id%>" iteration="<%=String(i)%>">Assign To Me</button>
+                              <button class="btn js_startBtn pull-left btn-primary" id="js_startBtn<%=String(i)%>" style="display: none" data="<%=tasks[i].id%>" iteration="<%=String(i)%>">Start</button>
+                              <select class="js_stateDropDown pull-left" style="display: none; margin-right: 6px; width :150px;">
+                              <option value="APPROVED">Approve</option>
+                              <option value="REJECTED">Reject</option>
+                              </select>
+                              <button class="btn js_completeBtn pull-left btn-primary" id="js_completeBtn<%=String(i)%>" style="display: none" data="<%=tasks[i].id%>" iteration="<%=String(i)%>">Complete</button>
+                               <%}%>
+
+</div>
+                    </td>
+                </tr>  <%}%>
+                </tbody>
+            </table>
+            <%}}else{%>
+            <div class="alert alert-info">
+                <div style="padding-bottom:10px"><b><%=i18n.localize("noTasksMsg")%></b></div> </div>
+            <%}%>
+
+             <!--START Pagination links-->
+               <% jagg.includeBlock("paginator", {currentPage:currentPage,numberOfPages:numberOfPages,taskType:"subscription"}); %>
+             <!--END Pagination links-->
+        </div>
+    </div>
+</div>
+<% }); %>

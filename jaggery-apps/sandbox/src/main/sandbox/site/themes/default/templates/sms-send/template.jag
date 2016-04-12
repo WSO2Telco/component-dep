@@ -1,0 +1,179 @@
+<% jagg.template("sms-send", function(inputs, outputs, jagg) { 
+	var smstxns = session.get("smstxns");
+	%>
+<div class="title-section">
+	<h2>SMS Send</h2>
+</div>
+
+<!-- <div class="content-section shadow-up"> -->
+	<div class="content-data">
+		<!-- 		<div class="application-add well form-horizontal"> -->
+		<form id="sendSMSRequestForm">
+			<h4>Outbound SMS API - Send SMS</h4>
+			<div class="form-actions"</div>
+			<table id="sms_send_request_parameters">
+				<tbody>
+					<tr>
+						<td valign="top">
+							<div class="ParameterGroupHeading">
+								<strong>Mandatory Parameters</strong>
+							</div>
+							<div class="ParameterRow">
+								<div class="ParameterLabel">senderAddress</div>
+								<div class="controls">
+									<select id="sender-address" autofocus="autofocus">
+									</select>
+								</div>
+							</div>
+							<div class="ParameterRow">
+								<div class="ParameterLabel">address [0]</div>
+								<div class="ParameterValue">
+									<input type="text" class="" maxlength="70" id="address-0"
+										autofocus="autofocus" value="tel:+94770000976" />
+								</div>
+							</div>
+							<div class="ParameterRow">
+								<div class="ParameterLabel">message</div>
+								<div class="ParameterValue">
+									<textarea id="message" maxlength="70" style="width: 208px;"
+										type="text">Hello World</textarea>
+								</div>
+							</div>
+						</td>
+						<td>
+							<div class="ParameterGroupHeading">
+								<strong>Optional Parameters</strong>
+							</div>
+							<div class="ParameterRow">
+								<div class="ParameterLabel">address [1]</div>
+								<div class="ParameterValue">
+									<input type="text" class="" maxlength="70" id="address-1"
+										autofocus="autofocus" value="tel:+94770000977" />
+								</div>
+							</div>
+							<div class="ParameterRow">
+								<div class="ParameterLabel">address [2]</div>
+								<div class="ParameterValue">
+									<input type="text" class="" maxlength="70" id="address-2"
+										autofocus="autofocus" />
+								</div>
+							</div>
+							<div class="ParameterRow">
+								<div class="ParameterLabel">address [3]</div>
+								<div class="ParameterValue">
+									<input type="text" class="" maxlength="70" id="address-3"
+										autofocus="autofocus" />
+								</div>
+							</div>
+							<div class="ParameterRow">
+								<div class="ParameterLabel">address [4]</div>
+								<div class="ParameterValue">
+									<input type="text" class="" maxlength="70" id="address-4"
+										autofocus="autofocus" />
+								</div>
+							</div>
+							<div class="ParameterRow">
+								<div class="ParameterLabel">clientCorrelator</div>
+								<div class="ParameterValue">
+									<input type="text" class="" maxlength="70"
+										id="client-correlator" autofocus="autofocus" value="123456" />
+								</div>
+							</div>
+							<div class="ParameterRow">
+								<div class="ParameterLabel">senderName</div>
+								<div class="ParameterValue">
+									<input type="text" class="" maxlength="70" id="sender-name"
+										autofocus="autofocus" value="ACME Inc." />
+								</div>
+							</div>
+							<div class="ParameterRow">
+								<div class="ParameterLabel">notifyURL</div>
+								<div class="ParameterValue">
+									<textarea id="notify-url" maxlength="70" style="width: 330px;"
+										type="text">http://application.example.com/notifications/DeliveryInfoNotification</textarea>
+								</div>
+							</div>
+							<div class="ParameterRow">
+								<div class="ParameterLabel">callbackData</div>
+								<div class="ParameterValue">
+									<input type="text" class="" maxlength="70" id="callback-data"
+										autofocus="autofocus"
+										value="some-data-useful-to-the-requester" />
+								</div>
+								<input type="button" id="sms-send-request-button"
+									class="btn btn-primary" value="Send Request"
+									onclick="smsSendRequest()" />
+							</div>
+						</td>
+						<td valign="top">
+							<div class="ParameterRow">
+								<div class="ParameterLabel">
+									<strong>Response:</strong>
+								</div>
+								<div class="ParameterValue">
+									<textarea id="json-response" maxlength="70"
+										style="width: 400px; height: 450px; background-color: #E7F0F7;" type="text"></textarea>
+								</div>
+							</div>
+						</td>
+					</tr>
+				</tbody>
+			</table>
+		</form>
+		<!-- 		</div> -->
+		
+		<div class="form-actions"</div>
+
+		<table class="table table-bordered table-striped"
+			id="sms_send_request_table" cellpadding="0" cellspacing="0">
+			<thead>
+				<tr class="alt first last">
+					<th value="senderAddress">senderAddress</th>
+					<th value="address">address</th>
+					<th value="deliveryStatus">deliveryStatus</th>
+					<th value="message">message</th>
+					<th value="clientCorrelator">clientCorrelator</th>
+					<th value="senderName">senderName</th>
+					<th value="notifyURL">notifyURL</th>
+					<th value="notifyURL">callbackData</th>
+				</tr>
+			</thead>
+			<tbody>
+				<% if(smstxns.length != 0){ 
+					for(var i=0;i<smstxns.length;i++){
+					for(var j=0;j<smstxns[i].deliveryInfoArray.length;j++){%>
+				<tr>
+					<td><%=smstxns[i].senderAddress %></td>
+					<td><%=smstxns[i].deliveryInfoArray[j].address %></td>
+					<td><%=smstxns[i].deliveryInfoArray[j].deliveryStatus %></td>
+					<td><%=smstxns[i].message %></td>
+					<td><%=smstxns[i].clientCorrelator %></td>
+					<td><%=smstxns[i].senderName %></td>
+					<td><%=smstxns[i].notifyURL %></td>
+					<td><%=smstxns[i].callbackData %></td>
+				</tr>
+				<%}
+				}
+				}else{
+				%>
+				<tr>
+					<td>empty</td>
+					<td>empty</td>
+					<td>empty</td>
+					<td>empty</td>
+					<td>empty</td>
+					<td>empty</td>
+					<td>empty</td>
+					<td>empty</td>
+				</tr>
+				<%
+				}
+				%>
+			</tbody>
+		</table>
+
+		<div class="pagination" style="text-align: right;"></div>
+
+	</div>
+<!-- </div> -->
+<% }); %>

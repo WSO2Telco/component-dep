@@ -1,0 +1,39 @@
+<%
+include("/jagg/jagg.jag");
+
+(function () {
+	var mod, obj, result;
+
+	var action = request.getParameter("action");
+	var user = jagg.getUser();
+
+	var log = new Log();
+
+	if(action == "getAppsBySubscriber"){
+		var selectedSubscriber = request.getParameter("subscriber");
+			
+		//log.info("getAppsBySubscriber");
+		var mod = jagg.module("performance-report");
+		var result = mod.getAppsBySubscriber(selectedSubscriber);
+		//log.info(result.data);
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		} else {
+			obj = {
+				error:false,
+				data: result.data
+			}
+		}
+		print(obj);
+	}
+	else{
+		print({
+			error:true,
+			message:msg.error.invalidAction(action)
+		});
+	}
+}());
+%>

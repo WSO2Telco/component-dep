@@ -1,0 +1,124 @@
+<%
+
+var log = new Log();
+
+function callWSInOnly(webService, serverUrl, action, payload, username, password){
+    var options = new Array();
+    options.useSOAP = 1.1;
+    options.action = action;
+//     options.action = "urn:registerOAuthApplicationData";
+    options.mep = 'in-only';
+
+    try {
+        call(webService, serverUrl, options, payload, username, password);
+    }
+    catch (e) {
+        log.error(e);
+        throw e;
+    }
+}
+
+function call(webService, serverUrl, options, payload, username, pwd){
+    var cookie;
+    	
+    log.debug(cookie);
+    if(cookie != null){
+        options["HTTPHeaders"] = [{name: "cookie", value: cookie}];
+
+        log.debug(options["HTTPHeaders"]);
+        webService.open(options, serverUrl, false);
+    }else if(username != null && pwd != null){
+        webService.open(options, serverUrl, false, username, pwd);
+    }else{
+        webService.open(options, serverUrl, false);
+    }
+
+    log.debug(payload);
+
+    webService.send(payload);
+
+}
+
+function callWSReturnJSON(options, webService, serverUrl, payload, username, password){
+	var log = new Log();
+	var ws = require('ws');
+	var result = new Object();
+	try {
+		webService.open(options, serverUrl, false, username, password);
+		webService.send(payload);
+		result = webService.responseE4X;
+	} catch (e) {
+		log.error(e.toString());
+		result.error = true;
+		result.errorMsg = "Error invoking service " + serverUrl;
+		return result;
+	}
+	return E4XtoJSON(result);
+}
+
+function callWSReturnXML(webService, serverUrl, action, payload, username, password){
+
+    var options = new Array();
+    options.useSOAP = 1.1;
+    options.action = action;
+
+    var result;
+    try {
+    	log.debug(payload);
+        call(webService, serverUrl, options, payload, username, password);
+        if(webService.readyState == 4){
+            result = webService.responseE4X;
+            return result;
+        }
+    }
+    catch (e) {
+        log.error(e);
+        throw e;
+    }
+}
+
+function E4XtoJSON(xml, ignored) {
+    var r, children = xml.*, attributes = xml.@*, length = children.length();
+    if(length == 0) {
+        r = xml.toString();
+    } else if(length == 1) {
+        var text = xml.text().toString();
+        if(text) {
+            r = text;
+        }
+    }
+    if(r == undefined) {
+        r = {};
+        for each (var child in children) {
+             var name = child.localName();
+             var json = E4XtoJSON(child, ignored);
+             var value = r[name];
+             if(value) {
+               if(value.length && value.push) {
+                 value.push(json);
+               } else {
+                 r[name] = [value, json]
+               }
+             } else {
+               r[name] = json;
+             }
+        }
+    }
+    if(attributes.length()) {
+        var a = {}, c = 0;
+        for each (var attribute in attributes) {
+          var name = attribute.localName();
+          if(ignored && ignored.indexOf(name) == -1) {
+            a["_" + name] = attribute.toString();
+            c ++;
+          }
+        }
+        if(c) {
+          if(r) a._ = r;
+          return a;
+        }
+    }
+    return r;
+}
+
+%>

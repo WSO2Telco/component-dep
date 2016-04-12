@@ -1,0 +1,24 @@
+<% jagg.template("menu/left-whitelist", function(inputs, outputs, jagg) { %>
+<%  var site = require("/site/conf/site.json");
+    var ssoEnabled = site.ssoConfiguration.enabled;
+
+    var reqUrl = request.getRequestURI();
+    var listUrl=jagg.getAbsoluteUrl("/site/pages/whitelist.jag");
+    var listMappedUrl=jagg.getMappedUrl("/site/pages/whitelist.jag");
+    var subsUrl=jagg.getAbsoluteUrl("/site/pages/whitelist.jag");
+    var subsMappedUrl=jagg.getMappedUrl("/site/pages/whitelist.jag");  
+
+    var isAdmin = jagg.getUser().isAdmin;
+    var isOperator = jagg.getUser().operator;
+%>
+
+<div class="sidebar-nav left-menu-back01">
+    <ul class="nav nav-list">
+    <li class="nav-header"><%=i18n.localize("whitelists")%></li>
+    
+    	<li <% if(request.getParameter("task")==null || request.getParameter("task")=="apiwise-whitelist"){%>class="active"<% } %>><a href="<%=subsMappedUrl%>?task=apiwise-whitelist" onclick="jagg.sessionAwareJS({redirect:'<%=subsMappedUrl%>?task=apiwise-whitelist',e:event,ssoEnabled:<%=ssoEnabled%>})"><%=i18n.localize("apiwise-whitelist")%></a></li>
+    	        
+     </ul>
+</div>
+
+<%});%>

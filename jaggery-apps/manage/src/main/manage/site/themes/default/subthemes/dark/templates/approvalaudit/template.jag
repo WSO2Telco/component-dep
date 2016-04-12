@@ -1,0 +1,175 @@
+<% jagg.template("approvalaudit", function(inputs, outputs, jagg) {
+	var usage=outputs.usage;
+	var length;
+	if (usage!=null){
+		length=outputs.usage.length;
+	}
+	var log = new Log();
+	//log.info(stringify(outputs));
+	var isAdmin = jagg.getUser().isAdmin;
+	var isOperator = jagg.getUser().operator;
+	log.info(isAdmin);
+	log.info(isOperator);
+%>
+<link href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("lib/jquery-ui/css/smoothness/jquery-ui-1.9.2.custom.css"))%>" rel="stylesheet">
+<script type="text/javascript" src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("lib/jquery-ui/js/jquery-ui-1.9.2.custom.min.js"))%>"></script>
+
+<div class="title-section">
+	<h2>Approval History</h2>
+</div>
+<div class="content-section shadow-up">
+	<div class="content-data">
+		<div id="userKey">
+			<div class="well form-inline">
+				<table>
+					<tr>
+						
+						<%
+							if(isAdmin == true || isOperator != null){
+						%>
+						<td><b>Service Provider:</b></td>
+						<%
+							}
+						%>
+						
+						<td><b>Application:</b></td>						
+						<%
+						if(isAdmin == true){
+						%>
+						<td><b>Operator:</b></td>
+						<%
+							}
+							%>
+						<td></td>
+					</tr>
+					<tr>
+						<!-- <td>
+							<input type="text" id="from_date" class="input-large" style="margin-bottom: 0px; width: 150px;">	
+						</td>
+						<td>
+							<input type="text" id="to_date" class="input-large" style="margin-bottom: 0px; width: 150px;">
+						</td> -->
+						
+						<%
+							if(isAdmin == true || isOperator != null){
+							  	var subscriberList = outputs.subscribers;
+							  	if(subscriberList != null){				
+						%>							
+						<td>
+							<select id="subscriber" size="1" style="width: 150px" onchange="getSelectedSubscriber()" name="subscriber">
+								<option value="__ALL__">All</option>
+								<%
+								for (i = 0; i < subscriberList.length; i++) {
+									var subscriber = subscriberList[i];										
+								%>
+								<option value="<%=subscriber%>"><%=subscriber%></option>
+								<%	
+									}
+								%>
+							</select>
+						</td>
+						<%
+							}
+							}
+						%>
+						
+						<td>
+							<select id="app" style="width: 150px;" autofocus="autofocus">
+								<%
+								if(isAdmin == true || isOperator != null){
+								%>
+								<option value="0">All</option>
+								<%		
+								}
+								%>
+								<%
+								if(isAdmin != true || isOperator == null){
+									var applicationList = outputs.applications;
+									if(applicationList != null){
+								%>
+								<option value="0">All</option>
+								<%
+								for (i = 0; i < applicationList.length; i++) {
+									var app = applicationList[i];
+								%>
+								<option value="<%=app.id%>"><%=app.name%></option>
+								<%		
+								}
+								}
+								}
+								%>
+							</select>
+						</td>
+						
+												</td>
+
+						<%
+						if(isAdmin == true ){
+								var operatorList = outputs.operators;
+								if(operatorList != null){
+						%>
+						<td><select id="operator" style="width: 150px;">
+								<option value="__ALL__">All</option>
+								<%
+								for (i = 0; i < operatorList.length; i++) {
+								%>
+								<option value="<%=operatorList[i]%>"><%=operatorList[i]%></option>
+								<%	
+								}
+								%>
+						</select>
+						</td>
+						<%
+							}
+							}
+							%>
+						
+					   <!-- td>
+							<%		
+							var apiList = outputs.apis;
+								if(apiList != null){
+							%>
+							<select id="api" style="width: 150px;" autofocus="autofocus">
+								<option value="__ALL__">All</option>
+								<%
+								if(isAdmin == true || isOperator != null){
+								for (i = 0; i < apiList.length; i++) {
+									var api = apiList[i];
+								%>
+								<option value="<%=api.name%>"><%=api.name%></option>
+								<%		
+									}
+									}
+								%>
+								
+								<%
+								if(isAdmin != true && isOperator == null){
+								for (i = 0; i < apiList.length; i++) {
+								var api = apiList[i];
+								%>
+								<option value="<%=api.name%>"><%=api.name%></option>
+								<%		
+									}
+								}
+								%>
+									
+							</select>
+							<%
+							}
+							%>
+						</td -->
+						<td>
+							<button class="btn btn-primary" id="generate" onclick="getApprovalHistory()">Find</button>
+						</td>
+					</tr>
+				</table>					
+			</div>
+			
+			<!-- button class="btn btn-primary" name="download_file" onclick="downloadReports()" type="button">Download Report</button> <br/> <br/ -->			
+			
+			<div id="application_history_tbl_div" style="width: 700px; min-height: 400px"></div>
+			<div class="pagination"></div>
+		</div>
+	</div>
+</div>
+<%});%>

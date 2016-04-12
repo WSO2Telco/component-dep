@@ -1,0 +1,6 @@
+<%
+	jagg.block("sms-retrieve", {
+		initializer:function (data) {},
+		getInputs:function () {}
+	});
+%>

@@ -1,0 +1,38 @@
+<%
+jagg.block("sms-task", {
+ initializer:function (data) {
+    },
+
+     getInputs:function () {
+            return {
+                "params":null
+            }
+        },
+
+        getOutputs:function (inputs) {
+        var mod,params;
+        mod = jagg.module("sms");
+        var user =jagg.getUser();
+        result = mod.getparam(user.username);
+        var log = new Log();
+        
+        tableData = mod.GetSMSParamData(user.username);
+        
+        var resobj = parse(result.data);
+        var resTableObj = parse(tableData.data);
+        
+        if(result==null){
+                params=null;
+                }
+                else{
+                params = parse(result.data);
+                
+                }
+                    return {
+                        "params":resobj,
+                    	"tabledata":resTableObj
+                    }
+                }
+
+});
+%>

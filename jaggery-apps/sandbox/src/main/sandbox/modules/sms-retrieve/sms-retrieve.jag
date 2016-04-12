@@ -1,0 +1,63 @@
+<%
+include("/jagg/jagg.jag");
+var loadSMSRetrieveResponse = function (registrationId, maxBatchSize,username) {
+
+	var log = new Log();
+	try {
+		var xhr = new XMLHttpRequest();
+		var endpoint =  jagg.getSandboxurl()+"RetrieveSMSService/smsmessaging/1/inbound/registrations/"+registrationId+"/messages/?maxBatchSize="+maxBatchSize;
+		xhr.open("GET", endpoint);
+		xhr.setRequestHeader("Content-Type", "application/json");
+		xhr.setRequestHeader("sandbox", username);
+		//var payload = requestJsonString;
+		xhr.send();
+		var result = xhr.responseText.toString();
+
+		var reqerr=true;
+		if (xhr.status =='200') {
+			var reqerr =false;
+		}
+
+		//log.info('response :'+result);
+			
+		return {
+			error:false,
+			message:"OK",
+			data:result,
+			reqerr:reqerr
+		};
+	} catch (e) {
+		log.error(e.message);
+		return {
+			error:true,
+			message:e.message.split("Exception:")[2]
+		};
+	}
+};
+
+var loadRegistrationIds = function(username){
+
+	var log = new Log();
+	try {
+		var xhr = new XMLHttpRequest();
+		var endpoint =  jagg.getSandboxurl()+"SenderAddressServlet/GetShortCodesArray";
+		xhr.open("POST", endpoint);
+		xhr.setRequestHeader("Content-Type", "application/x-www-form-urlencoded");
+		//xhr.setRequestHeader("User-Id", "1");
+		var payload = "userid="+username;
+		xhr.send(payload);
+		var result = xhr.responseText.toString();
+		//log.info("Result: "+result);
+		return {
+			error:false,
+			data:result
+		};
+	} catch (e) {
+		log.error(e.message);
+		return {
+			error:true,
+			message:e.message.split("Exception:")[2]
+		};
+	}
+};
+%>

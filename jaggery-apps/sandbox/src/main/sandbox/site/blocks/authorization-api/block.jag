@@ -1,0 +1,8 @@
+<%
+jagg.block("authorization-api", {
+    initializer:function (data) {},
+    getInputs:function () {
+        return {};
+    }
+});
+%>

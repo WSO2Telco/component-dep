@@ -1,0 +1,112 @@
+<%
+include("/jagg/jagg.jag");
+
+(function () {
+	var obj, result, user,
+	action = request.getParameter("action"),
+	site = require("/site/conf/site.json"),log = new Log(),
+	msg = require("/site/conf/ui-messages.jag"),
+	mod = jagg.module("ussd-services");
+
+	if(jagg.getUser() == null){
+		print({
+			error:true,
+			message:'timeout'
+		});
+	}else{
+			
+		if (action === "UssdSubscription") {
+
+			mod = jagg.module("ussd-services");
+			user =jagg.getUser();
+
+			var resourceURL = request.getParameter("resourceURL");
+			var destinationAddress = request.getParameter("destinationAddress");
+			var clientCorrelator = request.getParameter("clientCorrelator");
+			var callbackData = request.getParameter("callbackData");
+			var notifyURL = request.getParameter("notifyURL");
+				
+				
+			var callbackReference = {
+				"notifyURL":notifyURL,
+				"callbackData":callbackData
+			};
+
+			var subscription = {
+				"callbackReference":callbackReference,
+				"destinationAddress":destinationAddress,
+				"clientCorrelator":clientCorrelator,
+				"resourceURL":resourceURL,
+			};
+			
+			var jsonRequest = {
+				"subscription":subscription
+			};
+				
+			log.info('Request Json :'+stringify(jsonRequest));
+			result = mod.subscribeUssd(stringify(jsonRequest), user);
+			
+			if (result.error) {
+				obj = {
+					error:true,
+					requestData: result.message,
+					message:result.message
+				};
+			} else {
+				obj = {
+					error:false,
+					requestData: stringify(jsonRequest),
+					data: result.data
+				}
+			}
+			print(obj);
+			
+		} else if (action == "GetUssdSubData"){
+			
+
+			user =jagg.getUser();
+			var userid = user.username;
+			result = mod.getUssdSubscriptionData(userid);
+					
+							if (result.error) {
+								obj = {
+									error:result.error,
+									message:result.message
+								};
+							} else {
+								obj = {
+									error:false,
+									message:result.message,
+									data: result.data
+								}
+							}
+							print(obj);
+			
+		} else if(action == "UnsubscribeUssdSub"){
+			
+
+			var rowId = request.getParameter("id");
+			log.info('Unsubscribe ID :'+rowId);
+
+			mod = jagg.module("ussd-services");
+			result = mod.deleteUssdSub(rowId);
+					
+							if (result.error) {
+								obj = {
+									error:result.error,
+									message:result.message
+								};
+							} else {
+								obj = {
+									error:false,
+									message:result.message,
+									data: result.data
+								}
+							}
+							print(obj);
+			
+		}
+
+	}
+}());
+%>

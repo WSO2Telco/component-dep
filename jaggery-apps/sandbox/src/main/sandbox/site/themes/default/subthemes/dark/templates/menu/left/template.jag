@@ -1,0 +1,28 @@
+<% jagg.template("menu/left", function(inputs, outputs, jagg) { %>
+<%  var site = require("/site/conf/site.json");
+    var ssoEnabled = site.ssoConfiguration.enabled;
+
+    var reqUrl = request.getRequestURI();
+    var listUrl=jagg.getAbsoluteUrl("/site/pages/index.jag");
+    var listMappedUrl=jagg.getMappedUrl("/site/pages/index.jag");
+    var subsUrl=jagg.getAbsoluteUrl("/site/pages/index.jag");
+    var subsMappedUrl=jagg.getMappedUrl("/site/pages/index.jag");
+    var transactionsUrl=jagg.getMappedUrl("/site/pages/transactions.jag");
+    var smssendUrl=jagg.getMappedUrl("/site/pages/sms-send.jag");
+    var aboutUrl=jagg.getMappedUrl("/site/pages/about.jag");
+    var shortCodesUrl=jagg.getMappedUrl("/site/pages/shortcodes.jag");
+    var smsToAppUrl=jagg.getMappedUrl("/site/pages/sms-to-application.jag");
+    var smsretrieveUrl=jagg.getMappedUrl("/site/pages/sms-retrieve.jag");    
+%>
+
+<div id="listing">
+    <div class="title-section">
+        <h4>What's New</h4>
+    </div>
+<div class="sidebar-nav left-menu-back01">
+    <ul class="nav nav-list">
+    
+     </ul>
+</div>
+</div>
+<%});%>

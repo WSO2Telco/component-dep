@@ -1,0 +1,11 @@
+<%
+jagg.initializer("response-times", {
+
+    preInitialize:function () {
+        jagg.addHeaderJS("response-times", "dojo", "templates/utils/dojo-release-1.8.3/dojo/dojo.js");
+        jagg.addHeaderJS("response-times", "billing", "templates/response-times/js/response-times.js");
+
+    }
+
+});
+%>

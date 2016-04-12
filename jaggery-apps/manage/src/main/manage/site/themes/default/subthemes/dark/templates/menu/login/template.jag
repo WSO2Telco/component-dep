@@ -1,0 +1,33 @@
+<% jagg.template("menu/login", function(inputs, outputs, jagg) { %>
+<div class="container-fluid login-header">
+    <div class="row-fluid">
+        <div class="span2">
+             <div class="logo-section">
+                <a class="brand"><img src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("images/logo.png"))%>" alt="API PROVIDER"></a>
+            </div>
+        </div>
+        <div class="span9">
+
+        </div>
+    </div>
+</div>
+
+ <div class="navbar main-menu">
+    <div class="navbar-inner main-menu-navbar">
+
+        <ul class="nav orderFix">
+
+            <li class="active">
+                <a class="link-home" href="/manage/" title="IdeaBiz home page.">
+                    Login
+                </a>
+            </li>
+
+
+        </ul>
+
+
+    </div>
+</div>
+
+<%});%>

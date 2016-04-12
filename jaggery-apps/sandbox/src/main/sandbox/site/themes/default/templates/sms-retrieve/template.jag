@@ -1,0 +1,79 @@
+<% jagg.template("sms-retrieve", function(inputs, outputs, jagg) {%>
+<div class="title-section">
+	<h2>SMS Retrieve</h2>
+</div>
+
+<div class="content-section shadow-up">
+<div
+	class="content-data">
+	<div class="alert alert-error" id="errorMessage" style="display:none">
+    	<button type="button" class="close" data-dismiss="alert">×</button>
+   		<strong>Error retrieve sms messages!</strong>
+	</div>
+	<!-- 		<div class="application-add well form-horizontal"> -->
+	<form novalidate="novalidate id="sendSMSRequestForm">
+		<h4>Inbound SMS API - Retrieve SMS Messages</h4>
+		<div class="form-actions"</div>
+		<table id="sms_send_request_parameters" style="width: 90%;">
+			<tbody>
+				<tr>
+					<td valign="top">
+						<div class="ParameterGroupHeading">
+							<strong>Mandatory Parameters</strong>
+						</div>
+						<div class="ParameterRow">
+							<div class="ParameterLabel">registrationId</div>
+							<div class="controls">
+								<select id="registration-id" autofocus="autofocus">
+								</select>
+							</div>
+						</div>
+					</td>
+					<td valign="top">
+						<div class="ParameterGroupHeading">
+							<strong>Optional Parameters</strong>
+						</div>
+						<div class="ParameterRow">
+							<div class="ParameterLabel">maxBatchSize</div>
+							<div class="ParameterValue">
+								<input type="text" class="" maxlength="70" id="max-batch-size"
+									autofocus="autofocus" value="2" />
+							</div>
+							<input type="button" id="sms-retrieve-request-button"
+								class="btn btn-primary" value="Send Request"
+								onclick="smsRetrieveRequest()" />
+						</div>						
+					</td>
+					<td valign="top">
+						<div class="ParameterRow">
+							<div class="ParameterLabel">
+								<strong>Response:</strong>
+							</div>
+							<div class="ParameterValue">
+								<textarea id="json-response" maxlength="70"
+									style="width: 400px; height: 450px; background-color: #E7F0F7;"
+									type="text"></textarea>
+							</div>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</form>
+	<!-- 		</div> -->
+
+	<div id="footer_separator" style="display: none;" class="form-actions"</div>
+	
+<div id="retrieve_messages_table_content"></div>
+
+
+	<div class="pagination" style="text-align: right;"></div>
+
+</div>
+</div>
+
+<script type="text/javascript">
+$("#mainnavi").find('li.subnavi').removeClass("active");
+$("#mainnavi").find('li.subnavi:nth-child(3)').addClass("active");
+</script>
+<% }); %>

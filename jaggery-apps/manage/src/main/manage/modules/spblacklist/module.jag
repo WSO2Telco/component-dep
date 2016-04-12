@@ -1,0 +1,11 @@
+<%
+jagg.module("spblacklist", {
+	getSPforBlacklist:function () {
+		return jagg.require(jagg.getModulesDir() + "spblacklist/spblacklist.jag").getSPforBlacklist.apply(this, arguments);
+	},
+	addNewSPToBlacklist:function () {
+			return jagg.require(jagg.getModulesDir() + "spblacklist/spblacklist.jag").addNewSPToBlacklist.apply(this, arguments);
+	}
+});
+%>
+

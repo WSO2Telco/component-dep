@@ -1,0 +1,154 @@
+<%
+var isAdmin = jagg.getUser().isAdmin;
+var isOperator = jagg.getUser().operator;
+
+// var addSingleURL = "http://10.62.96.185:8280/customerProfile/queries/Blacklist/tel3A%2B"; // 9477*** Should be appended
+// var addBulkURL = "http://10.62.96.185:8280/customerProfile/queries/Blacklist";
+// var getBlacklistURL = "http://10.62.96.185:8280/customerProfile/queries/GetBlacklistPerApi/"; // apiName Should be appended
+// var removeBlacklistURL = "http://10.62.96.185:8280/customerProfile/queries/RemoveFromBlacklist/tel3A%2B"; // 9477*** Should be appended
+
+var site = require("/site/conf/site.json");
+var externalServicesUrl = site.externalServicesUrl;
+
+var addSingleURL = externalServicesUrl + "locationrest/queries/Blacklist/tel3A%2B";
+var addBulkURL = externalServicesUrl + "locationrest/queries/Blacklist";
+var getBlacklistURL = externalServicesUrl + "locationrest/queries/GetBlacklistPerApi/";
+var removeBlacklistURL = externalServicesUrl + "locationrest/queries/RemoveFromBlacklist/tel3A%2B";
+
+
+%>
+
+<%
+function getApiwiseBlacklist(api){
+	var log = new Log();
+
+	// NO API implementation
+	/* if (isAdmin) {
+	if (api == "USSD") {
+	return ["94777000000", "94777000000", "94777000000"];
+	} else if (api == "SMS") {
+	return ["94777000001", "94777000001", "94777000001"];
+	} else if (api == "LBS") {
+	return ["94777000002", "94777000002", "94777000002"];
+	} else { // Payment
+	return ["94777000003", "94777000003", "94777000003"];
+	}
+	} */
+
+	// API invocation
+	if (isAdmin || isOperator) {
+		log.info(api);
+		var data = {
+		};
+		var newURL = getBlacklistURL + api;
+		var response = postJSON(newURL, data);
+		log.info("response = " + response);
+		
+		try{
+			response = JSON.parse(response);
+			log.info("response.Success.variables = " + response.Success.variables);
+			var blacklist = urlDecode(response.Success.variables);
+			
+			return blacklist;
+		} catch(e) {
+			log.info("e: " + e);
+			return [];
+		}
+		
+	}
+}
+
+function addNewToBlacklist(api, subscriberList){
+	var log = new Log();
+	var subscribers = subscriberList.split(",");
+
+	subscribers = urlEncode(subscribers);
+
+	// Invoke single-add API
+	/* for (var i = 0; i < subscribers.length; i++) {
+	log.info(subscribers[i]);
+	var newURL = addSingleURL + subscribers[i];
+	var data = {
+	"apiID":"1",
+	"apiName":api,
+	"userID":jagg.getUser().username
+	};
+	var response = postJSON(newURL, data);
+	log.info("response = " + response);
+	} */
+
+	// Invoke bulk-add API
+	log.info(subscribers);
+	var data = {
+		"apiID":"1",
+		"apiName":api,
+		"userID":jagg.getUser().username,
+		"msisdnList":subscribers
+	};
+	var response = postJSON(addBulkURL, data);
+	log.info("response = " + response);
+
+	return response;
+}
+
+function removeFromBlacklist(api, subscriber){
+	var log = new Log();
+
+	subscriber = urlEncode(subscriber);
+	
+	log.info("subscriber: " + subscriber);
+	var newURL = removeBlacklistURL + subscriber;
+	var data = {
+		"apiName":api
+	};
+	var response = postJSON(newURL, data);
+	log.info("response = " + response);
+
+	return 1;
+}
+
+function postJSON(url, data) {
+	var log = new Log();
+	log.info("data = " + JSON.stringify(data));
+	var request = {
+		url: url, payload: JSON.stringify(data), handler: function(response) {
+			return JSON.parse(response).result;
+		}
+	};
+	log.info("request = " + JSON.stringify(request));
+
+	var ajax = new XMLHttpRequest();
+	ajax.open("POST", request.url, false);
+	ajax.onreadystatechange = function() {
+		if (ajax.readyState == 4) {
+			log.info("ajax onreadystatechange");
+			request.handler.call(request, ajax.responseText);
+		}
+	};
+	ajax.send(request.payload);
+	return ajax.responseText;
+}
+
+function urlEncode(subscribers){
+	for (i = 0; i < subscribers.length; i++) {
+	    subscribers[i] = "tel3A+" + subscribers[i];
+	}
+	return subscribers;
+}
+
+function urlDecode(blacklist){
+	// startsWith implementation
+	if ( typeof String.prototype.startsWith != 'function'){
+	  String.prototype.startsWith = function( str ) {
+	  	return this.substring( 0, str.length ) === str;
+	  }
+	};
+	
+	for (i = 0; i < blacklist.length; i++) {
+		if(blacklist[i].startsWith("tel3A+")){
+			blacklist[i] = blacklist[i].replace("tel3A+", "");
+		}
+	}
+	return blacklist;
+}
+%>

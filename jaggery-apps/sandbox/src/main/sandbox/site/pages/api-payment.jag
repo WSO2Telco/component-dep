@@ -1,0 +1,75 @@
+<%
+include("/jagg/jagg.jag");
+include("header.jag");
+var site = require("/site/conf/site.json");
+
+var i18n = require("i18n");
+var localeResourcesBasePath="/site/conf/locales/jaggery/";
+i18n.init(request,localeResourcesBasePath);
+
+var middlePage="charge";
+
+var pageName=request.getParameter("task");
+if(pageName=="charge"){
+middlePage="payment-task";
+}else if(pageName=="charge-reservation"){
+	middlePage="payment-charge-reservation";
+}else if(pageName=="refund"){
+	middlePage="payment-refund";
+}
+else if(pageName=="release-reservation"){
+	middlePage="payment-release-res";
+}
+else if(pageName=="reserve-amount"){
+	middlePage="payment-reserve";
+}
+else if(pageName=="reserve-aditional-amount"){
+	middlePage="payment-reserve-additional";
+}
+
+
+(function () {
+    var user = jagg.getUser();
+    if (!user) {
+        response.sendRedirect(getRedirectPathForNonAuthenticatedUser());
+        return;
+    }
+
+    jagg.render({
+        "name":"page/base",
+        "inputs":{
+            "title":"Home",
+            "header":{
+                "name":"menu/primary",
+                "inputs":{
+   					"pagePath":"/site/pages/api-payment.jag"
+    			}
+            },
+            "body":[
+                {
+                    "name":"layout/base",
+                    "inputs":{
+                        "middle":[{
+                            "name":middlePage,
+                			"inputs":{
+								"user":user
+                	           }
+                        	}
+                        ],
+                        "left":[{
+                        	"name":"menu/left-api-payment"
+                     		}
+                        ]
+                    }
+                }
+            ],"footer":[
+                {
+                    "name":"footer"
+                }
+            ]
+        }
+    });
+}());
+
+
+%>

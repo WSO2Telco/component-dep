@@ -1,0 +1,44 @@
+<% jagg.template("menu/left", function(inputs, outputs, jagg) { %>
+<%  var site = require("/site/conf/site.json");
+    var ssoEnabled = site.ssoConfiguration.enabled;
+
+    var reqUrl = request.getRequestURI();
+    var listUrl=jagg.getAbsoluteUrl("/site/pages/index.jag");
+    var listMappedUrl=jagg.getMappedUrl("/site/pages/index.jag");
+    var subsUrl=jagg.getAbsoluteUrl("/site/pages/index.jag");
+    var subsMappedUrl=jagg.getMappedUrl("/site/pages/index.jag");
+    var transactionsUrl=jagg.getMappedUrl("/site/pages/transactions.jag");
+    var smssendUrl=jagg.getMappedUrl("/site/pages/sms-send.jag");
+    var aboutUrl=jagg.getMappedUrl("/site/pages/about.jag");
+    var shortCodesUrl=jagg.getMappedUrl("/site/pages/shortcodes.jag");
+    var smsToAppUrl=jagg.getMappedUrl("/site/pages/sms-to-application.jag");
+    var smsretrieveUrl=jagg.getMappedUrl("/site/pages/sms-retrieve.jag");    
+%>
+
+<div id="listing">
+    <div class="title-section">
+        <h2>What's New 1</h2>
+    </div>
+<div class="sidebar-nav left-menu-back01">
+    <ul class="nav nav-list">
+    
+    	<!-- 
+    	<li class="nav-header"><%=i18n.localize("tasks")%></li>
+    	
+    	<li <% if(request.getParameter("task")==null|| request.getParameter("task")=="signup"){%>class="active"<% } %>><a href="<%=subsMappedUrl%>?task=signup" onclick="jagg.sessionAwareJS({redirect:'<%=subsMappedUrl%>?task=signup',e:event,ssoEnabled:<%=ssoEnabled%>})"><%=i18n.localize("userCreation")%></a></li>
+        <li <% if(request.getParameter("task")=="application"){%>class="active"<% } %>><a href="<%=subsMappedUrl%>?task=application" onclick="jagg.sessionAwareJS({redirect:'<%=subsMappedUrl%>?task=application',e:event,ssoEnabled:<%=ssoEnabled%>})"><%=i18n.localize("appCreation")%></a></li>
+        <li <%if(request.getParameter("task")=="subscription"){%>class="active"<% } %>><a href="<%=listMappedUrl%>?task=subscription"  onclick="jagg.sessionAwareJS({redirect:'<%=listMappedUrl%>?task=subscription',e:event,ssoEnabled:<%=ssoEnabled%>})"><%=i18n.localize("subscriptionCreation")%></a></li>
+		<li <%if(request.getParameter("task")=="about"){%>class="active"<% } %>><a href="<%=aboutUrl%>?task=about"  onclick="jagg.sessionAwareJS({redirect:'<%=aboutUrl%>?task=subscription',e:event,ssoEnabled:<%=ssoEnabled%>})">Manage Numbers</a></li>
+		
+		<li <%if(request.getParameter("task")=="shortcodes"){%>class="active"<% } %>><a href="<%=shortCodesUrl%>?task=shortcodes"  onclick="jagg.sessionAwareJS({redirect:'<%=shortCodesUrl%>',e:event,ssoEnabled:<%=ssoEnabled%>})">Manage Sender Addresses</a></li>
+		
+     	<li <%if(request.getParameter("task")=="transactions"){%>class="active"<% } %>><a href="<%=transactionsUrl%>?task=transactions"  onclick="jagg.sessionAwareJS({redirect:'<%=transactionsUrl%>',e:event,ssoEnabled:<%=ssoEnabled%>})">Transactions</a></li>
+		<!--li <%if(request.getParameter("task")=="sms-send"){%>class="active"<% } %>><a href="<%=smssendUrl%>?task=sms-send"  onclick="jagg.sessionAwareJS({redirect:'<%=smssendUrl%>',e:event,ssoEnabled:<%=ssoEnabled%>})">SMS Send</a></li
+		<li <%if(request.getParameter("task")=="sms-to-application"){%>class="active"<% } %>><a href="<%=smsToAppUrl%>?task=sms-to-application"  onclick="jagg.sessionAwareJS({redirect:'<%=smsToAppUrl%>',e:event,ssoEnabled:<%=ssoEnabled%>})">SMS to Application</a></li>
+		<li <%if(request.getParameter("task")=="sms-retrieve"){%>class="active"<% } %>><a href="<%=smsretrieveUrl%>?task=sms-retrieve"  onclick="jagg.sessionAwareJS({redirect:'<%=smsretrieveUrl%>',e:event,ssoEnabled:<%=ssoEnabled%>})">SMS Retrieve</a></li>
+		-->
+		
+     </ul>
+</div>
+</div>
+<%});%>

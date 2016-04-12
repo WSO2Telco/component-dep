@@ -1,0 +1,100 @@
+<% jagg.template("sms-to-application", function(inputs, outputs, jagg) {
+	var smstoapptxns = session.get("smstoapptxns");
+
+	var listMappedUrl=jagg.getMappedUrl("/site/pages/index.jag");	
+	var smsretrieveUrl=jagg.getMappedUrl("/site/pages/sms-retrieve.jag");
+	
+	%>
+<div class="title-section">
+	<h2>Send SMS to Application</h2>
+</div>
+
+<div class="content-section shadow-up">
+<div class="content-data">
+	<div class="alert alert-error" id="errorMessage" style="display:none">
+    	<button type="button" class="close" data-dismiss="alert">×</button>
+   		<strong>Error send sms to application!</strong>
+	</div>
+	<div class="" style="float: right;">
+		<input class="btn btn-primary" value="Settings" type="button" onclick="window.location.href='<%=listMappedUrl%>?task=subscription' "/>
+		<input class="btn btn-primary" value="Retrieve SMS " type="button" onclick="window.location.href='<%=smsretrieveUrl%>?task=sms-retrieve' "/>
+	</div>
+	<form id="sendSMSRequestForm">
+		<table id="sms_send_request_parameters">
+			<tbody>
+				<tr>
+					<td valign="top">
+						<div class="ParameterGroupHeading">
+							<strong>Mandatory Parameters</strong>
+						</div>                                                
+                        <div class="ParameterRow">
+							<div class="ParameterLabel">Application</div>
+							<div class="controls">
+								<select id="destination-address" autofocus="autofocus">
+								</select>
+							</div>
+						</div>
+						<div class="ParameterRow">
+							<div class="ParameterLabel">senderAddress</div>
+							<div class="controls">
+								<select id="sender-address" autofocus="autofocus">
+								</select>
+							</div>
+						</div>
+
+						<div class="ParameterRow">
+							<div class="ParameterLabel">message</div>
+							<div class="ParameterValue">
+								<textarea id="message" maxlength="70" style="width: 208px;"
+									type="text">Hello World</textarea>
+							</div>
+							<input type="button" id="send-sms-to-application-button"
+								class="btn btn-primary" value="Send Request"
+								onclick="sendSMSToApplication()" />
+						</div>
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</form>
+<% if(smstoapptxns.length != 0){ %>
+<div class="form-actions"</div>
+	<table class="table table-bordered table-striped"
+		id="sms_send_request_table" cellpadding="0" cellspacing="0">
+		<thead>
+			<tr class="alt first last">
+				<th value="no">Transaction Id</th>
+				<th value="senderAddress">Sender Address</th>
+				<th value="destinationAddress">Destination Address</th>
+				<th value="message">Message</th>
+			</tr>
+		</thead>
+		<tbody>
+			<% 
+				for(var i=0;i<smstoapptxns.length;i++){
+					%>
+			<tr>
+				<td><%=String(i+1) %></td>
+				<td><%if(smstoapptxns[i].senderAddress != null){print(smstoapptxns[i].senderAddress)} %></td>
+				<td><%if(smstoapptxns[i].destinationAddress != null){print(smstoapptxns[i].destinationAddress)} %></td>
+				<td><%if(smstoapptxns[i].message != null){print(smstoapptxns[i].message)} %></td>
+			</tr>
+			<%
+				}
+		
+				%>
+		</tbody>
+	</table>
+
+	<div class="pagination" style="text-align: right;"></div>
+	<%}
+				%>
+</div>
+</div>
+
+<script type="text/javascript">
+$("#mainnavi").find('li.subnavi').removeClass("active");
+$("#mainnavi").find('li.subnavi:nth-child(3)').addClass("active");
+</script>
+<!-- </div> -->
+<% }); %>

@@ -1,0 +1,29 @@
+<%
+jagg.module("about", {
+
+	GetNumberData:function () {
+		return jagg.require(jagg.getModulesDir() + "about/numbers.jag").GetNumberData.apply(this, arguments);
+	},
+	SaveNumber:function () {
+		return jagg.require(jagg.getModulesDir() + "about/numbers.jag").SaveNumber.apply(this, arguments);
+	},
+	UpdateNumber:function () {
+		return jagg.require(jagg.getModulesDir() + "about/numbers.jag").UpdateNumber.apply(this, arguments);
+	},
+	DeleteNumber:function () {
+		return jagg.require(jagg.getModulesDir() + "about/numbers.jag").DeleteNumber.apply(this, arguments);
+	},
+	FilterNumberTable:function () {
+		return jagg.require(jagg.getModulesDir() + "about/numbers.jag").FilterNumberTable.apply(this, arguments);
+	},
+	SearchNumber:function () {
+		return jagg.require(jagg.getModulesDir() + "about/numbers.jag").SearchNumber.apply(this, arguments);
+	},
+	getNumberList:function () {
+		return jagg.require(jagg.getModulesDir() + "about/numbers.jag").getNumberList.apply(this, arguments);
+	},
+	getDesctiptionList:function () {
+		return jagg.require(jagg.getModulesDir() + "about/numbers.jag").getDescriptionList.apply(this, arguments);
+	}
+});
+%>

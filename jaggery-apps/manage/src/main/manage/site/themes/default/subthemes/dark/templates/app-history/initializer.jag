@@ -1,0 +1,11 @@
+<%
+jagg.initializer("app-history", {
+
+    preInitialize:function () {
+        jagg.addHeaderJS("app-history", "app-history", "templates/app-history/js/app-history.js");
+        jagg.addFooterJS("popup", "jagg", "templates/app-history/js/jquery.popupoverlay.js");
+      	jagg.addFooterJS("tiers", "jagg", "templates/app-history/js/tiers.js");
+    }
+
+});
+%>

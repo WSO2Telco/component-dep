@@ -1,0 +1,79 @@
+<%
+include("/jagg/jagg.jag");
+(function () {
+	var log = new Log();
+	var action = request.getParameter("action");
+	//log.info("Action: " + action);
+	user =jagg.getUser();
+	
+	if (action == "getSenderAddresses") {
+		var mod = jagg.module("sms-to-application");
+		var result = mod.getSenderAddresses(user.username);
+
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		} else {
+			obj = {
+				error:false,
+				data: result.data
+			}
+		}
+		print(obj);
+	} else if(action == "getDestinationAddresses"){
+		var mod = jagg.module("sms-to-application");
+		var result = mod.getDestinationAddresses(user.username);
+
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		} else {
+			obj = {
+				error:false,
+				data: result.data
+			}
+		}
+		print(obj);
+	} else if(action == "saveSendSMSToApplication") {
+		var senderAddress = request.getParameter("senderAddress");
+		var destinationAddress = request.getParameter("destinationAddress");
+		var message = request.getParameter("message");
+		
+		user =jagg.getUser();
+
+		var mod = jagg.module("sms-to-application");
+		var result = mod.saveSendSMSToApplication(senderAddress, destinationAddress, message,user.username);
+		//log.info("Response json string in block: " + stringify(result));
+		if (result.reqerr == false) {
+				
+			var smstoapptxn = {
+				senderAddress : senderAddress,
+				destinationAddress : destinationAddress,
+				message : message
+			};
+			//log.info("smstxn: "+stringify(smstxn));
+			var smstoapptxns = session.get("smstoapptxns");
+			//log.info("smstxns: "+stringify(smstxns));
+			smstoapptxns.push(smstoapptxn);
+			session.put("smstoapptxns",smstoapptxns);
+		}
+
+		if (result.error==true) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		}else{
+			obj = {
+				error:false,
+				data: result.data
+			}
+		}
+		print(obj);
+	}
+}());
+%>

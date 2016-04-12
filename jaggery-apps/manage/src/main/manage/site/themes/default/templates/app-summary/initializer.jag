@@ -1,0 +1,11 @@
+<%
+jagg.initializer("app-summary", {
+
+    preInitialize:function () {
+        jagg.addHeaderJS("app-summary", "dojo", "templates/utils/dojo-release-1.8.3/dojo/dojo.js");
+        jagg.addHeaderJS("app-summary", "app-summary", "templates/app-summary/js/app-summary.js");
+
+    }
+
+});
+%>

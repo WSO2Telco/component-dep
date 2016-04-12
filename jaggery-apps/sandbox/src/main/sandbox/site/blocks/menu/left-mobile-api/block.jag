@@ -1,0 +1,8 @@
+<%
+jagg.block("menu/left-mobile-api", {
+    initializer:function (data) {
+
+    }
+
+});
+%>

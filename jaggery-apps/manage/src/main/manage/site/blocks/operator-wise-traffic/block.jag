@@ -1,0 +1,44 @@
+<%
+jagg.block("operator-wise-traffic", {
+	initializer:function (data) {
+
+	} ,
+// 	getInputs:function () {
+// 		return {
+// 			"usage":null
+// 		}
+// 	},
+	
+	getOutputs:function (inputs) {
+			
+		var data, user = inputs.user;
+		var isOperator = jagg.getUser().operator;
+		var data_subscribers;
+		var data_apis;
+		var data_applications;
+		if (user.isAdmin){
+			var operatorWiseTraffic = jagg.module("operator-wise-traffic");
+			var result_subscribers = operatorWiseTraffic.getAllSubscribers();
+			var result_apis = operatorWiseTraffic.getAllAPIs();
+
+			data_subscribers = result_subscribers.data;
+			data_apis = result_apis.data;
+		}else if(isOperator == null){
+			var operatorWiseTraffic = jagg.module("operator-wise-traffic");
+			var result_apis = operatorWiseTraffic.getAPIsBySubscriber(jagg.getUser().username);
+			var result_applications = operatorWiseTraffic.getAppsBySubscriber(jagg.getUser().username);
+// 			var log = new Log();
+// 			log.info(result_applications.data);
+			
+			data_apis = result_apis.data;
+			data_applications = result_applications.data;
+		}
+		return {
+			"subscribers" : data_subscribers,
+			"apis" : data_apis,
+			"applications" : data_applications
+		};
+	}
+
+});
+%>

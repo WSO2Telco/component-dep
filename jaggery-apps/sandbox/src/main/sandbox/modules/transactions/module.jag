@@ -1,0 +1,8 @@
+<%
+	jagg.module("transactions", {
+	
+	    getTransactions:function () {
+	        return jagg.require(jagg.getModulesDir() + "transactions/transactions.jag").loadTransactions.apply(this, arguments);
+	    }
+	});
+%>

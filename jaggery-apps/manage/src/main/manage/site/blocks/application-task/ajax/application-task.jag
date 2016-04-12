@@ -1,0 +1,194 @@
+<%
+include("/jagg/jagg.jag");
+
+(function () {
+
+	var msg = require("/site/conf/ui-messages.jag");
+	var action = request.getParameter("action");
+	var user = jagg.getUser();
+	var site = require("/site/conf/site.json");
+	var obj;
+
+	var log = new Log();
+	if(action == "setApplicationTier") {
+		if (!user) {
+			print({
+				error:true,
+				message:msg.error.loginRequired(action)
+			});
+			return;
+		}
+		var username = user.username;
+
+		var externalWFReference, taskId, taskType, tierId, taskManagerModule, result;
+
+		taskId = request.getParameter("taskId");
+		taskType = request.getParameter("taskType");
+		tierId = request.getParameter("tierId");
+
+		var prefixEndpoint = site.workflows.applicationWorkFlowServerURL;
+		var endpoint = prefixEndpoint+ "HumanTaskClientAPIAdmin/";
+
+		taskManagerModule = jagg.module("taskmanager");
+		result = taskManagerModule.setApplicationTier(taskId, taskType, tierId, endpoint);
+
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:msg.error.authError(action, username)
+			};
+		} else {
+			obj = {
+				error:false,
+				"status":result
+			}
+		}
+		print(obj);
+	}else if(action == "getApplicationDetails"){
+		if (!user) {
+			print({
+				error:true,
+				message:msg.error.loginRequired(action)
+			});
+			return;
+		}
+		var username = user.username;
+
+		var taskId, taskManagerModule, result;
+
+		taskId = request.getParameter("taskId");
+		taskManagerModule = jagg.module("taskmanager");
+		result = taskManagerModule.getApplicationDetails(taskId);
+
+		log.debug("::: Application details retrieval result: >> "+ stringify(result));
+		//log.info("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ: " + taskId);
+		// 		log.info("::: Application details retrieval result: >> "+ stringify(result));
+		// 		log.info("---------------------------------------------------------------------------------");
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:msg.error.authError(action, username)
+			};
+		} else {
+			obj = {
+				error:false,
+				"data":result
+			}
+		}
+		print(obj);
+	}else if(action == "getProfileData"){
+		try {
+			var store = jagg.module("manager").getAPIStoreObj();
+			var serverUrl =  store.getAuthServerURL()+"UserProfileMgtService/";
+
+
+			// 			var user = session.get("logged.user");
+			// 			var json = session.get("workflowCookie");
+
+			//var json = (user.cookie)/* .split(": ")[1].split("=")[1] */;
+			//var json = parse(user.cookie);
+			// 			log.info("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaax>>" + session);
+
+
+			var profileUser = request.getParameter("profileUser");
+			var payload = '<mgt:getUserProfile xmlns:mgt="http://mgt.profile.user.identity.carbon.wso2.org">'+
+			'<mgt:username>' + profileUser + '</mgt:username>' +
+			'<mgt:profileName>default</mgt:profileName>' +
+			'</mgt:getUserProfile>';
+
+			var ws = require('ws');
+			var webService = new ws.WSRequest();
+			var profileName = 'default';
+			var options = new Array();
+			options.useSOAP = 1.2;
+			options.useWSA = 1.0;
+			options.action = "urn:getUserProfile";
+			// 			options["HTTPHeaders"] = [{name: "cookie", value: json}];
+			// 	        log.debug(options["HTTPHeaders"]);
+			// 	        webService.open(options, serverUrl, false);
+
+
+
+			//get AuthManager admin credentials from api-manager.xml (source copied from /manage/modules/user/login.jag)
+			var configPath = "file://" + Packages.java.lang.System.getProperty("carbon.config.dir.path");
+			var amConfigPath = configPath + "/api-manager.xml";
+			var file = new File(amConfigPath);
+			file.open("r");
+			var amConfig = new XML(file.readAll());
+			file.close();
+			var adminUsername = String(amConfig.AuthManager.Username.text());
+			var adminPassword = String(amConfig.AuthManager.Password.text());
+
+
+
+			var wsUtil = require('wsUtil.jag');
+			var result = wsUtil.callWSReturnJSON(options, webService, serverUrl, payload, adminUsername, adminPassword);
+			if(result.error) {
+				print(result);
+				return;
+			}
+
+			log.info("DddddddddddddddddddddddddD:" + webService + ":" + serverUrl);
+			log.info(stringify(result));
+
+			var firstNameUri = "http://wso2.org/claims/givenname";
+			var lastNameUri = "http://wso2.org/claims/lastname";
+			var addressUri = "http://wso2.org/claims/streetaddress";
+			var countryUri = "http://wso2.org/claims/country";
+			var organizationUri = "http://wso2.org/claims/organization";
+			var emailUri = "http://wso2.org/claims/emailaddress";
+			var telephoneUri = "http://wso2.org/claims/telephone";
+			var mobileUri = "http://wso2.org/claims/mobile";
+			var retObj = new Object();
+
+			for(var x = 0; x < result.return.fieldValues.length; x++){
+				var obj = result.return.fieldValues[x];
+				if(obj.claimUri == firstNameUri){
+					retObj.firstName = obj.fieldValue;
+				} else if (obj.claimUri == lastNameUri){
+					retObj.lastName = obj.fieldValue;
+				} else if (obj.claimUri == addressUri){
+					retObj.address = obj.fieldValue;
+				} else if (obj.claimUri == countryUri){
+					retObj.country = obj.fieldValue;
+				} else if (obj.claimUri == organizationUri){
+					retObj.organization = obj.fieldValue;
+				} else if (obj.claimUri == emailUri){
+					retObj.email = obj.fieldValue;
+				} else if (obj.claimUri == telephoneUri){
+					retObj.telephone = obj.fieldValue;
+				} else if (obj.claimUri == mobileUri){
+					retObj.mobile = obj.fieldValue;
+				}
+			}
+			print(retObj);
+		} catch (e) {
+			var retObj = new Object();
+			retObj.error = true;
+			retObj.errorMsg = e.toString();
+			print(retObj);
+		}
+	} else if (action == "getApplicationTasks") {
+		var filterCategory, taskType, result, mod, tasks;
+		filterCategory = request.getParameter("filterCategory");
+		if(filterCategory==null){
+			filterCategory='userOnly';
+		}
+		taskType = "ApproveApplication";
+		mod = jagg.module("taskmanager");
+		result = mod.getTasks(filterCategory, taskType);
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:msg.error.authError(action, username)
+			};
+		} else {
+			obj = {
+				error:false,
+				"tasks":result
+			}
+		}
+		print(obj);
+	}
+}());
+%>

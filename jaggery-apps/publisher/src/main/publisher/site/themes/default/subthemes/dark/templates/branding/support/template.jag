@@ -1,0 +1,41 @@
+<% jagg.template("branding/support", function(inputs, outputs, jagg) {
+%>
+<link rel="stylesheet" type="text/css" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("css/styles-axiata.css"))%>" media="all"/>
+<style>
+body{
+background:none;
+}
+
+#middle {
+    padding-right: 20px;
+    width: 100%;
+}
+
+
+.title-section h2 {
+    color: #222;
+    font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 36px;
+    font-weight: 200;
+    margin: 0 20px;
+    padding: 40px 0 10px;
+}
+.content-section, .content-section-small, .title-section{
+    box-shadow:none;
+    background:none;
+}
+</style>
+<div id="listing">
+    <div class="title-section">
+        <h2>Support</h2>
+    </div>
+    <div class="content-section shadow-up">
+        <div class="content-data span5">
+			<h3>Forward your queries to the following email address:</h3>
+			<div class="title-section">
+        		<h4>test@dialog.lk</h4>
+    		</div>
+        </div>
+    </div>
+</div>
+<% }); %>

@@ -1,0 +1,11 @@
+<%
+jagg.initializer("finance-nb", {
+
+    preInitialize:function () {
+        jagg.addHeaderJS("finance-nb", "dojo", "templates/utils/dojo-release-1.8.3/dojo/dojo.js");
+        jagg.addHeaderJS("finance-nb", "finance-nb", "templates/finance-nb/js/finance.js");
+        jagg.addHeaderJS("finance-nb", "loadYears", "templates/utils/commons/loadYears.js");
+    }
+
+});
+%>

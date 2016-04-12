@@ -1,0 +1,122 @@
+<% jagg.template("ussd-sub", function(inputs, outputs, jagg) { 
+	var smstxns = session.get("smstxns");
+	%>
+<div class="title-section">
+	<h2>USSD Subscription</h2>
+</div>
+
+<!-- <div class="content-section shadow-up"> -->
+	<div class="content-data">
+		<!-- 		<div class="application-add well form-horizontal"> -->
+		<form id="sendSMSRequestForm">
+			<h4>Subscribe to notifications of MO USSD</h4>
+			<table id="sms_send_request_parameters" border="0" width="100%">
+			<tbody>
+				<tr>
+					<td valign="top">
+						<div class="ParameterGroupHeading">
+							<strong>Mandatory Parameters</strong>
+						</div>
+						<div class="ParameterRow">
+							<div class="ParameterLabel">destinationAddress</div>
+							<div class="ParameterValue">
+								<input type="text" value="1234" id="destinationAddress"
+											name="destinationAddress"/>
+							</div>
+						</div>
+						
+						<div class="ParameterRow">
+							<div class="ParameterLabel">resourceURL</div>
+							<div class="ParameterValue">
+								<input type="text" value="http://localhost:8080/mifeapiserver/callback.jsp" id="resourceURL" name="resourceURL"/>
+							</div>
+							
+						</div>
+						
+						<div class="ParameterRow">
+							<div class="ParameterLabel">clientCorrelator</div>
+							<div class="ParameterValue">
+								<input type="text" value="1234" id="clientCorrelator"
+											name="clientCorrelator"/>
+							</div>
+						</div>
+					</td>
+					<td valign="top">
+						<div class="ParameterGroupHeading">
+							<strong>Optional Parameters</strong>
+						</div>
+						
+						<div class="ParameterRow">
+							<div class="ParameterLabel">callbackData</div>
+							<div class="ParameterValue">
+								<input type="text" value="some-data-useful-to-the-requester" id="callbackData" name="callbackData"/>
+							</div>
+						</div>
+						<div class="ParameterRow">
+							<div class="ParameterLabel">notifyURL</div>
+							<div class="ParameterValue">
+								<input type="text" value="http://localhost:8080/mifeapiserver/callback.jsp"
+											id="notifyURL" name="notifyURL">
+							</div>
+									
+							<input id="ussd-sub-button" class="btn btn-primary"
+										value="Send Request" type="button">
+						</div>
+					</td>
+					<td valign="top">
+						<div class="ParameterRow">
+							<div class="ParameterLabel">
+								<strong>Request:</strong>
+							</div>
+							<div class="ParameterValue">
+								<textarea style="height: 300px; background-color: #e3e3e3;"
+										id="request" name="request"></textarea>
+							</div>
+						</div>
+					</td>
+					
+					<td valign="top">
+								<div class="ParameterRow">
+									<div class="ParameterLabel">
+										<strong>Response:</strong>
+									</div>
+									<div class="ParameterValue">
+										<textarea style="height: 300px; background-color: #E7F0F7;"
+											id="response" name="response"></textarea>
+									</div>
+								</div>
+							</td>
+					
+				</tr>
+			</tbody>
+		</table>
+		</form>
+		
+		<hr/>
+		<h4>Active Subscriptions</h4>
+			<table class="table table-bordered table-striped" id="ussd_sub_table" cellpadding="0" cellspacing="0">
+				<thead>
+					<tr class="alt first last">
+						<th value="SubscriptionId">Subscription Id</th>
+						<th value="callbackData">Callback Data</th>
+						<th value="notifyUrl">Notify URL</th>
+						<th value="clientCorrelator">Clientcorrelator</th>
+						<th value="resourceUrl">Resource URl</th>
+						<th value="createdDate">Created Date</th>
+						<th value="action">Action(s)</th>
+					</tr>
+				</thead>
+				<tbody id="data_class_body">
+				</tbody>
+			</table>
+
+			<div class="pagination" style="text-align: right;"></div>
+	<br/>
+	</div>
+	
+<script type="text/javascript">
+$("#mainnavi").find('li.subnavi').removeClass("active");
+$("#mainnavi").find('li.subnavi:nth-child(3)').addClass("active");
+</script>
+<!-- </div> -->
+<% }); %>
