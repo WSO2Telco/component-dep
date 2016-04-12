@@ -27,14 +27,14 @@
 
                                                  {'name':'requestId','type':'STRING'},
                                                  {'name':'responseCode','type':'STRING'},
-												 {'name':'msisdn','type':'STRING'},
+						 {'name':'msisdn','type':'STRING'},
                                                  {'name':'chargeAmount','type':'STRING'},
-												 {'name':'purchaseCategoryCode','type':'STRING'},
+						 {'name':'purchaseCategoryCode','type':'STRING'},
                                                  {'name':'operatorRef','type':'STRING'},
                                                  {'name':'exceptionId','type':'STRING'},
                                                  {'name':'exceptionMessage','type':'STRING'},
                                                  {'name':'jsonBody','type':'STRING'},
-												 {'name':'operationType','type':'INT'},
+												 {'name':'operationType','type':'STRING'},
 												 {'name':'merchantId','type':'STRING'},
 												 {'name':'category','type':'STRING'},
 												 {'name':'subCategory','type':'STRING'}

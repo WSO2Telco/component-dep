@@ -32,7 +32,7 @@
     );
 
     insert into table NB_API_REQUEST_SUMMARY_FINAL select
-    facet4(requestTime,userId,requestId,resourcePath),
+    facet4(cast(requestTime as String),userId,requestId,resourcePath),
     api,
     api_version,
     version,
@@ -107,7 +107,7 @@
     );
 
     insert into table SB_API_REQUEST_SUMMARY_FINAL select
-    facet4(requestTime,userId,requestId,resourcePath),
+     requestTime ,
     api,
     api_version,
     version,
@@ -157,44 +157,11 @@
 
     create temporary table NBAPIResponseSummaryData using CarbonJDBC options (dataSource "WSO2AM_STATS_DB", tableName "NB_API_RESPONSE_SUMMARY");
 
-        	create temporary table NBAPIResponseData USING CarbonAnalytics OPTIONS(tableName "COM_WSO2TELCO_STATISTICS_NORTHBOUND_RESPONSE");
+    create temporary table NBAPIResponseData USING CarbonAnalytics OPTIONS(tableName "COM_WSO2TELCO_STATISTICS_NORTHBOUND_RESPONSE");
 
-        	CREATE TEMPORARY TABLE NB_API_RESPONSE_SUMMARY_FINAL USING CarbonAnalytics OPTIONS (tableName "NB_API_RESPONSE_SUMMARY",
-    		schema  "messageRowID facet,
-    		api string,
-    		api_version string,
-    		version string,
-    		apiPublisher string,
-    		consumerKey string,
-    		userId string,
-   			context string,
-   			serviceTime int,
-   			response_count int,
-   			hostName string,
-   			resourcePath string,
-   			method string,
-   			requestId string,
-   			responseCode string,
-   			msisdn string,
-   			operatorRef string,
-   			chargeAmount string,
-   			purchaseCategoryCode string,
-   			exceptionId string,
-   			exceptionMessage string,
-   			jsonBody string,
-   			year int,
-   			month int,
-   			day int,
-   			time string,
-   			operationType String,
-   			merchantId string,
-   			category string,
-   			subCategory string",
-    		primaryKeys "messageRowID"
-    );
 
-    insert into table NB_API_RESPONSE_SUMMARY_FINAL select
-    facet4(responseTime,userId,requestId,resourcePath),
+    INSERT OVERWRITE TABLE NBAPIResponseSummaryData SELECT 
+     facet4(cast(responseTime as String) ,userId,requestId,resourcePath) ,
     api,
     api_version,
     version,
@@ -203,7 +170,7 @@
     userId,
     context,
     serviceTime,
-    response as response_count,
+    response,
     hostName,
     resourcePath,
     method,
@@ -224,40 +191,7 @@
     merchantId,
     category,
     subCategory
-    from NBAPIResponseData;
-
-    INSERT OVERWRITE TABLE NBAPIResponseSummaryData SELECT 
-    messageRowID,
-    api,
-    api_version,
-    version,
-    apiPublisher,
-    consumerKey,
-    userId,
-    context,
-    serviceTime,
-    response_count,
-    hostName,
-    resourcePath,
-    method,
-    requestId,
-    responseCode,
-    msisdn,
-    operatorRef,
-    chargeAmount,
-    purchaseCategoryCode,
-    exceptionId,
-    exceptionMessage,
-    jsonBody,
-    year,
-    month,
-    day,
-    time,
-    operationType,
-    merchantId,
-    category,
-    subCategory
-    FROM NB_API_RESPONSE_SUMMARY_FINAL;
+    FROM NBAPIResponseData;
 
 
     create temporary table SBAPIResponseSummaryData using CarbonJDBC options (dataSource "WSO2AM_STATS_DB", tableName "SB_API_RESPONSE_SUMMARY");
@@ -300,7 +234,7 @@
     );
 
     insert into table SB_API_RESPONSE_SUMMARY_FINAL select
-    facet4(responseTime,userId,requestId,resourcePath),
+    facet4(cast(responseTime  as String),userId,requestId,resourcePath),
     api,
     api_version,
     version,
