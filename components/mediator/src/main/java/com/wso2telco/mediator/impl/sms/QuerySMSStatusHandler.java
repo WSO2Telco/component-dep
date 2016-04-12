@@ -29,7 +29,7 @@ import com.wso2telco.mediator.internal.Type;
 import com.wso2telco.mediator.internal.UID;
 import com.wso2telco.mediator.internal.Util;
 import com.wso2telco.mediator.mediationrule.OriginatingCountryCalculatorIDD;
-import com.wso2telco.oneapivalidation.exceptions.AxiataException;
+import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.oneapivalidation.service.impl.sms.ValidateDeliveryStatus;
 import com.wso2telco.subscriptionvalidator.util.ValidatorUtils;
@@ -121,7 +121,7 @@ public class QuerySMSStatusHandler implements SMSHandler {
         Map<String, QuerySMSStatusResponse> responseMap = sendStatusQueries(context,
                 requestIdMap, senderAddress);
         if (Util.isAllNull(responseMap.values())) {
-            throw new AxiataException("SVC0001", "", new String[]{"Could not complete querying SMS statuses"});
+            throw new CustomException("SVC0001", "", new String[]{"Could not complete querying SMS statuses"});
         }
         executor.removeHeaders(context);
         String responsePayload = responseHandler.makeQuerySmsStatusResponse(context, senderAddress, requestId, responseMap);

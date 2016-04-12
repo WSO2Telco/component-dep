@@ -16,7 +16,7 @@
 package com.wso2telco.mediator.internal;
 
 import com.wso2telco.mediator.entity.nb.InboundSMSMessage;
-import com.wso2telco.oneapivalidation.exceptions.AxiataException;
+import com.wso2telco.oneapivalidation.exceptions.CustomException;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -224,7 +224,7 @@ public class ApiUtils {
             } catch (JSONException ex) {
 
                 log.error("Error in getJwtTokenDetails : " + ex.getMessage());
-                throw new AxiataException("SVC1000", "", new String[]{null});
+                throw new CustomException("SVC1000", "", new String[]{null});
             }
         }
 

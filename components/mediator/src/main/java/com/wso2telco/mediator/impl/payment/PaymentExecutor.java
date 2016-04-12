@@ -27,7 +27,7 @@ import com.wso2telco.mediator.internal.Type;
 import com.wso2telco.mediator.internal.UID;
 import com.wso2telco.mediator.internal.Base64Coder;
 import com.wso2telco.mediator.mediationrule.OriginatingCountryCalculatorIDD;
-import com.wso2telco.oneapivalidation.exceptions.AxiataException;
+import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.impl.payment.ValidateChargeReservation;
 import com.wso2telco.oneapivalidation.service.impl.payment.ValidateListTransactions;
 import com.wso2telco.oneapivalidation.service.impl.payment.ValidatePaymentCharge;
@@ -85,12 +85,12 @@ public class PaymentExecutor extends RequestExecutor {
      * @see com.wso2telco.mediator.RequestExecutor#execute(org.apache.synapse.MessageContext)
      */
     @Override
-    public boolean execute(MessageContext context) throws AxiataException, AxisFault, Exception {
+    public boolean execute(MessageContext context) throws CustomException, AxisFault, Exception {
         try {
             return chargeUserExec(context);
         } catch (JSONException e) {
             log.error(e.getMessage());
-            throw new AxiataException("SVC0001", "", new String[]{"Request is missing required URI components"});
+            throw new CustomException("SVC0001", "", new String[]{"Request is missing required URI components"});
         }
 //        return false;
     }
@@ -283,13 +283,13 @@ public class PaymentExecutor extends RequestExecutor {
 
         SpendLimitHandler spendLimitHandler = new SpendLimitHandler();
         if (spendLimitHandler.isMSISDNSpendLimitExceeded(msisdn)) {
-            throw new AxiataException("POL1001", "The %1 charging limit for this user has been exceeded", new
+            throw new CustomException("POL1001", "The %1 charging limit for this user has been exceeded", new
                     String[]{"daily"});
         } else if (spendLimitHandler.isApplicationSpendLimitExceeded(consumerKey)) {
-            throw new AxiataException("POL1001", "The %1 charging limit for this application has been exceeded", new
+            throw new CustomException("POL1001", "The %1 charging limit for this application has been exceeded", new
                     String[]{"daily"});
         } else if (spendLimitHandler.isOperatorSpendLimitExceeded(operator)) {
-            throw new AxiataException("POL1001", "The %1 charging limit for this operator has been exceeded", new
+            throw new CustomException("POL1001", "The %1 charging limit for this operator has been exceeded", new
                     String[]{"daily"});
         }
         return true;
@@ -390,7 +390,7 @@ public class PaymentExecutor extends RequestExecutor {
         }
 
         if (!isvalid) {
-            throw new AxiataException("POL0001", "A policy error occurred. Error code is %1", new String[]{"Invalid " +
+            throw new CustomException("POL0001", "A policy error occurred. Error code is %1", new String[]{"Invalid " +
                     "purchaseCategoryCode : " + chargeCategory});
         }
     }
@@ -468,7 +468,7 @@ public class PaymentExecutor extends RequestExecutor {
                 } catch (Exception ex) {
                     //logger.error("Sandbox controller - Manipulating recived JSON Object: " + ex);
                     //throw new Exception("API Type Not found");
-                    throw new AxiataException("SVC0002", "",new String[]{null});
+                    throw new CustomException("SVC0002", "",new String[]{null});
                 }
             } else {
                 //throw new Exception("API Type Not found");
@@ -498,7 +498,7 @@ public class PaymentExecutor extends RequestExecutor {
             } catch (Exception e) {
                 //logger.error("Sandbox controller - Manipulating recived JSON Object: " + e);
                 //throw new Exception("API Type Not found");
-                throw new AxiataException("SVC0002", "",new String[]{null});
+                throw new CustomException("SVC0002", "",new String[]{null});
             }
         } else if (requestURL.contains("transactions")) {
             //apiType = "listTransactions";

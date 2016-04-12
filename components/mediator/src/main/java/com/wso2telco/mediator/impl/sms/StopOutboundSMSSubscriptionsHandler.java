@@ -30,7 +30,7 @@ import com.wso2telco.mediator.OperatorEndpoint;
 import com.wso2telco.mediator.internal.Type;
 import com.wso2telco.mediator.internal.UID;
 import com.wso2telco.mediator.mediationrule.OriginatingCountryCalculatorIDD;
-import com.wso2telco.oneapivalidation.exceptions.AxiataException;
+import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.oneapivalidation.service.impl.sms.ValidateDNCancelSubscription;
 import com.wso2telco.oneapivalidation.service.impl.sms.ValidateDNCancelSubscriptionPlugin;
@@ -124,7 +124,7 @@ public class StopOutboundSMSSubscriptionsHandler implements SMSHandler {
         Integer axiataid = Integer.parseInt(subid.replaceFirst("sub", ""));
         List<Operatorsubs> domainsubs = (dbservice.outboudSubscriptionQuery(Integer.valueOf(axiataid)));
         if (domainsubs.isEmpty()) {
-            throw new AxiataException("POL0001", "", new String[]{"SMS Receipt Subscription Not Found: " + axiataid});
+            throw new CustomException("POL0001", "", new String[]{"SMS Receipt Subscription Not Found: " + axiataid});
         }
 
         String resStr = "";

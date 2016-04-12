@@ -16,7 +16,7 @@
 package com.wso2telco.mediator.internal;
 
 import com.wso2telco.dbutils.AxiataDbService;
-import com.wso2telco.oneapivalidation.exceptions.AxiataException;
+import com.wso2telco.oneapivalidation.exceptions.CustomException;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -47,7 +47,7 @@ public class AggregatorValidator {
          
         String merchantid =  DbService.blacklistedmerchant(appid, operatorid, subscriber, merchant);
         if ( merchantid != null) {
-            throw new AxiataException("SVC0001", "", new String[]{merchant +" Not provisioned for "+operatorid});
+            throw new CustomException("SVC0001", "", new String[]{merchant +" Not provisioned for "+operatorid});
         }                      
     }    
     

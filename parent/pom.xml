@@ -274,6 +274,26 @@
 		<commons-io.wso2.version>2.4.0.wso2v1</commons-io.wso2.version>
 		<joda-time.wso2.version>1.6.0.wso2v1</joda-time.wso2.version>
 		<carbon.governance.version>4.5.8</carbon.governance.version>
+
+		<commons-httpclient.wso2.version>3.1.0.wso2v2</commons-httpclient.wso2.version>
+		<org.json.wso2.version>3.0.0.wso2v1</org.json.wso2.version>
+		<org.wso2.orbit.org.apache.httpcomponents.version>4.3.1.wso2v2</org.wso2.orbit.org.apache.httpcomponents.version>
+		<org.apache.synapse.version>2.1.5-wso2v2</org.apache.synapse.version>
+		<commons-codec.wso2.version>1.4.0.wso2v1</commons-codec.wso2.version>
+		<wsdl4j.wso2.version>1.6.2.wso2v4</wsdl4j.wso2.version>
+		<org.apache.axis2.wso2.version>1.6.1.wso2v16</org.apache.axis2.wso2.version>
+		<org.apache.abdera.wso2.version>1.0.0.wso2v3</org.apache.abdera.wso2.version>
+		<org.apache.geronimo.specs.wso2.version>1.0.1.wso2v2</org.apache.geronimo.specs.wso2.version>
+		<org.apache.ws.commons.schema.wso2.version>1.4.7.wso2v3</org.apache.ws.commons.schema.wso2.version>
+		<org.apache.httpcomponents.wso2.version>4.3.3.wso2v1</org.apache.httpcomponents.wso2.version>
+		<org.wso2.orbit.org.apache.neethi.version>2.0.4.wso2v5</org.wso2.orbit.org.apache.neethi.version>
+		<org.apache.woden.wso2.version>1.0.0.M9-wso2v1</org.apache.woden.wso2.version>
+		<commons-logging.version>1.1.1</commons-logging.version>
+		<org.apache.ws.commons.axiom.wso2.version>1.2.11.wso2v9</org.apache.ws.commons.axiom.wso2.version>		
+		<com.h2database.version>1.4.191</com.h2database.version>
+		<org.wso2.carbon.version>4.4.3</org.wso2.carbon.version>
+		<com.wso2telco.dep.version>1.8.0-SNAPSHOT</com.wso2telco.dep.version>
+
 	</properties>
 
 	<build>

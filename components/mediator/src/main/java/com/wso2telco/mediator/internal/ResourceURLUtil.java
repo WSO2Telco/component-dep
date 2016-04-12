@@ -20,7 +20,7 @@ import java.net.URLDecoder;
 import java.util.ArrayList;
 import java.util.List;
 
-import com.wso2telco.oneapivalidation.exceptions.AxiataException;
+import com.wso2telco.oneapivalidation.exceptions.CustomException;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -66,7 +66,7 @@ public class ResourceURLUtil {
         } else if (apiType.equals("sms_inbound_notifications")) {
             processClass = "Forward";
         } else {
-            throw new AxiataException("SVC0002", "",new String[]{null});
+            throw new CustomException("SVC0002", "",new String[]{null});
         }
 
         return processClass;
@@ -159,7 +159,7 @@ public class ResourceURLUtil {
         } else if (ResourceURL.toLowerCase().contains(locationString.toLowerCase())) {
             apiType = "location";
         } else {
-            throw new AxiataException("SVC0002", "",new String[]{null});
+            throw new CustomException("SVC0002", "",new String[]{null});
         }
 
         return apiType;

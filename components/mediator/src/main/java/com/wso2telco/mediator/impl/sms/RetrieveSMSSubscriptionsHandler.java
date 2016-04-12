@@ -30,7 +30,7 @@ import com.wso2telco.mediator.internal.Type;
 import com.wso2telco.mediator.internal.UID;
 import com.wso2telco.mediator.internal.Util;
 import com.wso2telco.mediator.mediationrule.OriginatingCountryCalculatorIDD;
-import com.wso2telco.oneapivalidation.exceptions.AxiataException;
+import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.oneapivalidation.service.impl.sms.ValidateCancelSubscription;
 import com.wso2telco.oneapivalidation.service.impl.sms.nb.ValidateNBSubscription;
@@ -88,7 +88,7 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
      * @see com.wso2telco.mediator.impl.sms.SMSHandler#handle(org.apache.synapse.MessageContext)
      */
     @Override
-    public boolean handle(MessageContext context) throws AxiataException, AxisFault, Exception {
+    public boolean handle(MessageContext context) throws CustomException, AxisFault, Exception {
         if (executor.getHttpMethod().equalsIgnoreCase("POST")) {
             return createSubscriptions(context);
         } else if (executor.getHttpMethod().equalsIgnoreCase("DELETE")) {
@@ -184,7 +184,7 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
                 String notifyres = executor.makeRequest(endpoint, endpoint.getEndpointref().getAddress(), jsonBody
                         .toString(), true, context);
                 if (notifyres == null) {
-                    throw new AxiataException("POL0299", "", new String[]{"Error registering subscription"});
+                    throw new CustomException("POL0299", "", new String[]{"Error registering subscription"});
                 } else {
                     //plugin exception handling
                     subsresponse = gson.fromJson(notifyres, SBSubscribeRequest.class);
@@ -307,7 +307,7 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
             }
 
             if (successResultCount == 0) {
-                throw new AxiataException("POL0299", "", new String[]{"Error registering subscription"});
+                throw new CustomException("POL0299", "", new String[]{"Error registering subscription"});
             }
 
              
@@ -342,7 +342,7 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 
         List<Operatorsubs> domainsubs = (dbservice.subscriptionQuery(Integer.valueOf(axiataid)));
         if (domainsubs.isEmpty()) {
-            throw new AxiataException("POL0001", "", new String[]{"SMS Receipt Subscription Not Found: " + axiataid});
+            throw new CustomException("POL0001", "", new String[]{"SMS Receipt Subscription Not Found: " + axiataid});
         }
 
         String resStr = "";
@@ -380,7 +380,7 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
             sbrequestString = objSubscriptionRequest.toString();
         } catch (JSONException ex) {
             log.error("Error in removeResourceURL" + ex.getMessage());
-            throw new AxiataException("POL0299", "", new String[]{"Error registering subscription"});
+            throw new CustomException("POL0299", "", new String[]{"Error registering subscription"});
         }
         return "{\"subscription\":" + sbrequestString + "}";
     }

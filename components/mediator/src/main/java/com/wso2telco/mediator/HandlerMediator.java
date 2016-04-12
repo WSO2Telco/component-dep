@@ -17,7 +17,7 @@ package com.wso2telco.mediator;
 
 
 import com.wso2telco.mediator.internal.Base64Coder;
-import com.wso2telco.oneapivalidation.exceptions.AxiataException;
+import com.wso2telco.oneapivalidation.exceptions.CustomException;
 
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
@@ -69,8 +69,8 @@ public class HandlerMediator extends AbstractMediator {
             jsonBody = reqHandler.getJsonBody().toString();
             reqHandler.execute(context);
 
-        } catch (AxiataException ax) {
-            handleAxiataException(ax.getErrcode(),ax.getErrvar(), ax, context, jsonBody);
+        } catch (CustomException ax) {
+            handleCustomException(ax.getErrcode(),ax.getErrvar(), ax, context, jsonBody);
             
         } catch (Exception axisFault) {            
             handleException("Unexpected error ", axisFault, context);
@@ -89,7 +89,7 @@ public class HandlerMediator extends AbstractMediator {
      * @param context the context
      * @param jsonBody the json body
      */
-    public void handleAxiataException(String errcode, String[] errvar, AxiataException ax, MessageContext context, String jsonBody) {
+    public void handleCustomException(String errcode, String[] errvar, CustomException ax, MessageContext context, String jsonBody) {
         context.setProperty("ERROR_CODE",errcode);
         context.setProperty("errvar",errvar[0]);
         

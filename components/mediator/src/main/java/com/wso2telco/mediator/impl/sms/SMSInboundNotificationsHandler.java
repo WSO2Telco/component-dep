@@ -25,7 +25,7 @@ import com.wso2telco.mediator.internal.Type;
 import com.wso2telco.mediator.internal.UID;
 import com.wso2telco.mediator.internal.Util;
 import com.wso2telco.mnc.resolver.MNCQueryClient;
-import com.wso2telco.oneapivalidation.exceptions.AxiataException;
+import com.wso2telco.oneapivalidation.exceptions.CustomException;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -69,7 +69,7 @@ public class SMSInboundNotificationsHandler implements SMSHandler {
      * @see com.wso2telco.mediator.impl.sms.SMSHandler#handle(org.apache.synapse.MessageContext)
      */
     @Override
-    public boolean handle(MessageContext context) throws AxiataException, AxisFault, Exception {
+    public boolean handle(MessageContext context) throws CustomException, AxisFault, Exception {
 
         String requestid = UID.getUniqueID(Type.ALERTINBOUND.getCode(), context, executor
                 .getApplicationid());
@@ -113,7 +113,7 @@ public class SMSInboundNotificationsHandler implements SMSHandler {
         executor.removeHeaders(context);
 
         if (notifyret == 0) {
-            throw new AxiataException("SVC1000", "", new String[]{null});
+            throw new CustomException("SVC1000", "", new String[]{null});
         }
 
         ((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 200);

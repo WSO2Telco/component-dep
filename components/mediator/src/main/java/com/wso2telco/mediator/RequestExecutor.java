@@ -22,7 +22,7 @@ import com.wso2telco.datapublisher.DataPublisherClient;
 import com.wso2telco.datapublisher.DataPublisherConstants;
 import com.wso2telco.dbutils.AxiataDbService;
 import com.wso2telco.dbutils.Operator;
-import com.wso2telco.oneapivalidation.exceptions.AxiataException;
+import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.exceptions.RequestError;
 import com.wso2telco.oneapivalidation.exceptions.ResponseError;
 import com.wso2telco.publisheventsdata.publisher.EventsDataPublisherClient;
@@ -243,12 +243,12 @@ public abstract class RequestExecutor {
         String applicationid = getApplicationid();
         AxiataDbService dbservice = new AxiataDbService();
         if (applicationid == null) {
-            throw new AxiataException("SVC0001", "", new String[]{"Requested service is not provisioned"});
+            throw new CustomException("SVC0001", "", new String[]{"Requested service is not provisioned"});
         }
         validoperators = dbservice.applicationOperators(Integer.valueOf(applicationid));
         log.debug("DEBUG LOGS FOR LBS 07 : validoperators = " + validoperators);
         if (validoperators.isEmpty()) {
-            throw new AxiataException("SVC0001", "", new String[]{"Requested service is not provisioned"});
+            throw new CustomException("SVC0001", "", new String[]{"Requested service is not provisioned"});
         }
 
         String apiName = (String) context.getProperty("API_NAME");
@@ -269,7 +269,7 @@ public abstract class RequestExecutor {
         }
         log.debug("MEDIATOR DEBUG LOGS 04 : Array After = " + Arrays.toString(validoperatorsDup.toArray()));
         if (validoperatorsDup.isEmpty()) {
-            throw new AxiataException("SVC0001", "", new String[]{"Requested service is not provisioned"});
+            throw new CustomException("SVC0001", "", new String[]{"Requested service is not provisioned"});
         }
 
         validoperators = validoperatorsDup;
@@ -297,11 +297,11 @@ public abstract class RequestExecutor {
      *
      * @param context the context
      * @return true, if successful
-     * @throws AxiataException the axiata exception
+     * @throws CustomException the axiata exception
      * @throws AxisFault the axis fault
      * @throws Exception the exception
      */
-    public abstract boolean execute(MessageContext context) throws AxiataException, AxisFault, Exception;
+    public abstract boolean execute(MessageContext context) throws CustomException, AxisFault, Exception;
 
     /**
      * Validate request.
@@ -346,16 +346,16 @@ public abstract class RequestExecutor {
      * Handle plugin exception.
      *
      * @param errResp the err resp
-     * @throws AxiataException the axiata exception
+     * @throws CustomException the axiata exception
      */
-    public void handlePluginException(String errResp) throws AxiataException {
+    public void handlePluginException(String errResp) throws CustomException {
         log.debug("DEBUG LOGS FOR LBS 15 : errResp = " + errResp);
         Gson gson = new GsonBuilder().serializeNulls().create();
         String messagid = null;
         String variables = null;
 
         if (errResp == null) {
-            throw new AxiataException("SVC1000", "", new String[]{variables});
+            throw new CustomException("SVC1000", "", new String[]{variables});
         }
 
         if (errResp.contains("requestError")) {
@@ -384,7 +384,7 @@ public abstract class RequestExecutor {
         } else {
             return;
         }
-        throw new AxiataException(messagid, "", new String[]{variables});
+        throw new CustomException(messagid, "", new String[]{variables});
     }
 
      

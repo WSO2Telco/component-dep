@@ -19,7 +19,7 @@ import com.wso2telco.dbutils.AxiataDbService;
 import com.wso2telco.mediator.OperatorEndpoint;
 import com.wso2telco.mediator.internal.Util;
 import com.wso2telco.mediator.mediationrule.OriginatingCountryCalculatorIDD;
-import com.wso2telco.oneapivalidation.exceptions.AxiataException;
+import com.wso2telco.oneapivalidation.exceptions.CustomException;
 
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
@@ -65,7 +65,7 @@ public class USSDInboundHandler implements USSDHandler {
      * @see com.wso2telco.mediator.impl.ussd.USSDHandler#handle(org.apache.synapse.MessageContext)
      */
     @Override
-    public boolean handle(MessageContext context) throws AxiataException, AxisFault, Exception {
+    public boolean handle(MessageContext context) throws CustomException, AxisFault, Exception {
 
         String requestPath = executor.getSubResourcePath();
         String axiataid = requestPath.substring(requestPath.lastIndexOf("/") + 1);
@@ -88,7 +88,7 @@ public class USSDInboundHandler implements USSDHandler {
 
         log.debug(notifyret);
         if (notifyret == null) {
-            throw new AxiataException("POL0299", "", new String[]{"Error invoking Endpoint"});
+            throw new CustomException("POL0299", "", new String[]{"Error invoking Endpoint"});
         }
 
         JSONObject replyobj = new JSONObject(notifyret);

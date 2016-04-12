@@ -16,7 +16,7 @@
 package com.wso2telco.mediator.impl.ussd;
 
 import com.wso2telco.mediator.RequestExecutor;
-import com.wso2telco.oneapivalidation.exceptions.AxiataException;
+import com.wso2telco.oneapivalidation.exceptions.CustomException;
 
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
@@ -41,14 +41,14 @@ public class USSDExecutor extends RequestExecutor {
      * @see com.wso2telco.mediator.RequestExecutor#execute(org.apache.synapse.MessageContext)
      */
     @Override
-    public boolean execute(MessageContext context) throws AxiataException, AxisFault, Exception {
+    public boolean execute(MessageContext context) throws CustomException, AxisFault, Exception {
         try {
             USSDHandler handler = getUSSDHandler(getSubResourcePath());
             return handler.handle(context);
 
         } catch (JSONException e) {
             log.error(e.getMessage());
-            throw new AxiataException("SVC0001", "", new String[]{"Request is missing required URI components"});
+            throw new CustomException("SVC0001", "", new String[]{"Request is missing required URI components"});
         }
     }
 

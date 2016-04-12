@@ -29,7 +29,7 @@ import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 import com.wso2telco.datapublisher.DataPublisherConstants;
 import com.wso2telco.datapublisher.SouthboundDataPublisher;
 import com.wso2telco.datapublisher.dto.NorthboundResponsePublisherDTO;
-import com.wso2telco.oneapivalidation.exceptions.AxiataException;
+import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.exceptions.PolicyException;
 import com.wso2telco.oneapivalidation.exceptions.RequestError;
 import com.wso2telco.oneapivalidation.exceptions.ServiceException;
@@ -64,7 +64,7 @@ public class NorthboundPublisher {
      * @param retStr the ret str
      * @param messageContext the message context
      */
-    public void publishNBErrorResponseData(AxiataException ax, String retStr, MessageContext messageContext) {
+    public void publishNBErrorResponseData(CustomException ax, String retStr, MessageContext messageContext) {
         //set properties for response data publisher
         //messageContext.setProperty(SouthboundPublisherConstants.RESPONSE_CODE, Integer.toString(statusCode));
         //messageContext.setProperty(SouthboundPublisherConstants.MSISDN, messageContext.getProperty(MSISDNConstants.USER_MSISDN));
@@ -113,7 +113,7 @@ public class NorthboundPublisher {
      * @param ax the ax
      * @return the string
      */
-    private String buildErrorResponse(AxiataException ax){
+    private String buildErrorResponse(CustomException ax){
         String exceptionString = ""; //Build axiata exeption to normal exception here
         if(ax.getErrcode().length() > 3){
             if(ax.getErrcode().substring(0, 3).equals("POL")){

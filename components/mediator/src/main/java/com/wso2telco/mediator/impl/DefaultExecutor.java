@@ -32,7 +32,7 @@ import com.wso2telco.mediator.MSISDNConstants;
 import com.wso2telco.mediator.OperatorEndpoint;
 import com.wso2telco.mediator.RequestExecutor;
 import com.wso2telco.mediator.mediationrule.OriginatingCountryCalculatorIDD;
-import com.wso2telco.oneapivalidation.exceptions.AxiataException;
+import com.wso2telco.oneapivalidation.exceptions.CustomException;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -57,7 +57,7 @@ public class DefaultExecutor extends RequestExecutor {
      * @see com.wso2telco.mediator.RequestExecutor#execute(org.apache.synapse.MessageContext)
      */
     @Override
-    public boolean execute(MessageContext context) throws AxiataException, AxisFault, Exception {
+    public boolean execute(MessageContext context) throws CustomException, AxisFault, Exception {
         String msisdn = readMSISDN(context); // with +
         context.setProperty(MSISDNConstants.USER_MSISDN, msisdn.substring(1)); // without +
         OperatorEndpoint endpoint = occi.getAPIEndpointsByMSISDN(msisdn, (String) context.getProperty("API_NAME"),

@@ -27,7 +27,7 @@ import com.wso2telco.dbutils.Operatorendpoint;
 import com.wso2telco.mediator.OperatorEndpoint;
 import com.wso2telco.mediator.internal.Util;
 import com.wso2telco.mnc.resolver.MNCQueryClient;
-import com.wso2telco.oneapivalidation.exceptions.AxiataException;
+import com.wso2telco.oneapivalidation.exceptions.CustomException;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -83,7 +83,7 @@ public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculato
         operator = mncQueryclient.QueryNetwork(mcc, userMSISDN);
         
         if (operator == null) {
-            throw new AxiataException("SVC0001", "", new String[]{"No valid operator found for given MSISDN"});
+            throw new CustomException("SVC0001", "", new String[]{"No valid operator found for given MSISDN"});
         }
 
         //is operator provisioned
@@ -96,12 +96,12 @@ public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculato
         }
 
         if (valid == null) {
-            throw new AxiataException("SVC0001", "", new String[]{"Requested service is not provisioned"});
+            throw new CustomException("SVC0001", "", new String[]{"Requested service is not provisioned"});
         }
 
         Operatorendpoint validOperatorendpoint = getValidEndpoints(apikey, operator);
         if (validOperatorendpoint == null) {
-            throw new AxiataException("SVC0001", "", new String[]{"Requested service is not provisioned"});
+            throw new CustomException("SVC0001", "", new String[]{"Requested service is not provisioned"});
         }
                 
         String extremeEndpoint = validOperatorendpoint.getEndpoint();

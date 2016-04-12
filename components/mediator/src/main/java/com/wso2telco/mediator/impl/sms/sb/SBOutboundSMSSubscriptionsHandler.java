@@ -27,7 +27,7 @@ import com.wso2telco.mediator.internal.Type;
 import com.wso2telco.mediator.internal.UID;
 import com.wso2telco.mediator.internal.Util;
 import com.wso2telco.mediator.mediationrule.OriginatingCountryCalculatorIDD;
-import com.wso2telco.oneapivalidation.exceptions.AxiataException;
+import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.oneapivalidation.service.impl.sms.ValidateCancelSubscription;
 import com.wso2telco.oneapivalidation.service.impl.sms.sb.ValidateSBOutboundSubscription;
@@ -85,7 +85,7 @@ public class SBOutboundSMSSubscriptionsHandler implements SMSHandler {
      * @see com.wso2telco.mediator.impl.sms.SMSHandler#handle(org.apache.synapse.MessageContext)
      */
     @Override
-    public boolean handle(MessageContext context) throws AxiataException, AxisFault, Exception {
+    public boolean handle(MessageContext context) throws CustomException, AxisFault, Exception {
         if (executor.getHttpMethod().equalsIgnoreCase("POST")) {
             return createSubscriptions(context);
         }  
@@ -165,7 +165,7 @@ public class SBOutboundSMSSubscriptionsHandler implements SMSHandler {
 
             String notifyres = executor.makeRequest(endpoint, url, sbRequestBody, true, context);
             if (notifyres == null) {
-                throw new AxiataException("POL0299", "", new String[]{"Error registering subscription"});
+                throw new CustomException("POL0299", "", new String[]{"Error registering subscription"});
             } else {
                 subsresponse = gson.fromJson(notifyres, SBDeliveryReceiptSubscriptionRequest.class);
                 if (subsrequst.getDeliveryReceiptSubscription() == null) {
@@ -208,7 +208,7 @@ public class SBOutboundSMSSubscriptionsHandler implements SMSHandler {
             sbDeliveryNotificationrequestString = objDeliveryNotificationRequest.toString();
         } catch (JSONException ex) {
             log.error("Error in removeResourceURL" + ex.getMessage());
-            throw new AxiataException("POL0299", "", new String[]{"Error registering subscription"});
+            throw new CustomException("POL0299", "", new String[]{"Error registering subscription"});
         }
         return "{\"deliveryReceiptSubscription\":" + sbDeliveryNotificationrequestString + "}";
     }

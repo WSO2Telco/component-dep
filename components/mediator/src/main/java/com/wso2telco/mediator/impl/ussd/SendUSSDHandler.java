@@ -20,7 +20,7 @@ import com.wso2telco.mediator.MSISDNConstants;
 import com.wso2telco.mediator.OperatorEndpoint;
 import com.wso2telco.mediator.internal.Util;
 import com.wso2telco.mediator.mediationrule.OriginatingCountryCalculatorIDD;
-import com.wso2telco.oneapivalidation.exceptions.AxiataException;
+import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.subscriptionvalidator.util.ValidatorUtils;
 
 import org.apache.axis2.AxisFault;
@@ -70,7 +70,7 @@ public class SendUSSDHandler implements USSDHandler {
      * @see com.wso2telco.mediator.impl.ussd.USSDHandler#handle(org.apache.synapse.MessageContext)
      */
     @Override
-    public boolean handle(MessageContext context) throws AxiataException, AxisFault, Exception {
+    public boolean handle(MessageContext context) throws CustomException, AxisFault, Exception {
 
         JSONObject jsonBody = executor.getJsonBody();
         String address = jsonBody.getJSONObject("outboundUSSDMessageRequest").getString("address");

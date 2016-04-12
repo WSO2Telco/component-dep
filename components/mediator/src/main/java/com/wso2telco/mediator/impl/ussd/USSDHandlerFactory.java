@@ -18,7 +18,7 @@ package com.wso2telco.mediator.impl.ussd;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.wso2telco.oneapivalidation.exceptions.AxiataException;
+import com.wso2telco.oneapivalidation.exceptions.CustomException;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -54,7 +54,7 @@ public class USSDHandlerFactory {
             apiType = RequestType.RETRIEVE_USSD;
             handler = new USSDInboundHandler(executor);
         } else {
-            throw new AxiataException("SVC0002", "", new String[]{null});
+            throw new CustomException("SVC0002", "", new String[]{null});
         }
 //        return apiType;
         return handler;

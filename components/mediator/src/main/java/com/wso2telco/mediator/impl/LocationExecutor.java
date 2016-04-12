@@ -21,7 +21,7 @@ import com.wso2telco.mediator.RequestExecutor;
 import com.wso2telco.mediator.OperatorEndpoint;
 import com.wso2telco.mediator.internal.ResourceURLUtil;
 import com.wso2telco.mediator.mediationrule.OriginatingCountryCalculatorIDD;
-import com.wso2telco.oneapivalidation.exceptions.AxiataException;
+import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.impl.location.ValidateLocation;
 import com.wso2telco.subscriptionvalidator.util.ValidatorUtils;
 
@@ -50,7 +50,7 @@ public class LocationExecutor extends RequestExecutor {
      * @see com.wso2telco.mediator.RequestExecutor#execute(org.apache.synapse.MessageContext)
      */
     @Override
-    public boolean execute(MessageContext context) throws AxiataException, AxisFault, Exception {
+    public boolean execute(MessageContext context) throws CustomException, AxisFault, Exception {
 
         String[] params = new ResourceURLUtil().getParamValues(getSubResourcePath());
         context.setProperty(MSISDNConstants.USER_MSISDN, params[0].substring(5));

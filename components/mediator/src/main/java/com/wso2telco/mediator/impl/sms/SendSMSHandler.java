@@ -31,7 +31,7 @@ import com.wso2telco.mediator.internal.Type;
 import com.wso2telco.mediator.internal.UID;
 import com.wso2telco.mediator.internal.Util;
 import com.wso2telco.mediator.mediationrule.OriginatingCountryCalculatorIDD;
-import com.wso2telco.oneapivalidation.exceptions.AxiataException;
+import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.oneapivalidation.service.impl.sms.ValidateSendSms;
 import com.wso2telco.subscriptionvalidator.util.ValidatorUtils;
@@ -89,7 +89,7 @@ public class SendSMSHandler implements SMSHandler {
      * @see com.wso2telco.mediator.impl.sms.SMSHandler#handle(org.apache.synapse.MessageContext)
      */
     @Override
-    public boolean handle(MessageContext context) throws AxiataException, AxisFault, Exception {
+    public boolean handle(MessageContext context) throws CustomException, AxisFault, Exception {
         String requestid = UID.getUniqueID(Type.SMSSEND.getCode(), context, executor.getApplicationid());
         //append request id to client correlator
         JSONObject jsonBody = executor.getJsonBody();
@@ -101,14 +101,14 @@ public class SendSMSHandler implements SMSHandler {
         String senderAddress = subsrequest.getOutboundSMSMessageRequest().getSenderAddress();
 
         if (!ValidatorUtils.getValidatorForSubscription(context).validate(context)) {
-            throw new AxiataException("SVC0001", "", new String[]{"Subscription Validation Unsuccessful"});
+            throw new CustomException("SVC0001", "", new String[]{"Subscription Validation Unsuccessful"});
         }
         int smsCount = getSMSMessageCount(subsrequest.getOutboundSMSMessageRequest().getOutboundTextMessage().getMessage());
         context.setProperty(DataPublisherConstants.RESPONSE, String.valueOf(smsCount));
 
         Map<String, SendSMSResponse> smsResponses = smssendmulti(context, subsrequest, jsonBody.getJSONObject("outboundSMSMessageRequest").getJSONArray("address"), API_TYPE, executor.getValidoperators());
         if (Util.isAllNull(smsResponses.values())) {
-            throw new AxiataException("POL0257", "Message not delivered %1", new String[]{"Request failed. Errors "
+            throw new CustomException("POL0257", "Message not delivered %1", new String[]{"Request failed. Errors "
                 + "occurred while sending the request for all the destinations."});
         }
 //NB publish

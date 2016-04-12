@@ -32,7 +32,7 @@ import com.wso2telco.mediator.internal.Type;
 import com.wso2telco.mediator.internal.UID;
 import com.wso2telco.mediator.internal.Util;
 import com.wso2telco.mediator.mediationrule.OriginatingCountryCalculatorIDD;
-import com.wso2telco.oneapivalidation.exceptions.AxiataException;
+import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.oneapivalidation.service.impl.sms.ValidateCancelSubscription;
 import com.wso2telco.oneapivalidation.service.impl.sms.nb.ValidateNBOutboundSubscription;
@@ -228,7 +228,7 @@ public class NBOutboundSMSSubscriptionsHandler implements SMSHandler {
         }
 
         if (successResultCount == 0) {
-            throw new AxiataException("POL0299", "", new String[]{"Error registering subscription"});
+            throw new CustomException("POL0299", "", new String[]{"Error registering subscription"});
         }
 
          
@@ -263,7 +263,7 @@ public class NBOutboundSMSSubscriptionsHandler implements SMSHandler {
             sbDeliveryNotificationrequestString = objDeliveryNotificationRequest.toString();
         } catch (JSONException ex) {
             log.error("Error in removeResourceURL" + ex.getMessage());
-            throw new AxiataException("POL0299", "", new String[]{"Error registering subscription"});
+            throw new CustomException("POL0299", "", new String[]{"Error registering subscription"});
         }
         return "{\"deliveryReceiptSubscription\":" + sbDeliveryNotificationrequestString + "}";
     }

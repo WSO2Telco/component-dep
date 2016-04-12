@@ -19,7 +19,7 @@ import com.wso2telco.mediator.impl.sms.nb.NBOutboundSMSSubscriptionsHandler;
 import com.wso2telco.mediator.impl.sms.nb.NBRetrieveSMSHandler;
 import com.wso2telco.mediator.impl.sms.sb.SBOutboundSMSSubscriptionsHandler;
 import com.wso2telco.mediator.impl.sms.sb.SBRetrieveSMSHandler;
-import com.wso2telco.oneapivalidation.exceptions.AxiataException;
+import com.wso2telco.oneapivalidation.exceptions.CustomException;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -104,7 +104,7 @@ public class SMSHandlerFactory {
             apiType = RequestType.QUERY_SMS;
             handler = new QuerySMSStatusHandler(executor);
         } else {
-            throw new AxiataException("SVC0002", "", new String[]{null});
+            throw new CustomException("SVC0002", "", new String[]{null});
         }
 //        return apiType;
         return handler;
@@ -131,7 +131,7 @@ public class SMSHandlerFactory {
             }
         } catch (Exception e) {
             log.error("Error in findDeliveryNotificationSubscriptionType : " + e.getMessage());
-            throw new AxiataException("SVC0002", "", new String[]{null});
+            throw new CustomException("SVC0002", "", new String[]{null});
         }
 
         return handler;
@@ -156,7 +156,7 @@ public class SMSHandlerFactory {
              
 
         } catch (Exception e) {
-            throw new AxiataException("SVC0005", "Error when selecting Delivery reciept handler", new String[]{null});
+            throw new CustomException("SVC0005", "Error when selecting Delivery reciept handler", new String[]{null});
         }
 
         return handler;

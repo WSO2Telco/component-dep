@@ -25,7 +25,7 @@ import com.wso2telco.mediator.internal.ApiUtils;
 import com.wso2telco.mediator.internal.Type;
 import com.wso2telco.mediator.internal.UID;
 import com.wso2telco.mediator.mediationrule.OriginatingCountryCalculatorIDD;
-import com.wso2telco.oneapivalidation.exceptions.AxiataException;
+import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.oneapivalidation.service.impl.sms.ValidateRetrieveSms;
 
@@ -79,7 +79,7 @@ public class RetrieveSMSHandler implements SMSHandler {
      * @see com.wso2telco.mediator.impl.sms.SMSHandler#handle(org.apache.synapse.MessageContext)
      */
     @Override
-    public boolean handle(MessageContext context) throws AxiataException, AxisFault, Exception {
+    public boolean handle(MessageContext context) throws CustomException, AxisFault, Exception {
 
         SOAPBody body = context.getEnvelope().getBody();
         Gson gson = new GsonBuilder().serializeNulls().create();
