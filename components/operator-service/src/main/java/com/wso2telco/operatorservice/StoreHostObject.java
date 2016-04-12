@@ -25,20 +25,22 @@ import com.wso2telco.operatorservice.model.Operator;
 
 import org.mozilla.javascript.*;
 
- 
-// TODO: Auto-generated Javadoc
-/**
- * The Class StoreHostObject.
- */
 public class StoreHostObject extends ScriptableObject {
+
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 3642128192613608256L;
 
 	/** The Constant log. */
 	private static final Log log = LogFactory.getLog(StoreHostObject.class);
-	
+
 	/** The hostobject name. */
 	private String hostobjectName = "AxiataStore";
 
-	/* (non-Javadoc)
+	/*
+	 * (non-Javadoc)
+	 * 
 	 * @see org.mozilla.javascript.ScriptableObject#getClassName()
 	 */
 	@Override
@@ -53,87 +55,87 @@ public class StoreHostObject extends ScriptableObject {
 		log.info("::: Initialized HostObject ");
 	}
 
-	 
-	/**
-	 * Js function_retrieve operator list.
-	 *
-	 * @param cx the cx
-	 * @param thisObj the this obj
-	 * @param args the args
-	 * @param funObj the fun obj
-	 * @return the list
-	 * @throws APIManagementException the API management exception
-	 */
-	public static List<Operator> jsFunction_retrieveOperatorList(Context cx,
-													Scriptable thisObj, Object[] args, Function funObj)
-													throws APIManagementException {
-		
+/**
+ * 
+ * @param cx
+ * @param thisObj
+ * @param args
+ * @param funObj
+ * @return
+ * @throws APIManagementException
+ */
+	public static List<Operator> jsFunction_retrieveOperatorList(Context cx, 
+																Scriptable thisObj, 
+																Object[] args,
+																Function funObj) throws APIManagementException {
+
 		List<Operator> operatorList = null;
-		
+
 		try {
-			DAO axiataDAO = new DAO();
-			operatorList = axiataDAO.retrieveOperatorList();
-			
-		} catch(Exception e) {
+			DAO dao = new DAO();
+			operatorList = dao.retrieveOperatorList();
+
+		} catch (Exception e) {
 			handleException("Error occured while retrieving operator list. ", e);
 		}
-		
+
 		return operatorList;
 	}
-	
-	 
-	/**
-	 * Js function_persist sub operator list.
-	 *
-	 * @param cx the cx
-	 * @param thisObj the this obj
-	 * @param args the args
-	 * @param funObj the fun obj
-	 * @return true, if successful
-	 * @throws APIManagementException the API management exception
-	 */
-	public static boolean jsFunction_persistSubOperatorList(Context cx,
-													Scriptable thisObj, Object[] args, Function funObj)
-													throws APIManagementException {
-		
+/**
+ * 
+ * @param cx
+ * @param thisObj
+ * @param args
+ * @param funObj
+ * @return
+ * @throws APIManagementException
+ */
+	public static boolean jsFunction_persistSubOperatorList(Context cx, 
+															Scriptable thisObj, 
+															Object[] args,
+															Function funObj) throws APIManagementException {
+
 		boolean status = false;
-		
-		String apiName = (String)args[0];
-		String apiVersion = (String)args[1];
-		String apiProvider = (String)args[2];;
-		int appId = ((Double)args[3]).intValue();
-		String operatorList = (String)args[4];
-		
+
+		String apiName = (String) args[0];
+		String apiVersion = (String) args[1];
+		String apiProvider = (String) args[2];
+		;
+		int appId = ((Double) args[3]).intValue();
+		String operatorList = (String) args[4];
+
 		try {
-			DAO axiataDAO = new DAO();
-			axiataDAO.persistOperators(apiName, apiVersion, apiProvider, appId, operatorList);
-			
-		} catch(Exception e) {
+			new DAO().persistOperators(apiName, apiVersion, apiProvider, appId, operatorList);
+
+		} catch (Exception e) {
 			handleException("Error occured while retrieving operator list. ", e);
 		}
-		
+
 		return status;
 	}
-	
-	 
+
 	/**
 	 * Handle exception.
 	 *
-	 * @param msg the msg
-	 * @throws APIManagementException the API management exception
+	 * @param msg
+	 *            the msg
+	 * @throws APIManagementException
+	 *             the API management exception
 	 */
 	private static void handleException(String msg) throws APIManagementException {
 		log.error(msg);
 		throw new APIManagementException(msg);
 	}
 
-	 
 	/**
 	 * Handle exception.
 	 *
-	 * @param msg the msg
-	 * @param t the t
-	 * @throws APIManagementException the API management exception
+	 * @param msg
+	 *            the msg
+	 * @param t
+	 *            the t
+	 * @throws APIManagementException
+	 *             the API management exception
 	 */
 	private static void handleException(String msg, Throwable t) throws APIManagementException {
 		log.error(msg, t);
