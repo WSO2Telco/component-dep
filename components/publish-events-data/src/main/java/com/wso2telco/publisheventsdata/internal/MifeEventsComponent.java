@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+ *  
+ *  WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.wso2telco.publisheventsdata.internal;
 
 
@@ -16,18 +31,24 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
+ 
+// TODO: Auto-generated Javadoc
 /**
- * @scr.component name="mife.events.component" immediate="true"
- * @scr.reference name="hazelcast.instance.service"
- * interface="com.hazelcast.core.HazelcastInstance" cardinality="0..1"
- * policy="dynamic" bind="setHazelcastInstance" unbind="unsetHazelcastInstance"
+ * The Class MifeEventsComponent.
  */
 public class MifeEventsComponent {
 
+    /** The Constant log. */
     private static final Log log = LogFactory.getLog(MifeEventsComponent.class);
 
+    /** The data publisher map. */
     private static Map<String, LoadBalancingDataPublisher> dataPublisherMap;
 
+    /**
+     * Activate.
+     *
+     * @param ctx the ctx
+     */
     protected void activate(ComponentContext ctx) {
         try {
             dataPublisherMap = new ConcurrentHashMap<String, LoadBalancingDataPublisher>();
@@ -40,15 +61,21 @@ public class MifeEventsComponent {
         }
     }
 
+    /**
+     * Deactivate.
+     *
+     * @param ctx the ctx
+     */
     protected void deactivate(ComponentContext ctx) {
 
     }
 
+     
     /**
-     * Fetch the data publisher which has been registered under the tenant domain.
+     * Gets the data publisher.
      *
-     * @param tenantDomain - The tenant domain under which the data publisher is registered
-     * @return - Instance of the LoadBalancingDataPublisher which was registered. Null if not registered.
+     * @param tenantDomain the tenant domain
+     * @return the data publisher
      */
     public static LoadBalancingDataPublisher getDataPublisher(String tenantDomain) {
         if (dataPublisherMap.containsKey(tenantDomain)) {
@@ -57,13 +84,13 @@ public class MifeEventsComponent {
         return null;
     }
 
+     
     /**
-     * Adds a LoadBalancingDataPublisher to the data publisher map.
+     * Adds the data publisher.
      *
-     * @param tenantDomain  - The tenant domain under which the data publisher will be registered.
-     * @param dataPublisher - Instance of the LoadBalancingDataPublisher
-     * @throws DataPublisherAlreadyExistsException - If a data publisher has already been registered under the
-     *                                             tenant domain
+     * @param tenantDomain the tenant domain
+     * @param dataPublisher the data publisher
+     * @throws DataPublisherAlreadyExistsException the data publisher already exists exception
      */
     public static void addDataPublisher(String tenantDomain, LoadBalancingDataPublisher dataPublisher)
             throws DataPublisherAlreadyExistsException {
@@ -74,14 +101,29 @@ public class MifeEventsComponent {
         dataPublisherMap.put(tenantDomain, dataPublisher);
     }
 
+    /**
+     * Sets the hazelcast instance.
+     *
+     * @param hazelcastInstance the new hazelcast instance
+     */
     protected void setHazelcastInstance(HazelcastInstance hazelcastInstance) {
         MifeEventsDataHolder.registerHazelcastInstance(hazelcastInstance);
     }
 
+    /**
+     * Unset hazelcast instance.
+     *
+     * @param hazelcastInstance the hazelcast instance
+     */
     protected void unsetHazelcastInstance(HazelcastInstance hazelcastInstance) {
         MifeEventsDataHolder.registerHazelcastInstance(null);
     }
 
+    /**
+     * Load event properties.
+     *
+     * @return the properties
+     */
     private Properties loadEventProperties(){
         String configPath = CarbonUtils.getCarbonConfigDirPath() + File.separator + MifeEventsConstants.MIFE_EVENTS_PROPERTIES_FILE;
         Properties props = new Properties();

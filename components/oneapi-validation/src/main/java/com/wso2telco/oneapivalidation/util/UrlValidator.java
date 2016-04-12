@@ -1,21 +1,41 @@
-/*
- * To change this template, choose Tools | Templates
- * and open the template in the editor.
- */
+/*******************************************************************************
+ * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+ * 
+ * WSO2.Telco Inc. licences this file to you under  the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.wso2telco.oneapivalidation.util;
 
 import org.apache.log4j.Logger;
 
-import com.wso2telco.oneapivalidation.exceptions.AxiataException;
+import com.wso2telco.oneapivalidation.exceptions.CustomException;
 
+ 
+// TODO: Auto-generated Javadoc
 /**
- *
- * @author User
+ * The Class UrlValidator.
  */
 public class UrlValidator {
 
+    /** The logger. */
     static Logger logger = Logger.getLogger(UrlValidator.class);
 
+    /**
+     * Validate request.
+     *
+     * @param requestParts the request parts
+     * @param validationRules the validation rules
+     * @return true, if successful
+     */
     public static boolean validateRequest(String[] requestParts, String[] validationRules) {
 
         boolean valid = true;
@@ -23,7 +43,7 @@ public class UrlValidator {
         if (requestParts == null || requestParts.length < validationRules.length) {
             valid = false;
             //sendError(response, BAD_REQUEST, RequestError.SERVICEEXCEPTION, "SVC0002", "Request is missing required URI components", null);
-            throw new AxiataException("SVC0002", "Request is missing required URI components", new String[]{null});
+            throw new CustomException("SVC0002", "Request is missing required URI components", new String[]{null});
         } else {
             String errorMessage = null;
             for (int i = 0; i < validationRules.length; i++) {
@@ -44,7 +64,7 @@ public class UrlValidator {
             }
             if (!valid) {
                 //sendError(response, BAD_REQUEST, RequestError.SERVICEEXCEPTION, "SVC0002", "Request URI missing required component(s): ", errorMessage);
-                throw new AxiataException("SVC0002", "Request URI missing required component(s): ", new String[]{errorMessage});
+                throw new CustomException("SVC0002", "Request URI missing required component(s): ", new String[]{errorMessage});
             }
         }
         return valid;

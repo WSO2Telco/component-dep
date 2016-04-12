@@ -1,15 +1,44 @@
+/*******************************************************************************
+ * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+ * 
+ * WSO2.Telco Inc. licences this file to you under  the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.wso2telco.oneapivalidation.util;
 
 
 import org.json.JSONObject;
 
-import com.wso2telco.oneapivalidation.exceptions.AxiataException;
+import com.wso2telco.oneapivalidation.exceptions.CustomException;
 
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ResourceURLUtil.
+ */
 public class ResourceURLUtil {
 
+    /** The api type. */
     private String apiType = "";
+    
+    /** The process class. */
     private String processClass = "";
 
+    /**
+     * Gets the process class.
+     *
+     * @param ResourceURL the resource url
+     * @param reqPayload the req payload
+     * @return the process class
+     */
     public String getProcessClass(String ResourceURL, String reqPayload) {
 
         String apiType = this.findAPIType(ResourceURL, reqPayload);
@@ -37,18 +66,32 @@ public class ResourceURLUtil {
         else if (apiType.equals("sms_inbound_notifications")) {
             processClass = "Forward";
         } else {
-            throw new AxiataException("SVC0002", "",new String[]{null});
+            throw new CustomException("SVC0002", "",new String[]{null});
         }
 
         return processClass;
     }
 
+    /**
+     * Gets the API type.
+     *
+     * @param ResourceURL the resource url
+     * @param jsonPayload the json payload
+     * @return the API type
+     */
     public String getAPIType(String ResourceURL, String jsonPayload) {
         String apiType = this.findAPIType(ResourceURL, jsonPayload);
         return apiType;
     }
 
 
+    /**
+     * Find api type.
+     *
+     * @param resourceURL the resource url
+     * @param jsonPayload the json payload
+     * @return the string
+     */
     private String findAPIType(String resourceURL, String jsonPayload) {
 
         String paymentKeyString = "transactions";
@@ -109,10 +152,10 @@ public class ResourceURLUtil {
                     apiType = "list_transactions";
                 }
                 else {
-                    throw new AxiataException("SVC0002", "",new String[]{null});
+                    throw new CustomException("SVC0002", "",new String[]{null});
                 }
             } else {
-                throw new AxiataException("SVC0002", "",new String[]{null});
+                throw new CustomException("SVC0002", "",new String[]{null});
             }
         } else if (resourceURL.toLowerCase().contains(delivaryNotifyString.toLowerCase())) {
             apiType = "sms_inbound_notifications"; 
@@ -133,12 +176,19 @@ public class ResourceURLUtil {
             }
             
         } else {
-            throw new AxiataException("SVC0002", "",new String[]{null});
+            throw new CustomException("SVC0002", "",new String[]{null});
         }
 
         return apiType;
     }
     
+    /**
+     * Find payment api type.
+     *
+     * @param requestURL the request url
+     * @param jsonPayload the json payload
+     * @return the string
+     */
     private String findPaymentAPIType(String requestURL, String jsonPayload){
         String transactionOperationStatus = null;
         //String requestString = null;
@@ -175,7 +225,7 @@ public class ResourceURLUtil {
                 } catch (Exception ex) {
                     //logger.error("Sandbox controller - Manipulating recived JSON Object: " + ex);
                     //throw new Exception("API Type Not found");
-                    throw new AxiataException("SVC0002", "",new String[]{null});
+                    throw new CustomException("SVC0002", "",new String[]{null});
                 }
             } else {
                 //throw new Exception("API Type Not found");
@@ -203,7 +253,7 @@ public class ResourceURLUtil {
             } catch (Exception e) {
                 //logger.error("Sandbox controller - Manipulating recived JSON Object: " + e);
                 //throw new Exception("API Type Not found");
-                throw new AxiataException("SVC0002", "",new String[]{null});
+                throw new CustomException("SVC0002", "",new String[]{null});
             }
         } else if (requestURL.contains("transactions")) {
             apiType = "listTransactions";
@@ -214,6 +264,12 @@ public class ResourceURLUtil {
         return apiType;
     }
     
+    /**
+     * Null or trimmed.
+     *
+     * @param s the s
+     * @return the string
+     */
     private static String nullOrTrimmed(String s) {
         String rv = null;
         if (s != null && s.trim().length() > 0) {

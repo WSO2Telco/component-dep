@@ -1,13 +1,21 @@
-/*
- * GsmaValidater.java
- * Aug 1, 2014  11:27:18 AM
- * Roshan.Saputhanthri
- *
- * Copyright (C) Dialog Axiata PLC. All Rights Reserved.
- */
+/*******************************************************************************
+ * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+ * 
+ * WSO2.Telco Inc. licences this file to you under  the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.wso2telco.oneapivalidation.service.impl;
 
-import com.wso2telco.oneapivalidation.exceptions.AxiataException;
+import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.oneapivalidation.service.impl.location.ValidateLocation;
 import com.wso2telco.oneapivalidation.service.impl.payment.ValidateChargeReservation;
@@ -30,26 +38,43 @@ import com.wso2telco.oneapivalidation.service.impl.ussd.ValidateUssdSend;
 import com.wso2telco.oneapivalidation.service.impl.ussd.ValidateUssdSubscription;
 import com.wso2telco.oneapivalidation.util.ReadPropertyFile;
 import com.wso2telco.oneapivalidation.util.ResourceURLUtil;
+ 
+// TODO: Auto-generated Javadoc
 /**
- * <TO-DO>
- * <code>GsmaValidater</code>
- *
- * @version $Id: GsmaValidater.java,v 1.00.000
+ * The Class GsmaValidater.
  */
 public class GsmaValidater implements IServiceValidate {
 
-    public void validate(String json) throws AxiataException {
+    /* (non-Javadoc)
+     * @see com.wso2telco.oneapivalidation.service.IServiceValidate#validate(java.lang.String)
+     */
+    public void validate(String json) throws CustomException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void validateUrl(String pathInfo) throws AxiataException {
+    /* (non-Javadoc)
+     * @see com.wso2telco.oneapivalidation.service.IServiceValidate#validateUrl(java.lang.String)
+     */
+    public void validateUrl(String pathInfo) throws CustomException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    public void validate(String[] params) throws AxiataException {
+    /* (non-Javadoc)
+     * @see com.wso2telco.oneapivalidation.service.IServiceValidate#validate(java.lang.String[])
+     */
+    public void validate(String[] params) throws CustomException {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
+    /**
+     * Validate.
+     *
+     * @param reqUrl the req url
+     * @param reqPayload the req payload
+     * @param httpmethod the httpmethod
+     * @param params the params
+     * @throws Exception the exception
+     */
     public void validate(String reqUrl, String reqPayload, String httpmethod, String[] params) throws Exception {
 
         String apitype = new ResourceURLUtil().getAPIType(reqUrl, reqPayload);

@@ -1,0 +1,69 @@
+/*******************************************************************************
+ * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+ * 
+ * WSO2.Telco Inc. licences this file to you under  the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
+package com.wso2telco.mediator.mediationrule;
+
+
+import org.apache.axis2.addressing.EndpointReference;
+
+
+import java.util.HashMap;
+
+// TODO: Auto-generated Javadoc
+/**
+ * The Class OriginatingCountryCalculator.
+ */
+public abstract class OriginatingCountryCalculator {
+	 
+	 /** The api epr map. */
+ 	protected HashMap<String, EndpointReference> apiEprMap;
+	
+     /** The Dialog sms api endpoint. */
+     //API End points 
+	 protected String DialogSmsApiEndpoint;
+	 
+ 	/** The Dialog payment api endpoint. */
+ 	protected String DialogPaymentApiEndpoint;
+         
+         /** The Dialog location api endpoint. */
+         protected String DialogLocationApiEndpoint;
+         
+	 /** The Celcom sms api endpoint. */
+ 	protected String CelcomSmsApiEndpoint;
+	 
+ 	/** The Celcom payment api endpoint. */
+ 	protected String CelcomPaymentApiEndpoint;
+         
+         /** The Celcom location api endpoint. */
+         protected String CelcomLocationApiEndpoint;
+         
+         /** The Robi sms api endpoint. */
+         protected String RobiSmsApiEndpoint;
+	 
+ 	/** The Robi payment api endpoint. */
+ 	protected String RobiPaymentApiEndpoint;
+         
+         /** The Robi location api endpoint. */
+         protected String RobiLocationApiEndpoint;
+	 
+	  
+	 /**
+ 	 * Initialize.
+ 	 *
+ 	 * @throws Exception the exception
+ 	 */
+ 	public abstract void initialize() throws Exception ;
+	 
+}

@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+ *  
+ *  WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * 
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.wso2telco.custom.dao;
 
 import org.apache.commons.logging.Log;
@@ -13,10 +28,22 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 
-public class AxiataWorkflowDAO {
+// TODO: Auto-generated Javadoc
+/**
+ * The Class WorkflowDAO.
+ */
+public class WorkflowDAO {
 	
-	private static final Log log = LogFactory.getLog(AxiataWorkflowDAO.class);
+	/** The Constant log. */
+	private static final Log log = LogFactory.getLog(WorkflowDAO.class);
 
+    /**
+     * Update subscription tier.
+     *
+     * @param subscriptionId the subscription id
+     * @param tierId the tier id
+     * @throws APIManagementException the API management exception
+     */
     public void updateSubscriptionTier(String subscriptionId, String tierId) throws APIManagementException {
         Connection conn = null;
         ResultSet rs = null;
@@ -37,6 +64,15 @@ public class AxiataWorkflowDAO {
         }
     }
     
+    /**
+     * Save subscription charge rate.
+     *
+     * @param appId the app id
+     * @param apiId the api id
+     * @param opName the op name
+     * @throws APIManagementException the API management exception
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     */
     public void saveSubscriptionChargeRate(String appId, String apiId, String opName) throws APIManagementException, APIMgtUsageQueryServiceClientException {
         Connection conn = null;
         ResultSet rs = null;
@@ -71,6 +107,14 @@ public class AxiataWorkflowDAO {
         }
     }
 
+    /**
+     * Save subscription charge rate nb.
+     *
+     * @param appId the app id
+     * @param apiId the api id
+     * @throws APIManagementException the API management exception
+     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     */
     public void saveSubscriptionChargeRateNB(String appId, String apiId) throws APIManagementException, APIMgtUsageQueryServiceClientException {
         Connection conn = null;
         ResultSet rs = null;
@@ -104,14 +148,15 @@ public class AxiataWorkflowDAO {
         }
     }
     
-    /**
-	 * Update the tier for the specified application.
-	 * 
-	 * @param applicationId
-	 * @param tierId
-	 * @throws APIManagementException
-	 */
+     
     
+    /**
+     * Update application tier.
+     *
+     * @param applicationId the application id
+     * @param tierId the tier id
+     * @throws APIManagementException the API management exception
+     */
     public void updateApplicationTier(String applicationId, String tierId) throws APIManagementException {
         Connection conn = null;
         ResultSet rs = null;
@@ -132,11 +177,13 @@ public class AxiataWorkflowDAO {
         }
     }
     
+     
     /**
      * Handle exception.
-     * @param msg
-     * @param t
-     * @throws APIManagementException
+     *
+     * @param msg the msg
+     * @param t the t
+     * @throws APIManagementException the API management exception
      */
     private static void handleException(String msg, Throwable t) throws APIManagementException {
         log.error(msg, t);
