@@ -1,10 +1,10 @@
 <module name="dialogbilling" namespace="ns" expose="true" xmlns="http://wso2.org/projects/jaggery/module.xml">    
 	<hostObject>
-            <className>org.dialog.custom.hostobjects.BillingHostObject</className>
+            <className>com.wso2telco.custom.hostobjects.BillingHostObject</className>
             <name>DialogBilling</name>
         </hostObject>
 	<hostObject>
-            <className>org.dialog.custom.hostobjects.WorkflowHostObject</className>
+            <className>com.wso2telco.custom.hostobjects.WorkflowHostObject</className>
             <name>AxiataWorkflow</name>
         </hostObject>
 </module>
