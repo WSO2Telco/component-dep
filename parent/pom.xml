@@ -293,6 +293,9 @@
 		<com.h2database.version>1.4.191</com.h2database.version>
 		<org.wso2.carbon.version>4.4.3</org.wso2.carbon.version>
 		<com.wso2telco.dep.version>1.8.0-SNAPSHOT</com.wso2telco.dep.version>
+		<synapse.version>2.1.7-wso2v1</synapse.version>
+		<carbon.apimgt.version>5.0.3</carbon.apimgt.version>
+		<carbon.platform.version>4.4.3</carbon.platform.version>
 
 	</properties>
 
