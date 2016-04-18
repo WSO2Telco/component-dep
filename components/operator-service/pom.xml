@@ -28,7 +28,7 @@
 
     <artifactId>operator-service</artifactId>
     <packaging>bundle</packaging>
-    <name>WSO2 Carbon - HostObject for API management - Axiata Custom Modifications for store</name>
+    <name>WSO2 Carbon - HostObject for API management - Custom Modifications for store</name>
 
     <dependencies>
     	<dependency>
@@ -99,11 +99,11 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Private-Package>
-                            org.axiata.store.hostobjects.internal
+                            com.wso2telco.operatorservice.internal
                         </Private-Package>
                         <Export-Package>
-                            !org.axiata.store.hostobjects.internal,
-                            org.axiata.store.hostobjects,org.axiata.store.hostobjects.dao,org.axiata.store.hostobjects.model
+                            !com.wso2telco.operatorservice.internal,
+                            com.wso2telco.operatorservice,com.wso2telco.operatorservice.dao,com.wso2telco.operatorservice.model
                         </Export-Package>
                         <Import-Package>
                             org.wso2.carbon.apimgt.api.*,
