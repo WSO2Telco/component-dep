@@ -54,7 +54,7 @@
 	<modules>
 		<!--module>components/authentication-endpoint</module>
 		<module>features</module-->
-	        <module>webapps/blacklist-whitelist-service</module>
+	    <module>webapps/blacklist-whitelist-service</module>
 		<module>components/aggregator-blacklist</module> 
 		<module>components/oneapi-validation</module> 
 		<module>components/subscription-validator</module> 
@@ -63,6 +63,7 @@
 		<module>components/reporting-service</module>
 		<module>components/operator-service</module>
         <module>components/verification-handler</module>
+        <module>components/mediator</module>
 	</modules>
 
 	<scm>
