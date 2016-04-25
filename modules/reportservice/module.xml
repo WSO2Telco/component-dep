@@ -1,4 +1,4 @@
-<module name="dialogbilling" namespace="ns" expose="true" xmlns="http://wso2.org/projects/jaggery/module.xml">    
+<module name="reportservice" namespace="ns" expose="true" xmlns="http://wso2.org/projects/jaggery/module.xml">    
 	<hostObject>
             <className>com.wso2telco.custom.hostobjects.BillingHostObject</className>
             <name>DialogBilling</name>
