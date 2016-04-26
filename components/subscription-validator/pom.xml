@@ -20,16 +20,16 @@
     <modelVersion>4.0.0</modelVersion>
 
     <parent>
-	<groupId>com.wso2telco.dep</groupId>
-	<artifactId>component-dep</artifactId>
-	<version>1.8.0-SNAPSHOT</version>
-	<relativePath>../../parent/pom.xml</relativePath>
+    	<groupId>com.wso2telco.dep</groupId>
+    	<artifactId>component-dep</artifactId>
+    	<version>1.8.0-SNAPSHOT</version>
+    	<relativePath>../../parent/pom.xml</relativePath>
     </parent>
 	
     <artifactId>subscription-validator</artifactId>
     <packaging>bundle</packaging>
-    <name>Subscription Validator</name>
-    <description>Subscription Validator</description>
+    <name>WSO2.Telco Subscription Validator Module</name>
+    <description>WSO2.Telco Subscription Validator Module</description>
 
     <build>
         <plugins>
@@ -78,17 +78,5 @@
             <artifactId>org.wso2.carbon.utils</artifactId>
         </dependency>
     </dependencies>
-
-    <repositories>
-        <repository>
-            <id>wso2-nexus</id>
-            <url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-                <checksumPolicy>ignore</checksumPolicy>
-            </releases>
-        </repository>
-    </repositories>
 
 </project>
