@@ -28,7 +28,7 @@
     <artifactId>publish-events-data</artifactId>
 
     <packaging>bundle</packaging>
-    <name>WSO2.Telco Publish Events Data</name>
+    <name>WSO2.Telco Publish Events Data Module</name>
     <description>Events Processing Data Component for AM</description>
 
     <dependencies>
