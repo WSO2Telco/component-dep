@@ -28,7 +28,8 @@
 
     <artifactId>operator-service</artifactId>
     <packaging>bundle</packaging>
-    <name>WSO2 Carbon - HostObject for API management - Custom Modifications for store</name>
+    <name>WSO2.Telco Operator Service Module</name>
+    <description>WSO2.Telco - HostObject for API management - Custom Modifications for Store</description>
 
     <dependencies>
     	<dependency>
