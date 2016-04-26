@@ -64,6 +64,7 @@
 		<module>components/operator-service</module>
         <module>components/verification-handler</module>
         <module>components/mediator</module>
+        <module>components/workflow-manager</module>
 	</modules>
 
 	<scm>
