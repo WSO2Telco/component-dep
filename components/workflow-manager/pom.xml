@@ -1,0 +1,252 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+        <groupId>com.wso2telco.dep</groupId>
+        <artifactId>component-dep</artifactId>
+        <version>1.8.0-SNAPSHOT</version>
+        <relativePath>../../parent/pom.xml</relativePath>
+    </parent>
+
+	<!--<parent>
+		<groupId>org.wso2.carbon</groupId>
+		<artifactId>apimgt</artifactId>
+		<version>1.2.0</version>
+		<relativePath>../../pom.xml</relativePath>
+	</parent> -->
+
+	<artifactId>workflow-manager</artifactId>
+
+	<packaging>bundle</packaging>
+	<name>WSO2.Telco Workflow Manager Module</name>
+	<description>WSO2.Telco Workflow Manager Module</description>
+
+	<properties>
+		<CApp.type>lib/synapse/mediator</CApp.type>
+		<commons.httpclient.wso2.version>3.1.0.wso2v2</commons.httpclient.wso2.version> 
+		<org.apache.synapse.version>2.1.5-wso2v2</org.apache.synapse.version>
+		<commons-codec.wso2.version>1.4.0.wso2v1</commons-codec.wso2.version> 
+		<wsdl4j.wso2.version>1.6.2.wso2v4</wsdl4j.wso2.version>
+		<org.apache.axis2.wso2.versions>1.6.1.wso2v16</org.apache.axis2.wso2.versions>
+		<org.apache.abdera.wso2.version>1.0.0.wso2v3</org.apache.abdera.wso2.version> 
+		<org.apache.geronimo.specs.wso2.version>1.0.1.wso2v2</org.apache.geronimo.specs.wso2.version>
+		<org.apache.ws.commons.schema.wso2.version>1.4.7.wso2v3</org.apache.ws.commons.schema.wso2.version> 
+		<org.apache.httpcomponents.wso2.version>4.3.3.wso2v1</org.apache.httpcomponents.wso2.version> 
+		<org.wso2.orbit.org.apache.neethi.version>2.0.4.wso2v5</org.wso2.orbit.org.apache.neethi.version>   
+		<org.apache.woden.wso2.version>1.0.0.M9-wso2v1</org.apache.woden.wso2.version> 
+		<commons-logging.version>1.1.1</commons-logging.version>
+		<commons-io.wso2.version>2.4.0.wso2v1</commons-io.wso2.version>
+		<dbutils.version>1.0-SNAPSHOT</dbutils.version>
+		<!-- <apimgt.usage.client.version>5.0.3</apimgt.usage.client.version> -->
+		<org.wso2.carbon.apimgt.version>5.0.3</org.wso2.carbon.apimgt.version>
+		<!-- <apimgt.impl.version>5.0.3</apimgt.impl.version>  -->
+		<!-- <carbon.core.version>4.4.3</carbon.core.version> -->
+		<org.wso2.carbon.version>4.4.3</org.wso2.carbon.version>
+		<com.h2database.wso2.version>1.2.140.wso2v3</com.h2database.wso2.version>
+		<org.apache.ws.commons.axiom.wso2.version>1.2.11.wso2v3</org.apache.ws.commons.axiom.wso2.version>
+		<com.wso2telco.core.version>2.0.03-SNAPSHOT</com.wso2telco.core.version>
+	</properties>
+
+	<dependencies>
+		<dependency>
+			<groupId>commons-httpclient.wso2</groupId>
+			<artifactId>commons-httpclient</artifactId>
+			<version>${commons.httpclient.wso2.version}</version>
+		</dependency>		
+		<dependency>
+			<groupId>org.apache.synapse</groupId>
+			<artifactId>synapse-core</artifactId>
+			<version>${org.apache.synapse.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-codec.wso2</groupId>
+			<artifactId>commons-codec</artifactId>
+			<version>${commons-codec.wso2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>wsdl4j.wso2</groupId>
+			<artifactId>wsdl4j</artifactId>
+			<version>${wsdl4j.wso2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.axis2.wso2</groupId>
+			<artifactId>axis2</artifactId>
+			<version>${org.apache.axis2.wso2.versions}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.abdera.wso2</groupId>
+			<artifactId>abdera</artifactId>
+			<version>${org.apache.abdera.wso2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.geronimo.specs.wso2</groupId>
+			<artifactId>geronimo-stax-api_1.0_spec</artifactId>
+			<version>${org.apache.geronimo.specs.wso2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.ws.commons.schema.wso2</groupId>
+			<artifactId>XmlSchema</artifactId>
+			<version>${org.apache.ws.commons.schema.wso2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.httpcomponents.wso2</groupId>
+			<artifactId>httpcore</artifactId>
+			<version>${org.apache.httpcomponents.wso2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.wso2.orbit.org.apache.neethi</groupId>
+			<artifactId>neethi</artifactId>
+			<version>${org.wso2.orbit.org.apache.neethi.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.woden.wso2</groupId>
+			<artifactId>woden</artifactId>
+			<version>${org.apache.woden.wso2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-logging</groupId>
+			<artifactId>commons-logging</artifactId>
+			<version>${commons-logging.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.ws.commons.axiom.wso2</groupId>
+			<artifactId>axiom</artifactId>
+			<version>${org.apache.ws.commons.axiom.wso2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>commons-io.wso2</groupId>
+			<artifactId>commons-io</artifactId>
+			<version>${commons-io.wso2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.h2database.wso2</groupId>
+			<artifactId>h2-database-engine</artifactId>
+			<version>${com.h2database.wso2.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.wso2.carbon</groupId>
+			<artifactId>org.wso2.carbon.user.api</artifactId>
+			<version>${org.wso2.carbon.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.wso2.carbon</groupId>
+			<artifactId>org.wso2.carbon.core</artifactId>
+			<version>${org.wso2.carbon.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.wso2.carbon.apimgt</groupId>
+			<artifactId>org.wso2.carbon.apimgt.gateway</artifactId>
+			<version>${org.wso2.carbon.apimgt.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.wso2.carbon.apimgt</groupId>
+			<artifactId>org.wso2.carbon.apimgt.impl</artifactId>
+			<version>${org.wso2.carbon.apimgt.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>com.wso2telco.core</groupId>
+			<artifactId>dbutils</artifactId>
+			<version>${com.wso2telco.core.version}</version>
+		</dependency>
+		<dependency>
+			<groupId>org.wso2.carbon.apimgt</groupId>
+			<artifactId>org.wso2.carbon.apimgt.usage.client</artifactId>
+			<version>${org.wso2.carbon.apimgt.version}</version>
+		</dependency>
+	</dependencies>
+
+	<build>
+		<plugins>
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-scr-plugin</artifactId>
+				<version>1.7.2</version>
+				<executions>
+					<execution>
+						<id>generate-scr-scrdescriptor</id>
+						<goals>
+							<goal>scr</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
+			<plugin>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-bundle-plugin</artifactId>
+				<version>2.3.4</version>
+				<extensions>true</extensions>
+				<configuration>
+					<instructions>
+						<Bundle-SymbolicName>AxiataWorkflowHandler</Bundle-SymbolicName>
+						<Bundle-Name>AxiataWorkflowHandler</Bundle-Name>
+						<Export-Package>org.wso2.carbon.am.axiata.workflow,
+							org.wso2.carbon.am.axiata.workflow.audit</Export-Package>
+						<Import-Package>
+							javax.xml.parsers; version="0.0.0",
+							org.wso2.carbon.apimgt.api.model.*,
+							org.wso2.carbon.apimgt.api.*
+						</Import-Package>
+						<DynamicImport-Package>*</DynamicImport-Package>
+					</instructions>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<buildcommands>
+						<buildcommand>org.eclipse.jdt.core.javabuilder</buildcommand>
+					</buildcommands>
+					<projectnatures>
+						<projectnature>org.wso2.developerstudio.eclipse.artifact.mediator.project.nature</projectnature>
+						<projectnature>org.eclipse.jdt.core.javanature</projectnature>
+					</projectnatures>
+				</configuration>
+			</plugin>
+		</plugins>
+	</build>
+
+    <repositories>
+
+        <repository>
+            <id>wso2-nexus</id>
+            <name>WSO2 internal Repository</name>
+            <url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
+        </repository>
+        
+        <repository>
+			<id>wso2telco-nexus</id>
+			<name>WSO2Telco internal Repository</name>
+			<url>http://maven.wso2telco.com/nexus/content/groups/public/</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>ignore</checksumPolicy>
+			</releases>
+		</repository>
+
+		<repository>
+			<id>wso2telco.releases</id>
+			<name>WSO2 internal Repository</name>
+			<url>http://maven.wso2telco.com/nexus/content/repositories/releases/</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>always</updatePolicy>
+				<checksumPolicy>ignore</checksumPolicy>
+			</releases>
+		</repository>
+        
+    </repositories>
+    
+	<pluginRepositories>
+		<pluginRepository>
+			<id>wso2-nexus</id>
+			<url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
+		</pluginRepository>
+	</pluginRepositories>
+
+</project>
