@@ -65,6 +65,7 @@
         <module>components/verification-handler</module>
         <module>components/mediator</module>
         <module>components/workflow-manager</module>
+        <module>workflow\axis2services\AxiataWorkflowApprovalService</module>
 	</modules>
 
 	<scm>
