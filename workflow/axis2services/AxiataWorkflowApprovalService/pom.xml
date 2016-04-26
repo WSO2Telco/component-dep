@@ -3,12 +3,52 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
 	xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 	<modelVersion>4.0.0</modelVersion>
+
+	<parent>
+        <groupId>com.wso2telco.dep</groupId>
+        <artifactId>component-dep</artifactId>
+        <version>1.8.0-SNAPSHOT</version>
+        <relativePath>../../../parent/pom.xml</relativePath>
+    </parent>
+
 	<groupId>org.wso2.carbon.axiata.workflow</groupId>
 	<artifactId>AxiataWorkflowApprovalService</artifactId>
 	<version>1.0.0</version>
+
 	<packaging>service/axis2</packaging>
 	<name>AxiataWorkflowApprovalService</name>
 	<description>AxiataWorkflowApprovalService</description>
+
+	<dependencies>
+
+		<dependency>
+			<groupId>org.apache.axis2.wso2</groupId>
+			<artifactId>axis2</artifactId>
+		</dependency>
+		<dependency>
+		  	<groupId>org.apache.ws.commons.axiom</groupId>
+		  	<artifactId>axiom-impl</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.wso2telco.core</groupId>
+			<artifactId>dbutils</artifactId>
+		</dependency>
+		<dependency>
+		  	<groupId>com.sun.mail</groupId>
+		  	<artifactId>javax.mail</artifactId>
+		</dependency>
+		<dependency>
+        	<groupId>org.wso2.carbon</groupId>
+            <artifactId>org.wso2.carbon.utils</artifactId>
+        </dependency>
+        <dependency>
+		  	<groupId>org.wso2.carbon.commons</groupId>
+		  	<artifactId>org.wso2.carbon.um.ws.api.stub</artifactId>
+		  	<version>${org.wso2.carbon.commons.version}</version>
+		</dependency>
+
+	</dependencies>
+
 	<build>
 		<plugins>
 			<plugin>
@@ -42,70 +82,5 @@
 			</plugin>
 		</plugins>
 	</build>
-	<repositories>
-		<repository>
-			<releases>
-				<updatePolicy>daily</updatePolicy>
-				<checksumPolicy>ignore</checksumPolicy>
-			</releases>
-			<id>wso2-nexus</id>
-			<url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
-		</repository>
-	</repositories>
-	<pluginRepositories>
-		<pluginRepository>
-			<releases>
-				<updatePolicy>daily</updatePolicy>
-				<checksumPolicy>ignore</checksumPolicy>
-			</releases>
-			<id>wso2-nexus</id>
-			<url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
-		</pluginRepository>
-	</pluginRepositories>
-
-	<properties>
-		<org.apache.axis2.wso2.version>1.6.2.wso2v13</org.apache.axis2.wso2.version>
-		<org.apache.ws.commons.axiom.version>1.2.18</org.apache.ws.commons.axiom.version>
-		<com.wso2telco.core.version>2.0.03-SNAPSHOT</com.wso2telco.core.version>
-		<com.sun.mail.version>1.5.5</com.sun.mail.version>
-		<org.wso2.carbon.version>4.4.3</org.wso2.carbon.version>
-		<org.wso2.carbon.commons.version>4.4.8</org.wso2.carbon.commons.version>
-	</properties>
-
-	<dependencies>
-
-		<dependency>
-			<groupId>org.apache.axis2.wso2</groupId>
-			<artifactId>axis2</artifactId>
-			<version>${org.apache.axis2.wso2.version}</version>
-		</dependency>
-		<dependency>
-		  	<groupId>org.apache.ws.commons.axiom</groupId>
-		  	<artifactId>axiom-impl</artifactId>
-		  	<version>${org.apache.ws.commons.axiom.version}</version>
-		</dependency>
-		<dependency>
-			<groupId>com.wso2telco.core</groupId>
-			<artifactId>dbutils</artifactId>
-			<version>${com.wso2telco.core.version}</version>
-		</dependency>
-		<dependency>
-		  	<groupId>com.sun.mail</groupId>
-		  	<artifactId>javax.mail</artifactId>
-		  	<version>${com.sun.mail.version}</version>
-		</dependency>
-		<dependency>
-        	<groupId>org.wso2.carbon</groupId>
-            <artifactId>org.wso2.carbon.utils</artifactId>
-            <version>${org.wso2.carbon.version}</version>
-        </dependency>
-        <dependency>
-		  	<groupId>org.wso2.carbon.commons</groupId>
-		  	<artifactId>org.wso2.carbon.um.ws.api.stub</artifactId>
-		  	<version>${org.wso2.carbon.commons.version}</version>
-		  	<scope>provided</scope>
-		</dependency>
-
-	</dependencies>
 
 </project>
