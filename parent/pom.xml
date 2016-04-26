@@ -260,12 +260,6 @@
 			    <scope>provided</scope>
 			</dependency>
 			<dependency>
-			    <groupId>org.wso2.carbon.apimgt</groupId>
-			    <artifactId>org.wso2.carbon.apimgt.impl</artifactId>
-			    <version>${org.wso2.carbon.apimgt.version}</version>
-			    <scope>provided</scope>
-			</dependency>
-			<dependency>
 			    <groupId>org.jaggeryjs</groupId>
 			    <artifactId>org.jaggeryjs.hostobjects.web</artifactId>
 			    <version>${org.jaggeryjs.version}</version>
