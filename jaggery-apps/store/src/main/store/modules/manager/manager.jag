@@ -167,14 +167,14 @@ var getAxiataStoreObj = function() {
     var user = jagg.getUser();
     var axiataStore;
     if (user == null) {
-        axiataStore = require('axiatastore');
+        axiataStore = require('opratorservice');
         var axiataStoreHostObj = new axiataStore.AxiataStore();
 //         if(tenantDomain != null && tenantDomain != ""){
 //             axiataStoreHostObj.loadRegistryOfTenant(tenantDomain);
 //         }
         return axiataStoreHostObj;
     } else {
-        axiataStore = require('axiatastore');
+        axiataStore = require('opratorservice');
         return new axiataStore.AxiataStore(user.username);
     }
 };

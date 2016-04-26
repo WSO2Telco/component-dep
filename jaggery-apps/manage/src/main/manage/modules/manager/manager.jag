@@ -40,11 +40,11 @@ var getCustomBilling = function() {
     var user = jagg.getUser();
     var billing;
     if (user == null) {
-        billing = require('dialogbilling');
+        billing = require('reportservice');
         var billingHostObj = new billing.DialogBilling();        
         return billingHostObj;
     } else {
-        billing = require('dialogbilling');
+        billing = require('reportservice');
 	var log = new Log();
 	log.info("**** billing : "+billing);
         return new billing.DialogBilling(user.username);
@@ -75,11 +75,11 @@ var getAxiataWorkflow = function() {
     var user = jagg.getUser();
     var workflow;
     if (user == null) {
-        workflow = require('dialogbilling');
+        workflow = require('reportservice');
         var workflowHostObj = new workflow.AxiataWorkflow();        
         return workflowHostObj;
     } else {
-        workflow = require('dialogbilling');
+        workflow = require('reportservice');
 		var log = new Log();
 		log.info("**** workflow : " + workflow);
         return new workflow.AxiataWorkflow(user.username);
