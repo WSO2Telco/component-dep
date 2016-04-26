@@ -23,10 +23,10 @@
 	<artifactId>mediator</artifactId>
 
 	<packaging>bundle</packaging>
-	<name>Mediator</name>
-	<description>Mediator</description>
+	<name>WSO2.Telco Mediator Module</name>
+	<description>WSO2.Telco Mediator Module</description>
 
-	<repositories>
+	<!-- <repositories>
 		<repository>
 			<id>wso2telco-nexus</id>
 			<name>WSO2Telco internal Repository</name>
@@ -72,7 +72,7 @@
 			<id>wso2-nexus</id>
 			<url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
 		</pluginRepository>
-	</pluginRepositories>
+	</pluginRepositories> -->
 
 	<dependencies>
 		<dependency>
