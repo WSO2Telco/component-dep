@@ -26,54 +26,6 @@
 	<name>WSO2.Telco Mediator Module</name>
 	<description>WSO2.Telco Mediator Module</description>
 
-	<!-- <repositories>
-		<repository>
-			<id>wso2telco-nexus</id>
-			<name>WSO2Telco internal Repository</name>
-			<url>http://maven.wso2telco.com/nexus/content/groups/public/</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-				<checksumPolicy>ignore</checksumPolicy>
-			</releases>
-		</repository>
-
-		<repository>
-			<id>wso2telco.releases</id>
-			<name>WSO2 internal Repository</name>
-			<url>http://maven.wso2telco.com/nexus/content/repositories/releases/</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-				<checksumPolicy>ignore</checksumPolicy>
-			</releases>
-		</repository>
-
-		<repository>
-			<id>wso2Telco.snapshots</id>
-			<name>WSO2Telco Snapshot Repository</name>
-			<url>http://maven.wso2telco.com/nexus/content/repositories/snapshots/</url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-			</snapshots>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-		</repository>
-	</repositories>
-
-	<pluginRepositories>
-		<pluginRepository>
-			<releases>
-				<updatePolicy>daily</updatePolicy>
-				<checksumPolicy>ignore</checksumPolicy>
-			</releases>
-			<id>wso2-nexus</id>
-			<url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
-		</pluginRepository>
-	</pluginRepositories> -->
-
 	<dependencies>
 		<dependency>
 			<groupId>commons-httpclient.wso2</groupId>
