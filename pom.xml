@@ -55,7 +55,7 @@
 		<!--module>components/authentication-endpoint</module>
 		<module>features</module-->
 	    <module>webapps/blacklist-whitelist-service</module>
-		<module>components/aggregator-blacklist</module> 
+		<module>webapps/aggregator-blacklist</module> 
 		<module>components/oneapi-validation</module> 
 		<module>components/subscription-validator</module> 
 		<module>components/publish-events-data</module>
@@ -65,7 +65,7 @@
         <module>components/verification-handler</module>
         <module>components/mediator</module>
         <module>components/workflow-manager</module>
-        <module>workflow\axis2services\AxiataWorkflowApprovalService</module>
+        <module>workflow/axis2services/AxiataWorkflowApprovalService</module>
 	</modules>
 
 	<scm>
