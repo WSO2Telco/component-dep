@@ -1,0 +1,105 @@
+/*
+# Reset defaults ################### 
+*/
+
+html, body, div, h1, h2, h3, h4, h5, h6, ul, ol, dl, li, dt, dd, p, blockquote, pre, form, fieldset, table, th, td { margin: 0; padding: 0; } /* Reset margins and padding */
+
+a:link, a:visited{text-decoration:none;outline:none;} /* Reset link styles */
+
+html {overflow: -moz-scrollbars-vertical;} /* Mozilla scrollbar fix */
+
+/*   
+###################################
+*/
+
+
+
+
+#footer {
+	background-color: #FFF;
+	border-top:1px solid #bbbbbb;
+}
+
+body{
+	font-family: "Helvetica Neue", Helvetica, Arial;
+}
+   
+#body_container{	          
+	padding:20px 0;
+	clear:both;
+	margin-bottom:10px;
+}
+   
+#header{
+	border:1px solid #bbb;
+}
+
+
+   
+h1{
+	padding:10px 20px 10px 0;
+}
+   
+.nav-header ul{
+	list-style:none;
+}
+        
+#footer_container{
+	width:960px;
+	margin:auto;
+}
+   
+
+.logos{
+    display:none;
+}
+
+.sub-nav-footer{
+	border-top:1px solid #ccc;
+}
+
+  
+#footer ul {
+    list-style:none;
+}
+
+#footer ul ul,
+.nav-header ul ul{
+    margin-left:10px;
+}
+
+#forums table{
+	width:100%;
+}
+
+#forums table th{
+	background:#ddd;
+	border:1px solid #bbb;
+}
+
+#forums table td{
+	text-align:center;
+}
+
+#forums table td.forum-column-odd{
+	text-align:left;
+}
+
+input.paypal {
+    background: url(/f/files/css/main/images/btn_xpressCheckout.gif) no-repeat;
+    text-indent: -9999px;
+    overflow: hidden;
+    border: 0;
+    width: 154px;
+    height: 42px;
+}
+
+.virtualCurrencyBundles,
+.virtualCurrencyBalances{
+    list-style:none;
+}
+
+.virtualCurrencyBalances .accountName{
+    display:inline-block;
+    width:200px;
+}

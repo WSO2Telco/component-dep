@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE hibernate-configuration PUBLIC
+        "-//Hibernate/Hibernate Configuration DTD 3.0//EN"
+        "http://hibernate.sourceforge.net/hibernate-configuration-3.0.dtd">
+<hibernate-configuration>
+    <session-factory>
+        <!-- 2014-10-22 -->
+        <property name="hibernate.connection.driver_class">org.gjt.mm.mysql.Driver</property>
+
+        <property name="hibernate.connection.url">jdbc:mysql://localhost:3306/dev2_mife_sandbox_hub</property>
+
+        <property name="hibernate.dialect">org.hibernate.dialect.MySQLInnoDBDialect</property>
+        
+        <!-- This is use to create the database -->
+        <!--<property name="hibernate.dialect">org.hibernate.dialect.MySQLDialect</property>-->
+
+        <!-- Username of the database -->
+        <property name="hibernate.connection.username">root</property>
+
+        <!-- Password of the database -->
+        <property name="connection.password"></property>
+
+        <!-- Disable the second-level cache -->
+        <property name="cache.provider_class">org.hibernate.cache.internal.NoCacheProvider</property>
+        <property name="hibernate.jdbc.batch_size">50</property>
+        <property name="hibernate.show_sql">false</property>
+        <property name="hibernate.format_sql">true</property>
+        <property name="hibernate.connection.pool_size">50</property>
+        
+        <!-- This is use to create the database -->
+        <!--<property name="hibernate.hbm2ddl.auto">update</property>-->
+
+        <property name="hibernate.c3p0.min_size">10</property>
+        <!-- Minimum number of JDBC connections 
+        in the pool. Hibernate default: 1 -->
+        <property name="hibernate.c3p0.max_size">100</property>
+        <!-- Maximum number of JDBC connections 
+        in the pool. Hibernate default: 100 -->
+        <property name="hibernate.c3p0.max_statements">100</property>
+        <!-- The size of c3p0s PreparedStatement 
+        cache.Hibernate default: 0. no caching. -->
+        <property name="hibernate.c3p0.idle_test_period">100</property>
+        <!-- (seconds) c3p0 will test all 
+        idle, pooled but unchecked-out connections, every this number of seconds. 
+        Hibernate default: 0 (never validate) -->
+        <property name="hibernate.c3p0.acquire_increment">10</property>
+        <!-- how many connections at a time c3p0 will try to acquire. Hibernate default: 1 -->
+        <property name="hibernate.c3p0.timeout">100</property>
+        <property name="hibernate.c3p0.checkoutTimeout">1000</property>
+        <property name="hibernate.c3p0.acquireRetryAttempts">1</property>
+        <property name="hibernate.c3p0.acquireRetryDelay">5000</property>
+        
+        <!--<property name="hibernate.current_session_context_class">thread</property>-->
+            
+        <!-- Mapping entitiy classes -->
+        <mapping class="mife.sandbox.model.entities.Payment" />
+        <mapping class="mife.sandbox.model.entities.Sms" />
+        <mapping class="mife.sandbox.model.entities.ManageNumber" />
+        <mapping class="mife.sandbox.model.entities.SMSSubscription" />
+        <mapping class="mife.sandbox.model.entities.SenderAddress" />
+        <mapping class="mife.sandbox.model.entities.User" />
+        <mapping class="mife.sandbox.model.entities.ChargeAmountRequest" />
+        <mapping class="mife.sandbox.model.entities.PaymentTransaction" />
+        <mapping class="mife.sandbox.model.entities.SMSRequestLog" />
+        <mapping class="mife.sandbox.model.entities.SubscribeSMSRequest" />
+        <mapping class="mife.sandbox.model.entities.Paymentparam" />
+        <mapping class="mife.sandbox.model.entities.Smsparam" />
+        <mapping class="mife.sandbox.model.entities.SendSMSToApplication" />
+        <mapping class="mife.sandbox.model.entities.LocationRequestLog" />
+        <mapping class="mife.sandbox.model.entities.Locationparam" />
+        <mapping class="mife.sandbox.model.entities.DeliverySubscription" />
+        <mapping class="mife.sandbox.model.entities.UssdSubscriptions" />
+        <mapping class="mife.sandbox.model.entities.UssdTransaction" />
+        <mapping class="mife.sandbox.model.entities.SMSDeliveryStatus" />
+        <mapping class="mife.sandbox.model.entities.MobileIdApiRequest" />
+        <mapping class="mife.sandbox.model.entities.MobileApiEncodeRequest" />
+        
+        
+    </session-factory>
+</hibernate-configuration>
