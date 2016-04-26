@@ -1,0 +1,463 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<!DOCTYPE web-app PUBLIC "-//Sun Microsystems, Inc.//DTD Web Application 2.3//EN"
+        "http://java.sun.com/dtd/web-app_2_3.dtd">
+
+<web-app>
+    <display-name>One API</display-name>
+
+    <!--  yrdy -->
+
+    <description>
+        One API Server
+    </description>
+
+    <servlet>
+        <servlet-name>AmountChargeServlet</servlet-name>
+        <servlet-class>org.gsm.oneapi.server.payment.AmountChargeServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>AmountRefundServlet</servlet-name>
+        <servlet-class>org.gsm.oneapi.server.payment.AmountRefundServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>ListTransactionsServlet</servlet-name>
+        <servlet-class>org.gsm.oneapi.server.payment.ListTransactionsServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>AmountReserveServlet</servlet-name>
+        <servlet-class>org.gsm.oneapi.server.payment.AmountReserveServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <servlet-name>AmountReserveAdditionalServlet</servlet-name>
+        <servlet-class>org.gsm.oneapi.server.payment.AmountReserveAdditionalServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>AmountReserveChargeServlet</servlet-name>
+        <servlet-class>org.gsm.oneapi.server.payment.AmountReserveChargeServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <servlet-name>AmountReserveReleaseServlet</servlet-name>
+        <servlet-class>org.gsm.oneapi.server.payment.AmountReserveReleaseServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <servlet-name>LocationServlet</servlet-name>
+        <servlet-class>org.gsm.oneapi.server.location.LocationServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <servlet-name>SendSMSServlet</servlet-name>
+        <servlet-class>org.gsm.oneapi.server.sms.SendSMSServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <servlet-name>QuerySMSDeliveryStatusServlet</servlet-name>
+        <servlet-class>org.gsm.oneapi.server.sms.QuerySMSDeliveryStatusServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <servlet-name>SMSDeliveryReceiptSubscriptionServlet</servlet-name>
+        <servlet-class>org.gsm.oneapi.server.sms.SMSDeliveryReportSubscriptionServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <servlet-name>CancelSMSDeliveryReportSubscriptionServlet</servlet-name>
+        <servlet-class>org.gsm.oneapi.server.sms.CancelSMSDeliveryReportSubscriptionServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>RetrieveSMSMessagesServlet</servlet-name>
+        <servlet-class>org.gsm.oneapi.server.sms.RetrieveSMSMessagesServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <servlet-name>SMSReceiptReportSubscriptionServlet</servlet-name>
+        <servlet-class>org.gsm.oneapi.server.sms.SMSReceiptReportSubscriptionServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <servlet-name>CancelSMSReceiptReportSubscriptionServlet</servlet-name>
+        <servlet-class>org.gsm.oneapi.server.sms.CancelSMSReceiptReportSubscriptionServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    
+    <servlet>
+        <servlet-name>SendMMSServlet</servlet-name>
+        <servlet-class>org.gsm.oneapi.server.mms.SendMMSServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet> 
+
+    <servlet>
+        <servlet-name>QueryMMSDeliveryStatusServlet</servlet-name>
+        <servlet-class>org.gsm.oneapi.server.mms.QueryMMSDeliveryStatusServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <servlet-name>MMSDeliveryReceiptSubscriptionServlet</servlet-name>
+        <servlet-class>org.gsm.oneapi.server.mms.MMSDeliveryReportSubscriptionServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <servlet-name>CancelMMSDeliveryReportSubscriptionServlet</servlet-name>
+        <servlet-class>org.gsm.oneapi.server.mms.CancelMMSDeliveryReportSubscriptionServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>RetrieveMMSServlet</servlet-name>
+        <servlet-class>org.gsm.oneapi.server.mms.RetrieveMMSMessagesServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet> 
+
+    <servlet>
+        <servlet-name>RetrieveMMSMessageServlet</servlet-name>
+        <servlet-class>org.gsm.oneapi.server.mms.RetrieveMMSMessageServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet> 
+
+    <servlet>
+        <servlet-name>MMSReceiptReportSubscriptionServlet</servlet-name>
+        <servlet-class>org.gsm.oneapi.server.mms.MMSReceiptReportSubscriptionServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+    <servlet>
+        <servlet-name>CancelMMSReceiptReportSubscriptionServlet</servlet-name>
+        <servlet-class>org.gsm.oneapi.server.mms.CancelMMSReceiptReportSubscriptionServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+       
+    <servlet>
+        <servlet-name>ChangeProfile</servlet-name>
+        <servlet-class>org.dialog.mifesandbox.forum.server.ChangeProfile</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteForum</servlet-name>
+        <servlet-class>org.dialog.mifesandbox.forum.server.DeleteForum</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteReply</servlet-name>
+        <servlet-class>org.dialog.mifesandbox.forum.server.DeleteReply</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeleteThread</servlet-name>
+        <servlet-class>org.dialog.mifesandbox.forum.server.DeleteThread</servlet-class>
+    </servlet>
+
+    <servlet>
+        <servlet-name>Logout</servlet-name>
+        <servlet-class>org.dialog.mifesandbox.forum.server.Logout</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddForum</servlet-name>
+        <servlet-class>org.dialog.mifesandbox.forum.server.AddForum</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddReply</servlet-name>
+        <servlet-class>org.dialog.mifesandbox.forum.server.AddReply</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddThread</servlet-name>
+        <servlet-class>org.dialog.mifesandbox.forum.server.AddThread</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>AddUser</servlet-name>
+        <servlet-class>org.dialog.mifesandbox.forum.server.AddUser</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>ChangeMessage</servlet-name>
+        <servlet-class>org.dialog.mifesandbox.forum.server.ChangeMessage</servlet-class>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>Paymentsandbox</servlet-name>
+        <servlet-class>org.gsm.oneapi.server.payment.Paymentsandbox</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    <servlet>
+        <servlet-name>Smssandbox</servlet-name>
+        <servlet-class>org.gsm.oneapi.server.sms.Smssandbox</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+
+
+    <servlet>
+        <servlet-name>SubscribeSMSRequestServlet</servlet-name>
+        <servlet-class>mife.sandbox.view.SubscribeSMSRequestServlet</servlet-class>
+        <load-on-startup>1</load-on-startup>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>SenderAddressServlet</servlet-name>
+        <servlet-class>mife.sandbox.view.SenderAddressServlet</servlet-class>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>ManageNumberServlet</servlet-name>
+        <servlet-class>mife.sandbox.view.ManageNumberServlet</servlet-class>
+    </servlet>
+    <servlet>
+        <servlet-name>DeliverySubscriptionServlet</servlet-name>
+        <servlet-class>mife.sandbox.view.DeliverySubscriptionServlet</servlet-class>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>LocationSettingsServlet</servlet-name>
+        <servlet-class>mife.sandbox.view.LocationSettingsServlet</servlet-class>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>TransactionsServlet</servlet-name>
+        <servlet-class>mife.sandbox.view.TransactionsServlet</servlet-class>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>SendMessagesToApplicationServlet</servlet-name>
+        <servlet-class>org.gsm.oneapi.server.sms.SendMessagesToApplicationServlet</servlet-class>
+    </servlet>
+    
+    <servlet>
+        <servlet-name>Sandboxcontroller</servlet-name>
+        <servlet-class>mife.sandbox.view.Sandboxcontroller</servlet-class>
+    </servlet>
+    
+    <servlet-mapping>
+        <servlet-name>LocationSettingsServlet</servlet-name>
+        <url-pattern>/LocationSettingsService/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>AmountReserveReleaseServlet</servlet-name>
+        <url-pattern>/AmountReserveReleaseService/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>SendMessagesToApplicationServlet</servlet-name>
+        <url-pattern>/SendSMSToApplicationService/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>TransactionsServlet</servlet-name>
+        <url-pattern>/TransactionsServlet/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>SenderAddressServlet</servlet-name>
+        <url-pattern>/SenderAddressServlet/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>ManageNumberServlet</servlet-name>
+        <url-pattern>/ManageNumberServlet/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>DeliverySubscriptionServlet</servlet-name>
+        <url-pattern>/DeliverySubscriptionServlet/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>AmountChargeServlet</servlet-name>
+        <url-pattern>/AmountChargeService/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>ListTransactionsServlet</servlet-name>
+        <url-pattern>/ListTransactionsService/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>AmountRefundServlet</servlet-name>
+        <url-pattern>/AmountRefundService/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>AmountReserveServlet</servlet-name>
+        <url-pattern>/AmountReserveService/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>AmountReserveAdditionalServlet</servlet-name>
+        <url-pattern>/AmountReserveAdditionalService/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>AmountReserveChargeServlet</servlet-name>
+        <url-pattern>/AmountReserveChargeService/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>SubscribeSMSRequestServlet</servlet-name>
+        <url-pattern>/SubscribeSMSRequestServlet/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>Paymentsandbox</servlet-name>
+        <url-pattern>/PaymentSandboxService/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>Smssandbox</servlet-name>
+        <url-pattern>/SmsSandboxService/*</url-pattern>
+    </servlet-mapping>
+    
+    <servlet-mapping>
+        <servlet-name>Sandboxcontroller</servlet-name>
+        <url-pattern>/SandboxController/*</url-pattern>
+    </servlet-mapping>
+    
+
+
+    <!-- <servlet-mapping>
+         <servlet-name>PaymentAmountReservationServlet</servlet-name>
+         <url-pattern>/AmountReservationService/*</url-pattern>
+    </servlet-mapping> -->
+
+    <servlet-mapping>
+        <servlet-name>LocationServlet</servlet-name>
+        <url-pattern>/LocationService/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>SendSMSServlet</servlet-name>
+        <url-pattern>/SendSMSService/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>QuerySMSDeliveryStatusServlet</servlet-name>
+        <url-pattern>/QuerySMSService/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>SMSDeliveryReceiptSubscriptionServlet</servlet-name>
+        <url-pattern>/SMSDeliveryService/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>CancelSMSDeliveryReportSubscriptionServlet</servlet-name>
+        <url-pattern>/CancelSMSDeliveryService/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>RetrieveSMSMessagesServlet</servlet-name>
+        <url-pattern>/RetrieveSMSService/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>SMSReceiptReportSubscriptionServlet</servlet-name>
+        <url-pattern>/SMSReceiptService/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>CancelSMSReceiptReportSubscriptionServlet</servlet-name>
+        <url-pattern>/CancelSMSReceiptService/*</url-pattern>
+    </servlet-mapping>
+
+
+    <servlet-mapping>
+        <servlet-name>SendMMSServlet</servlet-name>
+        <url-pattern>/SendMMSService/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>QueryMMSDeliveryStatusServlet</servlet-name>
+        <url-pattern>/QueryMMSService/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>MMSDeliveryReceiptSubscriptionServlet</servlet-name>
+        <url-pattern>/MMSDeliveryService/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>CancelMMSDeliveryReportSubscriptionServlet</servlet-name>
+        <url-pattern>/CancelMMSDeliveryService/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>RetrieveMMSServlet</servlet-name>
+        <url-pattern>/RetrieveMMSService/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>RetrieveMMSMessageServlet</servlet-name>
+        <url-pattern>/RetrieveMMSMessageService/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>MMSReceiptReportSubscriptionServlet</servlet-name>
+        <url-pattern>/MMSReceiptService/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>CancelMMSReceiptReportSubscriptionServlet</servlet-name>
+        <url-pattern>/CancelMMSReceiptService/*</url-pattern>
+    </servlet-mapping>
+
+    <servlet-mapping>
+        <servlet-name>ChangeProfile</servlet-name>
+        <url-pattern>/forum/ChangeProfile/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteForum</servlet-name>
+        <url-pattern>/forum/DeleteForum/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteReply</servlet-name>
+        <url-pattern>/forum/DeleteReply/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>DeleteThread</servlet-name>
+        <url-pattern>/forum/DeleteThread/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>Logout</servlet-name>
+        <url-pattern>/forum/Logout/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddForum</servlet-name>
+        <url-pattern>/forum/AddForum/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddReply</servlet-name>
+        <url-pattern>/forum/AddReply/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddThread</servlet-name>
+        <url-pattern>/forum/AddThread/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>AddUser</servlet-name>
+        <url-pattern>/forum/AddUser/*</url-pattern>
+    </servlet-mapping>
+    <servlet-mapping>
+        <servlet-name>ChangeMessage</servlet-name>
+        <url-pattern>/forum/ChangeMessage/*</url-pattern>
+    </servlet-mapping>
+
+    <welcome-file-list>
+        <welcome-file>index.jsp</welcome-file>
+    </welcome-file-list>
+</web-app>
