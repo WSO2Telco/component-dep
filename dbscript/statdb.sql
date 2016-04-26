@@ -284,8 +284,6 @@ CREATE TABLE `sub_approval_audit` (
   PRIMARY KEY (`APP_ID`,`API_PROVIDER`,`API_NAME`,`API_VERSION`,`COMPLETED_BY_ROLE`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-
-
 DROP TABLE IF EXISTS `app_approval_audit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;

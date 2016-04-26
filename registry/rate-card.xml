@@ -1,0 +1,356 @@
+<RateCard>
+	<Operators>
+		<Operator name="DIALOG">
+			<API name="USSD">
+				<Rate default="true">
+					<Name>one</Name>
+					<Currency>Rs</Currency>
+					<Value>10</Value>
+					<Type>CONSTANT</Type>
+					<Taxes>
+						<Tax>VAT</Tax>
+						<Tax>ABC</Tax>
+					</Taxes>
+				</Rate>
+				<Rate>
+					<Name>two</Name>
+					<Currency>Rs</Currency>
+					<Value>20</Value>
+					<Type>PER_REQUEST</Type>
+				</Rate>
+			</API>
+			<API name="smsmessaging">
+				<Rate default="true">
+					<Name>one</Name>
+					<Currency>Rs</Currency>
+					<Value>10</Value>
+					<Type>CONSTANT</Type>
+					<Taxes>
+						<Tax>VAT</Tax>
+						<Tax>ABC</Tax>
+					</Taxes>
+				</Rate>
+				<Rate>
+					<Name>two</Name>
+					<Currency>Rs</Currency>
+					<Value>20</Value>
+					<Type>PER_REQUEST</Type>
+				</Rate>
+			</API>
+			<API name="payment">
+				<Rate default="true">
+					<Name>one</Name>
+					<Currency>Rs</Currency>
+					<Value>10</Value>
+					<Type>PERCENTAGE</Type>
+					<Category>
+						<game>25</game>
+						<movie>50</movie>
+						<category1>50</category1>
+					</Category>
+				</Rate>
+				<Rate>
+					<Name>two</Name>
+					<Currency>Rs</Currency>
+					<Value>20</Value>
+					<Type>PERCENTAGE</Type>
+					<Category>
+						<game>50</game>
+						<movie>52</movie>
+						<category1>57</category1>
+					</Category>
+					<Taxes>
+						<Tax>VAT</Tax>
+						<Tax>ABC</Tax>
+					</Taxes>
+				</Rate>
+			</API>
+			<API name="location">
+				<Rate default="true">
+					<Name>one</Name>
+					<Currency>Rs</Currency>
+					<Value>10</Value>
+					<Type>CONSTANT</Type>
+					<Taxes>
+						<Tax>VAT</Tax>
+						<Tax>ABC</Tax>
+					</Taxes>
+				</Rate>
+				<Rate>
+					<Name>two</Name>
+					<Currency>Rs</Currency>
+					<Value>20</Value>
+					<Type>PER_REQUEST</Type>
+				</Rate>
+			</API>
+			<API name="ussd">
+				<Rate default="true">
+					<Name>one</Name>
+					<Currency>Rs</Currency>
+					<Value>10</Value>
+					<Type>CONSTANT</Type>
+					<Taxes>
+						<Tax>VAT</Tax>
+						<Tax>ABC</Tax>
+					</Taxes>
+				</Rate>
+				<Rate>
+					<Name>two</Name>
+					<Currency>Rs</Currency>
+					<Value>20</Value>
+					<Type>PER_REQUEST</Type>
+				</Rate>
+			</API>
+		</Operator>
+		<Operator name="ROBI">
+			<API name="USSD">
+				<Rate default="true">
+					<Name>one</Name>
+					<Currency>Rs</Currency>
+					<Value>10</Value>
+					<Type>CONSTANT</Type>
+					<Taxes>
+						<Tax>VAT</Tax>
+						<Tax>ABC</Tax>
+					</Taxes>
+				</Rate>
+				<Rate>
+					<Name>two</Name>
+					<Currency>Rs</Currency>
+					<Value>20</Value>
+					<Type>PER_REQUEST</Type>
+				</Rate>
+			</API>
+			<API name="smsmessaging">
+				<Rate default="true">
+					<Name>one</Name>
+					<Currency>Tk</Currency>
+					<Value>10</Value>
+					<Type>CONSTANT</Type>
+					<Taxes>
+						<Tax>VAT</Tax>
+						<Tax>ABC</Tax>
+					</Taxes>
+				</Rate>
+				<Rate>
+					<Name>two</Name>
+					<Currency>Tk</Currency>
+					<Value>200</Value>
+					<Type>QUOTA</Type>
+					<Attributes>
+						<MaxCount>500</MaxCount>
+						<ExcessRate>10</ExcessRate>
+					</Attributes>
+				</Rate>
+			</API>
+			<API name="payment">
+				<Rate default="true">
+					<Name>one</Name>
+					<Currency>Tk</Currency>
+					<Value>10</Value>
+					<Type>PERCENTAGE</Type>
+					<Category>
+						<game>25</game>
+						<movie>52</movie>
+						<category1>17</category1>
+					</Category>
+				</Rate>
+				<Rate default="true">
+					<Name>two</Name>
+					<Currency>Tk</Currency>
+					<Value>20</Value>
+					<Type>PERCENTAGE</Type>
+					<Category>
+						<game>50</game>
+						<movie>52</movie>
+						<category1>57</category1>
+					</Category>
+				</Rate>
+			</API>
+			<API name="location">
+				<Rate default="true">
+					<Name>one</Name>
+					<Currency>Tk</Currency>
+					<Value>10</Value>
+					<Type>CONSTANT</Type>
+					<Taxes>
+						<Tax>VAT</Tax>
+						<Tax>ABC</Tax>
+					</Taxes>
+				</Rate>
+				<Rate>
+					<Name>two</Name>
+					<Currency>Tk</Currency>
+					<Value>20</Value>
+					<Type>PER_REQUEST</Type>
+				</Rate>
+			</API>
+			<API name="ussd">
+				<Rate default="true">
+					<Name>one</Name>
+					<Currency>Tk</Currency>
+					<Value>10</Value>
+					<Type>CONSTANT</Type>
+					<Taxes>
+						<Tax>VAT</Tax>
+						<Tax>ABC</Tax>
+					</Taxes>
+				</Rate>
+				<Rate>
+					<Name>two</Name>
+					<Currency>Tk</Currency>
+					<Value>20</Value>
+					<Type>PER_REQUEST</Type>
+				</Rate>
+			</API>
+		</Operator>
+               <Operator name="CELCOM">
+			   <API name="USSD">
+				<Rate default="true">
+					<Name>one</Name>
+					<Currency>Rs</Currency>
+					<Value>10</Value>
+					<Type>CONSTANT</Type>
+					<Taxes>
+						<Tax>VAT</Tax>
+						<Tax>ABC</Tax>
+					</Taxes>
+				</Rate>
+				<Rate>
+					<Name>two</Name>
+					<Currency>Rs</Currency>
+					<Value>20</Value>
+					<Type>PER_REQUEST</Type>
+				</Rate>
+			</API>
+			<API name="smsmessaging">
+				<Rate default="true">
+					<Name>one</Name>
+					<Currency>Rs</Currency>
+					<Value>10</Value>
+					<Type>CONSTANT</Type>
+					<Taxes>
+						<Tax>VAT</Tax>
+						<Tax>ABC</Tax>
+					</Taxes>
+				</Rate>
+				<Rate>
+					<Name>two</Name>
+					<Currency>Rs</Currency>
+					<Value>20</Value>
+					<Type>PER_REQUEST</Type>
+				</Rate>
+			</API>
+			<API name="payment">
+				<Rate default="true">
+					<Name>one</Name>
+					<Currency>Rs</Currency>
+					<Value>10</Value>
+					<Type>PERCENTAGE</Type>
+					<Category>
+						<game>25</game>
+						<movie>52</movie>
+						<category1>57</category1>
+					</Category>
+				</Rate>
+				<Rate>
+					<Name>two</Name>
+					<Currency>Rs</Currency>
+					<Value>20</Value>
+					<Type>PERCENTAGE</Type>
+					<Category>
+						<game>50</game>
+						<movie>52</movie>
+						<category1>57</category1>
+					</Category>
+					<Taxes>
+						<Tax>VAT</Tax>
+						<Tax>ABC</Tax>
+					</Taxes>
+				</Rate>
+			</API>
+			<API name="location">
+				<Rate default="true">
+					<Name>one</Name>
+					<Currency>Rs</Currency>
+					<Value>10</Value>
+					<Type>CONSTANT</Type>
+					<Taxes>
+						<Tax>VAT</Tax>
+						<Tax>ABC</Tax>
+					</Taxes>
+				</Rate>
+				<Rate>
+					<Name>two</Name>
+					<Currency>Rs</Currency>
+					<Value>20</Value>
+					<Type>PER_REQUEST</Type>
+				</Rate>
+			</API>
+			<API name="ussd">
+				<Rate default="true">
+					<Name>one</Name>
+					<Currency>Rs</Currency>
+					<Value>10</Value>
+					<Type>CONSTANT</Type>
+					<Taxes>
+						<Tax>VAT</Tax>
+						<Tax>ABC</Tax>
+					</Taxes>
+				</Rate>
+				<Rate>
+					<Name>two</Name>
+					<Currency>Rs</Currency>
+					<Value>20</Value>
+					<Type>PER_REQUEST</Type>
+				</Rate>
+			</API>
+		</Operator>
+
+		<!-- <Operator name="DIALOG">
+			<API name="smsmessaging">
+				<Rate default="true">
+					<!- Name of the Rate ->
+					<Name>one</Name>
+
+					<!- Currency symbol ->
+					<Currency>Tk</Currency>
+
+					<!- Value of Rate. Should be a float value ->
+					<Value>200</Value>
+
+					<!-
+						The type of Rate. Following types are allowed.
+						CONSTANT - A constant charge for the charging period,
+						PERCENTAGE - A percentage of the amount applied as the charge. Used for Payment API.,
+						PER_REQUEST - Rate applied per request.,
+						QUOTA - A constant charge upto the quota value and a different rate for the excess count.,
+						SUBSCRIPTION - Charged based on the no. of unique subscribers for the API. eg: LBS
+					->
+					<Type>QUOTA</Type>
+
+					<!-
+						Optional Attributes Element. Used to list Attributes needed for some Rate types.
+						e.g.-
+						<Attributes>
+							<Attribute1>xxxx</Attribute1>
+                            <Attribute2>xxxx</Attribute2>
+                        </Attributes>
+					->
+					<Attributes>
+						<MaxCount>500</MaxCount>
+						<ExcessRate>10</ExcessRate>
+					</Attributes>
+
+					<!-
+						Optional Taxes Element. Used to define the names of the Taxes applicable to this rate.
+					->
+					<Taxes>
+						<Tax>VAT</Tax>
+						<Tax>ABC</Tax>
+					</Taxes>
+				</Rate>
+			</API>
+		</Operator> -->
+	</Operators>
+</RateCard>
