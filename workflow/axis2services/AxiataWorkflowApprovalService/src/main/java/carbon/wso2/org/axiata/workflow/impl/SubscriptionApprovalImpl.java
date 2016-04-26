@@ -5,17 +5,13 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
-
 import javax.xml.namespace.QName;
-
 import carbon.wso2.org.axiata.workflow.dao.WorkflowDAO;
 import carbon.wso2.org.axiata.workflow.in.SubscriptionApproval;
 import carbon.wso2.org.axiata.workflow.subscription.*;
-
-import com.axiata.dialog.dbutils.AxiataDbService;
-import com.axiata.dialog.dbutils.Operator;
-import com.axiata.dialog.dbutils.Operatorendpoint;
-
+import com.wso2telco.dbutils.AxiataDbService;
+import com.wso2telco.dbutils.Operator;
+import com.wso2telco.dbutils.Operatorendpoint;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

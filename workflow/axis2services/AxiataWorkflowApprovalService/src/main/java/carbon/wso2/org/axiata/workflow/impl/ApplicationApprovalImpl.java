@@ -2,13 +2,10 @@ package carbon.wso2.org.axiata.workflow.impl;
 
 import java.util.Iterator;
 import java.util.List;
-
 import carbon.wso2.org.axiata.workflow.application.*;
 import carbon.wso2.org.axiata.workflow.in.ApplicationApproval;
-
-import com.axiata.dialog.dbutils.AxiataDbService;
-import com.axiata.dialog.dbutils.Operator;
-
+import com.wso2telco.dbutils.AxiataDbService;
+import com.wso2telco.dbutils.Operator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
