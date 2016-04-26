@@ -47,6 +47,23 @@ var isSelfSignupEnabled = function(){
 	return 	getAPIStoreObj().isSelfSignupEnabled();
 };
 
+var isSelfSignupEnabledForTenantUser = function(tenantDomain){
+    var log = new Log();
+    try {
+
+        if (tenantDomain == null) {
+             return  getAPIStoreObj().isSelfSignupEnabledForTenant("carbon.super");
+        } else {
+             return  getAPIStoreObj().isSelfSignupEnabledForTenant(tenantDomain);
+        }
+    } catch (e) {
+        log.error(e.message);
+        return false;
+    }
+    
+    
+};
+
 var getAdminCookie = function() {
     //TODO : this should be set in the Context during the deployment
 
@@ -54,7 +71,7 @@ var getAdminCookie = function() {
 
 var getAPIStoreObj = function() {
 
-    var tenantDomain = request.getParameter("tenant");
+    var tenantDomain = jagg.getTenantDomain();
     var user = jagg.getUser();
     var store;
     if (user == null) {
@@ -68,6 +85,14 @@ var getAPIStoreObj = function() {
         store = require('apistore');
         return new store.APIStore(user.username);
     }
+};
+
+var getAPIConsumerObj = function() {
+    var user = jagg.getUser();
+
+    var APIManagerFactory = Packages.org.wso2.carbon.apimgt.impl.APIManagerFactory;
+
+    return APIManagerFactory.getInstance().getAPIConsumer(user);
 };
 
 var loadTenantRegistry = function (tenantDomain) {
@@ -88,6 +113,25 @@ var loadTenantRegistry = function (tenantDomain) {
     }    
 };
 
+var loadTenantAxisConfiguration = function (tenantDomain) {
+ 
+    try {
+        if (tenantDomain != null && tenantDomain != "") {  
+             
+           getAPIStoreObj().loadAxisConfigOfTenant(String(tenantDomain));
+            return
+            {
+                error:false
+            }
+            ;
+        }
+    } catch (e) {
+        return {
+            error:true,
+            message:e.message
+        };
+    }    
+};
 
 var getActiveTenantDomains=function(){
     var tenantDomains,
@@ -96,6 +140,7 @@ var getActiveTenantDomains=function(){
 
 	try {
 		tenantDomains = store.getActiveTenantDomains();
+		tenantDomains = parse(stringify(tenantDomains));
 
         if (log.isDebugEnabled()) {
             log.debug("isTenantMode : " + stringify(api));
@@ -132,5 +177,10 @@ var getAxiataStoreObj = function() {
         axiataStore = require('axiatastore');
         return new axiataStore.AxiataStore(user.username);
     }
+};
+
+var getUsageClient = function(){
+    var user = jagg.getUser();
+    return org.wso2.carbon.apimgt.usage.client.UsageClient.getClient(user);
 };
 %>

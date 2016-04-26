@@ -6,7 +6,7 @@ var user = outputs.user;
 var isSuperTenant, tenantDomain;
 var mod = jagg.module("manager");
 var httpsUrl= mod.getHTTPsURL();
-var isSelfSignupEnabled = mod.isSelfSignupEnabled();
+var isSelfSignupEnabled = mod.isSelfSignupEnabledForTenantUser(request_tenant);
 var currentURL = request.getRequestURI();
 if(request.getQueryString()){
     currentURL += "?" + request.getQueryString();
@@ -40,7 +40,7 @@ if(user) { %>
         <li>
             <a id="login-link"><%=i18n.localize("login")%></a>
         </li>
-        <%if(isSelfSignupEnabled){%>
+	<%if(isSelfSignupEnabled){%>
         <li>
             <a id="register-link" class="register-link" href="<%=site.context%>/site/pages/sign-up.jag?<%=urlPrefix%>"><%=i18n.localize("signup")%></a>
         </li>

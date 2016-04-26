@@ -1,9 +1,9 @@
 <%
-
+var site = require("/site/conf/site.json");
 //TODO : remove this when log configs are implemented
-Log.prototype.isDebugEnabled = function () {
-    return false;
-};
+//Log.prototype.isDebugEnabled = function () {
+//    return false;
+//};
 
 //TODO : remove this when Context HO is implemented.
 var context = context || {
@@ -25,8 +25,6 @@ var jagg = jagg || (function () {
 
     var requirs = {};
 
-    var reverse_proxy; 
-
     var templates = {};
 
     var initializers = {};
@@ -34,6 +32,8 @@ var jagg = jagg || (function () {
     var bloks = {};
 
     var data;
+
+    var reverse_proxy;    
 
     var setData = function (d) {
         data = d;
@@ -44,11 +44,65 @@ var jagg = jagg || (function () {
     };
 
     var getUser = function () {
-        return session.get("logged.user");
+        var user = session.get("logged.user");
+
+        // If user is null then check for mutual auth
+        if (!user) {
+            user = mutualAuthVerifier(user);
+        }
+
+	return user;
     };
 
     var setUser = function (user) {
+        //if jaggery allow session reset
+        if (typeof request.getSession == "function") {
+            if (session && !session.isNew()) {
+                   session.invalidate();
+            }
+            session = request.getSession(true);
+        }
         session.put("logged.user", user);
+    };
+
+    var mutualAuthVerifier = function(user){
+
+        var log = new Log();
+        var site = require("/site/conf/site.json");
+
+	    if(site.mutualAuthConfiguration){
+            if (site.mutualAuthConfiguration.enabled == "true") {
+
+                // cert will be available only if trust store holds client certificate. Otherwise it is null
+                var cert = request.getAttribute("javax.servlet.request.X509Certificate");
+                var userName = request.getHeader("MutualAuthUserName");
+
+                // proceed mutul ssl validation if cert and user name set properly
+
+                if (cert != null) {
+                    if (userName) {
+                        var security = require("apistore");
+                        var mutualAuthHostObject = new security.MutualAuthHostObject();
+                        var isValidUser = mutualAuthHostObject.validateUserNameHeader(userName);
+                        // Group ID feature not supported here
+                        var groupId="";
+                        session.put("groupId", groupId);
+                        if (isValidUser) {
+                            log.info("Mutual Auth authentication success for user : " + userName);
+                            user = {username: userName, cookie: null, hasPublisherAccess: false};
+                            return  user;
+                        } else {
+                            log.debug("Mutual authentication failed for invalid user : " + userName);
+                        }
+
+                    } else {
+                        log.debug("Mutual authentication failed for invalid user : MutualAuthUserName header is empty");
+                    }
+                } else {
+                    log.debug("Mutual Authentication failed due to no trusted certificate");
+                }
+            }
+        }
     };
 
     var getThemeFile = function (path) {
@@ -128,10 +182,10 @@ var jagg = jagg || (function () {
             subtheme : subtheme ? subtheme : site.theme.subtheme,
         };
         //load the tenant theme if exists
-        var tenant = request.getParameter('tenant');
+        var tenant = getTenantDomain();
         if(tenant){
             tenant = tenant.replace("/",".");
-            r.tenant_theme = request.getParameter('tenant');
+            r.tenant_theme = getTenantDomain();
         }        
         return r;
     };
@@ -353,12 +407,11 @@ var jagg = jagg || (function () {
 
     };    
 
-
     var getMappedUrl = function (path) {
         return getAbsoluteUrl(getUrlMapping(path));
     };
 
-     var getAbsoluteUrl = function (path) {
+    var getAbsoluteUrl = function (path) {
         var host = "" 
         if(isReverseProxyEnabled()){
             host = "https://" + site.reverseProxy.host ;
@@ -411,13 +464,13 @@ var jagg = jagg || (function () {
     };
     
     var getTenantURLPrefix = function(tail) {
-        if (!tail) {
-            tail = "";
-        }
-        if( site.reverseProxy.tenantHeader == null ||
+    	if (!tail) {
+    		tail = "";
+    	}
+    	if( site.reverseProxy.tenantHeader == null ||
                 request.getHeader(site.reverseProxy.tenantHeader) == null){
-            if(getTenantDomain() != null){ 
-                return tail + "tenant=" + getTenantDomain();
+        	if(getTenantDomain() != null){ 
+				return tail + "tenant=" + getTenantDomain();
             }
          }
          return "";
@@ -501,7 +554,7 @@ var jagg = jagg || (function () {
 
         var ProxyContextPath = getCarbonProxyContextPath();
         return ProxyContextPath + path;
-    };  
+    }    
 
     var module = function (name, module) {
         if (module) {
@@ -645,7 +698,7 @@ var jagg = jagg || (function () {
     };
 
     var addHeaderCSS = function (template, key, css) {
-        css = '<link type="text/css" rel="stylesheet" href="' + site.context + getThemeFile(css) + '"/>';
+        css = '<link type="text/css" rel="stylesheet" href="' + url(getThemeFile(css)) + '"/>';
         insertData(this, template, "header", "css", key, css);
     };
 
@@ -655,7 +708,7 @@ var jagg = jagg || (function () {
     };
 
     var addHeaderJS = function (template, key, js) {
-        js = '<script type="text/javascript" src="' + site.context + getThemeFile(js) + '"></script>';
+        js = '<script type="text/javascript" src="' + url(getThemeFile(js)) + '"></script>\n';
         insertData(this, template, "header", "js", key, js);
     };
 
@@ -669,7 +722,7 @@ var jagg = jagg || (function () {
     };
 
     var addFooterCSS = function (template, key, css) {
-        css = '<link type="text/css" rel="stylesheet" href="' + site.context + getThemeFile(css) + '"/>';
+        css = '<link type="text/css" rel="stylesheet" href="' + url(getThemeFile(css)) + '"/>';
         insertData(this, template, "footer", "css", key, css);
     };
 
@@ -679,7 +732,7 @@ var jagg = jagg || (function () {
     };
 
     var addFooterJS = function (template, key, js) {
-        js = '<script type="text/javascript" src="' + site.context + getThemeFile(js) + '"></script>';
+        js = '\t<script type="text/javascript" src="' + url(getThemeFile(js)) + '"></script>\n';
         insertData(this, template, "footer", "js", key, js);
     };
 
@@ -757,7 +810,7 @@ var jagg = jagg || (function () {
               case "url":
                 break;
               case "input":
-                var regex = '/([<>\"\'])/';
+                var regex = /([<>\"\'])/;
                 if(regex.test(value)) errors.push(key);
                 break;                 
               case "number":
@@ -773,7 +826,7 @@ var jagg = jagg || (function () {
                 if(!regex.test(value)) errors.push(key); 
                 break;                                        
               case "name":
-                var regex = '/([~!#$;%^*+={}\|\\<>\"\'\/,])/';  
+                var regex = /([~!#$;%^*+={}\|\\<>\"\'\/,])/;  
                 if(regex.test(value)) errors.push(key);                
                 break;
               case "password":
@@ -785,7 +838,7 @@ var jagg = jagg || (function () {
                 if(!regex.test(value)) errors.push(key);              
                 break;
                case "provider":
-                var regex = '/([~!#$;%^*+={}\|\\<>\"\'\,])/';  
+                var regex = /([~!#$;%^*+={}\|\\<>\"\'\,])/;  
                 if(regex.test(value)) errors.push(key);
                 break;
               default:
