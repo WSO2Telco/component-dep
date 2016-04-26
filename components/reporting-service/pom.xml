@@ -122,7 +122,7 @@
         </plugins>
     </build>
 
-    <repositories>
+    <!-- <repositories>
         <repository>
             <id>wso2.snapshots</id>
             <name>Apache Snapshot Repository</name>
@@ -168,10 +168,10 @@
                 <enabled>false</enabled>
             </releases>
         </repository>
-    </repositories>
+    </repositories> -->
 
-    <properties>
+    <!-- <properties>
         <org.wso2.carbon.governance.api.version>4.5.8</org.wso2.carbon.governance.api.version>
         
-    </properties>
+    </properties> -->
 </project>
