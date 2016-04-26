@@ -25,7 +25,10 @@
 	</parent>
 
 	<artifactId>aggregator-blacklist</artifactId>
+
 	<packaging>war</packaging>
+	<name>WSO2.Telco Aggregator Blacklist Module</name>
+	<description>WSO2.Telco Aggregator Blacklist Module</description>
 
 	<build>
 		<plugins>
@@ -47,6 +50,7 @@
 			</plugin>
 		</plugins>
 	</build>
+
 	<dependencies>
 		<dependency>
 			<groupId>log4j</groupId>
@@ -65,44 +69,5 @@
 			<artifactId>jersey-client</artifactId>
 		</dependency>
 	</dependencies>
-	<properties>
-		
-		<com.axiata.dialog.version>1.0-SNAPSHOT</com.axiata.dialog.version>
-		
-	</properties>
 
-	<repositories>
-		<repository>
-			<id>wso2telco-nexus</id>
-			<name>WSO2Telco internal Repository</name>
-			<url>http://maven.wso2telco.com/nexus/content/groups/public/</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-				<checksumPolicy>ignore</checksumPolicy>
-			</releases>
-		</repository>
-		<repository>
-			<id>wso2telco.releases</id>
-			<name>WSO2 internal Repository</name>
-			<url>http://maven.wso2telco.com/nexus/content/repositories/releases/</url>
-			<releases>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-				<checksumPolicy>ignore</checksumPolicy>
-			</releases>
-		</repository>
-		<repository>
-			<id>wso2Telco.snapshots</id>
-			<name>WSO2Telco Snapshot Repository</name>
-			<url>http://maven.wso2telco.com/nexus/content/repositories/snapshots/</url>
-			<snapshots>
-				<enabled>true</enabled>
-				<updatePolicy>daily</updatePolicy>
-			</snapshots>
-			<releases>
-				<enabled>false</enabled>
-			</releases>
-		</repository>
-	</repositories>
 </project>
