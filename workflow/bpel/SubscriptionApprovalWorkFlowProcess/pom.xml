@@ -2,20 +2,28 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.example.SubscriptionApprovalWorkFlowProcess_1.0.0</groupId>
-  <artifactId>SubscriptionApprovalWorkFlowProcess_1.0.0</artifactId>
-  <version>1.0.0</version>
+  <groupId>com.wso2telco.dep</groupId>
+  <artifactId>SubscriptionApprovalWorkFlowProcess</artifactId>  
   <packaging>bpel/workflow</packaging>
-  <name>SubscriptionApprovalWorkFlowProcess_1.0.0</name>
-  <description>SubscriptionApprovalWorkFlowProcess_1.0.0</description>
+  <name>SubscriptionApprovalWorkFlowProcess</name>
+  <description>SubscriptionApprovalWorkFlowProcess</description>
+
+  <parent>
+    <groupId>com.wso2telco.dep</groupId>
+    <artifactId>component-dep</artifactId>    
+    <version>1.8.0-SNAPSHOT</version>
+    <relativePath>../../../parent/pom.xml</relativePath>
+  </parent>
+  
   <build>
+    <finalName>SubscriptionApprovalWorkFlowProcess</finalName>
     <plugins>
       <plugin>
         <groupId>org.wso2.maven</groupId>
         <artifactId>maven-bpel-plugin</artifactId>
         <version>2.0.4</version>
         <extensions>true</extensions>
-        <configuration />
+        <configuration/>
       </plugin>
       <plugin>
         <artifactId>maven-eclipse-plugin</artifactId>
@@ -34,7 +42,7 @@
           </projectnatures>
         </configuration>
       </plugin>
-    </plugins>
+    </plugins>      
   </build>
   <repositories>
     <repository>
