@@ -5,7 +5,7 @@
             <property name="POST_TO_URI" value="true" scope="axis2"/>
             <filter source="$ctx:AM_KEY_TYPE" regex="PRODUCTION">
                      <then>
-          <class name="com.wso2telco.mediator.AxiataHandlerMediator">
+          <class name="com.wso2telco.mediator.HandlerMediator">
                   <property name="executorClass" value="com.wso2telco.mediator.impl.LocationExecutor"/>
           </class>
           <loopback/>
@@ -51,11 +51,11 @@
             <property name="id" value="A"/>
             <property name="policyKey" value="gov:/apimgt/applicationdata/tiers.xml"/>
         </handler>
-        <handler class="org.wso2.carbon.apimgt.axiata.dialog.verifier.DialogAPIRequestHandler"/>
+        <handler class="com.wso2telco.verificationhandler.verifier.DialogAPIRequestHandler"/>
         <handler class="org.wso2.carbon.apimgt.usage.publisher.APIMgtGoogleAnalyticsTrackingHandler">
             <property name="configKey" value="gov:/apimgt/statistics/ga-config.xml"/>
         </handler>
         <handler class="org.wso2.carbon.apimgt.gateway.handlers.ext.APIManagerExtensionHandler"/>
-        <handler class="org.wso2.carbon.apimgt.axiata.dialog.verifier.DialogBlacklistHandler"/>
+        <handler class="com.wso2telco.verificationhandler.verifier.DialogBlacklistHandler"/>
     </handlers>
 </api>
