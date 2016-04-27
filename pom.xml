@@ -66,6 +66,7 @@
         <module>components/mediator</module>
         <module>components/workflow-manager</module>
         <module>workflow/axis2services/AxiataWorkflowApprovalService</module>
+        <module>workflow/bpel/ApplicationApprovalWorkFlowProcess</module>
 	</modules>
 
 	<scm>

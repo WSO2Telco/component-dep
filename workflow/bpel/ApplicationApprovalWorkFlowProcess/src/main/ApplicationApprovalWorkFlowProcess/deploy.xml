@@ -5,9 +5,9 @@
 	xmlns:applications="http://org.wso2.carbon/applications/"
 	xmlns:callback.workflow.apimgt.carbon.wso2.org="http://callback.workflow.apimgt.carbon.wso2.org"
 	xmlns:b4p="http://docs.oasis-open.org/ns/bpel4people/bpel4people/200803"
-	xmlns:axiata="http://org.wso2.carbon/axiata/workflow"
-	xmlns:axau="http://org.wso2.carbon/axiata/workflow"
-	xmlns:axnotify="http://org.wso2.carbon/axiata/workflow/notify">
+	xmlns:wso2telco="http://org.wso2.carbon/wso2telco/workflow"
+	xmlns:axau="http://org.wso2.carbon/wso2telco/workflow"
+	xmlns:axnotify="http://org.wso2.carbon/wso2telco/workflow/notify">
 	
 	<process
 		name="workflow.application.apimgt.carbon.wso2.org:ApplicationApprovalWorkFlowProcess">
@@ -42,23 +42,23 @@
 			</service>
 		</invoke>
 		<invoke partnerLink="AAOPPL">
-			<service name="axiata:AxiataWorkflowApprovalService" port="AxiataWorkflowApprovalServiceSOAP">
+			<service name="wso2telco:Wso2telcoWorkflowApprovalService" port="Wso2telcoWorkflowApprovalServiceSOAP">
 				<endpoint xmlns="http://wso2.org/bps/bpel/endpoint/config"
-					endpointReference="./../../../../repository/conf/epr/AxiataWorkflowApprovalService.epr">
+					endpointReference="./../../../../repository/conf/epr/Wso2telcoWorkflowApprovalService.epr">
 				</endpoint>
 			</service>
 		</invoke>
 		<invoke partnerLink="AAUPL">
-			<service name="axau:AxiataWorkflowApprovalService" port="AxiataWorkflowApprovalServiceSOAP">
+			<service name="axau:Wso2telcoWorkflowApprovalService" port="Wso2telcoWorkflowApprovalServiceSOAP">
 				<endpoint xmlns="http://wso2.org/bps/bpel/endpoint/config"
-					endpointReference="./../../../../repository/conf/epr/AxiataWorkflowApprovalService.epr">
+					endpointReference="./../../../../repository/conf/epr/Wso2telcoWorkflowApprovalService.epr">
 				</endpoint>
 			</service>
 		</invoke>
 		<invoke partnerLink="AXNOTIFYPL">
-			<service name="axnotify:AxiataWorkflowNotificationService" port="AxiataWorkflowNotificationServiceSOAP">
+			<service name="axnotify:Wso2telcoWorkflowNotificationService" port="Wso2telcoWorkflowNotificationServiceSOAP">
 				<endpoint xmlns="http://wso2.org/bps/bpel/endpoint/config"
-					endpointReference="./../../../../repository/conf/epr/AxiataWorkflowNotificationService.epr">
+					endpointReference="./../../../../repository/conf/epr/Wso2telcoWorkflowNotificationService.epr">
 				</endpoint>
 			</service>
 		</invoke>

@@ -2,12 +2,19 @@
 <project xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd" xmlns="http://maven.apache.org/POM/4.0.0"
     xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
   <modelVersion>4.0.0</modelVersion>
-  <groupId>com.example.ApplicationApprovalWorkFlowProcess</groupId>
-  <artifactId>ApplicationApprovalWorkFlowProcess</artifactId>
-  <version>1.0.0</version>
-  <packaging>bpel/workflow</packaging>
+  <groupId>com.wso2telco.dep</groupId>
+  <artifactId>ApplicationApprovalWorkFlowProcess</artifactId> 
+  <packaging>pom</packaging>
   <name>ApplicationApprovalWorkFlowProcess</name>
   <description>ApplicationApprovalWorkFlowProcess</description>
+
+  <parent>
+    <groupId>com.wso2telco.dep</groupId>
+    <artifactId>component-dep</artifactId>
+    <version>1.8.0-SNAPSHOT</version>
+    <relativePath>../../../parent/pom.xml</relativePath>
+  </parent>
+
   <build>
     <plugins>
       <plugin>
@@ -27,6 +34,23 @@
           </projectnatures>
         </configuration>
       </plugin>
+      <plugin>
+        <artifactId>maven-assembly-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>ApplicationApprovalWorkFlowProcess</id>
+            <phase>package</phase>
+            <goals>
+              <goal>single</goal>
+            </goals>
+          </execution>
+        </executions>
+        <configuration>
+          <appendAssemblyId>false</appendAssemblyId>           
+          <descriptor>zip-descriptor.xml</descriptor>
+        </configuration>
+      </plugin>
     </plugins>
+   <finalName>ApplicationApprovalWorkFlowProcess</finalName>
   </build>
 </project>
