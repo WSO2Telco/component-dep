@@ -140,8 +140,7 @@
 					<instructions>
 						<Bundle-SymbolicName>AxiataWorkflowHandler</Bundle-SymbolicName>
 						<Bundle-Name>AxiataWorkflowHandler</Bundle-Name>
-						<Export-Package>org.wso2.carbon.am.axiata.workflow,
-							org.wso2.carbon.am.axiata.workflow.audit</Export-Package>
+						<Export-Package>com.wso2telco.workflow.*</Export-Package>
 						<Import-Package>
 							javax.xml.parsers; version="0.0.0",
 							org.wso2.carbon.apimgt.api.model.*,
