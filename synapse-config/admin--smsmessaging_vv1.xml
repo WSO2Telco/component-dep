@@ -1,0 +1,66 @@
+<?xml version="1.0" encoding="UTF-8"?><api xmlns="http://ws.apache.org/ns/synapse" name="admin--smsmessaging" context="/smsmessaging" version="v1" version-type="url">
+    <resource methods="POST GET OPTIONS DELETE PUT" url-mapping="/*">
+        <inSequence>
+            <property name="POST_TO_URI" value="true" scope="axis2"/>
+            <filter source="$ctx:AM_KEY_TYPE" regex="PRODUCTION">
+                <then>
+		    <class name="com.axiata.dialog.mife.mediator.AxiataHandlerMediator">
+       	   		<property name="executorClass" value="com.axiata.dialog.mife.mediator.impl.sms.SMSExecutor"/>
+		    </class>
+			<loopback/>
+                    
+
+                </then>
+                <else>
+                    <sequence key="_sandbox_key_error_"/>
+                </else>
+            </filter>
+        </inSequence>
+        <outSequence>
+            <header name="To" action="remove"/>
+                    <property name="NO_ENTITY_BODY" scope="axis2" action="remove"/>
+                    <property name="RESPONSE" value="true"/>
+                    <send/>
+   			<log level="full">
+				<property name="STATE" value="API CALL"/>
+			</log>
+			<property xmlns:ns="http://org.apache.synapse/xsd" name="STATUS_CODE" expression="$axis2:HTTP_SC"/>
+			<filter source="get-property('STATUS_CODE')" regex="40[0|3]">
+				<then>
+					<filter xpath="//errcode">
+						<then>
+        					<property name="ERROR_CODE" expression="//errcode" scope="default" type="STRING"/>
+        					<property name="errvar" expression="//errvar" scope="default" type="STRING"/>
+        					<sequence key="custom_fault"/>
+						</then>
+						<else>
+							<property name="ERROR_CODE" expression="//messageId" scope="default" type="STRING"/>
+							<property name="errvar" expression="//variables" scope="default" type="STRING"/>
+							<sequence key="custom_fault"/>	
+						</else>
+					</filter>
+				</then>
+				<else>
+					<send/>
+				</else>
+			</filter>
+        </outSequence>
+	<faultSequence>
+		<property name="ERROR_CODE" expression="$ctx:ERROR_CODE" scope="default" type="STRING"/>
+		<sequence key="custom_fault"/>
+	</faultSequence>
+    </resource>
+    <handlers>
+        <handler class="org.wso2.carbon.apimgt.gateway.handlers.security.APIAuthenticationHandler"/>
+	<handler class="org.wso2.carbon.apimgt.axiata.dialog.verifier.DialogAPIRequestHandler"/>
+        <handler class="org.wso2.carbon.apimgt.gateway.handlers.throttling.APIThrottleHandler">
+            <property name="id" value="A"/>
+            <property name="policyKey" value="gov:/apimgt/applicationdata/tiers.xml"/>
+        </handler>
+        <handler class="org.wso2.carbon.apimgt.usage.publisher.APIMgtUsageHandler"/>
+        <handler class="org.wso2.carbon.apimgt.usage.publisher.APIMgtGoogleAnalyticsTrackingHandler">
+            <property name="configKey" value="gov:/apimgt/statistics/ga-config.xml"/>
+        </handler>
+        <handler class="org.wso2.carbon.apimgt.gateway.handlers.ext.APIManagerExtensionHandler"/>
+    </handlers>
+</api>

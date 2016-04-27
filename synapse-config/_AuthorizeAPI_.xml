@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<api xmlns="http://ws.apache.org/ns/synapse" name="_WSO2AMAuthorizeAPI_" context="/authorize">
+    <resource methods="GET" url-mapping="/*" faultSequence="_token_fault_">
+        <inSequence>
+            <property name="clientid" expression="$url:client_id" scope="default" type="STRING"/>
+            <property name="queryParams" expression="get-property('axis2','REST_URL_POSTFIX')" scope="default" type="STRING"/>
+            <payloadFactory media-type="xml">
+                <format>
+                    <m0:validateClientInfo xmlns:m0="http://org.apache.axis2/xsd">
+                        <m0:clientId>$1</m0:clientId>
+                        <m0:callbackURI>$2</m0:callbackURI>
+                    </m0:validateClientInfo>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$url:client_id"/>
+                    <arg evaluator="xml" expression="$url:redirect_uri"/>
+                </args>
+            </payloadFactory>
+            <header name="Action" scope="default" value="urn:validateClientInfo"/>
+            <call>
+                <endpoint>
+                    <address uri="https://localhost:9444/services/OAuth2Service" format="soap11"/>
+                </endpoint>
+            </call>
+            <property name="clientid" expression="get-property('clientid')" scope="transport" type="STRING"/>
+            <log level="full">
+                <property xmlns:m0="http://org.apache.axis2/xsd" xmlns:oau="http://dto.oauth2.identity.carbon.wso2.org/xsd" name="isValidClientID" expression="//m0:validateClientInfoResponse/m0:return/oau:validClient/text()"/>
+            </log>
+            <switch xmlns:m0="http://org.apache.axis2/xsd" xmlns:oau="http://dto.oauth2.identity.carbon.wso2.org/xsd" source="//m0:validateClientInfoResponse/m0:return/oau:validClient/text()">
+                <case regex="true">
+                    <property name="isvalid" value="true" scope="default" type="STRING"/>
+                    <property name="REST_URL_POSTFIX" expression="get-property('queryParams')" scope="axis2" type="STRING"/>
+                </case>
+                <default>
+                    <property name="isvalid" value="false" scope="default" type="STRING"/>
+                    <sequence key="RequestValidation"/>
+                    <property name="REST_URL_POSTFIX" expression="get-property('GSMASPQueryParams')" scope="axis2" type="STRING"/>
+                </default>
+            </switch>
+            <property name="HTTP_METHOD" value="GET" scope="axis2" type="STRING"/>
+            <send>
+                <endpoint>
+                    <address uri="https://localhost:9444/oauth2/authorize"/>
+                </endpoint>
+            </send>
+        </inSequence>
+        <outSequence>
+            <send/>
+        </outSequence>
+    </resource>
+</api>
