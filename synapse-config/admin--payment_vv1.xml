@@ -5,8 +5,8 @@
       <property name="POST_TO_URI" scope="axis2" value="true"/>
       <filter regex="PRODUCTION" source="$ctx:AM_KEY_TYPE">
         <then>
-         <class name="com.axiata.dialog.mife.mediator.AxiataHandlerMediator">
-      	 	<property name="executorClass" value="com.axiata.dialog.mife.mediator.impl.payment.PaymentExecutor"/>
+         <class name="com.wso2telco.mediator.AxiataHandlerMediator">
+      	 	<property name="executorClass" value="com.wso2telco.mediator.impl.payment.PaymentExecutor"/>
   	     </class> 
 		  <loopback/>
         </then>
