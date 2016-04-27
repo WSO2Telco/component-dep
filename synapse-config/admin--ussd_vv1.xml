@@ -5,8 +5,8 @@
             <property name="POST_TO_URI" value="true" scope="axis2"/>
             <filter source="$ctx:AM_KEY_TYPE" regex="PRODUCTION">
                 <then>
-         <class name="com.axiata.dialog.mife.mediator.AxiataHandlerMediator">
-      	 	<property name="executorClass" value="com.axiata.dialog.mife.mediator.impl.ussd.USSDExecutor"/>
+         <class name="com.wso2telco.mediator.AxiataHandlerMediator">
+      	 	<property name="executorClass" value="com.wso2telco.mediator.impl.ussd.USSDExecutor"/>
   	 </class> 
           <header action="remove" name="To"/>
           <property action="remove" name="NO_ENTITY_BODY" scope="axis2"/>
