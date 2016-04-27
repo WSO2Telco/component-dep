@@ -8,13 +8,13 @@
 	xmlns:tns="http://workflow.subscription.apimgt.carbon.wso2.org"
 	xmlns:bpel="http://docs.oasis-open.org/wsbpel/2.0/process/executable"
 	xmlns:b4p="http://docs.oasis-open.org/ns/bpel4people/bpel4people/200803"
-	xmlns:ns1="http://org.wso2.carbon/subscriptions/" xmlns:ns2="http://org.wso2.carbon/axiata/workflow"
-	xmlns:ns3="http://org.wso2.carbon/axiata/workflow/subscription"
+	xmlns:ns1="http://org.wso2.carbon/subscriptions/" xmlns:ns2="http://org.wso2.carbon/wso2telco/workflow"
+	xmlns:ns3="http://org.wso2.carbon/wso2telco/workflow/subscription"
 	xmlns:ns="http://callback.workflow.apimgt.carbon.wso2.org"
 	queryLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"
 	expressionLanguage="urn:oasis:names:tc:wsbpel:2.0:sublang:xpath2.0"
-	xmlns:axau="http://org.wso2.carbon/axiata/workflow/audit"
-	xmlns:axnotify="http://org.wso2.carbon/axiata/workflow/notify">
+	xmlns:axau="http://org.wso2.carbon/wso2telco/workflow/audit"
+	xmlns:axnotify="http://org.wso2.carbon/wso2telco/workflow/notify">
 
 	<!-- Import the client WSDL -->
 	<bpel:extensions>
@@ -29,12 +29,12 @@
 	<bpel:import location="SubscriptionApprovalWorkFlowProcessArtifacts.wsdl"
 		namespace="http://workflow.subscription.apimgt.carbon.wso2.org"
 		importType="http://schemas.xmlsoap.org/wsdl/" />
-	<bpel:import namespace="http://org.wso2.carbon/axiata/workflow"
-		location="AxiataWorkflowApprovalService.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"></bpel:import>
-	<!-- <bpel:import namespace="http://org.wso2.carbon/axiata/workflow/audit" 
-		location="AxiataWorkflowApprovalAuditService.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"></bpel:import> -->
-	<bpel:import namespace="http://org.wso2.carbon/axiata/workflow/notify"
-		location="AxiataWorkflowNotificationService.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"></bpel:import>
+	<bpel:import namespace="http://org.wso2.carbon/wso2telco/workflow"
+		location="Wso2telcoWorkflowApprovalService.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"></bpel:import>
+	<!-- <bpel:import namespace="http://org.wso2.carbon/wso2telco/workflow/audit" 
+		location="Wso2telcoWorkflowApprovalAuditService.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"></bpel:import> -->
+	<bpel:import namespace="http://org.wso2.carbon/wso2telco/workflow/notify"
+		location="Wso2telcoWorkflowNotificationService.wsdl" importType="http://schemas.xmlsoap.org/wsdl/"></bpel:import>
 
 	<!-- ================================================================= -->
 	<!-- PARTNERLINKS -->
@@ -51,11 +51,11 @@
 		<bpel:partnerLink name="CBPL" partnerLinkType="tns:CBPLT"
 			partnerRole="role3"></bpel:partnerLink>
 		<bpel:partnerLink name="AXSAPL" partnerLinkType="tns:AXSAPLT"
-			partnerRole="axiataDBHandlerRole" initializePartnerRole="yes"></bpel:partnerLink>
+			partnerRole="wso2telcoDBHandlerRole" initializePartnerRole="yes"></bpel:partnerLink>
 		<bpel:partnerLink name="AAUPL" partnerLinkType="tns:AAUPLT"
-			partnerRole="axiataAuditRole" initializePartnerRole="yes"></bpel:partnerLink>
+			partnerRole="wso2telcoAuditRole" initializePartnerRole="yes"></bpel:partnerLink>
 		<bpel:partnerLink name="AXNOTIFYPL" partnerLinkType="tns:AXNOTIFYPLT"
-			partnerRole="axiataNotifyRole" initializePartnerRole="yes"></bpel:partnerLink>
+			partnerRole="wso2telcoNotifyRole" initializePartnerRole="yes"></bpel:partnerLink>
 	</bpel:partnerLinks>
 
 	<!-- ================================================================= -->
@@ -134,7 +134,7 @@
 						<bpel:from>
 							<bpel:literal>
 								<axnotify:HUBAdminSubApprovalEmailNotificationRequest
-									xmlns:axnotify="http://org.wso2.carbon/axiata/workflow/notify"
+									xmlns:axnotify="http://org.wso2.carbon/wso2telco/workflow/notify"
 									xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 									<axnotify:receiverRole>axnotify:receiverRole
 									</axnotify:receiverRole>
@@ -240,7 +240,7 @@
 				</bpel:assign>
 				<bpel:invoke name="invoke_hub_approver_email_notification"
 					partnerLink="AXNOTIFYPL" operation="sendHUBAdminSubApprovalEmailNotification"
-					portType="axnotify:AxiataWorkflowNotificationServicePT"
+					portType="axnotify:Wso2telcoWorkflowNotificationServicePT"
 					inputVariable="input_hub_approver_email_notification">
 				</bpel:invoke>
 			</bpel:sequence>
@@ -481,7 +481,7 @@
 						<bpel:from>
 							<bpel:literal>
 								<axnotify:SubApprovalStatusSPEmailNotificationRequest
-									xmlns:axnotify="http://org.wso2.carbon/axiata/workflow/notify"
+									xmlns:axnotify="http://org.wso2.carbon/wso2telco/workflow/notify"
 									xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 									<axnotify:apiName>axnotify:apiName</axnotify:apiName>
 									<axnotify:apiVersion>axnotify:apiVersion</axnotify:apiVersion>
@@ -587,7 +587,7 @@
 				</bpel:assign>
 				<bpel:invoke name="invoke_approval_status_sp_email_notification"
 					partnerLink="AXNOTIFYPL" operation="sendSubApprovalStatusSPEmailNotification"
-					portType="axnotify:AxiataWorkflowNotificationServicePT"
+					portType="axnotify:Wso2telcoWorkflowNotificationServicePT"
 					inputVariable="input_approval_status_sp_email_notification">
 				</bpel:invoke>
 			</bpel:sequence>
@@ -600,7 +600,7 @@
 				<bpel:from>
 					<bpel:literal>
 						<axau:SubApprovalAuditRequest
-							xmlns:axau="http://org.wso2.carbon/axiata/workflow/audit"
+							xmlns:axau="http://org.wso2.carbon/wso2telco/workflow/audit"
 							xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 							<axau:requestType>axau:requestType</axau:requestType>
 							<axau:apiProvider>axau:apiProvider</axau:apiProvider>
@@ -700,7 +700,7 @@
 		</bpel:assign>
 		<bpel:invoke name="invoke_hub_sub_approval_audit_insert"
 			partnerLink="AAUPL" operation="insertSubApprovalAuditRecord"
-			portType="ns2:AxiataWorkflowApprovalServicePT" inputVariable="input_hub_sub_approval_audit">
+			portType="ns2:Wso2telcoWorkflowApprovalServicePT" inputVariable="input_hub_sub_approval_audit">
 		</bpel:invoke>
 
 		<!-- Execute sequence containing operator approval workflow logic. -->
@@ -718,7 +718,7 @@
 							<bpel:from>
 								<bpel:literal xml:space="preserve">
                                 	<ax:SubHUBApprovalDBUpdateRequest
-									xmlns:ax="http://org.wso2.carbon/axiata/workflow/subscription"
+									xmlns:ax="http://org.wso2.carbon/wso2telco/workflow/subscription"
 									xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                                     	<ax:requestType>ax:requestType</ax:requestType>
   										<ax:appID>ax:appID</ax:appID>
@@ -757,7 +757,7 @@
 					<!-- Invoke the service call to perform HUB approval DB updates. -->
 					<bpel:invoke name="invoke_hub_approval_db_update"
 						partnerLink="AXSAPL" operation="updateDBSubHubApproval"
-						portType="ns2:AxiataWorkflowApprovalServicePT" inputVariable="input_hub_approval_db">
+						portType="ns2:Wso2telcoWorkflowApprovalServicePT" inputVariable="input_hub_approval_db">
 					</bpel:invoke>
 
 					<!-- Initialize the HUB approval subscription validator request update 
@@ -768,7 +768,7 @@
 							<bpel:from>
 								<bpel:literal xml:space="preserve">
                                 	<ax:HUBApprovalSubValidatorRequest
-									xmlns:ax="http://org.wso2.carbon/axiata/workflow/subscription"
+									xmlns:ax="http://org.wso2.carbon/wso2telco/workflow/subscription"
 									xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                                     	<ax:requestType>ax:requestType</ax:requestType>
   										<ax:appID>ax:appID</ax:appID>
@@ -808,7 +808,7 @@
 						updates. -->
 					<bpel:invoke name="invoke_hub_approval_sub_validator_update"
 						partnerLink="AXSAPL" operation="insertValidatorForSubscription"
-						portType="ns2:AxiataWorkflowApprovalServicePT" inputVariable="input_hub_approval_sub_validator">
+						portType="ns2:Wso2telcoWorkflowApprovalServicePT" inputVariable="input_hub_approval_sub_validator">
 					</bpel:invoke>
 
 
@@ -819,7 +819,7 @@
 							<bpel:from>
 								<bpel:literal xml:space="preserve">
                                 	<ax:SubOperatorRetrievalRequest
-									xmlns:ax="http://org.wso2.carbon/axiata/workflow/subscription"
+									xmlns:ax="http://org.wso2.carbon/wso2telco/workflow/subscription"
 									xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
                                     	<ax:requestType>ax:requestType</ax:requestType>
   										<ax:apiName>ax:apiName</ax:apiName>
@@ -876,7 +876,7 @@
 					<!-- Invoke the service call to retrieve subscription operator list. -->
 					<bpel:invoke name="invoke_sub_operator_list_retrieval"
 						partnerLink="AXSAPL" operation="retrieveSubOperatorList"
-						portType="ns2:AxiataWorkflowApprovalServicePT" inputVariable="input_sub_op_list"
+						portType="ns2:Wso2telcoWorkflowApprovalServicePT" inputVariable="input_sub_op_list"
 						outputVariable="output_sub_op_list">
 					</bpel:invoke>
 
@@ -906,7 +906,7 @@
 												<bpel:from>
 													<bpel:literal>
 														<axnotify:HUBAdminSubApprovalEmailNotificationRequest
-															xmlns:axnotify="http://org.wso2.carbon/axiata/workflow/notify"
+															xmlns:axnotify="http://org.wso2.carbon/wso2telco/workflow/notify"
 															xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 															<axnotify:receiverRole>axnotify:receiverRole
 															</axnotify:receiverRole>
@@ -1033,7 +1033,7 @@
 										</bpel:assign>
 										<bpel:invoke name="invoke_op_approver_dialog_email_notification"
 											partnerLink="AXNOTIFYPL" operation="sendHUBAdminSubApprovalEmailNotification"
-											portType="axnotify:AxiataWorkflowNotificationServicePT"
+											portType="axnotify:Wso2telcoWorkflowNotificationServicePT"
 											inputVariable="input_op_approver_dialog_email_notification">
 										</bpel:invoke>
 									</bpel:sequence>
@@ -1286,7 +1286,7 @@
 											<bpel:from>
 												<bpel:literal>
 													<ax:SubOpApprovalDBUpdateRequest
-														xmlns:ax="http://org.wso2.carbon/axiata/workflow/subscription"
+														xmlns:ax="http://org.wso2.carbon/wso2telco/workflow/subscription"
 														xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 														<ax:requestType>ax:requestType</ax:requestType>
 														<ax:appID>ax:appID</ax:appID>
@@ -1351,7 +1351,7 @@
 									<!-- Invoke the service to perform operator approval database updates. -->
 									<bpel:invoke name="invoke_op_approval_db_update"
 										partnerLink="AXSAPL" operation="updateDBSubOpApproval"
-										portType="ns2:AxiataWorkflowApprovalServicePT" inputVariable="input_op_approval_db">
+										portType="ns2:Wso2telcoWorkflowApprovalServicePT" inputVariable="input_op_approval_db">
 									</bpel:invoke>
 								</bpel:sequence>
 								<!-- </bpel:if> -->
@@ -1361,7 +1361,7 @@
 										<bpel:from>
 											<bpel:literal>
 												<axau:SubApprovalAuditRequest
-													xmlns:axau="http://org.wso2.carbon/axiata/workflow/audit"
+													xmlns:axau="http://org.wso2.carbon/wso2telco/workflow/audit"
 													xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 													<axau:requestType>axau:requestType</axau:requestType>
 													<axau:apiProvider>axau:apiProvider</axau:apiProvider>
@@ -1468,7 +1468,7 @@
 								</bpel:assign>
 								<bpel:invoke name="invoke_op_sub_approval_audit_insert_dialog"
 									partnerLink="AAUPL" operation="insertSubApprovalAuditRecord"
-									portType="ns2:AxiataWorkflowApprovalServicePT" inputVariable="input_op_sub_approval_audit_dialog">
+									portType="ns2:Wso2telcoWorkflowApprovalServicePT" inputVariable="input_op_sub_approval_audit_dialog">
 								</bpel:invoke>
 
 							</bpel:sequence>
@@ -1495,7 +1495,7 @@
 												<bpel:from>
 													<bpel:literal>
 														<axnotify:HUBAdminSubApprovalEmailNotificationRequest
-															xmlns:axnotify="http://org.wso2.carbon/axiata/workflow/notify"
+															xmlns:axnotify="http://org.wso2.carbon/wso2telco/workflow/notify"
 															xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 															<axnotify:receiverRole>axnotify:receiverRole
 															</axnotify:receiverRole>
@@ -1622,7 +1622,7 @@
 										</bpel:assign>
 										<bpel:invoke name="invoke_op_approver_celcom_email_notification"
 											partnerLink="AXNOTIFYPL" operation="sendHUBAdminSubApprovalEmailNotification"
-											portType="axnotify:AxiataWorkflowNotificationServicePT"
+											portType="axnotify:Wso2telcoWorkflowNotificationServicePT"
 											inputVariable="input_op_approver_celcom_email_notification">
 										</bpel:invoke>
 									</bpel:sequence>
@@ -1874,7 +1874,7 @@
 											<bpel:from>
 												<bpel:literal>
 													<ax:SubOpApprovalDBUpdateRequest
-														xmlns:ax="http://org.wso2.carbon/axiata/workflow/subscription"
+														xmlns:ax="http://org.wso2.carbon/wso2telco/workflow/subscription"
 														xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 														<ax:requestType>ax:requestType</ax:requestType>
 														<ax:appID>ax:appID</ax:appID>
@@ -1939,7 +1939,7 @@
 									<!-- Invoke the service to perform operator approval database updates. -->
 									<bpel:invoke name="invoke_op_approval_db_update"
 										partnerLink="AXSAPL" operation="updateDBSubOpApproval"
-										portType="ns2:AxiataWorkflowApprovalServicePT" inputVariable="input_op_approval_db">
+										portType="ns2:Wso2telcoWorkflowApprovalServicePT" inputVariable="input_op_approval_db">
 									</bpel:invoke>
 								</bpel:sequence>
 								<!-- </bpel:if> -->
@@ -1949,7 +1949,7 @@
 										<bpel:from>
 											<bpel:literal>
 												<axau:SubApprovalAuditRequest
-													xmlns:axau="http://org.wso2.carbon/axiata/workflow/audit"
+													xmlns:axau="http://org.wso2.carbon/wso2telco/workflow/audit"
 													xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
 													<axau:requestType>axau:requestType</axau:requestType>
 													<axau:apiProvider>axau:apiProvider</axau:apiProvider>
@@ -2056,7 +2056,7 @@
 								</bpel:assign>
 								<bpel:invoke name="invoke_op_sub_approval_audit_insert_celcom"
 									partnerLink="AAUPL" operation="insertSubApprovalAuditRecord"
-									portType="ns2:AxiataWorkflowApprovalServicePT" inputVariable="input_op_sub_approval_audit_celcom">
+									portType="ns2:Wso2telcoWorkflowApprovalServicePT" inputVariable="input_op_sub_approval_audit_celcom">
 								</bpel:invoke>
 
 							</bpel:sequence>

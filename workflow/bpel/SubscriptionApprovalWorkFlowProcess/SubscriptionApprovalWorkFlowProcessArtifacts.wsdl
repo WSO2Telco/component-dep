@@ -6,8 +6,8 @@
 	xmlns:vprop="http://docs.oasis-open.org/wsbpel/2.0/varprop" 
 	xmlns:wsdl="http://org.wso2.carbon/subscriptions/"
 	xmlns:wsdl1="http://callback.workflow.apimgt.carbon.wso2.org" 
-	xmlns:wsdl2="http://org.wso2.carbon/axiata/workflow"
-	xmlns:wsdl3="http://org.wso2.carbon/axiata/workflow/notify"
+	xmlns:wsdl2="http://org.wso2.carbon/wso2telco/workflow"
+	xmlns:wsdl3="http://org.wso2.carbon/wso2telco/workflow/notify"
 	name="SubscriptionApprovalWorkFlowProcess"
 	targetNamespace="http://workflow.subscription.apimgt.carbon.wso2.org">
 
@@ -27,19 +27,19 @@
 		<plnk:role name="role3" portType="wsdl1:WorkflowCallbackServicePortType" />
 	</plnk:partnerLinkType>
 	<plnk:partnerLinkType name="AXSAPLT">
-		<plnk:role name="axiataDBHandlerRole" portType="wsdl2:AxiataWorkflowApprovalServicePT" />
+		<plnk:role name="wso2telcoDBHandlerRole" portType="wsdl2:Wso2telcoWorkflowApprovalServicePT" />
 	</plnk:partnerLinkType>
 	<plnk:partnerLinkType name="AAUPLT">
-  		<plnk:role name="axiataAuditRole" portType="wsdl2:AxiataWorkflowApprovalServicePT"/>
+  		<plnk:role name="wso2telcoAuditRole" portType="wsdl2:Wso2telcoWorkflowApprovalServicePT"/>
   	</plnk:partnerLinkType>
   	<plnk:partnerLinkType name="AXNOTIFYPLT">
-  		<plnk:role name="axiataNotifyRole" portType="wsdl3:AxiataWorkflowNotificationServicePT"/>
+  		<plnk:role name="wso2telcoNotifyRole" portType="wsdl3:Wso2telcoWorkflowNotificationServicePT"/>
   	</plnk:partnerLinkType>
 
 	<import location="SubscriptionsApprovalTaskService.wsdl" namespace="http://org.wso2.carbon/subscriptions/" />
 	<import location="WorkflowCallbackService.wsdl" namespace="http://callback.workflow.apimgt.carbon.wso2.org" />
-	<import location="AxiataWorkflowApprovalService.wsdl" namespace="http://org.wso2.carbon/subscriptions/axiata/workflow" />
-	<import location="AxiataWorkflowNotificationService.wsdl" namespace="http://org.wso2.carbon/axiata/workflow/notify"/>
+	<import location="Wso2telcoWorkflowApprovalService.wsdl" namespace="http://org.wso2.carbon/subscriptions/wso2telco/workflow" />
+	<import location="Wso2telcoWorkflowNotificationService.wsdl" namespace="http://org.wso2.carbon/wso2telco/workflow/notify"/>
 		
 	<types>
 		<schema xmlns="http://www.w3.org/2001/XMLSchema"

@@ -1,14 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<wsdl:definitions name="AxiataWorkflowNotificationService" 
-	targetNamespace="http://org.wso2.carbon/axiata/workflow/notify"
-	xmlns:axnotify="http://org.wso2.carbon/axiata/workflow/notify" 
+<wsdl:definitions name="Wso2telcoWorkflowNotificationService" 
+	targetNamespace="http://org.wso2.carbon/wso2telco/workflow/notify"
+	xmlns:axnotify="http://org.wso2.carbon/wso2telco/workflow/notify" 
 	xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/"  
 	xmlns:xsd="http://www.w3.org/2001/XMLSchema" 
 	xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" 
-	xmlns:ax="http://org.wso2.carbon/axiata/workflow/notify">
+	xmlns:ax="http://org.wso2.carbon/wso2telco/workflow/notify">
 	
   <wsdl:types>
-    <xsd:schema elementFormDefault="qualified" targetNamespace="http://org.wso2.carbon/axiata/workflow/notify" xmlns:axnotify="http://org.wso2.carbon/axiata/workflow/notify" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:schema elementFormDefault="qualified" targetNamespace="http://org.wso2.carbon/wso2telco/workflow/notify" xmlns:axnotify="http://org.wso2.carbon/wso2telco/workflow/notify" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 			
 			<xsd:element name="HUBAdminAppApprovalEmailNotificationRequest" type="axnotify:HUBAdminAppApprovalEmailNotificationRequestType"/>
 			<xsd:complexType name="HUBAdminAppApprovalEmailNotificationRequestType">
@@ -71,6 +71,7 @@
 			<xsd:element name="SubApprovalStatusSPEmailNotificationRequest" type="axnotify:SubApprovalStatusSPEmailNotificationRequestType"/>
 			<xsd:complexType name="SubApprovalStatusSPEmailNotificationRequestType">
 				<xsd:sequence>
+					<xsd:element name="receiverRole" type="xsd:string"/>
 					<xsd:element name="apiName" type="xsd:string"/>
 					<xsd:element name="apiVersion" type="xsd:string"/>
 					<xsd:element name="apiContext" type="xsd:string"/>
@@ -108,7 +109,7 @@
     <wsdl:part name="SubApprovalStatusSPEmailNotificationRequest" element="axnotify:SubApprovalStatusSPEmailNotificationRequest">
     </wsdl:part>
   </wsdl:message>
-  <wsdl:portType name="AxiataWorkflowNotificationServicePT">
+  <wsdl:portType name="Wso2telcoWorkflowNotificationServicePT">
     <wsdl:operation name="sendHUBAdminAppApprovalEmailNotification">
       	<wsdl:input message="ax:HUBAdminAppApprovalEmailNotificationRequest">
     	</wsdl:input>
@@ -134,48 +135,48 @@
     	</wsdl:input>
     </wsdl:operation>
   </wsdl:portType>
-  <wsdl:binding name="AxiataWorkflowNotificationServiceSOAP" type="ax:AxiataWorkflowNotificationServicePT">
+  <wsdl:binding name="Wso2telcoWorkflowNotificationServiceSOAP" type="ax:Wso2telcoWorkflowNotificationServicePT">
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
     <wsdl:operation name="sendHUBAdminAppApprovalEmailNotification">
-      <soap:operation soapAction="http://org.wso2.carbon/applications/axiata/workflow/notify/sendHUBAdminAppApprovalEmailNotification"/>
+      <soap:operation soapAction="http://org.wso2.carbon/applications/wso2telco/workflow/notify/sendHUBAdminAppApprovalEmailNotification"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>
     </wsdl:operation>
     <wsdl:operation name="sendHUBAdminSubApprovalEmailNotification">
-      <soap:operation soapAction="http://org.wso2.carbon/subscriptions/axiata/workflow/notify/sendHUBAdminSubApprovalEmailNotification"/>
+      <soap:operation soapAction="http://org.wso2.carbon/subscriptions/wso2telco/workflow/notify/sendHUBAdminSubApprovalEmailNotification"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>
     </wsdl:operation>
     <wsdl:operation name="sendPLUGINAdminAppApprovalEmailNotification">
-      <soap:operation soapAction="http://org.wso2.carbon/applications/axiata/workflow/notify/sendPLUGINAdminAppApprovalEmailNotification"/>
+      <soap:operation soapAction="http://org.wso2.carbon/applications/wso2telco/workflow/notify/sendPLUGINAdminAppApprovalEmailNotification"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>
     </wsdl:operation>
     <wsdl:operation name="sendPLUGINAdminSubApprovalEmailNotification">
-      <soap:operation soapAction="http://org.wso2.carbon/subscriptions/axiata/workflow/notify/sendPLUGINAdminSubApprovalEmailNotification"/>
+      <soap:operation soapAction="http://org.wso2.carbon/subscriptions/wso2telco/workflow/notify/sendPLUGINAdminSubApprovalEmailNotification"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>
     </wsdl:operation>
     <wsdl:operation name="sendAppApprovalStatusSPEmailNotification">
-      <soap:operation soapAction="http://org.wso2.carbon/applications/axiata/workflow/notify/sendAppApprovalStatusSPEmailNotification"/>
+      <soap:operation soapAction="http://org.wso2.carbon/applications/wso2telco/workflow/notify/sendAppApprovalStatusSPEmailNotification"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>
     </wsdl:operation>
     <wsdl:operation name="sendSubApprovalStatusSPEmailNotification">
-      <soap:operation soapAction="http://org.wso2.carbon/subscriptions/axiata/workflow/notify/sendSubApprovalStatusSPEmailNotification"/>
+      <soap:operation soapAction="http://org.wso2.carbon/subscriptions/wso2telco/workflow/notify/sendSubApprovalStatusSPEmailNotification"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>
     </wsdl:operation>
   </wsdl:binding>
-  <wsdl:service name="AxiataWorkflowNotificationService">
-    <wsdl:port name="AxiataWorkflowNotificationServiceSOAP" binding="ax:AxiataWorkflowNotificationServiceSOAP">
-      <soap:address location="http://localhost:8280/services/AxiataWorkflowNotificationService"/>
+  <wsdl:service name="Wso2telcoWorkflowNotificationService">
+    <wsdl:port name="Wso2telcoWorkflowNotificationServiceSOAP" binding="ax:Wso2telcoWorkflowNotificationServiceSOAP">
+      <soap:address location="http://localhost:8280/services/Wso2telcoWorkflowNotificationService"/>
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>

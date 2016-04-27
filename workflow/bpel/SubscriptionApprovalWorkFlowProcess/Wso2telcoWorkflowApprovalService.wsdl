@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<wsdl:definitions name="AxiataWorkflowApprovalService" targetNamespace="http://org.wso2.carbon/axiata/workflow" xmlns:axcom="http://org.wso2.carbon/axiata/workflow/common" xmlns:axapp="http://org.wso2.carbon/axiata/workflow/application" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:axsub="http://org.wso2.carbon/axiata/workflow/subscription" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:axaud="http://org.wso2.carbon/axiata/workflow/audit" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ax="http://org.wso2.carbon/axiata/workflow">
+<wsdl:definitions name="Wso2telcoWorkflowApprovalService" targetNamespace="http://org.wso2.carbon/wso2telco/workflow" xmlns:axcom="http://org.wso2.carbon/wso2telco/workflow/common" xmlns:axapp="http://org.wso2.carbon/wso2telco/workflow/application" xmlns:wsdl="http://schemas.xmlsoap.org/wsdl/" xmlns:axsub="http://org.wso2.carbon/wso2telco/workflow/subscription" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:axaud="http://org.wso2.carbon/wso2telco/workflow/audit" xmlns:soap="http://schemas.xmlsoap.org/wsdl/soap/" xmlns:ax="http://org.wso2.carbon/wso2telco/workflow">
   <wsdl:types>
-    <xsd:schema elementFormDefault="qualified" targetNamespace="http://org.wso2.carbon/axiata/workflow/common" xmlns:axcom="http://org.wso2.carbon/axiata/workflow/common" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:schema elementFormDefault="qualified" targetNamespace="http://org.wso2.carbon/wso2telco/workflow/common" xmlns:axcom="http://org.wso2.carbon/wso2telco/workflow/common" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
 			<xsd:element name="OperatorRetrievalRequest" type="axcom:OperatorRetrievalRequestType"/>
 			<xsd:complexType name="OperatorRetrievalRequestType">
@@ -22,7 +22,7 @@
 				</xsd:sequence>
 			</xsd:complexType>
 		</xsd:schema>
-    <xsd:schema elementFormDefault="qualified" targetNamespace="http://org.wso2.carbon/axiata/workflow/application" xmlns:axapp="http://org.wso2.carbon/axiata/workflow/application" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:schema elementFormDefault="qualified" targetNamespace="http://org.wso2.carbon/wso2telco/workflow/application" xmlns:axapp="http://org.wso2.carbon/wso2telco/workflow/application" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
 			<xsd:element name="AppHUBApprovalDBUpdateRequest" type="axapp:AppHUBApprovalDBUpdateRequestType"/>
 			<xsd:complexType name="AppHUBApprovalDBUpdateRequestType">
@@ -41,7 +41,7 @@
 				</xsd:sequence>
 			</xsd:complexType>
 		</xsd:schema>
-    <xsd:schema elementFormDefault="qualified" targetNamespace="http://org.wso2.carbon/axiata/workflow/subscription" xmlns:axsub="http://org.wso2.carbon/axiata/workflow/subscription" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:schema elementFormDefault="qualified" targetNamespace="http://org.wso2.carbon/wso2telco/workflow/subscription" xmlns:axsub="http://org.wso2.carbon/wso2telco/workflow/subscription" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
 			<xsd:element name="SubHUBApprovalDBUpdateRequest" type="axsub:SubHUBApprovalDBUpdateRequestType"/>
 			<xsd:complexType name="SubHUBApprovalDBUpdateRequestType">
@@ -86,7 +86,7 @@
 				</xsd:sequence>
 			</xsd:complexType>
 		</xsd:schema>
-    <xsd:schema elementFormDefault="qualified" targetNamespace="http://org.wso2.carbon/axiata/workflow/audit" xmlns:axaud="http://org.wso2.carbon/axiata/workflow/audit" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <xsd:schema elementFormDefault="qualified" targetNamespace="http://org.wso2.carbon/wso2telco/workflow/audit" xmlns:axaud="http://org.wso2.carbon/wso2telco/workflow/audit" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
 
 			<xsd:element name="AppApprovalAuditRequest" type="axaud:AppApprovalAuditRequestType"/>
 			<xsd:complexType name="AppApprovalAuditRequestType">
@@ -162,7 +162,7 @@
     <wsdl:part name="OperatorRetrievalResponse" element="axcom:OperatorRetrievalResponse">
     </wsdl:part>
   </wsdl:message>
-  <wsdl:portType name="AxiataWorkflowApprovalServicePT">
+  <wsdl:portType name="Wso2telcoWorkflowApprovalServicePT">
     <wsdl:operation name="retrieveOperatorList">
       <wsdl:input message="ax:OperatorRetrievalRequest">
     </wsdl:input>
@@ -204,10 +204,10 @@
     </wsdl:input>
     </wsdl:operation>
   </wsdl:portType>
-  <wsdl:binding name="AxiataWorkflowApprovalServiceSOAP" type="ax:AxiataWorkflowApprovalServicePT">
+  <wsdl:binding name="Wso2telcoWorkflowApprovalServiceSOAP" type="ax:Wso2telcoWorkflowApprovalServicePT">
     <soap:binding style="document" transport="http://schemas.xmlsoap.org/soap/http"/>
     <wsdl:operation name="retrieveOperatorList">
-      <soap:operation soapAction="http://org.wso2.carbon/applications/axiata/workflow/retrieveOperatorList"/>
+      <soap:operation soapAction="http://org.wso2.carbon/applications/wso2telco/workflow/retrieveOperatorList"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>
@@ -216,37 +216,37 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="updateDBAppHubApproval">
-      <soap:operation soapAction="http://org.wso2.carbon/applications/axiata/workflow/updateDBAppHubApproval"/>
+      <soap:operation soapAction="http://org.wso2.carbon/applications/wso2telco/workflow/updateDBAppHubApproval"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>
     </wsdl:operation>
     <wsdl:operation name="updateDBAppOpApproval">
-      <soap:operation soapAction="http://org.wso2.carbon/applications/axiata/workflow/updateDBAppOpApproval"/>
+      <soap:operation soapAction="http://org.wso2.carbon/applications/wso2telco/workflow/updateDBAppOpApproval"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>
     </wsdl:operation>
     <wsdl:operation name="updateDBSubHubApproval">
-      <soap:operation soapAction="http://org.wso2.carbon/subscriptions/axiata/workflow/updateDBSubHubApproval"/>
+      <soap:operation soapAction="http://org.wso2.carbon/subscriptions/wso2telco/workflow/updateDBSubHubApproval"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>
     </wsdl:operation>
     <wsdl:operation name="updateDBSubOpApproval">
-      <soap:operation soapAction="http://org.wso2.carbon/subscriptions/axiata/workflow/updateDBSubOpApproval"/>
+      <soap:operation soapAction="http://org.wso2.carbon/subscriptions/wso2telco/workflow/updateDBSubOpApproval"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>
     </wsdl:operation>
     <wsdl:operation name="insertValidatorForSubscription">
-      <soap:operation soapAction="http://org.wso2.carbon/subscriptions/axiata/workflow/insertValidatorForSubscription"/>
+      <soap:operation soapAction="http://org.wso2.carbon/subscriptions/wso2telco/workflow/insertValidatorForSubscription"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>
     </wsdl:operation>
     <wsdl:operation name="retrieveSubOperatorList">
-      <soap:operation soapAction="http://org.wso2.carbon/subscriptions/axiata/workflow/retrieveSubOperatorList"/>
+      <soap:operation soapAction="http://org.wso2.carbon/subscriptions/wso2telco/workflow/retrieveSubOperatorList"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>
@@ -255,21 +255,21 @@
       </wsdl:output>
     </wsdl:operation>
     <wsdl:operation name="insertAppApprovalAuditRecord">
-      <soap:operation soapAction="http://org.wso2.carbon/axiata/workflow/audit/insertAppApprovalAuditRecord"/>
+      <soap:operation soapAction="http://org.wso2.carbon/wso2telco/workflow/audit/insertAppApprovalAuditRecord"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>
     </wsdl:operation>
     <wsdl:operation name="insertSubApprovalAuditRecord">
-      <soap:operation soapAction="http://org.wso2.carbon/axiata/workflow/audit/insertSubApprovalAuditRecord"/>
+      <soap:operation soapAction="http://org.wso2.carbon/wso2telco/workflow/audit/insertSubApprovalAuditRecord"/>
       <wsdl:input>
         <soap:body use="literal"/>
       </wsdl:input>
     </wsdl:operation>
   </wsdl:binding>
-  <wsdl:service name="AxiataWorkflowApprovalService">
-    <wsdl:port name="AxiataWorkflowApprovalServiceSOAP" binding="ax:AxiataWorkflowApprovalServiceSOAP">
-      <soap:address location="http://localhost:8280/services/AxiataWorkflowApprovalService"/>
+  <wsdl:service name="Wso2telcoWorkflowApprovalService">
+    <wsdl:port name="Wso2telcoWorkflowApprovalServiceSOAP" binding="ax:Wso2telcoWorkflowApprovalServiceSOAP">
+      <soap:address location="http://localhost:8280/services/Wso2telcoWorkflowApprovalService"/>
     </wsdl:port>
   </wsdl:service>
 </wsdl:definitions>
