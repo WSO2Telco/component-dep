@@ -24,10 +24,19 @@ import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.user.core.service.RealmService;
 
  
-// TODO: Auto-generated Javadoc
 /**
- * The Class HostObjectComponent.
- */
+ * @scr.component name="reporting.HostObject" immediate="true"
+ * @scr.reference name="api.manager.config.service"
+ *                interface=
+ *                "org.wso2.carbon.apimgt.impl.APIManagerConfigurationService"
+ *                cardinality="1..1"
+ *                policy="dynamic" bind="setAPIManagerConfigurationService"
+ *                unbind="unsetAPIManagerConfigurationService"
+ * @scr.reference name="user.realm.service"
+ *                interface="org.wso2.carbon.user.core.service.RealmService"
+ *                cardinality="1..1" policy="dynamic" bind="setRealmService"
+ *                unbind="unsetRealmService"
+ * */
 public class HostObjectComponent {
 	
 	/** The Constant log. */
