@@ -255,8 +255,8 @@ CREATE TABLE IF NOT EXISTS `outbound_subscriptions` (
 /*
 * Default validator types provided from mife-validator component
 */
-insert into validator (name, class) values ('passthru','com.axiata.dialog.mife.validators.PassThroughValidator');
-insert into validator (name, class) values ('msisdn','com.axiata.dialog.mife.validators.MSISDNValidator');
+insert into validator (name, class) values ('passthru','com.wso2telco.subscriptionvalidator.services.impl.PassThroughValidator');
+insert into validator (name, class) values ('msisdn','com.wso2telco.subscriptionvalidator.services.impl.MSISDNValidator');
 
 /*
 * Default operators
