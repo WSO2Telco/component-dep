@@ -75,7 +75,7 @@
 							com.wso2telco.datapublisher.internal
 						</Private-Package>
 						<Export-Package>
-							!com.wso2telco.datapublisher.internal.internal,
+							!com.wso2telco.datapublisher.internal,
 							com.wso2telco.datapublisher.*
 						</Export-Package>
 						<Import-Package>
