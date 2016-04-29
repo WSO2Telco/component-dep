@@ -32,9 +32,11 @@ import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
 
  
-// TODO: Auto-generated Javadoc
 /**
- * The Class MifeEventsComponent.
+ * @scr.component name="publish.events" immediate="true"
+ * @scr.reference name="hazelcast.instance.service"
+ * interface="com.hazelcast.core.HazelcastInstance" cardinality="0..1"
+ * policy="dynamic" bind="setHazelcastInstance" unbind="unsetHazelcastInstance"
  */
 public class MifeEventsComponent {
 
