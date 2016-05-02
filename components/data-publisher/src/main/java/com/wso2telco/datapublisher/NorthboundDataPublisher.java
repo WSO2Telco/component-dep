@@ -148,10 +148,10 @@ public class NorthboundDataPublisher {
             APIMgtConfigReader apimgtConfigReader = SouthboundDataComponent.getApiMgtConfigReaderService();
 
             List<String> receiverGroups = DataPublisherUtil.getReceiverGroups(apimgtConfigReader
-                    .getBamServerURL());
+                    .getDasServerURL());
 
-            String serverUser = apimgtConfigReader.getBamServerUser();
-            String serverPassword = apimgtConfigReader.getBamServerPassword();
+            String serverUser = apimgtConfigReader.getDasServerUser();
+            String serverPassword = apimgtConfigReader.getDasServerPassword();
             List<ReceiverGroup> allReceiverGroups = new ArrayList<ReceiverGroup>();
 
             for (String receiverGroupString : receiverGroups) {
