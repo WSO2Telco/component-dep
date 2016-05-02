@@ -26,17 +26,14 @@ import org.wso2.carbon.apimgt.impl.APIManagerConfiguration;
  */
 public class APIMgtConfigReader {
 
-    /** The bam server thrift port. */
-    private String bamServerThriftPort;
+    /** The das server url. */
+    private String dasServerURL;
     
-    /** The bam server url. */
-    private String bamServerURL;
+    /** The das server user. */
+    private String dasServerUser;
     
-    /** The bam server user. */
-    private String bamServerUser;
-    
-    /** The bam server password. */
-    private String bamServerPassword;
+    /** The das server password. */
+    private String dasServerPassword;
     
     /** The enabled. */
     private boolean enabled;
@@ -49,44 +46,36 @@ public class APIMgtConfigReader {
     public APIMgtConfigReader(APIManagerConfiguration config) {
         String enabledStr = config.getFirstProperty(APIConstants.API_USAGE_ENABLED);
         enabled = enabledStr != null && JavaUtils.isTrueExplicitly(enabledStr);
-        bamServerUser = config.getFirstProperty(APIConstants.API_USAGE_BAM_SERVER_USER);
-        bamServerPassword = config.getFirstProperty(APIConstants.API_USAGE_BAM_SERVER_PASSWORD);
+        dasServerURL = config.getFirstProperty(APIConstants.API_USAGE_BAM_SERVER_URL_GROUPS);
+        dasServerUser = config.getFirstProperty(APIConstants.API_USAGE_BAM_SERVER_USER);
+        dasServerPassword = config.getFirstProperty(APIConstants.API_USAGE_BAM_SERVER_PASSWORD);
     }
 
     /**
-     * Gets the bam server thrift port.
+     * Gets the das server password.
      *
-     * @return the bam server thrift port
+     * @return the das server password
      */
-    public String getBamServerThriftPort() {
-        return bamServerThriftPort;
+    public String getDasServerPassword() {
+        return dasServerPassword;
     }
 
     /**
-     * Gets the bam server password.
+     * Gets the das server user.
      *
-     * @return the bam server password
+     * @return the das server user
      */
-    public String getBamServerPassword() {
-        return bamServerPassword;
+    public String getDasServerUser() {
+        return dasServerUser;
     }
 
     /**
-     * Gets the bam server user.
+     * Gets the das server url.
      *
-     * @return the bam server user
+     * @return the das server url
      */
-    public String getBamServerUser() {
-        return bamServerUser;
-    }
-
-    /**
-     * Gets the bam server url.
-     *
-     * @return the bam server url
-     */
-    public String getBamServerURL() {
-        return bamServerURL;
+    public String getDasServerURL() {
+        return dasServerURL;
     }
 
     /**
