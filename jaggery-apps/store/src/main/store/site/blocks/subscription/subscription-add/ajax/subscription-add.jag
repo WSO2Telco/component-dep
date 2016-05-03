@@ -2,26 +2,50 @@
 include("/jagg/jagg.jag");
 (function () {
     var log = new Log();
+    var site = require("/site/conf/site.json");
+    var ssoEnabled = site.ssoConfiguration.enabled;
     response.contentType = "application/json; charset=UTF-8";
-    var mod, obj, name, version, provider, tier, application, applicationId, applicationName, context, result, username, accessAllowDomains,
+    var mod, obj, name, version, provider, tier, application, applicationId, tokenScope, applicationName, context, result,
             user = jagg.getUser(),
             msg = require("/site/conf/ui-messages.jag"),
             action = request.getParameter("action");
-    if (action == "addSubscription" && request.getMethod() == 'POST') {
-        if (!user) {
+
+
+    var validation = {
+        "action": { type: "safetext"},
+        "application":{ type:"name"}
+    };
+
+    var validation_errors = jagg.validateInputs(validation);
+
+    if(validation_errors != true){
             print({
                 error:true,
-                message:msg.error.loginRequired(action)
-            });
-            return;
-        }        
+                message: msg.error.invalidInputs(validation_errors)
+            });        
+    }else if( request.getMethod() == 'POST' && !jagg.isCSRFTokenValid()){
+        print({
+            error:true,
+            message: msg.error.csrfError
+        });
+    }            
+    else if (action == "addSubscription" && request.getMethod() == 'POST') {
+        if (!user) {
+            if(!ssoEnabled){
+		print({
+		    error:true,
+                    message:msg.error.loginRequired(action)
+            	});
+	    }
+	    return;
+        }
+
         name = request.getParameter("name");
         version = request.getParameter("version");
         provider = request.getParameter("provider");
         tier = request.getParameter("tier");
         applicationId = parseInt(request.getParameter("applicationId"), 10);
         username = user.username;
-
         mod = jagg.module("subscription");
         result = mod.addSubscription({
             name:name,
@@ -32,7 +56,7 @@ include("/jagg/jagg.jag");
         if (result.error) {
         	var message = result.message;
         	if (message != null) {
-        		message = message.split(":")[1];
+        		message = message.replace(message.split(":")[0] + ":", "");
         	} else {
         		message = msg.error.authError(action, username);
         	}
@@ -49,11 +73,13 @@ include("/jagg/jagg.jag");
         print(obj);
     }else if (action == "addAPISubscription" && request.getMethod() == 'POST') {
         if (!user) {
-            print({
-                error:true,
-                message:msg.error.loginRequired(action)
-            });
-            return;
+           if(!ssoEnabled){
+		print({
+		    error:true,
+                    message:msg.error.loginRequired(action)
+            	});
+	    }
+	    return;
         }
 
         name = request.getParameter("name");
@@ -62,7 +88,6 @@ include("/jagg/jagg.jag");
         tier = request.getParameter("tier");
         applicationName = request.getParameter("applicationName");
         username = user.username;
-
         mod = jagg.module("subscription");
         result = mod.addAPISubscription({
             name:name,
@@ -77,17 +102,20 @@ include("/jagg/jagg.jag");
             };
         } else {
             obj = {
-                error:false
+                error:false,
+                status:result.status 
             }
         }
         print(obj);
     }else if (action == "generateAPIKey" && request.getMethod() == 'POST') {
         if (!user) {
-            print({
-                error:true,
-                message:msg.error.loginRequired(action)
-            });
-            return;
+            if(!ssoEnabled){
+		print({
+		    error:true,
+                    message:msg.error.loginRequired(action)
+            	});
+	    }
+	    return;
         }
 
         name = request.getParameter("name");
@@ -120,7 +148,8 @@ include("/jagg/jagg.jag");
             }
         }
         print(obj);
-    } else if (action == "generateApplicationKey" && request.getMethod() == 'POST') {
+    } else if (action == "deleteAuthApplication" && request.getMethod() == 'POST') {
+
         if (!user) {
             print({
                 error:true,
@@ -128,24 +157,158 @@ include("/jagg/jagg.jag");
             });
             return;
         }
-        application = request.getParameter("application");
-        keyType = request.getParameter("keytype");
-        callbackUrl = request.getParameter("callbackUrl");
-        username = user.username;
-        accessAllowDomains = request.getParameter("authorizedDomains");       
-        var accessAllowDomainsArr = accessAllowDomains.split(",");
-        validityTime = request.getParameter("validityTime");
-		var retryAfterFailure = request.getParameter("retryAfterFailure");
-	
-		if(retryAfterFailure == null){
-			retryAfterFailure = false;
-		}
+        var authAppParams = {};
+        authAppParams.username = user.username;
+        authAppParams.consumerKey = request.getParameter("consumerKey");
 
         mod = jagg.module("subscription");
-        result = mod.generateApplicationKey(application, username, keyType, callbackUrl, accessAllowDomainsArr, validityTime,retryAfterFailure);
-        var generatedconsumetkeyvalue = result['key']['consumerKey'];
-        var generatedconsumerSecretkeyvalue = result['key']['consumerSecret'];
-        
+
+        result = mod.deleteAuthApplication(authAppParams);
+
+        if (result.error) {
+            obj = {
+                error:result.error,
+                message:msg.error.authError(action, username)
+            };
+            /*print({
+                error:result.error,
+                message:msg.error.authError(action, username)
+            });
+            response.status = 500;
+            response.contentType = "application/json";
+            return;*/
+        } else {
+            obj = {
+                error:false,
+                data:{
+                    key:result.key
+                }
+            }
+        }
+        print(obj);
+
+    } else if (action == "generateApplicationKey" && request.getMethod() == 'POST') {
+
+        if (!user) {
+            if (!ssoEnabled) {
+                print({
+                    error: true,
+                    message: msg.error.loginRequired(action)
+                });
+            }
+            return;
+        }
+
+        var application = request.getParameter("application");
+        var keyType = request.getParameter("keytype");
+        var callbackUrl = request.getParameter("callbackUrl");
+        var username = user.username;
+        var accessAllowDomains = request.getParameter("authorizedDomains");
+
+        if (accessAllowDomains == null) {
+            accessAllowDomains = "ALL";
+        }
+	    var tokenScope = request.getParameter("tokenScope");
+        //var tokenScope = "default";
+
+        var accessAllowDomainsArr = accessAllowDomains.split(",");
+        var validityTime = request.getParameter("validityTime");
+        var retryAfterFailure = request.getParameter("retryAfterFailure");
+        var jsonParams = request.getParameter("jsonParams");
+	    var groupingId=session.get("groupId");
+
+        if (retryAfterFailure == null) {
+            retryAfterFailure = false;
+        }
+
+        if(jsonParams != null){
+            //convert json string in to a javascript array. Then we can add user name attribute in to it.
+            var jsonParamsObject = JSON.parse(jsonParams);
+
+            jsonParamsObject.username = user.username;
+
+        }else{
+            var jsonParamsObject = {
+                username : user.username
+            };
+
+        }
+
+        mod = jagg.module("subscription");
+
+        result = mod.generateApplicationKey(username, application , keyType, callbackUrl, accessAllowDomainsArr,
+                validityTime, retryAfterFailure, tokenScope,groupingId, JSON.stringify(jsonParamsObject));
+
+        if (result.error) {
+            obj = {
+                error: result.error,
+                message: msg.error.authError(action, username)
+            };
+        } else {
+            obj = {
+                error: false,
+                data: {
+                    key: result.key
+                }
+            }
+        }
+        print(obj);
+
+    } else if (action == "updateClientApplication" && request.getMethod() == 'POST') {
+
+        if (!user) {
+            if (!ssoEnabled) {
+                print({
+                    error: true,
+                    message: msg.error.loginRequired(action)
+                });
+            }
+            return;
+        }
+
+        var application = request.getParameter("application");
+        var keyType = request.getParameter("keytype");
+        var callbackUrl = request.getParameter("callbackUrl");
+        var username = user.username;
+        var accessAllowDomains = request.getParameter("authorizedDomains");
+        if (accessAllowDomains == null) {
+            accessAllowDomains = "ALL";
+        }
+        //var tokenScope = request.getParameter("tokenScope");
+        var tokenScope = "default";
+
+        var accessAllowDomainsArr = accessAllowDomains.split(",");
+
+        var validityTime = request.getParameter("validityTime");
+        var retryAfterFailure = request.getParameter("retryAfterFailure");
+        var jsonParams = request.getParameter("jsonParams");
+        var groupingId=session.get("groupId");
+
+        if (retryAfterFailure == null) {
+            retryAfterFailure = false;
+        }
+        var log = new Log();
+
+        if(jsonParams != null){
+            //convert json string in to a javascript array. Then we can add user name attribute in to it.
+            var jsonParamsObject = JSON.parse(jsonParams);
+
+            jsonParamsObject.username = user.username;
+
+        }else{
+            var jsonParamsObject = {
+                username : user.username
+            };
+
+        }
+
+
+        mod = jagg.module("subscription");
+
+        result = mod.updateAuthClient(username, application , keyType, callbackUrl, accessAllowDomainsArr,
+                validityTime, retryAfterFailure, tokenScope,groupingId, JSON.stringify(jsonParamsObject));
+
+
         if (result.error) {
             obj = {
                 error:result.error,
@@ -155,27 +318,20 @@ include("/jagg/jagg.jag");
             obj = {
                 error:false,
                 data:{
-                    key:result.key                    
+                    key:result.key
                 }
             }
-
-            var site = require("/site/conf/site.json");
-            var apiManagerServerUrl = site.AM_URL;   
-            var subUsername = session.get("subscriber_username");
-
-            var url  = apiManagerServerUrl + "manage/site/blocks/application-task/ajax/is.jag?action=createSpAppIs&appName="+application+"&consumerKeyval="+generatedconsumetkeyvalue+"&consumerSecretval="+generatedconsumerSecretkeyvalue+"&subscriber_username="+subUsername;
-            var xhr = new XMLHttpRequest();
-            xhr.open("GET", url);
-            xhr.send();
         }
         print(obj);
      } else if (action == "updateAccessAllowDomains" && request.getMethod() == 'POST') {
         if (!user) {
-            print({
-                error:true,
-                message:msg.error.loginRequired(action)
-            });
-            return;
+           if(!ssoEnabled){
+		print({
+		    error:true,
+                    message:msg.error.loginRequired(action)
+            	});
+	    }
+	    return;
         }
 
         oldAccessToken = request.getParameter("oldAccessToken");
@@ -198,11 +354,13 @@ include("/jagg/jagg.jag");
         print(obj);
      } else if (action == "refreshToken" && request.getMethod() == 'POST') {
         if (!user) {
-            print({
-                error:true,
-                message:msg.error.loginRequired(action)
-            });
-            return;
+            if(!ssoEnabled){
+		print({
+		    error:true,
+                    message:msg.error.loginRequired(action)
+            	});
+	    }
+	    return;
         }
         application = request.getParameter("application");
         keyType = request.getParameter("keytype");
@@ -213,8 +371,9 @@ include("/jagg/jagg.jag");
         clientId = request.getParameter("clientId");
         clientSecret = request.getParameter("clientSecret");
         validityTime = request.getParameter("validityTime");
+        tokenScope = request.getParameter("tokenScope");
         mod = jagg.module("subscription");
-        result = mod.refreshToken(username,application,keyType,oldAccessToken,accessAllowDomainsArr,clientId, clientSecret,validityTime);
+        result = mod.refreshToken(username,application,keyType,oldAccessToken,accessAllowDomainsArr,clientId, clientSecret,validityTime,tokenScope);
 
         if (result.error) {
             obj = {
@@ -230,7 +389,87 @@ include("/jagg/jagg.jag");
             }
         }
         print(obj);
-     }else {
+     }else if (action == "mapExistingOauthClient" && request.getMethod() == 'POST') {
+
+        if (!user) {
+            print({
+                error:true,
+                message:msg.error.loginRequired(action)
+            });
+            return;
+        }
+        var saveAuthAppParams = {};
+        saveAuthAppParams.username = user.username;
+        saveAuthAppParams.jsonParams = request.getParameter("jsonParams");
+        saveAuthAppParams.client_id = request.getParameter("client_id");
+        saveAuthAppParams.validityTime = request.getParameter("validityTime");
+        saveAuthAppParams.keytype = request.getParameter("keytype");
+        saveAuthAppParams.authorizedDomains = request.getParameter("authorizedDomains");
+
+        if(saveAuthAppParams.authorizedDomains == null){
+            saveAuthAppParams.authorizedDomains = "ALL";
+        }
+        
+        saveAuthAppParams.applicationName = request.getParameter("applicationName");
+
+
+
+        //log.info(saveAuthAppParams);
+
+        mod = jagg.module("subscription");
+
+        result = mod.mapExistingOauthClient(saveAuthAppParams);
+
+        if (result.error) {
+            obj = {
+                error:result.error,
+                message:msg.error.authError(action, username)
+            };
+        } else {
+            obj = {
+                error:false,
+                data:{
+                    key:result.key
+                }
+            }
+        }
+        print(obj);
+     }else if (action == "cleanUpApplicationRegistration" && request.getMethod() == 'POST') {
+
+        if (!user) {
+            print({
+                error:true,
+                message:msg.error.loginRequired(action)
+            });
+            return;
+        }
+
+        var applicationName = request.getParameter("applicationName");
+        var keyType = request.getParameter("keyType");
+        var groupingId=session.get("groupId");
+        var username = user.username;
+
+
+        mod = jagg.module("subscription");
+
+        result = mod.cleanUpApplicationRegistration(applicationName , keyType, groupingId , username);
+
+        if (result.error) {
+            obj = {
+                error:result.error,
+                message:msg.error.authError(action, username)
+            };
+        } else {
+            obj = {
+                error:false,
+                data:{
+                    key:result.key
+                }
+            }
+        }
+        print(obj);
+     }
+     else {
         print({
             error:true,
             message:msg.error.invalidAction(action)
