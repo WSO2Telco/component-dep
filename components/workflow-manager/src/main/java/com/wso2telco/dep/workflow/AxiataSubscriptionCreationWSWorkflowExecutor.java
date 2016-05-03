@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.workflow;
+package com.wso2telco.dep.workflow;
 
 import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.axis2.AxisFault;
@@ -42,9 +42,9 @@ import org.wso2.carbon.apimgt.impl.workflow.WorkflowConstants;
 import org.wso2.carbon.apimgt.impl.workflow.WorkflowException;
 import org.wso2.carbon.apimgt.impl.workflow.WorkflowStatus;
 
-import com.wso2telco.workflow.impl.AxiataAPIConsumerImpl;
-import com.wso2telco.workflow.interfaces.AxiataAPIConsumer;
-import com.wso2telco.workflow.internal.ServiceReferenceHolder;
+import com.wso2telco.dep.workflow.impl.AxiataAPIConsumerImpl;
+import com.wso2telco.dep.workflow.interfaces.AxiataAPIConsumer;
+import com.wso2telco.dep.workflow.internal.ServiceReferenceHolder;
 
 import org.wso2.carbon.apimgt.impl.utils.APIUtil;
 import org.wso2.carbon.apimgt.api.APIConsumer;
