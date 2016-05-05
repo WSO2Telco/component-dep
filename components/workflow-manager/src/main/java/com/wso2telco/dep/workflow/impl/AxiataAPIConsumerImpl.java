@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.workflow.impl;
+package com.wso2telco.dep.workflow.impl;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -25,7 +25,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.apimgt.impl.utils.APIMgtDBUtil;
 
-import com.wso2telco.workflow.interfaces.AxiataAPIConsumer;
+import com.wso2telco.dep.workflow.interfaces.AxiataAPIConsumer;
 
 public class AxiataAPIConsumerImpl implements AxiataAPIConsumer {
 	

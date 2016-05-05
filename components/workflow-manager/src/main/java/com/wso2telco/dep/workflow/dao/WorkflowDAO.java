@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.workflow.dao;
+package com.wso2telco.dep.workflow.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -35,9 +35,9 @@ import org.wso2.carbon.apimgt.impl.utils.APIMgtDBUtil;
 import org.wso2.carbon.apimgt.impl.APIManagerConfiguration;
 import org.wso2.carbon.apimgt.usage.client.exception.APIMgtUsageQueryServiceClientException;
 
-import com.wso2telco.workflow.internal.WorkflowComponent;
-import com.wso2telco.workflow.model.ApplicationApprovalAuditRecord;
-import com.wso2telco.workflow.model.SubscriptionApprovalAuditRecord;
+import com.wso2telco.dep.workflow.internal.WorkflowComponent;
+import com.wso2telco.dep.workflow.model.ApplicationApprovalAuditRecord;
+import com.wso2telco.dep.workflow.model.SubscriptionApprovalAuditRecord;
 
 
 public class WorkflowDAO {
