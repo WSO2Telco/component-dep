@@ -153,14 +153,15 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Bundle-SymbolicName>AxiataWorkflowHandler</Bundle-SymbolicName>
-						<Bundle-Name>AxiataWorkflowHandler</Bundle-Name>
-						<Export-Package>com.wso2telco.workflow.*</Export-Package>
+						<Bundle-SymbolicName>WorkflowManager</Bundle-SymbolicName>
+						<Bundle-Name>WorkflowManager</Bundle-Name>
+						<Export-Package>com.wso2telco.dep.workflow.*</Export-Package>
 						<Import-Package>
 							javax.xml.parsers; version="0.0.0",
 							org.wso2.carbon.apimgt.api.model.*,
 							org.wso2.carbon.apimgt.api.*
 						</Import-Package>
+						<Bundle-Activator>com.wso2telco.dep.workflow.activator.Activator</Bundle-Activator>
 						<DynamicImport-Package>*</DynamicImport-Package>
 					</instructions>
 				</configuration>
