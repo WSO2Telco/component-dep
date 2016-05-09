@@ -52,7 +52,7 @@ public class NorthboundPublisher {
     private volatile SouthboundDataPublisher publisher;
     
     /** The publisher class. */
-    private String publisherClass = "com.axiata.dialog.mife.southbound.data.publisher.SouthboundDataPublisher";
+    private String publisherClass = "com.wso2telco.datapublisher.SouthboundDataPublisher";
     
     /** The events publisher client. */
     private EventsDataPublisherClient eventsPublisherClient;

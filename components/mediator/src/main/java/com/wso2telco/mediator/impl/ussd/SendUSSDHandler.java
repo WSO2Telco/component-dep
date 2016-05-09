@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.wso2telco.mediator.impl.ussd;
 
+import com.wso2telco.datapublisher.DataPublisherConstants;
 import com.wso2telco.dbutils.AxiataDbService;
 import com.wso2telco.mediator.MSISDNConstants;
 import com.wso2telco.mediator.OperatorEndpoint;
@@ -116,7 +117,7 @@ public class SendUSSDHandler implements USSDHandler {
      */
     @Override
     public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context) throws Exception {
-        context.setProperty("mife.prop.operationType", 400);
+        context.setProperty(DataPublisherConstants.OPERATION_TYPE, 400);
         if (!httpMethod.equalsIgnoreCase("POST")) {
             ((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 405);
             throw new Exception("Method not allowed");
