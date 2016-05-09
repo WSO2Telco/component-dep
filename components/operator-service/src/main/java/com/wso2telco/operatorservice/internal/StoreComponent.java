@@ -22,9 +22,21 @@ import org.wso2.carbon.apimgt.impl.APIManagerConfigurationService;
 import org.wso2.carbon.utils.ConfigurationContextService;
 
  
-// TODO: Auto-generated Javadoc
 /**
- * The Class StoreComponent.
+ * @scr.component name="operator.store" immediate="true"
+ * @scr.reference name="config.context.service"
+ * 				  interface="org.wso2.carbon.utils.ConfigurationContextService"
+ * 				  cardinality="1..1" 
+ * 				  policy="dynamic"  
+ * 				  bind="setConfigurationContextService"
+ * 				  unbind="unsetConfigurationContextService"
+ * @scr.reference name="api.manager.config.service"
+ *                interface=
+ *                "org.wso2.carbon.apimgt.impl.APIManagerConfigurationService"
+ *                cardinality="1..1"
+ *                policy="dynamic" bind="setAPIManagerConfigurationService"
+ *                unbind="unsetAPIManagerConfigurationService"
+ *
  */
 public class StoreComponent {
 	

@@ -16,6 +16,7 @@
 package com.wso2telco.mediator.impl;
 
 
+import com.wso2telco.datapublisher.DataPublisherConstants;
 import com.wso2telco.mediator.MSISDNConstants;
 import com.wso2telco.mediator.RequestExecutor;
 import com.wso2telco.mediator.OperatorEndpoint;
@@ -78,7 +79,7 @@ public class LocationExecutor extends RequestExecutor {
     @Override
     public boolean validateRequest(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context) throws Exception {
         
-        context.setProperty("mife.prop.operationType", 300);
+        context.setProperty(DataPublisherConstants.OPERATION_TYPE, 300);
         
         if (!httpMethod.equalsIgnoreCase("GET")) {
             ((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 405);

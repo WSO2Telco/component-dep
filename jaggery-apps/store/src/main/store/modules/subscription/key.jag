@@ -21,18 +21,24 @@ var generateAPIKey = function (api, context, application, username, keyType, cal
         };
     }
 };
-var generateApplicationKey = function (application, username, keyType, callbackUrl, accessAllowDomains, validityTime,afterFailure) {
+
+
+var generateApplicationKey = function (application, username, keyType, callbackUrl, accessAllowDomainsArr,
+                                       validityTime, afterFailure,tokenScope,groupingId,jsonParams) {
+
     afterFailure = typeof afterFailure !== 'undefined' ? afterFailure : false;
     var key,
             log = new Log(),
             store = jagg.module("manager").getAPIStoreObj();
-
     try {
+
 	if(afterFailure){
-        key = store.createApplicationKeys( username,application, keyType, callbackUrl, accessAllowDomains, validityTime);
+        key = store.createApplicationKeys(application, username, keyType, callbackUrl, accessAllowDomainsArr,
+                validityTime, afterFailure,tokenScope,groupingId,jsonParams);
 	}else{
-	key = store.getApplicationKey( username,application, keyType, callbackUrl, accessAllowDomains, validityTime);
-        
+	    key = store.getApplicationKey(application, username, keyType, callbackUrl, accessAllowDomainsArr,
+                validityTime, afterFailure,tokenScope,groupingId,jsonParams);
+
 	}
         if (log.isDebugEnabled()) {
             log.debug("generateAPIKey");
@@ -51,15 +57,125 @@ var generateApplicationKey = function (application, username, keyType, callbackU
 };
 
 
+var deleteAuthApplication = function (authAppParams) {
+
+    afterFailure = typeof afterFailure !== 'undefined' ? afterFailure : false;
+    var key,
+            log = new Log(),
+            store = jagg.module("manager").getAPIStoreObj();
+
+    try {
+
+        key = store.deleteAuthApplication(authAppParams);
+
+        if (log.isDebugEnabled()) {
+            log.debug("generateAPIKey");
+        }
+        return {
+            error:false,
+            key:key
+        };
+    } catch (e) {
+        log.error(e.message);
+        return {
+            error:true,
+            key:null
+        };
+    }
+};
+
+
+var updateAuthClient = function (username, application , keyType, callbackUrl, accessAllowDomainsArr,
+                                 validityTime, retryAfterFailure, tokenScope,applicationId, jsonParams) {
+
+    afterFailure = typeof afterFailure !== 'undefined' ? afterFailure : false;
+    var key,
+            log = new Log(),
+            store = jagg.module("manager").getAPIStoreObj();
+
+    try {
+
+        key = store.updateAuthClient(username, application , keyType, callbackUrl, accessAllowDomainsArr,
+                validityTime, retryAfterFailure, tokenScope,applicationId, jsonParams);;
+
+        if (log.isDebugEnabled()) {
+            log.debug("generateAPIKey");
+        }
+        return {
+            error:false,
+            key:key
+        };
+    } catch (e) {
+        log.error(e.message);
+        return {
+            error:true,
+            key:null
+        };
+    }
+};
+
+var mapExistingOauthClient = function (authAppParams) {
+
+    var key,
+            log = new Log(),
+            store = jagg.module("manager").getAPIStoreObj();
+    try {
+
+        key = store.mapExistingOauthClient(authAppParams);
+
+        if (log.isDebugEnabled()) {
+            log.debug("generateAPIKey");
+        }
+        return {
+            error:false,
+            key:key
+        };
+    } catch (e) {
+        log.error(e.message);
+        return {
+            error:true,
+            key:null
+        };
+    }
+};
+
+var cleanUpApplicationRegistration = function (applicationName , keyType ,groupId ,userName) {
+
+    var key,
+            log = new Log(),
+            store = jagg.module("manager").getAPIStoreObj();
+    try {
+
+        key = store.cleanUpApplicationRegistration(applicationName, keyType ,groupId ,userName);
+
+        if (log.isDebugEnabled()) {
+            log.debug("Deleting from application registration. Application name = " + applicationName + "Key type =" +
+            keyType);
+        }
+        return {
+            error:false,
+            key:key
+        };
+    } catch (e) {
+        log.error(e.message);
+        return {
+            error:true,
+            key:null
+        };
+    }
+};
+
+
+
 var refreshToken = function (username,application, keyType ,oldAccessToken, accessAllowDomains ,
-		clientId, clientSecret, validityTime) {
+		clientId, clientSecret, validityTime,tokenScope) {
     var key,
             log = new Log(),
             store = jagg.module("manager").getAPIStoreObj();
 
     try {
         key = store.refreshToken(username,application, keyType,oldAccessToken, accessAllowDomains, 
-        		clientId, clientSecret,validityTime);
+        		clientId, clientSecret,validityTime,tokenScope);
         if (log.isDebugEnabled()) {
             log.debug("generateAPIKey");
         }
