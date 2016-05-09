@@ -128,7 +128,7 @@ public class SMSInboundNotificationsHandler implements SMSHandler {
     @Override
     public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext
             context) throws Exception {
-        context.setProperty("mife.prop.operationType", 207);
+        context.setProperty(DataPublisherConstants.OPERATION_TYPE, 207);
         return true;
     }
 }

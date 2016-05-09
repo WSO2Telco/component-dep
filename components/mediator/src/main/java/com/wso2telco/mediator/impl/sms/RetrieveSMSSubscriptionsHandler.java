@@ -17,6 +17,7 @@ package com.wso2telco.mediator.impl.sms;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.wso2telco.datapublisher.DataPublisherConstants;
 import com.wso2telco.dbutils.AxiataDbService;
 import com.wso2telco.dbutils.Operatorsubs;
 import com.wso2telco.mediator.OperatorEndpoint;
@@ -102,7 +103,7 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
      */
     @Override
     public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context) throws Exception {
-        context.setProperty("mife.prop.operationType", 205);
+        context.setProperty(DataPublisherConstants.OPERATION_TYPE, 205);
         IServiceValidate validator;
         if (httpMethod.equalsIgnoreCase("POST")) {
 

@@ -34,7 +34,7 @@
                                                  {'name':'exceptionId','type':'STRING'},
                                                  {'name':'exceptionMessage','type':'STRING'},
                                                  {'name':'jsonBody','type':'STRING'},
-												 {'name':'operationType','type':'STRING'},
+												 {'name':'operationType','type':'INT'},
 												 {'name':'merchantId','type':'STRING'},
 												 {'name':'category','type':'STRING'},
 												 {'name':'subCategory','type':'STRING'}

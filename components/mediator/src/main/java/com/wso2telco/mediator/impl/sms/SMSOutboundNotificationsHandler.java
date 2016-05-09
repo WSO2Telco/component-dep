@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.wso2telco.mediator.impl.sms;
 
-
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.synapse.MessageContext;
@@ -39,103 +38,111 @@ import java.util.HashMap;
 
 import org.wso2.carbon.apimgt.gateway.APIMgtGatewayConstants;
 
-
 // TODO: Auto-generated Javadoc
 /**
  * The Class SMSOutboundNotificationsHandler.
  */
 public class SMSOutboundNotificationsHandler implements SMSHandler {
 
-    /** The dbservice. */
-    private AxiataDbService dbservice;
-    
-    /** The executor. */
-    private SMSExecutor executor;
-    
-    /** The mnc queryclient. */
-    MNCQueryClient mncQueryclient = null;
+	/** The dbservice. */
+	private AxiataDbService dbservice;
 
-    /**
-     * Instantiates a new SMS outbound notifications handler.
-     *
-     * @param executor the executor
-     */
-    public SMSOutboundNotificationsHandler(SMSExecutor executor) {
-        this.executor = executor;
-        dbservice = new AxiataDbService();
-        mncQueryclient = new MNCQueryClient();
-    }
+	/** The executor. */
+	private SMSExecutor executor;
 
-    /* (non-Javadoc)
-     * @see com.wso2telco.mediator.impl.sms.SMSHandler#handle(org.apache.synapse.MessageContext)
-     */
-    @Override
-    public boolean handle(MessageContext context) throws CustomException, AxisFault, Exception {
+	/** The mnc queryclient. */
+	MNCQueryClient mncQueryclient = null;
 
-        String requestid = UID.getUniqueID(Type.ALERTINBOUND.getCode(), context, executor.getApplicationid());
+	/**
+	 * Instantiates a new SMS outbound notifications handler.
+	 *
+	 * @param executor
+	 *            the executor
+	 */
+	public SMSOutboundNotificationsHandler(SMSExecutor executor) {
+		this.executor = executor;
+		dbservice = new AxiataDbService();
+		mncQueryclient = new MNCQueryClient();
+	}
 
-        String requestPath = executor.getSubResourcePath();
-        String axiataid = requestPath.substring(requestPath.lastIndexOf("/") + 1);
-        
-        HashMap<String, String> dnSubscriptionDetails = dbservice.subscriptionDNNotifiMap(Integer.valueOf(axiataid));
-        String notifyurl = dnSubscriptionDetails.get("notifyurl");
-        String serviceProvider = dnSubscriptionDetails.get("serviceProvider");
-        
-        String notifyurlRoute = notifyurl;        
-        Util.getPropertyFile();
-        String requestRouterUrl = Util.getApplicationProperty("requestRouterUrl");
-        if (requestRouterUrl != null) {
-            notifyurlRoute = requestRouterUrl + notifyurlRoute;
-        }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wso2telco.mediator.impl.sms.SMSHandler#handle(org.apache.synapse.
+	 * MessageContext)
+	 */
+	@Override
+	public boolean handle(MessageContext context) throws CustomException, AxisFault, Exception {
 
-        String formattedString = null;
-        String mcc = null;
-        String operatormar ="+";
+		String requestid = UID.getUniqueID(Type.ALERTINBOUND.getCode(), context, executor.getApplicationid());
 
-                //String[] params = executor.getSubResourcePath().split("/");
-        Gson gson = new GsonBuilder().serializeNulls().create();
-        if (executor.getJsonBody().toString().contains("operatorCode")) {
-            
-            OutboundRequestOp outboundRequestOp = gson.fromJson(executor.getJsonBody().toString(), OutboundRequestOp.class);
-            formattedString = gson.toJson(outboundRequestOp);
-            String[] params = outboundRequestOp.getDeliveryInfoNotification().getDeliveryInfo().getAddress().split(":");
-            String  operator = mncQueryclient.QueryNetwork(mcc,params[1]);
-            context.setProperty(DataPublisherConstants.MSISDN,params[1]);
-            context.setProperty(DataPublisherConstants.OPERATOR_ID,operator);
-            context.setProperty(APIMgtGatewayConstants.USER_ID, serviceProvider);
-        } else {
-            
-            OutboundRequest outboundRequest = gson.fromJson(executor.getJsonBody().toString(), OutboundRequest.class);
-            formattedString = gson.toJson(outboundRequest);
-            String[] params = outboundRequest.getDeliveryInfoNotification().getDeliveryInfo().getAddress().split(":");
-            String  operator = mncQueryclient.QueryNetwork(mcc,params[1]);
-            context.setProperty(DataPublisherConstants.MSISDN,params[1]);
-            context.setProperty(DataPublisherConstants.OPERATOR_ID,operator);
-            context.setProperty(APIMgtGatewayConstants.USER_ID, serviceProvider);
-        }
+		String requestPath = executor.getSubResourcePath();
+		String axiataid = requestPath.substring(requestPath.lastIndexOf("/") + 1);
 
+		HashMap<String, String> dnSubscriptionDetails = dbservice.subscriptionDNNotifiMap(Integer.valueOf(axiataid));
+		String notifyurl = dnSubscriptionDetails.get("notifyurl");
+		String serviceProvider = dnSubscriptionDetails.get("serviceProvider");
 
+		String notifyurlRoute = notifyurl;
+		Util.getPropertyFile();
+		String requestRouterUrl = Util.getApplicationProperty("requestRouterUrl");
+		if (requestRouterUrl != null) {
+			notifyurlRoute = requestRouterUrl + notifyurlRoute;
+		}
 
-        int notifyret = executor.makeNorthBoundRequest(new OperatorEndpoint(new EndpointReference(notifyurl), null), notifyurlRoute, formattedString, true, context, false);
+		String formattedString = null;
+		String mcc = null;
+		String operatormar = "+";
 
-        executor.removeHeaders(context);
-        
-        if (notifyret == 0) {
-            throw new CustomException("SVC1000", "", new String[]{null});
-        }
-        
-        ((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 200);
-         
+		// String[] params = executor.getSubResourcePath().split("/");
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		if (executor.getJsonBody().toString().contains("operatorCode")) {
 
-        return true;
-    }
+			OutboundRequestOp outboundRequestOp = gson.fromJson(executor.getJsonBody().toString(),
+					OutboundRequestOp.class);
+			formattedString = gson.toJson(outboundRequestOp);
+			String[] params = outboundRequestOp.getDeliveryInfoNotification().getDeliveryInfo().getAddress().split(":");
+			String operator = mncQueryclient.QueryNetwork(mcc, params[1]);
+			context.setProperty(DataPublisherConstants.MSISDN, params[1]);
+			context.setProperty(DataPublisherConstants.OPERATOR_ID, operator);
+			context.setProperty(APIMgtGatewayConstants.USER_ID, serviceProvider);
+		} else {
 
-    /* (non-Javadoc)
-     * @see com.wso2telco.mediator.impl.sms.SMSHandler#validate(java.lang.String, java.lang.String, org.json.JSONObject, org.apache.synapse.MessageContext)
-     */
-    @Override
-    public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context) throws Exception {
-        context.setProperty("mife.prop.operationType", 207);
-        return true;
-    }
+			OutboundRequest outboundRequest = gson.fromJson(executor.getJsonBody().toString(), OutboundRequest.class);
+			formattedString = gson.toJson(outboundRequest);
+			String[] params = outboundRequest.getDeliveryInfoNotification().getDeliveryInfo().getAddress().split(":");
+			String operator = mncQueryclient.QueryNetwork(mcc, params[1]);
+			context.setProperty(DataPublisherConstants.MSISDN, params[1]);
+			context.setProperty(DataPublisherConstants.OPERATOR_ID, operator);
+			context.setProperty(APIMgtGatewayConstants.USER_ID, serviceProvider);
+		}
+
+		int notifyret = executor.makeNorthBoundRequest(new OperatorEndpoint(new EndpointReference(notifyurl), null),
+				notifyurlRoute, formattedString, true, context, false);
+
+		executor.removeHeaders(context);
+
+		if (notifyret == 0) {
+			throw new CustomException("SVC1000", "", new String[] { null });
+		}
+
+		((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 200);
+
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wso2telco.mediator.impl.sms.SMSHandler#validate(java.lang.String,
+	 * java.lang.String, org.json.JSONObject, org.apache.synapse.MessageContext)
+	 */
+	@Override
+	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context)
+			throws Exception {
+		context.setProperty(DataPublisherConstants.OPERATION_TYPE, 207);
+		return true;
+	}
 }
