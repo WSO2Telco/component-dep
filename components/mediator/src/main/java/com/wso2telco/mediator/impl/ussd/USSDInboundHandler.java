@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.wso2telco.mediator.impl.ussd;
 
+import com.wso2telco.datapublisher.DataPublisherConstants;
 import com.wso2telco.dbutils.AxiataDbService;
 import com.wso2telco.mediator.OperatorEndpoint;
 import com.wso2telco.mediator.internal.Util;
@@ -128,7 +129,7 @@ public class USSDInboundHandler implements USSDHandler {
     @Override
     public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext
             context) throws Exception {
-        context.setProperty("mife.prop.operationType", 407);
+        context.setProperty(DataPublisherConstants.OPERATION_TYPE, 407);
         return true;
     }
 }

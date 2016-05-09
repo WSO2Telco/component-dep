@@ -19,6 +19,7 @@ package com.wso2telco.mediator.impl.sms;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
+import com.wso2telco.datapublisher.DataPublisherConstants;
 import com.wso2telco.dbutils.AxiataDbService;
 import com.wso2telco.mediator.MSISDNConstants;
 import com.wso2telco.mediator.OperatorEndpoint;
@@ -95,7 +96,7 @@ public class QuerySMSStatusHandler implements SMSHandler {
      */
     @Override
     public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context) throws Exception {
-        context.setProperty("mife.prop.operationType", 202);
+        context.setProperty(DataPublisherConstants.OPERATION_TYPE, 202);
         if (!httpMethod.equalsIgnoreCase("GET")) {
             ((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 405);
             throw new Exception("Method not allowed");

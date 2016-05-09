@@ -55,236 +55,261 @@ import java.util.Map;
  */
 public class SendSMSHandler implements SMSHandler {
 
-    /** The log. */
-    private Log log = LogFactory.getLog(SendSMSHandler.class);
-    
-    /** The Constant API_TYPE. */
-    private static final String API_TYPE = "sms";
-    
-    /** The occi. */
-    private OriginatingCountryCalculatorIDD occi;
-    
-    /** The response handler. */
-    private ResponseHandler responseHandler;
-    
-    /** The executor. */
-    private SMSExecutor executor;
-    
-    /** The dbservice. */
-    private AxiataDbService dbservice;
+	/** The log. */
+	private Log log = LogFactory.getLog(SendSMSHandler.class);
 
-    /**
-     * Instantiates a new send sms handler.
-     *
-     * @param executor the executor
-     */
-    public SendSMSHandler(SMSExecutor executor) {
-        this.executor = executor;
-        occi = new OriginatingCountryCalculatorIDD();
-        responseHandler = new ResponseHandler();
-        dbservice = new AxiataDbService();
-    }
+	/** The Constant API_TYPE. */
+	private static final String API_TYPE = "sms";
 
-    /* (non-Javadoc)
-     * @see com.wso2telco.mediator.impl.sms.SMSHandler#handle(org.apache.synapse.MessageContext)
-     */
-    @Override
-    public boolean handle(MessageContext context) throws CustomException, AxisFault, Exception {
-        String requestid = UID.getUniqueID(Type.SMSSEND.getCode(), context, executor.getApplicationid());
-        //append request id to client correlator
-        JSONObject jsonBody = executor.getJsonBody();
-        JSONObject clientclr = jsonBody.getJSONObject("outboundSMSMessageRequest");
-        clientclr.put("clientCorrelator", clientclr.getString("clientCorrelator") + ":" + requestid);
+	/** The occi. */
+	private OriginatingCountryCalculatorIDD occi;
 
-        Gson gson = new GsonBuilder().serializeNulls().create();
-        SendSMSRequest subsrequest = gson.fromJson(jsonBody.toString(), SendSMSRequest.class);
-        String senderAddress = subsrequest.getOutboundSMSMessageRequest().getSenderAddress();
+	/** The response handler. */
+	private ResponseHandler responseHandler;
 
-        if (!ValidatorUtils.getValidatorForSubscription(context).validate(context)) {
-            throw new CustomException("SVC0001", "", new String[]{"Subscription Validation Unsuccessful"});
-        }
-        int smsCount = getSMSMessageCount(subsrequest.getOutboundSMSMessageRequest().getOutboundTextMessage().getMessage());
-        context.setProperty(DataPublisherConstants.RESPONSE, String.valueOf(smsCount));
+	/** The executor. */
+	private SMSExecutor executor;
 
-        Map<String, SendSMSResponse> smsResponses = smssendmulti(context, subsrequest, jsonBody.getJSONObject("outboundSMSMessageRequest").getJSONArray("address"), API_TYPE, executor.getValidoperators());
-        if (Util.isAllNull(smsResponses.values())) {
-            throw new CustomException("POL0257", "Message not delivered %1", new String[]{"Request failed. Errors "
-                + "occurred while sending the request for all the destinations."});
-        }
-//NB publish
-        executor.removeHeaders(context);
-        String resPayload = responseHandler.makeSmsSendResponse(context, jsonBody.toString(), smsResponses, requestid);
-        storeRequestIDs(requestid, senderAddress, smsResponses);
-        executor.setResponse(context, resPayload);
-        return true;
-    }
+	/** The dbservice. */
+	private AxiataDbService dbservice;
 
-    /* (non-Javadoc)
-     * @see com.wso2telco.mediator.impl.sms.SMSHandler#validate(java.lang.String, java.lang.String, org.json.JSONObject, org.apache.synapse.MessageContext)
-     */
-    @Override
-    public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context) throws Exception {
+	/**
+	 * Instantiates a new send sms handler.
+	 *
+	 * @param executor
+	 *            the executor
+	 */
+	public SendSMSHandler(SMSExecutor executor) {
+		this.executor = executor;
+		occi = new OriginatingCountryCalculatorIDD();
+		responseHandler = new ResponseHandler();
+		dbservice = new AxiataDbService();
+	}
 
-        if (!httpMethod.equalsIgnoreCase("POST")) {
-            ((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 405);
-            throw new Exception("Method not allowed");
-        }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wso2telco.mediator.impl.sms.SMSHandler#handle(org.apache.synapse.
+	 * MessageContext)
+	 */
+	@Override
+	public boolean handle(MessageContext context) throws CustomException, AxisFault, Exception {
+		String requestid = UID.getUniqueID(Type.SMSSEND.getCode(), context, executor.getApplicationid());
+		// append request id to client correlator
+		JSONObject jsonBody = executor.getJsonBody();
+		JSONObject clientclr = jsonBody.getJSONObject("outboundSMSMessageRequest");
+		clientclr.put("clientCorrelator", clientclr.getString("clientCorrelator") + ":" + requestid);
 
-        context.setProperty("mife.prop.operationType", 200);
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		SendSMSRequest subsrequest = gson.fromJson(jsonBody.toString(), SendSMSRequest.class);
+		String senderAddress = subsrequest.getOutboundSMSMessageRequest().getSenderAddress();
 
-        IServiceValidate validator = new ValidateSendSms();
-        validator.validateUrl(requestPath);
-        validator.validate(jsonBody.toString());
+		if (!ValidatorUtils.getValidatorForSubscription(context).validate(context)) {
+			throw new CustomException("SVC0001", "", new String[] { "Subscription Validation Unsuccessful" });
+		}
+		int smsCount = getSMSMessageCount(
+				subsrequest.getOutboundSMSMessageRequest().getOutboundTextMessage().getMessage());
+		context.setProperty(DataPublisherConstants.RESPONSE, String.valueOf(smsCount));
 
-        String senderName = jsonBody.getJSONObject("outboundSMSMessageRequest").optString("senderName");
+		Map<String, SendSMSResponse> smsResponses = smssendmulti(context, subsrequest,
+				jsonBody.getJSONObject("outboundSMSMessageRequest").getJSONArray("address"), API_TYPE,
+				executor.getValidoperators());
+		if (Util.isAllNull(smsResponses.values())) {
+			throw new CustomException("POL0257", "Message not delivered %1", new String[] {
+					"Request failed. Errors " + "occurred while sending the request for all the destinations." });
+		}
+		// NB publish
+		executor.removeHeaders(context);
+		String resPayload = responseHandler.makeSmsSendResponse(context, jsonBody.toString(), smsResponses, requestid);
+		storeRequestIDs(requestid, senderAddress, smsResponses);
+		executor.setResponse(context, resPayload);
+		return true;
+	}
 
-        if (senderName.equals("") || senderName == null || senderName.length() < 10) {
-            context.setProperty("mife.prop.merchantId", "");
-            context.setProperty("mife.prop.category", "");
-            context.setProperty("mife.prop.subCategory", "");
-        } else {
-            if (senderName.substring(0, 3).equals("000")) {
-                context.setProperty("mife.prop.merchantId", "");
-            } else {
-                context.setProperty("mife.prop.merchantId", senderName.substring(0, 3));
-            }
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wso2telco.mediator.impl.sms.SMSHandler#validate(java.lang.String,
+	 * java.lang.String, org.json.JSONObject, org.apache.synapse.MessageContext)
+	 */
+	@Override
+	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context)
+			throws Exception {
 
-            if (senderName.substring(3, 6).equals("000")) {
-                context.setProperty("mife.prop.category", "");
-            } else {
-                context.setProperty("mife.prop.category", senderName.substring(3, 6));
-            }
+		if (!httpMethod.equalsIgnoreCase("POST")) {
+			((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 405);
+			throw new Exception("Method not allowed");
+		}
 
-            if (senderName.substring(6, 9).equals("000")) {
-                context.setProperty("mife.prop.subCategory", "");
-            } else {
-                context.setProperty("mife.prop.subCategory", senderName.substring(6, 9));
-            }
-        }
+		context.setProperty(DataPublisherConstants.OPERATION_TYPE, 200);
 
-        return true;
-    }
+		IServiceValidate validator = new ValidateSendSms();
+		validator.validateUrl(requestPath);
+		validator.validate(jsonBody.toString());
 
-    /**
-     * Smssendmulti.
-     *
-     * @param smsmc the smsmc
-     * @param sendreq the sendreq
-     * @param listaddr the listaddr
-     * @param apitype the apitype
-     * @param operators the operators
-     * @return the map
-     * @throws Exception the exception
-     */
-    private Map<String, SendSMSResponse> smssendmulti(MessageContext smsmc, SendSMSRequest sendreq, JSONArray listaddr,
-            String apitype, List<Operator> operators) throws Exception {
+		String senderName = jsonBody.getJSONObject("outboundSMSMessageRequest").optString("senderName");
 
-        OperatorEndpoint endpoint = null;
-        String jsonStr;
-        String address;
-        Map<String, SendSMSResponse> smsResponses = new HashMap<String, SendSMSResponse>();
-        for (int i = 0; i < listaddr.length(); i++) {
+		if (senderName.equals("") || senderName == null || senderName.length() < 10) {
+			context.setProperty(DataPublisherConstants.MERCHANT_ID, "");
+			context.setProperty(DataPublisherConstants.CATEGORY, "");
+			context.setProperty(DataPublisherConstants.SUB_CATEGORY, "");
+		} else {
+			if (senderName.substring(0, 3).equals("000")) {
+				context.setProperty(DataPublisherConstants.MERCHANT_ID, "");
+			} else {
+				context.setProperty(DataPublisherConstants.MERCHANT_ID, senderName.substring(0, 3));
+			}
 
-            SendSMSResponse sendSMSResponse = null;
-            address = listaddr.getString(i);
-            //     try {
-            log.info("id : " + address);
-            smsmc.setProperty(MSISDNConstants.USER_MSISDN, address.substring(5));
-            endpoint = occi.getAPIEndpointsByMSISDN(address.replace("tel:", ""), apitype, executor
-                    .getSubResourcePath(), false, operators);   //smsSend;
+			if (senderName.substring(3, 6).equals("000")) {
+				context.setProperty(DataPublisherConstants.CATEGORY, "");
+			} else {
+				context.setProperty(DataPublisherConstants.CATEGORY, senderName.substring(3, 6));
+			}
 
-            List<String> sendAdr = new ArrayList<String>();
-            sendAdr.add(address);
-            sendreq.getOutboundSMSMessageRequest().setAddress(sendAdr);
-            jsonStr = new Gson().toJson(sendreq);
-            String sending_add = endpoint.getEndpointref().getAddress();
-            log.info("sending endpoint found: " + sending_add);
+			if (senderName.substring(6, 9).equals("000")) {
+				context.setProperty(DataPublisherConstants.SUB_CATEGORY, "");
+			} else {
+				context.setProperty(DataPublisherConstants.SUB_CATEGORY, senderName.substring(6, 9));
+			}
+		}
 
-            String responseStr = executor.makeRequest(endpoint, sending_add, jsonStr, true, smsmc);
-            sendSMSResponse = parseJsonResponse(responseStr);
-       //     } catch (Exception e) {
-            //        log.error(e.getMessage(), e);
-            //    }
-            smsResponses.put(address, sendSMSResponse);
-        }
-        return smsResponses;
-    }
+		return true;
+	}
 
-    /**
-     * Parses the json response.
-     *
-     * @param responseString the response string
-     * @return the send sms response
-     */
-    private SendSMSResponse parseJsonResponse(String responseString) {
+	/**
+	 * Smssendmulti.
+	 *
+	 * @param smsmc
+	 *            the smsmc
+	 * @param sendreq
+	 *            the sendreq
+	 * @param listaddr
+	 *            the listaddr
+	 * @param apitype
+	 *            the apitype
+	 * @param operators
+	 *            the operators
+	 * @return the map
+	 * @throws Exception
+	 *             the exception
+	 */
+	private Map<String, SendSMSResponse> smssendmulti(MessageContext smsmc, SendSMSRequest sendreq, JSONArray listaddr,
+			String apitype, List<Operator> operators) throws Exception {
 
-        Gson gson = new GsonBuilder().create();
-        SendSMSResponse smsResponse;
-        try {
-            smsResponse = gson.fromJson(responseString, SendSMSResponse.class);
-            if (smsResponse.getOutboundSMSMessageRequest() == null) {
-                return null;
-            }
-        } catch (JsonSyntaxException e) {
-            log.error(e.getMessage(), e);
-            return null;
-        }
-        return smsResponse;
-    }
+		OperatorEndpoint endpoint = null;
+		String jsonStr;
+		String address;
+		Map<String, SendSMSResponse> smsResponses = new HashMap<String, SendSMSResponse>();
+		for (int i = 0; i < listaddr.length(); i++) {
 
-    /**
-     * Store request i ds.
-     *
-     * @param requestID the request id
-     * @param senderAddress the sender address
-     * @param smsResponses the sms responses
-     * @throws AxataDBUtilException the axata db util exception
-     */
-    private void storeRequestIDs(String requestID, String senderAddress, Map<String, SendSMSResponse> smsResponses)
-            throws AxataDBUtilException {
-        Map<String, String> reqIdMap = new HashMap<String, String>(smsResponses.size());
-        for (Map.Entry<String, SendSMSResponse> entry : smsResponses.entrySet()) {
-            SendSMSResponse smsResponse = entry.getValue();
-            String pluginReqId = null;
-            if (smsResponse != null) {
-                String resourceURL = smsResponse.getOutboundSMSMessageRequest().getResourceURL().trim();
-                String[] segments = resourceURL.split("/");
-                pluginReqId = segments[segments.length - 1];
-            }
-            reqIdMap.put(entry.getKey(), pluginReqId);
-        }
-        dbservice.insertSmsRequestIds(requestID, senderAddress, reqIdMap);
-    }
+			SendSMSResponse sendSMSResponse = null;
+			address = listaddr.getString(i);
+			// try {
+			log.info("id : " + address);
+			smsmc.setProperty(MSISDNConstants.USER_MSISDN, address.substring(5));
+			endpoint = occi.getAPIEndpointsByMSISDN(address.replace("tel:", ""), apitype, executor.getSubResourcePath(),
+					false, operators); // smsSend;
 
-    /**
-     * Gets the SMS message count.
-     *
-     * @param textMessage the text message
-     * @return the SMS message count
-     */
-    private int getSMSMessageCount(String textMessage) {
+			List<String> sendAdr = new ArrayList<String>();
+			sendAdr.add(address);
+			sendreq.getOutboundSMSMessageRequest().setAddress(sendAdr);
+			jsonStr = new Gson().toJson(sendreq);
+			String sending_add = endpoint.getEndpointref().getAddress();
+			log.info("sending endpoint found: " + sending_add);
 
-        int smsCount = 0;
-        try {
-            int count = textMessage.length();
-            log.debug("Character count of text message : " + count);
-            if (count > 0) {
-                int tempSMSCount = count / 160;
+			String responseStr = executor.makeRequest(endpoint, sending_add, jsonStr, true, smsmc);
+			sendSMSResponse = parseJsonResponse(responseStr);
+			// } catch (Exception e) {
+			// log.error(e.getMessage(), e);
+			// }
+			smsResponses.put(address, sendSMSResponse);
+		}
+		return smsResponses;
+	}
 
-                int tempRem = count % 160;
+	/**
+	 * Parses the json response.
+	 *
+	 * @param responseString
+	 *            the response string
+	 * @return the send sms response
+	 */
+	private SendSMSResponse parseJsonResponse(String responseString) {
 
-                if (tempRem > 0) {
-                    tempSMSCount++;
-                }
-                smsCount = tempSMSCount;
+		Gson gson = new GsonBuilder().create();
+		SendSMSResponse smsResponse;
+		try {
+			smsResponse = gson.fromJson(responseString, SendSMSResponse.class);
+			if (smsResponse.getOutboundSMSMessageRequest() == null) {
+				return null;
+			}
+		} catch (JsonSyntaxException e) {
+			log.error(e.getMessage(), e);
+			return null;
+		}
+		return smsResponse;
+	}
 
-            }
-        } catch (Exception e) {
-            log.error("error in getSMSMessageCharacterCount : " + e.getMessage());
-            return 0;
-        }
+	/**
+	 * Store request i ds.
+	 *
+	 * @param requestID
+	 *            the request id
+	 * @param senderAddress
+	 *            the sender address
+	 * @param smsResponses
+	 *            the sms responses
+	 * @throws AxataDBUtilException
+	 *             the axata db util exception
+	 */
+	private void storeRequestIDs(String requestID, String senderAddress, Map<String, SendSMSResponse> smsResponses)
+			throws AxataDBUtilException {
+		Map<String, String> reqIdMap = new HashMap<String, String>(smsResponses.size());
+		for (Map.Entry<String, SendSMSResponse> entry : smsResponses.entrySet()) {
+			SendSMSResponse smsResponse = entry.getValue();
+			String pluginReqId = null;
+			if (smsResponse != null) {
+				String resourceURL = smsResponse.getOutboundSMSMessageRequest().getResourceURL().trim();
+				String[] segments = resourceURL.split("/");
+				pluginReqId = segments[segments.length - 1];
+			}
+			reqIdMap.put(entry.getKey(), pluginReqId);
+		}
+		dbservice.insertSmsRequestIds(requestID, senderAddress, reqIdMap);
+	}
 
-        log.debug("SMS count : " + smsCount);
-        return smsCount;
-    }
+	/**
+	 * Gets the SMS message count.
+	 *
+	 * @param textMessage
+	 *            the text message
+	 * @return the SMS message count
+	 */
+	private int getSMSMessageCount(String textMessage) {
+
+		int smsCount = 0;
+		try {
+			int count = textMessage.length();
+			log.debug("Character count of text message : " + count);
+			if (count > 0) {
+				int tempSMSCount = count / 160;
+
+				int tempRem = count % 160;
+
+				if (tempRem > 0) {
+					tempSMSCount++;
+				}
+				smsCount = tempSMSCount;
+
+			}
+		} catch (Exception e) {
+			log.error("error in getSMSMessageCharacterCount : " + e.getMessage());
+			return 0;
+		}
+
+		log.debug("SMS count : " + smsCount);
+		return smsCount;
+	}
 }
