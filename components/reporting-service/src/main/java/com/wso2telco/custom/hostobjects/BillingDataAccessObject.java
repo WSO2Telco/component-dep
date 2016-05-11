@@ -94,7 +94,7 @@ public class BillingDataAccessObject {
             return;
         }
         APIManagerConfiguration config = HostObjectComponent.getAPIManagerConfiguration();
-        String statdataSourceName = config.getFirstProperty(STAT_SOURCE_NAME);
+        String statdataSourceName = "jdbc/WSO2AM_STATS_DB";
         String apimgtdataSourceName = config.getFirstProperty(APIMGT_SOURCE_NAME);
 
         if (statdataSourceName != null) {
