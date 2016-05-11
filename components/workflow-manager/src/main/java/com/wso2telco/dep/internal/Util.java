@@ -13,15 +13,26 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.workflow.interfaces;
+package com.wso2telco.dep.internal;
 
-import java.sql.Connection;
+import org.wso2.carbon.user.core.service.RealmService;
 
-import org.wso2.carbon.apimgt.api.APIManagementException;
-import org.wso2.carbon.apimgt.api.model.APIIdentifier;
+public class Util {
+    private static RealmService realmService;
 
-public interface AxiataAPIConsumer {
-	
-	int getAPIID(APIIdentifier apiId) throws APIManagementException;
+    /**
+     * Gets the realm service.
+     *
+     * @return the realm service
+     */
+    public static RealmService getRealmService() {
+        return realmService;
+    }
+    
+    public static synchronized void setRealmService(RealmService realmSer) {
+
+        realmService=realmSer;
+
+ }
 
 }
