@@ -49,7 +49,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.apimgt.impl.workflow.WorkflowException;
 
-public class AxiataApplicationCreationWSWorkflowExecutor extends WorkflowExecutor {
+public class ApplicationCreationWSWorkflowExecutor extends WorkflowExecutor {
 
     private String serviceEndpoint;
 
@@ -59,7 +59,7 @@ public class AxiataApplicationCreationWSWorkflowExecutor extends WorkflowExecuto
 
     private String contentType;
 
-    private static final Log log = LogFactory.getLog(AxiataApplicationCreationWSWorkflowExecutor.class);
+    private static final Log log = LogFactory.getLog(ApplicationCreationWSWorkflowExecutor.class);
 
     @Override
     public String getWorkflowType() {

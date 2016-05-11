@@ -57,9 +57,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class AxiataSubscriptionCreationWSWorkflowExecutor extends WorkflowExecutor {
+public class SubscriptionCreationWSWorkflowExecutor extends WorkflowExecutor {
 
-    private static final Log log = LogFactory.getLog(AxiataSubscriptionCreationWSWorkflowExecutor.class);
+    private static final Log log = LogFactory.getLog(SubscriptionCreationWSWorkflowExecutor.class);
 
     private String serviceEndpoint;
 
