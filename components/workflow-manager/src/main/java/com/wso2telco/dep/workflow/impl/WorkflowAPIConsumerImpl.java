@@ -25,11 +25,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.apimgt.impl.utils.APIMgtDBUtil;
 
-import com.wso2telco.dep.workflow.interfaces.AxiataAPIConsumer;
+import com.wso2telco.dep.workflow.interfaces.WorkflowAPIConsumer;
 
-public class AxiataAPIConsumerImpl implements AxiataAPIConsumer {
+public class WorkflowAPIConsumerImpl implements WorkflowAPIConsumer {
 	
-	private static final Log log = LogFactory.getLog(AxiataAPIConsumerImpl.class);
+	private static final Log log = LogFactory.getLog(WorkflowAPIConsumerImpl.class);
 
 	@Override
 	public int getAPIID(APIIdentifier apiId) throws APIManagementException {

@@ -42,8 +42,8 @@ import org.wso2.carbon.apimgt.impl.workflow.WorkflowConstants;
 import org.wso2.carbon.apimgt.impl.workflow.WorkflowException;
 import org.wso2.carbon.apimgt.impl.workflow.WorkflowStatus;
 
-import com.wso2telco.dep.workflow.impl.AxiataAPIConsumerImpl;
-import com.wso2telco.dep.workflow.interfaces.AxiataAPIConsumer;
+import com.wso2telco.dep.workflow.impl.WorkflowAPIConsumerImpl;
+import com.wso2telco.dep.workflow.interfaces.WorkflowAPIConsumer;
 import com.wso2telco.dep.workflow.internal.ServiceReferenceHolder;
 
 import org.wso2.carbon.apimgt.impl.utils.APIUtil;
@@ -57,9 +57,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
-public class AxiataSubscriptionCreationWSWorkflowExecutor extends WorkflowExecutor {
+public class SubscriptionCreationWSWorkflowExecutor extends WorkflowExecutor {
 
-    private static final Log log = LogFactory.getLog(AxiataSubscriptionCreationWSWorkflowExecutor.class);
+    private static final Log log = LogFactory.getLog(SubscriptionCreationWSWorkflowExecutor.class);
 
     private String serviceEndpoint;
 
@@ -177,7 +177,7 @@ public class AxiataSubscriptionCreationWSWorkflowExecutor extends WorkflowExecut
                 tiersStr = tiersStr.replace("$g", tierAttributesString);
             }
 
-    		AxiataAPIConsumer axiataAPIConsumer = new AxiataAPIConsumerImpl();
+    		WorkflowAPIConsumer axiataAPIConsumer = new WorkflowAPIConsumerImpl();
             int apiID = axiataAPIConsumer.getAPIID(apiIdentifier);
 
             payload = payload.replace("$1", apiName);
