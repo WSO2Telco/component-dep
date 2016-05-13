@@ -161,21 +161,18 @@ var getActiveTenantDomains=function(){
 
 };
 
-var getAxiataStoreObj = function() {
+var getStoreHostObject = function() {
 
     var tenantDomain = request.getParameter("tenant");
     var user = jagg.getUser();
-    var axiataStore;
+    var operatorService;
     if (user == null) {
-        axiataStore = require('opratorservice');
-        var axiataStoreHostObj = new axiataStore.AxiataStore();
-//         if(tenantDomain != null && tenantDomain != ""){
-//             axiataStoreHostObj.loadRegistryOfTenant(tenantDomain);
-//         }
-        return axiataStoreHostObj;
+        operatorService = require('opratorservice');
+        var storeHostObject = new operatorService.StoreHostObject();
+        return storeHostObject;
     } else {
-        axiataStore = require('opratorservice');
-        return new axiataStore.AxiataStore(user.username);
+        operatorService = require('opratorservice');
+        return new operatorService.StoreHostObject(user.username);
     }
 };
 

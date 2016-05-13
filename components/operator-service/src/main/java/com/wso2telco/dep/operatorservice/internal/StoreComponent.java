@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.operatorservice.internal;
+package com.wso2telco.dep.operatorservice.internal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -70,7 +70,7 @@ public class StoreComponent {
 	 * @param amcService the new API manager configuration service
 	 */
 	protected void setAPIManagerConfigurationService(APIManagerConfigurationService amcService) {
-		log.debug("API manager configuration service bound to AxiataStore host objects.");
+		log.debug("API manager configuration service bound to store host objects.");
 		configuration = amcService.getAPIManagerConfiguration();
 	}
 
@@ -80,7 +80,7 @@ public class StoreComponent {
 	 * @param amcService the amc service
 	 */
 	protected void unsetAPIManagerConfigurationService(APIManagerConfigurationService amcService) {
-		log.debug("API manager configuration service unbound from AxiataStore host objects.");
+		log.debug("API manager configuration service unbound from store host objects.");
 		configuration = null;
 	}
 	
