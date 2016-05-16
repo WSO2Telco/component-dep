@@ -1,11 +1,11 @@
 <module name="reportservice" namespace="ns" expose="true" xmlns="http://wso2.org/projects/jaggery/module.xml">    
 	<hostObject>
-            <className>com.wso2telco.custom.hostobjects.BillingHostObject</className>
-            <name>DialogBilling</name>
-        </hostObject>
+            <className>com.wso2telco.dep.custom.hostobjects.BillingHostObject</className>
+            <name>BillingHostObject</name>
+    </hostObject>
 	<hostObject>
-            <className>com.wso2telco.custom.hostobjects.WorkflowHostObject</className>
+            <className>com.wso2telco.dep.custom.hostobjects.WorkflowHostObject</className>
             <name>AxiataWorkflow</name>
-        </hostObject>
+    </hostObject>
 </module>
 

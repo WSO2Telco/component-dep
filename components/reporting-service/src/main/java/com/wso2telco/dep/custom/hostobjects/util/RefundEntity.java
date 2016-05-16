@@ -13,19 +13,55 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.wso2.carbon.apimgt.hostobjects;
+package com.wso2telco.dep.custom.hostobjects.util;
 
-import java.util.HashMap;
+import java.util.List;
 
-import com.wso2telco.dep.custom.hostobjects.ApiTxCard;
-
-public class TxCardTest {
+// TODO: Auto-generated Javadoc
+/**
+ * The Class RefundEntity.
+ */
+public class RefundEntity{
 	
-	public static void main(String args[]){
-		ApiTxCard card = new ApiTxCard();
-		HashMap<Integer, Object> txCardTemp = card.getTxCardTemp();
-		//TxCardDAO currentDao = (TxCardDAO) txCardTemp.get(new Integer(100));
-		//System.out.println(currentDao.getHeaderList().size()+"");
+	/** The name. */
+	private String name;
+	
+	/** The refund list. */
+	private List<String> refundList;
+	
+	/**
+	 * Gets the name.
+	 *
+	 * @return the name
+	 */
+	public String getName() {
+		return name;
 	}
 	
+	/**
+	 * Sets the name.
+	 *
+	 * @param name the new name
+	 */
+	public void setName(String name) {
+		this.name = name;
+	}
+	
+	/**
+	 * Gets the refund list.
+	 *
+	 * @return the refund list
+	 */
+	public List<String> getRefundList() {
+		return refundList;
+	}
+	
+	/**
+	 * Sets the refund list.
+	 *
+	 * @param refundList the new refund list
+	 */
+	public void setRefundList(List<String> refundList) {
+		this.refundList = refundList;
+	}		
 }
