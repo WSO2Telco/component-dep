@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.operatorservice.internal;
+package com.wso2telco.dep.operatorservice.internal;
 
 import org.wso2.carbon.apimgt.impl.APIManagerConfiguration;
 import org.wso2.carbon.utils.ConfigurationContextService;

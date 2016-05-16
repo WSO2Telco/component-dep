@@ -13,15 +13,16 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.operatorservice;
+package com.wso2telco.dep.operatorservice;
 
 import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.apimgt.api.APIManagementException;
-import com.wso2telco.operatorservice.dao.DAO;
-import com.wso2telco.operatorservice.model.Operator;
+
+import com.wso2telco.dep.operatorservice.dao.DAO;
+import com.wso2telco.dep.operatorservice.model.Operator;
 
 import org.mozilla.javascript.*;
 
@@ -36,7 +37,7 @@ public class StoreHostObject extends ScriptableObject {
 	private static final Log log = LogFactory.getLog(StoreHostObject.class);
 
 	/** The hostobject name. */
-	private String hostobjectName = "AxiataStore";
+	private String hostobjectName = "StoreHostObject";
 
 	/*
 	 * (non-Javadoc)

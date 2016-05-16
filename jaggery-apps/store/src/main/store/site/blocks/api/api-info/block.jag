@@ -29,7 +29,7 @@ jagg.block("api/api-info", {
             isAdvertiseOnly = (api.isAdvertiseOnly == null) ? false : api.isAdvertiseOnly;
         }
 
-        var axiataStore = null;
+        var operatorService = null;
         var operators, operatorsOut = null;
 
        if (swaggerString == "noPermissions") {
@@ -65,9 +65,9 @@ jagg.block("api/api-info", {
         result = jagg.module("tiers").getDeniedTiers();
         deniedTiers = result.tiers;
         
-        // Retrieve the list of Axiata operators.
-        axiataStore = jagg.module("manager").getAxiataStoreObj();
-        operators = axiataStore.retrieveOperatorList();
+        // Retrieve the list of operators.
+        operatorService = jagg.module("manager").getStoreHostObject();
+        operators = operatorService.retrieveOperatorList();
 
     }
     if(!isAdvertiseOnly){

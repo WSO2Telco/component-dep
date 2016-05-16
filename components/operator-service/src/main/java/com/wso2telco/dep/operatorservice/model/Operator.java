@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.operatorservice.model;
+package com.wso2telco.dep.operatorservice.model;
 
 // TODO: Auto-generated Javadoc
 /**
