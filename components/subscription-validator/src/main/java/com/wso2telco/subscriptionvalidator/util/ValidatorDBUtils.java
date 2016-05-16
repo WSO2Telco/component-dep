@@ -21,6 +21,9 @@ import org.wso2.carbon.apimgt.api.APIManagementException;
 import org.wso2.carbon.apimgt.api.model.APIIdentifier;
 import org.wso2.carbon.apimgt.impl.dao.ApiMgtDAO;
 import org.wso2.carbon.apimgt.impl.utils.APIMgtDBUtil;
+
+import com.wso2telco.dbutils.DbUtils;
+import com.wso2telco.dbutils.util.DataSourceNames;
 import com.wso2telco.subscriptionvalidator.exceptions.ValidatorException;
 import javax.naming.Context;
 import javax.naming.InitialContext;
@@ -37,33 +40,9 @@ import java.sql.SQLException;
  * The Class ValidatorDBUtils.
  */
 public class ValidatorDBUtils {
-
-    /** The axiata datasource. */
-    private static volatile DataSource axiataDatasource = null;
-    
-    /** The Constant AXIATA_DATA_SOURCE. */
-    private static final String AXIATA_DATA_SOURCE = "jdbc/AXIATA_MIFE_DB";
     
     /** The Constant log. */
     private static final Log log = LogFactory.getLog(ValidatorDBUtils.class);
-
-    /**
-     * Initialize datasources.
-     *
-     * @throws ValidatorException the validator exception
-     */
-    public static void initializeDatasources() throws ValidatorException {
-        if (axiataDatasource != null) {
-            return;
-        }
-
-        try {
-            Context ctx = new InitialContext();
-            axiataDatasource = (DataSource) ctx.lookup(AXIATA_DATA_SOURCE);
-        } catch (NamingException e) {
-            handleException("Error while looking up the data source: " + AXIATA_DATA_SOURCE, e);
-        }
-    }
 
     /**
      * Gets the api mgt db connection.
@@ -74,22 +53,6 @@ public class ValidatorDBUtils {
     public static Connection getApiMgtDBConnection() throws SQLException {
 
         return APIMgtDBUtil.getConnection();
-    }
-
-    /**
-     * Gets the axiata db connection.
-     *
-     * @return the axiata db connection
-     * @throws SQLException the SQL exception
-     * @throws ValidatorException the validator exception
-     */
-    public static Connection getAxiataDBConnection() throws SQLException, ValidatorException {
-        initializeDatasources();
-
-        if (axiataDatasource != null) {
-            return axiataDatasource.getConnection();
-        }
-        throw new SQLException("Axiata Datasource not initialized properly");
     }
 
     /**
@@ -131,7 +94,7 @@ public class ValidatorDBUtils {
                 "validator.id=subscription_validator.validator_id";
         String validatorClass = null;
         try {
-            conn = getAxiataDBConnection();
+            conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
             ps = conn.prepareStatement(sql);
             log.debug("getValidatorClassForSubscription for applicationId---> " + applicationId + " apiId--> " + apiId);
             ps.setInt(1, applicationId);
@@ -140,7 +103,7 @@ public class ValidatorDBUtils {
             while (results.next()) {
                 validatorClass = results.getString("class");
             }
-        } catch (SQLException e) {
+        } catch (Exception e) {
             handleException("Error occured while getting Validator Class for App: " + applicationId + " API: " +
                     apiId + " from the database", e);
         } finally {
