@@ -44,7 +44,7 @@ return {
 }
 }
 
-function testDialogBilling(){
+function testBillingHostObject(){
 var billing = jagg.module("manager").getCustomBilling();
   return {
   error:false
