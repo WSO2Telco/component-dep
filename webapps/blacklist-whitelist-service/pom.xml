@@ -11,7 +11,6 @@
  
 	<groupId>com.wso2telco.services</groupId>
 	<artifactId>blcklist-whitelist-service</artifactId>
-        <version>1.8.0-SNAPSHOT</version>
         <name>WSO2.Telco BlackList WhiteList Service</name>
         <description>WSO2Telco DEP Aggregate Pom</description>
         <url>http://wso2telco.com</url>
@@ -68,7 +67,6 @@
 	</dependencies>
 
 	<build>
-		<finalName>locationrest</finalName>
 
 		<sourceDirectory>src</sourceDirectory>
 		<resources>
