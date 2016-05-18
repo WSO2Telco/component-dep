@@ -15,32 +15,26 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.impl.sms;
 
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.wso2telco.datapublisher.DataPublisherConstants;
-import com.wso2telco.dbutils.AxiataDbService;
 import com.wso2telco.dep.mediator.MSISDNConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.ResponseHandler;
-import com.wso2telco.dep.mediator.entity.DeliveryInfo;
+import com.wso2telco.dep.mediator.dao.SMSMessagingDAO;
 import com.wso2telco.dep.mediator.entity.QuerySMSStatusResponse;
-import com.wso2telco.dep.mediator.internal.Type;
-import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.internal.Util;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.oneapivalidation.service.impl.sms.ValidateDeliveryStatus;
 import com.wso2telco.subscriptionvalidator.util.ValidatorUtils;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONObject;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -55,154 +49,168 @@ import java.util.regex.Pattern;
  */
 public class QuerySMSStatusHandler implements SMSHandler {
 
-    /** The log. */
-    private Log log = LogFactory.getLog(QuerySMSStatusHandler.class);
+	/** The log. */
+	private Log log = LogFactory.getLog(QuerySMSStatusHandler.class);
 
-    /** The Constant API_TYPE. */
-    private static final String API_TYPE = "sms";
-    
-    /** The occi. */
-    private OriginatingCountryCalculatorIDD occi;
-    
-    /** The executor. */
-    private SMSExecutor executor;
-    
-    /** The dbservice. */
-    private AxiataDbService dbservice;
-    
-    /** The response handler. */
-    private ResponseHandler responseHandler;
+	/** The Constant API_TYPE. */
+	private static final String API_TYPE = "sms";
 
-    /** The sender address. */
-    private String senderAddress = null;
-    
-    /** The request id. */
-    private String requestId = null;
+	/** The occi. */
+	private OriginatingCountryCalculatorIDD occi;
 
-    /**
-     * Instantiates a new query sms status handler.
-     *
-     * @param executor the executor
-     */
-    public QuerySMSStatusHandler(SMSExecutor executor) {
-        occi = new OriginatingCountryCalculatorIDD();
-        this.executor = executor;
-        dbservice = new AxiataDbService();
-        responseHandler = new ResponseHandler();
-    }
+	/** The executor. */
+	private SMSExecutor executor;
 
-    /* (non-Javadoc)
-     * @see com.wso2telco.mediator.impl.sms.SMSHandler#validate(java.lang.String, java.lang.String, org.json.JSONObject, org.apache.synapse.MessageContext)
-     */
-    @Override
-    public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context) throws Exception {
-        context.setProperty(DataPublisherConstants.OPERATION_TYPE, 202);
-        if (!httpMethod.equalsIgnoreCase("GET")) {
-            ((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 405);
-            throw new Exception("Method not allowed");
-        }
-        IServiceValidate validator = new ValidateDeliveryStatus();
-        validator.validateUrl(requestPath);
+	/** The smsMessagingDAO. */
+	private SMSMessagingDAO smsMessagingDAO;
 
-        loadRequestParams();
-        validator.validate(new String[]{senderAddress, requestId});
+	/** The response handler. */
+	private ResponseHandler responseHandler;
 
-        return true;
-    }
+	/** The sender address. */
+	private String senderAddress = null;
 
-    /* (non-Javadoc)
-     * @see com.wso2telco.mediator.impl.sms.SMSHandler#handle(org.apache.synapse.MessageContext)
-     */
-    @Override
-    public boolean handle(MessageContext context) throws Exception {
-//        String axiataReqid = UID.getUniqueID(Type..getCode(), context, executor.getApplicationid());
+	/** The request id. */
+	private String requestId = null;
 
+	/**
+	 * Instantiates a new query sms status handler.
+	 *
+	 * @param executor
+	 *            the executor
+	 */
+	public QuerySMSStatusHandler(SMSExecutor executor) {
+		occi = new OriginatingCountryCalculatorIDD();
+		this.executor = executor;
+		smsMessagingDAO = new SMSMessagingDAO();
+		responseHandler = new ResponseHandler();
+	}
 
-        Map<String, String> requestIdMap = dbservice.getSmsRequestIds(requestId, senderAddress);
-        Map<String, QuerySMSStatusResponse> responseMap = sendStatusQueries(context,
-                requestIdMap, senderAddress);
-        if (Util.isAllNull(responseMap.values())) {
-            throw new CustomException("SVC0001", "", new String[]{"Could not complete querying SMS statuses"});
-        }
-        executor.removeHeaders(context);
-        String responsePayload = responseHandler.makeQuerySmsStatusResponse(context, senderAddress, requestId, responseMap);
-        executor.setResponse(context, responsePayload);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wso2telco.mediator.impl.sms.SMSHandler#validate(java.lang.String,
+	 * java.lang.String, org.json.JSONObject, org.apache.synapse.MessageContext)
+	 */
+	@Override
+	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context)
+			throws Exception {
+		context.setProperty(DataPublisherConstants.OPERATION_TYPE, 202);
+		if (!httpMethod.equalsIgnoreCase("GET")) {
+			((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 405);
+			throw new Exception("Method not allowed");
+		}
+		IServiceValidate validator = new ValidateDeliveryStatus();
+		validator.validateUrl(requestPath);
 
-        return true;
-    }
+		loadRequestParams();
+		validator.validate(new String[] { senderAddress, requestId });
 
-    /**
-     * Send status queries.
-     *
-     * @param context the context
-     * @param requestIdMap the request id map
-     * @param senderAddr the sender addr
-     * @return the map
-     * @throws Exception the exception
-     */
-    private Map<String, QuerySMSStatusResponse> sendStatusQueries(MessageContext context, Map<String, String>
-            requestIdMap, String senderAddr) throws Exception {
+		return true;
+	}
 
-        String resourcePathPrefix = "/outbound/" + URLEncoder.encode(senderAddr, "UTF-8") + "/requests/";
-        Map<String, QuerySMSStatusResponse> statusResponses = new HashMap<String, QuerySMSStatusResponse>();
-        for (Map.Entry<String, String> entry : requestIdMap.entrySet()) {
-            String address = entry.getKey();
-            String reqId = entry.getValue();
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wso2telco.mediator.impl.sms.SMSHandler#handle(org.apache.synapse.
+	 * MessageContext)
+	 */
+	@Override
+	public boolean handle(MessageContext context) throws Exception {
 
-            if (reqId != null) {
-                context.setProperty(MSISDNConstants.USER_MSISDN, address.substring(5));
-                OperatorEndpoint endpoint = null;
-                String resourcePath = resourcePathPrefix + reqId + "/deliveryInfos";
-                if (ValidatorUtils.getValidatorForSubscription(context).validate(context)) {
-                    endpoint = occi.getAPIEndpointsByMSISDN(address.replace("tel:", ""), API_TYPE, resourcePath,
-                            true, executor.getValidoperators());
-                }
-                String sending_add = endpoint.getEndpointref().getAddress();
-                log.info("sending endpoint found: " + sending_add);
+		Map<String, String> requestIdMap = smsMessagingDAO.getSmsRequestIds(requestId, senderAddress);
+		Map<String, QuerySMSStatusResponse> responseMap = sendStatusQueries(context, requestIdMap, senderAddress);
+		if (Util.isAllNull(responseMap.values())) {
+			throw new CustomException("SVC0001", "", new String[] { "Could not complete querying SMS statuses" });
+		}
+		executor.removeHeaders(context);
+		String responsePayload = responseHandler.makeQuerySmsStatusResponse(context, senderAddress, requestId,
+				responseMap);
+		executor.setResponse(context, responsePayload);
 
-                String responseStr = executor.makeGetRequest(endpoint, sending_add, resourcePath, true, context);
-                QuerySMSStatusResponse statusResponse = parseJsonResponse(responseStr);
-                statusResponses.put(address, statusResponse);
-            } else {
-                statusResponses.put(address, null);
-            }
-        }
-        return statusResponses;
-    }
+		return true;
+	}
 
-    /**
-     * Parses the json response.
-     *
-     * @param responseString the response string
-     * @return the query sms status response
-     */
-    private QuerySMSStatusResponse parseJsonResponse(String responseString) {
+	/**
+	 * Send status queries.
+	 *
+	 * @param context
+	 *            the context
+	 * @param requestIdMap
+	 *            the request id map
+	 * @param senderAddr
+	 *            the sender addr
+	 * @return the map
+	 * @throws Exception
+	 *             the exception
+	 */
+	private Map<String, QuerySMSStatusResponse> sendStatusQueries(MessageContext context,
+			Map<String, String> requestIdMap, String senderAddr) throws Exception {
 
-        Gson gson = new GsonBuilder().create();
-        QuerySMSStatusResponse response;
-        try {
-            response = gson.fromJson(responseString, QuerySMSStatusResponse.class);
-            if (response.getDeliveryInfoList() == null) {
-                return null;
-            }
-        } catch (JsonSyntaxException e) {
-            return null;
-        }
-        return response;
-    }
+		String resourcePathPrefix = "/outbound/" + URLEncoder.encode(senderAddr, "UTF-8") + "/requests/";
+		Map<String, QuerySMSStatusResponse> statusResponses = new HashMap<String, QuerySMSStatusResponse>();
+		for (Map.Entry<String, String> entry : requestIdMap.entrySet()) {
+			String address = entry.getKey();
+			String reqId = entry.getValue();
 
-    /**
-     * Load request params.
-     *
-     * @throws UnsupportedEncodingException the unsupported encoding exception
-     */
-    private void loadRequestParams() throws UnsupportedEncodingException {
-        String reqPath = URLDecoder.decode(executor.getSubResourcePath().replace("+","%2B"), "UTF-8");
-        Pattern pattern = Pattern.compile("outbound/(.+?)/requests/(.+?)/");
-        Matcher matcher = pattern.matcher(reqPath);
-        while (matcher.find()) {
-            senderAddress = matcher.group(1);
-            requestId = matcher.group(2);
-        }
-    }
+			if (reqId != null) {
+				context.setProperty(MSISDNConstants.USER_MSISDN, address.substring(5));
+				OperatorEndpoint endpoint = null;
+				String resourcePath = resourcePathPrefix + reqId + "/deliveryInfos";
+				if (ValidatorUtils.getValidatorForSubscription(context).validate(context)) {
+					endpoint = occi.getAPIEndpointsByMSISDN(address.replace("tel:", ""), API_TYPE, resourcePath, true,
+							executor.getValidoperators());
+				}
+				String sending_add = endpoint.getEndpointref().getAddress();
+				log.info("sending endpoint found: " + sending_add);
+
+				String responseStr = executor.makeGetRequest(endpoint, sending_add, resourcePath, true, context);
+				QuerySMSStatusResponse statusResponse = parseJsonResponse(responseStr);
+				statusResponses.put(address, statusResponse);
+			} else {
+				statusResponses.put(address, null);
+			}
+		}
+		return statusResponses;
+	}
+
+	/**
+	 * Parses the json response.
+	 *
+	 * @param responseString
+	 *            the response string
+	 * @return the query sms status response
+	 */
+	private QuerySMSStatusResponse parseJsonResponse(String responseString) {
+
+		Gson gson = new GsonBuilder().create();
+		QuerySMSStatusResponse response;
+		try {
+			response = gson.fromJson(responseString, QuerySMSStatusResponse.class);
+			if (response.getDeliveryInfoList() == null) {
+				return null;
+			}
+		} catch (JsonSyntaxException e) {
+			return null;
+		}
+		return response;
+	}
+
+	/**
+	 * Load request params.
+	 *
+	 * @throws UnsupportedEncodingException
+	 *             the unsupported encoding exception
+	 */
+	private void loadRequestParams() throws UnsupportedEncodingException {
+		String reqPath = URLDecoder.decode(executor.getSubResourcePath().replace("+", "%2B"), "UTF-8");
+		Pattern pattern = Pattern.compile("outbound/(.+?)/requests/(.+?)/");
+		Matcher matcher = pattern.matcher(reqPath);
+		while (matcher.find()) {
+			senderAddress = matcher.group(1);
+			requestId = matcher.group(2);
+		}
+	}
 }

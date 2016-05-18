@@ -20,11 +20,11 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.wso2telco.datapublisher.DataPublisherConstants;
 import com.wso2telco.dbutils.AxataDBUtilException;
-import com.wso2telco.dbutils.AxiataDbService;
 import com.wso2telco.dbutils.Operator;
 import com.wso2telco.dep.mediator.MSISDNConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.ResponseHandler;
+import com.wso2telco.dep.mediator.dao.SMSMessagingDAO;
 import com.wso2telco.dep.mediator.entity.SendSMSRequest;
 import com.wso2telco.dep.mediator.entity.SendSMSResponse;
 import com.wso2telco.dep.mediator.internal.Type;
@@ -35,7 +35,6 @@ import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.oneapivalidation.service.impl.sms.ValidateSendSms;
 import com.wso2telco.subscriptionvalidator.util.ValidatorUtils;
-
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -43,7 +42,6 @@ import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -70,8 +68,8 @@ public class SendSMSHandler implements SMSHandler {
 	/** The executor. */
 	private SMSExecutor executor;
 
-	/** The dbservice. */
-	private AxiataDbService dbservice;
+	/** The smsMessagingDAO. */
+	private SMSMessagingDAO smsMessagingDAO;
 
 	/**
 	 * Instantiates a new send sms handler.
@@ -83,7 +81,7 @@ public class SendSMSHandler implements SMSHandler {
 		this.executor = executor;
 		occi = new OriginatingCountryCalculatorIDD();
 		responseHandler = new ResponseHandler();
-		dbservice = new AxiataDbService();
+		smsMessagingDAO = new SMSMessagingDAO();
 	}
 
 	/*
@@ -206,7 +204,7 @@ public class SendSMSHandler implements SMSHandler {
 
 			SendSMSResponse sendSMSResponse = null;
 			address = listaddr.getString(i);
-			// try {
+
 			log.info("id : " + address);
 			smsmc.setProperty(MSISDNConstants.USER_MSISDN, address.substring(5));
 			endpoint = occi.getAPIEndpointsByMSISDN(address.replace("tel:", ""), apitype, executor.getSubResourcePath(),
@@ -221,9 +219,7 @@ public class SendSMSHandler implements SMSHandler {
 
 			String responseStr = executor.makeRequest(endpoint, sending_add, jsonStr, true, smsmc);
 			sendSMSResponse = parseJsonResponse(responseStr);
-			// } catch (Exception e) {
-			// log.error(e.getMessage(), e);
-			// }
+
 			smsResponses.put(address, sendSMSResponse);
 		}
 		return smsResponses;
@@ -277,7 +273,7 @@ public class SendSMSHandler implements SMSHandler {
 			}
 			reqIdMap.put(entry.getKey(), pluginReqId);
 		}
-		dbservice.insertSmsRequestIds(requestID, senderAddress, reqIdMap);
+		smsMessagingDAO.insertSmsRequestIds(requestID, senderAddress, reqIdMap);
 	}
 
 	/**

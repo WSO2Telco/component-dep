@@ -17,11 +17,11 @@ package com.wso2telco.dep.mediator.impl.payment;
 
 import com.wso2telco.datapublisher.DataPublisherConstants;
 import com.wso2telco.dbutils.AxataDBUtilException;
-import com.wso2telco.dbutils.AxiataDbService;
 import com.wso2telco.dep.mediator.MSISDNConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.RequestExecutor;
 import com.wso2telco.dep.mediator.ResponseHandler;
+import com.wso2telco.dep.mediator.dao.PaymentDAO;
 import com.wso2telco.dep.mediator.internal.AggregatorValidator;
 import com.wso2telco.dep.mediator.internal.Base64Coder;
 import com.wso2telco.dep.mediator.internal.Type;
@@ -64,8 +64,8 @@ public class PaymentExecutor extends RequestExecutor {
 	/** The occi. */
 	private OriginatingCountryCalculatorIDD occi;
 
-	/** The dbservice. */
-	private AxiataDbService dbservice;
+	/** The paymentDAO. */
+	private PaymentDAO paymentDAO;
 
 	/** The response handler. */
 	private ResponseHandler responseHandler;
@@ -75,7 +75,7 @@ public class PaymentExecutor extends RequestExecutor {
 	 */
 	public PaymentExecutor() {
 		occi = new OriginatingCountryCalculatorIDD();
-		dbservice = new AxiataDbService();
+		paymentDAO = new PaymentDAO();
 		responseHandler = new ResponseHandler();
 	}
 
@@ -112,11 +112,6 @@ public class PaymentExecutor extends RequestExecutor {
 		}
 
 		int apiType = findPaymentAPIType(requestPath, jsonBody.toString());
-		// Payment API types are as follow,
-		// 100 - Charge, 101 - Refund, 102 - Reserve amount, 103 - Reserve
-		// additional amount, 104 - Charge against reservation, 105 - Release
-		// Reservation,
-		// 106 - List transactions, 0 - Unsupported
 
 		context.setProperty(DataPublisherConstants.OPERATION_TYPE, apiType);
 		if (apiType == 100) {
@@ -236,8 +231,7 @@ public class PaymentExecutor extends RequestExecutor {
 		boolean isaggrigator = isAggregator(mc);
 
 		if (isaggrigator) {
-			// JSONObject chargingdmeta =
-			// clientclr.getJSONObject("paymentAmount").getJSONObject("chargingMetaData");
+			
 			if (!chargingdmeta.isNull("onBehalfOf")) {
 				new AggregatorValidator().validateMerchant(Integer.valueOf(getApplicationid()), endpoint.getOperator(),
 						subscriber, chargingdmeta.getString("onBehalfOf"));
@@ -251,7 +245,7 @@ public class PaymentExecutor extends RequestExecutor {
 			mc.setProperty(DataPublisherConstants.CATEGORY, chargingdmeta.getString("purchaseCategoryCode"));
 		}
 		// validate payment categoreis
-		List<String> validCategoris = dbservice.getValidPayCategories();
+		List<String> validCategoris = paymentDAO.getValidPayCategories();
 		validatePaymentCategory(chargingdmeta, validCategoris);
 
 		String responseStr = makeRequest(endpoint, sending_add, jsonBody.toString(), true, mc);
@@ -491,9 +485,7 @@ public class PaymentExecutor extends RequestExecutor {
 						apiType = 0;
 					}
 				} catch (Exception ex) {
-					// logger.error("Sandbox controller - Manipulating recived
-					// JSON Object: " + ex);
-					// throw new Exception("API Type Not found");
+					
 					throw new CustomException("SVC0002", "", new String[] { null });
 				}
 			} else {
@@ -523,9 +515,7 @@ public class PaymentExecutor extends RequestExecutor {
 					apiType = 0;
 				}
 			} catch (Exception e) {
-				// logger.error("Sandbox controller - Manipulating recived JSON
-				// Object: " + e);
-				// throw new Exception("API Type Not found");
+				
 				throw new CustomException("SVC0002", "", new String[] { null });
 			}
 		} else if (requestURL.contains("transactions")) {

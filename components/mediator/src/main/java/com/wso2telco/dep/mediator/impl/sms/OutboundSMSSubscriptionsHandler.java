@@ -17,7 +17,6 @@ package com.wso2telco.dep.mediator.impl.sms;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.axis2.AxisFault;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
@@ -25,10 +24,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.wso2telco.datapublisher.DataPublisherConstants;
-import com.wso2telco.dbutils.AxiataDbService;
 import com.wso2telco.dbutils.Operatorsubs;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
+import com.wso2telco.dep.mediator.dao.SMSMessagingDAO;
 import com.wso2telco.dep.mediator.entity.DeliveryReceiptSubscriptionRequest;
 import com.wso2telco.dep.mediator.internal.ApiUtils;
 import com.wso2telco.dep.mediator.internal.Type;
@@ -39,7 +37,6 @@ import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.oneapivalidation.service.impl.sms.ValidateCancelSubscription;
 import com.wso2telco.oneapivalidation.service.impl.sms.ValidateOutboundSubscription;
-
 import java.util.HashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -59,8 +56,8 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
     /** The occi. */
     private OriginatingCountryCalculatorIDD occi;
     
-    /** The dbservice. */
-    private AxiataDbService dbservice;
+    /** The smsMessagingDAO. */
+    private SMSMessagingDAO smsMessagingDAO;
     
     /** The executor. */
     private SMSExecutor executor;
@@ -76,7 +73,7 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
     public OutboundSMSSubscriptionsHandler(SMSExecutor executor) {
         this.executor = executor;
         occi = new OriginatingCountryCalculatorIDD();
-        dbservice = new AxiataDbService();
+        smsMessagingDAO = new SMSMessagingDAO();
         apiUtils = new ApiUtils();
     }
 
@@ -146,7 +143,7 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
 
             List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(API_TYPE, executor.getSubResourcePath(), executor.getValidoperators());
 
-            Integer axiataid = dbservice.outboundSubscriptionEntry(subsrequst.getDeliveryReceiptSubscription().getCallbackReference().getNotifyURL(), serviceProvider);
+            Integer axiataid = smsMessagingDAO.outboundSubscriptionEntry(subsrequst.getDeliveryReceiptSubscription().getCallbackReference().getNotifyURL(), serviceProvider);
             Util.getPropertyFile();
             String subsEndpoint = Util.getApplicationProperty("hubSubsGatewayEndpoint") + "/" + axiataid;
             jsondstaddr.getJSONObject("callbackReference").put("notifyURL", subsEndpoint);
@@ -169,7 +166,7 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
                 }
             }
 
-            boolean issubs = dbservice.outboundOperatorsubsEntry(domainsubs, axiataid);
+            boolean issubs = smsMessagingDAO.outboundOperatorsubsEntry(domainsubs, axiataid);
             String ResourceUrlPrefix = Util.getApplicationProperty("hubGateway");
             subsresponse.getDeliveryReceiptSubscription().setResourceURL(ResourceUrlPrefix + executor.getResourceUrl() + "/" + axiataid);
             JSONObject replyobj = new JSONObject(subsresponse);

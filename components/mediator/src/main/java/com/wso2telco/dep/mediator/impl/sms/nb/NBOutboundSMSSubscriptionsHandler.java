@@ -17,9 +17,9 @@ package com.wso2telco.dep.mediator.impl.sms.nb;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.wso2telco.dbutils.AxiataDbService;
 import com.wso2telco.dbutils.Operatorsubs;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
+import com.wso2telco.dep.mediator.dao.SMSMessagingDAO;
 import com.wso2telco.dep.mediator.entity.CallbackReference;
 import com.wso2telco.dep.mediator.entity.nb.NBDeliveryReceiptSubscriptionRequest;
 import com.wso2telco.dep.mediator.entity.nb.SenderAddresses;
@@ -36,7 +36,6 @@ import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.oneapivalidation.service.impl.sms.ValidateCancelSubscription;
 import com.wso2telco.oneapivalidation.service.impl.sms.nb.ValidateNBOutboundSubscription;
-
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -47,7 +46,6 @@ import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONException;
 import org.json.JSONObject;
 
- 
 // TODO: Auto-generated Javadoc
 /**
  * The Class NBOutboundSMSSubscriptionsHandler.
@@ -63,8 +61,8 @@ public class NBOutboundSMSSubscriptionsHandler implements SMSHandler {
     /** The occi. */
     private OriginatingCountryCalculatorIDD occi;
     
-    /** The dbservice. */
-    private AxiataDbService dbservice;
+    /** The smsMessagingDAO. */
+    private SMSMessagingDAO smsMessagingDAO;
     
     /** The executor. */
     private SMSExecutor executor;
@@ -80,7 +78,7 @@ public class NBOutboundSMSSubscriptionsHandler implements SMSHandler {
     public NBOutboundSMSSubscriptionsHandler(SMSExecutor executor) {
         this.executor = executor;
         occi = new OriginatingCountryCalculatorIDD();
-        dbservice = new AxiataDbService();
+        smsMessagingDAO = new SMSMessagingDAO();
         apiUtils = new ApiUtils();
     }
 
@@ -140,20 +138,15 @@ public class NBOutboundSMSSubscriptionsHandler implements SMSHandler {
 
         NBDeliveryReceiptSubscriptionRequest nbDeliveryReceiptSubscriptionRequest = gson.fromJson(jsonBody.toString(), NBDeliveryReceiptSubscriptionRequest.class);
         String orgclientcl = nbDeliveryReceiptSubscriptionRequest.getDeliveryReceiptSubscription().getClientCorrelator();
-        //JSONObject jsondstaddr = jsonBody.getJSONObject("deliveryReceiptSubscription");
-
-        //SBOutboundSubscriptionRequest subsrequst = gson.fromJson(jsonBody.toString(), SBOutboundSubscriptionRequest.class);
-        //String origNotiUrl = subsrequst.getDeliveryReceiptSubscription().getCallbackReference().getNotifyURL();
+        
         String origNotiUrl = nbDeliveryReceiptSubscriptionRequest.getDeliveryReceiptSubscription().getCallbackReference().getNotifyURL();
 
         List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(API_TYPE, executor.getSubResourcePath(), executor.getValidoperators());
 
-        Integer axiataid = dbservice.outboundSubscriptionEntry(nbDeliveryReceiptSubscriptionRequest.getDeliveryReceiptSubscription().getCallbackReference().getNotifyURL(), serviceProvider);
+        Integer axiataid = smsMessagingDAO.outboundSubscriptionEntry(nbDeliveryReceiptSubscriptionRequest.getDeliveryReceiptSubscription().getCallbackReference().getNotifyURL(), serviceProvider);
         Util.getPropertyFile();
         String subsEndpoint = Util.getApplicationProperty("hubSubsGatewayEndpoint") + "/" + axiataid;
         nbDeliveryReceiptSubscriptionRequest.getDeliveryReceiptSubscription().getCallbackReference().setNotifyURL(subsEndpoint);
-        //jsondstaddr.getJSONObject("callbackReference").put("notifyURL", subsEndpoint);
-
         log.debug("Delivery notification subscription northbound request body : " + gson.toJson(nbDeliveryReceiptSubscriptionRequest));
 
         SenderAddresses[] senderAddresses = nbDeliveryReceiptSubscriptionRequest.getDeliveryReceiptSubscription().getSenderAddresses();
@@ -210,7 +203,7 @@ public class NBOutboundSMSSubscriptionsHandler implements SMSHandler {
             }
         }
 
-        boolean issubs = dbservice.outboundOperatorsubsEntry(domainsubs, axiataid);
+        boolean issubs = smsMessagingDAO.outboundOperatorsubsEntry(domainsubs, axiataid);
         String ResourceUrlPrefix = Util.getApplicationProperty("hubGateway");
 
         SenderAddresses[] responseSenderAddresses = new SenderAddresses[senderAddresses.length];
@@ -266,7 +259,5 @@ public class NBOutboundSMSSubscriptionsHandler implements SMSHandler {
             throw new CustomException("POL0299", "", new String[]{"Error registering subscription"});
         }
         return "{\"deliveryReceiptSubscription\":" + sbDeliveryNotificationrequestString + "}";
-    }
-
-     
+    }   
 }

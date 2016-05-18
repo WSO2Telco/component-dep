@@ -20,12 +20,11 @@ import org.apache.axis2.addressing.EndpointReference;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONObject;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wso2telco.datapublisher.DataPublisherConstants;
-import com.wso2telco.dbutils.AxiataDbService;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
+import com.wso2telco.dep.mediator.dao.SMSMessagingDAO;
 import com.wso2telco.dep.mediator.entity.OutboundRequest;
 import com.wso2telco.dep.mediator.entity.OutboundRequestOp;
 import com.wso2telco.dep.mediator.internal.Type;
@@ -33,9 +32,7 @@ import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.internal.Util;
 import com.wso2telco.mnc.resolver.MNCQueryClient;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
-
 import java.util.HashMap;
-
 import org.wso2.carbon.apimgt.gateway.APIMgtGatewayConstants;
 
 // TODO: Auto-generated Javadoc
@@ -44,8 +41,8 @@ import org.wso2.carbon.apimgt.gateway.APIMgtGatewayConstants;
  */
 public class SMSOutboundNotificationsHandler implements SMSHandler {
 
-	/** The dbservice. */
-	private AxiataDbService dbservice;
+	/** The smsMessagingDAO. */
+	private SMSMessagingDAO smsMessagingDAO;
 
 	/** The executor. */
 	private SMSExecutor executor;
@@ -61,7 +58,7 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 	 */
 	public SMSOutboundNotificationsHandler(SMSExecutor executor) {
 		this.executor = executor;
-		dbservice = new AxiataDbService();
+		smsMessagingDAO = new SMSMessagingDAO();
 		mncQueryclient = new MNCQueryClient();
 	}
 
@@ -80,7 +77,7 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 		String requestPath = executor.getSubResourcePath();
 		String axiataid = requestPath.substring(requestPath.lastIndexOf("/") + 1);
 
-		HashMap<String, String> dnSubscriptionDetails = dbservice.subscriptionDNNotifiMap(Integer.valueOf(axiataid));
+		HashMap<String, String> dnSubscriptionDetails = smsMessagingDAO.subscriptionDNNotifiMap(Integer.valueOf(axiataid));
 		String notifyurl = dnSubscriptionDetails.get("notifyurl");
 		String serviceProvider = dnSubscriptionDetails.get("serviceProvider");
 

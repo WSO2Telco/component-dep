@@ -16,17 +16,15 @@
 package com.wso2telco.dep.mediator.impl.sms;
 
 import java.util.List;
-
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONObject;
-
-import com.wso2telco.dbutils.AxiataDbService;
 import com.wso2telco.dbutils.Operatorsubs;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
+import com.wso2telco.dep.mediator.dao.SMSMessagingDAO;
 import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
@@ -50,8 +48,8 @@ public class StopOutboundSMSSubscriptionsHandler implements SMSHandler {
     /** The occi. */
     private OriginatingCountryCalculatorIDD occi;
     
-    /** The dbservice. */
-    private AxiataDbService dbservice;
+    /** The smsMessagingDAO. */
+    private SMSMessagingDAO smsMessagingDAO;
     
     /** The executor. */
     private SMSExecutor executor;
@@ -64,7 +62,7 @@ public class StopOutboundSMSSubscriptionsHandler implements SMSHandler {
     public StopOutboundSMSSubscriptionsHandler(SMSExecutor executor) {
         this.executor = executor;
         occi = new OriginatingCountryCalculatorIDD();
-        dbservice = new AxiataDbService();
+        smsMessagingDAO = new SMSMessagingDAO();
     }
 
     /* (non-Javadoc)
@@ -122,7 +120,7 @@ public class StopOutboundSMSSubscriptionsHandler implements SMSHandler {
 
         String requestid = UID.getUniqueID(Type.DELRETSUB.getCode(), context, executor.getApplicationid());
         Integer axiataid = Integer.parseInt(subid.replaceFirst("sub", ""));
-        List<Operatorsubs> domainsubs = (dbservice.outboudSubscriptionQuery(Integer.valueOf(axiataid)));
+        List<Operatorsubs> domainsubs = (smsMessagingDAO.outboudSubscriptionQuery(Integer.valueOf(axiataid)));
         if (domainsubs.isEmpty()) {
             throw new CustomException("POL0001", "", new String[]{"SMS Receipt Subscription Not Found: " + axiataid});
         }
@@ -132,7 +130,7 @@ public class StopOutboundSMSSubscriptionsHandler implements SMSHandler {
             resStr = executor.makeDeleteRequest(new OperatorEndpoint(new EndpointReference(subs.getDomain()), subs
                     .getOperator()), subs.getDomain(), null, true, context);
         }
-        new AxiataDbService().outboundSubscriptionDelete(Integer.valueOf(axiataid));
+        smsMessagingDAO.outboundSubscriptionDelete(Integer.valueOf(axiataid));
 
         executor.removeHeaders(context);
         ((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 204);
