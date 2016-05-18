@@ -11,8 +11,8 @@
          <class name="org.wso2.carbon.apimgt.gateway.mediators.TokenPasser"/>
          <filter source="$ctx:AM_KEY_TYPE" regex="PRODUCTION">
             <then>
-              <class name="com.wso2telco.mediator.HandlerMediator">
-                <property name="executorClass" value="com.wso2telco.mediator.impl.LocationExecutor"/>
+              <class name="com.wso2telco.dep.mediator.HandlerMediator">
+                <property name="executorClass" value="com.wso2telco.dep.mediator.impl.LocationExecutor"/>
               </class>
               <loopback/>
             </then>
