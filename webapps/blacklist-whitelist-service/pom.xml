@@ -2,16 +2,17 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
 	
-	<parent>
-                <groupId>org.wso2</groupId>
-                <artifactId>wso2</artifactId>
-                <version>1</version>
+       <parent>
+                <groupId>com.wso2telco.dep</groupId>
+                <artifactId>component-dep</artifactId>
+                <version>1.8.0-SNAPSHOT</version>
+                <relativePath>../../parent/pom.xml</relativePath>
         </parent>
-        
+ 
 	<groupId>com.wso2telco.services</groupId>
 	<artifactId>blcklist-whitelist-service</artifactId>
         <version>1.8.0-SNAPSHOT</version>
-        <name>WSO2Telco -Digital Enable Services</name>
+        <name>WSO2.Telco BlackList WhiteList Service</name>
         <description>WSO2Telco DEP Aggregate Pom</description>
         <url>http://wso2telco.com</url>
 
