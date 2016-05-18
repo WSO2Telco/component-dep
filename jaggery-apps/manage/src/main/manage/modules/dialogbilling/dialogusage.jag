@@ -114,7 +114,7 @@ function executeDummyQuery(subscriberName,period){
 
 }
 
-function testDialogBilling(){
+function testBillingHostObject(){
 var billing = jagg.module("manager").getCustomBilling();
   return {
   error:false

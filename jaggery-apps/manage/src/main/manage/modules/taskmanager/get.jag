@@ -400,7 +400,7 @@ function getAllTiers(){
 	var log = new Log();
 	//log.info("*************************Get All Tiers from Host Object***************************");
 
-	var workflow = jagg.module("manager").getAxiataWorkflow();
+	var workflow = jagg.module("manager").getWorkflowHostObject();
 	var tiers = [];
 	try {
 		tiers = workflow.getTierDetails();
@@ -415,7 +415,7 @@ function getAllTiers(){
 
 function getRatesList(apiName, opName){
 	var workflow, result;
-		workflow = jagg.module("manager").getAxiataWorkflow();
+		workflow = jagg.module("manager").getWorkflowHostObject();
 		
 		try {
 			result = workflow.getSubscriptionRatesForOperator(apiName, opName);

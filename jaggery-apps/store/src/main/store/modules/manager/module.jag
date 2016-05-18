@@ -40,8 +40,8 @@ jagg.module("manager", {
        return jagg.require(jagg.getModulesDir() + "manager/manager.jag").getActiveTenantDomains.apply(this, arguments);
      },
 
-    getAxiataStoreObj:function () {
-        return jagg.require(jagg.getModulesDir() + "manager/manager.jag").getAxiataStoreObj.apply(this, arguments);
+	 getStoreHostObject:function () {
+        return jagg.require(jagg.getModulesDir() + "manager/manager.jag").getStoreHostObject.apply(this, arguments);
      },
      getAPIConsumerObj:function () {
         return jagg.require(jagg.getModulesDir() + "manager/manager.jag").getAPIConsumerObj.apply(this, arguments);

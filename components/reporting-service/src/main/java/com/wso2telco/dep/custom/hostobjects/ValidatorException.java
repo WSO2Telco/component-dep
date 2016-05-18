@@ -13,19 +13,40 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.wso2.carbon.apimgt.hostobjects;
+package com.wso2telco.dep.custom.hostobjects;
 
-import java.util.HashMap;
 
-import com.wso2telco.dep.custom.hostobjects.ApiTxCard;
+// TODO: Auto-generated Javadoc
+/**
+ * The Class ValidatorException.
+ */
+public class ValidatorException extends Exception {
 
-public class TxCardTest {
-	
-	public static void main(String args[]){
-		ApiTxCard card = new ApiTxCard();
-		HashMap<Integer, Object> txCardTemp = card.getTxCardTemp();
-		//TxCardDAO currentDao = (TxCardDAO) txCardTemp.get(new Integer(100));
-		//System.out.println(currentDao.getHeaderList().size()+"");
-	}
-	
+    /**
+     * Instantiates a new validator exception.
+     *
+     * @param message the message
+     */
+    public ValidatorException(String message) {
+        super(message);
+    }
+
+    /**
+     * Instantiates a new validator exception.
+     *
+     * @param message the message
+     * @param cause the cause
+     */
+    public ValidatorException(String message, Throwable cause) {
+        super(message, cause);
+    }
+
+    /**
+     * Instantiates a new validator exception.
+     *
+     * @param cause the cause
+     */
+    public ValidatorException(Throwable cause) {
+        super(cause);
+    }
 }

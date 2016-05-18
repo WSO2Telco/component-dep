@@ -99,15 +99,15 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Private-Package>
-                            com.wso2telco.custom.hostobjects.internal,
+                            com.wso2telco.dep.custom.hostobjects.internal,
                         </Private-Package>
                         <Export-Package>
-                            !com.wso2telco.custom.hostobjects.internal,
-                            com.wso2telco.custom.hostobjects,
-                            com.wso2telco.custom.hostobjects.util,
-                            com.wso2telco.custom.dao,
-                            com.wso2telco.custom.hostobjects.northbound,
-                            com.wso2telco.custom.hostobjects.southbound
+                            !com.wso2telco.dep.custom.hostobjects.internal,
+                            com.wso2telco.dep.custom.hostobjects,
+                            com.wso2telco.dep.custom.hostobjects.util,
+                            com.wso2telco.dep.custom.dao,
+                            com.wso2telco.dep.custom.hostobjects.northbound,
+                            com.wso2telco.dep.custom.hostobjects.southbound
                         </Export-Package>
                         <Import-Package>
                             org.wso2.carbon.apimgt.impl.*,

@@ -2,7 +2,7 @@
 include("/jagg/jagg.jag");
 (function () {
     response.contentType = "application/json; charset=UTF-8";
-    var mod, obj, apiName, apiVersion, apiProvider, applicationId, result, operatorList, axiataStore,
+    var mod, obj, apiName, apiVersion, apiProvider, applicationId, result, operatorList, operatorService,
             user = jagg.getUser(),
             msg = require("/site/conf/ui-messages.jag"),
             action = request.getParameter("action");
@@ -22,8 +22,8 @@ include("/jagg/jagg.jag");
         operatorList = request.getParameter("operatorList");
 
         mod = jagg.module("manager");
-        axiataStore = mod.getAxiataStoreObj();
-        result = axiataStore.persistSubOperatorList(apiName, apiVersion, apiProvider, applicationId, operatorList);
+        operatorService = mod.getStoreHostObject();
+        result = operatorService.persistSubOperatorList(apiName, apiVersion, apiProvider, applicationId, operatorList);
 
         if (result.error) {
         	var message = result.message;

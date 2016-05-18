@@ -13,19 +13,55 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.wso2.carbon.apimgt.hostobjects;
+package com.wso2telco.dep.custom.hostobjects.util;
 
 import java.util.HashMap;
 
-import com.wso2telco.dep.custom.hostobjects.ApiTxCard;
+// TODO: Auto-generated Javadoc
+/**
+ * The Class TierEntity.
+ */
+public class TierEntity {
 
-public class TxCardTest {
+	/** The tier rate. */
+	private String tierRate;
 	
-	public static void main(String args[]){
-		ApiTxCard card = new ApiTxCard();
-		HashMap<Integer, Object> txCardTemp = card.getTxCardTemp();
-		//TxCardDAO currentDao = (TxCardDAO) txCardTemp.get(new Integer(100));
-		//System.out.println(currentDao.getHeaderList().size()+"");
+	/** The tiers. */
+	private HashMap<String, Integer> tiers;
+
+	/**
+	 * Gets the tier rate.
+	 *
+	 * @return the tier rate
+	 */
+	public String getTierRate() {
+		return tierRate;
 	}
-	
+
+	/**
+	 * Sets the tier rate.
+	 *
+	 * @param tierRate the new tier rate
+	 */
+	public void setTierRate(String tierRate) {
+		this.tierRate = tierRate;
+	}
+
+	/**
+	 * Gets the tiers.
+	 *
+	 * @return the tiers
+	 */
+	public HashMap<String, Integer> getTiers() {
+		return tiers;
+	}
+
+	/**
+	 * Sets the tiers.
+	 *
+	 * @param tiers the tiers
+	 */
+	public void setTiers(HashMap<String, Integer> tiers) {
+		this.tiers = tiers;
+	}
 }

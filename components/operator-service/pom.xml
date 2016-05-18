@@ -103,8 +103,8 @@
                             com.wso2telco.operatorservice.internal
                         </Private-Package>
                         <Export-Package>
-                            !com.wso2telco.operatorservice.internal,
-                            com.wso2telco.operatorservice,com.wso2telco.operatorservice.dao,com.wso2telco.operatorservice.model
+                            !com.wso2telco.dep.operatorservice.internal,
+                            com.wso2telco.dep.operatorservice,com.wso2telco.dep.operatorservice.dao,com.wso2telco.dep.operatorservice.model
                         </Export-Package>
                         <Import-Package>
                             org.wso2.carbon.apimgt.api.*,
