@@ -54,7 +54,7 @@
 	<modules>
 		<!--module>components/authentication-endpoint</module>
 		<module>features</module-->
-	    <module>webapps/blacklist-whitelist-service</module>
+	   	<module>webapps/blacklist-whitelist-service</module>
 		<module>webapps/aggregator-blacklist</module> 
 		<module>components/oneapi-validation</module> 
 		<module>components/subscription-validator</module> 
@@ -65,7 +65,7 @@
        		<module>components/verification-handler</module>
        		<module>components/mediator</module>
        		<module>components/workflow-manager</module>
-       		<!--module>workflow/axis2services/AxiataWorkflowApprovalService</module-->
+       		<module>workflow/axis2services/AxiataWorkflowApprovalService</module>
 		<module>jaggery-apps/manage</module>
 		<module>jaggery-apps/publisher</module>
 		<module>jaggery-apps/sandbox</module>
