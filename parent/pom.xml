@@ -168,7 +168,7 @@
 		<com.h2database.wso2.version>1.2.140.wso2v3</com.h2database.wso2.version>
 		<org.apache.ws.commons.axiom.version>1.2.18</org.apache.ws.commons.axiom.version>
 		<com.sun.mail.version>1.5.5</com.sun.mail.version>
-
+ 		<cxf.bundle.version>2.7.6</cxf.bundle.version>
 	</properties>
 
 	<dependencyManagement>
@@ -385,7 +385,12 @@
 			  	<version>${org.wso2.carbon.commons.version}</version>
 			  	<scope>provided</scope>
 			</dependency>
-
+			<dependency>
+                <groupId>org.apache.cxf</groupId>
+                <artifactId>cxf-bundle</artifactId>
+                <version>${cxf.bundle.version}</version>
+            </dependency>
+            
 		</dependencies>
 
 	</dependencyManagement>
