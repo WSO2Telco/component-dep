@@ -16,12 +16,11 @@
 package com.wso2telco.dep.mediator.impl.ussd;
 
 import com.wso2telco.datapublisher.DataPublisherConstants;
-import com.wso2telco.dbutils.AxiataDbService;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
+import com.wso2telco.dep.mediator.dao.USSDDAO;
 import com.wso2telco.dep.mediator.internal.Util;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
-
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.commons.logging.Log;
@@ -36,100 +35,112 @@ import org.json.JSONObject;
  */
 public class USSDInboundHandler implements USSDHandler {
 
-    /** The log. */
-    private Log log = LogFactory.getLog(USSDInboundHandler.class);
-    
-    /** The Constant API_TYPE. */
-    private static final String API_TYPE = "ussd";
-    
-    /** The dbservice. */
-    private AxiataDbService dbservice;
-    
-    /** The executor. */
-    private USSDExecutor executor;
-    
-    /** The occi. */
-    private OriginatingCountryCalculatorIDD occi;
+	/** The log. */
+	private Log log = LogFactory.getLog(USSDInboundHandler.class);
 
-    /**
-     * Instantiates a new USSD inbound handler.
-     *
-     * @param executor the executor
-     */
-    public USSDInboundHandler(USSDExecutor executor) {
-        this.executor = executor;
-        dbservice = new AxiataDbService();
-        occi = new OriginatingCountryCalculatorIDD();
-    }
+	/** The Constant API_TYPE. */
+	private static final String API_TYPE = "ussd";
 
-    /* (non-Javadoc)
-     * @see com.wso2telco.mediator.impl.ussd.USSDHandler#handle(org.apache.synapse.MessageContext)
-     */
-    @Override
-    public boolean handle(MessageContext context) throws CustomException, AxisFault, Exception {
+	/** The ussdDAO. */
+	private USSDDAO ussdDAO;
 
-        String requestPath = executor.getSubResourcePath();
-        String axiataid = requestPath.substring(requestPath.lastIndexOf("/") + 1);
-        //remove non numeric chars
-        axiataid = axiataid.replaceAll("[^\\d.]", "");
-        log.debug("axiataId - "+axiataid);
-        String notifyurl = dbservice.getUSSDNotify(Integer.valueOf(axiataid));
-        log.info("notifyUrl found -  " + notifyurl);
+	/** The executor. */
+	private USSDExecutor executor;
 
-        String carbonHome = System.getProperty("user.dir");
-        log.debug("conf carbonHome - " + carbonHome);
-        String fileLocation = carbonHome + "/repository/conf/axiataMediator_conf.properties";
-        Util.getPropertyFileByPath(fileLocation);
+	/** The occi. */
+	private OriginatingCountryCalculatorIDD occi;
 
-        JSONObject jsonBody = executor.getJsonBody();
-        jsonBody.getJSONObject("inboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL", notifyurl);
+	/**
+	 * Instantiates a new USSD inbound handler.
+	 *
+	 * @param executor
+	 *            the executor
+	 */
+	public USSDInboundHandler(USSDExecutor executor) {
+		this.executor = executor;
+		ussdDAO = new USSDDAO();
+		occi = new OriginatingCountryCalculatorIDD();
+	}
 
-        String notifyret = executor.makeRequest(new OperatorEndpoint(new EndpointReference(notifyurl), null), notifyurl,
-                jsonBody.toString(), true, context);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wso2telco.mediator.impl.ussd.USSDHandler#handle(org.apache.synapse.
+	 * MessageContext)
+	 */
+	@Override
+	public boolean handle(MessageContext context) throws CustomException, AxisFault, Exception {
 
-        log.debug(notifyret);
-        if (notifyret == null) {
-            throw new CustomException("POL0299", "", new String[]{"Error invoking Endpoint"});
-        }
+		String requestPath = executor.getSubResourcePath();
+		String axiataid = requestPath.substring(requestPath.lastIndexOf("/") + 1);
+		// remove non numeric chars
+		axiataid = axiataid.replaceAll("[^\\d.]", "");
+		log.debug("axiataId - " + axiataid);
+		String notifyurl = ussdDAO.getUSSDNotify(Integer.valueOf(axiataid));
+		log.info("notifyUrl found -  " + notifyurl);
 
-        JSONObject replyobj = new JSONObject(notifyret);
-        String action = replyobj.getJSONObject("outboundUSSDMessageRequest").getString("ussdAction");
+		String carbonHome = System.getProperty("user.dir");
+		log.debug("conf carbonHome - " + carbonHome);
+		String fileLocation = carbonHome + "/repository/conf/axiataMediator_conf.properties";
+		Util.getPropertyFileByPath(fileLocation);
 
-        if(action.equalsIgnoreCase("mtcont")){
+		JSONObject jsonBody = executor.getJsonBody();
+		jsonBody.getJSONObject("inboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL",
+				notifyurl);
 
-            String subsEndpoint = Util.propMap.get("ussdGatewayEndpoint")+axiataid;
-            log.info("Subsendpoint - " +subsEndpoint);
-            replyobj.getJSONObject("outboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL", subsEndpoint);
+		String notifyret = executor.makeRequest(new OperatorEndpoint(new EndpointReference(notifyurl), null), notifyurl,
+				jsonBody.toString(), true, context);
 
-        }
+		log.debug(notifyret);
+		if (notifyret == null) {
+			throw new CustomException("POL0299", "", new String[] { "Error invoking Endpoint" });
+		}
 
-        if(action.equalsIgnoreCase("mtfin")){
-            String subsEndpoint = Util.propMap.get("ussdGatewayEndpoint")+axiataid;
-            log.info("Subsendpoint - " +subsEndpoint);
-            replyobj.getJSONObject("outboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL", subsEndpoint);
+		JSONObject replyobj = new JSONObject(notifyret);
+		String action = replyobj.getJSONObject("outboundUSSDMessageRequest").getString("ussdAction");
 
-            boolean deleted = dbservice.ussdEntryDelete(Integer.valueOf(axiataid));
-            log.info("Entry deleted " + deleted);
+		if (action.equalsIgnoreCase("mtcont")) {
 
-        }
+			String subsEndpoint = Util.propMap.get("ussdGatewayEndpoint") + axiataid;
+			log.info("Subsendpoint - " + subsEndpoint);
+			replyobj.getJSONObject("outboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL",
+					subsEndpoint);
 
-        executor.removeHeaders(context);
+		}
 
-        ((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 201);
-        ((Axis2MessageContext) context).getAxis2MessageContext().setProperty("messageType", "application/json");
-        ((Axis2MessageContext) context).getAxis2MessageContext().setProperty("ContentType", "application/json");
-        executor.setResponse(context, replyobj.toString());
+		if (action.equalsIgnoreCase("mtfin")) {
+			String subsEndpoint = Util.propMap.get("ussdGatewayEndpoint") + axiataid;
+			log.info("Subsendpoint - " + subsEndpoint);
+			replyobj.getJSONObject("outboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL",
+					subsEndpoint);
 
-        return true;
-    }
+			boolean deleted = ussdDAO.ussdEntryDelete(Integer.valueOf(axiataid));
+			log.info("Entry deleted " + deleted);
 
-    /* (non-Javadoc)
-     * @see com.wso2telco.mediator.impl.ussd.USSDHandler#validate(java.lang.String, java.lang.String, org.json.JSONObject, org.apache.synapse.MessageContext)
-     */
-    @Override
-    public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext
-            context) throws Exception {
-        context.setProperty(DataPublisherConstants.OPERATION_TYPE, 407);
-        return true;
-    }
+		}
+
+		executor.removeHeaders(context);
+
+		((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 201);
+		((Axis2MessageContext) context).getAxis2MessageContext().setProperty("messageType", "application/json");
+		((Axis2MessageContext) context).getAxis2MessageContext().setProperty("ContentType", "application/json");
+		executor.setResponse(context, replyobj.toString());
+
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wso2telco.mediator.impl.ussd.USSDHandler#validate(java.lang.String,
+	 * java.lang.String, org.json.JSONObject, org.apache.synapse.MessageContext)
+	 */
+	@Override
+	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context)
+			throws Exception {
+		context.setProperty(DataPublisherConstants.OPERATION_TYPE, 407);
+		return true;
+	}
 }

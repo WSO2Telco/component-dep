@@ -28,7 +28,7 @@ import com.wso2telco.dbutils.DbUtils;
 import com.wso2telco.dbutils.Operatorsubs;
 import com.wso2telco.dbutils.util.DataSourceNames;
 
-public class SMSMessagingDAO {
+public class SMSMessagingDAO extends CommonDAO{
 
 	public Integer outboundSubscriptionEntry(String notifyurl, String serviceProvider) throws Exception {
 
@@ -50,6 +50,7 @@ public class SMSMessagingDAO {
 
 			rs = st.executeQuery(sql);
 			if (rs.next()) {
+				
 				newid = rs.getInt("maxid") + 1;
 			}
 

@@ -24,7 +24,7 @@ import java.util.List;
 import com.wso2telco.dbutils.DbUtils;
 import com.wso2telco.dbutils.util.DataSourceNames;
 
-public class PaymentDAO {
+public class PaymentDAO extends CommonDAO{
 
 	/**
      * Gets the valid pay categories.

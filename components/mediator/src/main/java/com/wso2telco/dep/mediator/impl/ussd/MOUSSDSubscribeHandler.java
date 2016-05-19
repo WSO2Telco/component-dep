@@ -15,108 +15,111 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.impl.ussd;
 
-import com.wso2telco.dbutils.AxiataDbService;
-import com.wso2telco.dep.mediator.MSISDNConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
+import com.wso2telco.dep.mediator.dao.USSDDAO;
 import com.wso2telco.dep.mediator.internal.Util;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONObject;
-
 import java.util.List;
 
- 
 // TODO: Auto-generated Javadoc
 /**
  * The Class MOUSSDSubscribeHandler.
  */
 public class MOUSSDSubscribeHandler implements USSDHandler {
 
-    /** The log. */
-    private Log log = LogFactory.getLog(MOUSSDSubscribeHandler.class);
-    
-    /** The Constant API_TYPE. */
-    private static final String API_TYPE ="ussd";
-    
-    /** The occi. */
-    private OriginatingCountryCalculatorIDD occi;
-    
-    /** The executor. */
-    private USSDExecutor executor;
-    
-    /** The dbservice. */
-    private AxiataDbService dbservice;
+	/** The log. */
+	private Log log = LogFactory.getLog(MOUSSDSubscribeHandler.class);
 
-    /**
-     * Instantiates a new MOUSSD subscribe handler.
-     *
-     * @param ussdExecutor the ussd executor
-     */
-    public MOUSSDSubscribeHandler(USSDExecutor ussdExecutor){
+	/** The Constant API_TYPE. */
+	private static final String API_TYPE = "ussd";
 
-        log.info("------------------------MOUSSDSubscribeHandler Constructor-------------------");
-        occi = new OriginatingCountryCalculatorIDD();
-        this.executor = ussdExecutor;
-        dbservice = new AxiataDbService();
-    }
+	/** The occi. */
+	private OriginatingCountryCalculatorIDD occi;
 
-    /* (non-Javadoc)
-     * @see com.wso2telco.mediator.impl.ussd.USSDHandler#handle(org.apache.synapse.MessageContext)
-     */
-    @Override
-    public boolean handle(MessageContext context) throws Exception {
+	/** The executor. */
+	private USSDExecutor executor;
 
-        JSONObject jsonBody = executor.getJsonBody();
-        String notifyUrl = jsonBody.getJSONObject("subscription").getJSONObject("callbackReference").getString("notifyURL");
+	/** The ussdDAO. */
+	private USSDDAO ussdDAO;
 
-        String carbonHome = System.getProperty("user.dir");
-        log.debug("conf carbonHome - " + carbonHome);
+	/**
+	 * Instantiates a new MOUSSD subscribe handler.
+	 *
+	 * @param ussdExecutor
+	 *            the ussd executor
+	 */
+	public MOUSSDSubscribeHandler(USSDExecutor ussdExecutor) {
 
-        String fileLocation = carbonHome + "/repository/conf/axiataMediator_conf.properties";
+		occi = new OriginatingCountryCalculatorIDD();
+		this.executor = ussdExecutor;
+		ussdDAO = new USSDDAO();
+	}
 
-        Util.getPropertyFileByPath(fileLocation);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wso2telco.mediator.impl.ussd.USSDHandler#handle(org.apache.synapse.
+	 * MessageContext)
+	 */
+	@Override
+	public boolean handle(MessageContext context) throws Exception {
 
-        Integer axiataid = dbservice.ussdRequestEntry(notifyUrl);
-        log.info("created axiataId  -  " + axiataid);
+		JSONObject jsonBody = executor.getJsonBody();
+		String notifyUrl = jsonBody.getJSONObject("subscription").getJSONObject("callbackReference")
+				.getString("notifyURL");
 
-        String subsEndpoint = Util.propMap.get("ussdGatewayEndpoint")+axiataid;
-        log.info("Subsendpoint - " +subsEndpoint);
+		String carbonHome = System.getProperty("user.dir");
+		log.debug("conf carbonHome - " + carbonHome);
 
-        jsonBody.getJSONObject("subscription").getJSONObject("callbackReference").put("notifyURL", subsEndpoint);
-       // jsonBody.getJSONObject("subscription").getJSONObject("callbackReference").put("notifyURL", "http://localhost:8080/DemoService/Priyan/Root/Service");
+		String fileLocation = carbonHome + "/repository/conf/axiataMediator_conf.properties";
 
+		Util.getPropertyFileByPath(fileLocation);
 
-        List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(API_TYPE, executor.getSubResourcePath(),
-                executor.getValidoperators());
+		Integer axiataid = ussdDAO.ussdRequestEntry(notifyUrl);
+		log.info("created axiataId  -  " + axiataid);
 
-        executor.removeHeaders(context);
+		String subsEndpoint = Util.propMap.get("ussdGatewayEndpoint") + axiataid;
+		log.info("Subsendpoint - " + subsEndpoint);
 
-        String responseStr ="";
-        for (OperatorEndpoint endpoint : endpoints) {
+		jsonBody.getJSONObject("subscription").getJSONObject("callbackReference").put("notifyURL", subsEndpoint);
 
-            System.out.println("-------------------------endpoint---------------------------------" + endpoint.getEndpointref().getAddress() );
-            responseStr = executor.makeRequest(endpoint, endpoint.getEndpointref().getAddress(), jsonBody.toString(), true, context);
-            executor.handlePluginException(responseStr);
+		List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(API_TYPE, executor.getSubResourcePath(),
+				executor.getValidoperators());
 
-        }
+		executor.removeHeaders(context);
 
-        executor.setResponse(context, responseStr);
-        ((Axis2MessageContext) context).getAxis2MessageContext().setProperty("messageType", "application/json");
+		String responseStr = "";
+		for (OperatorEndpoint endpoint : endpoints) {
 
+			responseStr = executor.makeRequest(endpoint, endpoint.getEndpointref().getAddress(), jsonBody.toString(),
+					true, context);
+			executor.handlePluginException(responseStr);
 
-        return true;
+		}
 
-    }
+		executor.setResponse(context, responseStr);
+		((Axis2MessageContext) context).getAxis2MessageContext().setProperty("messageType", "application/json");
 
-    /* (non-Javadoc)
-     * @see com.wso2telco.mediator.impl.ussd.USSDHandler#validate(java.lang.String, java.lang.String, org.json.JSONObject, org.apache.synapse.MessageContext)
-     */
-    @Override
-    public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context) throws Exception {
-        return false;
-    }
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wso2telco.mediator.impl.ussd.USSDHandler#validate(java.lang.String,
+	 * java.lang.String, org.json.JSONObject, org.apache.synapse.MessageContext)
+	 */
+	@Override
+	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context)
+			throws Exception {
+
+		return false;
+	}
 }

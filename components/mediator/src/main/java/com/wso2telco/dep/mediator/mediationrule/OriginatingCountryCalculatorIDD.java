@@ -15,16 +15,13 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.mediationrule;
 
-
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.axis2.addressing.EndpointReference;
-
-import com.wso2telco.dbutils.AxiataDbService;
 import com.wso2telco.dbutils.Operator;
 import com.wso2telco.dbutils.Operatorendpoint;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
+import com.wso2telco.dep.mediator.dao.OperatorDAO;
 import com.wso2telco.dep.mediator.internal.Util;
 import com.wso2telco.mnc.resolver.MNCQueryClient;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
@@ -34,205 +31,244 @@ import com.wso2telco.oneapivalidation.exceptions.CustomException;
  * The Class OriginatingCountryCalculatorIDD.
  */
 public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculator {
-     
-    //private HashMap<String, EndpointReference> apiEprMap;
 
-    /** The error message. */
-    private String ERROR_MESSAGE = "Error.No API endpoint matched your request";
-    
-    /** The opendpoints. */
-    List<Operatorendpoint> opendpoints;
-    
-    /** The mnc queryclient. */
-    MNCQueryClient mncQueryclient = null;
+	/** The error message. */
+	private String ERROR_MESSAGE = "Error.No API endpoint matched your request";
 
-    /* (non-Javadoc)
-     * @see com.wso2telco.mediator.mediationrule.OriginatingCountryCalculator#initialize()
-     */
-    public void initialize() throws Exception {
+	/** The operatorEndpoints. */
+	List<Operatorendpoint> operatorEndpoints;
 
-        Util.getPropertyFile();
-        opendpoints = new AxiataDbService().operatorEndpoints();
+	/** The mnc queryclient. */
+	MNCQueryClient mncQueryclient = null;
 
-        mncQueryclient = new MNCQueryClient();
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see com.wso2telco.mediator.mediationrule.OriginatingCountryCalculator#
+	 * initialize()
+	 */
+	public void initialize() throws Exception {
 
-    }
+		Util.getPropertyFile();
+		operatorEndpoints = new OperatorDAO().getOperatorEndpoints();
+		mncQueryclient = new MNCQueryClient();
+	}
 
-     
-    /**
-     * Gets the API endpoints by msisdn.
-     *
-     * @param userMSISDN the user msisdn
-     * @param apikey the apikey
-     * @param requestPathURL the request path url
-     * @param isredirect the isredirect
-     * @param operators the operators
-     * @return the API endpoints by msisdn
-     * @throws Exception the exception
-     */
-    public OperatorEndpoint getAPIEndpointsByMSISDN(String userMSISDN, String apikey, String requestPathURL, boolean isredirect, List<Operator> operators) throws Exception {
+	/**
+	 * Gets the API endpoints by msisdn.
+	 *
+	 * @param userMSISDN
+	 *            the user msisdn
+	 * @param apikey
+	 *            the apikey
+	 * @param requestPathURL
+	 *            the request path url
+	 * @param isredirect
+	 *            the isredirect
+	 * @param operators
+	 *            the operators
+	 * @return the API endpoints by msisdn
+	 * @throws Exception
+	 *             the exception
+	 */
+	public OperatorEndpoint getAPIEndpointsByMSISDN(String userMSISDN, String apikey, String requestPathURL,
+			boolean isredirect, List<Operator> operators) throws Exception {
 
-        String operator;
-        String userName = userMSISDN.substring(1);
+		String operator;
+		String userName = userMSISDN.substring(1);
 
-        //Initialize End points
-        initialize();
-        
-        String mcc = null;        
-        //mcc not known in mediator
-        operator = mncQueryclient.QueryNetwork(mcc, userMSISDN);
-        
-        if (operator == null) {
-            throw new CustomException("SVC0001", "", new String[]{"No valid operator found for given MSISDN"});
-        }
+		// Initialize End points
+		initialize();
 
-        //is operator provisioned
-        Operator valid = null;
-        for (Operator d : operators) {
-            if (d.getOperatorname() != null && d.getOperatorname().contains(operator.toUpperCase())) {
-                valid = d;
-                break;
-            }
-        }
+		String mcc = null;
+		// mcc not known in mediator
+		operator = mncQueryclient.QueryNetwork(mcc, userMSISDN);
 
-        if (valid == null) {
-            throw new CustomException("SVC0001", "", new String[]{"Requested service is not provisioned"});
-        }
+		if (operator == null) {
 
-        Operatorendpoint validOperatorendpoint = getValidEndpoints(apikey, operator);
-        if (validOperatorendpoint == null) {
-            throw new CustomException("SVC0001", "", new String[]{"Requested service is not provisioned"});
-        }
-                
-        String extremeEndpoint = validOperatorendpoint.getEndpoint();
-        if (!isredirect) {
-            extremeEndpoint = validOperatorendpoint.getEndpoint() + requestPathURL;
-        }
-        EndpointReference eprMSISDN = new EndpointReference(extremeEndpoint);
+			throw new CustomException("SVC0001", "", new String[] { "No valid operator found for given MSISDN" });
+		}
 
-        return new OperatorEndpoint(eprMSISDN, operator.toUpperCase());
+		// is operator provisioned
+		Operator valid = null;
+		for (Operator d : operators) {
 
-    }
+			if (d.getOperatorname() != null && d.getOperatorname().contains(operator.toUpperCase())) {
+				valid = d;
+				break;
+			}
+		}
 
-     
-    /**
-     * Gets the API endpoints by app.
-     *
-     * @param apiKey the api key
-     * @param requestPathURL the request path url
-     * @param validoperator the validoperator
-     * @return the API endpoints by app
-     * @throws Exception the exception
-     */
-    public List<OperatorEndpoint> getAPIEndpointsByApp(String apiKey, String requestPathURL, List<Operator> validoperator) throws Exception {
+		if (valid == null) {
 
-        List<OperatorEndpoint> endpoints = new ArrayList<OperatorEndpoint>();
+			throw new CustomException("SVC0001", "", new String[] { "Requested service is not provisioned" });
+		}
 
-        Util.getPropertyFile();
-        initialize();
+		Operatorendpoint validOperatorendpoint = getValidEndpoints(apikey, operator);
+		if (validOperatorendpoint == null) {
 
-        List<Operatorendpoint> validendpoints = getValidEndpoints(apiKey, validoperator);
-        String extremeEndpoint;
+			throw new CustomException("SVC0001", "", new String[] { "Requested service is not provisioned" });
+		}
 
-        for (Operatorendpoint oe : validendpoints) {
-//            if (apiType.equals("payment") || (apiType.equals("location"))) {
-//                extremeEndpoint = oe.getEndpoint();
-//            } else {
-                extremeEndpoint = oe.getEndpoint() + requestPathURL;
+		String extremeEndpoint = validOperatorendpoint.getEndpoint();
+		if (!isredirect) {
 
-//            }
+			extremeEndpoint = validOperatorendpoint.getEndpoint() + requestPathURL;
+		}
 
-            endpoints.add(new OperatorEndpoint(new EndpointReference(extremeEndpoint), oe.getOperatorcode()));
-        }
+		EndpointReference eprMSISDN = new EndpointReference(extremeEndpoint);
 
-        return endpoints;
-    }
+		return new OperatorEndpoint(eprMSISDN, operator.toUpperCase());
+	}
 
-    /**
-     * Str_piece.
-     *
-     * @param str the str
-     * @param separator the separator
-     * @param index the index
-     * @return the string
-     */
-    private String str_piece(String str, char separator, int index) {
-        String str_result = "";
-        int count = 0;
-        for (int i = 0; i < str.length(); i++) {
-            if (str.charAt(i) == separator) {
-                count++;
-                if (count == index) {
-                    break;
-                }
-            } else {
-                if (count == index - 1) {
-                    str_result += str.charAt(i);
-                }
-            }
-        }
-        return str_result;
-    }
+	/**
+	 * Gets the API endpoints by app.
+	 *
+	 * @param apiKey
+	 *            the api key
+	 * @param requestPathURL
+	 *            the request path url
+	 * @param validoperator
+	 *            the validoperator
+	 * @return the API endpoints by app
+	 * @throws Exception
+	 *             the exception
+	 */
+	public List<OperatorEndpoint> getAPIEndpointsByApp(String apiKey, String requestPathURL,
+			List<Operator> validoperator) throws Exception {
 
-    /**
-     * Gets the application property.
-     *
-     * @param operatorcode the operatorcode
-     * @param api the api
-     * @return the application property
-     */
-    private String getApplicationProperty(String operatorcode, String api) {
-        String endpoint = null;
-        for (Operatorendpoint d : opendpoints) {
-            if ((d.getApi().contains(api)) && (d.getOperatorcode().contains(operatorcode))) {
-                endpoint = d.getEndpoint();
-                break;
-            }
-        }
-        return endpoint;
-    }
+		List<OperatorEndpoint> endpoints = new ArrayList<OperatorEndpoint>();
 
-    /**
-     * Gets the valid endpoints.
-     *
-     * @param api the api
-     * @param validoperator the validoperator
-     * @return the valid endpoints
-     */
-    private List<Operatorendpoint> getValidEndpoints(String api, List<Operator> validoperator) {
-        String endpoint = null;
-        List<String> validlist = new ArrayList();
-        List<Operatorendpoint> validoperendpoints = new ArrayList();
+		Util.getPropertyFile();
+		initialize();
 
-        for (Operator op : validoperator) {
-            validlist.add(op.getOperatorname());
-        }
+		List<Operatorendpoint> validendpoints = getValidEndpoints(apiKey, validoperator);
+		String extremeEndpoint;
 
-        for (Operatorendpoint d : opendpoints) {
-            if ((d.getApi().contains(api)) && (validlist.contains(d.getOperatorcode()))) {
-                validoperendpoints.add(d);
-            }
-        }
-        return validoperendpoints;
-    }
-    
-    /**
-     * Gets the valid endpoints.
-     *
-     * @param api the api
-     * @param validoperator the validoperator
-     * @return the valid endpoints
-     */
-    private Operatorendpoint getValidEndpoints(String api, String validoperator) {
-        String endpoint = null;
-        Operatorendpoint validoperendpoint = null;
+		for (Operatorendpoint oe : validendpoints) {
 
-        for (Operatorendpoint d : opendpoints) {
-            if ((d.getApi().contains(api)) && (validoperator.equalsIgnoreCase(d.getOperatorcode()) ) ) {
-                validoperendpoint  = d;
-            }
-        }
-        return validoperendpoint;
-    }    
-    
+			extremeEndpoint = oe.getEndpoint() + requestPathURL;
+			endpoints.add(new OperatorEndpoint(new EndpointReference(extremeEndpoint), oe.getOperatorcode()));
+		}
+
+		return endpoints;
+	}
+
+	/**
+	 * Str_piece.
+	 *
+	 * @param str
+	 *            the str
+	 * @param separator
+	 *            the separator
+	 * @param index
+	 *            the index
+	 * @return the string
+	 */
+	private String str_piece(String str, char separator, int index) {
+
+		String str_result = "";
+		int count = 0;
+
+		for (int i = 0; i < str.length(); i++) {
+
+			if (str.charAt(i) == separator) {
+
+				count++;
+				if (count == index) {
+
+					break;
+				}
+			} else {
+
+				if (count == index - 1) {
+
+					str_result += str.charAt(i);
+				}
+			}
+		}
+
+		return str_result;
+	}
+
+	/**
+	 * Gets the application property.
+	 *
+	 * @param operatorcode
+	 *            the operatorcode
+	 * @param api
+	 *            the api
+	 * @return the application property
+	 */
+	private String getApplicationProperty(String operatorcode, String api) {
+
+		String endpoint = null;
+		for (Operatorendpoint d : operatorEndpoints) {
+
+			if ((d.getApi().contains(api)) && (d.getOperatorcode().contains(operatorcode))) {
+
+				endpoint = d.getEndpoint();
+				break;
+			}
+		}
+
+		return endpoint;
+	}
+
+	/**
+	 * Gets the valid endpoints.
+	 *
+	 * @param api
+	 *            the api
+	 * @param validoperator
+	 *            the validoperator
+	 * @return the valid endpoints
+	 */
+	private List<Operatorendpoint> getValidEndpoints(String api, List<Operator> validoperator) {
+
+		String endpoint = null;
+		List<String> validlist = new ArrayList();
+		List<Operatorendpoint> validoperendpoints = new ArrayList();
+
+		for (Operator op : validoperator) {
+
+			validlist.add(op.getOperatorname());
+		}
+
+		for (Operatorendpoint d : operatorEndpoints) {
+
+			if ((d.getApi().contains(api)) && (validlist.contains(d.getOperatorcode()))) {
+
+				validoperendpoints.add(d);
+			}
+		}
+
+		return validoperendpoints;
+	}
+
+	/**
+	 * Gets the valid endpoints.
+	 *
+	 * @param api
+	 *            the api
+	 * @param validoperator
+	 *            the validoperator
+	 * @return the valid endpoints
+	 */
+	private Operatorendpoint getValidEndpoints(String api, String validoperator) {
+
+		String endpoint = null;
+		Operatorendpoint validoperendpoint = null;
+
+		for (Operatorendpoint d : operatorEndpoints) {
+
+			if ((d.getApi().contains(api)) && (validoperator.equalsIgnoreCase(d.getOperatorcode()))) {
+
+				validoperendpoint = d;
+			}
+		}
+		
+		return validoperendpoint;
+	}
+
 }

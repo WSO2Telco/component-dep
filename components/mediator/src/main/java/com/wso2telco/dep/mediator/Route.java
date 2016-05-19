@@ -25,6 +25,7 @@ import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 /**
  * The Class Route.
  */
+@Deprecated
 public class Route {
 
     /** The log. */

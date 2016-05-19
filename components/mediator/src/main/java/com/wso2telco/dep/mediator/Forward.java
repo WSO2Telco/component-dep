@@ -29,10 +29,11 @@ import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 /**
  * The Class Forward.
  */
+@Deprecated
 public class Forward {
 
     /** The log. */
-    private static Log log = LogFactory.getLog(Route.class);
+    private static Log log = LogFactory.getLog(Forward.class);
     
     /** The occi. */
     private OriginatingCountryCalculatorIDD occi;
@@ -53,8 +54,5 @@ public class Forward {
     private static final String sendError = "http://localhost:18080/MediationTest/tnspoints/enpoint/RequestError/error";
     
     /** The Constant sendResponse. */
-    private static final String sendResponse = "http://localhost:18080/MediationTest/tnspoints/enpoint/Response/dummy";
-
-     
-    
+    private static final String sendResponse = "http://localhost:18080/MediationTest/tnspoints/enpoint/Response/dummy";   
 }

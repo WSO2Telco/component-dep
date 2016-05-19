@@ -15,10 +15,8 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator;
 
-
 import com.wso2telco.dep.mediator.internal.Base64Coder;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
-
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -93,7 +91,7 @@ public class HandlerMediator extends AbstractMediator {
         context.setProperty("ERROR_CODE",errcode);
         context.setProperty("errvar",errvar[0]);
         
-        //NB Data Publish : Hiranya
+        //NB Data Publish
         if(nbPublisher == null){
             nbPublisher = new NorthboundPublisher();
         }

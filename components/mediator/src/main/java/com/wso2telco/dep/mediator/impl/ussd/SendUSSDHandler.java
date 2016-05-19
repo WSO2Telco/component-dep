@@ -16,23 +16,19 @@
 package com.wso2telco.dep.mediator.impl.ussd;
 
 import com.wso2telco.datapublisher.DataPublisherConstants;
-import com.wso2telco.dbutils.AxiataDbService;
 import com.wso2telco.dep.mediator.MSISDNConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
+import com.wso2telco.dep.mediator.dao.USSDDAO;
 import com.wso2telco.dep.mediator.internal.Util;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.subscriptionvalidator.util.ValidatorUtils;
-
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONObject;
-
-
- 
 
 // TODO: Auto-generated Javadoc
 /**
@@ -52,8 +48,8 @@ public class SendUSSDHandler implements USSDHandler {
     /** The executor. */
     private USSDExecutor executor;
     
-    /** The dbservice. */
-    private AxiataDbService dbservice;
+    /** The ussdDAO. */
+    private USSDDAO ussdDAO;
 
     /**
      * Instantiates a new send ussd handler.
@@ -63,7 +59,7 @@ public class SendUSSDHandler implements USSDHandler {
     public SendUSSDHandler(USSDExecutor executor) {
         occi = new OriginatingCountryCalculatorIDD();
         this.executor = executor;
-        dbservice = new AxiataDbService();
+        ussdDAO = new USSDDAO();
     }
 
 
@@ -84,7 +80,7 @@ public class SendUSSDHandler implements USSDHandler {
 
         Util.getPropertyFileByPath(fileLocation);
 
-        Integer axiataid = dbservice.ussdRequestEntry(notifyUrl);
+        Integer axiataid = ussdDAO.ussdRequestEntry(notifyUrl);
         log.info("created axiataId  -  " + axiataid);
 
         String subsEndpoint = Util.propMap.get("ussdGatewayEndpoint")+axiataid;
@@ -122,10 +118,6 @@ public class SendUSSDHandler implements USSDHandler {
             ((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 405);
             throw new Exception("Method not allowed");
         }
-
-        //ValidateUssdSend validator = new ValidateUssdSend();
-        //validator.validateUrl(requestPath);
-        //validator.validate(jsonBody.toString());
 
         return true;
     }

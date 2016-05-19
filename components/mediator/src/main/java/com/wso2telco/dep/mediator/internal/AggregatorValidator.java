@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.internal;
 
-import com.wso2telco.dbutils.AxiataDbService;
+import com.wso2telco.dep.mediator.dao.AggregatorDAO;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 
 // TODO: Auto-generated Javadoc
@@ -24,31 +24,37 @@ import com.wso2telco.oneapivalidation.exceptions.CustomException;
  */
 public class AggregatorValidator {
 
-    /** The Db service. */
-    private AxiataDbService DbService;
-    
-    /**
-     * Instantiates a new aggregator validator.
-     */
-    public AggregatorValidator() {
-        DbService = new AxiataDbService();        
-    }
-    
-    /**
-     * Validate merchant.
-     *
-     * @param appid the appid
-     * @param operatorid the operatorid
-     * @param subscriber the subscriber
-     * @param merchant the merchant
-     * @throws Exception the exception
-     */
-    public void validateMerchant(int appid,String operatorid, String subscriber, String merchant) throws Exception {
-         
-        String merchantid =  DbService.blacklistedmerchant(appid, operatorid, subscriber, merchant);
-        if ( merchantid != null) {
-            throw new CustomException("SVC0001", "", new String[]{merchant +" Not provisioned for "+operatorid});
-        }                      
-    }    
-    
+	/** The Db service. */
+	private AggregatorDAO aggregatorDAO;
+
+	/**
+	 * Instantiates a new aggregator validator.
+	 */
+	public AggregatorValidator() {
+		aggregatorDAO = new AggregatorDAO();
+	}
+
+	/**
+	 * Validate merchant.
+	 *
+	 * @param appid
+	 *            the appid
+	 * @param operatorid
+	 *            the operatorid
+	 * @param subscriber
+	 *            the subscriber
+	 * @param merchant
+	 *            the merchant
+	 * @throws Exception
+	 *             the exception
+	 */
+	public void validateMerchant(int appid, String operatorid, String subscriber, String merchant) throws Exception {
+
+		String merchantid = aggregatorDAO.blacklistedmerchant(appid, operatorid, subscriber, merchant);
+		if (merchantid != null) {
+
+			throw new CustomException("SVC0001", "", new String[] { merchant + " Not provisioned for " + operatorid });
+		}
+	}
+
 }
