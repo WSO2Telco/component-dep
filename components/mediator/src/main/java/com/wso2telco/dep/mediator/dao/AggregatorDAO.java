@@ -21,15 +21,15 @@ import java.sql.Statement;
 import com.wso2telco.dbutils.DbUtils;
 import com.wso2telco.dbutils.util.DataSourceNames;
 
-public class AggregatorDAO extends CommonDAO{
+public class AggregatorDAO extends CommonDAO {
 
 	/**
 	 * Blacklistedmerchant.
 	 *
-	 * @param appid
-	 *            the appid
-	 * @param operatorid
-	 *            the operatorid
+	 * @param appId
+	 *            the appId
+	 * @param operatorId
+	 *            the operatorId
 	 * @param subscriber
 	 *            the subscriber
 	 * @param merchant
@@ -38,7 +38,7 @@ public class AggregatorDAO extends CommonDAO{
 	 * @throws Exception
 	 *             the exception
 	 */
-	public String blacklistedmerchant(int appid, String operatorid, String subscriber, String merchant)
+	public String blacklistedmerchant(int appId, String operatorId, String subscriber, String merchant)
 			throws Exception {
 
 		String resultcode = null;
@@ -61,29 +61,42 @@ public class AggregatorDAO extends CommonDAO{
 
 			// is aggrigator
 			st = con.createStatement();
-			String sql = "SELECT merchantopco_blacklist.id id " + "FROM merchantopco_blacklist, operators "
-					+ "WHERE merchantopco_blacklist.operator_id = operators.id " + "AND application_id = " + appid + " "
-					+ "AND operatorname = '" + operatorid + "' " + "AND subscriber = '" + subscriber + "' "
-					+ "AND lower(merchant) = '" + merchant.toLowerCase() + "'";
+			int x = 0;
+			StringBuilder queryString = new StringBuilder("SELECT merchantopco_blacklist.id id ");
+			queryString.append("FROM merchantopco_blacklist, operators ");
+			queryString.append("WHERE merchantopco_blacklist.operator_id = operators.id ");
+			queryString.append("AND application_id = ");
+			queryString.append(appId);
+			queryString.append(" AND operatorname = ");
+			queryString.append(operatorId);
+			queryString.append(" AND subscriber = ");
+			queryString.append(subscriber);
+			queryString.append(" AND lower(merchant) = ");
+			queryString.append(merchant.toLowerCase());
 
-			rs = st.executeQuery(sql);
+			rs = st.executeQuery(queryString.toString());
 			if (rs.next()) {
 
 				resultcode = String.valueOf(rs.getInt("id"));
 			} else {
 
-				sql = "SELECT merchantopco_blacklist.id id " + "FROM merchantopco_blacklist, operators "
-						+ "WHERE merchantopco_blacklist.operator_id = operators.id " + "AND application_id is null "
-						+ "AND subscriber = '" + subscriber + "' " + "AND operatorname = '" + operatorid + "' "
-						+ "AND lower(merchant) = '" + merchant.toLowerCase() + "'";
+				StringBuilder merchantQueryString = new StringBuilder("SELECT merchantopco_blacklist.id id ");
+				merchantQueryString.append("FROM merchantopco_blacklist, operators ");
+				merchantQueryString.append("WHERE merchantopco_blacklist.operator_id = operators.id ");
+				merchantQueryString.append("AND application_id is null ");
+				merchantQueryString.append("AND subscriber = ");
+				merchantQueryString.append(subscriber);
+				merchantQueryString.append(" AND operatorname = ");
+				merchantQueryString.append(operatorId);
+				merchantQueryString.append(" AND lower(merchant) = ");
+				merchantQueryString.append(merchant.toLowerCase());
 
-				rs = st.executeQuery(sql);
+				rs = st.executeQuery(merchantQueryString.toString());
 				if (rs.next()) {
 
 					resultcode = String.valueOf(rs.getInt("id"));
 				}
 			}
-
 		} catch (Exception e) {
 
 			DbUtils.handleException("Error while selecting black listed merchant. ", e);
