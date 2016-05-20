@@ -39,102 +39,117 @@ import com.wso2telco.oneapivalidation.service.impl.sms.ValidateDNCancelSubscript
  */
 public class StopOutboundSMSSubscriptionsHandler implements SMSHandler {
 
-    /** The log. */
-    private static Log log = LogFactory.getLog(StopOutboundSMSSubscriptionsHandler.class);
-    
-    /** The Constant API_TYPE. */
-    private static final String API_TYPE = "sms";
-    
-    /** The occi. */
-    private OriginatingCountryCalculatorIDD occi;
-    
-    /** The smsMessagingDAO. */
-    private SMSMessagingDAO smsMessagingDAO;
-    
-    /** The executor. */
-    private SMSExecutor executor;
+	/** The log. */
+	private static Log log = LogFactory.getLog(StopOutboundSMSSubscriptionsHandler.class);
 
-    /**
-     * Instantiates a new stop outbound sms subscriptions handler.
-     *
-     * @param executor the executor
-     */
-    public StopOutboundSMSSubscriptionsHandler(SMSExecutor executor) {
-        this.executor = executor;
-        occi = new OriginatingCountryCalculatorIDD();
-        smsMessagingDAO = new SMSMessagingDAO();
-    }
+	/** The Constant API_TYPE. */
+	private static final String API_TYPE = "sms";
 
-    /* (non-Javadoc)
-     * @see com.wso2telco.mediator.impl.sms.SMSHandler#validate(java.lang.String, java.lang.String, org.json.JSONObject, org.apache.synapse.MessageContext)
-     */
-    @Override
-    public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context) throws Exception {
-        IServiceValidate validator;
-        if (httpMethod.equalsIgnoreCase("DELETE")) {
-            String axiataid = requestPath.substring(requestPath.lastIndexOf("/") + 1);
-            String[] params = {axiataid};
+	/** The occi. */
+	private OriginatingCountryCalculatorIDD occi;
 
-            String[] urlElements = requestPath.split("/");
-            int elements = urlElements.length;
-            if (elements == 5) {
-                validator = new ValidateDNCancelSubscriptionPlugin();
-                log.debug("Invoke validation - ValidateDNCancelSubscriptionPlugin");
-            } else if (elements == 4) {
-                validator = new ValidateDNCancelSubscription();
-                log.debug("Invoke validation - ValidateDNCancelSubscription");
-            } else {
-                throw new Exception("requestPath not valid");
-            }
+	/** The smsMessagingDAO. */
+	private SMSMessagingDAO smsMessagingDAO;
 
-            validator.validateUrl(requestPath);
-            validator.validate(params);
-            return true;
-        } else {
-            ((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 405);
-            throw new Exception("Method not allowed");
-        }
-    }
+	/** The executor. */
+	private SMSExecutor executor;
 
-    /* (non-Javadoc)
-     * @see com.wso2telco.mediator.impl.sms.SMSHandler#handle(org.apache.synapse.MessageContext)
-     */
-    @Override
-    public boolean handle(MessageContext context) throws Exception {
-        if (executor.getHttpMethod().equalsIgnoreCase("DELETE")) {
-            return deleteSubscriptions(context);
-        }
-        return false;
-    }
+	/**
+	 * Instantiates a new stop outbound sms subscriptions handler.
+	 *
+	 * @param executor
+	 *            the executor
+	 */
+	public StopOutboundSMSSubscriptionsHandler(SMSExecutor executor) {
+		this.executor = executor;
+		occi = new OriginatingCountryCalculatorIDD();
+		smsMessagingDAO = new SMSMessagingDAO();
+	}
 
-    /**
-     * Delete subscriptions.
-     *
-     * @param context the context
-     * @return true, if successful
-     * @throws Exception the exception
-     */
-    private boolean deleteSubscriptions(MessageContext context) throws Exception {
-        String requestPath = executor.getSubResourcePath();
-        String subid = requestPath.substring(requestPath.lastIndexOf("/") + 1);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wso2telco.mediator.impl.sms.SMSHandler#validate(java.lang.String,
+	 * java.lang.String, org.json.JSONObject, org.apache.synapse.MessageContext)
+	 */
+	@Override
+	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context)
+			throws Exception {
+		IServiceValidate validator;
+		if (httpMethod.equalsIgnoreCase("DELETE")) {
+			String dnSubscriptionId = requestPath.substring(requestPath.lastIndexOf("/") + 1);
+			String[] params = { dnSubscriptionId };
 
-        String requestid = UID.getUniqueID(Type.DELRETSUB.getCode(), context, executor.getApplicationid());
-        Integer axiataid = Integer.parseInt(subid.replaceFirst("sub", ""));
-        List<Operatorsubs> domainsubs = (smsMessagingDAO.outboudSubscriptionQuery(Integer.valueOf(axiataid)));
-        if (domainsubs.isEmpty()) {
-            throw new CustomException("POL0001", "", new String[]{"SMS Receipt Subscription Not Found: " + axiataid});
-        }
+			String[] urlElements = requestPath.split("/");
+			int elements = urlElements.length;
+			if (elements == 5) {
+				validator = new ValidateDNCancelSubscriptionPlugin();
+				log.debug("Invoke validation - ValidateDNCancelSubscriptionPlugin");
+			} else if (elements == 4) {
+				validator = new ValidateDNCancelSubscription();
+				log.debug("Invoke validation - ValidateDNCancelSubscription");
+			} else {
+				throw new Exception("requestPath not valid");
+			}
 
-        String resStr = "";
-        for (Operatorsubs subs : domainsubs) {
-            resStr = executor.makeDeleteRequest(new OperatorEndpoint(new EndpointReference(subs.getDomain()), subs
-                    .getOperator()), subs.getDomain(), null, true, context);
-        }
-        smsMessagingDAO.outboundSubscriptionDelete(Integer.valueOf(axiataid));
+			validator.validateUrl(requestPath);
+			validator.validate(params);
+			return true;
+		} else {
+			((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 405);
+			throw new Exception("Method not allowed");
+		}
+	}
 
-        executor.removeHeaders(context);
-        ((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 204);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wso2telco.mediator.impl.sms.SMSHandler#handle(org.apache.synapse.
+	 * MessageContext)
+	 */
+	@Override
+	public boolean handle(MessageContext context) throws Exception {
+		if (executor.getHttpMethod().equalsIgnoreCase("DELETE")) {
+			return deleteSubscriptions(context);
+		}
+		return false;
+	}
 
-        return true;
-    }
+	/**
+	 * Delete subscriptions.
+	 *
+	 * @param context
+	 *            the context
+	 * @return true, if successful
+	 * @throws Exception
+	 *             the exception
+	 */
+	private boolean deleteSubscriptions(MessageContext context) throws Exception {
+		String requestPath = executor.getSubResourcePath();
+		String subid = requestPath.substring(requestPath.lastIndexOf("/") + 1);
+
+		String requestid = UID.getUniqueID(Type.DELRETSUB.getCode(), context, executor.getApplicationid());
+		Integer dnSubscriptionId = Integer.parseInt(subid.replaceFirst("sub", ""));
+		List<Operatorsubs> domainsubs = (smsMessagingDAO.outboudSubscriptionQuery(Integer.valueOf(dnSubscriptionId)));
+		if (domainsubs.isEmpty()) {
+
+			throw new CustomException("POL0001", "",
+					new String[] { "SMS Receipt Subscription Not Found: " + dnSubscriptionId });
+		}
+
+		String resStr = "";
+		for (Operatorsubs subs : domainsubs) {
+			resStr = executor.makeDeleteRequest(
+					new OperatorEndpoint(new EndpointReference(subs.getDomain()), subs.getOperator()), subs.getDomain(),
+					null, true, context);
+		}
+		smsMessagingDAO.outboundSubscriptionDelete(Integer.valueOf(dnSubscriptionId));
+
+		executor.removeHeaders(context);
+		((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 204);
+
+		return true;
+	}
 }

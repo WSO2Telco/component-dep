@@ -77,9 +77,10 @@ public class SMSInboundNotificationsHandler implements SMSHandler {
 		String requestid = UID.getUniqueID(Type.ALERTINBOUND.getCode(), context, executor.getApplicationid());
 
 		String requestPath = executor.getSubResourcePath();
-		String axiataid = requestPath.substring(requestPath.lastIndexOf("/") + 1);
+		String moSubscriptionId = requestPath.substring(requestPath.lastIndexOf("/") + 1);
 
-		HashMap<String, String> subscriptionDetails = smsMessagingDAO.subscriptionNotifiMap(Integer.valueOf(axiataid));
+		HashMap<String, String> subscriptionDetails = smsMessagingDAO
+				.subscriptionNotifiMap(Integer.valueOf(moSubscriptionId));
 		String notifyurl = subscriptionDetails.get("notifyurl");
 		String serviceProvider = subscriptionDetails.get("serviceProvider");
 
@@ -135,6 +136,7 @@ public class SMSInboundNotificationsHandler implements SMSHandler {
 	@Override
 	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context)
 			throws Exception {
+
 		context.setProperty(DataPublisherConstants.OPERATION_TYPE, 207);
 		return true;
 	}

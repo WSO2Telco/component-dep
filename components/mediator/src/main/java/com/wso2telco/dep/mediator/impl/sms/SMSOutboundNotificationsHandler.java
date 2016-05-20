@@ -75,9 +75,10 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 		String requestid = UID.getUniqueID(Type.ALERTINBOUND.getCode(), context, executor.getApplicationid());
 
 		String requestPath = executor.getSubResourcePath();
-		String axiataid = requestPath.substring(requestPath.lastIndexOf("/") + 1);
+		String moSubscriptionId = requestPath.substring(requestPath.lastIndexOf("/") + 1);
 
-		HashMap<String, String> dnSubscriptionDetails = smsMessagingDAO.subscriptionDNNotifiMap(Integer.valueOf(axiataid));
+		HashMap<String, String> dnSubscriptionDetails = smsMessagingDAO
+				.subscriptionDNNotifiMap(Integer.valueOf(moSubscriptionId));
 		String notifyurl = dnSubscriptionDetails.get("notifyurl");
 		String serviceProvider = dnSubscriptionDetails.get("serviceProvider");
 
@@ -92,7 +93,6 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 		String mcc = null;
 		String operatormar = "+";
 
-		// String[] params = executor.getSubResourcePath().split("/");
 		Gson gson = new GsonBuilder().serializeNulls().create();
 		if (executor.getJsonBody().toString().contains("operatorCode")) {
 
@@ -139,6 +139,7 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 	@Override
 	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context)
 			throws Exception {
+
 		context.setProperty(DataPublisherConstants.OPERATION_TYPE, 207);
 		return true;
 	}

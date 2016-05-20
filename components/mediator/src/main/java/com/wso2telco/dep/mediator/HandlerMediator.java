@@ -79,7 +79,7 @@ public class HandlerMediator extends AbstractMediator {
     }
     
     /**
-     * Handle axiata exception.
+     * Handle custom exception.
      *
      * @param errcode the errcode
      * @param errvar the errvar

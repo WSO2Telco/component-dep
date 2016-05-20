@@ -81,11 +81,9 @@ public class MOUSSDSubscribeHandler implements USSDHandler {
 
 		Util.getPropertyFileByPath(fileLocation);
 
-		Integer axiataid = ussdDAO.ussdRequestEntry(notifyUrl);
-		log.info("created axiataId  -  " + axiataid);
+		Integer subscriptionId = ussdDAO.ussdRequestEntry(notifyUrl);
 
-		String subsEndpoint = Util.propMap.get("ussdGatewayEndpoint") + axiataid;
-		log.info("Subsendpoint - " + subsEndpoint);
+		String subsEndpoint = Util.propMap.get("ussdGatewayEndpoint") + subscriptionId;
 
 		jsonBody.getJSONObject("subscription").getJSONObject("callbackReference").put("notifyURL", subsEndpoint);
 

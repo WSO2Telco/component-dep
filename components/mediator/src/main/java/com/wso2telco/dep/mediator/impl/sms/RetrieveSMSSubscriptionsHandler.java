@@ -129,8 +129,8 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 			}
 			return true;
 		} else if (httpMethod.equalsIgnoreCase("DELETE")) {
-			String axiataid = requestPath.substring(requestPath.lastIndexOf("/") + 1);
-			String[] params = { axiataid };
+			String moSubscriptionId = requestPath.substring(requestPath.lastIndexOf("/") + 1);
+			String[] params = { moSubscriptionId };
 			validator = new ValidateCancelSubscription();
 			validator.validateUrl(requestPath);
 			validator.validate(params);
@@ -175,10 +175,10 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 			List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(API_TYPE, executor.getSubResourcePath(),
 					executor.getValidoperators());
 
-			Integer axiataid = smsMessagingDAO.subscriptionEntry(
+			Integer moSubscriptionId = smsMessagingDAO.subscriptionEntry(
 					subsrequst.getSubscription().getCallbackReference().getNotifyURL(), serviceProvider);
 			Util.getPropertyFile();
-			String subsEndpoint = Util.getApplicationProperty("hubSubsGatewayEndpoint") + "/" + axiataid;
+			String subsEndpoint = Util.getApplicationProperty("hubSubsGatewayEndpoint") + "/" + moSubscriptionId;
 			jsondstaddr.getJSONObject("callbackReference").put("notifyURL", subsEndpoint);
 
 			jsondstaddr.put("clientCorrelator", orgclientcl + ":" + requestid);
@@ -202,11 +202,11 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 				}
 			}
 
-			boolean issubs = smsMessagingDAO.operatorsubsEntry(domainsubs, axiataid);
+			boolean issubs = smsMessagingDAO.operatorsubsEntry(domainsubs, moSubscriptionId);
 
 			String ResourceUrlPrefix = Util.getApplicationProperty("hubGateway");
 			subsresponse.getSubscription()
-					.setResourceURL(ResourceUrlPrefix + executor.getResourceUrl() + "/" + axiataid);
+					.setResourceURL(ResourceUrlPrefix + executor.getResourceUrl() + "/" + moSubscriptionId);
 
 			JSONObject replyobj = new JSONObject(subsresponse);
 			JSONObject replysubs = replyobj.getJSONObject("subscription");
@@ -215,7 +215,7 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 
 			replysubs.getJSONObject("callbackReference").put("notifyURL", origNotiUrl);
 
-			jsondstaddr.put("resourceURL", ResourceUrlPrefix + executor.getResourceUrl() + "/" + axiataid);
+			jsondstaddr.put("resourceURL", ResourceUrlPrefix + executor.getResourceUrl() + "/" + moSubscriptionId);
 
 			executor.removeHeaders(context);
 			((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 201);
@@ -228,10 +228,10 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 			List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(API_TYPE, executor.getSubResourcePath(),
 					executor.getValidoperators());
 
-			Integer axiataid = smsMessagingDAO.subscriptionEntry(
+			Integer moSubscriptionId = smsMessagingDAO.subscriptionEntry(
 					nbSubsrequst.getSubscription().getCallbackReference().getNotifyURL(), serviceProvider);
 			Util.getPropertyFile();
-			String subsEndpoint = Util.getApplicationProperty("hubSubsGatewayEndpoint") + "/" + axiataid;
+			String subsEndpoint = Util.getApplicationProperty("hubSubsGatewayEndpoint") + "/" + moSubscriptionId;
 			jsondstaddr.getJSONObject("callbackReference").put("notifyURL", subsEndpoint);
 
 			jsondstaddr.put("clientCorrelator", orgclientcl + ":" + requestid);
@@ -292,7 +292,7 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 				}
 			}
 
-			boolean issubs = smsMessagingDAO.operatorsubsEntry(domainsubs, axiataid);
+			boolean issubs = smsMessagingDAO.operatorsubsEntry(domainsubs, moSubscriptionId);
 
 			String ResourceUrlPrefix = Util.getApplicationProperty("hubGateway");
 
@@ -316,7 +316,7 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 
 			nbSubsrequst.getSubscription().setDestinationAddresses(responseDestinationAddresses);
 			nbSubsrequst.getSubscription()
-					.setResourceURL(ResourceUrlPrefix + executor.getResourceUrl() + "/" + axiataid);
+					.setResourceURL(ResourceUrlPrefix + executor.getResourceUrl() + "/" + moSubscriptionId);
 			nbSubsrequst.getSubscription().setClientCorrelator(orgclientcl);
 			nbSubsrequst.getSubscription().getCallbackReference().setNotifyURL(origNotiUrl);
 
@@ -342,14 +342,14 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 	 */
 	private boolean deleteSubscriptions(MessageContext context) throws Exception {
 		String requestPath = executor.getSubResourcePath();
-		String axiataid = requestPath.substring(requestPath.lastIndexOf("/") + 1);
+		String moSubscriptionId = requestPath.substring(requestPath.lastIndexOf("/") + 1);
 
 		String requestid = UID.getUniqueID(Type.DELRETSUB.getCode(), context, executor.getApplicationid());
 
-		List<Operatorsubs> domainsubs = (smsMessagingDAO.subscriptionQuery(Integer.valueOf(axiataid)));
+		List<Operatorsubs> domainsubs = (smsMessagingDAO.subscriptionQuery(Integer.valueOf(moSubscriptionId)));
 		if (domainsubs.isEmpty()) {
 			throw new CustomException("POL0001", "",
-					new String[] { "SMS Receipt Subscription Not Found: " + axiataid });
+					new String[] { "SMS Receipt Subscription Not Found: " + moSubscriptionId });
 		}
 
 		String resStr = "";
@@ -358,7 +358,7 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 					new OperatorEndpoint(new EndpointReference(subs.getDomain()), subs.getOperator()), subs.getDomain(),
 					null, true, context);
 		}
-		smsMessagingDAO.subscriptionDelete(Integer.valueOf(axiataid));
+		smsMessagingDAO.subscriptionDelete(Integer.valueOf(moSubscriptionId));
 		executor.removeHeaders(context);
 		((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 204);
 

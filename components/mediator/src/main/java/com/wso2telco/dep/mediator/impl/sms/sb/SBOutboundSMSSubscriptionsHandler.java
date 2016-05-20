@@ -113,8 +113,8 @@ public class SBOutboundSMSSubscriptionsHandler implements SMSHandler {
 			validator.validate(jsonBody.toString());
 			return true;
 		} else if (httpMethod.equalsIgnoreCase("DELETE")) {
-			String axiataid = requestPath.substring(requestPath.lastIndexOf("/") + 1);
-			String[] params = { axiataid };
+			String dnSubscriptionId = requestPath.substring(requestPath.lastIndexOf("/") + 1);
+			String[] params = { dnSubscriptionId };
 			validator = new ValidateCancelSubscription();
 			validator.validateUrl(requestPath);
 			validator.validate(params);
@@ -158,10 +158,10 @@ public class SBOutboundSMSSubscriptionsHandler implements SMSHandler {
 		List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(API_TYPE, executor.getSubResourcePath(),
 				executor.getValidoperators());
 
-		Integer axiataid = smsMessagingDAO.outboundSubscriptionEntry(
+		Integer dnSubscriptionId = smsMessagingDAO.outboundSubscriptionEntry(
 				subsrequst.getDeliveryReceiptSubscription().getCallbackReference().getNotifyURL(), serviceProvider);
 		Util.getPropertyFile();
-		String subsEndpoint = Util.getApplicationProperty("hubSubsGatewayEndpoint") + "/" + axiataid;
+		String subsEndpoint = Util.getApplicationProperty("hubSubsGatewayEndpoint") + "/" + dnSubscriptionId;
 		jsondstaddr.getJSONObject("callbackReference").put("notifyURL", subsEndpoint);
 		subsrequst.getDeliveryReceiptSubscription().getCallbackReference().setNotifyURL(subsEndpoint);
 
@@ -187,15 +187,15 @@ public class SBOutboundSMSSubscriptionsHandler implements SMSHandler {
 			}
 		}
 
-		boolean issubs = smsMessagingDAO.outboundOperatorsubsEntry(domainsubs, axiataid);
+		boolean issubs = smsMessagingDAO.outboundOperatorsubsEntry(domainsubs, dnSubscriptionId);
 		String ResourceUrlPrefix = Util.getApplicationProperty("hubGateway");
 		subsresponse.getDeliveryReceiptSubscription()
-				.setResourceURL(ResourceUrlPrefix + executor.getResourceUrl() + "/" + axiataid);
+				.setResourceURL(ResourceUrlPrefix + executor.getResourceUrl() + "/" + dnSubscriptionId);
 		JSONObject replyobj = new JSONObject(subsresponse);
 		JSONObject replysubs = replyobj.getJSONObject("deliveryReceiptSubscription");
 		replysubs.put("clientCorrelator", orgclientcl);
 		replysubs.getJSONObject("callbackReference").put("notifyURL", origNotiUrl);
-		jsondstaddr.put("resourceURL", ResourceUrlPrefix + executor.getResourceUrl() + "/" + axiataid);
+		jsondstaddr.put("resourceURL", ResourceUrlPrefix + executor.getResourceUrl() + "/" + dnSubscriptionId);
 
 		executor.removeHeaders(context);
 		((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 201);

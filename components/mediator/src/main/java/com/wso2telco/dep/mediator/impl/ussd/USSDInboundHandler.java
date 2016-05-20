@@ -73,12 +73,12 @@ public class USSDInboundHandler implements USSDHandler {
 	public boolean handle(MessageContext context) throws CustomException, AxisFault, Exception {
 
 		String requestPath = executor.getSubResourcePath();
-		String axiataid = requestPath.substring(requestPath.lastIndexOf("/") + 1);
+		String subscriptionId = requestPath.substring(requestPath.lastIndexOf("/") + 1);
+
 		// remove non numeric chars
-		axiataid = axiataid.replaceAll("[^\\d.]", "");
-		log.debug("axiataId - " + axiataid);
-		String notifyurl = ussdDAO.getUSSDNotify(Integer.valueOf(axiataid));
-		log.info("notifyUrl found -  " + notifyurl);
+		subscriptionId = subscriptionId.replaceAll("[^\\d.]", "");
+		log.debug("axiataId - " + subscriptionId);
+		String notifyurl = ussdDAO.getUSSDNotify(Integer.valueOf(subscriptionId));
 
 		String carbonHome = System.getProperty("user.dir");
 		log.debug("conf carbonHome - " + carbonHome);
@@ -102,7 +102,7 @@ public class USSDInboundHandler implements USSDHandler {
 
 		if (action.equalsIgnoreCase("mtcont")) {
 
-			String subsEndpoint = Util.propMap.get("ussdGatewayEndpoint") + axiataid;
+			String subsEndpoint = Util.propMap.get("ussdGatewayEndpoint") + subscriptionId;
 			log.info("Subsendpoint - " + subsEndpoint);
 			replyobj.getJSONObject("outboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL",
 					subsEndpoint);
@@ -110,12 +110,12 @@ public class USSDInboundHandler implements USSDHandler {
 		}
 
 		if (action.equalsIgnoreCase("mtfin")) {
-			String subsEndpoint = Util.propMap.get("ussdGatewayEndpoint") + axiataid;
+			String subsEndpoint = Util.propMap.get("ussdGatewayEndpoint") + subscriptionId;
 			log.info("Subsendpoint - " + subsEndpoint);
 			replyobj.getJSONObject("outboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL",
 					subsEndpoint);
 
-			boolean deleted = ussdDAO.ussdEntryDelete(Integer.valueOf(axiataid));
+			boolean deleted = ussdDAO.ussdEntryDelete(Integer.valueOf(subscriptionId));
 			log.info("Entry deleted " + deleted);
 
 		}
@@ -140,6 +140,7 @@ public class USSDInboundHandler implements USSDHandler {
 	@Override
 	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context)
 			throws Exception {
+
 		context.setProperty(DataPublisherConstants.OPERATION_TYPE, 407);
 		return true;
 	}

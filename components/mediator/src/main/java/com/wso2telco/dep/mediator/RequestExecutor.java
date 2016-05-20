@@ -241,7 +241,7 @@ public abstract class RequestExecutor {
 	 *             the exception
 	 */
 	public boolean initialize(MessageContext context) throws Exception {
-		
+
 		// Get valid operators
 		log.debug("DEBUG LOGS FOR LBS 05 : context = " + context);
 		log.debug("DEBUG LOGS FOR LBS 06 : applicationid = " + applicationid);
@@ -257,7 +257,8 @@ public abstract class RequestExecutor {
 		}
 
 		String apiName = (String) context.getProperty("API_NAME");
-		List<Integer> activeoperators = operatorDAO.getActiveApplicationOperators(Integer.valueOf(applicationid), apiName);
+		List<Integer> activeoperators = operatorDAO.getActiveApplicationOperators(Integer.valueOf(applicationid),
+				apiName);
 
 		log.debug("DEBUG LOGS FOR LBS 08 : activeoperators = " + activeoperators);
 
@@ -306,7 +307,7 @@ public abstract class RequestExecutor {
 	 *            the context
 	 * @return true, if successful
 	 * @throws CustomException
-	 *             the axiata exception
+	 *             the custom exception
 	 * @throws AxisFault
 	 *             the axis fault
 	 * @throws Exception
@@ -368,7 +369,7 @@ public abstract class RequestExecutor {
 	 * @param errResp
 	 *            the err resp
 	 * @throws CustomException
-	 *             the axiata exception
+	 *             the custom exception
 	 */
 	public void handlePluginException(String errResp) throws CustomException {
 		log.debug("DEBUG LOGS FOR LBS 15 : errResp = " + errResp);

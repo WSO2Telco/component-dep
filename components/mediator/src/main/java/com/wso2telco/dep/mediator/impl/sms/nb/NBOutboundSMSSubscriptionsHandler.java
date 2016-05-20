@@ -52,212 +52,241 @@ import org.json.JSONObject;
  */
 public class NBOutboundSMSSubscriptionsHandler implements SMSHandler {
 
-    /** The log. */
-    private static Log log = LogFactory.getLog(NBOutboundSMSSubscriptionsHandler.class);
-    
-    /** The Constant API_TYPE. */
-    private static final String API_TYPE = "sms";
-    
-    /** The occi. */
-    private OriginatingCountryCalculatorIDD occi;
-    
-    /** The smsMessagingDAO. */
-    private SMSMessagingDAO smsMessagingDAO;
-    
-    /** The executor. */
-    private SMSExecutor executor;
-    
-    /** The api utils. */
-    private ApiUtils apiUtils;
+	/** The log. */
+	private static Log log = LogFactory.getLog(NBOutboundSMSSubscriptionsHandler.class);
 
-    /**
-     * Instantiates a new NB outbound sms subscriptions handler.
-     *
-     * @param executor the executor
-     */
-    public NBOutboundSMSSubscriptionsHandler(SMSExecutor executor) {
-        this.executor = executor;
-        occi = new OriginatingCountryCalculatorIDD();
-        smsMessagingDAO = new SMSMessagingDAO();
-        apiUtils = new ApiUtils();
-    }
+	/** The Constant API_TYPE. */
+	private static final String API_TYPE = "sms";
 
-    /* (non-Javadoc)
-     * @see com.wso2telco.mediator.impl.sms.SMSHandler#validate(java.lang.String, java.lang.String, org.json.JSONObject, org.apache.synapse.MessageContext)
-     */
-    @Override
-    public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context) throws Exception {
-        IServiceValidate validator;
-        if (httpMethod.equalsIgnoreCase("POST")) {
-            validator = new ValidateNBOutboundSubscription();
-            validator.validateUrl(requestPath);
-            validator.validate(jsonBody.toString());
-            return true;
-        } else if (httpMethod.equalsIgnoreCase("DELETE")) {
-            String axiataid = requestPath.substring(requestPath.lastIndexOf("/") + 1);
-            String[] params = {axiataid};
-            validator = new ValidateCancelSubscription();
-            validator.validateUrl(requestPath);
-            validator.validate(params);
-            return true;
-        } else {
-            ((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 405);
-            throw new Exception("Method not allowed");
-        }
-    }
+	/** The occi. */
+	private OriginatingCountryCalculatorIDD occi;
 
-    /* (non-Javadoc)
-     * @see com.wso2telco.mediator.impl.sms.SMSHandler#handle(org.apache.synapse.MessageContext)
-     */
-    @Override
-    public boolean handle(MessageContext context) throws Exception {
-        if (executor.getHttpMethod().equalsIgnoreCase("POST")) {
-            return createSubscriptions(context);
-        }  
+	/** The smsMessagingDAO. */
+	private SMSMessagingDAO smsMessagingDAO;
 
-        return false;
-    }
+	/** The executor. */
+	private SMSExecutor executor;
 
-    /**
-     * Creates the subscriptions.
-     *
-     * @param context the context
-     * @return true, if successful
-     * @throws Exception the exception
-     */
-    private boolean createSubscriptions(MessageContext context) throws Exception {
+	/** The api utils. */
+	private ApiUtils apiUtils;
 
-        String requestid = UID.getUniqueID(Type.RETRIVSUB.getCode(), context, executor.getApplicationid());
-        Gson gson = new GsonBuilder().serializeNulls().create();
+	/**
+	 * Instantiates a new NB outbound sms subscriptions handler.
+	 *
+	 * @param executor
+	 *            the executor
+	 */
+	public NBOutboundSMSSubscriptionsHandler(SMSExecutor executor) {
+		this.executor = executor;
+		occi = new OriginatingCountryCalculatorIDD();
+		smsMessagingDAO = new SMSMessagingDAO();
+		apiUtils = new ApiUtils();
+	}
 
-        HashMap<String, String> jwtDetails = apiUtils.getJwtTokenDetails(context);
-        JSONObject jsonBody = executor.getJsonBody();
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wso2telco.mediator.impl.sms.SMSHandler#validate(java.lang.String,
+	 * java.lang.String, org.json.JSONObject, org.apache.synapse.MessageContext)
+	 */
+	@Override
+	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context)
+			throws Exception {
+		IServiceValidate validator;
+		if (httpMethod.equalsIgnoreCase("POST")) {
+			validator = new ValidateNBOutboundSubscription();
+			validator.validateUrl(requestPath);
+			validator.validate(jsonBody.toString());
+			return true;
+		} else if (httpMethod.equalsIgnoreCase("DELETE")) {
+			String dnSubscriptionId = requestPath.substring(requestPath.lastIndexOf("/") + 1);
+			String[] params = { dnSubscriptionId };
+			validator = new ValidateCancelSubscription();
+			validator.validateUrl(requestPath);
+			validator.validate(params);
+			return true;
+		} else {
+			((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 405);
+			throw new Exception("Method not allowed");
+		}
+	}
 
-        String serviceProvider = jwtDetails.get("subscriber");
-        log.debug("Subscriber Name : " + serviceProvider);
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wso2telco.mediator.impl.sms.SMSHandler#handle(org.apache.synapse.
+	 * MessageContext)
+	 */
+	@Override
+	public boolean handle(MessageContext context) throws Exception {
+		if (executor.getHttpMethod().equalsIgnoreCase("POST")) {
+			return createSubscriptions(context);
+		}
 
-        NBDeliveryReceiptSubscriptionRequest nbDeliveryReceiptSubscriptionRequest = gson.fromJson(jsonBody.toString(), NBDeliveryReceiptSubscriptionRequest.class);
-        String orgclientcl = nbDeliveryReceiptSubscriptionRequest.getDeliveryReceiptSubscription().getClientCorrelator();
-        
-        String origNotiUrl = nbDeliveryReceiptSubscriptionRequest.getDeliveryReceiptSubscription().getCallbackReference().getNotifyURL();
+		return false;
+	}
 
-        List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(API_TYPE, executor.getSubResourcePath(), executor.getValidoperators());
+	/**
+	 * Creates the subscriptions.
+	 *
+	 * @param context
+	 *            the context
+	 * @return true, if successful
+	 * @throws Exception
+	 *             the exception
+	 */
+	private boolean createSubscriptions(MessageContext context) throws Exception {
 
-        Integer axiataid = smsMessagingDAO.outboundSubscriptionEntry(nbDeliveryReceiptSubscriptionRequest.getDeliveryReceiptSubscription().getCallbackReference().getNotifyURL(), serviceProvider);
-        Util.getPropertyFile();
-        String subsEndpoint = Util.getApplicationProperty("hubSubsGatewayEndpoint") + "/" + axiataid;
-        nbDeliveryReceiptSubscriptionRequest.getDeliveryReceiptSubscription().getCallbackReference().setNotifyURL(subsEndpoint);
-        log.debug("Delivery notification subscription northbound request body : " + gson.toJson(nbDeliveryReceiptSubscriptionRequest));
+		String requestid = UID.getUniqueID(Type.RETRIVSUB.getCode(), context, executor.getApplicationid());
+		Gson gson = new GsonBuilder().serializeNulls().create();
 
-        SenderAddresses[] senderAddresses = nbDeliveryReceiptSubscriptionRequest.getDeliveryReceiptSubscription().getSenderAddresses();
+		HashMap<String, String> jwtDetails = apiUtils.getJwtTokenDetails(context);
+		JSONObject jsonBody = executor.getJsonBody();
 
-        List<Operatorsubs> domainsubs = new ArrayList<Operatorsubs>();
-        SBDeliveryReceiptSubscriptionRequest sbDeliveryReceiptSubscriptionResponse = null;
+		String serviceProvider = jwtDetails.get("subscriber");
+		log.debug("Subscriber Name : " + serviceProvider);
 
-        for (OperatorEndpoint endpoint : endpoints) {
+		NBDeliveryReceiptSubscriptionRequest nbDeliveryReceiptSubscriptionRequest = gson.fromJson(jsonBody.toString(),
+				NBDeliveryReceiptSubscriptionRequest.class);
+		String orgclientcl = nbDeliveryReceiptSubscriptionRequest.getDeliveryReceiptSubscription()
+				.getClientCorrelator();
 
-             
-            for (int i = 0; i < senderAddresses.length; i++) {
-                if (senderAddresses[i].getOperatorCode().equalsIgnoreCase(endpoint.getOperator())) {
-                    log.debug("Operator name: " + endpoint.getOperator());
-                    SBDeliveryReceiptSubscriptionRequest sbDeliveryReceiptSubscriptionRequest = new SBDeliveryReceiptSubscriptionRequest();
-                    DeliveryReceiptSubscription deliveryReceiptSubscriptionRequest = new DeliveryReceiptSubscription();
-                    CallbackReference callbackReference = new CallbackReference();
+		String origNotiUrl = nbDeliveryReceiptSubscriptionRequest.getDeliveryReceiptSubscription()
+				.getCallbackReference().getNotifyURL();
 
-                    callbackReference.setCallbackData(nbDeliveryReceiptSubscriptionRequest.getDeliveryReceiptSubscription().getCallbackReference().getCallbackData());
-                    callbackReference.setNotifyURL(subsEndpoint);
-                    deliveryReceiptSubscriptionRequest.setCallbackReference(callbackReference);
-                    deliveryReceiptSubscriptionRequest.setClientCorrelator(orgclientcl + ":" + requestid);
-                    deliveryReceiptSubscriptionRequest.setOperatorCode(senderAddresses[i].getOperatorCode());
-                    deliveryReceiptSubscriptionRequest.setFilterCriteria(senderAddresses[i].getFilterCriteria());
-                    sbDeliveryReceiptSubscriptionRequest.setDeliveryReceiptSubscription(deliveryReceiptSubscriptionRequest);
+		List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(API_TYPE, executor.getSubResourcePath(),
+				executor.getValidoperators());
 
-                    String sbRequestBody = removeResourceURL(gson.toJson(sbDeliveryReceiptSubscriptionRequest));
-                    log.debug("Delivery notification southbound request body of " + endpoint.getOperator() + " operator: " + sbRequestBody);
+		Integer dnSubscriptionId = smsMessagingDAO.outboundSubscriptionEntry(nbDeliveryReceiptSubscriptionRequest
+				.getDeliveryReceiptSubscription().getCallbackReference().getNotifyURL(), serviceProvider);
+		Util.getPropertyFile();
+		String subsEndpoint = Util.getApplicationProperty("hubSubsGatewayEndpoint") + "/" + dnSubscriptionId;
+		nbDeliveryReceiptSubscriptionRequest.getDeliveryReceiptSubscription().getCallbackReference()
+				.setNotifyURL(subsEndpoint);
+		log.debug("Delivery notification subscription northbound request body : "
+				+ gson.toJson(nbDeliveryReceiptSubscriptionRequest));
 
-                     
-                    String url = endpoint.getEndpointref().getAddress();
-                    String southboundURLPart = "/" + senderAddresses[i].getSenderAddress() + "/subscriptions";
-                    url = url.replace("/subscriptions", southboundURLPart);
-                    log.debug("Delivery notification southbound request url of " + endpoint.getOperator() + " operator: " + url);
+		SenderAddresses[] senderAddresses = nbDeliveryReceiptSubscriptionRequest.getDeliveryReceiptSubscription()
+				.getSenderAddresses();
 
-                    String notifyres = executor.makeRequest(endpoint, url, sbRequestBody, true, context);
+		List<Operatorsubs> domainsubs = new ArrayList<Operatorsubs>();
+		SBDeliveryReceiptSubscriptionRequest sbDeliveryReceiptSubscriptionResponse = null;
 
-                    log.debug("Delivery notification southbound response body of " + endpoint.getOperator() + " operator: " + notifyres);
+		for (OperatorEndpoint endpoint : endpoints) {
 
-                    if (notifyres == null) {
-                        senderAddresses[i].setStatus("Failed");
-                         
-                    } else {
-                        //plugin exception handling
-                        sbDeliveryReceiptSubscriptionResponse = gson.fromJson(notifyres, SBDeliveryReceiptSubscriptionRequest.class);
-                        if (sbDeliveryReceiptSubscriptionResponse.getDeliveryReceiptSubscription() == null) {
-                            senderAddresses[i].setStatus("NotCreated");
-                        } else {
-                            domainsubs.add(new Operatorsubs(endpoint.getOperator(), sbDeliveryReceiptSubscriptionResponse.getDeliveryReceiptSubscription().getResourceURL()));
-                            senderAddresses[i].setStatus("Created");
-                        }
-                    }
-                    break;
-                }
-            }
-        }
+			for (int i = 0; i < senderAddresses.length; i++) {
+				if (senderAddresses[i].getOperatorCode().equalsIgnoreCase(endpoint.getOperator())) {
+					log.debug("Operator name: " + endpoint.getOperator());
+					SBDeliveryReceiptSubscriptionRequest sbDeliveryReceiptSubscriptionRequest = new SBDeliveryReceiptSubscriptionRequest();
+					DeliveryReceiptSubscription deliveryReceiptSubscriptionRequest = new DeliveryReceiptSubscription();
+					CallbackReference callbackReference = new CallbackReference();
 
-        boolean issubs = smsMessagingDAO.outboundOperatorsubsEntry(domainsubs, axiataid);
-        String ResourceUrlPrefix = Util.getApplicationProperty("hubGateway");
+					callbackReference.setCallbackData(nbDeliveryReceiptSubscriptionRequest
+							.getDeliveryReceiptSubscription().getCallbackReference().getCallbackData());
+					callbackReference.setNotifyURL(subsEndpoint);
+					deliveryReceiptSubscriptionRequest.setCallbackReference(callbackReference);
+					deliveryReceiptSubscriptionRequest.setClientCorrelator(orgclientcl + ":" + requestid);
+					deliveryReceiptSubscriptionRequest.setOperatorCode(senderAddresses[i].getOperatorCode());
+					deliveryReceiptSubscriptionRequest.setFilterCriteria(senderAddresses[i].getFilterCriteria());
+					sbDeliveryReceiptSubscriptionRequest
+							.setDeliveryReceiptSubscription(deliveryReceiptSubscriptionRequest);
 
-        SenderAddresses[] responseSenderAddresses = new SenderAddresses[senderAddresses.length];
-        int senderAddressesCount = 0;
-        int successResultCount = 0;
-        for (SenderAddresses sendernAddressesResult : senderAddresses) {
-            String deliverySubscriptionStatus = sendernAddressesResult.getStatus();
-            if (deliverySubscriptionStatus == null) {
-                sendernAddressesResult.setStatus("Failed");
-            } else if (deliverySubscriptionStatus.equals("Created")) {
-                successResultCount++;
-            }
-            responseSenderAddresses[senderAddressesCount] = sendernAddressesResult;
-            senderAddressesCount++;
-        }
+					String sbRequestBody = removeResourceURL(gson.toJson(sbDeliveryReceiptSubscriptionRequest));
+					log.debug("Delivery notification southbound request body of " + endpoint.getOperator()
+							+ " operator: " + sbRequestBody);
 
-        if (successResultCount == 0) {
-            throw new CustomException("POL0299", "", new String[]{"Error registering subscription"});
-        }
+					String url = endpoint.getEndpointref().getAddress();
+					String southboundURLPart = "/" + senderAddresses[i].getSenderAddress() + "/subscriptions";
+					url = url.replace("/subscriptions", southboundURLPart);
+					log.debug("Delivery notification southbound request url of " + endpoint.getOperator()
+							+ " operator: " + url);
 
-         
-        nbDeliveryReceiptSubscriptionRequest.getDeliveryReceiptSubscription().setSenderAddresses(responseSenderAddresses);
-        nbDeliveryReceiptSubscriptionRequest.getDeliveryReceiptSubscription().setResourceURL(ResourceUrlPrefix + executor.getResourceUrl() + "/" + axiataid);
-        nbDeliveryReceiptSubscriptionRequest.getDeliveryReceiptSubscription().getCallbackReference().setNotifyURL(origNotiUrl);
+					String notifyres = executor.makeRequest(endpoint, url, sbRequestBody, true, context);
 
-        String nbDeliveryReceiptSubscriptionResponseBody = gson.toJson(nbDeliveryReceiptSubscriptionRequest);
-        log.debug("Delivery notification subscription northbound response body : " + nbDeliveryReceiptSubscriptionResponseBody);
+					log.debug("Delivery notification southbound response body of " + endpoint.getOperator()
+							+ " operator: " + notifyres);
 
-        executor.removeHeaders(context);
-        ((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 201);
-        executor.setResponse(context, nbDeliveryReceiptSubscriptionResponseBody);
+					if (notifyres == null) {
+						senderAddresses[i].setStatus("Failed");
 
-        return true;
-    }
+					} else {
+						// plugin exception handling
+						sbDeliveryReceiptSubscriptionResponse = gson.fromJson(notifyres,
+								SBDeliveryReceiptSubscriptionRequest.class);
+						if (sbDeliveryReceiptSubscriptionResponse.getDeliveryReceiptSubscription() == null) {
+							senderAddresses[i].setStatus("NotCreated");
+						} else {
+							domainsubs
+									.add(new Operatorsubs(endpoint.getOperator(), sbDeliveryReceiptSubscriptionResponse
+											.getDeliveryReceiptSubscription().getResourceURL()));
+							senderAddresses[i].setStatus("Created");
+						}
+					}
+					break;
+				}
+			}
+		}
 
-     
-    /**
-     * Removes the resource url.
-     *
-     * @param sbSubsrequst the sb subsrequst
-     * @return the string
-     */
-    private String removeResourceURL(String sbSubsrequst) {
-        String sbDeliveryNotificationrequestString = "";
-        try {
-            JSONObject objJSONObject = new JSONObject(sbSubsrequst);
-            JSONObject objDeliveryNotificationRequest = (JSONObject) objJSONObject.get("deliveryReceiptSubscription");
-            objDeliveryNotificationRequest.remove("resourceURL");
+		boolean issubs = smsMessagingDAO.outboundOperatorsubsEntry(domainsubs, dnSubscriptionId);
+		String ResourceUrlPrefix = Util.getApplicationProperty("hubGateway");
 
-            sbDeliveryNotificationrequestString = objDeliveryNotificationRequest.toString();
-        } catch (JSONException ex) {
-            log.error("Error in removeResourceURL" + ex.getMessage());
-            throw new CustomException("POL0299", "", new String[]{"Error registering subscription"});
-        }
-        return "{\"deliveryReceiptSubscription\":" + sbDeliveryNotificationrequestString + "}";
-    }   
+		SenderAddresses[] responseSenderAddresses = new SenderAddresses[senderAddresses.length];
+		int senderAddressesCount = 0;
+		int successResultCount = 0;
+		for (SenderAddresses sendernAddressesResult : senderAddresses) {
+			String deliverySubscriptionStatus = sendernAddressesResult.getStatus();
+			if (deliverySubscriptionStatus == null) {
+				sendernAddressesResult.setStatus("Failed");
+			} else if (deliverySubscriptionStatus.equals("Created")) {
+				successResultCount++;
+			}
+			responseSenderAddresses[senderAddressesCount] = sendernAddressesResult;
+			senderAddressesCount++;
+		}
+
+		if (successResultCount == 0) {
+			throw new CustomException("POL0299", "", new String[] { "Error registering subscription" });
+		}
+
+		nbDeliveryReceiptSubscriptionRequest.getDeliveryReceiptSubscription()
+				.setSenderAddresses(responseSenderAddresses);
+		nbDeliveryReceiptSubscriptionRequest.getDeliveryReceiptSubscription()
+				.setResourceURL(ResourceUrlPrefix + executor.getResourceUrl() + "/" + dnSubscriptionId);
+		nbDeliveryReceiptSubscriptionRequest.getDeliveryReceiptSubscription().getCallbackReference()
+				.setNotifyURL(origNotiUrl);
+
+		String nbDeliveryReceiptSubscriptionResponseBody = gson.toJson(nbDeliveryReceiptSubscriptionRequest);
+		log.debug("Delivery notification subscription northbound response body : "
+				+ nbDeliveryReceiptSubscriptionResponseBody);
+
+		executor.removeHeaders(context);
+		((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 201);
+		executor.setResponse(context, nbDeliveryReceiptSubscriptionResponseBody);
+
+		return true;
+	}
+
+	/**
+	 * Removes the resource url.
+	 *
+	 * @param sbSubsrequst
+	 *            the sb subsrequst
+	 * @return the string
+	 */
+	private String removeResourceURL(String sbSubsrequst) {
+		String sbDeliveryNotificationrequestString = "";
+		try {
+			JSONObject objJSONObject = new JSONObject(sbSubsrequst);
+			JSONObject objDeliveryNotificationRequest = (JSONObject) objJSONObject.get("deliveryReceiptSubscription");
+			objDeliveryNotificationRequest.remove("resourceURL");
+
+			sbDeliveryNotificationrequestString = objDeliveryNotificationRequest.toString();
+		} catch (JSONException ex) {
+			log.error("Error in removeResourceURL" + ex.getMessage());
+			throw new CustomException("POL0299", "", new String[] { "Error registering subscription" });
+		}
+		return "{\"deliveryReceiptSubscription\":" + sbDeliveryNotificationrequestString + "}";
+	}
 }
