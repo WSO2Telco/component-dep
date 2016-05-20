@@ -47,10 +47,11 @@ public class PaymentDAO extends CommonDAO{
             }
 
             st = con.createStatement();
-            String sql = "SELECT id, category "
-                    + "FROM valid_payment_categories";
+            
+            StringBuilder queryString = new StringBuilder("SELECT id, category ");
+            queryString.append("FROM valid_payment_categories");
 
-            rs = st.executeQuery(sql);
+            rs = st.executeQuery(queryString.toString());
 
             while (rs.next()) {    
             	
