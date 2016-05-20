@@ -12,8 +12,8 @@ import org.apache.log4j.Logger;
 
 import com.wso2telco.aggregatorblacklist.model.ProvisionReq;
 import com.wso2telco.dbutils.AxiataDbService;
-
-
+import com.wso2telco.dep.operatorservice.model.OperatorSearchDTO;
+import com.wso2telco.dep.operatorservice.service.OparatorService;
 // TODO: Auto-generated Javadoc
 /**
  * The Class ProvisionService.
@@ -36,6 +36,9 @@ public class ProvisionService {
            String subscriber = provisionreq.getProvisioninfo().getSubscriber();
            String operator = provisionreq.getProvisioninfo().getOperatorcode();
            String[] merchants = (String[])(provisionreq.getProvisioninfo().getMerchantcode()).toArray(new String[(provisionreq.getProvisioninfo().getMerchantcode()).size()]);
+           OparatorService opService = new OparatorService();
+           OperatorSearchDTO searchDTO = new OperatorSearchDTO();
+           opService.loadOperators(searchDTO);
            
           new AxiataDbService().insertMerchantProvision(applicationid,subscriber,operator, merchants);
     }

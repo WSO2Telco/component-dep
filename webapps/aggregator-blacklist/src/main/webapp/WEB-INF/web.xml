@@ -8,17 +8,6 @@
 	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
 	the specific language governing permissions and limitations under the License. -->
 <web-app>
-
-<context-param>
-        <param-name>contextConfigLocation</param-name>
-        <param-value>WEB-INF/beans.xml</param-value>
-    </context-param>
-
-    <listener>
-        <listener-class>
-            org.springframework.web.context.ContextLoaderListener
-        </listener-class>
-    </listener>
     
    <display-name>cxf</display-name>
 

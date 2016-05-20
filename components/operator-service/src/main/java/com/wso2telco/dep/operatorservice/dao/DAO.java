@@ -29,7 +29,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.apimgt.usage.client.exception.APIMgtUsageQueryServiceClientException;
 
+import com.wso2telco.dbutils.DbUtils;
+import com.wso2telco.dbutils.util.DataSourceNames;
 import com.wso2telco.dep.operatorservice.model.Operator;
+import com.wso2telco.dep.operatorservice.model.OperatorSearchDTO;
+import com.wso2telco.dep.operatorservice.util.OparatorTable;
 
 import org.wso2.carbon.apimgt.api.APIManagementException;
 import org.wso2.carbon.apimgt.impl.utils.APIMgtDBUtil;
@@ -184,5 +188,41 @@ public class DAO {
 			throws APIManagementException {
 		log.error(msg, t);
 		throw new APIManagementException(msg, t);
+	}
+
+	public List<Operator> seachOparators(OperatorSearchDTO searchDTO) throws Exception {
+
+		
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<Operator> operatorList = new ArrayList<Operator>();
+		
+		try {
+			conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+			StringBuilder sql = new StringBuilder();
+			sql.append("SELECT ID, operatorname, description ");
+			sql.append(" FROM ").append(OparatorTable.OPARATOR.getTObject());
+			
+			
+			log.debug(" seachOparators : "+sql);
+			ps = conn.prepareStatement(sql.toString());
+			rs = ps.executeQuery();
+			
+			while (rs.next()) {
+				Operator operator = new Operator();
+				operator.setOperatorId(rs.getInt("ID"));
+				operator.setOperatorName(rs.getString("operatorname"));
+				operator.setOperatorDescription(rs.getString("description"));
+				
+				operatorList.add(operator);
+			}
+
+		} catch (SQLException e) {
+			throw new Exception(e);
+		} finally {
+			DbUtils.closeAllConnections(ps, conn, rs);
+		}
+		return operatorList;
 	}
 }
