@@ -26,18 +26,18 @@ public class USSDDAO extends CommonDAO {
 	/**
 	 * Ussd request entry.
 	 *
-	 * @param notifyurl
-	 *            the notifyurl
+	 * @param notifyURL
+	 *            the notifyURL
 	 * @return the integer
 	 * @throws Exception
 	 *             the exception
 	 */
-	public Integer ussdRequestEntry(String notifyurl) throws Exception {
+	public Integer ussdRequestEntry(String notifyURL) throws Exception {
 
 		Connection con = null;
 		Statement st = null;
 		ResultSet rs = null;
-		Integer newid = 0;
+		Integer newId = 0;
 
 		try {
 
@@ -48,17 +48,25 @@ public class USSDDAO extends CommonDAO {
 			}
 
 			st = con.createStatement();
-			String sql = "SELECT MAX(axiataid) maxid " + "FROM ussd_request_entry";
 
-			rs = st.executeQuery(sql);
+			StringBuilder queryString = new StringBuilder("SELECT MAX(axiataid) maxid ");
+			queryString.append("FROM ussd_request_entry");
+
+			rs = st.executeQuery(queryString.toString());
 			if (rs.next()) {
 
-				newid = rs.getInt("maxid") + 1;
+				newId = rs.getInt("maxid") + 1;
 			}
 
-			sql = "INSERT INTO ussd_request_entry (axiataid,notifyurl) " + "VALUES (" + newid + ",'" + notifyurl + "')";
-			st.executeUpdate(sql);
+			StringBuilder insertQueryString = new StringBuilder(
+					"INSERT INTO ussd_request_entry (axiataid, notifyurl) ");
+			insertQueryString.append("VALUES (");
+			insertQueryString.append(newId);
+			insertQueryString.append(", ");
+			insertQueryString.append(notifyURL);
+			insertQueryString.append(")");
 
+			st.executeUpdate(insertQueryString.toString());
 		} catch (Exception e) {
 
 			DbUtils.handleException("Error while inserting in to ussd_request_entry. ", e);
@@ -67,19 +75,19 @@ public class USSDDAO extends CommonDAO {
 			DbUtils.closeAllConnections(st, con, rs);
 		}
 
-		return newid;
+		return newId;
 	}
 
 	/**
 	 * Gets the USSD notify.
 	 *
-	 * @param axiataid
-	 *            the axiataid
+	 * @param subscriptionId
+	 *            the subscriptionId
 	 * @return the USSD notify
 	 * @throws Exception
 	 *             the exception
 	 */
-	public String getUSSDNotify(Integer axiataid) throws Exception {
+	public String getUSSDNotify(Integer subscriptionId) throws Exception {
 
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 		Statement st = null;
@@ -94,9 +102,13 @@ public class USSDDAO extends CommonDAO {
 			}
 
 			st = con.createStatement();
-			String sql = "SELECT notifyurl " + "FROM ussd_request_entry " + "WHERE axiataid = " + axiataid + "";
 
-			rs = st.executeQuery(sql);
+			StringBuilder queryString = new StringBuilder("SELECT notifyurl ");
+			queryString.append("FROM ussd_request_entry ");
+			queryString.append("WHERE axiataid = ");
+			queryString.append(subscriptionId);
+
+			rs = st.executeQuery(queryString.toString());
 
 			if (rs.next()) {
 
@@ -117,13 +129,13 @@ public class USSDDAO extends CommonDAO {
 	/**
 	 * Ussd entry delete.
 	 *
-	 * @param axiataid
-	 *            the axiataid
+	 * @param subscriptionId
+	 *            the subscriptionId
 	 * @return true, if successful
 	 * @throws Exception
 	 *             the exception
 	 */
-	public boolean ussdEntryDelete(Integer axiataid) throws Exception {
+	public boolean ussdEntryDelete(Integer subscriptionId) throws Exception {
 
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 		Statement st = null;
@@ -136,10 +148,12 @@ public class USSDDAO extends CommonDAO {
 			}
 
 			st = con.createStatement();
-			String sql = "DELETE FROM ussd_request_entry " + "WHERE axiataid = " + axiataid + "";
 
-			st.executeUpdate(sql);
+			StringBuilder queryString = new StringBuilder("DELETE FROM ussd_request_entry ");
+			queryString.append("WHERE axiataid = ");
+			queryString.append(subscriptionId);
 
+			st.executeUpdate(queryString.toString());
 		} catch (Exception e) {
 
 			DbUtils.handleException("Error while deleting ussd_request_entry. ", e);
