@@ -47,6 +47,7 @@ import org.codehaus.jettison.mapped.MappedXMLStreamReader;
 /**
  * The Class JSONBuilder.
  */
+@Deprecated
 public class JSONBuilder implements Builder {
     
     /** The Constant JsonRoot. */

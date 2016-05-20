@@ -33,6 +33,7 @@ import org.wso2.carbon.user.api.Claim;
 /**
  * The Class ProfileAttributeHandler.
  */
+@Deprecated
 public class ProfileAttributeHandler {
 	
 	 /** The Constant CURRENT_LOCATION_CLAIM. */
