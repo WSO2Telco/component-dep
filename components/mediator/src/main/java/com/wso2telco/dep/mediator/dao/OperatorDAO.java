@@ -23,7 +23,6 @@ import java.util.ArrayList;
 import java.util.List;
 import javax.cache.Cache;
 import javax.cache.Caching;
-
 import com.wso2telco.dbutils.AxataDBUtilException;
 import com.wso2telco.dbutils.DbUtils;
 import com.wso2telco.dbutils.Operator;
@@ -33,7 +32,7 @@ import com.wso2telco.dbutils.util.DataSourceNames;
 public class OperatorDAO extends CommonDAO {
 
 	/**
-	 * Operator endpoints.
+	 * Operator endPoints.
 	 *
 	 * @return the list
 	 * @throws Exception
@@ -45,15 +44,14 @@ public class OperatorDAO extends CommonDAO {
 
 		Cache<Integer, List<Operatorendpoint>> cache = Caching.getCacheManager(AXIATA_MEDIATOR_CACHE_MANAGER)
 				.getCache("axiataDbOperatorEndpoints");
-		List<Operatorendpoint> endpoints = cache.get(opEndpointsID);
-		System.out.println((endpoints == null ? "== cache miss ==" : "== cache hit ==") + " --- operatorEndpoints");
+		List<Operatorendpoint> endPoints = cache.get(opEndpointsID);
 
-		if (endpoints == null) {
+		if (endPoints == null) {
 
 			Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 			Statement st = null;
 			ResultSet rs = null;
-			endpoints = new ArrayList<Operatorendpoint>();
+			endPoints = new ArrayList<Operatorendpoint>();
 
 			try {
 
@@ -63,14 +61,16 @@ public class OperatorDAO extends CommonDAO {
 				}
 
 				st = con.createStatement();
-				String sql = "SELECT operatorid,operatorname,api,endpoint " + "FROM operatorendpoints, operators "
-						+ "WHERE operatorendpoints.operatorid = operators.id";
 
-				rs = st.executeQuery(sql);
+				StringBuilder queryString = new StringBuilder("SELECT operatorid, operatorname, api, endpoint ");
+				queryString.append("FROM operatorendpoints, operators ");
+				queryString.append("WHERE operatorendpoints.operatorid = operators.id");
+
+				rs = st.executeQuery(queryString.toString());
 
 				while (rs.next()) {
 
-					endpoints.add(new Operatorendpoint(rs.getInt("operatorid"), rs.getString("operatorname"),
+					endPoints.add(new Operatorendpoint(rs.getInt("operatorid"), rs.getString("operatorname"),
 							rs.getString("api"), rs.getString("endpoint")));
 				}
 			} catch (Exception e) {
@@ -80,30 +80,29 @@ public class OperatorDAO extends CommonDAO {
 
 				DbUtils.closeAllConnections(st, con, rs);
 			}
-			if (!endpoints.isEmpty()) {
+			if (!endPoints.isEmpty()) {
 
-				cache.put(opEndpointsID, endpoints);
+				cache.put(opEndpointsID, endPoints);
 			}
 		}
 
-		return endpoints;
+		return endPoints;
 	}
 
 	/**
 	 * Application operators.
 	 *
-	 * @param axiataid
-	 *            the axiataid
+	 * @param applicationId
+	 *            the applicationId
 	 * @return the list
 	 * @throws Exception
 	 *             the exception
 	 */
-	public List<Operator> getApplicationOperators(Integer axiataid) throws Exception {
+	public List<Operator> getApplicationOperators(Integer applicationId) throws Exception {
 
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 		Statement st = null;
 		ResultSet rs = null;
-		String domainurls = "";
 		List<Operator> operators = new ArrayList<Operator>();
 
 		try {
@@ -114,12 +113,14 @@ public class OperatorDAO extends CommonDAO {
 			}
 
 			st = con.createStatement();
-			String sql = "SELECT oa.id id,oa.applicationid,oa.operatorid,o.operatorname,o.refreshtoken,o.tokenvalidity,o.tokentime,o.token, o.tokenurl, o.tokenauth "
-					+ "FROM operatorapps oa, operators o "
-					+ "WHERE oa.operatorid = o.id AND oa.isactive = 1  AND oa.applicationid = '" + axiataid + "'";
 
-			System.out.println(sql);
-			rs = st.executeQuery(sql);
+			StringBuilder queryString = new StringBuilder(
+					"SELECT oa.id id, oa.applicationid, oa.operatorid, o.operatorname, o.refreshtoken, o.tokenvalidity, o.tokentime, o.token, o.tokenurl, o.tokenauth ");
+			queryString.append("FROM operatorapps oa, operators o ");
+			queryString.append("WHERE oa.operatorid = o.id AND oa.isactive = 1  AND oa.applicationid = ");
+			queryString.append(applicationId);
+
+			rs = st.executeQuery(queryString.toString());
 
 			while (rs.next()) {
 
@@ -151,16 +152,16 @@ public class OperatorDAO extends CommonDAO {
 	 * Active application operators.
 	 *
 	 * @param appId
-	 *            the app id
-	 * @param apitype
-	 *            the apitype
+	 *            the appId
+	 * @param apiType
+	 *            the apiType
 	 * @return the list
 	 * @throws SQLException
 	 *             the SQL exception
 	 * @throws AxataDBUtilException
-	 *             the axata db util exception
+	 *             the AxataDBUtilException
 	 */
-	public List<Integer> getActiveApplicationOperators(Integer appId, String apitype)
+	public List<Integer> getActiveApplicationOperators(Integer appId, String apiType)
 			throws SQLException, AxataDBUtilException {
 
 		Connection con = null;
@@ -177,11 +178,15 @@ public class OperatorDAO extends CommonDAO {
 			}
 
 			st = con.createStatement();
-			String sql = "SELECT o.operatorid FROM endpointapps e,operatorendpoints o "
-					+ " where o.id = e.endpointid AND e.applicationid = " + appId + " AND e.isactive = 1 AND o.api='"
-					+ apitype + "'";
 
-			rs = st.executeQuery(sql);
+			StringBuilder queryString = new StringBuilder("SELECT o.operatorid ");
+			queryString.append("FROM endpointapps e, operatorendpoints o ");
+			queryString.append("WHERE o.id = e.endpointid AND e.applicationid = ");
+			queryString.append(appId);
+			queryString.append(" AND e.isactive = 1 AND o.api = ");
+			queryString.append(apiType);
+
+			rs = st.executeQuery(queryString.toString());
 
 			while (rs.next()) {
 
@@ -205,19 +210,19 @@ public class OperatorDAO extends CommonDAO {
 	 *
 	 * @param id
 	 *            the id
-	 * @param refreshtoken
-	 *            the refreshtoken
-	 * @param tokenvalidity
-	 *            the tokenvalidity
-	 * @param tokentime
-	 *            the tokentime
+	 * @param refreshToken
+	 *            the refreshToken
+	 * @param tokenValidity
+	 *            the tokenValidity
+	 * @param tokenTime
+	 *            the tokenTime
 	 * @param token
 	 *            the token
 	 * @return the integer
 	 * @throws Exception
 	 *             the exception
 	 */
-	public Integer updateOperatorToken(int id, String refreshtoken, long tokenvalidity, long tokentime, String token)
+	public Integer updateOperatorToken(int id, String refreshToken, long tokenValidity, long tokenTime, String token)
 			throws Exception {
 
 		Connection con = null;
@@ -233,11 +238,20 @@ public class OperatorDAO extends CommonDAO {
 			}
 
 			st = con.createStatement();
-			String sql = "UPDATE operators " + "SET refreshtoken='" + refreshtoken + "',tokenvalidity=" + tokenvalidity
-					+ ",tokentime=" + tokentime + ",token='" + token + "' " + "WHERE id =" + id;
 
-			st.executeUpdate(sql);
+			StringBuilder queryString = new StringBuilder("UPDATE operators ");
+			queryString.append("SET refreshtoken = ");
+			queryString.append(refreshToken);
+			queryString.append(" ,tokenvalidity = ");
+			queryString.append(tokenValidity);
+			queryString.append(" ,tokentime = ");
+			queryString.append(tokenTime);
+			queryString.append(" ,token = ");
+			queryString.append(token);
+			queryString.append(" WHERE id = ");
+			queryString.append(id);
 
+			st.executeUpdate(queryString.toString());
 		} catch (Exception e) {
 
 			DbUtils.handleException("Error while updating operators. ", e);
