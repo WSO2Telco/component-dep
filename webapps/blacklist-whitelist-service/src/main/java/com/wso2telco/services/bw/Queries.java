@@ -19,6 +19,7 @@ import org.apache.log4j.Logger;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.wso2telco.core.msisdnvalidator.InvalidMSISDNException;
 import com.wso2telco.dep.bw.model.RequestError;
 import com.wso2telco.dep.operatorservice.model.BlackListDTO;
 import com.wso2telco.dep.operatorservice.model.MSISDNSearchDTO;
@@ -107,14 +108,6 @@ public class Queries {
 
 	}
 
-	/**
-	 * Adds a list of subscribers to blacklist
-	 *
-	 * { "apiID":"1", "apiName":"USSD", "userID":"admin"
-	 * "msisdnList":["94777000001","94777000002","94777000003"] }
-	 * 
-	 * @throws Exception
-	 */
 	@POST
 	@Path("/Blacklist")
 	@Consumes("application/json")
@@ -319,6 +312,9 @@ public class Queries {
 
 				return Response.status(Response.Status.OK).entity(succMSG.toString()).build();
 
+			}catch( InvalidMSISDNException e1){
+				return Response.status(Response.Status.BAD_REQUEST).entity(e1.getErrorType()).build();
+				
 			} catch (BusinessException e) {
 				return Response.status(Response.Status.BAD_REQUEST).entity(e.getErrorType()).build();
 			}
@@ -376,7 +372,10 @@ public class Queries {
 				succMSG.append("\"variables\":").append(gson.toJson(msisdnList)).append("}}");
 
 				return Response.status(Response.Status.OK).entity(succMSG.toString()).build();
-			} catch (BusinessException ex) {
+			}catch( InvalidMSISDNException e1){
+				return Response.status(Response.Status.BAD_REQUEST).entity(e1.getErrorType()).build();
+			} 
+			catch (BusinessException ex) {
 				return Response.status(Response.Status.BAD_REQUEST).entity(ex.getErrorType()).build();
 			}
 		} else {

@@ -2,7 +2,6 @@ package com.wso2telco.dep.operatorservice.service;
 
 import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -19,7 +18,6 @@ import com.wso2telco.dep.operatorservice.model.BlackListDTO;
 import com.wso2telco.dep.operatorservice.model.MSISDNSearchDTO;
 import com.wso2telco.dep.operatorservice.model.WhiteListDTO;
 import com.wso2telco.dep.operatorservice.model.WhiteListMSISDNSearchDTO;
-import com.wso2telco.dep.operatorservice.util.OparatorError;
 import com.wso2telco.utils.exception.BusinessException;
 import com.wso2telco.utils.exception.GenaralError;
 
@@ -43,7 +41,7 @@ public class BlackListWhiteListService {
 		String[] msisdns = dto.getUserMSISDN();
 		List<MSISDN> numberA = new ArrayList<MSISDN>();
 		MSISDNSearchDTO mSISDNSearchDTO = new MSISDNSearchDTO();
-
+		try {
 		for (String msisdn : msisdns) {
 
 			MSISDN msisdnDTO = phoneNumberValidationUtil_.parse(msisdn);
@@ -58,7 +56,7 @@ public class BlackListWhiteListService {
 		// load already black listed numbers
 		mSISDNSearchDTO.setApiID(apiID_);
 		List<MSISDN> alreadyBlacklisted;
-		try {
+	
 			alreadyBlacklisted = dao.loadAlreadyBlacklisted(mSISDNSearchDTO);
 
 			// Remove already black listed from the list
@@ -102,14 +100,15 @@ public class BlackListWhiteListService {
 	 * @param whiteListDTO
 	 * @throws BusinessException
 	 */
-	public void whiteListSubscription(WhiteListDTO whiteListDTO) throws BusinessException {
+	public void whiteListSubscription(WhiteListDTO whiteListDTO) throws InvalidMSISDNException,BusinessException {
 		String[] msisdns = whiteListDTO.getUserMSISDN();
 		List<MSISDN> numberA = new ArrayList<MSISDN>();
 		WhiteListMSISDNSearchDTO mSISDNSearchDTO = new WhiteListMSISDNSearchDTO();
 
 		for (String msisdn : msisdns) {
 
-			MSISDN msisdnDTO = phoneNumberValidationUtil_.parse(msisdn);
+			MSISDN msisdnDTO;
+				msisdnDTO = phoneNumberValidationUtil_.parse(msisdn);
 			numberA.add(msisdnDTO);
 			mSISDNSearchDTO.addMSISDN2Search(msisdnDTO);
 		}
