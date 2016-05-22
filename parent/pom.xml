@@ -171,6 +171,7 @@
 		<com.sun.mail.version>1.5.5</com.sun.mail.version>
 		<cxf.bundle.version>2.7.6</cxf.bundle.version>
 		<servlet.api.version>2.5</servlet.api.version>
+		
 	</properties>
 
 	<dependencyManagement>
@@ -208,6 +209,12 @@
 				<artifactId>dbutils</artifactId>
 				<version>${com.wso2telco.core.version}</version>
 			</dependency>
+			<dependency>
+				<groupId>com.wso2telco.core</groupId>
+				<artifactId>msisdn-validator</artifactId>
+				<version>${com.wso2telco.core.version}</version>
+			</dependency>
+			
 			<dependency>
 				<groupId>org.json.wso2</groupId>
 				<artifactId>json</artifactId>
@@ -408,7 +415,8 @@
 				<artifactId>cxf-bundle</artifactId>
 				<version>${cxf.bundle.version}</version>
 			</dependency>
-
+		
+		
 		</dependencies>
 
 	</dependencyManagement>
