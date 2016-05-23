@@ -19,12 +19,16 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Function;
+import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
 import org.wso2.carbon.apimgt.api.APIManagementException;
 
-import com.wso2telco.dep.operatorservice.dao.DAO;
+import com.wso2telco.dep.operatorservice.dao.OperatorDAO;
 import com.wso2telco.dep.operatorservice.model.Operator;
-
-import org.mozilla.javascript.*;
+import com.wso2telco.dep.operatorservice.model.OperatorSearchDTO;
+import com.wso2telco.dep.operatorservice.service.OparatorService;
 
 public class StoreHostObject extends ScriptableObject {
 
@@ -48,7 +52,6 @@ public class StoreHostObject extends ScriptableObject {
 	public String getClassName() {
 		return hostobjectName;
 	}
-
 	/**
 	 * Instantiates a new axiata store host object.
 	 */
@@ -73,8 +76,9 @@ public class StoreHostObject extends ScriptableObject {
 		List<Operator> operatorList = null;
 
 		try {
-			DAO dao = new DAO();
-			operatorList = dao.retrieveOperatorList();
+			OperatorSearchDTO searchDTO =new OperatorSearchDTO(); 
+			
+			operatorList = new OparatorService ().loadOperators(searchDTO);
 
 		} catch (Exception e) {
 			handleException("Error occured while retrieving operator list. ", e);
@@ -106,7 +110,7 @@ public class StoreHostObject extends ScriptableObject {
 		String operatorList = (String) args[4];
 
 		try {
-			new DAO().persistOperators(apiName, apiVersion, apiProvider, appId, operatorList);
+			new OperatorDAO().persistOperators(apiName, apiVersion, apiProvider, appId, operatorList);
 
 		} catch (Exception e) {
 			handleException("Error occured while retrieving operator list. ", e);

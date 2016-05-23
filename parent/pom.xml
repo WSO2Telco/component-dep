@@ -7,90 +7,91 @@
 	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
 	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
 	the specific language governing permissions and limitations under the License. -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 	<!--groupId>org.wso2.carbon.identity</groupId> <artifactId>carbon-identity</artifactId> 
 		<packaging>pom</packaging> <version>5.0.8-SNAPSHOT</version> <name>WSO2 Carbon 
 		- Platform Aggregator Pom</name> <url>http://wso2.org</url -->
 	<parent>
-      		<groupId>org.wso2</groupId>
-       		<artifactId>wso2</artifactId>
-       		<version>1</version>
+		<groupId>org.wso2</groupId>
+		<artifactId>wso2</artifactId>
+		<version>1</version>
 	</parent>
 	<groupId>com.wso2telco.dep</groupId>
 	<artifactId>component-dep</artifactId>
 	<packaging>pom</packaging>
 	<url>http://wso2telco.com</url>
-        <version>1.8.0-SNAPSHOT</version>
-        <name>WSO2Telco -Digital Enable Platform Component</name>
-        <description>WSO2Telco DEP Aggregate Pom</description>
+	<version>1.8.0-SNAPSHOT</version>
+	<name>WSO2Telco -Digital Enable Platform Component</name>
+	<description>WSO2Telco DEP Aggregate Pom</description>
 
 	<prerequisites>
 		<maven>3.0.0</maven>
 	</prerequisites>
 
 	<distributionManagement>
-                <snapshotRepository>
-                        <id>wso2Telco.snapshots</id>
-                        <name>Snapshot repo</name>
-                        <url>http://maven.wso2telco.com/nexus/content/repositories/snapshots</url>
-                </snapshotRepository>
-                <!-- Publish the versioned releases here -->
-                <repository>
-                        <id>wso2telco.releases</id>
-                        <name>release repo</name>
-                        <url>http://maven.wso2telco.com/nexus/content/repositories/releases/</url>
-                </repository>
-        </distributionManagement>
+		<snapshotRepository>
+			<id>wso2Telco.snapshots</id>
+			<name>Snapshot repo</name>
+			<url>http://maven.wso2telco.com/nexus/content/repositories/snapshots</url>
+		</snapshotRepository>
+		<!-- Publish the versioned releases here -->
+		<repository>
+			<id>wso2telco.releases</id>
+			<name>release repo</name>
+			<url>http://maven.wso2telco.com/nexus/content/repositories/releases/</url>
+		</repository>
+	</distributionManagement>
 
 	<scm>
-                <url>https://github.com/WSO2Telco/component-dep.git</url>
-                <developerConnection>scm:git:https://github.com/WSO2Telco/component-dep.git</developerConnection>
-                <connection>scm:git:https://github.com/WSO2Telco/component-dep.git</connection>
-                <tag>HEAD</tag>
-        </scm>
+		<url>https://github.com/WSO2Telco/component-dep.git</url>
+		<developerConnection>scm:git:https://github.com/WSO2Telco/component-dep.git</developerConnection>
+		<connection>scm:git:https://github.com/WSO2Telco/component-dep.git</connection>
+		<tag>HEAD</tag>
+	</scm>
 
 
 	<repositories>
 
-  		<repository>
-                        <id>wso2telco-nexus</id>
-                        <name>WSO2Telco internal Repository</name>
-                        <url>http://maven.wso2telco.com/nexus/content/groups/public/</url>
-                        <releases>
-                                <enabled>true</enabled>
-                                <updatePolicy>daily</updatePolicy>
-                                <checksumPolicy>ignore</checksumPolicy>
-                        </releases>
-                </repository>
-                <repository>
-                        <id>wso2telco.releases</id>
-                        <name>WSO2 internal Repository</name>
-                        <url>http://maven.wso2telco.com/nexus/content/repositories/releases/</url>
-                        <releases>
-                                <enabled>true</enabled>
-                                <updatePolicy>daily</updatePolicy>
-                                <checksumPolicy>ignore</checksumPolicy>
-                        </releases>
-                </repository>
-                <repository>
-                        <id>wso2Telco.snapshots</id>
-                        <name>WSO2Telco Snapshot Repository</name>
-                        <url>http://maven.wso2telco.com/nexus/content/repositories/snapshots/</url>
-                        <snapshots>
-                                <enabled>true</enabled>
-                                <updatePolicy>daily</updatePolicy>
-                        </snapshots>
-                        <releases>
-                                <enabled>false</enabled>
-                        </releases>
-                </repository>
+		<repository>
+			<id>wso2telco-nexus</id>
+			<name>WSO2Telco internal Repository</name>
+			<url>http://maven.wso2telco.com/nexus/content/groups/public/</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+				<checksumPolicy>ignore</checksumPolicy>
+			</releases>
+		</repository>
+		<repository>
+			<id>wso2telco.releases</id>
+			<name>WSO2 internal Repository</name>
+			<url>http://maven.wso2telco.com/nexus/content/repositories/releases/</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+				<checksumPolicy>ignore</checksumPolicy>
+			</releases>
+		</repository>
+		<repository>
+			<id>wso2Telco.snapshots</id>
+			<name>WSO2Telco Snapshot Repository</name>
+			<url>http://maven.wso2telco.com/nexus/content/repositories/snapshots/</url>
+			<snapshots>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+			</snapshots>
+			<releases>
+				<enabled>false</enabled>
+			</releases>
+		</repository>
 
 	</repositories>
 
 
-	<pluginRepositories> 
+	<pluginRepositories>
 		<pluginRepository>
 			<id>wso2telco-nexus</id>
 			<name>WSO2Telco internal Repository</name>
@@ -127,7 +128,7 @@
 	</pluginRepositories>
 
 	<properties>
-
+		<com.wso2telco.dep.version>1.8.0-SNAPSHOT</com.wso2telco.dep.version>
 		<log4j.version>1.2.13</log4j.version>
 		<google.code.gson.version>2.3.1</google.code.gson.version>
 		<org.glassfish.jersey.core.version>2.4</org.glassfish.jersey.core.version>
@@ -158,7 +159,7 @@
 		<org.wso2.orbit.org.apache.neethi.version>2.0.4.wso2v5</org.wso2.orbit.org.apache.neethi.version>
 		<org.apache.woden.wso2.version>1.0.0.M9-wso2v1</org.apache.woden.wso2.version>
 		<commons-logging.version>1.1.1</commons-logging.version>
-		<org.apache.ws.commons.axiom.wso2.version>1.2.11.wso2v9</org.apache.ws.commons.axiom.wso2.version>		
+		<org.apache.ws.commons.axiom.wso2.version>1.2.11.wso2v9</org.apache.ws.commons.axiom.wso2.version>
 		<com.h2database.version>1.4.191</com.h2database.version>
 		<org.wso2.carbon.version>4.4.3</org.wso2.carbon.version>
 		<com.wso2telco.dep.version>1.8.0-SNAPSHOT</com.wso2telco.dep.version>
@@ -168,12 +169,25 @@
 		<com.h2database.wso2.version>1.2.140.wso2v3</com.h2database.wso2.version>
 		<org.apache.ws.commons.axiom.version>1.2.18</org.apache.ws.commons.axiom.version>
 		<com.sun.mail.version>1.5.5</com.sun.mail.version>
-
+		<cxf.bundle.version>2.7.6</cxf.bundle.version>
+		<servlet.api.version>2.5</servlet.api.version>
+		
 	</properties>
 
 	<dependencyManagement>
 
 		<dependencies>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+			<version>${servlet.api.version}</version>
+		</dependency>
+		
+			<dependency>
+				<groupId>com.wso2telco.dep</groupId>
+				<artifactId>operator-service</artifactId>
+				<version>${com.wso2telco.dep.version}</version> 
+			</dependency>
 
 			<dependency>
 				<groupId>log4j</groupId>
@@ -196,6 +210,12 @@
 				<version>${com.wso2telco.core.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>com.wso2telco.core</groupId>
+				<artifactId>msisdn-validator</artifactId>
+				<version>${com.wso2telco.core.version}</version>
+			</dependency>
+			
+			<dependency>
 				<groupId>org.json.wso2</groupId>
 				<artifactId>json</artifactId>
 				<version>${org.json.wso2.version}</version>
@@ -206,19 +226,19 @@
 				<version>${junit.version}</version>
 			</dependency>
 			<dependency>
-			    <groupId>org.apache.synapse</groupId>
-			    <artifactId>synapse-core</artifactId>
-			    <version>${org.apache.synapse.core.version}</version>
+				<groupId>org.apache.synapse</groupId>
+				<artifactId>synapse-core</artifactId>
+				<version>${org.apache.synapse.core.version}</version>
 			</dependency>
 			<dependency>
-			    <groupId>org.wso2.carbon.apimgt</groupId>
-			    <artifactId>org.wso2.carbon.apimgt.gateway</artifactId>
-			    <version>${org.wso2.carbon.apimgt.version}</version>
+				<groupId>org.wso2.carbon.apimgt</groupId>
+				<artifactId>org.wso2.carbon.apimgt.gateway</artifactId>
+				<version>${org.wso2.carbon.apimgt.version}</version>
 			</dependency>
 			<dependency>
-			    <groupId>org.wso2.carbon</groupId>
-			    <artifactId>org.wso2.carbon.utils</artifactId>
-			    <version>${org.wso2.carbon.version}</version>
+				<groupId>org.wso2.carbon</groupId>
+				<artifactId>org.wso2.carbon.utils</artifactId>
+				<version>${org.wso2.carbon.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.wso2.carbon.apimgt</groupId>
@@ -239,60 +259,60 @@
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
-			    <groupId>org.wso2.orbit.com.hazelcast</groupId>
-			    <artifactId>hazelcast</artifactId>
-			    <version>${org.wso2.hazelcast}</version>
+				<groupId>org.wso2.orbit.com.hazelcast</groupId>
+				<artifactId>hazelcast</artifactId>
+				<version>${org.wso2.hazelcast}</version>
 			</dependency>
 			<dependency>
-			    <groupId>rhino.wso2</groupId>
-			    <artifactId>js</artifactId>
-			    <version>${rhino.wso2.version}</version>
-			    <scope>provided</scope>
+				<groupId>rhino.wso2</groupId>
+				<artifactId>js</artifactId>
+				<version>${rhino.wso2.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
-			    <groupId>org.jaggeryjs</groupId>
-			    <artifactId>org.jaggeryjs.scriptengine</artifactId>
-			    <version>${org.jaggeryjs.version}</version>
-			    <scope>provided</scope>
+				<groupId>org.jaggeryjs</groupId>
+				<artifactId>org.jaggeryjs.scriptengine</artifactId>
+				<version>${org.jaggeryjs.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
-			    <groupId>org.wso2.carbon.apimgt</groupId>
-			    <artifactId>org.wso2.carbon.apimgt.api</artifactId>
-			    <version>${org.wso2.carbon.apimgt.version}</version>
-			    <scope>provided</scope>
+				<groupId>org.wso2.carbon.apimgt</groupId>
+				<artifactId>org.wso2.carbon.apimgt.api</artifactId>
+				<version>${org.wso2.carbon.apimgt.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
-			    <groupId>org.jaggeryjs</groupId>
-			    <artifactId>org.jaggeryjs.hostobjects.web</artifactId>
-			    <version>${org.jaggeryjs.version}</version>
-			    <scope>provided</scope>
+				<groupId>org.jaggeryjs</groupId>
+				<artifactId>org.jaggeryjs.hostobjects.web</artifactId>
+				<version>${org.jaggeryjs.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
-			    <groupId>org.jaggeryjs</groupId>
-			    <artifactId>org.jaggeryjs.hostobjects.file</artifactId>
-			    <version>${org.jaggeryjs.version}</version>
-			    <scope>provided</scope>
+				<groupId>org.jaggeryjs</groupId>
+				<artifactId>org.jaggeryjs.hostobjects.file</artifactId>
+				<version>${org.jaggeryjs.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
-			    <groupId>org.wso2.carbon.apimgt</groupId>
-			    <artifactId>org.wso2.carbon.apimgt.usage.client</artifactId>
-			    <version>${org.wso2.carbon.apimgt.version}</version>
+				<groupId>org.wso2.carbon.apimgt</groupId>
+				<artifactId>org.wso2.carbon.apimgt.usage.client</artifactId>
+				<version>${org.wso2.carbon.apimgt.version}</version>
 			</dependency>
 			<dependency>
-			    <groupId>commons-io.wso2</groupId>
-			    <artifactId>commons-io</artifactId>
-			    <version>${commons-io.wso2.version}</version>
-			    <scope>provided</scope>
+				<groupId>commons-io.wso2</groupId>
+				<artifactId>commons-io</artifactId>
+				<version>${commons-io.wso2.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
-			    <groupId>joda-time.wso2</groupId>
-			    <artifactId>joda-time</artifactId>
-			    <version>${joda-time.wso2.version}</version>
+				<groupId>joda-time.wso2</groupId>
+				<artifactId>joda-time</artifactId>
+				<version>${joda-time.wso2.version}</version>
 			</dependency>
 			<dependency>
-			    <groupId>org.wso2.carbon.governance</groupId>
-			    <artifactId>org.wso2.carbon.governance.api</artifactId>
-			    <version>${carbon.governance.version}</version>
+				<groupId>org.wso2.carbon.governance</groupId>
+				<artifactId>org.wso2.carbon.governance.api</artifactId>
+				<version>${carbon.governance.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>commons-codec.wso2</groupId>
@@ -370,22 +390,33 @@
 				<version>${org.apache.ws.commons.schema.wso2.version}</version>
 			</dependency>
 			<dependency>
-			  	<groupId>org.apache.ws.commons.axiom</groupId>
-			  	<artifactId>axiom-impl</artifactId>
-			  	<version>${org.apache.ws.commons.axiom.version}</version>
+				<groupId>org.apache.ws.commons.axiom</groupId>
+				<artifactId>axiom-impl</artifactId>
+				<version>${org.apache.ws.commons.axiom.version}</version>
 			</dependency>
 			<dependency>
-			  	<groupId>com.sun.mail</groupId>
-			  	<artifactId>javax.mail</artifactId>
-			  	<version>${com.sun.mail.version}</version>
+				<groupId>com.wso2telco.dep</groupId>
+				<artifactId>operator-service</artifactId>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
-			  	<groupId>org.wso2.carbon.commons</groupId>
-			  	<artifactId>org.wso2.carbon.um.ws.api.stub</artifactId>
-			  	<version>${org.wso2.carbon.commons.version}</version>
-			  	<scope>provided</scope>
+				<groupId>com.sun.mail</groupId>
+				<artifactId>javax.mail</artifactId>
+				<version>${com.sun.mail.version}</version>
 			</dependency>
-
+			<dependency>
+				<groupId>org.wso2.carbon.commons</groupId>
+				<artifactId>org.wso2.carbon.um.ws.api.stub</artifactId>
+				<version>${org.wso2.carbon.commons.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.cxf</groupId>
+				<artifactId>cxf-bundle</artifactId>
+				<version>${cxf.bundle.version}</version>
+			</dependency>
+		
+		
 		</dependencies>
 
 	</dependencyManagement>
@@ -393,30 +424,13 @@
 	<build>
 		<pluginManagement>
 			<plugins>
-				<!--plugin>
-				                     <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-checkstyle-plugin</artifactId>
-                <version>2.17</version>
-                <executions>
-                    <execution>
-                        <id>validate</id>
-                        <phase>validate</phase>
-                        <configuration>
-                        <configLocation>sun_checks.xml</configLocation>
-                        <encoding>UTF-8</encoding>
-                        <consoleOutput>true</consoleOutput>
-                            <failsOnError>false</failsOnError>
-                        <failOnViolation>false</failOnViolation>
-                        <outputFile>../Checkstyle-result.xml</outputFile>
-                        <outputFileFormat>xml</outputFileFormat>
-                        <linkXRef>false</linkXRef>
-                        </configuration>
-                        <goals>
-                        <goal>check</goal>
-                        </goals>
-                    </execution>
-                </executions>
-    			</plugin-->
+				<!--plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-checkstyle-plugin</artifactId> 
+					<version>2.17</version> <executions> <execution> <id>validate</id> <phase>validate</phase> 
+					<configuration> <configLocation>sun_checks.xml</configLocation> <encoding>UTF-8</encoding> 
+					<consoleOutput>true</consoleOutput> <failsOnError>false</failsOnError> <failOnViolation>false</failOnViolation> 
+					<outputFile>../Checkstyle-result.xml</outputFile> <outputFileFormat>xml</outputFileFormat> 
+					<linkXRef>false</linkXRef> </configuration> <goals> <goal>check</goal> </goals> 
+					</execution> </executions> </plugin -->
 				<plugin>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>maven-scr-plugin</artifactId>
@@ -444,19 +458,19 @@
 
 		<plugins>
 			<plugin>
-                            <groupId>org.apache.felix</groupId>
-                            <artifactId>maven-scr-plugin</artifactId>
-                            <version>1.7.2</version>
-                                    <executions>
-                                          <execution>
-                                            <id>generate-scr-scrdescriptor</id>
-                                            <goals>
-                                                <goal>scr</goal>
-                                            </goals>
-                                        </execution>
-                                </executions>
-                        </plugin>
-			
+				<groupId>org.apache.felix</groupId>
+				<artifactId>maven-scr-plugin</artifactId>
+				<version>1.7.2</version>
+				<executions>
+					<execution>
+						<id>generate-scr-scrdescriptor</id>
+						<goals>
+							<goal>scr</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
 				<version>2.3.1</version>
@@ -469,32 +483,32 @@
 			</plugin>
 
 			<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-source-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>attach-sources</id>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-javadoc-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>attach-javadocs</id>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-							</execution>
-						</executions>
-						<configuration>
-                        			<!--additionalparam>-Xdoclint:none</additionalparam-->
-			                        </configuration>
-					</plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-source-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-sources</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+			</plugin>
+			<plugin>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-javadoc-plugin</artifactId>
+				<executions>
+					<execution>
+						<id>attach-javadocs</id>
+						<goals>
+							<goal>jar</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<!--additionalparam>-Xdoclint:none</additionalparam -->
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 	<profiles>
@@ -503,19 +517,19 @@
 			<build>
 				<plugins>
 					<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>docs</id>
-						<phase>compile</phase>
-						<goals>
-							<goal>javadoc</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<plugin>
+						<groupId>org.apache.maven.plugins</groupId>
+						<artifactId>maven-javadoc-plugin</artifactId>
+						<executions>
+							<execution>
+								<id>docs</id>
+								<phase>compile</phase>
+								<goals>
+									<goal>javadoc</goal>
+								</goals>
+							</execution>
+						</executions>
+					</plugin>
+					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-source-plugin</artifactId>
 						<executions>
