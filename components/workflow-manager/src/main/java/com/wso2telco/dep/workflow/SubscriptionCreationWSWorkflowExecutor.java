@@ -16,6 +16,7 @@
 package com.wso2telco.dep.workflow;
 
 import org.apache.axiom.om.util.AXIOMUtil;
+import org.wso2.carbon.apimgt.impl.workflow.GeneralWorkflowResponse;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
 import org.apache.axis2.addressing.EndpointReference;
@@ -59,7 +60,12 @@ import java.util.Set;
 
 public class SubscriptionCreationWSWorkflowExecutor extends WorkflowExecutor {
 
-    private static final Log log = LogFactory.getLog(SubscriptionCreationWSWorkflowExecutor.class);
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = -5971125822992744788L;
+
+	private static final Log log = LogFactory.getLog(SubscriptionCreationWSWorkflowExecutor.class);
 
     private String serviceEndpoint;
 
@@ -207,7 +213,7 @@ public class SubscriptionCreationWSWorkflowExecutor extends WorkflowExecutor {
             log.error("Error retrieving application id", e);
             throw new WorkflowException("Error retrieving application id", e);
         }
-		return null;
+		return new GeneralWorkflowResponse();
     }
 
     @Override

@@ -152,16 +152,19 @@ public class OperatorDAO {
 			}
 
 			log.debug(" seachOparators : " + sql);
-			ps = conn.prepareStatement(sql.toString());
-
-			if (searchDTO.getName() != null && searchDTO.getName().trim().length() > 0) {
+			
+			if (searchDTO.hasName()) {
 				sql.append(" AND operatorname").append(" =?");
 			}
+			ps = conn.prepareStatement(sql.toString());
+			
 
-			ps.setString(1, searchDTO.getName().trim());
-
+			if (searchDTO.hasName()) {
+				ps.setString(1, searchDTO.getName().trim());
+			}
+			
 			rs = ps.executeQuery();
-
+			
 			while (rs.next()) {
 				Operator operator = new Operator();
 				operator.setOperatorId(rs.getInt("ID"));
