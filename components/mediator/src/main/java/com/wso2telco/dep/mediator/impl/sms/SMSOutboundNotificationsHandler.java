@@ -23,6 +23,7 @@ import org.json.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wso2telco.datapublisher.DataPublisherConstants;
+import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.dao.SMSMessagingDAO;
 import com.wso2telco.dep.mediator.entity.OutboundRequest;
@@ -33,6 +34,8 @@ import com.wso2telco.dep.mediator.internal.Util;
 import com.wso2telco.mnc.resolver.MNCQueryClient;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import java.util.HashMap;
+import java.util.Map;
+
 import org.wso2.carbon.apimgt.gateway.APIMgtGatewayConstants;
 
 // TODO: Auto-generated Javadoc
@@ -76,6 +79,9 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 
 		String requestPath = executor.getSubResourcePath();
 		String moSubscriptionId = requestPath.substring(requestPath.lastIndexOf("/") + 1);
+		
+		FileReader fileReader = new FileReader();
+		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
 
 		HashMap<String, String> dnSubscriptionDetails = smsMessagingDAO
 				.subscriptionDNNotifiMap(Integer.valueOf(moSubscriptionId));
@@ -83,8 +89,7 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 		String serviceProvider = dnSubscriptionDetails.get("serviceProvider");
 
 		String notifyurlRoute = notifyurl;
-		Util.getPropertyFile();
-		String requestRouterUrl = Util.getApplicationProperty("requestRouterUrl");
+		String requestRouterUrl = mediatorConfMap.get("requestRouterUrl");
 		if (requestRouterUrl != null) {
 			notifyurlRoute = requestRouterUrl + notifyurlRoute;
 		}

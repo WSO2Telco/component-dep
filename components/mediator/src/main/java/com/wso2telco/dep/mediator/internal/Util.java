@@ -31,101 +31,108 @@ import org.wso2.carbon.user.core.service.RealmService;
  * The Class Util.
  */
 public class Util {
-    
-    /** The realm service. */
-    private static RealmService realmService;
-    
-    /** The props. */
-    private static Properties props = new Properties();
-    
-    /** The log. */
-    private static Log log = LogFactory.getLog(Util.class);
-    
-    /** The prop map. */
-    public static Map<String,String> propMap = new HashMap<String,String>();
-    
-    /**
-     * Gets the realm service.
-     *
-     * @return the realm service
-     */
-    public static RealmService getRealmService() {
-        return realmService;
-    }
-    
-    /**
-     * Sets the realm service.
-     *
-     * @param realmSer the new realm service
-     */
-    public static synchronized void setRealmService(RealmService realmSer) {
 
-        realmService=realmSer;
+	/** The realm service. */
+	private static RealmService realmService;
 
-   }
-    
-    /**
-     * Gets the application property.
-     *
-     * @param key the key
-     * @return the application property
-     */
-    public static String getApplicationProperty(String key) {
+	/** The props. */
+	private static Properties props = new Properties();
+
+	/** The log. */
+	private static Log log = LogFactory.getLog(Util.class);
+
+	/** The prop map. */
+	@Deprecated
+	public static Map<String, String> propMap = new HashMap<String, String>();
+
+	/**
+	 * Gets the realm service.
+	 *
+	 * @return the realm service
+	 */
+	public static RealmService getRealmService() {
+		return realmService;
+	}
+
+	/**
+	 * Sets the realm service.
+	 *
+	 * @param realmSer
+	 *            the new realm service
+	 */
+	public static synchronized void setRealmService(RealmService realmSer) {
+
+		realmService = realmSer;
+
+	}
+
+	/**
+	 * Gets the application property.
+	 *
+	 * @param key
+	 *            the key
+	 * @return the application property
+	 */
+	
+	@Deprecated
+	public static String getApplicationProperty(String key) {
 		return props.getProperty(key);
-	} 
-    
-    /**
-     * Gets the property file.
-     *
-     * @return the property file
-     */
-    public static void getPropertyFile(){
+	}
+
+	/**
+	 * Gets the property file.
+	 *
+	 * @return the property file
+	 */
+	@Deprecated
+	public static void getPropertyFile() {
 		try {
 			props.load(Util.class.getResourceAsStream("/application.properties"));
 		} catch (FileNotFoundException e) {
 			// e.printStackTrace();
 			log.info("FileNotFound");
-			System.err.println(
-					"Check your Property file, it should be in application home dir, Error:"
-							+ e.getCause()+ "Cant load APPLICATION.properties");
+			System.err.println("Check your Property file, it should be in application home dir, Error:" + e.getCause()
+					+ "Cant load APPLICATION.properties");
 
-			//System.exit(-1);
+			// System.exit(-1);
 		} catch (IOException e) {
 			log.info("IO Error");
-			System.err.println(
-					"Check your Property file, it should be in application home dir, Error:"
-							+ e.getCause()+ "Cant load APPLICATION.properties");
-			//System.exit(-1);
+			System.err.println("Check your Property file, it should be in application home dir, Error:" + e.getCause()
+					+ "Cant load APPLICATION.properties");
+			// System.exit(-1);
 		}
 	}
 
-    /**
-     * Gets the property file by path.
-     *
-     * @param path the path
-     * @return the property file by path
-     * @throws IOException Signals that an I/O exception has occurred.
-     */
-    public static void getPropertyFileByPath(String path) throws IOException {
-        Properties props = new Properties();
-        FileInputStream in = new FileInputStream(path);
-        try {
-            props.load(in);
-            propMap.put("ussdGatewayEndpoint",props.getProperty("ussdGatewayEndpoint"));
-        } catch (FileNotFoundException e) {
-            log.debug("file not found !!! ");
-        } catch (IOException e) {
-            log.debug("file not found !!! ");
-        } finally {
-            in.close();
+	/**
+	 * Gets the property file by path.
+	 *
+	 * @param path
+	 *            the path
+	 * @return the property file by path
+	 * @throws IOException
+	 *             Signals that an I/O exception has occurred.
+	 */
+	@Deprecated
+	public static void getPropertyFileByPath(String path) throws IOException {
+		Properties props = new Properties();
+		FileInputStream in = new FileInputStream(path);
+		try {
+			props.load(in);
+			propMap.put("ussdGatewayEndpoint", props.getProperty("ussdGatewayEndpoint"));
+		} catch (FileNotFoundException e) {
+			log.debug("file not found !!! ");
+		} catch (IOException e) {
+			log.debug("file not found !!! ");
+		} finally {
+			in.close();
 		}
 	}
 
-	 
 	/**
 	 * Checks if is all null.
 	 *
-	 * @param list the list
+	 * @param list
+	 *            the list
 	 * @return true, if is all null
 	 */
 	public static boolean isAllNull(Iterable<?> list) {

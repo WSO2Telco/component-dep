@@ -16,11 +16,12 @@
 package com.wso2telco.dep.mediator.impl.ussd;
 
 import com.wso2telco.datapublisher.DataPublisherConstants;
+import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.dao.USSDDAO;
-import com.wso2telco.dep.mediator.internal.Util;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
+import java.util.Map;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.commons.logging.Log;
@@ -74,16 +75,14 @@ public class USSDInboundHandler implements USSDHandler {
 
 		String requestPath = executor.getSubResourcePath();
 		String subscriptionId = requestPath.substring(requestPath.lastIndexOf("/") + 1);
+		FileReader fileReader = new FileReader();
 
 		// remove non numeric chars
 		subscriptionId = subscriptionId.replaceAll("[^\\d.]", "");
-		log.debug("axiataId - " + subscriptionId);
+		log.debug("subscriptionId - " + subscriptionId);
 		String notifyurl = ussdDAO.getUSSDNotify(Integer.valueOf(subscriptionId));
 
-		String carbonHome = System.getProperty("user.dir");
-		log.debug("conf carbonHome - " + carbonHome);
-		String fileLocation = carbonHome + "/repository/conf/axiataMediator_conf.properties";
-		Util.getPropertyFileByPath(fileLocation);
+		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
 
 		JSONObject jsonBody = executor.getJsonBody();
 		jsonBody.getJSONObject("inboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL",
@@ -102,7 +101,7 @@ public class USSDInboundHandler implements USSDHandler {
 
 		if (action.equalsIgnoreCase("mtcont")) {
 
-			String subsEndpoint = Util.propMap.get("ussdGatewayEndpoint") + subscriptionId;
+			String subsEndpoint = mediatorConfMap.get("ussdGatewayEndpoint") + subscriptionId;
 			log.info("Subsendpoint - " + subsEndpoint);
 			replyobj.getJSONObject("outboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL",
 					subsEndpoint);
@@ -110,7 +109,7 @@ public class USSDInboundHandler implements USSDHandler {
 		}
 
 		if (action.equalsIgnoreCase("mtfin")) {
-			String subsEndpoint = Util.propMap.get("ussdGatewayEndpoint") + subscriptionId;
+			String subsEndpoint = mediatorConfMap.get("ussdGatewayEndpoint") + subscriptionId;
 			log.info("Subsendpoint - " + subsEndpoint);
 			replyobj.getJSONObject("outboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL",
 					subsEndpoint);

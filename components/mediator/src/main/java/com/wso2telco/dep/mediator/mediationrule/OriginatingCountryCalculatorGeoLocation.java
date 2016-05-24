@@ -33,7 +33,7 @@ public class OriginatingCountryCalculatorGeoLocation extends OriginatingCountryC
 		
 		
 	    
-	    apiEprMap = new HashMap<String, EndpointReference>();
+	    /*apiEprMap = new HashMap<String, EndpointReference>();
 	    
 	    apiEprMap.put("Dialog sms",
                              new EndpointReference(DialogSmsApiEndpoint));
@@ -48,7 +48,7 @@ public class OriginatingCountryCalculatorGeoLocation extends OriginatingCountryC
             
             apiEprMap.put("Robi sms", new EndpointReference(RobiSmsApiEndpoint));	    
 	    apiEprMap.put("Robi payment", new EndpointReference(RobiPaymentApiEndpoint));
-            apiEprMap.put("Robi location", new EndpointReference(RobiLocationApiEndpoint));
+            apiEprMap.put("Robi location", new EndpointReference(RobiLocationApiEndpoint));*/
  }
 	
 }

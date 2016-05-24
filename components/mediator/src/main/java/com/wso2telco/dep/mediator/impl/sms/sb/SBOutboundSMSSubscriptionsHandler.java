@@ -18,6 +18,7 @@ package com.wso2telco.dep.mediator.impl.sms.sb;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wso2telco.dbutils.Operatorsubs;
+import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.dao.SMSMessagingDAO;
 import com.wso2telco.dep.mediator.entity.sb.SBDeliveryReceiptSubscriptionRequest;
@@ -33,6 +34,8 @@ import com.wso2telco.oneapivalidation.service.impl.sms.ValidateCancelSubscriptio
 import com.wso2telco.oneapivalidation.service.impl.sms.sb.ValidateSBOutboundSubscription;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
+
 import org.apache.axis2.AxisFault;
 import java.util.HashMap;
 import org.apache.commons.logging.Log;
@@ -138,6 +141,9 @@ public class SBOutboundSMSSubscriptionsHandler implements SMSHandler {
 
 		String requestid = UID.getUniqueID(Type.RETRIVSUB.getCode(), context, executor.getApplicationid());
 		Gson gson = new GsonBuilder().serializeNulls().create();
+		
+		FileReader fileReader = new FileReader();
+		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
 
 		HashMap<String, String> jwtDetails = apiUtils.getJwtTokenDetails(context);
 		JSONObject jsonBody = executor.getJsonBody();
@@ -160,8 +166,8 @@ public class SBOutboundSMSSubscriptionsHandler implements SMSHandler {
 
 		Integer dnSubscriptionId = smsMessagingDAO.outboundSubscriptionEntry(
 				subsrequst.getDeliveryReceiptSubscription().getCallbackReference().getNotifyURL(), serviceProvider);
-		Util.getPropertyFile();
-		String subsEndpoint = Util.getApplicationProperty("hubSubsGatewayEndpoint") + "/" + dnSubscriptionId;
+		
+		String subsEndpoint = mediatorConfMap.get("hubSubsGatewayEndpoint") + "/" + dnSubscriptionId;
 		jsondstaddr.getJSONObject("callbackReference").put("notifyURL", subsEndpoint);
 		subsrequst.getDeliveryReceiptSubscription().getCallbackReference().setNotifyURL(subsEndpoint);
 
@@ -188,7 +194,7 @@ public class SBOutboundSMSSubscriptionsHandler implements SMSHandler {
 		}
 
 		boolean issubs = smsMessagingDAO.outboundOperatorsubsEntry(domainsubs, dnSubscriptionId);
-		String ResourceUrlPrefix = Util.getApplicationProperty("hubGateway");
+		String ResourceUrlPrefix = mediatorConfMap.get("hubGateway");
 		subsresponse.getDeliveryReceiptSubscription()
 				.setResourceURL(ResourceUrlPrefix + executor.getResourceUrl() + "/" + dnSubscriptionId);
 		JSONObject replyobj = new JSONObject(subsresponse);

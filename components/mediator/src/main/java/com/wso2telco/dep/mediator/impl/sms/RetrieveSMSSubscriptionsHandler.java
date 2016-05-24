@@ -19,6 +19,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wso2telco.datapublisher.DataPublisherConstants;
 import com.wso2telco.dbutils.Operatorsubs;
+import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.dao.SMSMessagingDAO;
 import com.wso2telco.dep.mediator.entity.CallbackReference;
@@ -29,7 +30,6 @@ import com.wso2telco.dep.mediator.entity.sb.Subscription;
 import com.wso2telco.dep.mediator.internal.ApiUtils;
 import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
-import com.wso2telco.dep.mediator.internal.Util;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
@@ -39,6 +39,7 @@ import com.wso2telco.oneapivalidation.service.impl.sms.sb.ValidateSBSubscription
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.commons.logging.Log;
@@ -155,6 +156,9 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 		String requestid = UID.getUniqueID(Type.RETRIVSUB.getCode(), context, executor.getApplicationid());
 		Gson gson = new GsonBuilder().serializeNulls().create();
 
+		FileReader fileReader = new FileReader();
+		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
+
 		HashMap<String, String> jwtDetails = apiUtils.getJwtTokenDetails(context);
 		JSONObject jsonBody = executor.getJsonBody();
 		JSONObject jsondstaddr = jsonBody.getJSONObject("subscription");
@@ -177,8 +181,8 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 
 			Integer moSubscriptionId = smsMessagingDAO.subscriptionEntry(
 					subsrequst.getSubscription().getCallbackReference().getNotifyURL(), serviceProvider);
-			Util.getPropertyFile();
-			String subsEndpoint = Util.getApplicationProperty("hubSubsGatewayEndpoint") + "/" + moSubscriptionId;
+
+			String subsEndpoint = mediatorConfMap.get("hubSubsGatewayEndpoint") + "/" + moSubscriptionId;
 			jsondstaddr.getJSONObject("callbackReference").put("notifyURL", subsEndpoint);
 
 			jsondstaddr.put("clientCorrelator", orgclientcl + ":" + requestid);
@@ -204,7 +208,7 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 
 			boolean issubs = smsMessagingDAO.operatorsubsEntry(domainsubs, moSubscriptionId);
 
-			String ResourceUrlPrefix = Util.getApplicationProperty("hubGateway");
+			String ResourceUrlPrefix = mediatorConfMap.get("hubGateway");
 			subsresponse.getSubscription()
 					.setResourceURL(ResourceUrlPrefix + executor.getResourceUrl() + "/" + moSubscriptionId);
 
@@ -230,8 +234,8 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 
 			Integer moSubscriptionId = smsMessagingDAO.subscriptionEntry(
 					nbSubsrequst.getSubscription().getCallbackReference().getNotifyURL(), serviceProvider);
-			Util.getPropertyFile();
-			String subsEndpoint = Util.getApplicationProperty("hubSubsGatewayEndpoint") + "/" + moSubscriptionId;
+
+			String subsEndpoint = mediatorConfMap.get("hubSubsGatewayEndpoint") + "/" + moSubscriptionId;
 			jsondstaddr.getJSONObject("callbackReference").put("notifyURL", subsEndpoint);
 
 			jsondstaddr.put("clientCorrelator", orgclientcl + ":" + requestid);
@@ -294,7 +298,7 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 
 			boolean issubs = smsMessagingDAO.operatorsubsEntry(domainsubs, moSubscriptionId);
 
-			String ResourceUrlPrefix = Util.getApplicationProperty("hubGateway");
+			String ResourceUrlPrefix = mediatorConfMap.get("hubGateway");
 
 			DestinationAddresses[] responseDestinationAddresses = new DestinationAddresses[destinationAddresses.length];
 			int destinationAddressesCount = 0;

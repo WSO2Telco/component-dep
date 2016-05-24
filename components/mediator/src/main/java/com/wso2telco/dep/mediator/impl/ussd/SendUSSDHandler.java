@@ -16,6 +16,7 @@
 package com.wso2telco.dep.mediator.impl.ussd;
 
 import com.wso2telco.datapublisher.DataPublisherConstants;
+import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.MSISDNConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.dao.USSDDAO;
@@ -23,6 +24,9 @@ import com.wso2telco.dep.mediator.internal.Util;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.subscriptionvalidator.util.ValidatorUtils;
+
+import java.util.Map;
+
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -74,20 +78,18 @@ public class SendUSSDHandler implements USSDHandler {
 	public boolean handle(MessageContext context) throws CustomException, AxisFault, Exception {
 
 		JSONObject jsonBody = executor.getJsonBody();
+		FileReader fileReader = new FileReader();
+
 		String address = jsonBody.getJSONObject("outboundUSSDMessageRequest").getString("address");
 		String notifyUrl = jsonBody.getJSONObject("outboundUSSDMessageRequest").getJSONObject("responseRequest")
 				.getString("notifyURL");
 		String msisdn = address.substring(5);
 
-		String carbonHome = System.getProperty("user.dir");
-		log.debug("conf carbonHome - " + carbonHome);
-		String fileLocation = carbonHome + "/repository/conf/axiataMediator_conf.properties";
-
-		Util.getPropertyFileByPath(fileLocation);
+		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
 
 		Integer subscriptionId = ussdDAO.ussdRequestEntry(notifyUrl);
 
-		String subsEndpoint = Util.propMap.get("ussdGatewayEndpoint") + subscriptionId;
+		String subsEndpoint = mediatorConfMap.get("ussdGatewayEndpoint") + subscriptionId;
 		log.info("Subsendpoint - " + subsEndpoint);
 
 		jsonBody.getJSONObject("outboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL",

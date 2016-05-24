@@ -49,7 +49,6 @@ public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculato
 	 */
 	public void initialize() throws Exception {
 
-		Util.getPropertyFile();
 		operatorEndpoints = new OperatorDAO().getOperatorEndpoints();
 		mncQueryclient = new MNCQueryClient();
 	}
@@ -139,7 +138,6 @@ public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculato
 
 		List<OperatorEndpoint> endpoints = new ArrayList<OperatorEndpoint>();
 
-		Util.getPropertyFile();
 		initialize();
 
 		List<Operatorendpoint> validendpoints = getValidEndpoints(apiKey, validoperator);
@@ -267,7 +265,7 @@ public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculato
 				validoperendpoint = d;
 			}
 		}
-		
+
 		return validoperendpoint;
 	}
 

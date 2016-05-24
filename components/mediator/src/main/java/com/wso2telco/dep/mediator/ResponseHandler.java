@@ -17,20 +17,18 @@ package com.wso2telco.dep.mediator;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.entity.DeliveryInfo;
 import com.wso2telco.dep.mediator.entity.DeliveryInfoList;
 import com.wso2telco.dep.mediator.entity.QuerySMSStatusResponse;
 import com.wso2telco.dep.mediator.entity.SendSMSResponse;
 import com.wso2telco.dep.mediator.internal.UID;
-import com.wso2telco.dep.mediator.internal.Util;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONException;
 import org.json.JSONObject;
-
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
@@ -40,170 +38,188 @@ import java.util.*;
  * The Class ResponseHandler.
  */
 public class ResponseHandler {
-    
-    /** The log. */
-    private Log log = LogFactory.getLog(ResponseHandler.class);
 
-    /**
-     * Make sms send response.
-     *
-     * @param mc the mc
-     * @param requestBody the request body
-     * @param responseMap the response map
-     * @param requestid the requestid
-     * @return the string
-     */
-    public String makeSmsSendResponse(MessageContext mc, String requestBody, Map<String, SendSMSResponse>
-            responseMap, String requestid) {
-        log.debug("Building Send SMS Response: " + requestBody);
+	/** The log. */
+	private Log log = LogFactory.getLog(ResponseHandler.class);
 
-        Gson gson = new GsonBuilder().create();
-        SendSMSResponse finalResponse = gson.fromJson(requestBody, SendSMSResponse.class);
+	/**
+	 * Make sms send response.
+	 *
+	 * @param mc
+	 *            the mc
+	 * @param requestBody
+	 *            the request body
+	 * @param responseMap
+	 *            the response map
+	 * @param requestid
+	 *            the requestid
+	 * @return the string
+	 */
+	public String makeSmsSendResponse(MessageContext mc, String requestBody, Map<String, SendSMSResponse> responseMap,
+			String requestid) {
+		log.debug("Building Send SMS Response: " + requestBody);
 
-        DeliveryInfoList deliveryInfoListObj = new DeliveryInfoList();
-        List<DeliveryInfo> deliveryInfoList = new ArrayList<DeliveryInfo>(responseMap.size());
+		Gson gson = new GsonBuilder().create();
+		SendSMSResponse finalResponse = gson.fromJson(requestBody, SendSMSResponse.class);
 
-        for (Map.Entry<String, SendSMSResponse> entry : responseMap.entrySet()) {
-            SendSMSResponse smsResponse = entry.getValue();
-            if (smsResponse != null) {
-                DeliveryInfoList resDeliveryInfoList = smsResponse.getOutboundSMSMessageRequest().getDeliveryInfoList();
-                DeliveryInfo[] resDeliveryInfos = resDeliveryInfoList.getDeliveryInfo();
-                Collections.addAll(deliveryInfoList, resDeliveryInfos);
-            } else {
-                DeliveryInfo deliveryInfo = new DeliveryInfo();
-                deliveryInfo.setAddress(entry.getKey());
-                deliveryInfo.setDeliveryStatus("DeliveryImpossible");
-                deliveryInfoList.add(deliveryInfo);
-            }
-        }
-        deliveryInfoListObj.setDeliveryInfo(deliveryInfoList.toArray(new DeliveryInfo[deliveryInfoList.size()]));
+		DeliveryInfoList deliveryInfoListObj = new DeliveryInfoList();
+		List<DeliveryInfo> deliveryInfoList = new ArrayList<DeliveryInfo>(responseMap.size());
 
-        String senderAddress = finalResponse.getOutboundSMSMessageRequest().getSenderAddress();
-        try {
-            senderAddress = URLEncoder.encode(senderAddress, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            log.error(e.getMessage(), e);
-        }
-        String resourceURL = getResourceURL(mc, senderAddress) +"/requests/"+ requestid;
+		for (Map.Entry<String, SendSMSResponse> entry : responseMap.entrySet()) {
+			SendSMSResponse smsResponse = entry.getValue();
+			if (smsResponse != null) {
+				DeliveryInfoList resDeliveryInfoList = smsResponse.getOutboundSMSMessageRequest().getDeliveryInfoList();
+				DeliveryInfo[] resDeliveryInfos = resDeliveryInfoList.getDeliveryInfo();
+				Collections.addAll(deliveryInfoList, resDeliveryInfos);
+			} else {
+				DeliveryInfo deliveryInfo = new DeliveryInfo();
+				deliveryInfo.setAddress(entry.getKey());
+				deliveryInfo.setDeliveryStatus("DeliveryImpossible");
+				deliveryInfoList.add(deliveryInfo);
+			}
+		}
+		deliveryInfoListObj.setDeliveryInfo(deliveryInfoList.toArray(new DeliveryInfo[deliveryInfoList.size()]));
 
-        deliveryInfoListObj.setResourceURL(resourceURL + "/deliveryInfos");
-        finalResponse.getOutboundSMSMessageRequest().setDeliveryInfoList(deliveryInfoListObj);
-        finalResponse.getOutboundSMSMessageRequest().setResourceURL(resourceURL);
+		String senderAddress = finalResponse.getOutboundSMSMessageRequest().getSenderAddress();
+		try {
+			senderAddress = URLEncoder.encode(senderAddress, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			log.error(e.getMessage(), e);
+		}
+		String resourceURL = getResourceURL(mc, senderAddress) + "/requests/" + requestid;
 
-        ((Axis2MessageContext) mc).getAxis2MessageContext().setProperty("HTTP_SC", 201);
+		deliveryInfoListObj.setResourceURL(resourceURL + "/deliveryInfos");
+		finalResponse.getOutboundSMSMessageRequest().setDeliveryInfoList(deliveryInfoListObj);
+		finalResponse.getOutboundSMSMessageRequest().setResourceURL(resourceURL);
 
-        //Set Location Header
-        Object headers = ((Axis2MessageContext) mc).getAxis2MessageContext().getProperty(
-                org.apache.axis2.context.MessageContext.TRANSPORT_HEADERS);
-        if (headers != null && headers instanceof Map) {
-            Map headersMap = (Map) headers;
-            headersMap.put("Location", resourceURL);
-        }
+		((Axis2MessageContext) mc).getAxis2MessageContext().setProperty("HTTP_SC", 201);
 
-        return gson.toJson(finalResponse);
-    }
+		// Set Location Header
+		Object headers = ((Axis2MessageContext) mc).getAxis2MessageContext()
+				.getProperty(org.apache.axis2.context.MessageContext.TRANSPORT_HEADERS);
+		if (headers != null && headers instanceof Map) {
+			Map headersMap = (Map) headers;
+			headersMap.put("Location", resourceURL);
+		}
 
-    /**
-     * Gets the resource url.
-     *
-     * @param mc the mc
-     * @param senderAddress the sender address
-     * @return the resource url
-     */
-    private String getResourceURL(MessageContext mc, String senderAddress) {
-        Util.getPropertyFile();
-        String resourceURL = Util.getApplicationProperty("sendSMSResourceURL");
-        if (resourceURL != null && !resourceURL.isEmpty()) {
-            resourceURL = resourceURL.substring(1, resourceURL.length() - 1) + senderAddress;
-        } else {
-            resourceURL = (String) mc.getProperty("REST_URL_PREFIX") + mc.getProperty("REST_FULL_REQUEST_PATH");
-            resourceURL = resourceURL.substring(0, resourceURL.indexOf("/requests"));
-        }
-        return resourceURL;
-    }
+		return gson.toJson(finalResponse);
+	}
 
-    /**
-     * Make payment response.
-     *
-     * @param jsonBody the json body
-     * @param requestid the requestid
-     * @return the string
-     * @throws JSONException the JSON exception
-     */
-    public String makePaymentResponse(String jsonBody, String requestid) throws JSONException {
+	/**
+	 * Gets the resource url.
+	 *
+	 * @param mc
+	 *            the mc
+	 * @param senderAddress
+	 *            the sender address
+	 * @return the resource url
+	 */
+	private String getResourceURL(MessageContext mc, String senderAddress) {
 
-        String jsonPayload = null;
+		FileReader fileReader = new FileReader();
+		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
 
-        Gson gson = new GsonBuilder().serializeNulls().create();
-        org.json.JSONObject jsonObj = new org.json.JSONObject(jsonBody);
-        JSONObject objPay = jsonObj.getJSONObject("amountTransaction");
-        
-         
-        
-        String endUserId = objPay.get("endUserId").toString();
-        log.debug("Creating payment charge response -> endUserId : " + endUserId);
-        String pluginResourceUrl = objPay.getString("resourceURL");
-        log.debug("Creating payment charge response -> pluginResourceUrl : " + pluginResourceUrl);
-        String pluginResourceUrlParts [] = pluginResourceUrl.split("/");
-        String hubResourceURL = Util.getApplicationProperty("hubGateway") + "/payment/v1/" + endUserId + "/transactions/amount/" + pluginResourceUrlParts [pluginResourceUrlParts.length - 1];  
-        log.debug("Creating payment charge response -> hubResourceURL : " + hubResourceURL);
-        log.debug("Creating payment charge response -> requestid : " + requestid);
-        
-        try {            
-            objPay.put("clientCorrelator", objPay.get("clientCorrelator").toString().split(":")[0] );
-            objPay.remove("resourceURL");
-            objPay.put("resourceURL", UID.resourceURL(hubResourceURL, requestid));  
-        } catch (Exception e) {
-            log.error("Error in creating payment charge response : " + e.getMessage());
-        }
-        return jsonObj.toString();
-    }
+		String resourceURL = mediatorConfMap.get("sendSMSResourceURL");
+		if (resourceURL != null && !resourceURL.isEmpty()) {
+			resourceURL = resourceURL.substring(1, resourceURL.length() - 1) + senderAddress;
+		} else {
+			resourceURL = (String) mc.getProperty("REST_URL_PREFIX") + mc.getProperty("REST_FULL_REQUEST_PATH");
+			resourceURL = resourceURL.substring(0, resourceURL.indexOf("/requests"));
+		}
+		return resourceURL;
+	}
 
-    /**
-     * Make query sms status response.
-     *
-     * @param mc the mc
-     * @param senderAddress the sender address
-     * @param requestid the requestid
-     * @param responseMap the response map
-     * @return the string
-     */
-    public String makeQuerySmsStatusResponse(MessageContext mc, String senderAddress, String requestid, Map<String,
-            QuerySMSStatusResponse> responseMap) {
-        log.debug("Building Query SMS Status Response");
+	/**
+	 * Make payment response.
+	 *
+	 * @param jsonBody
+	 *            the json body
+	 * @param requestid
+	 *            the requestid
+	 * @return the string
+	 * @throws JSONException
+	 *             the JSON exception
+	 */
+	public String makePaymentResponse(String jsonBody, String requestid) throws JSONException {
 
-        Gson gson = new GsonBuilder().create();
-        QuerySMSStatusResponse finalResponse = new QuerySMSStatusResponse();
+		String jsonPayload = null;
 
-        DeliveryInfoList deliveryInfoListObj = new DeliveryInfoList();
-        List<DeliveryInfo> deliveryInfoList = new ArrayList<DeliveryInfo>(responseMap.size());
+		FileReader fileReader = new FileReader();
+		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
 
-        for (Map.Entry<String, QuerySMSStatusResponse> entry : responseMap.entrySet()) {
-            QuerySMSStatusResponse statusResponse = entry.getValue();
-            if (statusResponse != null) {
-                DeliveryInfo[] resDeliveryInfos = statusResponse.getDeliveryInfoList().getDeliveryInfo();
-                Collections.addAll(deliveryInfoList, resDeliveryInfos);
-            } else {
-                DeliveryInfo deliveryInfo = new DeliveryInfo();
-                deliveryInfo.setAddress(entry.getKey());
-                deliveryInfo.setDeliveryStatus("DeliveryImpossible");
-                deliveryInfoList.add(deliveryInfo);
-            }
-        }
-        deliveryInfoListObj.setDeliveryInfo(deliveryInfoList.toArray(new DeliveryInfo[deliveryInfoList.size()]));
-        try {
-            senderAddress = URLEncoder.encode(senderAddress, "UTF-8");
-        } catch (UnsupportedEncodingException e) {
-            log.error(e.getMessage(), e);
-        }
-        String resourceURL = getResourceURL(mc, senderAddress) + "/requests/" + requestid + "/deliveryInfos";
-        deliveryInfoListObj.setResourceURL(resourceURL);
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		org.json.JSONObject jsonObj = new org.json.JSONObject(jsonBody);
+		JSONObject objPay = jsonObj.getJSONObject("amountTransaction");
 
-        finalResponse.setDeliveryInfoList(deliveryInfoListObj);
+		String endUserId = objPay.get("endUserId").toString();
+		log.debug("Creating payment charge response -> endUserId : " + endUserId);
+		String pluginResourceUrl = objPay.getString("resourceURL");
+		log.debug("Creating payment charge response -> pluginResourceUrl : " + pluginResourceUrl);
+		String pluginResourceUrlParts[] = pluginResourceUrl.split("/");
+		String hubResourceURL = mediatorConfMap.get("hubGateway") + "/payment/v1/" + endUserId + "/transactions/amount/"
+				+ pluginResourceUrlParts[pluginResourceUrlParts.length - 1];
+		log.debug("Creating payment charge response -> hubResourceURL : " + hubResourceURL);
+		log.debug("Creating payment charge response -> requestid : " + requestid);
 
-        ((Axis2MessageContext) mc).getAxis2MessageContext().setProperty("HTTP_SC", 200);
-        ((Axis2MessageContext) mc).getAxis2MessageContext().setProperty("messageType", "application/json");
-        return gson.toJson(finalResponse);
-    }
-    
+		try {
+			objPay.put("clientCorrelator", objPay.get("clientCorrelator").toString().split(":")[0]);
+			objPay.remove("resourceURL");
+			objPay.put("resourceURL", UID.resourceURL(hubResourceURL, requestid));
+		} catch (Exception e) {
+			log.error("Error in creating payment charge response : " + e.getMessage());
+		}
+		return jsonObj.toString();
+	}
+
+	/**
+	 * Make query sms status response.
+	 *
+	 * @param mc
+	 *            the mc
+	 * @param senderAddress
+	 *            the sender address
+	 * @param requestid
+	 *            the requestid
+	 * @param responseMap
+	 *            the response map
+	 * @return the string
+	 */
+	public String makeQuerySmsStatusResponse(MessageContext mc, String senderAddress, String requestid,
+			Map<String, QuerySMSStatusResponse> responseMap) {
+		log.debug("Building Query SMS Status Response");
+
+		Gson gson = new GsonBuilder().create();
+		QuerySMSStatusResponse finalResponse = new QuerySMSStatusResponse();
+
+		DeliveryInfoList deliveryInfoListObj = new DeliveryInfoList();
+		List<DeliveryInfo> deliveryInfoList = new ArrayList<DeliveryInfo>(responseMap.size());
+
+		for (Map.Entry<String, QuerySMSStatusResponse> entry : responseMap.entrySet()) {
+			QuerySMSStatusResponse statusResponse = entry.getValue();
+			if (statusResponse != null) {
+				DeliveryInfo[] resDeliveryInfos = statusResponse.getDeliveryInfoList().getDeliveryInfo();
+				Collections.addAll(deliveryInfoList, resDeliveryInfos);
+			} else {
+				DeliveryInfo deliveryInfo = new DeliveryInfo();
+				deliveryInfo.setAddress(entry.getKey());
+				deliveryInfo.setDeliveryStatus("DeliveryImpossible");
+				deliveryInfoList.add(deliveryInfo);
+			}
+		}
+		deliveryInfoListObj.setDeliveryInfo(deliveryInfoList.toArray(new DeliveryInfo[deliveryInfoList.size()]));
+		try {
+			senderAddress = URLEncoder.encode(senderAddress, "UTF-8");
+		} catch (UnsupportedEncodingException e) {
+			log.error(e.getMessage(), e);
+		}
+		String resourceURL = getResourceURL(mc, senderAddress) + "/requests/" + requestid + "/deliveryInfos";
+		deliveryInfoListObj.setResourceURL(resourceURL);
+
+		finalResponse.setDeliveryInfoList(deliveryInfoListObj);
+
+		((Axis2MessageContext) mc).getAxis2MessageContext().setProperty("HTTP_SC", 200);
+		((Axis2MessageContext) mc).getAxis2MessageContext().setProperty("messageType", "application/json");
+		return gson.toJson(finalResponse);
+	}
+
 }
