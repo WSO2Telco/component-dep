@@ -73,7 +73,7 @@ i18n.init(request,localeResourcesBasePath);
     <% jagg.includeBlocks(outputs.body); %>
 
 </div> <!-- End wrapper -->
-<link rel="stylesheet" type="text/css" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("css/styles-axiata.css"))%>" media="all"/>
+<link rel="stylesheet" type="text/css" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("css/styles-store.css"))%>" media="all"/>
    <div class="container-fluid footer-main">
    		<div class="row-fluid">
                        <div class="span12">
