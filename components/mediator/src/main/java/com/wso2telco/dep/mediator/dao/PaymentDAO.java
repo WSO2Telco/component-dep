@@ -16,56 +16,58 @@
 package com.wso2telco.dep.mediator.dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
+import com.wso2telco.dep.mediator.util.DatabaseTables;
 import com.wso2telco.dbutils.DbUtils;
 import com.wso2telco.dbutils.util.DataSourceNames;
 
-public class PaymentDAO extends CommonDAO{
+public class PaymentDAO {
 
 	/**
-     * Gets the valid pay categories.
-     *
-     * @return the valid pay categories
-     * @throws Exception the exception
-     */
-    public List<String> getValidPayCategories() throws Exception {
+	 * Gets the valid pay categories.
+	 *
+	 * @return the valid pay categories
+	 * @throws Exception
+	 *             the exception
+	 */
+	public List<String> getValidPayCategories() throws Exception {
 
-        Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
-        Statement st = null;
-        ResultSet rs = null;
-        List<String> categories = new ArrayList<String>();
+		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<String> categories = new ArrayList<String>();
 
-        try {
-        	
-            if (con == null) {
-            	
-                throw new Exception("Connection not found");
-            }
+		try {
 
-            st = con.createStatement();
-            
-            StringBuilder queryString = new StringBuilder("SELECT id, category ");
-            queryString.append("FROM valid_payment_categories");
+			if (con == null) {
 
-            rs = st.executeQuery(queryString.toString());
+				throw new Exception("Connection not found");
+			}
 
-            while (rs.next()) {    
-            	
-                categories.add(rs.getString("category"));
-            }
+			StringBuilder queryString = new StringBuilder("SELECT id, category ");
+			queryString.append("FROM ");
+			queryString.append(DatabaseTables.VALID_PAYMENT_CATEGORIES.getTableName());
 
-        } catch (Exception e) {
-        	
-            DbUtils.handleException("Error while retrieving valid payment categories. ", e);
-        } finally {
-        	
-            DbUtils.closeAllConnections(st, con, rs);
-        }
-        
-        return categories;
-    }
+			ps = con.prepareStatement(queryString.toString());
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				categories.add(rs.getString("category"));
+			}
+
+		} catch (Exception e) {
+
+			DbUtils.handleException("Error while retrieving valid payment categories. ", e);
+		} finally {
+
+			DbUtils.closeAllConnections(ps, con, rs);
+		}
+
+		return categories;
+	}
 }

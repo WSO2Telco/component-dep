@@ -22,7 +22,6 @@ import com.wso2telco.dbutils.Operator;
 import com.wso2telco.dbutils.Operatorendpoint;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.dao.OperatorDAO;
-import com.wso2telco.dep.mediator.internal.Util;
 import com.wso2telco.mnc.resolver.MNCQueryClient;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 

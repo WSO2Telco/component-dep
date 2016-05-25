@@ -13,19 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.dep.mediator.dao;
+package com.wso2telco.dep.mediator.util;
 
-class CommonDAO {
+public enum DatabaseTables {
 
-	/** The Constant AXIATA_MEDIATOR_CACHE_MANAGER. */
-	protected static final String AXIATA_MEDIATOR_CACHE_MANAGER = "AxiataMediatorCacheManager";
+	MERCHANT_OPERATOR_BLACKLIST("merchantopco_blacklist"), OPERATORS("operators"), VALID_PAYMENT_CATEGORIES(
+			"valid_payment_categories"), USSD_REQUEST_ENTRY("ussd_request_entry"), OUTBOUND_SUBSCRIPTIONS(
+					"outbound_subscriptions"), OUTBOUND_OPERATORSUBS("outbound_operatorsubs"), SEND_SMS_REQID(
+							"sendsms_reqid"), SUBSCRIPTIONS("subscriptions"), OPERATORSUBS("operatorsubs");
 
-	/** The Constant MSISDN_SPEND_LIMIT_TABLE. */
-	protected static final String MSISDN_SPEND_LIMIT_TABLE = "spendlimitexceeded_msisdn";
+	private String tableName;
 
-	/** The Constant APPLICATION_SPEND_LIMIT_TABLE. */
-	protected static final String APPLICATION_SPEND_LIMIT_TABLE = "spendlimitexceeded_application";
+	DatabaseTables(String tableName) {
 
-	/** The Constant OPERATOR_SPEND_LIMIT_TABLE. */
-	protected static final String OPERATOR_SPEND_LIMIT_TABLE = "spendlimitexceeded_operator";
+		this.tableName = tableName;
+	}
+
+	public String getTableName() {
+
+		return this.tableName;
+	}
 }

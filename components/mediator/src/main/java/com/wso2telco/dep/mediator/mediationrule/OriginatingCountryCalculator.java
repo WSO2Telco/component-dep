@@ -16,7 +16,6 @@
 package com.wso2telco.dep.mediator.mediationrule;
 
 import org.apache.axis2.addressing.EndpointReference;
-
 import java.util.HashMap;
 
 // TODO: Auto-generated Javadoc
@@ -28,34 +27,6 @@ public abstract class OriginatingCountryCalculator {
 	/** The api epr map. */
 	protected HashMap<String, EndpointReference> apiEprMap;
 
-	/** The Dialog sms api endpoint. */
-	// API End points
-	//protected String DialogSmsApiEndpoint;
-
-	/** The Dialog payment api endpoint. */
-	//protected String DialogPaymentApiEndpoint;
-
-	/** The Dialog location api endpoint. */
-	//protected String DialogLocationApiEndpoint;
-
-	/** The Celcom sms api endpoint. */
-	//protected String CelcomSmsApiEndpoint;
-
-	/** The Celcom payment api endpoint. */
-	//protected String CelcomPaymentApiEndpoint;
-
-	/** The Celcom location api endpoint. */
-	//protected String CelcomLocationApiEndpoint;
-
-	/** The Robi sms api endpoint. */
-	//protected String RobiSmsApiEndpoint;
-
-	/** The Robi payment api endpoint. */
-	//protected String RobiPaymentApiEndpoint;
-
-	/** The Robi location api endpoint. */
-	//protected String RobiLocationApiEndpoint;
-
 	/**
 	 * Initialize.
 	 *
@@ -63,5 +34,4 @@ public abstract class OriginatingCountryCalculator {
 	 *             the exception
 	 */
 	public abstract void initialize() throws Exception;
-
 }

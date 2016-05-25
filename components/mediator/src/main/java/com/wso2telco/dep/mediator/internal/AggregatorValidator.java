@@ -51,6 +51,12 @@ public class AggregatorValidator {
 	public void validateMerchant(int appid, String operatorid, String subscriber, String merchant) throws Exception {
 
 		String merchantid = aggregatorDAO.blacklistedmerchant(appid, operatorid, subscriber, merchant);
+
+		if (merchantid == null) {
+
+			merchantid = aggregatorDAO.blacklistedmerchant(operatorid, subscriber, merchant);
+		}
+
 		if (merchantid != null) {
 
 			throw new CustomException("SVC0001", "", new String[] { merchant + " Not provisioned for " + operatorid });

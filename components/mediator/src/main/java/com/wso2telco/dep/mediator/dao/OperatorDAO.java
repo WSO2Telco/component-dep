@@ -16,20 +16,25 @@
 package com.wso2telco.dep.mediator.dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
 import javax.cache.Cache;
 import javax.cache.Caching;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import com.wso2telco.dbutils.AxataDBUtilException;
 import com.wso2telco.dbutils.DbUtils;
 import com.wso2telco.dbutils.Operator;
 import com.wso2telco.dbutils.Operatorendpoint;
 import com.wso2telco.dbutils.util.DataSourceNames;
 
-public class OperatorDAO extends CommonDAO {
+public class OperatorDAO {
+
+	private Log LOG = LogFactory.getLog(OperatorDAO.class);
+	private static final String MEDIATOR_CACHE_MANAGER = "MediatorCacheManager";
 
 	/**
 	 * Operator endPoints.
@@ -42,14 +47,14 @@ public class OperatorDAO extends CommonDAO {
 
 		final int opEndpointsID = 0;
 
-		Cache<Integer, List<Operatorendpoint>> cache = Caching.getCacheManager(AXIATA_MEDIATOR_CACHE_MANAGER)
-				.getCache("axiataDbOperatorEndpoints");
+		Cache<Integer, List<Operatorendpoint>> cache = Caching.getCacheManager(MEDIATOR_CACHE_MANAGER)
+				.getCache("dbOperatorEndpoints");
 		List<Operatorendpoint> endPoints = cache.get(opEndpointsID);
 
 		if (endPoints == null) {
 
 			Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
-			Statement st = null;
+			PreparedStatement ps = null;
 			ResultSet rs = null;
 			endPoints = new ArrayList<Operatorendpoint>();
 
@@ -60,13 +65,13 @@ public class OperatorDAO extends CommonDAO {
 					throw new Exception("Connection not found");
 				}
 
-				st = con.createStatement();
-
 				StringBuilder queryString = new StringBuilder("SELECT operatorid, operatorname, api, endpoint ");
 				queryString.append("FROM operatorendpoints, operators ");
 				queryString.append("WHERE operatorendpoints.operatorid = operators.id");
 
-				rs = st.executeQuery(queryString.toString());
+				ps = con.prepareStatement(queryString.toString());
+
+				rs = ps.executeQuery();
 
 				while (rs.next()) {
 
@@ -78,7 +83,7 @@ public class OperatorDAO extends CommonDAO {
 				DbUtils.handleException("Error while retrieving operator endpoint. ", e);
 			} finally {
 
-				DbUtils.closeAllConnections(st, con, rs);
+				DbUtils.closeAllConnections(ps, con, rs);
 			}
 			if (!endPoints.isEmpty()) {
 
@@ -101,7 +106,7 @@ public class OperatorDAO extends CommonDAO {
 	public List<Operator> getApplicationOperators(Integer applicationId) throws Exception {
 
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
-		Statement st = null;
+		PreparedStatement ps = null;
 		ResultSet rs = null;
 		List<Operator> operators = new ArrayList<Operator>();
 
@@ -112,15 +117,16 @@ public class OperatorDAO extends CommonDAO {
 				throw new Exception("Connection not found");
 			}
 
-			st = con.createStatement();
-
 			StringBuilder queryString = new StringBuilder(
 					"SELECT oa.id id, oa.applicationid, oa.operatorid, o.operatorname, o.refreshtoken, o.tokenvalidity, o.tokentime, o.token, o.tokenurl, o.tokenauth ");
 			queryString.append("FROM operatorapps oa, operators o ");
-			queryString.append("WHERE oa.operatorid = o.id AND oa.isactive = 1  AND oa.applicationid = ");
-			queryString.append(applicationId);
+			queryString.append("WHERE oa.operatorid = o.id AND oa.isactive = 1  AND oa.applicationid = ?");
 
-			rs = st.executeQuery(queryString.toString());
+			ps = con.prepareStatement(queryString.toString());
+
+			ps.setInt(1, applicationId);
+
+			rs = ps.executeQuery();
 
 			while (rs.next()) {
 
@@ -142,7 +148,7 @@ public class OperatorDAO extends CommonDAO {
 			DbUtils.handleException("Error while selecting from operatorapps, operators. ", e);
 		} finally {
 
-			DbUtils.closeAllConnections(st, con, rs);
+			DbUtils.closeAllConnections(ps, con, rs);
 		}
 
 		return operators;
@@ -165,7 +171,7 @@ public class OperatorDAO extends CommonDAO {
 			throws SQLException, AxataDBUtilException {
 
 		Connection con = null;
-		Statement st = null;
+		PreparedStatement ps = null;
 		ResultSet rs = null;
 		List<Integer> operators = new ArrayList<Integer>();
 
@@ -177,29 +183,31 @@ public class OperatorDAO extends CommonDAO {
 				throw new Exception("Connection not found.");
 			}
 
-			st = con.createStatement();
-
 			StringBuilder queryString = new StringBuilder("SELECT o.operatorid ");
 			queryString.append("FROM endpointapps e, operatorendpoints o ");
-			queryString.append("WHERE o.id = e.endpointid AND e.applicationid = ");
-			queryString.append(appId);
-			queryString.append(" AND e.isactive = 1 AND o.api = ");
-			queryString.append(apiType);
+			queryString.append("WHERE o.id = e.endpointid AND e.applicationid = ?");
+			queryString.append(" AND e.isactive = 1 AND o.api = ?");
 
-			rs = st.executeQuery(queryString.toString());
+			ps = con.prepareStatement(queryString.toString());
+
+			ps.setInt(1, appId);
+			ps.setString(2, apiType);
+
+			LOG.debug("getActiveApplicationOperators : " + queryString.toString());
+
+			rs = ps.executeQuery();
 
 			while (rs.next()) {
 
 				Integer operatorid = (rs.getInt("operatorid"));
 				operators.add(operatorid);
 			}
-
 		} catch (Exception e) {
 
 			DbUtils.handleException("Error while selecting from endpointapps, operatorendpoints ", e);
 		} finally {
 
-			DbUtils.closeAllConnections(st, con, rs);
+			DbUtils.closeAllConnections(ps, con, rs);
 		}
 
 		return operators;
@@ -226,7 +234,7 @@ public class OperatorDAO extends CommonDAO {
 			throws Exception {
 
 		Connection con = null;
-		Statement st = null;
+		PreparedStatement ps = null;
 		Integer newid = 0;
 
 		try {
@@ -237,27 +245,28 @@ public class OperatorDAO extends CommonDAO {
 				throw new Exception("Connection not found");
 			}
 
-			st = con.createStatement();
-
 			StringBuilder queryString = new StringBuilder("UPDATE operators ");
-			queryString.append("SET refreshtoken = ");
-			queryString.append(refreshToken);
-			queryString.append(" ,tokenvalidity = ");
-			queryString.append(tokenValidity);
-			queryString.append(" ,tokentime = ");
-			queryString.append(tokenTime);
-			queryString.append(" ,token = ");
-			queryString.append(token);
-			queryString.append(" WHERE id = ");
-			queryString.append(id);
+			queryString.append("SET refreshtoken = ?");
+			queryString.append(" ,tokenvalidity = ?");
+			queryString.append(" ,tokentime = ?");
+			queryString.append(" ,token = ?");
+			queryString.append(" WHERE id = ?");
 
-			st.executeUpdate(queryString.toString());
+			ps = con.prepareStatement(queryString.toString());
+
+			ps.setString(1, refreshToken);
+			ps.setLong(2, tokenValidity);
+			ps.setLong(3, tokenTime);
+			ps.setString(4, token);
+			ps.setInt(5, id);
+
+			ps.executeUpdate();
 		} catch (Exception e) {
 
 			DbUtils.handleException("Error while updating operators. ", e);
 		} finally {
 
-			DbUtils.closeAllConnections(st, con, null);
+			DbUtils.closeAllConnections(ps, con, null);
 		}
 
 		return newid;

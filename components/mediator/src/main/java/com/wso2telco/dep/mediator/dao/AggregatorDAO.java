@@ -16,12 +16,13 @@
 package com.wso2telco.dep.mediator.dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
-import java.sql.Statement;
 import com.wso2telco.dbutils.DbUtils;
 import com.wso2telco.dbutils.util.DataSourceNames;
+import com.wso2telco.dep.mediator.util.DatabaseTables;
 
-public class AggregatorDAO extends CommonDAO {
+public class AggregatorDAO {
 
 	/**
 	 * Blacklistedmerchant.
@@ -43,7 +44,7 @@ public class AggregatorDAO extends CommonDAO {
 
 		String resultcode = null;
 		Connection con = null;
-		Statement st = null;
+		PreparedStatement ps = null;
 		ResultSet rs = null;
 
 		if (merchant == null || merchant.isEmpty()) {
@@ -60,49 +61,103 @@ public class AggregatorDAO extends CommonDAO {
 			}
 
 			// is aggrigator
-			st = con.createStatement();
-			int x = 0;
 			StringBuilder queryString = new StringBuilder("SELECT merchantopco_blacklist.id id ");
-			queryString.append("FROM merchantopco_blacklist, operators ");
-			queryString.append("WHERE merchantopco_blacklist.operator_id = operators.id ");
-			queryString.append("AND application_id = ");
-			queryString.append(appId);
-			queryString.append(" AND operatorname = ");
-			queryString.append(operatorId);
-			queryString.append(" AND subscriber = ");
-			queryString.append(subscriber);
-			queryString.append(" AND lower(merchant) = ");
-			queryString.append(merchant.toLowerCase());
+			queryString.append("FROM ");
+			queryString.append(DatabaseTables.MERCHANT_OPERATOR_BLACKLIST.getTableName());
+			queryString.append(" , ");
+			queryString.append(DatabaseTables.OPERATORS.getTableName());
+			queryString.append(" WHERE merchantopco_blacklist.operator_id = operators.id ");
+			queryString.append("AND application_id = ?");
+			queryString.append(" AND operatorname = ?");
+			queryString.append(" AND subscriber = ?");
+			queryString.append(" AND lower(merchant) = ?");
 
-			rs = st.executeQuery(queryString.toString());
-			if (rs.next()) {
+			ps = con.prepareStatement(queryString.toString());
+
+			ps.setInt(1, appId);
+			ps.setString(2, operatorId);
+			ps.setString(3, subscriber);
+			ps.setString(4, merchant.toLowerCase());
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
 
 				resultcode = String.valueOf(rs.getInt("id"));
-			} else {
-
-				StringBuilder merchantQueryString = new StringBuilder("SELECT merchantopco_blacklist.id id ");
-				merchantQueryString.append("FROM merchantopco_blacklist, operators ");
-				merchantQueryString.append("WHERE merchantopco_blacklist.operator_id = operators.id ");
-				merchantQueryString.append("AND application_id is null ");
-				merchantQueryString.append("AND subscriber = ");
-				merchantQueryString.append(subscriber);
-				merchantQueryString.append(" AND operatorname = ");
-				merchantQueryString.append(operatorId);
-				merchantQueryString.append(" AND lower(merchant) = ");
-				merchantQueryString.append(merchant.toLowerCase());
-
-				rs = st.executeQuery(merchantQueryString.toString());
-				if (rs.next()) {
-
-					resultcode = String.valueOf(rs.getInt("id"));
-				}
 			}
 		} catch (Exception e) {
 
 			DbUtils.handleException("Error while selecting black listed merchant. ", e);
 		} finally {
 
-			DbUtils.closeAllConnections(st, con, rs);
+			DbUtils.closeAllConnections(ps, con, rs);
+		}
+
+		return resultcode;
+	}
+
+	/**
+	 * Blacklistedmerchant.
+	 *
+	 * @param operatorId
+	 *            the operatorId
+	 * @param subscriber
+	 *            the subscriber
+	 * @param merchant
+	 *            the merchant
+	 * @return the string
+	 * @throws Exception
+	 *             the exception
+	 */
+	public String blacklistedmerchant(String operatorId, String subscriber, String merchant) throws Exception {
+
+		String resultcode = null;
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		if (merchant == null || merchant.isEmpty()) {
+
+			return resultcode;
+		}
+
+		try {
+
+			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+			if (con == null) {
+
+				throw new Exception("Connection not found");
+			}
+
+			StringBuilder merchantQueryString = new StringBuilder("SELECT merchantopco_blacklist.id id ");
+			merchantQueryString.append("FROM ");
+			merchantQueryString.append(DatabaseTables.MERCHANT_OPERATOR_BLACKLIST.getTableName());
+			merchantQueryString.append(" , ");
+			merchantQueryString.append(DatabaseTables.OPERATORS.getTableName());
+			merchantQueryString.append(" WHERE merchantopco_blacklist.operator_id = operators.id ");
+			merchantQueryString.append("AND application_id is null ");
+			merchantQueryString.append("AND subscriber = ?");
+			merchantQueryString.append(" AND operatorname = ?");
+			merchantQueryString.append(" AND lower(merchant) = ?");
+
+			ps = con.prepareStatement(merchantQueryString.toString());
+
+			ps.setString(1, subscriber);
+			ps.setString(2, operatorId);
+			ps.setString(3, merchant.toLowerCase());
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				resultcode = String.valueOf(rs.getInt("id"));
+			}
+		} catch (Exception e) {
+
+			DbUtils.handleException("Error while selecting black listed merchant. ", e);
+		} finally {
+
+			DbUtils.closeAllConnections(ps, con, rs);
 		}
 
 		return resultcode;

@@ -20,8 +20,9 @@ import java.sql.ResultSet;
 import java.sql.Statement;
 import com.wso2telco.dbutils.DbUtils;
 import com.wso2telco.dbutils.util.DataSourceNames;
+import com.wso2telco.dep.mediator.util.DatabaseTables;
 
-public class USSDDAO extends CommonDAO {
+public class USSDDAO {
 
 	/**
 	 * Ussd request entry.
@@ -50,7 +51,8 @@ public class USSDDAO extends CommonDAO {
 			st = con.createStatement();
 
 			StringBuilder queryString = new StringBuilder("SELECT MAX(axiataid) maxid ");
-			queryString.append("FROM ussd_request_entry");
+			queryString.append("FROM ");
+			queryString.append(DatabaseTables.USSD_REQUEST_ENTRY.getTableName());
 
 			rs = st.executeQuery(queryString.toString());
 			if (rs.next()) {
@@ -58,8 +60,9 @@ public class USSDDAO extends CommonDAO {
 				newId = rs.getInt("maxid") + 1;
 			}
 
-			StringBuilder insertQueryString = new StringBuilder(
-					"INSERT INTO ussd_request_entry (axiataid, notifyurl) ");
+			StringBuilder insertQueryString = new StringBuilder("INSERT INTO ");
+			insertQueryString.append(DatabaseTables.USSD_REQUEST_ENTRY.getTableName());
+			insertQueryString.append(" (axiataid, notifyurl) ");
 			insertQueryString.append("VALUES (");
 			insertQueryString.append(newId);
 			insertQueryString.append(", ");
@@ -104,8 +107,9 @@ public class USSDDAO extends CommonDAO {
 			st = con.createStatement();
 
 			StringBuilder queryString = new StringBuilder("SELECT notifyurl ");
-			queryString.append("FROM ussd_request_entry ");
-			queryString.append("WHERE axiataid = ");
+			queryString.append("FROM ");
+			queryString.append(DatabaseTables.USSD_REQUEST_ENTRY.getTableName());
+			queryString.append(" WHERE axiataid = ");
 			queryString.append(subscriptionId);
 
 			rs = st.executeQuery(queryString.toString());
@@ -149,8 +153,9 @@ public class USSDDAO extends CommonDAO {
 
 			st = con.createStatement();
 
-			StringBuilder queryString = new StringBuilder("DELETE FROM ussd_request_entry ");
-			queryString.append("WHERE axiataid = ");
+			StringBuilder queryString = new StringBuilder("DELETE FROM ");
+			queryString.append(DatabaseTables.USSD_REQUEST_ENTRY.getTableName());
+			queryString.append(" WHERE axiataid = ");
 			queryString.append(subscriptionId);
 
 			st.executeUpdate(queryString.toString());
