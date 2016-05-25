@@ -81,7 +81,8 @@ public class BillingHostObject extends ScriptableObject {
     
     /** The tier unit time. */
     private static Map<String, Integer> tierUnitTime = new HashMap<String, Integer>();
-
+   
+    
     /**
      * Gets the tier pricing.
      *
@@ -1465,8 +1466,10 @@ public class BillingHostObject extends ScriptableObject {
         }
         String operator = String.valueOf(args[2]);
         Boolean isadmin = Boolean.valueOf(String.valueOf(args[1]));
-
-        List<SPObject> spList = BillingDAO.generateSPList();
+        
+        BillingDAO billingDAO = new BillingDAO();
+        
+        List<SPObject> spList = billingDAO.generateSPList();
         List<SPObject> spListoperator = OperatorDAO.getSPList(operator);
         NativeArray nativeArray = new NativeArray(0);
         NativeObject nativeObject;
@@ -1509,8 +1512,9 @@ public class BillingHostObject extends ScriptableObject {
         if (args == null || args.length == 0) {
             handleException("Invalid number of parameters.");
         }
+        BillingDAO billingDAO = new BillingDAO();
         String appId = args[0].toString();
-        SPObject spObject = BillingDAO.generateSPObject(appId);
+        SPObject spObject = billingDAO.generateSPObject(appId);
         NativeObject row = new NativeObject();
         if (spObject != null) {
 

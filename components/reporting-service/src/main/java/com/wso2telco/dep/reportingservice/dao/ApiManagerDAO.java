@@ -24,11 +24,11 @@ import java.util.List;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.apimgt.impl.utils.APIMgtDBUtil;
 import org.wso2.carbon.apimgt.usage.client.exception.APIMgtUsageQueryServiceClientException;
 
 import com.wso2telco.dbutils.DbUtils;
 import com.wso2telco.dbutils.util.DataSourceNames;
+import com.wso2telco.dep.reportingservice.util.ReportingTable;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -47,11 +47,11 @@ public class ApiManagerDAO {
      * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
      * @throws SQLException the SQL exception
      */
-    public static String getConsumerKeyByApplication(int applicationId) throws APIMgtUsageQueryServiceClientException, SQLException {
+    public String getConsumerKeyByApplication(int applicationId) throws APIMgtUsageQueryServiceClientException, SQLException {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet results = null;
-        String sql = "SELECT CONSUMER_KEY FROM AM_APPLICATION_KEY_MAPPING WHERE KEY_TYPE = 'PRODUCTION' AND APPLICATION_ID=?";
+        String sql = "SELECT CONSUMER_KEY FROM "+ ReportingTable.AM_APPLICATION_KEY_MAPPING +" WHERE KEY_TYPE = 'PRODUCTION' AND APPLICATION_ID=?";
         String consumerKey = null;
 
         try {
@@ -66,7 +66,7 @@ public class ApiManagerDAO {
         } catch (Exception e) {
         	log.error("Error occured while getting consumer key from the database" + e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, results);
+            DbUtils.closeAllConnections(ps, conn, results);
         }
 
         return consumerKey;
@@ -82,7 +82,7 @@ public class ApiManagerDAO {
      * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
      * @throws SQLException the SQL exception
      */
-    public static List<String[]> getAPIListForAPITrafficHistogram(String fromDate, String toDate, String api) throws APIMgtUsageQueryServiceClientException, SQLException {
+    public List<String[]> getAPIListForAPITrafficHistogram(String fromDate, String toDate, String api) throws APIMgtUsageQueryServiceClientException, SQLException {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet results = null;
@@ -93,7 +93,7 @@ public class ApiManagerDAO {
                 + "  cross join (select 0 as a union all select 1 union all select 2 union all select 3 union all select 4 union all select 5 union all select 6 union all select 7 union all select 8 union all select 9) as c  \n"
                 + "  ) al \n"
                 + " cross join \n"
-                + " (select api_name from AM_API where api_name like ?) ap \n"
+                + " (select api_name from "+ ReportingTable.AM_API +" where api_name like ?) ap \n"
                 + " where al.Date between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d')";
         List<String[]> api_list = new ArrayList<String[]>();
 
@@ -113,7 +113,7 @@ public class ApiManagerDAO {
         } catch (Exception e) {
         	log.error("Error occured while getting API list from the database" + e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, results);
+            DbUtils.closeAllConnections(ps, conn, results);
         }
 
         return api_list;
@@ -127,11 +127,11 @@ public class ApiManagerDAO {
      * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
      * @throws SQLException the SQL exception
      */
-    public static String getApiNameById(int apiid) throws APIMgtUsageQueryServiceClientException, SQLException {
+    public String getApiNameById(int apiid) throws APIMgtUsageQueryServiceClientException, SQLException {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet results = null;
-        String sql = "SELECT API_NAME FROM AM_API WHERE API_ID=?";
+        String sql = "SELECT API_NAME FROM "+ ReportingTable.AM_API +" WHERE API_ID=?";
         String apiName = null;
 
         try {
@@ -146,7 +146,7 @@ public class ApiManagerDAO {
         } catch (Exception e) {
         	log.error("Error occured while getting API name from the database" + e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, results);
+            DbUtils.closeAllConnections(ps, conn, results);
         }
 
         return apiName;

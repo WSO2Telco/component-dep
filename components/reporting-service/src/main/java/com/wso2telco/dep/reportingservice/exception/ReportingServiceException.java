@@ -13,48 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.dep.reportingservice.util;
 
-// TODO: Auto-generated Javadoc
-/**
- * The Enum ChargingPlanType.
- */
-public enum ChargingPlanType {
+package com.wso2telco.dep.reportingservice.exception;
 
-	/** The unlimited. */
-	UNLIMITED("Unlimited"),
-	/** The gold. */
-	GOLD("Gold"),
-	/** The silver. */
-	SILVER("Silver"),
-	/** The bronze. */
-	BRONZE("Bronze"),
-	/** The premium. */
-	PREMIUM("Premium"),
-	/** The subscription. */
-	SUBSCRIPTION("Subscription"),
-	/** The request based. */
-	REQUEST_BASED("Requestbased");
+import com.wso2telco.utils.exception.BusinessException;
+import com.wso2telco.utils.exception.ThrowableError;
 
-	/** The value. */
-	private String value;
+public class ReportingServiceException extends BusinessException{
 
 	/**
-	 * Instantiates a new charging plan type.
-	 *
-	 * @param value
-	 *            the value
+	 * 
 	 */
-	private ChargingPlanType(String value) {
-		this.value = value;
-	}
+	private static final long serialVersionUID = 7966516527553909413L;
 
-	/**
-	 * Gets the value.
-	 *
-	 * @return the value
-	 */
-	public String getValue() {
-		return value;
+	public ReportingServiceException(ThrowableError error) {
+		super(error);
 	}
+	
 }

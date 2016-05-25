@@ -23,13 +23,12 @@ import java.sql.SQLException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.apimgt.api.APIManagementException;
-import org.wso2.carbon.apimgt.impl.utils.APIMgtDBUtil;
 
 import com.wso2telco.dbutils.DbUtils;
 import com.wso2telco.dbutils.util.DataSourceNames;
+import com.wso2telco.dep.reportingservice.util.ReportingTable;
 
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class WorkflowDAO.
  */
@@ -38,19 +37,21 @@ public class WorkflowDAO {
 	/** The Constant log. */
 	private static final Log log = LogFactory.getLog(WorkflowDAO.class);
 
+	/** The api manager dao. */
+	ApiManagerDAO apiManagerDAO = new ApiManagerDAO();
     /**
      * Update subscription tier.
      *
      * @param subscriptionId the subscription id
      * @param tierId the tier id
-     * @throws APIManagementException the API management exception
+     * @throws Exception 
      */
-    public void updateSubscriptionTier(String subscriptionId, String tierId) throws APIManagementException {
+    public void updateSubscriptionTier(String subscriptionId, String tierId) throws Exception {
         Connection conn = null;
         ResultSet rs = null;
         PreparedStatement ps = null;
         try {
-            conn = APIMgtDBUtil.getConnection();
+            conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
             String query = "UPDATE AM_SUBSCRIPTION SET TIER_ID=?" +
                            " WHERE SUBSCRIPTION_ID=?";
             ps = conn.prepareStatement(query);
@@ -61,7 +62,7 @@ public class WorkflowDAO {
         } catch (SQLException e) {
             handleException("Error in updating subscription tier : " + e.getMessage(), e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, rs);
+            DbUtils.closeAllConnections(ps, conn, rs);
         }
     }
     
@@ -71,16 +72,16 @@ public class WorkflowDAO {
      * @param appId the app id
      * @param apiId the api id
      * @param opName the op name
-     * @throws Exception 
+     * @throws Exception the exception
      */
     public void saveSubscriptionChargeRate(String appId, String apiId, String opName) throws Exception {
         Connection conn = null;
         ResultSet rs = null;
         PreparedStatement ps = null;
         try {
-            String apiName = ApiManagerDAO.getApiNameById(Integer.valueOf(apiId));
+            String apiName = apiManagerDAO.getApiNameById(Integer.valueOf(apiId));
             conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
-            String sql = "SELECT operation_id,default_rate FROM api_operation_types WHERE api=?";
+            String sql = "SELECT operation_id,default_rate FROM "+ ReportingTable.API_OPERATION_TYPES +" WHERE api=?";
             ps = conn.prepareStatement(sql);
             ps.setString(1, apiName);
             log.debug("SQL (PS) ---> " + ps.toString());
@@ -90,7 +91,7 @@ public class WorkflowDAO {
                 Integer opId = Integer.parseInt(rs.getString("operation_id"));
                 String defaultRate = rs.getString("default_rate");
 
-                String query = "INSERT INTO subscription_rates (`application_id`, `api_id`, `operator_name`, `rate_id_sb`, `operation_id`) VALUES (?, ?, ?, ?, ?)";
+                String query = "INSERT INTO "+ ReportingTable.SUBSCRIPTION_RATES +" (`application_id`, `api_id`, `operator_name`, `rate_id_sb`, `operation_id`) VALUES (?, ?, ?, ?, ?)";
                 ps = conn.prepareStatement(query);
                 ps.setInt(1, Integer.parseInt(appId));
                 ps.setInt(2, Integer.parseInt(apiId));
@@ -103,7 +104,7 @@ public class WorkflowDAO {
         } catch (SQLException e) {
             handleException("Error in Creating subscription charge rate : " + e.getMessage(), e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, rs);
+            DbUtils.closeAllConnections(ps, conn, rs);
         }
     }
 
@@ -112,16 +113,16 @@ public class WorkflowDAO {
      *
      * @param appId the app id
      * @param apiId the api id
-     * @throws Exception 
+     * @throws Exception the exception
      */
     public void saveSubscriptionChargeRateNB(String appId, String apiId) throws Exception {
         Connection conn = null;
         ResultSet rs = null;
         PreparedStatement ps = null;
         try {
-            String apiName = ApiManagerDAO.getApiNameById(Integer.valueOf(apiId));
+            String apiName = apiManagerDAO.getApiNameById(Integer.valueOf(apiId));
             conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
-            String sql = "SELECT operation_id,default_rate FROM api_operation_types WHERE api=?";
+            String sql = "SELECT operation_id,default_rate FROM "+ ReportingTable.API_OPERATION_TYPES +"  WHERE api=?";
             ps = conn.prepareStatement(sql);
             ps.setString(1, apiName);
             log.debug("SQL (PS) ---> " + ps.toString());
@@ -131,7 +132,7 @@ public class WorkflowDAO {
                 Integer opId = Integer.parseInt(rs.getString("operation_id"));
                 String defaultRate = rs.getString("default_rate");
 
-                String query = "INSERT INTO subscription_rates_nb (`application_id`, `api_id`, `rate_id_nb`, `operation_id`) VALUES (?, ?, ?, ?)";
+                String query = "INSERT INTO  "+ ReportingTable.SUBSCRIPTION_RATES_NB +" (`application_id`, `api_id`, `rate_id_nb`, `operation_id`) VALUES (?, ?, ?, ?)";
                 ps = conn.prepareStatement(query);
                 ps.setInt(1, Integer.parseInt(appId));
                 ps.setInt(2, Integer.parseInt(apiId));
@@ -143,7 +144,7 @@ public class WorkflowDAO {
         } catch (SQLException e) {
             handleException("Error in Creating subscription charge rate : " + e.getMessage(), e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, rs);
+            DbUtils.closeAllConnections(ps, conn, rs);
         }
     }
     
@@ -154,15 +155,15 @@ public class WorkflowDAO {
      *
      * @param applicationId the application id
      * @param tierId the tier id
-     * @throws APIManagementException the API management exception
+     * @throws Exception 
      */
-    public void updateApplicationTier(String applicationId, String tierId) throws APIManagementException {
+    public void updateApplicationTier(String applicationId, String tierId) throws Exception {
         Connection conn = null;
         ResultSet rs = null;
         PreparedStatement ps = null;
         try {
-            conn = APIMgtDBUtil.getConnection();
-            String query = "UPDATE AM_APPLICATION SET APPLICATION_TIER=?" +
+            conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+            String query = "UPDATE "+ ReportingTable.AM_APPLICATION +" SET APPLICATION_TIER=?" +
                            " WHERE APPLICATION_ID=?";
             ps = conn.prepareStatement(query);
             ps.setString(1, tierId);
@@ -172,7 +173,7 @@ public class WorkflowDAO {
         } catch (SQLException e) {
             handleException("Error in updating application tier : " + e.getMessage(), e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, rs);
+            DbUtils.closeAllConnections(ps, conn, rs);
         }
     }
     

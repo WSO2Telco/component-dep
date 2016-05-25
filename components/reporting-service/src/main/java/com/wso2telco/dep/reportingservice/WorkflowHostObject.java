@@ -77,11 +77,11 @@ public class WorkflowHostObject extends ScriptableObject {
 	 * @param args the args
 	 * @param funObj the fun obj
 	 * @return the string
-	 * @throws APIManagementException the API management exception
+	 * @throws Exception 
 	 */
 	public static String jsFunction_setSubscriptionTier(Context cx,
 													Scriptable thisObj, Object[] args, Function funObj)
-													throws APIManagementException {
+													throws Exception {
 		
 		String status = "";
 		
@@ -283,11 +283,11 @@ public class WorkflowHostObject extends ScriptableObject {
 	 * @param args the args
 	 * @param funObj the fun obj
 	 * @return the string
-	 * @throws APIManagementException the API management exception
+	 * @throws Exception 
 	 */
 	public static String jsFunction_setApplicationTier(Context cx,
 													Scriptable thisObj, Object[] args, Function funObj)
-													throws APIManagementException {
+													throws Exception {
 		
 		String status = "";
 		

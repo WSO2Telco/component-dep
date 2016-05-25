@@ -41,7 +41,6 @@ import org.wso2.carbon.apimgt.api.APIManagementException;
 import org.wso2.carbon.apimgt.api.model.APIIdentifier;
 import org.wso2.carbon.apimgt.api.model.Application;
 import org.wso2.carbon.apimgt.impl.dao.ApiMgtDAO;
-import org.wso2.carbon.apimgt.impl.utils.APIMgtDBUtil;
 import org.wso2.carbon.apimgt.impl.workflow.WorkflowConstants;
 import org.wso2.carbon.apimgt.usage.client.exception.APIMgtUsageQueryServiceClientException;
 
@@ -55,8 +54,9 @@ import com.wso2telco.dep.reportingservice.southbound.BilledCharge;
 import com.wso2telco.dep.reportingservice.southbound.CategoryCharge;
 import com.wso2telco.dep.reportingservice.util.CommissionPercentagesDTO;
 import com.wso2telco.dep.reportingservice.util.OperatorDetailsEntity;
+import com.wso2telco.dep.reportingservice.util.ReportingTable;
 
-// TODO: Auto-generated Javadoc
+
 /**
  * The Class BillingDataAccessObject.
  */
@@ -66,6 +66,8 @@ public class BillingDAO {
     /** The Constant log. */
     private static final Log log = LogFactory.getLog(BillingDAO.class);
     
+    /** The api manager dao. */
+    ApiManagerDAO apiManagerDAO = new ApiManagerDAO();
     
     /**
      * Prints the api request summary.
@@ -74,7 +76,7 @@ public class BillingDAO {
      * @throws APIManagementException the API management exception
      * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
      */
-    public static void printAPIRequestSummary() throws SQLException, APIManagementException,
+    public void printAPIRequestSummary() throws SQLException, APIManagementException,
             APIMgtUsageQueryServiceClientException {
         String sql = "select * from API_REQUEST_SUMMARY";
         Connection conn = null;
@@ -93,7 +95,7 @@ public class BillingDAO {
         } catch (Exception e) {
             handleException("Error occurred while querying Request Summary", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, rs);
+            DbUtils.closeAllConnections(ps, conn, rs);
         }
 
     }
@@ -105,7 +107,7 @@ public class BillingDAO {
      * @throws APIManagementException the API management exception
      * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
      */
-    public static void printSouthboundTraffic() throws SQLException, APIManagementException,
+    public void printSouthboundTraffic() throws SQLException, APIManagementException,
             APIMgtUsageQueryServiceClientException {
         String sql = "select * from TEST_DB";
         Connection conn = null;
@@ -127,7 +129,7 @@ public class BillingDAO {
         } catch (Exception e) {
             handleException("Error occurred while querying Request Summary", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, rs);
+            DbUtils.closeAllConnections(ps, conn, rs);
         }
 
     }
@@ -140,11 +142,11 @@ public class BillingDAO {
      * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
      * @throws APIManagementException the API management exception
      */
-    public static String getResponseTimeForAPI(String apiVersion) throws APIMgtUsageQueryServiceClientException, APIManagementException {
+    public String getResponseTimeForAPI(String apiVersion) throws APIMgtUsageQueryServiceClientException, APIManagementException {
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet results = null;
-        String sql = "select * from SB_API_RESPONSE_SUMMARY where api_version=? order by time desc limit 1;";
+        String sql = "select * from" + ReportingTable.SB_API_RESPONSE_SUMMARY + "where api_version=? order by time desc limit 1;";
         Map<String, Integer> apiCount = new HashMap<String, Integer>();
         try {
             connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
@@ -162,7 +164,7 @@ public class BillingDAO {
             log.error(e.getStackTrace());
             handleException("Error occurred while getting Invocation count for Application", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, connection, results);
+            DbUtils.closeAllConnections(ps, connection, results);
         }
         return null;
     }
@@ -179,7 +181,7 @@ public class BillingDAO {
      * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
      * @throws APIManagementException the API management exception
      */
-    public static List<APIResponseDTO> getAllResponseTimesForAPI(String operator, String appId, String apiVersion, String fromDate,
+    public List<APIResponseDTO> getAllResponseTimesForAPI(String operator, String appId, String apiVersion, String fromDate,
             String toDate) throws APIMgtUsageQueryServiceClientException, APIManagementException {
 
         String appConsumerKey = "%";
@@ -195,7 +197,7 @@ public class BillingDAO {
         PreparedStatement ps = null;
         ResultSet results = null;
         String sql = "select api_version,response_count AS count, serviceTime,STR_TO_DATE(time,'%Y-%m-%d') as date "
-                + "FROM SB_API_RESPONSE_SUMMARY WHERE api_version=? AND (time BETWEEN ? AND ?) AND operatorId LIKE ? AND consumerKey LIKE ?;";
+                + "FROM "+ ReportingTable.SB_API_RESPONSE_SUMMARY +" WHERE api_version=? AND (time BETWEEN ? AND ?) AND operatorId LIKE ? AND consumerKey LIKE ?;";
         List<APIResponseDTO> responseTimes = new ArrayList<APIResponseDTO>();
         try {
             connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
@@ -222,7 +224,7 @@ public class BillingDAO {
             log.error(e.getStackTrace());
             handleException("Error occurred while getting all response times for API", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, connection, results);
+            DbUtils.closeAllConnections(ps, connection, results);
         }
         return responseTimes;
     }
@@ -238,7 +240,7 @@ public class BillingDAO {
      * @throws APIManagementException the API management exception
      * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
      */
-    public static Map<String, Integer> getAPICountsForApplication(String consumerKey, String year,
+    public Map<String, Integer> getAPICountsForApplication(String consumerKey, String year,
             String month, String userId)
             throws APIManagementException,
             APIMgtUsageQueryServiceClientException {
@@ -247,7 +249,7 @@ public class BillingDAO {
         ResultSet results = null;
 
         String sql = "select api_version,sum(response_count) as total"
-                + " from SB_API_RESPONSE_SUMMARY where month= ? AND year = ?"
+                + " from "+ ReportingTable.SB_API_RESPONSE_SUMMARY +" where month= ? AND year = ?"
                 + " and consumerKey=? and userId=?"
                 + " and responseCode like '2%'"
                 + " group by api_version;";
@@ -268,7 +270,7 @@ public class BillingDAO {
         } catch (Exception e) {
             handleException("Error occurred while getting Invocation count for Application", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, connection, results);
+            DbUtils.closeAllConnections(ps, connection, results);
         }
 
         return apiCount;
@@ -283,14 +285,14 @@ public class BillingDAO {
      * @throws APIManagementException the API management exception
      * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
      */
-    public static String getApplicationconsumer(Integer applicationid, String keytype)
+    public String getApplicationconsumer(Integer applicationid, String keytype)
             throws APIManagementException,
             APIMgtUsageQueryServiceClientException {
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet results = null;
         String consumerKey = null;
-        String sql = "select consumer_key from AM_APPLICATION_KEY_MAPPING where key_type = ? and application_id = ?;";
+        String sql = "select consumer_key from "+ ReportingTable.AM_APPLICATION_KEY_MAPPING +" where key_type = ? and application_id = ?;";
 
         Map<String, Integer> apiCount = new HashMap<String, Integer>();
         try {
@@ -306,7 +308,7 @@ public class BillingDAO {
         } catch (Exception e) {
             handleException("Error occurred while getting Invocation count for Application", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, connection, results);
+            DbUtils.closeAllConnections(ps, connection, results);
         }
 
         return consumerKey;
@@ -321,14 +323,14 @@ public class BillingDAO {
      * @throws APIManagementException the API management exception
      * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
      */
-    public static String getApplicationName(Integer applicationid, String keytype)
+    public String getApplicationName(Integer applicationid, String keytype)
             throws APIManagementException,
             APIMgtUsageQueryServiceClientException {
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet results = null;
         String appName = null;
-        String sql = "select consumer_key, name from AM_APPLICATION_KEY_MAPPING ap, AM_APPLICATION am where ap.APPLICATION_ID = am.APPLICATION_ID and key_type = ? and ap.application_id = ?;";
+        String sql = "select consumer_key, name from "+ ReportingTable.AM_APPLICATION_KEY_MAPPING +" ap, "+ ReportingTable.AM_APPLICATION +" am where ap.APPLICATION_ID = am.APPLICATION_ID and key_type = ? and ap.application_id = ?;";
 
         Map<String, Integer> apiCount = new HashMap<String, Integer>();
         try {
@@ -344,7 +346,7 @@ public class BillingDAO {
         } catch (Exception e) {
             handleException("Error occurred while getting Invocation count for Application", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, connection, results);
+            DbUtils.closeAllConnections(ps, connection, results);
         }
 
         return appName;
@@ -359,7 +361,7 @@ public class BillingDAO {
      * @throws APIManagementException the API management exception
      * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
      */
-    public static List<OperatorDetailsEntity> getOperatorDetailsOfSubscription(int applicationId, int apiId) throws APIManagementException,
+    public List<OperatorDetailsEntity> getOperatorDetailsOfSubscription(int applicationId, int apiId) throws APIManagementException,
             APIMgtUsageQueryServiceClientException {
         Connection connection = null;
         PreparedStatement ps = null;
@@ -391,7 +393,7 @@ public class BillingDAO {
             log.error(e.getStackTrace());
             handleException("Error occurred while getting Taxes for Subscription", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, connection, results);
+            DbUtils.closeAllConnections(ps, connection, results);
         }
         return operatorDetails;
     }
@@ -405,7 +407,7 @@ public class BillingDAO {
      * @throws APIManagementException the API management exception
      * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
      */
-    public static List<OperatorDetailsEntity> getDetailsOfSubscription(int applicationId, int apiId) throws APIManagementException,
+    public List<OperatorDetailsEntity> getDetailsOfSubscription(int applicationId, int apiId) throws APIManagementException,
             APIMgtUsageQueryServiceClientException {
         Connection connection = null;
         PreparedStatement ps = null;
@@ -440,7 +442,7 @@ public class BillingDAO {
             log.error(e.getStackTrace());
             handleException("Error occurred while getting Taxes for Subscription", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, connection, results);
+            DbUtils.closeAllConnections(ps, connection, results);
         }
         return operatorDetails;
     }
@@ -459,7 +461,7 @@ public class BillingDAO {
      * @throws APIManagementException the API management exception
      * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
      */
-    public static Map<CategoryCharge,BilledCharge> getAPICountsForSubscription (String consumerKey, short year, short month, String apiName, String apiVersion, String operatorId, int operationId)
+    public Map<CategoryCharge,BilledCharge> getAPICountsForSubscription (String consumerKey, short year, short month, String apiName, String apiVersion, String operatorId, int operationId)
             throws APIManagementException, APIMgtUsageQueryServiceClientException {
         Connection connection = null;
         PreparedStatement ps = null;
@@ -494,7 +496,7 @@ public class BillingDAO {
         } catch (Exception e) {
             handleException("Error occurred while getting Invocation count for Subscription", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, connection, results);
+            DbUtils.closeAllConnections(ps, connection, results);
         }
 
         return apiCount;
@@ -513,7 +515,7 @@ public class BillingDAO {
          * @throws APIManagementException the API management exception
          * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
          */
-        public static Map<CategoryCharge,BilledCharge> getNorthboundAPICountsForSubscription (String consumerKey, short year, short month, String apiName, String apiVersion,int operationId)
+        public Map<CategoryCharge,BilledCharge> getNorthboundAPICountsForSubscription (String consumerKey, short year, short month, String apiName, String apiVersion,int operationId)
             throws APIManagementException, APIMgtUsageQueryServiceClientException {
         Connection connection = null;
         PreparedStatement ps = null;
@@ -547,7 +549,7 @@ public class BillingDAO {
         } catch (Exception e) {
             handleException("Error occurred while getting Invocation count for Subscription", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, connection, results);
+            DbUtils.closeAllConnections(ps, connection, results);
         }
 
         return apiCount;
@@ -566,14 +568,14 @@ public class BillingDAO {
      * @throws APIManagementException the API management exception
      * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
      */
-    public static Map<String, Integer> getAPICountsForApplicationOpco(String consumerKey, String year, String month, String userId, String api)
+    public Map<String, Integer> getAPICountsForApplicationOpco(String consumerKey, String year, String month, String userId, String api)
             throws APIManagementException,
             APIMgtUsageQueryServiceClientException {
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet results = null;
         String sql = "select operatorId,sum(response_count) as total "
-                + "from SB_API_RESPONSE_SUMMARY "
+                + "from "+ ReportingTable.SB_API_RESPONSE_SUMMARY +" "
                 + "where year=? and month=? and api=? and userid like ? and consumerKey like ?"
                 + " and responseCode like '2%' "
                 + "group by operatorId";
@@ -598,8 +600,8 @@ public class BillingDAO {
             }
         } catch (Exception e) {
             handleException("Error occurred while getting Invocation count for Application", e);
-        } finally {
-            APIMgtDBUtil.closeAllConnections(ps, connection, results);
+        } finally {            
+            DbUtils.closeAllConnections(ps, connection, results);
         }
 
         return apiCount;
@@ -612,7 +614,7 @@ public class BillingDAO {
      * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
      */
     @Deprecated
-    public static void printAPISubscriberTable() throws SQLException,
+    public void printAPISubscriberTable() throws SQLException,
             APIMgtUsageQueryServiceClientException {
         String sql = "select * from AM_SUBSCRIBER";
         Connection conn = null;
@@ -631,7 +633,7 @@ public class BillingDAO {
         } catch (Exception e) {
             log.error("Error occured while querying Request Summary", e);           
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, rs);
+            DbUtils.closeAllConnections(ps, conn, rs);
         }
     }
 
@@ -642,7 +644,7 @@ public class BillingDAO {
      * @return the all subscriptions
      * @throws Exception the exception
      */
-    public static List<String> getAllSubscriptions() throws Exception {
+    public List<String> getAllSubscriptions() throws Exception {
         String sql = "select USER_ID from AM_SUBSCRIBER";
         Connection conn = null;
         PreparedStatement ps = null;
@@ -660,7 +662,7 @@ public class BillingDAO {
             log.error("Error occured while querying Request Summary", e);
             throw e;
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, rs);
+            DbUtils.closeAllConnections(ps, conn, rs);
         }
         return subscriber;
     }
@@ -672,7 +674,7 @@ public class BillingDAO {
      * @return the subscriberkey
      * @throws Exception the exception
      */
-    public static int getSubscriberkey(String userid) throws Exception {
+    public int getSubscriberkey(String userid) throws Exception {
         String sql = "select subscriber_id from AM_SUBSCRIBER WHERE USER_ID = ?";
         Connection conn = null;
         PreparedStatement ps = null;
@@ -691,7 +693,7 @@ public class BillingDAO {
             log.error("Error occured while querying Request Summary", e);
             throw e;
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, rs);
+            DbUtils.closeAllConnections(ps, conn, rs);
         }
         return subscriber;
     }
@@ -705,7 +707,7 @@ public class BillingDAO {
      */
     private static void handleException(String msg, Throwable t) throws APIManagementException {
         log.error(msg, t);
-        throw new APIManagementException(msg, t);
+        throw new APIManagementException(t);
     }
 
     /**
@@ -719,7 +721,7 @@ public class BillingDAO {
      * @throws APIManagementException the API management exception
      */
     //Retriving number of Subscribers for each API
-    public static int getNoOfSubscribers(String subscriber, String app, String apiName) throws APIMgtUsageQueryServiceClientException, APIManagementException {
+    public int getNoOfSubscribers(String subscriber, String app, String apiName) throws APIMgtUsageQueryServiceClientException, APIManagementException {
         int noOfSubscribers = 0;
 
         Connection connection = null;
@@ -745,7 +747,7 @@ public class BillingDAO {
         } catch (Exception e) {
             handleException("Error occurred while getting Invocation count for Application", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, connection, results);
+            DbUtils.closeAllConnections(ps, connection, results);
         }
 
         return noOfSubscribers;
@@ -767,7 +769,7 @@ public class BillingDAO {
      * @throws APIManagementException the API management exception
      */
     //Retriving amount charged from end-user through payment API
-    public static Set<PaymentRequestDTO> getPaymentAmounts(short year, short month, String consumerKey,
+    public Set<PaymentRequestDTO> getPaymentAmounts(short year, short month, String consumerKey,
                                                            String api_version, String operatorId, int operation, String category, String subcategory) throws
             APIMgtUsageQueryServiceClientException, APIManagementException {
 
@@ -814,7 +816,7 @@ public class BillingDAO {
         } catch (Exception e) {
             handleException("Error occurred while getting Payment API count for Application", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, connection, results);
+            DbUtils.closeAllConnections(ps, connection, results);
         }
 
         return requestSet;
@@ -835,7 +837,7 @@ public class BillingDAO {
      * @throws APIManagementException the API management exception
      */
     //Retriving amount charged from end-user through payment API
-    public static Set<PaymentRequestDTO> getNbPaymentAmounts(short year, short month, String consumerKey,
+    public Set<PaymentRequestDTO> getNbPaymentAmounts(short year, short month, String consumerKey,
                                                            String api_version, int operation, String category, String subcategory) throws
             APIMgtUsageQueryServiceClientException, APIManagementException {
 
@@ -881,7 +883,7 @@ public class BillingDAO {
         } catch (Exception e) {
             handleException("Error occurred while getting Payment API count for Application", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, connection, results);
+            DbUtils.closeAllConnections(ps, connection, results);
         }
 
         return requestSet;
@@ -895,7 +897,7 @@ public class BillingDAO {
      * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
      * @throws APIManagementException the API management exception
      */
-    public static int getApiId(APIIdentifier apiIdent) throws APIMgtUsageQueryServiceClientException,
+    public int getApiId(APIIdentifier apiIdent) throws APIMgtUsageQueryServiceClientException,
             APIManagementException {
         Connection conn = null;
         int apiId = -1;
@@ -905,7 +907,7 @@ public class BillingDAO {
         } catch (Exception e) {
             handleException("Error occured while getting API ID of API: " + apiIdent + " from the database", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(null, conn, null);
+            DbUtils.closeAllConnections(null, conn, null);
         }
         return apiId;
     }
@@ -919,9 +921,9 @@ public class BillingDAO {
      * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
      * @throws APIManagementException the API management exception
      */
-    public static int getSubscriptionIdForApplicationAPI(int appId, APIIdentifier apiIdent) throws
+    public int getSubscriptionIdForApplicationAPI(int appId, APIIdentifier apiIdent) throws
             APIMgtUsageQueryServiceClientException, APIManagementException {
-        String sql = "select SUBSCRIPTION_ID from AM_SUBSCRIPTION where APPLICATION_ID=? AND API_ID=?";
+        String sql = "select SUBSCRIPTION_ID from "+ ReportingTable.AM_SUBSCRIPTION +" where APPLICATION_ID=? AND API_ID=?";
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -946,7 +948,7 @@ public class BillingDAO {
         } catch (Exception e) {
             handleException("Error occured while getting subscription ID for API: " + apiIdent + " from the database", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, rs);
+            DbUtils.closeAllConnections(ps, conn, rs);
         }
         return subscriptionId;
     }
@@ -964,7 +966,7 @@ public class BillingDAO {
      * @throws APIManagementException the API management exception
      * @throws SQLException the SQL exception
      */
-    public static List<String[]> getTotalAPITrafficForPieChart(String fromDate, String toDate, String subscriber, String operator, int applicationId) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
+    public List<String[]> getTotalAPITrafficForPieChart(String fromDate, String toDate, String subscriber, String operator, int applicationId) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
         String consumerKey = null;
         if (subscriber.equals("__ALL__")) {
             subscriber = "%";
@@ -975,13 +977,13 @@ public class BillingDAO {
         if (applicationId == 0) {
             consumerKey = "%";
         } else {
-            consumerKey = ApiManagerDAO.getConsumerKeyByApplication(applicationId);
+            consumerKey = apiManagerDAO.getConsumerKeyByApplication(applicationId);
         }
 
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet results = null;
-        String sql = "SELECT api, SUM(response_count) AS api_request_count FROM SB_API_RESPONSE_SUMMARY WHERE userId LIKE ? AND consumerKey LIKE ? AND operatorId LIKE ? AND (STR_TO_DATE(SB_API_RESPONSE_SUMMARY.time, '%Y-%m-%d') BETWEEN  STR_TO_DATE(?, '%Y-%m-%d') AND STR_TO_DATE(?, '%Y-%m-%d')) GROUP BY  api";
+        String sql = "SELECT api, SUM(response_count) AS api_request_count FROM "+ ReportingTable.SB_API_RESPONSE_SUMMARY +" WHERE userId LIKE ? AND consumerKey LIKE ? AND operatorId LIKE ? AND (STR_TO_DATE("+ ReportingTable.SB_API_RESPONSE_SUMMARY +".time, '%Y-%m-%d') BETWEEN  STR_TO_DATE(?, '%Y-%m-%d') AND STR_TO_DATE(?, '%Y-%m-%d')) GROUP BY  api";
         List<String[]> api_request = new ArrayList<String[]>();
 
         try {
@@ -1002,7 +1004,7 @@ public class BillingDAO {
         	log.error("Error occured while getting total traffic for pie chart from the database" + e);
             handleException("Error occured while getting total traffic for pie chart from the database", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, results);
+            DbUtils.closeAllConnections(ps, conn, results);
         }
         return api_request;
     }
@@ -1021,7 +1023,7 @@ public class BillingDAO {
      * @throws APIManagementException the API management exception
      * @throws SQLException the SQL exception
      */
-    public static List<String[]> getTotalAPITrafficForHistogram(String fromDate, String toDate, String subscriber, String operator, int applicationId, String api) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
+    public List<String[]> getTotalAPITrafficForHistogram(String fromDate, String toDate, String subscriber, String operator, int applicationId, String api) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
         String consumerKey = null;
         if (subscriber.equals("__ALL__")) {
             subscriber = "%";
@@ -1032,7 +1034,7 @@ public class BillingDAO {
         if (applicationId == 0) {
             consumerKey = "%";
         } else {
-            consumerKey = ApiManagerDAO.getConsumerKeyByApplication(applicationId);
+            consumerKey = apiManagerDAO.getConsumerKeyByApplication(applicationId);
         }
         if (api.equals("__ALL__")) {
             api = "%";
@@ -1041,12 +1043,12 @@ public class BillingDAO {
         if (consumerKey == null) {
             return null;
         }
-        List<String[]> api_list = ApiManagerDAO.getAPIListForAPITrafficHistogram(fromDate, toDate, api);
+        List<String[]> api_list = apiManagerDAO.getAPIListForAPITrafficHistogram(fromDate, toDate, api);
 
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet results = null;
-        String sql = "select api,date(time) as date, sum(response_count) hits from SB_API_RESPONSE_SUMMARY\n"
+        String sql = "select api,date(time) as date, sum(response_count) hits from "+ ReportingTable.SB_API_RESPONSE_SUMMARY +"\n"
                 + "where DATE(time) between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') AND operatorId LIKE ? AND userId LIKE ? AND API LIKE ? AND consumerKey LIKE ? \n"
                 + "group by api, date";
         List<String[]> api_request = new ArrayList<String[]>();
@@ -1082,7 +1084,7 @@ public class BillingDAO {
         	log.error("Error occured while getting total traffic for histogram from the database" + e);
             handleException("Error occured while getting total traffic for histogram from the database", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, results);
+            DbUtils.closeAllConnections(ps, conn, results);
         }
         return api_list;
     }
@@ -1100,7 +1102,7 @@ public class BillingDAO {
      * @throws APIManagementException the API management exception
      * @throws SQLException the SQL exception
      */
-    public static List<String[]> getOperatorWiseAPITrafficForPieChart(String fromDate, String toDate, String subscriber, String api, int applicationId) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
+    public List<String[]> getOperatorWiseAPITrafficForPieChart(String fromDate, String toDate, String subscriber, String api, int applicationId) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
         String consumerKey = null;
         if (subscriber.equals("__ALL__")) {
             subscriber = "%";
@@ -1111,15 +1113,15 @@ public class BillingDAO {
         if (applicationId == 0) {
             consumerKey = "%";
         } else {
-            consumerKey = ApiManagerDAO.getConsumerKeyByApplication(applicationId);
+            consumerKey = apiManagerDAO.getConsumerKeyByApplication(applicationId);
         }
 
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet results = null;
         String sql = "SELECT operatorId, SUM(response_count) AS api_request_count "
-                + "FROM SB_API_RESPONSE_SUMMARY "
-                + "WHERE userId LIKE ? AND consumerKey LIKE ? AND api LIKE ? AND (STR_TO_DATE(SB_API_RESPONSE_SUMMARY.time, '%Y-%m-%d') BETWEEN  STR_TO_DATE(?, '%Y-%m-%d') AND STR_TO_DATE(?, '%Y-%m-%d')) "
+                + "FROM "+ ReportingTable.SB_API_RESPONSE_SUMMARY +" "
+                + "WHERE userId LIKE ? AND consumerKey LIKE ? AND api LIKE ? AND (STR_TO_DATE("+ ReportingTable.SB_API_RESPONSE_SUMMARY +".time, '%Y-%m-%d') BETWEEN  STR_TO_DATE(?, '%Y-%m-%d') AND STR_TO_DATE(?, '%Y-%m-%d')) "
                 + "GROUP BY operatorId";
         List<String[]> api_request = new ArrayList<String[]>();
 
@@ -1141,7 +1143,7 @@ public class BillingDAO {
         	log.error("Error occured while getting opertaor wise api traffic for pie chart from the database" + e);
             handleException("Error occured while getting opertaor wise api traffic for pie chart from the database", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, results);
+            DbUtils.closeAllConnections(ps, conn, results);
         }
         return api_request;
     }
@@ -1158,14 +1160,14 @@ public class BillingDAO {
      * @return the approval history
      * @throws Exception the exception
      */
-    public static List<String[]> getApprovalHistory(String fromDate, String toDate, String subscriber, String api, int applicationId, String operator) throws Exception {
+    public List<String[]> getApprovalHistory(String fromDate, String toDate, String subscriber, String api, int applicationId, String operator) throws Exception {
 
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
         String sql = "select application_id,name,if(description is null,'Not Specified',description) as description,"
                 + "ELT(FIELD(application_status,'CREATED','APPROVED','REJECTED'),'PENDING APPROVE','APPROVED','REJECTED') as app_status "
-                + "from AM_APPLICATION "
+                + "from "+ ReportingTable.AM_APPLICATION +" "
                 + "where application_id like ? and subscriber_id like ?";
 
         List<String[]> applist = new ArrayList<String[]>();
@@ -1216,7 +1218,7 @@ public class BillingDAO {
         	log.error("Error occured while getting opertaor wise api traffic for pie chart from the database" + e);
             handleException("Error occured while getting opertaor wise api traffic for pie chart from the database", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, rs);
+            DbUtils.closeAllConnections(ps, conn, rs);
         }
         return applist;
     }
@@ -1231,14 +1233,14 @@ public class BillingDAO {
      * @throws APIManagementException the API management exception
      * @throws SQLException the SQL exception
      */
-    public static List<Approval> getApprovalHistoryApp(int applicationId, String operatorid) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
+    public List<Approval> getApprovalHistoryApp(int applicationId, String operatorid) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
 
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
 
         String sql = "SELECT application_id, sub_status,tier_id, api_name,api_version "
-                + "FROM AM_SUBSCRIPTION, AM_API WHERE AM_SUBSCRIPTION.api_id = AM_API.api_id "
+                + "FROM "+ ReportingTable.AM_SUBSCRIPTION +", "+ ReportingTable.AM_API +" WHERE "+ ReportingTable.AM_SUBSCRIPTION +".api_id = "+ ReportingTable.AM_API +".api_id "
                 + "AND application_id = ?";
 
         List<Approval> applist = new ArrayList<Approval>();
@@ -1272,7 +1274,7 @@ public class BillingDAO {
         	log.error("Error occured while getting opertaor wise api traffic for pie chart from the database" + e);
             handleException("Error occured while getting opertaor wise api traffic for pie chart from the database", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, rs);
+            DbUtils.closeAllConnections(ps, conn, rs);
         }
         return applist;
     }
@@ -1283,14 +1285,14 @@ public class BillingDAO {
      * @return the all operation types
      * @throws APIManagementException the API management exception
      */
-    public static List<String[]> getAllOperationTypes() throws APIManagementException{
+    public List<String[]> getAllOperationTypes() throws APIManagementException{
         
         List<String[]> txTypes = new ArrayList<String[]>();
         
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet results = null;
-        String sql = "SELECT `operation_id`, `operation` FROM api_operation_types";
+        String sql = "SELECT `operation_id`, `operation` FROM "+ ReportingTable.API_OPERATION_TYPES;
         
         try {
             conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
@@ -1305,7 +1307,7 @@ public class BillingDAO {
         	log.error("Error occured while getting All Operation Types from the database" + e);
             handleException("Error occured while getting All Operation Types from the database", e);
         }finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, results);
+            DbUtils.closeAllConnections(ps, conn, results);
         }
         return txTypes;
     }
@@ -1324,7 +1326,7 @@ public class BillingDAO {
      * @throws APIManagementException the API management exception
      * @throws SQLException the SQL exception
      */
-    public static List<String[]> getAllAPIs(String fromDate, String toDate, String subscriber, String operator, int applicationId, String api) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
+    public List<String[]> getAllAPIs(String fromDate, String toDate, String subscriber, String operator, int applicationId, String api) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
         String consumerKey = null;
         if (subscriber.equals("__ALL__")) {
             subscriber = "%";
@@ -1335,7 +1337,7 @@ public class BillingDAO {
         if (applicationId == 0) {
             consumerKey = "%";
         } else {
-            consumerKey = ApiManagerDAO.getConsumerKeyByApplication(applicationId);
+            consumerKey = apiManagerDAO.getConsumerKeyByApplication(applicationId);
         }
         if (api.equals("__ALL__")) {
             api = "%";
@@ -1344,7 +1346,7 @@ public class BillingDAO {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet results = null;
-        String sql = "SELECT DISTINCT api FROM SB_API_RESPONSE_SUMMARY WHERE userId LIKE ? AND consumerKey LIKE ? AND operatorId LIKE ? AND api LIKE ? AND (STR_TO_DATE(SB_API_RESPONSE_SUMMARY.time, '%Y-%m-%d') BETWEEN  STR_TO_DATE(?, '%Y-%m-%d') AND STR_TO_DATE(?, '%Y-%m-%d'))";
+        String sql = "SELECT DISTINCT api FROM "+ ReportingTable.SB_API_RESPONSE_SUMMARY +" WHERE userId LIKE ? AND consumerKey LIKE ? AND operatorId LIKE ? AND api LIKE ? AND (STR_TO_DATE("+ ReportingTable.SB_API_RESPONSE_SUMMARY +".time, '%Y-%m-%d') BETWEEN  STR_TO_DATE(?, '%Y-%m-%d') AND STR_TO_DATE(?, '%Y-%m-%d'))";
         List<String[]> apis = new ArrayList<String[]>();
 
         try {
@@ -1366,7 +1368,7 @@ public class BillingDAO {
         	log.error("Error occured while getting all APIs from the database" + e);
             handleException("Error occured while getting all APIs from the database", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, results);
+            DbUtils.closeAllConnections(ps, conn, results);
         }
         return apis;
     }
@@ -1385,7 +1387,7 @@ public class BillingDAO {
      * @throws APIManagementException the API management exception
      * @throws SQLException the SQL exception
      */
-    public static List<String[]> getAllErrorResponseCodes(String fromDate, String toDate, String subscriber, String operator, int applicationId, String api) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
+    public List<String[]> getAllErrorResponseCodes(String fromDate, String toDate, String subscriber, String operator, int applicationId, String api) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
         String consumerKey = null;
         if (subscriber.equals("__ALL__")) {
             subscriber = "%";
@@ -1396,7 +1398,7 @@ public class BillingDAO {
         if (applicationId == 0) {
             consumerKey = "%";
         } else {
-            consumerKey = ApiManagerDAO.getConsumerKeyByApplication(applicationId);
+            consumerKey = apiManagerDAO.getConsumerKeyByApplication(applicationId);
         }
         if (api.equals("__ALL__")) {
             api = "%";
@@ -1405,8 +1407,8 @@ public class BillingDAO {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet results = null;
-        String sql = "SELECT DISTINCT IFNULL(exceptionId, 'SVC1000') AS exceptionId FROM SB_API_RESPONSE_SUMMARY \n"
-                + "WHERE userId LIKE ? AND consumerKey LIKE ? AND operatorId LIKE ? AND api LIKE ? AND (STR_TO_DATE(SB_API_RESPONSE_SUMMARY.time, '%Y-%m-%d') BETWEEN  STR_TO_DATE(?, '%Y-%m-%d') \n"
+        String sql = "SELECT DISTINCT IFNULL(exceptionId, 'SVC1000') AS exceptionId FROM "+ ReportingTable.SB_API_RESPONSE_SUMMARY +" \n"
+                + "WHERE userId LIKE ? AND consumerKey LIKE ? AND operatorId LIKE ? AND api LIKE ? AND (STR_TO_DATE("+ ReportingTable.SB_API_RESPONSE_SUMMARY +".time, '%Y-%m-%d') BETWEEN  STR_TO_DATE(?, '%Y-%m-%d') \n"
                 + "AND STR_TO_DATE(?, '%Y-%m-%d')) AND responseCode NOT IN ('200' , '201', '202', '204')";
         List<String[]> resCodes = new ArrayList<String[]>();
 
@@ -1429,7 +1431,7 @@ public class BillingDAO {
         	log.error("Error occured while getting all error response codes from the database" + e);
             handleException("Error occured while getting all all error response codes from the database", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, results);
+            DbUtils.closeAllConnections(ps, conn, results);
         }
         return resCodes;
     }
@@ -1452,7 +1454,7 @@ public class BillingDAO {
      * @throws APIManagementException the API management exception
      * @throws SQLException the SQL exception
      */
-    public static List<String[]> getCustomerCareReportData(String fromDate, String toDate, String msisdn, String subscriber, String operator, String app, String api, String startLimit, String endLimit, String timeOffset) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
+    public List<String[]> getCustomerCareReportData(String fromDate, String toDate, String msisdn, String subscriber, String operator, String app, String api, String startLimit, String endLimit, String timeOffset) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
 
         String consumerKey = "";
 
@@ -1474,7 +1476,7 @@ public class BillingDAO {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet results = null;
-        String sql = "SELECT x.time, x.jsonBody, x.api FROM SB_API_RESPONSE_SUMMARY x WHERE STR_TO_DATE(x.time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') AND operatorId LIKE ? AND userid LIKE ? AND api LIKE ? AND consumerKey LIKE ? AND msisdn LIKE ? LIMIT "+startLimit+" ,"+endLimit;
+        String sql = "SELECT x.time, x.jsonBody, x.api FROM "+ ReportingTable.SB_API_RESPONSE_SUMMARY +" x WHERE STR_TO_DATE(x.time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') AND operatorId LIKE ? AND userid LIKE ? AND api LIKE ? AND consumerKey LIKE ? AND msisdn LIKE ? LIMIT "+startLimit+" ,"+endLimit;
         List<String[]> api_request_data = new ArrayList<String[]>();
 
         try {
@@ -1499,7 +1501,7 @@ public class BillingDAO {
         	log.error("Error occured while getting API wise traffic for report (Charging) from the database" + e);
             handleException("Error occured while getting API wise traffic for report (Charging) from the database", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, results);
+            DbUtils.closeAllConnections(ps, conn, results);
         }
         return api_request_data;
     }
@@ -1519,7 +1521,7 @@ public class BillingDAO {
       * @throws APIManagementException the API management exception
       * @throws SQLException the SQL exception
       */
-     public static String getCustomerCareReportDataCount(String fromDate, String toDate, String msisdn, String subscriber, String operator, String app, String api) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
+     public String getCustomerCareReportDataCount(String fromDate, String toDate, String msisdn, String subscriber, String operator, String app, String api) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
 
         String consumerKey = "";
         String count = "";
@@ -1542,7 +1544,7 @@ public class BillingDAO {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet results = null;
-        String sql = "SELECT COUNT(*) FROM SB_API_RESPONSE_SUMMARY x WHERE STR_TO_DATE(x.time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') AND operatorId LIKE ? AND userid LIKE ? AND api LIKE ? AND consumerKey LIKE ? AND msisdn LIKE ?";
+        String sql = "SELECT COUNT(*) FROM "+ ReportingTable.SB_API_RESPONSE_SUMMARY +" x WHERE STR_TO_DATE(x.time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') AND operatorId LIKE ? AND userid LIKE ? AND api LIKE ? AND consumerKey LIKE ? AND msisdn LIKE ?";
         List<String[]> api_request_data = new ArrayList<String[]>();
 
         try {
@@ -1564,7 +1566,7 @@ public class BillingDAO {
         	log.error("Error occured while getCustomerCareReportDataCount" + e);
             handleException("Error occured while getCustomerCareReportDataCount", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, results);
+            DbUtils.closeAllConnections(ps, conn, results);
         }
         return count;
     }
@@ -1582,7 +1584,7 @@ public class BillingDAO {
      * @throws APIManagementException the API management exception
      * @throws SQLException the SQL exception
      */
-    public static List<String[]> getAPIWiseTrafficForReport(String fromDate, String toDate, String subscriber, String operator, String api) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
+    public List<String[]> getAPIWiseTrafficForReport(String fromDate, String toDate, String subscriber, String operator, String api) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
         if (subscriber.equals("__ALL__")) {
             subscriber = "%";
         }
@@ -1598,7 +1600,7 @@ public class BillingDAO {
         ResultSet results = null;
 
         String sql = "SELECT time, userId, operatorId, requestId, msisdn, response_count, responseCode, jsonBody, resourcePath, method,api "
-                + "FROM SB_API_RESPONSE_SUMMARY "
+                + "FROM "+ ReportingTable.SB_API_RESPONSE_SUMMARY +" "
                 + "WHERE STR_TO_DATE(time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') AND operatorId LIKE ? AND userid LIKE ? AND api LIKE ?";
 
         List<String[]> api_request = new ArrayList<String[]>();
@@ -1679,7 +1681,7 @@ public class BillingDAO {
         	log.error("Error occured while getting API wise traffic for report from the database" + e);
             handleException("Error occured while getting API wise traffic for report from the database", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, results);
+            DbUtils.closeAllConnections(ps, conn, results);
         }
         return api_request;
     }
@@ -1698,7 +1700,7 @@ public class BillingDAO {
      * @throws APIManagementException the API management exception
      * @throws SQLException the SQL exception
      */
-    public static ResultSet getTxLogData(String fromDate, String toDate, String subscriber, String operator, int opType, String dataType)
+    public ResultSet getTxLogData(String fromDate, String toDate, String subscriber, String operator, int opType, String dataType)
     		throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
         if (subscriber.equals("__ALL__")) {
             subscriber = "%";
@@ -1711,7 +1713,7 @@ public class BillingDAO {
         PreparedStatement ps = null;
         ResultSet results = null;
         String sql = "SELECT *"
-                + "FROM SB_API_RESPONSE_SUMMARY "
+                + "FROM "+ ReportingTable.SB_API_RESPONSE_SUMMARY +" "
                 + "WHERE STR_TO_DATE(time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') AND operatorId LIKE ? AND userid LIKE ? AND operationType LIKE ?";
         
         if(dataType.equals("1")){
@@ -1735,7 +1737,7 @@ public class BillingDAO {
         	log.error("Error occured while getting API wise traffic for report from the database" + e);
             handleException("Error occured while getting API wise traffic for report from the database", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, results);
+            DbUtils.closeAllConnections(ps, conn, results);
         }
         return results;
     }
@@ -1754,7 +1756,7 @@ public class BillingDAO {
      * @throws APIManagementException the API management exception
      * @throws SQLException the SQL exception
      */
-    public static ResultSet getTxLogDataNB(String fromDate, String toDate, String subscriber, String operator, int opType, String dataType)
+    public ResultSet getTxLogDataNB(String fromDate, String toDate, String subscriber, String operator, int opType, String dataType)
     		throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
         if (subscriber.equals("__ALL__")) {
             subscriber = "%";
@@ -1767,7 +1769,7 @@ public class BillingDAO {
         PreparedStatement ps = null;
         ResultSet results = null;
         String sql = "SELECT *"
-                + "FROM NB_API_RESPONSE_SUMMARY "
+                + "FROM "+ ReportingTable.NB_API_RESPONSE_SUMMARY +" "
                 + "WHERE STR_TO_DATE(time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') AND userid LIKE ? AND operationType LIKE ?";
         
         if(dataType.equals("1")){
@@ -1790,7 +1792,7 @@ public class BillingDAO {
         	log.error("Error occured while getting API wise traffic for report from the database" + e);
             handleException("Error occured while getting API wise traffic for report from the database", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, results);
+            DbUtils.closeAllConnections(ps, conn, results);
         }
         return results;
     }
@@ -1808,7 +1810,7 @@ public class BillingDAO {
      * @throws APIManagementException the API management exception
      * @throws SQLException the SQL exception
      */
-    public static List<String[]> getAPIWiseTrafficForReportCharging(String fromDate, String toDate, String subscriber, String operator, String api) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
+    public List<String[]> getAPIWiseTrafficForReportCharging(String fromDate, String toDate, String subscriber, String operator, String api) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
         if (subscriber.equals("__ALL__")) {
             subscriber = "%";
         }
@@ -1824,7 +1826,7 @@ public class BillingDAO {
         ResultSet results = null;
 
         String sql = "SELECT time, userId, operatorId, requestId, msisdn, chargeAmount, responseCode, jsonBody, resourcePath, method, purchaseCategoryCode,api "
-                + "FROM SB_API_RESPONSE_SUMMARY "
+                + "FROM "+ ReportingTable.SB_API_RESPONSE_SUMMARY +" "
                 + "WHERE STR_TO_DATE(time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') AND operatorId LIKE ? AND userid LIKE ? AND api LIKE ?;";
 
         List<String[]> api_request = new ArrayList<String[]>();
@@ -1912,7 +1914,7 @@ public class BillingDAO {
         	log.error("Error occured while getting API wise traffic for report (Charging) from the database" + e);
             handleException("Error occured while getting API wise traffic for report (Charging) from the database", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, results);
+            DbUtils.closeAllConnections(ps, conn, results);
         }
         return api_request;
     }
@@ -1931,7 +1933,7 @@ public class BillingDAO {
      * @throws APIManagementException the API management exception
      * @throws SQLException the SQL exception
      */
-    public static List<String[]> getErrorResponseCodesForPieChart(String fromDate, String toDate, String subscriber, String operator, int applicationId, String api) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
+    public List<String[]> getErrorResponseCodesForPieChart(String fromDate, String toDate, String subscriber, String operator, int applicationId, String api) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
         String consumerKey = null;
         if (subscriber.equals("__ALL__")) {
             subscriber = "%";
@@ -1942,7 +1944,7 @@ public class BillingDAO {
         if (applicationId == 0) {
             consumerKey = "%";
         } else {
-            consumerKey = ApiManagerDAO.getConsumerKeyByApplication(applicationId);
+            consumerKey = apiManagerDAO.getConsumerKeyByApplication(applicationId);
         }
         if (api.equals("__ALL__")) {
             api = "%";
@@ -1952,8 +1954,8 @@ public class BillingDAO {
         PreparedStatement ps = null;
         ResultSet results = null;
         String sql = "SELECT IFNULL(exceptionId,'SVC1000') AS exceptionId, SUM(response_count) AS api_response_count \n"
-                + "FROM SB_API_RESPONSE_SUMMARY \n"
-                + "WHERE userId LIKE ? AND consumerKey LIKE ? AND operatorId LIKE ? AND (STR_TO_DATE(SB_API_RESPONSE_SUMMARY.time, '%Y-%m-%d') BETWEEN  STR_TO_DATE(?, '%Y-%m-%d') AND STR_TO_DATE(?, '%Y-%m-%d')) AND api LIKE ? AND responseCode NOT IN ('200' , '201', '202', '204') \n"
+                + "FROM "+ ReportingTable.SB_API_RESPONSE_SUMMARY +" \n"
+                + "WHERE userId LIKE ? AND consumerKey LIKE ? AND operatorId LIKE ? AND (STR_TO_DATE("+ ReportingTable.SB_API_RESPONSE_SUMMARY +".time, '%Y-%m-%d') BETWEEN  STR_TO_DATE(?, '%Y-%m-%d') AND STR_TO_DATE(?, '%Y-%m-%d')) AND api LIKE ? AND responseCode NOT IN ('200' , '201', '202', '204') \n"
                 + "GROUP BY exceptionId";
         List<String[]> api_response_codes = new ArrayList<String[]>();
 
@@ -1976,7 +1978,7 @@ public class BillingDAO {
         	log.error("Error occured while getting error response codes for pie chart from the database" + e);
             handleException("Error occured while getting error response codes for pie chart from the database", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, results);
+            DbUtils.closeAllConnections(ps, conn, results);
         }
         return api_response_codes;
     }
@@ -1995,7 +1997,7 @@ public class BillingDAO {
      * @throws APIManagementException the API management exception
      * @throws SQLException the SQL exception
      */
-    public static List<String[]> getErrorResponseCodesForHistogram(String fromDate, String toDate, String subscriber, String operator, int applicationId, String api) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
+    public List<String[]> getErrorResponseCodesForHistogram(String fromDate, String toDate, String subscriber, String operator, int applicationId, String api) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
         String consumerKey = null;
         if (subscriber.equals("__ALL__")) {
             subscriber = "%";
@@ -2006,7 +2008,7 @@ public class BillingDAO {
         if (applicationId == 0) {
             consumerKey = "%";
         } else {
-            consumerKey = ApiManagerDAO.getConsumerKeyByApplication(applicationId);
+            consumerKey = apiManagerDAO.getConsumerKeyByApplication(applicationId);
         }
         if (api.equals("__ALL__")) {
             api = "%";
@@ -2016,12 +2018,12 @@ public class BillingDAO {
         PreparedStatement ps = null;
         ResultSet results = null;
         String sql = "select a.exceptionId, a.Date, IFNULL(b.HITS,0) HITS\n"
-                + "from (select IFNULL(aa.exceptionId, 'SVC1000') exceptionId, a.Date from SB_API_RESPONSE_SUMMARY aa cross join (select DATE(?) - INTERVAL (a.a + (10 * b.a) + (100 * c.a)) DAY as Date \n"
+                + "from (select IFNULL(aa.exceptionId, 'SVC1000') exceptionId, a.Date from "+ ReportingTable.SB_API_RESPONSE_SUMMARY +" aa cross join (select DATE(?) - INTERVAL (a.a + (10 * b.a) + (100 * c.a)) DAY as Date \n"
                 + "from (select 0 as a union all select 1 union all select 2 union all select 3 union all select 4 union all select 5 union all select 6 union all select 7 union all select 8 union all select 9) as a \n"
                 + "cross join (select 0 as a union all select 1 union all select 2 union all select 3 union all select 4 union all select 5 union all select 6 union all select 7 union all select 8 union all select 9) as b \n"
                 + "cross join (select 0 as a union all select 1 union all select 2 union all select 3 union all select 4 union all select 5 union all select 6 union all select 7 union all select 8 union all select 9) as c ) a \n"
                 + "where a.Date between ? and ? AND aa.responseCode NOT IN ('200' , '201', '202', '204') group by a.date, exceptionId) a \n"
-                + "left join (SELECT IFNULL(exceptionId,'SVC1000') exceptionId, SUM(response_count) HITS, time FROM SB_API_RESPONSE_SUMMARY\n"
+                + "left join (SELECT IFNULL(exceptionId,'SVC1000') exceptionId, SUM(response_count) HITS, time FROM "+ ReportingTable.SB_API_RESPONSE_SUMMARY +"\n"
                 + "WHERE DATE(time) between DATE(?) and DATE(?) AND operatorId LIKE ? AND userId LIKE ? AND API LIKE ? AND consumerKey LIKE ? \n"
                 + "AND responseCode NOT IN ('200' , '201', '202', '204')\n"
                 + "GROUP BY exceptionId, DATE(time)) b on (a.Date = DATE(b.time) and a.exceptionId = b.exceptionId)";
@@ -2049,7 +2051,7 @@ public class BillingDAO {
         	log.error("Error occured while getting error response codes for histogram from the database" + e);
             handleException("Error occured while getting error response codes for histogram from the database", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, results);
+            DbUtils.closeAllConnections(ps, conn, results);
         }
         return api_response_codes;
     }
@@ -2061,7 +2063,7 @@ public class BillingDAO {
      * @param requested_api the requested_api
      * @return the string
      */
-    private static String findAPIType(String ResourceURL , String requested_api) {
+    private String findAPIType(String ResourceURL , String requested_api) {
 
         String apiType = null;
 
@@ -2131,12 +2133,12 @@ public class BillingDAO {
      * @return the app name by consumer key
      * @throws APIManagementException the API management exception
      */
-    private static String getAppNameByConsumerKey(String key) throws APIManagementException {
+    private String getAppNameByConsumerKey(String key) throws APIManagementException {
         String appName = "";
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet results = null;
-        String sql = "SELECT `name` FROM AM_APPLICATION ap, AM_APPLICATION_KEY_MAPPING mp WHERE mp.CONSUMER_KEY =? AND mp.KEY_TYPE ='PRODUCTION' AND ap.APPLICATION_ID = mp.APPLICATION_ID";
+        String sql = "SELECT `name` FROM "+ ReportingTable.AM_APPLICATION +" ap, "+ ReportingTable.AM_APPLICATION_KEY_MAPPING +" mp WHERE mp.CONSUMER_KEY =? AND mp.KEY_TYPE ='PRODUCTION' AND ap.APPLICATION_ID = mp.APPLICATION_ID";
         try {
             conn =DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
             ps = conn.prepareStatement(sql);
@@ -2151,7 +2153,7 @@ public class BillingDAO {
         	log.error("Error occured while getting API wise traffic for report (Charging) from the database" + e);
             handleException("Error occured while getting API wise traffic for report (Charging) from the database", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, results);
+            DbUtils.closeAllConnections(ps, conn, results);
         }
 
         return appName;
@@ -2164,13 +2166,13 @@ public class BillingDAO {
      * @return the consumer key by app id
      * @throws APIManagementException the API management exception
      */
-    private static String getConsumerKeyByAppId(String appId) throws APIManagementException {
+    private String getConsumerKeyByAppId(String appId) throws APIManagementException {
         String key = "";
 
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet results = null;
-        String sql = "SELECT `CONSUMER_KEY` FROM AM_APPLICATION_KEY_MAPPING WHERE `APPLICATION_ID` = ? and `KEY_TYPE` = 'PRODUCTION'";
+        String sql = "SELECT `CONSUMER_KEY` FROM "+ ReportingTable.AM_APPLICATION_KEY_MAPPING +" WHERE `APPLICATION_ID` = ? and `KEY_TYPE` = 'PRODUCTION'";
         try {
             conn =DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
             ps = conn.prepareStatement(sql);
@@ -2185,7 +2187,7 @@ public class BillingDAO {
         	log.error("Error occured while getting API wise traffic for report (Charging) from the database" + e);
             handleException("Error occured while getting API wise traffic for report (Charging) from the database", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, results);
+            DbUtils.closeAllConnections(ps, conn, results);
         }
 
         return key;
@@ -2198,12 +2200,12 @@ public class BillingDAO {
      * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
      * @throws APIManagementException the API management exception
      */
-    public static ArrayList<SPObject> generateSPList() throws APIMgtUsageQueryServiceClientException, APIManagementException {
+    public ArrayList<SPObject> generateSPList() throws APIMgtUsageQueryServiceClientException, APIManagementException {
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet results = null;
         String sql = "select distinct(application_id),name,authz_user from (select am.application_id,am.name,ac.authz_user "
-        		+ "from IDN_OAUTH2_ACCESS_TOKEN ac,IDN_OAUTH_CONSUMER_APPS ca,AM_APPLICATION am,AM_APPLICATION_KEY_MAPPING km where ac.consumer_key=ca.consumer_key "
+        		+ "from IDN_OAUTH2_ACCESS_TOKEN ac,IDN_OAUTH_CONSUMER_APPS ca,"+ ReportingTable.AM_APPLICATION +" am,"+ ReportingTable.AM_APPLICATION_KEY_MAPPING +" km where ac.consumer_key=ca.consumer_key "
         		+ "and km.application_id=am.application_id and km.consumer_key=ca.consumer_key and ac.authz_user=ca.username and user_type='APPLICATION' and token_State='Active') as dummy";
         ArrayList<SPObject> spList = new ArrayList<SPObject>();
         try {
@@ -2222,7 +2224,7 @@ public class BillingDAO {
             log.error(e.getStackTrace());
             handleException("Error occurred while getting Invocation count for Application", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, connection, results);
+            DbUtils.closeAllConnections(ps, connection, results);
         }
         return null;
     }
@@ -2237,12 +2239,12 @@ public class BillingDAO {
      * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
      * @throws APIManagementException the API management exception
      */
-    public static SPObject generateSPObject(String appId) throws APIMgtUsageQueryServiceClientException, APIManagementException {
+    public SPObject generateSPObject(String appId) throws APIMgtUsageQueryServiceClientException, APIManagementException {
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet results = null;
         String sql = "select am.application_id,am.name,ac.authz_user,ac.ACCESS_TOKEN,ca.consumer_key,ca.consumer_secret "
-        		+ "from IDN_OAUTH2_ACCESS_TOKEN ac,IDN_OAUTH_CONSUMER_APPS ca,AM_APPLICATION am,AM_APPLICATION_KEY_MAPPING km "
+        		+ "from IDN_OAUTH2_ACCESS_TOKEN ac,IDN_OAUTH_CONSUMER_APPS ca,"+ ReportingTable.AM_APPLICATION +" am,"+ ReportingTable.AM_APPLICATION_KEY_MAPPING +" km "
         		+ "where ac.consumer_key=ca.consumer_key and km.application_id=am.application_id "
         		+ "and km.consumer_key=ca.consumer_key and ac.authz_user=ca.username and user_type='APPLICATION' and token_State='Active' and am.application_id='"+appId+"' limit 1";
         SPObject spObject = new SPObject();
@@ -2264,7 +2266,7 @@ public class BillingDAO {
             log.error(e.getStackTrace());
             handleException("Error occurred while getting Invocation count for Application", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, connection, results);
+            DbUtils.closeAllConnections(ps, connection, results);
         }
         return null;
     }  
@@ -2284,7 +2286,7 @@ public class BillingDAO {
      * @throws APIManagementException the API management exception
      * @throws SQLException the SQL exception
      */
-    public static List<String[]> getTotalAPITrafficForLineChart(String fromDate, String toDate, String subscriber, String operator, int applicationId, String api) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
+    public List<String[]> getTotalAPITrafficForLineChart(String fromDate, String toDate, String subscriber, String operator, int applicationId, String api) throws APIMgtUsageQueryServiceClientException, APIManagementException, SQLException {
         String consumerKey = null;
         if (subscriber.equals("__ALL__")) {
             subscriber = "%";
@@ -2295,7 +2297,7 @@ public class BillingDAO {
         if (applicationId == 0) {
             consumerKey = "%";
         } else {
-            consumerKey = ApiManagerDAO.getConsumerKeyByApplication(applicationId);
+            consumerKey = apiManagerDAO.getConsumerKeyByApplication(applicationId);
         }
         if (api.equals("__ALL__")) {
             api = "%";
@@ -2308,7 +2310,7 @@ public class BillingDAO {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet results = null;
-        String sql = "select date(time) as date, sum(response_count) hits from SB_API_RESPONSE_SUMMARY\n"
+        String sql = "select date(time) as date, sum(response_count) hits from "+ ReportingTable.SB_API_RESPONSE_SUMMARY +"\n"
                 + "where DATE(time) between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') AND operatorId LIKE ? AND userId LIKE ? AND API LIKE ? AND consumerKey LIKE ? \n"
                 + "group by date";
         List<String[]> api_request = new ArrayList<String[]>();
@@ -2336,7 +2338,7 @@ public class BillingDAO {
             log.error("Error occured while getting total traffic for histogram from the database" + e);            
             handleException("Error occured while getting total traffic for histogram from the database", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, results);
+            DbUtils.closeAllConnections(ps, conn, results);
         }
         return api_request;
     }
@@ -2353,7 +2355,7 @@ public class BillingDAO {
      * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
      * @throws APIManagementException the API management exception
      */
-    public static List<APIResponseDTO> getAllResponseTimesForAllAPIs(String operator, String userId, String fromDate,
+    public List<APIResponseDTO> getAllResponseTimesForAllAPIs(String operator, String userId, String fromDate,
             String toDate, String timeRange) throws APIMgtUsageQueryServiceClientException, APIManagementException {
 
 	if (log.isDebugEnabled()) {
@@ -2375,7 +2377,7 @@ public class BillingDAO {
         ResultSet results = null;
     
         String sql = "SELECT SUM(response_count) as sumCount, SUM(serviceTime) as sumServiceTime, STR_TO_DATE(time,'%Y-%m-%d') as date "
-        		+ "FROM SB_API_RESPONSE_SUMMARY "
+        		+ "FROM "+ ReportingTable.SB_API_RESPONSE_SUMMARY +" "
         		+ "WHERE (time BETWEEN ? AND ?) AND operatorId LIKE ? AND userId LIKE ? "
         		+ "GROUP BY date;";
         List<APIResponseDTO> responseTimes = new ArrayList<APIResponseDTO>();
@@ -2400,7 +2402,7 @@ public class BillingDAO {
             log.error(e.getStackTrace());
             handleException("Error occurred while getting all response times for API", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, connection, results);
+            DbUtils.closeAllConnections(ps, connection, results);
         }
         return responseTimes;
     }
@@ -2417,7 +2419,7 @@ public class BillingDAO {
      * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
      * @throws APIManagementException the API management exception
      */
-    public static List<APIResponseDTO> getAllResponseTimesForAPIbyDate(String operator, String userId, String fromDate,
+    public List<APIResponseDTO> getAllResponseTimesForAPIbyDate(String operator, String userId, String fromDate,
             String toDate, String api) throws APIMgtUsageQueryServiceClientException, APIManagementException {
 
 	if (log.isDebugEnabled()) {
@@ -2439,7 +2441,7 @@ public class BillingDAO {
         ResultSet results = null;
     
         String sql = "SELECT api,SUM(response_count) as sumCount, SUM(serviceTime) as sumServiceTime, STR_TO_DATE(time,'%Y-%m-%d') as date "
-        		+ "FROM SB_API_RESPONSE_SUMMARY "
+        		+ "FROM "+ ReportingTable.SB_API_RESPONSE_SUMMARY +" "
         		+ "WHERE api=? AND (time BETWEEN ? AND ?) AND operatorId LIKE ? AND userId LIKE ? "
         		+ "GROUP BY date;";
         List<APIResponseDTO> responseTimes = new ArrayList<APIResponseDTO>();
@@ -2466,7 +2468,7 @@ public class BillingDAO {
             log.error(e.getStackTrace());
             handleException("Error occurred while getting all response times for API by date", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, connection, results);
+            DbUtils.closeAllConnections(ps, connection, results);
         }
         return responseTimes;
     }
@@ -2485,7 +2487,7 @@ public class BillingDAO {
      * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
      * @throws APIManagementException the API management exception
      */
-    public static String[] getTimeConsumptionByAPI(String operator, String userId, String fromDate,
+    public String[] getTimeConsumptionByAPI(String operator, String userId, String fromDate,
             String toDate, String api) throws APIMgtUsageQueryServiceClientException, APIManagementException {
 
 	if (log.isDebugEnabled()) {
@@ -2509,7 +2511,7 @@ public class BillingDAO {
 
         String sql = "SELECT api, MAX(hightestTime) as highestConsumption, SUM(sumServiceTime)/SUM(sumCount) as avgTotalConsump FROM ("
         	+ "SELECT api,SUM(response_count) as sumCount, SUM(serviceTime) as sumServiceTime, (SUM(serviceTime)/SUM(response_count)) as hightestTime, STR_TO_DATE(time,'%Y-%m-%d') as date "
-        	+ "FROM SB_API_RESPONSE_SUMMARY "
+        	+ "FROM "+ ReportingTable.SB_API_RESPONSE_SUMMARY +" "
         	+ "WHERE api = ? AND (time BETWEEN ? AND ?) AND operatorId LIKE ? AND userId LIKE ? "
         	+ "GROUP BY date "
         	+ ") AS T;";
@@ -2537,7 +2539,7 @@ public class BillingDAO {
             log.error(e.getStackTrace());
             handleException("Error occurred while getting all response times for API by date", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, connection, results);
+            DbUtils.closeAllConnections(ps, connection, results);
         }
         return timeConsumerData;
     }
@@ -2552,14 +2554,14 @@ public class BillingDAO {
      * @throws APIManagementException the API management exception
      * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
      */
-    public static Date getSubscriptionCreatedTime(int appId, APIIdentifier apiIdent)
+    public Date getSubscriptionCreatedTime(int appId, APIIdentifier apiIdent)
             throws APIManagementException, APIMgtUsageQueryServiceClientException {
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet results = null;
         Timestamp wfCreatedTime = null;
         String sql = "SELECT WF.WF_CREATED_TIME " +
-                "FROM AM_SUBSCRIPTION SUBS, AM_WORKFLOWS WF " +
+                "FROM "+ ReportingTable.AM_SUBSCRIPTION +" SUBS, "+ ReportingTable.AM_WORKFLOWS +" WF " +
                 "WHERE " +
                 "SUBS.APPLICATION_ID = ? " +
                 "AND SUBS.API_ID = ? " +
@@ -2588,7 +2590,7 @@ public class BillingDAO {
             log.error(e.getStackTrace());
             handleException("Error occurred while getting workflow created time", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, connection, results);
+            DbUtils.closeAllConnections(ps, connection, results);
         }
         return (wfCreatedTime != null) ? new Date(wfCreatedTime.getTime()) : null;
     }
@@ -2602,7 +2604,7 @@ public class BillingDAO {
 	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
 	 * @throws APIManagementException the API management exception
 	 */
-	public static Map<String,CommissionPercentagesDTO> getCommissionPercentages(String spId, Integer appId) throws APIMgtUsageQueryServiceClientException,APIManagementException {
+	public Map<String,CommissionPercentagesDTO> getCommissionPercentages(String spId, Integer appId) throws APIMgtUsageQueryServiceClientException,APIManagementException {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet results = null;
@@ -2634,7 +2636,7 @@ public class BillingDAO {
 			handleException(
 					"Error occurred while getting Payment API count for Application",e);
 		} finally {
-			APIMgtDBUtil.closeAllConnections(ps, connection, results);
+			DbUtils.closeAllConnections(ps, connection, results);
 		}
 
 		return requestSet;
@@ -2648,7 +2650,7 @@ public class BillingDAO {
      * @throws APIManagementException the API management exception
      * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
      */
-    public static String getOperationNameById(int operationId) throws APIManagementException,
+    public String getOperationNameById(int operationId) throws APIManagementException,
             APIMgtUsageQueryServiceClientException {
 
         Connection connection = null;
@@ -2673,7 +2675,7 @@ public class BillingDAO {
             log.error(e.getStackTrace());
             handleException("Error occurred while getting Taxes for Subscription", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, connection, results);
+            DbUtils.closeAllConnections(ps, connection, results);
         }
         return operationName;
     }
@@ -2686,7 +2688,7 @@ public class BillingDAO {
      * @param time the time
      * @return the string
      */
-    public static String convertToLocalTime(String timeOffset, String time){
+    public String convertToLocalTime(String timeOffset, String time){
         Integer offsetValue = Integer.parseInt(timeOffset);
 
         log.debug("Offset value = " +offsetValue);

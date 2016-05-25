@@ -16,10 +16,21 @@
 package com.wso2telco.dep.reportingservice.dao;
 
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.apimgt.api.APIManagementException;
-import org.wso2.carbon.apimgt.impl.utils.APIMgtDBUtil;
 import org.wso2.carbon.apimgt.usage.client.exception.APIMgtUsageQueryServiceClientException;
 
 import com.wso2telco.dbutils.DbUtils;
@@ -27,11 +38,9 @@ import com.wso2telco.dbutils.util.DataSourceNames;
 import com.wso2telco.dep.reportingservice.APIRequestDTO;
 import com.wso2telco.dep.reportingservice.HostObjectConstants;
 import com.wso2telco.dep.reportingservice.Tax;
+import com.wso2telco.dep.reportingservice.util.ReportingTable;
 
-import java.sql.*;
-import java.util.*;
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class TaxDataAccessObject.
  */
@@ -46,13 +55,13 @@ public class TaxDAO {
      * @param applicationId the application id
      * @param apiId the api id
      * @return the taxes for subscription
-     * @throws Exception 
+     * @throws Exception the exception
      */
-    public static List<Tax> getTaxesForSubscription(int applicationId, int apiId) throws Exception {
+    public List<Tax> getTaxesForSubscription(int applicationId, int apiId) throws Exception {
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet results = null;
-        String sql = "SELECT type,effective_from,effective_to,value FROM tax, subscription_tax " +
+        String sql = "SELECT type,effective_from,effective_to,value FROM "+ ReportingTable.TAX +", "+ ReportingTable.SUBSCRIPTION_TAX +
                 "WHERE subscription_tax.application_id=? AND subscription_tax.api_id=? AND tax.type=subscription_tax.tax_type ";
 
         List<Tax> taxes = new ArrayList<Tax>();
@@ -77,7 +86,7 @@ public class TaxDAO {
             log.error(e.getStackTrace());
             handleException("Error occurred while getting Taxes for Subscription", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, connection, results);
+            DbUtils.closeAllConnections(ps, connection, results);
         }
         return taxes;
     }
@@ -87,9 +96,9 @@ public class TaxDAO {
      *
      * @param taxList the tax list
      * @return the taxes for tax list
-     * @throws Exception 
+     * @throws Exception the exception
      */
-    public static List<Tax> getTaxesForTaxList(List<String> taxList) throws Exception {
+    public List<Tax> getTaxesForTaxList(List<String> taxList) throws Exception {
         Connection connection = null;
         Statement st = null;
         ResultSet results = null;
@@ -103,7 +112,7 @@ public class TaxDAO {
         // CSV format surrounded by single quote
         String taxListStr = taxList.toString().replace("[", "'").replace("]", "'").replace(", ", "','");
 
-        String sql = "SELECT type,effective_from,effective_to,value FROM tax WHERE type IN (" + taxListStr + ")";
+        String sql = "SELECT type,effective_from,effective_to,value FROM "+ ReportingTable.TAX +" WHERE type IN (" + taxListStr + ")";
 
         try {
             connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
@@ -125,7 +134,7 @@ public class TaxDAO {
             log.error(e.getStackTrace());
             handleException("Error occurred while getting Taxes for Tax List", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(null, connection, results);
+            DbUtils.closeAllConnections(null, connection, results);
         }
         return taxes;
     }
@@ -143,9 +152,9 @@ public class TaxDAO {
      * @param category the category
      * @param subcategory the subcategory
      * @return the API request times for subscription
-     * @throws Exception 
+     * @throws Exception the exception
      */
-    public static Set<APIRequestDTO> getAPIRequestTimesForSubscription(short year, short month, String apiName,
+    public Set<APIRequestDTO> getAPIRequestTimesForSubscription(short year, short month, String apiName,
                                                                        String apiVersion, String consumerKey,
                                                                        String operatorId, int operation, String category, String subcategory) throws
             Exception {
@@ -182,7 +191,7 @@ public class TaxDAO {
         } catch (SQLException e) {
             handleException("Error occurred while getting Request Times for Subscription", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, connection, results);
+            DbUtils.closeAllConnections(ps, connection, results);
         }
 
         return apiRequests;
@@ -200,9 +209,9 @@ public class TaxDAO {
      * @param category the category
      * @param subcategory the subcategory
      * @return the nb api request times for subscription
-     * @throws Exception 
+     * @throws Exception the exception
      */
-    public static Set<APIRequestDTO> getNbAPIRequestTimesForSubscription(short year, short month, String apiName,
+    public Set<APIRequestDTO> getNbAPIRequestTimesForSubscription(short year, short month, String apiName,
                                                                        String apiVersion, String consumerKey,
                                                                        int operation, String category, String subcategory) throws
             Exception {
@@ -210,7 +219,7 @@ public class TaxDAO {
         PreparedStatement ps = null;
         ResultSet results = null;
         String sql = "SELECT api_version,response_count AS count,STR_TO_DATE(time,'%Y-%m-%d') as date FROM " +
-                HostObjectConstants.NB_RESPONSE_SUMMARY_TABLE + " WHERE year=? and month=? and consumerKey=? and " +
+                ReportingTable.NB_API_RESPONSE_SUMMARY + " WHERE year=? and month=? and consumerKey=? and " +
                 "api=? and api_version=? and operationType=? and category =? and subcategory=? and responseCode like '2%'";
 
         Set<APIRequestDTO> apiRequests = new HashSet<APIRequestDTO>();
@@ -238,7 +247,7 @@ public class TaxDAO {
         } catch (SQLException e) {
             handleException("Error occurred while getting Request Times for Subscription", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, connection, results);
+            DbUtils.closeAllConnections(ps, connection, results);
         }
 
         return apiRequests;
@@ -252,15 +261,15 @@ public class TaxDAO {
      * @param month the month
      * @param userId the user id
      * @return the API request times for application
-     * @throws Exception 
+     * @throws Exception the exception
      */
-    public static Map<String, List<APIRequestDTO>> getAPIRequestTimesForApplication(String consumerKey, short year,
+    public Map<String, List<APIRequestDTO>> getAPIRequestTimesForApplication(String consumerKey, short year,
                                                                                  short month, String userId)
             throws Exception {
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet results = null;
-        String sql = "SELECT api_version,total_request_count AS count,STR_TO_DATE(time,'%Y-%m-%d') as date FROM API_REQUEST_SUMMARY " +
+        String sql = "SELECT api_version,total_request_count AS count,STR_TO_DATE(time,'%Y-%m-%d') as date FROM  "+ ReportingTable.API_REQUEST_SUMMARY +
                 "WHERE year=? AND month=? AND consumerKey=?  AND userId=?;";
 
         Map<String, List<APIRequestDTO>> apiRequests = new HashMap<String, List<APIRequestDTO>>();
@@ -289,7 +298,7 @@ public class TaxDAO {
         } catch (SQLException e) {
             handleException("Error occurred while getting Request Times for Application", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, connection, results);
+            DbUtils.closeAllConnections(ps, connection, results);
         }
 
         return apiRequests;
@@ -311,17 +320,20 @@ public class TaxDAO {
      * The main method.
      *
      * @param args the arguments
-     * @throws Exception 
+     * @throws Exception the exception
      */
     public static void main(String[] args) throws Exception {
+    	
+    	TaxDAO taxDAO = new TaxDAO();
+    	
         try {
-            List<Tax> taxList = getTaxesForSubscription(00,25);
+            List<Tax> taxList = taxDAO.getTaxesForSubscription(00,25);
             for (int i = 0; i < taxList.size(); i++) {
                 Tax tax = taxList.get(i);
                 System.out.println(tax.getType() + " ~ " + tax.getEffective_from() + " ~ " + tax.getEffective_to() + " ~ " + tax.getValue());
             }
 
-            Map<String, List<APIRequestDTO>> reqMap = getAPIRequestTimesForApplication("yx1eZTmtbBaYqfIuEYMVgIKonSga", (short)2014, (short)1, "admin");
+            Map<String, List<APIRequestDTO>> reqMap = taxDAO.getAPIRequestTimesForApplication("yx1eZTmtbBaYqfIuEYMVgIKonSga", (short)2014, (short)1, "admin");
             System.out.println(reqMap);
 
         } catch (APIManagementException e) {

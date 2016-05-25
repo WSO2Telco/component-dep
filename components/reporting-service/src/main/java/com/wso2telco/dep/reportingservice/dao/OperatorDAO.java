@@ -24,6 +24,7 @@ import com.wso2telco.dbutils.DbUtils;
 import com.wso2telco.dbutils.util.DataSourceNames;
 import com.wso2telco.dep.reportingservice.SPObject;
 import com.wso2telco.dep.reportingservice.dao.Approval;
+import com.wso2telco.dep.reportingservice.util.ReportingTable;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -52,7 +53,7 @@ public class OperatorDAO {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet results = null;
-        String sql = "SELECT operatorname FROM operators";
+        String sql = "SELECT operatorname FROM "+ ReportingTable.OPERATORS +"";
         List<String> op = new ArrayList<String>();
         try {
             conn =  DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
@@ -66,7 +67,7 @@ public class OperatorDAO {
         } catch (Exception e) {
         	log.error("Error occured while getting All Operators from the database" + e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, results);
+            DbUtils.closeAllConnections(ps, conn, results);
         }
         return op;
     }
@@ -83,7 +84,7 @@ public class OperatorDAO {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet results = null;
-        String sql = "SELECT opcoApp.applicationid FROM operatorapps opcoApp INNER JOIN operators opco ON opcoApp.operatorid = opco.id WHERE opco.operatorname =? AND opcoApp.isactive = 1";
+        String sql = "SELECT opcoApp.applicationid FROM "+ ReportingTable.OPERATORAPPS +" opcoApp INNER JOIN "+ ReportingTable.OPERATORS +" opco ON opcoApp.operatorid = opco.id WHERE opco.operatorname =? AND opcoApp.isactive = 1";
         List<Integer> applicationIds = new ArrayList<Integer>();
         try {
             conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
@@ -98,7 +99,7 @@ public class OperatorDAO {
         } catch (Exception e) {
         	log.error("Error occured while getting application ids from the database" + e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, results);
+            DbUtils.closeAllConnections(ps, conn, results);
         }
         return applicationIds;
     }
@@ -115,7 +116,7 @@ public class OperatorDAO {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet results = null;
-        String sql = "SELECT opco.operatorname FROM operatorapps opcoApp INNER JOIN operators opco ON opcoApp.operatorid = opco.id  WHERE opcoApp.applicationid =? AND opcoApp.isactive = 1";
+        String sql = "SELECT opco.operatorname FROM "+ ReportingTable.OPERATORAPPS +" opcoApp INNER JOIN "+ ReportingTable.OPERATORS +" opco ON opcoApp.operatorid = opco.id  WHERE opcoApp.applicationid =? AND opcoApp.isactive = 1";
         List<String> operatorNames = new ArrayList<String>();
         try {
             conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
@@ -130,7 +131,7 @@ public class OperatorDAO {
         } catch (Exception e) {
         	log.error("Error occured while getting operator names from the database" + e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, results);
+            DbUtils.closeAllConnections(ps, conn, results);
         }
         
         return operatorNames;
@@ -150,9 +151,9 @@ public class OperatorDAO {
         PreparedStatement ps = null;
         ResultSet rs = null;
         String sql = "SELECT applicationid as application_id ,2 as type, 'APPO' as name, operatorid, IF(isactive = 0, 'NOT APPROVED','APPROVED') as isactive, '' as api_name, created_date,lastupdated_date "+ 
-                "FROM operatorapps where operatorid like ? and applicationid = ? "+
+                "FROM "+ ReportingTable.OPERATORAPPS +" where operatorid like ? and applicationid = ? "+
                 "UNION ALL SELECT applicationid as application_id, 4 as type,'SUBO' as name, openp.operatorid as operatorid, IF(enp.isactive = 0, 'NOT APPROVED','APPROVED') as isactive, openp.api as api_name, enp.created_date,enp.lastupdated_date "+
-                "FROM endpointapps enp,operatorendpoints openp WHERE " +
+                "FROM "+ ReportingTable.ENDPOINTAPPS +" enp,"+ ReportingTable.OPERATORENDPOINTS +" openp WHERE " +
                 "enp.endpointid = openp.id and openp.operatorid like ? and applicationid = ? "+
                 "ORDER BY type,api_name, operatorid";
         
@@ -180,7 +181,7 @@ public class OperatorDAO {
         } catch (Exception e) {
         	log.error("Error occured while getting operator names from the database" + e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, rs);
+            DbUtils.closeAllConnections(ps, conn, rs);
         }
     }
 
@@ -196,7 +197,7 @@ public class OperatorDAO {
         PreparedStatement ps = null;
         ResultSet rs = null;
                 
-        String sql = "SELECT opco.operatorname FROM operatorapps opcoApp INNER JOIN operators opco ON opcoApp.operatorid = opco.id WHERE opcoApp.isactive = 1 AND opcoApp.applicationid = ? AND opco.operatorname like ?";
+        String sql = "SELECT opco.operatorname FROM "+ ReportingTable.OPERATORAPPS +" opcoApp INNER JOIN "+ ReportingTable.OPERATORS +" opco ON opcoApp.operatorid = opco.id WHERE opcoApp.isactive = 1 AND opcoApp.applicationid = ? AND opco.operatorname like ?";
 
         String approvedOperators = "";
 
@@ -220,7 +221,7 @@ public class OperatorDAO {
         } catch (Exception e) {
         	log.error("Error occured while getting approved operators of application from the database" + e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, rs);
+            DbUtils.closeAllConnections(ps, conn, rs);
         }
         if(approvedOperators == ""){
             approvedOperators = "NONE";

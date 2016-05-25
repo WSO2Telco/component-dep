@@ -179,7 +179,8 @@ public class SbHostObjectUtils {
 	private static boolean isSubscriptionValidForMonth(SubscribedAPI subAPI,
 			String year, String month) throws APIManagementException,
 			APIMgtUsageQueryServiceClientException {
-		java.util.Date createdTime = BillingDAO
+		BillingDAO billingDAO = new BillingDAO();
+		java.util.Date createdTime = billingDAO
 				.getSubscriptionCreatedTime(subAPI.getApplication().getId(),
 						subAPI.getApiId());
 		Date reportDate = Date.valueOf(year + "-" + month + "-01");
@@ -278,7 +279,7 @@ public class SbHostObjectUtils {
 
 		Set<Map.Entry<Application, Set<BillingSubscription>>> entries = billingSubs
 				.entrySet();
-
+		BillingDAO billingDAO = new BillingDAO();
 		for (Map.Entry<Application, Set<BillingSubscription>> entry : entries) {
 			Set<BillingSubscription> subscriptions = entry.getValue();
 			for (BillingSubscription subscription : subscriptions) {
@@ -287,7 +288,7 @@ public class SbHostObjectUtils {
 
 				String subscriber = subscription.getSubscriber().getName();
 				String apiName = subscription.getApiId().getApiName();
-				subscription.setApiIdInt(BillingDAO
+				subscription.setApiIdInt(billingDAO
 						.getApiId(subscription.getApiId()));
 				subscription.setYear(year);
 				if (month != null && month.length() == 1) {
@@ -419,7 +420,8 @@ public class SbHostObjectUtils {
 			if (prodKey != null) {
 				String consumerKey = prodKey.getConsumerKey();
 				String api_version = ApiName + ":v" + apiVersion;
-				Set<PaymentRequestDTO> paymentRequestSet = BillingDAO
+				BillingDAO billingDAO = new BillingDAO();
+				Set<PaymentRequestDTO> paymentRequestSet = billingDAO
 						.getPaymentAmounts(Short.parseShort(subsYear),
 								Short.parseShort(subsMonth), consumerKey,
 								api_version,
@@ -573,13 +575,14 @@ public class SbHostObjectUtils {
 		BigDecimal billRate = rate.getValue();
 
 		boolean CategoryBased = rate.getCategoryBasedVal();
-
-		List<Tax> taxList = TaxDAO.getTaxesForTaxList(rate
+		BillingDAO billingDAO = new BillingDAO();
+		TaxDAO taxDAO = new TaxDAO();
+		List<Tax> taxList = taxDAO.getTaxesForTaxList(rate
 				.getTaxList());
 		Map<String, CommissionPercentagesDTO> commisionMap = null;
 
 		if (!CategoryBased) {
-			commisionMap = BillingDAO.getCommissionPercentages(
+			commisionMap = billingDAO.getCommissionPercentages(
 					subId, appId);
 		}
 
@@ -711,7 +714,8 @@ public class SbHostObjectUtils {
 			throws Exception {
 
 		ChargeRate rate = opSubscription.getRate();
-		List<Tax> taxList = TaxDAO.getTaxesForTaxList(rate
+		TaxDAO taxDAO = new TaxDAO();
+		List<Tax> taxList = taxDAO.getTaxesForTaxList(rate
 				.getTaxList());
 		BigDecimal totalCharge = BigDecimal.ZERO;
 		BigDecimal totalPrice = BigDecimal.ZERO;
@@ -777,8 +781,9 @@ public class SbHostObjectUtils {
 		Set<APIRequestDTO> requestTimes = new HashSet<APIRequestDTO>();
 		if (prodKey != null) {
 			String api_version = apiName + ":v" + apiVersion;
-
-			requestTimes = TaxDAO
+			
+			TaxDAO taxDAO = new TaxDAO();
+			requestTimes = taxDAO
 					.getAPIRequestTimesForSubscription(Short.parseShort(year),
 							Short.parseShort(month), apiName, api_version,
 							prodKey.getConsumerKey(),
@@ -808,8 +813,9 @@ public class SbHostObjectUtils {
 					.getSurchargeElementOpco()).divide(new BigDecimal(100));
 			isSurcharge = true;
 		}
-
-		List<Tax> taxList = TaxDAO.getTaxesForTaxList(rate
+		
+		TaxDAO taxDAO = new TaxDAO();
+		List<Tax> taxList = taxDAO.getTaxesForTaxList(rate
 				.getTaxList());
 		BigDecimal totalCharge = BigDecimal.ZERO;
 		BigDecimal totalTax = BigDecimal.ZERO;
@@ -865,8 +871,9 @@ public class SbHostObjectUtils {
 	private static void applyTaxForBlockCharging(
 			Map.Entry<CategoryCharge, BilledCharge> CatEntry, ChargeRate rate,
 			String year, String month) throws Exception {
-
-		List<Tax> taxList = TaxDAO.getTaxesForTaxList(rate
+		
+		TaxDAO taxDAO = new TaxDAO();
+		List<Tax> taxList = taxDAO.getTaxesForTaxList(rate
 				.getTaxList());
 		CategoryCharge categorycharge = CatEntry.getKey();
 		BilledCharge billed = CatEntry.getValue();
@@ -924,8 +931,8 @@ public class SbHostObjectUtils {
 		int appId = subscription.getApplication().getId();
 		int apiId = subscription.getApiIdInt();
 		List<BillingSubscription.OperatorSubscription> opSubscriptionList = new ArrayList<BillingSubscription.OperatorSubscription>();
-
-		List<OperatorDetailsEntity> operatorMap = BillingDAO
+		BillingDAO billingDAO = new BillingDAO();
+		List<OperatorDetailsEntity> operatorMap = billingDAO
 				.getOperatorDetailsOfSubscription(appId, apiId);
 		for (OperatorDetailsEntity operatorDetail : operatorMap) {
 
@@ -973,9 +980,9 @@ public class SbHostObjectUtils {
 		Map<CategoryCharge, BilledCharge> categoryCharges = null;
 		for (BillingSubscription.OperatorSubscription operatorSubscription : subscription
 				.getOperatorSubscriptionList()) {
-
+			BillingDAO billingDAO = new BillingDAO();
 			if (prodKey != null) {
-				categoryCharges = BillingDAO
+				categoryCharges = billingDAO
 						.getAPICountsForSubscription(prodKey.getConsumerKey(),
 								Short.parseShort(subscription.getYear()),
 								Short.parseShort(subscription.getMonth()),
@@ -1011,18 +1018,19 @@ public class SbHostObjectUtils {
 		Set<SubscribedAPI> apis = apiMgtDAO.getSubscribedAPIs(subscriber, null);
 		log.debug("apis count, " + apis.size());
 		String api_version = null;
+		BillingDAO billingDAO = new BillingDAO();
 		for (SubscribedAPI api : apis) {
 			log.debug("api_name " + api.getApiId().getApiName());
 			log.debug("api_version " + api.getApiId().getVersion());
 			api_version = api.getApiId().getApiName() + ":v"
 					+ api.getApiId().getVersion();
 			log.debug("api_version " + api_version);
-			String ResponseTimeForAPI = BillingDAO
+			String ResponseTimeForAPI = billingDAO
 					.getResponseTimeForAPI(api_version);
 			log.debug("ResponseTimeForAPI: " + ResponseTimeForAPI);
 			if (ResponseTimeForAPI != null) {
 				log.debug("ResponseTimeForAPI was updated ");
-				responseTimes.put(api_version, BillingDAO
+				responseTimes.put(api_version, billingDAO
 						.getResponseTimeForAPI(api_version));
 			}
 		}
@@ -1052,14 +1060,14 @@ public class SbHostObjectUtils {
 				+ " to " + toDate);
 		Map<String, List<APIResponseDTO>> responseTimes = new HashMap<String, List<APIResponseDTO>>();
 		ApiMgtDAO apiMgtDAO = new ApiMgtDAO();
-
+		BillingDAO billingDAO = new BillingDAO();
 		if (username.equals(ALL_SUBSCRIBERS_KEYWORD)) {
 			List<API> allAPIs = APIManagerFactory.getInstance()
 					.getAPIConsumer().getAllAPIs();
 			for (API api : allAPIs) {
 				String nameVersion = api.getId().getApiName() + ":v"
 						+ api.getId().getVersion();
-				List<APIResponseDTO> responseDTOs = BillingDAO
+				List<APIResponseDTO> responseDTOs = billingDAO
 						.getAllResponseTimesForAPI(opName, appId, nameVersion,
 								fromDate, toDate);
 				responseTimes.put(nameVersion, responseDTOs);
@@ -1072,7 +1080,7 @@ public class SbHostObjectUtils {
 			for (SubscribedAPI api : subscribedAPIs) {
 				String nameVersion = api.getApiId().getApiName() + ":v"
 						+ api.getApiId().getVersion();
-				List<APIResponseDTO> responseDTOs = BillingDAO
+				List<APIResponseDTO> responseDTOs = billingDAO
 						.getAllResponseTimesForAPI(opName, appId, nameVersion,
 								fromDate, toDate);
 				responseTimes.put(nameVersion, responseDTOs);
@@ -1084,7 +1092,7 @@ public class SbHostObjectUtils {
 			for (SubscribedAPI api : subscribedAPIs) {
 				String nameVersion = api.getApiId().getApiName() + ":v"
 						+ api.getApiId().getVersion();
-				List<APIResponseDTO> responseDTOs = BillingDAO
+				List<APIResponseDTO> responseDTOs = billingDAO
 						.getAllResponseTimesForAPI(opName, appId, nameVersion,
 								fromDate, toDate);
 				responseTimes.put(nameVersion, responseDTOs);
@@ -1319,8 +1327,8 @@ public class SbHostObjectUtils {
 			String msisdn, String subscriberName, String operator, String app,
 			String api) throws IOException, SQLException,
 			APIMgtUsageQueryServiceClientException, APIManagementException {
-
-		String user_data_count = BillingDAO
+		BillingDAO billingDAO = new BillingDAO();
+		String user_data_count = billingDAO
 				.getCustomerCareReportDataCount(fromDate, toDate, msisdn,
 						subscriberName, operator, app, api);
 
@@ -1382,9 +1390,9 @@ public class SbHostObjectUtils {
 			}
 			titleStr = titleStr + "%n";
 			fileWriter.write(String.format(titleStr, headerArray));
-
+			BillingDAO billingDAO = new BillingDAO();
 			// Loop for Data parameters
-			ResultSet rs = BillingDAO.getTxLogData(fromDate,
+			ResultSet rs = billingDAO.getTxLogData(fromDate,
 					toDate, subscriberName, operator, operationType, resType);
 
 			List<TxCardDAO.DataList> dataList = currentDao.getDataList();
@@ -1404,7 +1412,7 @@ public class SbHostObjectUtils {
 						String timeInDb = rs.getString(tempDL
 								.getManipulationField());
 						log.debug("Time in Db - " + timeInDb);
-						String convertedTime = BillingDAO
+						String convertedTime = billingDAO
 								.convertToLocalTime(timeOffset, timeInDb);
 						log.debug("convertedTime - " + convertedTime);
 						dataArray[d] = convertedTime;
@@ -1574,7 +1582,7 @@ public class SbHostObjectUtils {
 													"", "", "", "", "", "", "",
 													"", "", "", "", ""));
 						}
-
+						BillingDAO billingDAO = new BillingDAO();
 						NativeArray subscriptionOperators = new NativeArray(0);
 						for (BillingSubscription.OperatorSubscription operatorSub : billingSubscription
 								.getOperatorSubscriptionList()) {
@@ -1604,7 +1612,7 @@ public class SbHostObjectUtils {
 								subscriptionOperator
 										.put("operationid",
 												subscriptionOperator,
-												BillingDAO
+												billingDAO
 														.getOperationNameById(operatorSub
 																.getOperationId()));
 								subscriptionOperator.put("currency",
@@ -1631,7 +1639,7 @@ public class SbHostObjectUtils {
 															"",
 															operatorSub
 																	.getOperator(),
-															BillingDAO
+															billingDAO
 																	.getOperationNameById(operatorSub
 																			.getOperationId()),
 															operatorSub
@@ -1815,7 +1823,7 @@ public class SbHostObjectUtils {
 			NativeObject subscriber = new NativeObject();
 			subscriber.put("subscriber", subscriber, subscriberName);
 			NativeArray applications = new NativeArray(0);
-
+			BillingDAO billingDAO = new BillingDAO();
 			Map<Application, Set<BillingSubscription>> billingSubs = SbHostObjectUtils
 					.chargeSubscriberForMonth(subscriberName, year, month,
 							rateCard);
@@ -1877,7 +1885,7 @@ public class SbHostObjectUtils {
 					NativeArray subscriptionOperators = new NativeArray(0);
 					for (BillingSubscription.OperatorSubscription operatorSub : billingSubscription
 							.getOperatorSubscriptionList()) {
-
+						
 						log.debug("operatorSub:" + operatorSub.toString());
 						if ((operatorName.equalsIgnoreCase("__All__"))
 								|| (operatorSub.getOperator()
@@ -1901,7 +1909,7 @@ public class SbHostObjectUtils {
 									operatorSub.getTaxValue());
 							subscriptionOperator.put("operationid",
 									subscriptionOperator,
-									BillingDAO
+									billingDAO
 											.getOperationNameById(operatorSub
 													.getOperationId()));
 							subscriptionOperator.put("credit",
@@ -1918,7 +1926,7 @@ public class SbHostObjectUtils {
 									.put(subscriptionOperators.size(),
 											subscriptionOperators,
 											subscriptionOperator);
-
+							
 							if (isPersistReport && fileWriter != null) {
 								String currencyStr = operatorSub.getRate()
 										.getCurrency() + " ";
@@ -1931,7 +1939,7 @@ public class SbHostObjectUtils {
 														"",
 														operatorSub
 																.getOperator(),
-														BillingDAO
+														billingDAO
 																.getOperationNameById(operatorSub
 																		.getOperationId()),
 														operatorSub.getRate()
@@ -2102,7 +2110,8 @@ public class SbHostObjectUtils {
 	 * @throws Exception 
 	 */
 	public static List<String> getAllSubscribers() throws Exception {
-		List<String> subscriptions = BillingDAO
+		BillingDAO billingDAO = new BillingDAO();
+		List<String> subscriptions = billingDAO
 				.getAllSubscriptions();
 		Collections.sort(subscriptions, String.CASE_INSENSITIVE_ORDER);
 		return subscriptions;
@@ -2118,7 +2127,8 @@ public class SbHostObjectUtils {
 	 */
 	public static List<String[]> getOperationTypes() throws SQLException,
 			APIMgtUsageQueryServiceClientException, APIManagementException {
-		List<String[]> txTypes = BillingDAO.getAllOperationTypes();
+		BillingDAO billingDAO = new BillingDAO();
+		List<String[]> txTypes = billingDAO.getAllOperationTypes();
 		return txTypes;
 	}
 
@@ -2152,15 +2162,16 @@ public class SbHostObjectUtils {
 			String applicationid, String year, String month, String subscriber,
 			String api) throws SQLException,
 			APIMgtUsageQueryServiceClientException, APIManagementException {
-
+		BillingDAO billingDAO = new BillingDAO();
 		String consumerkey = "%";
 		if (applicationid != null) {
-			consumerkey = BillingDAO.getApplicationconsumer(
+			
+			consumerkey = billingDAO.getApplicationconsumer(
 					Integer.parseInt(applicationid),
 					APIConstants.API_KEY_TYPE_PRODUCTION);
 		}
 
-		Map<String, Integer> usageCounts = BillingDAO
+		Map<String, Integer> usageCounts = billingDAO
 				.getAPICountsForApplicationOpco(consumerkey, year, month,
 						subscriber, api);
 
@@ -2180,8 +2191,8 @@ public class SbHostObjectUtils {
 	public static String getApplicationNameById(String applicationid)
 			throws SQLException, APIMgtUsageQueryServiceClientException,
 			APIManagementException {
-
-		String appName = BillingDAO.getApplicationName(
+		BillingDAO billingDAO = new BillingDAO();
+		String appName = billingDAO.getApplicationName(
 				Integer.parseInt(applicationid),
 				APIConstants.API_KEY_TYPE_PRODUCTION);
 
@@ -2206,7 +2217,8 @@ public class SbHostObjectUtils {
 			String toDate, String subscriber, String operator, int applicationId)
 			throws SQLException, APIMgtUsageQueryServiceClientException,
 			APIManagementException {
-		List<String[]> api_request = BillingDAO
+		BillingDAO billingDAO = new BillingDAO();
+		List<String[]> api_request = billingDAO
 				.getTotalAPITrafficForPieChart(fromDate, toDate, subscriber,
 						operator, applicationId);
 		return api_request;
@@ -2230,7 +2242,8 @@ public class SbHostObjectUtils {
 			String fromDate, String toDate, String subscriber, String operator,
 			int applicationId, String api) throws SQLException,
 			APIMgtUsageQueryServiceClientException, APIManagementException {
-		List<String[]> api_request = BillingDAO
+		BillingDAO billingDAO = new BillingDAO();
+		List<String[]> api_request = billingDAO
 				.getTotalAPITrafficForHistogram(fromDate, toDate, subscriber,
 						operator, applicationId, api);
 		return api_request;
@@ -2253,7 +2266,8 @@ public class SbHostObjectUtils {
 			String fromDate, String toDate, String subscriber, String api,
 			int applicationId) throws SQLException,
 			APIMgtUsageQueryServiceClientException, APIManagementException {
-		List<String[]> api_request = BillingDAO
+		BillingDAO billingDAO = new BillingDAO();
+		List<String[]> api_request = billingDAO
 				.getOperatorWiseAPITrafficForPieChart(fromDate, toDate,
 						subscriber, api, applicationId);
 		return api_request;
@@ -2274,7 +2288,8 @@ public class SbHostObjectUtils {
 	public static List<String[]> getApprovalHistory(String fromDate,
 			String toDate, String subscriber, String api, int applicationId,
 			String operator) throws Exception {
-		List<String[]> api_request = BillingDAO
+		BillingDAO billingDAO = new BillingDAO();
+		List<String[]> api_request = billingDAO
 				.getApprovalHistory(fromDate, toDate, subscriber, api,
 						applicationId, operator);
 		return api_request;
@@ -2293,7 +2308,8 @@ public class SbHostObjectUtils {
 	public static List<Approval> getApprovalHistoryApp(int applicationId,
 			String operator) throws SQLException,
 			APIMgtUsageQueryServiceClientException, APIManagementException {
-		List<Approval> api_request = BillingDAO
+		BillingDAO billingDAO = new BillingDAO();
+		List<Approval> api_request = billingDAO
 				.getApprovalHistoryApp(applicationId, operator);
 		return api_request;
 	}
@@ -2316,7 +2332,8 @@ public class SbHostObjectUtils {
 			String subscriber, String operator, int applicationId, String api)
 			throws SQLException, APIMgtUsageQueryServiceClientException,
 			APIManagementException {
-		List<String[]> apis = BillingDAO.getAllAPIs(fromDate,
+		BillingDAO billingDAO = new BillingDAO();
+		List<String[]> apis = billingDAO.getAllAPIs(fromDate,
 				toDate, subscriber, operator, applicationId, api);
 		return apis;
 	}
@@ -2339,7 +2356,8 @@ public class SbHostObjectUtils {
 			String toDate, String subscriber, String operator,
 			int applicationId, String api) throws SQLException,
 			APIMgtUsageQueryServiceClientException, APIManagementException {
-		List<String[]> resCodes = BillingDAO
+		BillingDAO billingDAO = new BillingDAO();
+		List<String[]> resCodes = billingDAO
 				.getAllErrorResponseCodes(fromDate, toDate, subscriber,
 						operator, applicationId, api);
 		return resCodes;
@@ -2503,7 +2521,8 @@ public class SbHostObjectUtils {
 			String toDate, String subscriber, String operator, String api)
 			throws SQLException, APIMgtUsageQueryServiceClientException,
 			APIManagementException {
-		List<String[]> api_request_data = BillingDAO
+		BillingDAO billingDAO = new BillingDAO();
+		List<String[]> api_request_data = billingDAO
 				.getAPIWiseTrafficForReport(fromDate, toDate, subscriber,
 						operator, api);
 		return api_request_data;
@@ -2532,7 +2551,8 @@ public class SbHostObjectUtils {
 			String app, String api, String stLimit, String endLimit,
 			String timeOffset) throws SQLException,
 			APIMgtUsageQueryServiceClientException, APIManagementException {
-		List<String[]> api_request_data = BillingDAO
+		BillingDAO billingDAO = new BillingDAO();
+		List<String[]> api_request_data = billingDAO
 				.getCustomerCareReportData(fromDate, toDate, msisdn,
 						subscriber, operator, app, api, stLimit, endLimit,
 						timeOffset);
@@ -2556,7 +2576,8 @@ public class SbHostObjectUtils {
 			String fromDate, String toDate, String subscriber, String operator,
 			String api) throws SQLException,
 			APIMgtUsageQueryServiceClientException, APIManagementException {
-		List<String[]> charging_request_data = BillingDAO
+		BillingDAO billingDAO = new BillingDAO();
+		List<String[]> charging_request_data = billingDAO
 				.getAPIWiseTrafficForReportCharging(fromDate, toDate,
 						subscriber, operator, api);
 		return charging_request_data;
@@ -2659,7 +2680,8 @@ public class SbHostObjectUtils {
 			String fromDate, String toDate, String subscriber, String operator,
 			int applicationId, String api) throws SQLException,
 			APIMgtUsageQueryServiceClientException, APIManagementException {
-		List<String[]> api_request = BillingDAO
+		BillingDAO billingDAO = new BillingDAO();
+		List<String[]> api_request = billingDAO
 				.getErrorResponseCodesForPieChart(fromDate, toDate, subscriber,
 						operator, applicationId, api);
 		return api_request;
@@ -2683,7 +2705,8 @@ public class SbHostObjectUtils {
 			String fromDate, String toDate, String subscriber, String operator,
 			int applicationId, String api) throws SQLException,
 			APIMgtUsageQueryServiceClientException, APIManagementException {
-		List<String[]> api_response_codes = BillingDAO
+		BillingDAO billingDAO = new BillingDAO();
+		List<String[]> api_response_codes = billingDAO
 				.getErrorResponseCodesForHistogram(fromDate, toDate,
 						subscriber, operator, applicationId, api);
 		return api_response_codes;
@@ -3325,8 +3348,8 @@ public class SbHostObjectUtils {
 			String fromDate, String toDate, String subscriber, String operator,
 			int applicationId, String api) throws SQLException,
 			APIMgtUsageQueryServiceClientException, APIManagementException {
-
-		List<String[]> api_request = BillingDAO
+		BillingDAO billingDAO = new BillingDAO();
+		List<String[]> api_request = billingDAO
 				.getTotalAPITrafficForLineChart(fromDate, toDate, subscriber,
 						operator, applicationId, api);
 		return api_request;
@@ -3349,8 +3372,8 @@ public class SbHostObjectUtils {
 			String fromDate, String toDate, String subscriber, String operator,
 			String timeRange) throws SQLException,
 			APIMgtUsageQueryServiceClientException, APIManagementException {
-
-		List<APIResponseDTO> apiResponse = BillingDAO
+		BillingDAO billingDAO = new BillingDAO();
+		List<APIResponseDTO> apiResponse = billingDAO
 				.getAllResponseTimesForAllAPIs(operator, subscriber, fromDate,
 						toDate, timeRange);
 		return apiResponse;
@@ -3375,9 +3398,10 @@ public class SbHostObjectUtils {
 		Map<String, List<APIResponseDTO>> responseTimes = new HashMap<String, List<APIResponseDTO>>();
 		List<API> allAPIs = APIManagerFactory.getInstance().getAPIConsumer()
 				.getAllAPIs();
+		BillingDAO billingDAO = new BillingDAO();
 		for (API api : allAPIs) {
 			String apiName = api.getId().getApiName();
-			List<APIResponseDTO> responseDTOs = BillingDAO
+			List<APIResponseDTO> responseDTOs = billingDAO
 					.getAllResponseTimesForAPIbyDate(opName, username,
 							fromDate, toDate, apiName);
 			responseTimes.put(apiName, responseDTOs);
@@ -3404,9 +3428,10 @@ public class SbHostObjectUtils {
 		Map<String, String[]> responseTimes = new HashMap<String, String[]>();
 		List<API> allAPIs = APIManagerFactory.getInstance().getAPIConsumer()
 				.getAllAPIs();
+		BillingDAO billingDAO = new BillingDAO();
 		for (API api : allAPIs) {
 			String apiName = api.getId().getApiName();
-			String[] responseData = BillingDAO
+			String[] responseData = billingDAO
 					.getTimeConsumptionByAPI(opName, username, fromDate,
 							toDate, apiName);
 			responseTimes.put(apiName, responseData);
