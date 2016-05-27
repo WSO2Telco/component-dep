@@ -34,7 +34,7 @@ public class SMSMessagingDAO {
 	public Integer outboundSubscriptionEntry(String notifyURL, String serviceProvider) throws Exception {
 
 		Connection con = null;
-		Statement st = null;
+		PreparedStatement ps = null;
 		ResultSet rs = null;
 		Integer newId = 0;
 
@@ -46,36 +46,31 @@ public class SMSMessagingDAO {
 				throw new Exception("Connection not found");
 			}
 
-			st = con.createStatement();
-
-			StringBuilder queryString = new StringBuilder("SELECT MAX(axiataid) maxid ");
-			queryString.append("FROM ");
-			queryString.append(DatabaseTables.OUTBOUND_SUBSCRIPTIONS.getTableName());
-
-			rs = st.executeQuery(queryString.toString());
-			if (rs.next()) {
-
-				newId = rs.getInt("maxid") + 1;
-			}
-
 			StringBuilder insertQueryString = new StringBuilder("INSERT INTO ");
 			insertQueryString.append(DatabaseTables.OUTBOUND_SUBSCRIPTIONS.getTableName());
-			insertQueryString.append(" (axiataid, notifyurl, service_provider) ");
-			insertQueryString.append("VALUES (");
-			insertQueryString.append(newId);
-			insertQueryString.append(", ");
-			insertQueryString.append(notifyURL);
-			insertQueryString.append(", ");
-			insertQueryString.append(serviceProvider);
-			insertQueryString.append(")");
+			insertQueryString.append(" (notifyurl, service_provider, is_active) ");
+			insertQueryString.append("VALUES (?, ?, ?)");
 
-			st.executeUpdate(insertQueryString.toString());
+			ps = con.prepareStatement(insertQueryString.toString(), Statement.RETURN_GENERATED_KEYS);
+
+			ps.setString(1, notifyURL);
+			ps.setString(2, serviceProvider);
+			ps.setInt(3, 0);
+
+			ps.executeUpdate();
+
+			rs = ps.getGeneratedKeys();
+
+			while (rs.next()) {
+
+				newId = rs.getInt(1);
+			}
 		} catch (Exception e) {
 
 			DbUtils.handleException("Error while inserting in to subscriptions. ", e);
 		} finally {
 
-			DbUtils.closeAllConnections(st, con, rs);
+			DbUtils.closeAllConnections(ps, con, rs);
 		}
 
 		return newId;
@@ -95,7 +90,8 @@ public class SMSMessagingDAO {
 	public boolean outboundOperatorsubsEntry(List<Operatorsubs> domainsubs, Integer dnSubscriptionId) throws Exception {
 
 		Connection con = null;
-		Statement st = null;
+		PreparedStatement insertStatement = null;
+		PreparedStatement updateStatement = null;
 
 		try {
 
@@ -105,29 +101,57 @@ public class SMSMessagingDAO {
 				throw new Exception("Connection not found");
 			}
 
-			st = con.createStatement();
+			/**
+			 * Set autocommit off to handle the transaction
+			 */
+			con.setAutoCommit(false);
+
+			StringBuilder queryString = new StringBuilder("INSERT INTO ");
+			queryString.append(DatabaseTables.OUTBOUND_OPERATORSUBS.getTableName());
+			queryString.append(" (dn_subscription_did, domainurl, operator) ");
+			queryString.append("VALUES (?, ?, ?)");
+
+			insertStatement = con.prepareStatement(queryString.toString());
 
 			for (Operatorsubs d : domainsubs) {
 
-				StringBuilder queryString = new StringBuilder("INSERT INTO ");
-				queryString.append(DatabaseTables.OUTBOUND_OPERATORSUBS.getTableName());
-				queryString.append(" (axiataid, domainurl, operator) ");
-				queryString.append("VALUES (");
-				queryString.append(dnSubscriptionId);
-				queryString.append(", ");
-				queryString.append(d.getDomain());
-				queryString.append(", ");
-				queryString.append(d.getOperator());
-				queryString.append(")");
+				insertStatement.setInt(1, dnSubscriptionId);
+				insertStatement.setString(2, d.getDomain());
+				insertStatement.setString(3, d.getOperator());
 
-				st.executeUpdate(queryString.toString());
+				insertStatement.addBatch();
 			}
+
+			insertStatement.executeBatch();
+
+			StringBuilder updateQueryString = new StringBuilder("UPDATE ");
+			updateQueryString.append(DatabaseTables.OUTBOUND_SUBSCRIPTIONS.getTableName());
+			updateQueryString.append(" SET is_active = ?");
+			updateQueryString.append(" WHERE dn_subscription_did = ?");
+
+			updateStatement = con.prepareStatement(updateQueryString.toString());
+
+			updateStatement.setInt(1, 1);
+			updateStatement.setInt(2, dnSubscriptionId);
+
+			updateStatement.executeUpdate();
+
+			/**
+			 * commit the transaction if all success
+			 */
+			con.commit();
 		} catch (Exception e) {
+
+			/**
+			 * rollback if Exception occurs
+			 */
+			con.rollback();
 
 			DbUtils.handleException("Error while inserting in to operatorsubs. ", e);
 		} finally {
 
-			DbUtils.closeAllConnections(st, con, null);
+			DbUtils.closeAllConnections(insertStatement, con, null);
+			DbUtils.closeAllConnections(updateStatement, null, null);
 		}
 
 		return true;
@@ -161,6 +185,7 @@ public class SMSMessagingDAO {
 			queryString.append(" WHERE hub_requestid = ? AND sender_address = ?");
 
 			ps = con.prepareStatement(queryString.toString());
+
 			ps.setString(1, requestId);
 			ps.setString(2, senderAddress);
 			rs = ps.executeQuery();
@@ -183,7 +208,7 @@ public class SMSMessagingDAO {
 	public Integer subscriptionEntry(String notifyURL, String serviceProvider) throws Exception {
 
 		Connection con = null;
-		Statement st = null;
+		PreparedStatement ps = null;
 		ResultSet rs = null;
 		Integer newId = 0;
 
@@ -195,35 +220,31 @@ public class SMSMessagingDAO {
 				throw new Exception("Connection not found");
 			}
 
-			st = con.createStatement();
-			StringBuilder queryString = new StringBuilder("SELECT MAX(axiataid) maxid ");
-			queryString.append("FROM ");
-			queryString.append(DatabaseTables.SUBSCRIPTIONS.getTableName());
-
-			rs = st.executeQuery(queryString.toString());
-			if (rs.next()) {
-
-				newId = rs.getInt("maxid") + 1;
-			}
-
 			StringBuilder insertQueryString = new StringBuilder("INSERT INTO ");
 			insertQueryString.append(DatabaseTables.SUBSCRIPTIONS.getTableName());
-			insertQueryString.append(" (axiataid, notifyurl, service_provider) ");
-			insertQueryString.append("VALUES (");
-			insertQueryString.append(newId);
-			insertQueryString.append(", ");
-			insertQueryString.append(notifyURL);
-			insertQueryString.append(", ");
-			insertQueryString.append(serviceProvider);
-			insertQueryString.append(")");
+			insertQueryString.append(" (notifyurl, service_provider, is_active) ");
+			insertQueryString.append("VALUES (?, ?, ?)");
 
-			st.executeUpdate(insertQueryString.toString());
+			ps = con.prepareStatement(insertQueryString.toString(), Statement.RETURN_GENERATED_KEYS);
+
+			ps.setString(1, notifyURL);
+			ps.setString(2, serviceProvider);
+			ps.setInt(3, 0);
+
+			ps.executeUpdate();
+
+			rs = ps.getGeneratedKeys();
+
+			while (rs.next()) {
+
+				newId = rs.getInt(1);
+			}
 		} catch (Exception e) {
 
 			DbUtils.handleException("Error while inserting in to subscriptions. ", e);
 		} finally {
 
-			DbUtils.closeAllConnections(st, con, rs);
+			DbUtils.closeAllConnections(ps, con, rs);
 		}
 
 		return newId;
@@ -243,7 +264,8 @@ public class SMSMessagingDAO {
 	public boolean operatorsubsEntry(List<Operatorsubs> domainsubs, Integer moSubscriptionId) throws Exception {
 
 		Connection con = null;
-		Statement st = null;
+		PreparedStatement insertStatement = null;
+		PreparedStatement updateStatement = null;
 
 		try {
 
@@ -253,30 +275,56 @@ public class SMSMessagingDAO {
 				throw new Exception("Connection not found");
 			}
 
-			st = con.createStatement();
+			/**
+			 * Set autocommit off to handle the transaction
+			 */
+			con.setAutoCommit(false);
+
+			StringBuilder queryString = new StringBuilder("INSERT INTO ");
+			queryString.append(DatabaseTables.OPERATORSUBS.getTableName());
+			queryString.append(" (mo_subscription_did, domainurl, operator) ");
+			queryString.append("VALUES (?, ?, ?)");
+
+			insertStatement = con.prepareStatement(queryString.toString());
 
 			for (Operatorsubs d : domainsubs) {
 
-				StringBuilder queryString = new StringBuilder("INSERT INTO ");
-				queryString.append(DatabaseTables.OPERATORSUBS.getTableName());
-				queryString.append(" (axiataid, domainurl, operator) ");
-				queryString.append("VALUES (");
-				queryString.append(moSubscriptionId);
-				queryString.append(", ");
-				queryString.append(d.getDomain());
-				queryString.append(", ");
-				queryString.append(d.getOperator());
-				queryString.append(")");
+				insertStatement.setInt(1, moSubscriptionId);
+				insertStatement.setString(2, d.getDomain());
+				insertStatement.setString(3, d.getOperator());
 
-				st.executeUpdate(queryString.toString());
+				insertStatement.addBatch();
 			}
 
+			insertStatement.executeBatch();
+
+			StringBuilder updateQueryString = new StringBuilder("UPDATE ");
+			updateQueryString.append(DatabaseTables.SUBSCRIPTIONS.getTableName());
+			updateQueryString.append(" SET is_active = ?");
+			updateQueryString.append(" WHERE mo_subscription_did = ?");
+
+			updateStatement = con.prepareStatement(updateQueryString.toString());
+
+			updateStatement.setInt(1, 1);
+			updateStatement.setInt(2, moSubscriptionId);
+
+			updateStatement.executeUpdate();
+
+			/**
+			 * commit the transaction if all success
+			 */
+			con.commit();
 		} catch (Exception e) {
 
+			/**
+			 * rollback if Exception occurs
+			 */
+			con.rollback();
 			DbUtils.handleException("Error while inserting in to operatorsubs. ", e);
 		} finally {
 
-			DbUtils.closeAllConnections(st, con, null);
+			DbUtils.closeAllConnections(insertStatement, con, null);
+			DbUtils.closeAllConnections(updateStatement, null, null);
 		}
 
 		return true;
@@ -294,7 +342,7 @@ public class SMSMessagingDAO {
 	public List<Operatorsubs> subscriptionQuery(Integer moSubscriptionId) throws Exception {
 
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
-		Statement st = null;
+		PreparedStatement ps = null;
 		ResultSet rs = null;
 		List<Operatorsubs> domainsubs = new ArrayList();
 
@@ -305,27 +353,27 @@ public class SMSMessagingDAO {
 				throw new Exception("Connection not found");
 			}
 
-			st = con.createStatement();
-
 			StringBuilder queryString = new StringBuilder("SELECT domainurl, operator ");
 			queryString.append("FROM ");
 			queryString.append(DatabaseTables.OPERATORSUBS.getTableName());
-			queryString.append(" WHERE axiataid = ");
-			queryString.append(moSubscriptionId);
+			queryString.append(" WHERE mo_subscription_did = ?");
 
-			rs = st.executeQuery(queryString.toString());
+			ps = con.prepareStatement(queryString.toString());
+
+			ps.setInt(1, moSubscriptionId);
+
+			rs = ps.executeQuery();
 
 			while (rs.next()) {
 
 				domainsubs.add(new Operatorsubs(rs.getString("operator"), rs.getString("domainurl")));
 			}
-
 		} catch (Exception e) {
 
 			DbUtils.handleException("Error while selecting selecting from operatorsubs. ", e);
 		} finally {
 
-			DbUtils.closeAllConnections(st, con, rs);
+			DbUtils.closeAllConnections(ps, con, rs);
 		}
 
 		return domainsubs;
@@ -343,7 +391,8 @@ public class SMSMessagingDAO {
 	public boolean subscriptionDelete(Integer moSubscriptionId) throws Exception {
 
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
-		Statement st = null;
+		PreparedStatement deleteSubscriptionsStatement = null;
+		PreparedStatement deleteOperatorSubscriptionsStatement = null;
 
 		try {
 
@@ -352,27 +401,47 @@ public class SMSMessagingDAO {
 				throw new Exception("Connection not found");
 			}
 
-			st = con.createStatement();
+			/**
+			 * Set autocommit off to handle the transaction
+			 */
+			con.setAutoCommit(false);
 
 			StringBuilder deleteSubscriptionsQueryString = new StringBuilder("DELETE FROM ");
 			deleteSubscriptionsQueryString.append(DatabaseTables.SUBSCRIPTIONS.getTableName());
-			deleteSubscriptionsQueryString.append(" WHERE axiataid = ");
-			deleteSubscriptionsQueryString.append(moSubscriptionId);
+			deleteSubscriptionsQueryString.append(" WHERE mo_subscription_did = ?");
 
-			st.executeUpdate(deleteSubscriptionsQueryString.toString());
+			deleteSubscriptionsStatement = con.prepareStatement(deleteSubscriptionsQueryString.toString());
+
+			deleteSubscriptionsStatement.setInt(1, moSubscriptionId);
+
+			deleteSubscriptionsStatement.executeUpdate();
 
 			StringBuilder deleteOperatorSubscriptionsQueryString = new StringBuilder("DELETE FROM ");
 			deleteOperatorSubscriptionsQueryString.append(DatabaseTables.OPERATORSUBS.getTableName());
-			deleteOperatorSubscriptionsQueryString.append(" WHERE axiataid = ");
-			deleteOperatorSubscriptionsQueryString.append(moSubscriptionId);
+			deleteOperatorSubscriptionsQueryString.append(" WHERE mo_subscription_did = ?");
 
-			st.executeUpdate(deleteOperatorSubscriptionsQueryString.toString());
+			deleteOperatorSubscriptionsStatement = con
+					.prepareStatement(deleteOperatorSubscriptionsQueryString.toString());
+
+			deleteOperatorSubscriptionsStatement.setInt(1, moSubscriptionId);
+
+			deleteOperatorSubscriptionsStatement.executeUpdate();
+
+			/**
+			 * commit the transaction if all success
+			 */
+			con.commit();
 		} catch (Exception e) {
 
+			/**
+			 * rollback if Exception occurs
+			 */
+			con.rollback();
 			DbUtils.handleException("Error while deleting subscriptions. ", e);
 		} finally {
 
-			DbUtils.closeAllConnections(st, con, null);
+			DbUtils.closeAllConnections(deleteSubscriptionsStatement, con, null);
+			DbUtils.closeAllConnections(deleteOperatorSubscriptionsStatement, null, null);
 		}
 
 		return true;
@@ -390,9 +459,10 @@ public class SMSMessagingDAO {
 	 * @return true, if successful
 	 * @throws AxataDBUtilException
 	 *             the axata db util exception
+	 * @throws Exception
 	 */
 	public boolean insertSmsRequestIds(String requestId, String senderAddress, Map<String, String> gatewayRequestIds)
-			throws AxataDBUtilException {
+			throws AxataDBUtilException, Exception {
 
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -401,23 +471,40 @@ public class SMSMessagingDAO {
 
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 
+			/**
+			 * Set autocommit off to handle the transaction
+			 */
+			con.setAutoCommit(false);
+
 			StringBuilder queryString = new StringBuilder("INSERT INTO ");
 			queryString.append(DatabaseTables.SEND_SMS_REQID.getTableName());
 			queryString.append(" (hub_requestid, sender_address, delivery_address, plugin_requestid) ");
 			queryString.append("VALUES (?, ?, ?, ?)");
 
 			ps = con.prepareStatement(queryString.toString());
-			ps.setString(1, requestId);
-			ps.setString(2, senderAddress);
 
 			for (Map.Entry<String, String> entry : gatewayRequestIds.entrySet()) {
 
+				ps.setString(1, requestId);
+				ps.setString(2, senderAddress);
 				ps.setString(3, entry.getKey());
 				ps.setString(4, entry.getValue());
-				ps.executeUpdate();
+
+				ps.addBatch();
 			}
+
+			ps.executeBatch();
+
+			/**
+			 * commit the transaction if all success
+			 */
+			con.commit();
 		} catch (Exception e) {
 
+			/**
+			 * rollback if Exception occurs
+			 */
+			con.rollback();
 			DbUtils.handleException("Error while inserting in to sendsms_reqid. ", e);
 		} finally {
 
@@ -431,7 +518,7 @@ public class SMSMessagingDAO {
 
 		HashMap<String, String> subscriptionDetails = new HashMap<String, String>();
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
-		Statement st = null;
+		PreparedStatement ps = null;
 		ResultSet rs = null;
 
 		try {
@@ -441,15 +528,16 @@ public class SMSMessagingDAO {
 				throw new Exception("Connection not found");
 			}
 
-			st = con.createStatement();
-
 			StringBuilder queryString = new StringBuilder("SELECT notifyurl, service_provider ");
 			queryString.append("FROM ");
 			queryString.append(DatabaseTables.SUBSCRIPTIONS.getTableName());
-			queryString.append(" WHERE axiataid = ");
-			queryString.append(moSubscriptionId);
+			queryString.append(" WHERE mo_subscription_did = ?");
 
-			rs = st.executeQuery(queryString.toString());
+			ps = con.prepareStatement(queryString.toString());
+
+			ps.setInt(1, moSubscriptionId);
+
+			rs = ps.executeQuery();
 
 			if (rs.next()) {
 
@@ -461,7 +549,7 @@ public class SMSMessagingDAO {
 			DbUtils.handleException("Error while selecting from subscriptions. ", e);
 		} finally {
 
-			DbUtils.closeAllConnections(st, con, rs);
+			DbUtils.closeAllConnections(ps, con, rs);
 		}
 
 		return subscriptionDetails;
@@ -471,7 +559,7 @@ public class SMSMessagingDAO {
 
 		HashMap<String, String> dnSubscriptionDetails = new HashMap<String, String>();
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
-		Statement st = null;
+		PreparedStatement ps = null;
 		ResultSet rs = null;
 
 		try {
@@ -481,28 +569,28 @@ public class SMSMessagingDAO {
 				throw new Exception("Connection not found");
 			}
 
-			st = con.createStatement();
-
 			StringBuilder queryString = new StringBuilder("SELECT notifyurl, service_provider ");
 			queryString.append("FROM ");
 			queryString.append(DatabaseTables.OUTBOUND_SUBSCRIPTIONS.getTableName());
-			queryString.append(" WHERE axiataid = ");
-			queryString.append(dnSubscriptionId);
+			queryString.append(" WHERE dn_subscription_did = ?");
 
-			rs = st.executeQuery(queryString.toString());
+			ps = con.prepareStatement(queryString.toString());
+
+			ps.setInt(1, dnSubscriptionId);
+
+			rs = ps.executeQuery();
 
 			if (rs.next()) {
 
 				dnSubscriptionDetails.put("notifyurl", rs.getString("notifyurl"));
 				dnSubscriptionDetails.put("serviceProvider", rs.getString("service_provider"));
 			}
-
 		} catch (Exception e) {
 
 			DbUtils.handleException("Error while selecting from subscriptions. ", e);
 		} finally {
 
-			DbUtils.closeAllConnections(st, con, rs);
+			DbUtils.closeAllConnections(ps, con, rs);
 		}
 
 		return dnSubscriptionDetails;
@@ -520,7 +608,7 @@ public class SMSMessagingDAO {
 	public List<Operatorsubs> outboudSubscriptionQuery(Integer dnSubscriptionId) throws Exception {
 
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
-		Statement st = null;
+		PreparedStatement ps = null;
 		ResultSet rs = null;
 		List<Operatorsubs> domainsubs = new ArrayList();
 
@@ -531,15 +619,16 @@ public class SMSMessagingDAO {
 				throw new Exception("Connection not found");
 			}
 
-			st = con.createStatement();
-
 			StringBuilder queryString = new StringBuilder("SELECT domainurl, operator ");
 			queryString.append("FROM ");
 			queryString.append(DatabaseTables.OUTBOUND_OPERATORSUBS.getTableName());
-			queryString.append(" WHERE axiataid = ");
-			queryString.append(dnSubscriptionId);
+			queryString.append(" WHERE dn_subscription_did = ?");
 
-			rs = st.executeQuery(queryString.toString());
+			ps = con.prepareStatement(queryString.toString());
+
+			ps.setInt(1, dnSubscriptionId);
+
+			rs = ps.executeQuery();
 
 			while (rs.next()) {
 
@@ -551,7 +640,7 @@ public class SMSMessagingDAO {
 			DbUtils.handleException("Error while selecting selecting from operatorsubs. ", e);
 		} finally {
 
-			DbUtils.closeAllConnections(st, con, rs);
+			DbUtils.closeAllConnections(ps, con, rs);
 		}
 
 		return domainsubs;
@@ -569,7 +658,8 @@ public class SMSMessagingDAO {
 	public boolean outboundSubscriptionDelete(Integer dnSubscriptionId) throws Exception {
 
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
-		Statement st = null;
+		PreparedStatement deleteSubscriptionsStatement = null;
+		PreparedStatement deleteOperatorSubscriptionsStatement = null;
 
 		try {
 
@@ -578,27 +668,47 @@ public class SMSMessagingDAO {
 				throw new Exception("Connection not found");
 			}
 
-			st = con.createStatement();
+			/**
+			 * Set autocommit off to handle the transaction
+			 */
+			con.setAutoCommit(false);
 
 			StringBuilder deleteSubscriptionsQueryString = new StringBuilder("DELETE FROM ");
 			deleteSubscriptionsQueryString.append(DatabaseTables.OUTBOUND_SUBSCRIPTIONS.getTableName());
-			deleteSubscriptionsQueryString.append(" WHERE axiataid = ");
-			deleteSubscriptionsQueryString.append(dnSubscriptionId);
+			deleteSubscriptionsQueryString.append(" WHERE dn_subscription_did = ?");
 
-			st.executeUpdate(deleteSubscriptionsQueryString.toString());
+			deleteSubscriptionsStatement = con.prepareStatement(deleteSubscriptionsQueryString.toString());
+
+			deleteSubscriptionsStatement.setInt(1, dnSubscriptionId);
+
+			deleteSubscriptionsStatement.executeUpdate();
 
 			StringBuilder deleteOperatorSubscriptionsQueryString = new StringBuilder("DELETE FROM ");
 			deleteOperatorSubscriptionsQueryString.append(DatabaseTables.OUTBOUND_OPERATORSUBS.getTableName());
-			deleteOperatorSubscriptionsQueryString.append(" WHERE axiataid = ");
-			deleteOperatorSubscriptionsQueryString.append(dnSubscriptionId);
+			deleteOperatorSubscriptionsQueryString.append(" WHERE dn_subscription_did = ?");
 
-			st.executeUpdate(deleteOperatorSubscriptionsQueryString.toString());
+			deleteOperatorSubscriptionsStatement = con
+					.prepareStatement(deleteOperatorSubscriptionsQueryString.toString());
+
+			deleteOperatorSubscriptionsStatement.setInt(1, dnSubscriptionId);
+
+			deleteOperatorSubscriptionsStatement.executeUpdate();
+
+			/**
+			 * commit the transaction if all success
+			 */
+			con.commit();
 		} catch (Exception e) {
 
+			/**
+			 * rollback if Exception occurs
+			 */
+			con.rollback();
 			DbUtils.handleException("Error while deleting subscriptions. ", e);
 		} finally {
 
-			DbUtils.closeAllConnections(st, con, null);
+			DbUtils.closeAllConnections(deleteSubscriptionsStatement, con, null);
+			DbUtils.closeAllConnections(deleteOperatorSubscriptionsStatement, null, null);
 		}
 
 		return true;

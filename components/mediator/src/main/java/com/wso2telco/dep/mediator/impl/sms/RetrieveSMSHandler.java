@@ -28,7 +28,6 @@ import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.oneapivalidation.service.impl.sms.ValidateRetrieveSms;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;

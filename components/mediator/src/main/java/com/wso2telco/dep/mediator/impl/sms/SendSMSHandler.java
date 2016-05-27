@@ -257,11 +257,10 @@ public class SendSMSHandler implements SMSHandler {
 	 *            the sender address
 	 * @param smsResponses
 	 *            the sms responses
-	 * @throws AxataDBUtilException
-	 *             the axata db util exception
+	 * @throws Exception
 	 */
 	private void storeRequestIDs(String requestID, String senderAddress, Map<String, SendSMSResponse> smsResponses)
-			throws AxataDBUtilException {
+			throws Exception {
 		Map<String, String> reqIdMap = new HashMap<String, String>(smsResponses.size());
 		for (Map.Entry<String, SendSMSResponse> entry : smsResponses.entrySet()) {
 			SendSMSResponse smsResponse = entry.getValue();

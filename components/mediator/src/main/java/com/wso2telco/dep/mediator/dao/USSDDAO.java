@@ -16,6 +16,7 @@
 package com.wso2telco.dep.mediator.dao;
 
 import java.sql.Connection;
+import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.Statement;
 import com.wso2telco.dbutils.DbUtils;
@@ -36,7 +37,7 @@ public class USSDDAO {
 	public Integer ussdRequestEntry(String notifyURL) throws Exception {
 
 		Connection con = null;
-		Statement st = null;
+		PreparedStatement ps = null;
 		ResultSet rs = null;
 		Integer newId = 0;
 
@@ -48,34 +49,29 @@ public class USSDDAO {
 				throw new Exception("Connection not found");
 			}
 
-			st = con.createStatement();
-
-			StringBuilder queryString = new StringBuilder("SELECT MAX(axiataid) maxid ");
-			queryString.append("FROM ");
-			queryString.append(DatabaseTables.USSD_REQUEST_ENTRY.getTableName());
-
-			rs = st.executeQuery(queryString.toString());
-			if (rs.next()) {
-
-				newId = rs.getInt("maxid") + 1;
-			}
-
 			StringBuilder insertQueryString = new StringBuilder("INSERT INTO ");
 			insertQueryString.append(DatabaseTables.USSD_REQUEST_ENTRY.getTableName());
-			insertQueryString.append(" (axiataid, notifyurl) ");
-			insertQueryString.append("VALUES (");
-			insertQueryString.append(newId);
-			insertQueryString.append(", ");
-			insertQueryString.append(notifyURL);
-			insertQueryString.append(")");
+			insertQueryString.append(" (notifyurl) ");
+			insertQueryString.append("VALUES (?)");
 
-			st.executeUpdate(insertQueryString.toString());
+			ps = con.prepareStatement(insertQueryString.toString(), Statement.RETURN_GENERATED_KEYS);
+
+			ps.setString(1, notifyURL);
+
+			ps.executeUpdate();
+
+			rs = ps.getGeneratedKeys();
+
+			while (rs.next()) {
+
+				newId = rs.getInt(1);
+			}
 		} catch (Exception e) {
 
 			DbUtils.handleException("Error while inserting in to ussd_request_entry. ", e);
 		} finally {
 
-			DbUtils.closeAllConnections(st, con, rs);
+			DbUtils.closeAllConnections(ps, con, rs);
 		}
 
 		return newId;
@@ -93,7 +89,7 @@ public class USSDDAO {
 	public String getUSSDNotify(Integer subscriptionId) throws Exception {
 
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
-		Statement st = null;
+		PreparedStatement ps = null;
 		ResultSet rs = null;
 		String notifyurls = "";
 
@@ -104,15 +100,16 @@ public class USSDDAO {
 				throw new Exception("Connection not found");
 			}
 
-			st = con.createStatement();
-
 			StringBuilder queryString = new StringBuilder("SELECT notifyurl ");
 			queryString.append("FROM ");
 			queryString.append(DatabaseTables.USSD_REQUEST_ENTRY.getTableName());
-			queryString.append(" WHERE axiataid = ");
-			queryString.append(subscriptionId);
+			queryString.append(" WHERE ussd_request_did = ?");
 
-			rs = st.executeQuery(queryString.toString());
+			ps = con.prepareStatement(queryString.toString());
+
+			ps.setInt(1, subscriptionId);
+
+			rs = ps.executeQuery();
 
 			if (rs.next()) {
 
@@ -124,7 +121,7 @@ public class USSDDAO {
 			DbUtils.handleException("Error while selecting from ussd_request_entry. ", e);
 		} finally {
 
-			DbUtils.closeAllConnections(st, con, rs);
+			DbUtils.closeAllConnections(ps, con, rs);
 		}
 
 		return notifyurls;
@@ -142,7 +139,7 @@ public class USSDDAO {
 	public boolean ussdEntryDelete(Integer subscriptionId) throws Exception {
 
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
-		Statement st = null;
+		PreparedStatement ps = null;
 
 		try {
 
@@ -151,20 +148,21 @@ public class USSDDAO {
 				throw new Exception("Connection not found");
 			}
 
-			st = con.createStatement();
-
 			StringBuilder queryString = new StringBuilder("DELETE FROM ");
 			queryString.append(DatabaseTables.USSD_REQUEST_ENTRY.getTableName());
-			queryString.append(" WHERE axiataid = ");
-			queryString.append(subscriptionId);
+			queryString.append(" WHERE ussd_request_did = ?");
 
-			st.executeUpdate(queryString.toString());
+			ps = con.prepareStatement(queryString.toString());
+
+			ps.setInt(1, subscriptionId);
+
+			ps.executeUpdate();
 		} catch (Exception e) {
 
 			DbUtils.handleException("Error while deleting ussd_request_entry. ", e);
 		} finally {
 
-			DbUtils.closeAllConnections(st, con, null);
+			DbUtils.closeAllConnections(ps, con, null);
 		}
 
 		return true;
