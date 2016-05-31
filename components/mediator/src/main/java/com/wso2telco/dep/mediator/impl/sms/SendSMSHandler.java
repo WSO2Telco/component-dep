@@ -20,7 +20,7 @@ import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.wso2telco.datapublisher.DataPublisherConstants;
 import com.wso2telco.dbutils.AxataDBUtilException;
-import com.wso2telco.dbutils.Operator;
+import com.wso2telco.dep.operatorservice.model.OperatorApplicationDTO;
 import com.wso2telco.dep.mediator.MSISDNConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.ResponseHandler;
@@ -194,7 +194,7 @@ public class SendSMSHandler implements SMSHandler {
 	 *             the exception
 	 */
 	private Map<String, SendSMSResponse> smssendmulti(MessageContext smsmc, SendSMSRequest sendreq, JSONArray listaddr,
-			String apitype, List<Operator> operators) throws Exception {
+			String apitype, List<OperatorApplicationDTO> operators) throws Exception {
 
 		OperatorEndpoint endpoint = null;
 		String jsonStr;

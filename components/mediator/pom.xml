@@ -210,6 +210,12 @@
 			<version>${com.wso2telco.dep.version}</version>
 		</dependency>
 
+		<dependency>
+			<groupId>com.wso2telco.dep</groupId>
+			<artifactId>operator-service</artifactId>
+			<version>${com.wso2telco.dep.version}</version>
+		</dependency>
+
 	</dependencies>
 
 	<build>

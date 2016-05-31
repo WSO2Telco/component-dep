@@ -18,7 +18,7 @@ package com.wso2telco.dep.mediator.impl.sms;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wso2telco.datapublisher.DataPublisherConstants;
-import com.wso2telco.dbutils.Operatorsubs;
+import com.wso2telco.dep.operatorservice.model.OperatorSubscriptionDTO;
 import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.dao.SMSMessagingDAO;
@@ -187,7 +187,7 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 
 			jsondstaddr.put("clientCorrelator", orgclientcl + ":" + requestid);
 
-			List<Operatorsubs> domainsubs = new ArrayList<Operatorsubs>();
+			List<OperatorSubscriptionDTO> domainsubs = new ArrayList<OperatorSubscriptionDTO>();
 			SBSubscribeRequest subsresponse = null;
 			for (OperatorEndpoint endpoint : endpoints) {
 
@@ -202,7 +202,7 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 						executor.handlePluginException(notifyres);
 					}
 					domainsubs.add(
-							new Operatorsubs(endpoint.getOperator(), subsresponse.getSubscription().getResourceURL()));
+							new OperatorSubscriptionDTO(endpoint.getOperator(), subsresponse.getSubscription().getResourceURL()));
 				}
 			}
 
@@ -242,7 +242,7 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 
 			log.debug("Subscription northbound request body : " + gson.toJson(nbSubsrequst));
 
-			List<Operatorsubs> domainsubs = new ArrayList<Operatorsubs>();
+			List<OperatorSubscriptionDTO> domainsubs = new ArrayList<OperatorSubscriptionDTO>();
 			SBSubscribeRequest sbSubsresponse = null;
 
 			DestinationAddresses[] destinationAddresses = nbSubsrequst.getSubscription().getDestinationAddresses();
@@ -286,7 +286,7 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 
 								destinationAddresses[i].setStatus("NotCreated");
 							} else {
-								domainsubs.add(new Operatorsubs(endpoint.getOperator(),
+								domainsubs.add(new OperatorSubscriptionDTO(endpoint.getOperator(),
 										sbSubsresponse.getSubscription().getResourceURL()));
 								destinationAddresses[i].setStatus("Created");
 							}
@@ -350,14 +350,14 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 
 		String requestid = UID.getUniqueID(Type.DELRETSUB.getCode(), context, executor.getApplicationid());
 
-		List<Operatorsubs> domainsubs = (smsMessagingDAO.subscriptionQuery(Integer.valueOf(moSubscriptionId)));
+		List<OperatorSubscriptionDTO> domainsubs = (smsMessagingDAO.subscriptionQuery(Integer.valueOf(moSubscriptionId)));
 		if (domainsubs.isEmpty()) {
 			throw new CustomException("POL0001", "",
 					new String[] { "SMS Receipt Subscription Not Found: " + moSubscriptionId });
 		}
 
 		String resStr = "";
-		for (Operatorsubs subs : domainsubs) {
+		for (OperatorSubscriptionDTO subs : domainsubs) {
 			resStr = executor.makeDeleteRequest(
 					new OperatorEndpoint(new EndpointReference(subs.getDomain()), subs.getOperator()), subs.getDomain(),
 					null, true, context);

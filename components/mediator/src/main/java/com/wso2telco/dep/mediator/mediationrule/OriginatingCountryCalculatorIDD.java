@@ -18,10 +18,10 @@ package com.wso2telco.dep.mediator.mediationrule;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.axis2.addressing.EndpointReference;
-import com.wso2telco.dbutils.Operator;
-import com.wso2telco.dbutils.Operatorendpoint;
+import com.wso2telco.dep.operatorservice.model.OperatorApplicationDTO;
+import com.wso2telco.dep.operatorservice.model.OperatorEndPointDTO;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
-import com.wso2telco.dep.mediator.dao.OperatorDAO;
+import com.wso2telco.dep.operatorservice.service.OparatorService;
 import com.wso2telco.mnc.resolver.MNCQueryClient;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 
@@ -35,7 +35,7 @@ public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculato
 	private String ERROR_MESSAGE = "Error.No API endpoint matched your request";
 
 	/** The operatorEndpoints. */
-	List<Operatorendpoint> operatorEndpoints;
+	List<OperatorEndPointDTO> operatorEndpoints;
 
 	/** The mnc queryclient. */
 	MNCQueryClient mncQueryclient = null;
@@ -48,7 +48,7 @@ public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculato
 	 */
 	public void initialize() throws Exception {
 
-		operatorEndpoints = new OperatorDAO().getOperatorEndpoints();
+		operatorEndpoints = new OparatorService().getOperatorEndpoints();
 		mncQueryclient = new MNCQueryClient();
 	}
 
@@ -70,7 +70,7 @@ public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculato
 	 *             the exception
 	 */
 	public OperatorEndpoint getAPIEndpointsByMSISDN(String userMSISDN, String apikey, String requestPathURL,
-			boolean isredirect, List<Operator> operators) throws Exception {
+			boolean isredirect, List<OperatorApplicationDTO> operators) throws Exception {
 
 		String operator;
 		String userName = userMSISDN.substring(1);
@@ -88,8 +88,8 @@ public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculato
 		}
 
 		// is operator provisioned
-		Operator valid = null;
-		for (Operator d : operators) {
+		OperatorApplicationDTO valid = null;
+		for (OperatorApplicationDTO d : operators) {
 
 			if (d.getOperatorname() != null && d.getOperatorname().contains(operator.toUpperCase())) {
 				valid = d;
@@ -102,7 +102,7 @@ public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculato
 			throw new CustomException("SVC0001", "", new String[] { "Requested service is not provisioned" });
 		}
 
-		Operatorendpoint validOperatorendpoint = getValidEndpoints(apikey, operator);
+		OperatorEndPointDTO validOperatorendpoint = getValidEndpoints(apikey, operator);
 		if (validOperatorendpoint == null) {
 
 			throw new CustomException("SVC0001", "", new String[] { "Requested service is not provisioned" });
@@ -133,16 +133,16 @@ public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculato
 	 *             the exception
 	 */
 	public List<OperatorEndpoint> getAPIEndpointsByApp(String apiKey, String requestPathURL,
-			List<Operator> validoperator) throws Exception {
+			List<OperatorApplicationDTO> validoperator) throws Exception {
 
 		List<OperatorEndpoint> endpoints = new ArrayList<OperatorEndpoint>();
 
 		initialize();
 
-		List<Operatorendpoint> validendpoints = getValidEndpoints(apiKey, validoperator);
+		List<OperatorEndPointDTO> validendpoints = getValidEndpoints(apiKey, validoperator);
 		String extremeEndpoint;
 
-		for (Operatorendpoint oe : validendpoints) {
+		for (OperatorEndPointDTO oe : validendpoints) {
 
 			extremeEndpoint = oe.getEndpoint() + requestPathURL;
 			endpoints.add(new OperatorEndpoint(new EndpointReference(extremeEndpoint), oe.getOperatorcode()));
@@ -200,7 +200,7 @@ public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculato
 	private String getApplicationProperty(String operatorcode, String api) {
 
 		String endpoint = null;
-		for (Operatorendpoint d : operatorEndpoints) {
+		for (OperatorEndPointDTO d : operatorEndpoints) {
 
 			if ((d.getApi().contains(api)) && (d.getOperatorcode().contains(operatorcode))) {
 
@@ -221,18 +221,18 @@ public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculato
 	 *            the validoperator
 	 * @return the valid endpoints
 	 */
-	private List<Operatorendpoint> getValidEndpoints(String api, List<Operator> validoperator) {
+	private List<OperatorEndPointDTO> getValidEndpoints(String api, List<OperatorApplicationDTO> validoperator) {
 
 		String endpoint = null;
 		List<String> validlist = new ArrayList();
-		List<Operatorendpoint> validoperendpoints = new ArrayList();
+		List<OperatorEndPointDTO> validoperendpoints = new ArrayList();
 
-		for (Operator op : validoperator) {
+		for (OperatorApplicationDTO op : validoperator) {
 
 			validlist.add(op.getOperatorname());
 		}
 
-		for (Operatorendpoint d : operatorEndpoints) {
+		for (OperatorEndPointDTO d : operatorEndpoints) {
 
 			if ((d.getApi().contains(api)) && (validlist.contains(d.getOperatorcode()))) {
 
@@ -252,12 +252,12 @@ public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculato
 	 *            the validoperator
 	 * @return the valid endpoints
 	 */
-	private Operatorendpoint getValidEndpoints(String api, String validoperator) {
+	private OperatorEndPointDTO getValidEndpoints(String api, String validoperator) {
 
 		String endpoint = null;
-		Operatorendpoint validoperendpoint = null;
+		OperatorEndPointDTO validoperendpoint = null;
 
-		for (Operatorendpoint d : operatorEndpoints) {
+		for (OperatorEndPointDTO d : operatorEndpoints) {
 
 			if ((d.getApi().contains(api)) && (validoperator.equalsIgnoreCase(d.getOperatorcode()))) {
 
@@ -267,5 +267,4 @@ public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculato
 
 		return validoperendpoint;
 	}
-
 }

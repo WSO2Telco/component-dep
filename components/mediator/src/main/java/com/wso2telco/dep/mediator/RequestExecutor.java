@@ -19,8 +19,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wso2telco.datapublisher.DataPublisherClient;
 import com.wso2telco.datapublisher.DataPublisherConstants;
-import com.wso2telco.dbutils.Operator;
-import com.wso2telco.dep.mediator.dao.OperatorDAO;
+import com.wso2telco.dep.operatorservice.model.OperatorApplicationDTO;
+import com.wso2telco.dep.operatorservice.service.OparatorService;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.exceptions.RequestError;
 import com.wso2telco.oneapivalidation.exceptions.ResponseError;
@@ -58,7 +58,7 @@ public abstract class RequestExecutor {
 	private static Log log = LogFactory.getLog(RequestExecutor.class);
 
 	/** The validoperators. */
-	List<Operator> validoperators = null;
+	List<OperatorApplicationDTO> validoperators = null;
 
 	/** The http method. */
 	private String httpMethod;
@@ -108,14 +108,14 @@ public abstract class RequestExecutor {
 	 *             the exception
 	 */
 	protected String getAccessToken(String operator) throws Exception {
-		Operator op = null;
+		OperatorApplicationDTO op = null;
 		String token = null;
 
 		if (operator == null) {
 			return token;
 		}
 
-		for (Operator d : validoperators) {
+		for (OperatorApplicationDTO d : validoperators) {
 			if (d.getOperatorname() != null && d.getOperatorname().contains(operator)) {
 				log.debug("DEBUG LOGS FOR LBS 01 : d.getOperatorname() = " + d.getOperatorname());
 				op = d;
@@ -140,7 +140,7 @@ public abstract class RequestExecutor {
 
 				JSONObject jsontoken = new JSONObject(Strtoken);
 				token = jsontoken.getString("access_token");
-				new OperatorDAO().updateOperatorToken(op.getOperatorid(), jsontoken.getString("refresh_token"),
+				new OparatorService().updateOperatorToken(op.getOperatorid(), jsontoken.getString("refresh_token"),
 						Long.parseLong(jsontoken.getString("expires_in")), new Date().getTime(), token);
 
 			} else {
@@ -200,7 +200,7 @@ public abstract class RequestExecutor {
 	 *
 	 * @return the validoperators
 	 */
-	public List<Operator> getValidoperators() {
+	public List<OperatorApplicationDTO> getValidoperators() {
 		return validoperators;
 	}
 
@@ -246,28 +246,28 @@ public abstract class RequestExecutor {
 		log.debug("DEBUG LOGS FOR LBS 05 : context = " + context);
 		log.debug("DEBUG LOGS FOR LBS 06 : applicationid = " + applicationid);
 		String applicationid = getApplicationid();
-		OperatorDAO operatorDAO = new OperatorDAO();
+		OparatorService operatorService = new OparatorService();
 		if (applicationid == null) {
 			throw new CustomException("SVC0001", "", new String[] { "Requested service is not provisioned" });
 		}
-		validoperators = operatorDAO.getApplicationOperators(Integer.valueOf(applicationid));
+		validoperators = operatorService.getApplicationOperators(Integer.valueOf(applicationid));
 		log.debug("DEBUG LOGS FOR LBS 07 : validoperators = " + validoperators);
 		if (validoperators.isEmpty()) {
 			throw new CustomException("SVC0001", "", new String[] { "Requested service is not provisioned" });
 		}
 
 		String apiName = (String) context.getProperty("API_NAME");
-		List<Integer> activeoperators = operatorDAO.getActiveApplicationOperators(Integer.valueOf(applicationid),
+		List<Integer> activeoperators = operatorService.getActiveApplicationOperators(Integer.valueOf(applicationid),
 				apiName);
 
 		log.debug("DEBUG LOGS FOR LBS 08 : activeoperators = " + activeoperators);
 
-		List<Operator> validoperatorsDup = new ArrayList<Operator>();
+		List<OperatorApplicationDTO> validoperatorsDup = new ArrayList<OperatorApplicationDTO>();
 		log.debug("MEDIATOR DEBUG LOGS 00 : validoperators Array Before = "
 				+ Arrays.toString(validoperatorsDup.toArray()));
 		log.debug("MEDIATOR DEBUG LOGS 00 : activeoperators Array Before = "
 				+ Arrays.toString(activeoperators.toArray()));
-		for (Operator operator : validoperators) {
+		for (OperatorApplicationDTO operator : validoperators) {
 			if (activeoperators.contains(operator.getOperatorid())) {
 				log.debug("MEDIATOR DEBUG LOGS 01 : getOperatorid = " + operator.getOperatorid());
 				log.debug("MEDIATOR DEBUG LOGS 02 : getApplicationid = " + operator.getApplicationid());

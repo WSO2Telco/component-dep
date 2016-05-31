@@ -25,7 +25,7 @@ import java.util.List;
 import java.util.Map;
 import com.wso2telco.dbutils.AxataDBUtilException;
 import com.wso2telco.dbutils.DbUtils;
-import com.wso2telco.dbutils.Operatorsubs;
+import com.wso2telco.dep.operatorservice.model.OperatorSubscriptionDTO;
 import com.wso2telco.dbutils.util.DataSourceNames;
 import com.wso2telco.dep.mediator.util.DatabaseTables;
 
@@ -87,7 +87,7 @@ public class SMSMessagingDAO {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public boolean outboundOperatorsubsEntry(List<Operatorsubs> domainsubs, Integer dnSubscriptionId) throws Exception {
+	public boolean outboundOperatorsubsEntry(List<OperatorSubscriptionDTO> domainsubs, Integer dnSubscriptionId) throws Exception {
 
 		Connection con = null;
 		PreparedStatement insertStatement = null;
@@ -113,7 +113,7 @@ public class SMSMessagingDAO {
 
 			insertStatement = con.prepareStatement(queryString.toString());
 
-			for (Operatorsubs d : domainsubs) {
+			for (OperatorSubscriptionDTO d : domainsubs) {
 
 				insertStatement.setInt(1, dnSubscriptionId);
 				insertStatement.setString(2, d.getDomain());
@@ -261,7 +261,7 @@ public class SMSMessagingDAO {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public boolean operatorsubsEntry(List<Operatorsubs> domainsubs, Integer moSubscriptionId) throws Exception {
+	public boolean operatorsubsEntry(List<OperatorSubscriptionDTO> domainsubs, Integer moSubscriptionId) throws Exception {
 
 		Connection con = null;
 		PreparedStatement insertStatement = null;
@@ -287,7 +287,7 @@ public class SMSMessagingDAO {
 
 			insertStatement = con.prepareStatement(queryString.toString());
 
-			for (Operatorsubs d : domainsubs) {
+			for (OperatorSubscriptionDTO d : domainsubs) {
 
 				insertStatement.setInt(1, moSubscriptionId);
 				insertStatement.setString(2, d.getDomain());
@@ -339,12 +339,12 @@ public class SMSMessagingDAO {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public List<Operatorsubs> subscriptionQuery(Integer moSubscriptionId) throws Exception {
+	public List<OperatorSubscriptionDTO> subscriptionQuery(Integer moSubscriptionId) throws Exception {
 
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		List<Operatorsubs> domainsubs = new ArrayList();
+		List<OperatorSubscriptionDTO> domainsubs = new ArrayList();
 
 		try {
 
@@ -366,7 +366,7 @@ public class SMSMessagingDAO {
 
 			while (rs.next()) {
 
-				domainsubs.add(new Operatorsubs(rs.getString("operator"), rs.getString("domainurl")));
+				domainsubs.add(new OperatorSubscriptionDTO(rs.getString("operator"), rs.getString("domainurl")));
 			}
 		} catch (Exception e) {
 
@@ -605,12 +605,12 @@ public class SMSMessagingDAO {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public List<Operatorsubs> outboudSubscriptionQuery(Integer dnSubscriptionId) throws Exception {
+	public List<OperatorSubscriptionDTO> outboudSubscriptionQuery(Integer dnSubscriptionId) throws Exception {
 
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		List<Operatorsubs> domainsubs = new ArrayList();
+		List<OperatorSubscriptionDTO> domainsubs = new ArrayList();
 
 		try {
 
@@ -632,7 +632,7 @@ public class SMSMessagingDAO {
 
 			while (rs.next()) {
 
-				domainsubs.add(new Operatorsubs(rs.getString("operator"), rs.getString("domainurl")));
+				domainsubs.add(new OperatorSubscriptionDTO(rs.getString("operator"), rs.getString("domainurl")));
 			}
 
 		} catch (Exception e) {

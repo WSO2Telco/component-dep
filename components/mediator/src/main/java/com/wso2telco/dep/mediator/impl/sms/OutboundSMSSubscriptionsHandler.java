@@ -18,7 +18,7 @@ package com.wso2telco.dep.mediator.impl.sms;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
+import com.wso2telco.dep.operatorservice.model.OperatorSubscriptionDTO;
 import org.apache.axis2.AxisFault;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
@@ -26,7 +26,6 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.wso2telco.dbutils.Operatorsubs;
 import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.dao.SMSMessagingDAO;
@@ -34,7 +33,6 @@ import com.wso2telco.dep.mediator.entity.DeliveryReceiptSubscriptionRequest;
 import com.wso2telco.dep.mediator.internal.ApiUtils;
 import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
-import com.wso2telco.dep.mediator.internal.Util;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
@@ -173,7 +171,7 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
 			subsrequst.getDeliveryReceiptSubscription().getCallbackReference().setNotifyURL(subsEndpoint);
 
 			String sbRequestBody = removeResourceURL(gson.toJson(subsrequst));
-			List<Operatorsubs> domainsubs = new ArrayList<Operatorsubs>();
+			List<OperatorSubscriptionDTO> domainsubs = new ArrayList<OperatorSubscriptionDTO>();
 			DeliveryReceiptSubscriptionRequest subsresponse = null;
 			for (OperatorEndpoint endpoint : endpoints) {
 
@@ -186,7 +184,7 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
 					if (subsrequst.getDeliveryReceiptSubscription() == null) {
 						executor.handlePluginException(notifyres);
 					}
-					domainsubs.add(new Operatorsubs(endpoint.getOperator(),
+					domainsubs.add(new OperatorSubscriptionDTO(endpoint.getOperator(),
 							subsresponse.getDeliveryReceiptSubscription().getResourceURL()));
 				}
 			}

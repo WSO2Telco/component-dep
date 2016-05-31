@@ -28,6 +28,10 @@
          <class name="org.wso2.carbon.apimgt.usage.publisher.APIMgtResponseHandler"/>
          <send/>
       </outSequence>
+      <faultSequence>
+        <property expression="$ctx:ERROR_CODE" name="ERROR_CODE" scope="default" type="STRING"/>
+        <sequence key="custom_fault"/>
+      </faultSequence>
    </resource>
    <handlers>
       <handler class="org.wso2.carbon.apimgt.gateway.handlers.security.CORSRequestHandler">

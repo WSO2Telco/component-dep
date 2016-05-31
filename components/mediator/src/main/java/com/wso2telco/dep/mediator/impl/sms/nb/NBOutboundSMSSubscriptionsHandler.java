@@ -17,7 +17,6 @@ package com.wso2telco.dep.mediator.impl.sms.nb;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.wso2telco.dbutils.Operatorsubs;
 import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.dao.SMSMessagingDAO;
@@ -46,6 +45,7 @@ import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONException;
 import org.json.JSONObject;
+import com.wso2telco.dep.operatorservice.model.OperatorSubscriptionDTO;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -174,7 +174,7 @@ public class NBOutboundSMSSubscriptionsHandler implements SMSHandler {
 		SenderAddresses[] senderAddresses = nbDeliveryReceiptSubscriptionRequest.getDeliveryReceiptSubscription()
 				.getSenderAddresses();
 
-		List<Operatorsubs> domainsubs = new ArrayList<Operatorsubs>();
+		List<OperatorSubscriptionDTO> domainsubs = new ArrayList<OperatorSubscriptionDTO>();
 		SBDeliveryReceiptSubscriptionRequest sbDeliveryReceiptSubscriptionResponse = null;
 
 		for (OperatorEndpoint endpoint : endpoints) {
@@ -222,7 +222,7 @@ public class NBOutboundSMSSubscriptionsHandler implements SMSHandler {
 							senderAddresses[i].setStatus("NotCreated");
 						} else {
 							domainsubs
-									.add(new Operatorsubs(endpoint.getOperator(), sbDeliveryReceiptSubscriptionResponse
+									.add(new OperatorSubscriptionDTO(endpoint.getOperator(), sbDeliveryReceiptSubscriptionResponse
 											.getDeliveryReceiptSubscription().getResourceURL()));
 							senderAddresses[i].setStatus("Created");
 						}
