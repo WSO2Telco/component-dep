@@ -51,7 +51,7 @@ public enum ReportingTable {
 	/** The sub approval operators. */
 	SUB_APPROVAL_OPERATORS("sub_approval_operators"),
 	
-	/** The tax. */
+	/** The tax. */ 
 	TAX("tax"),
 	
 	/** The subscription tax. */
@@ -64,10 +64,16 @@ public enum ReportingTable {
 	SUBSCRIPTION_RATES("subscription_rates"),
 	
 	/** The subscription rates nb. */
-	SUBSCRIPTION_RATES_NB("subscription_rates_nb");
+	SUBSCRIPTION_RATES_NB("subscription_rates_nb"),
 	
+	/** The test db. */
+	TEST_DB("TEST_DB"),
 	
+	/** The am subscriber. */
+	AM_SUBSCRIBER("AM_SUBSCRIBER"),
 	
+	/** The subscriptioncount. */
+	SUBSCRIPTIONCOUNT("SUBSCRIPTIONCOUNT");
 	
 	/**
 	 * Instantiates a new reporting table.

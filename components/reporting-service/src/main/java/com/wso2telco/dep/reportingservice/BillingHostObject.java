@@ -57,6 +57,8 @@ import com.wso2telco.dep.reportingservice.northbound.NbHostObjectUtils;
 import com.wso2telco.dep.reportingservice.southbound.SbHostObjectUtils;
 import com.wso2telco.dep.reportingservice.util.ChargeRate;
 import com.wso2telco.dep.reportingservice.util.RateKey;
+import com.wso2telco.utils.exception.BusinessException;
+import com.wso2telco.dep.reportingservice.exception.ReportingServiceError;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -134,16 +136,22 @@ public class BillingHostObject extends ScriptableObject {
      * Instantiates a new billing host object.
      *
      * @param username the username
+     * @throws BusinessException 
      * @throws APIManagementException the API management exception
      */
-    public BillingHostObject(String username) throws APIManagementException {
+    public BillingHostObject(String username) throws BusinessException{
         log.info("::: Initialized HostObject for : " + username);
-        if (username != null) {
-            this.username = username;
-            apiConsumer = APIManagerFactory.getInstance().getAPIConsumer(username);
-        } else {
-            apiConsumer = APIManagerFactory.getInstance().getAPIConsumer();
-        }
+        try {
+			if (username != null) {
+			    this.username = username;
+			    apiConsumer = APIManagerFactory.getInstance().getAPIConsumer(username);
+			} else {
+			    apiConsumer = APIManagerFactory.getInstance().getAPIConsumer();
+			}
+		} catch (APIManagementException e) {
+			log.error("",e);
+			throw new BusinessException(ReportingServiceError.INTERNAL_SERVER_ERROR);
+		}
     }
 
     /**
@@ -184,16 +192,21 @@ public class BillingHostObject extends ScriptableObject {
      */
     public static String jsFunction_getReportFileContent(Context cx, Scriptable thisObj,
             Object[] args, Function funObj)
-            throws Exception {
-        if (args == null || args.length == 0) {
-            handleException("Invalid number of parameters.");
+            throws BusinessException {
+        if (args == null || args.length == 0) {            
+            throw new BusinessException(ReportingServiceError.INPUT_ERROR);
         }
 
         String subscriberName = (String) args[0];
         String period = (String) args[1];
         boolean isNorthbound = (Boolean) args[2];
-
-        generateReport(subscriberName, period, true, isNorthbound, "__ALL__");
+      
+        try {
+			generateReport(subscriberName, period, true, isNorthbound, "__ALL__");
+		} catch (Exception e) {
+			log.error("",e);
+			throw new BusinessException(ReportingServiceError.INTERNAL_SERVER_ERROR);
+		}
 
         String fileContent = (isNorthbound) ? NbHostObjectUtils.getReport(subscriberName, period) : SbHostObjectUtils.getReport(subscriberName, period);
         return fileContent;
@@ -208,12 +221,14 @@ public class BillingHostObject extends ScriptableObject {
      * @param funObj the fun obj
      * @return the native array
      * @throws APIManagementException the API management exception
+     * @throws BusinessException 
      */
     public static NativeArray jsFunction_getCustomCareDataReport(Context cx, Scriptable thisObj,
             Object[] args, Function funObj)
-            throws APIManagementException {
+            throws BusinessException {
         if (args == null || args.length == 0) {
-            handleException("Invalid number of parameters.");
+            //handleException("Invalid number of parameters.");
+        	throw new BusinessException(ReportingServiceError.INPUT_ERROR);
         }
 
         String fromDate = (String) args[0];
@@ -246,9 +261,10 @@ public class BillingHostObject extends ScriptableObject {
      */
     public static String jsFunction_getCustomCareDataRecordsCount(Context cx, Scriptable thisObj,
             Object[] args, Function funObj)
-            throws APIManagementException {
+            throws BusinessException {
         if (args == null || args.length == 0) {
-            handleException("Invalid number of parameters.");
+            //handleException("Invalid number of parameters.");
+        	throw new BusinessException(ReportingServiceError.INPUT_ERROR);
         }
 
         String fromDate = (String) args[0];
@@ -259,7 +275,8 @@ public class BillingHostObject extends ScriptableObject {
         String app = (String) args[5];
         String api = (String) args[6];
 
-        String dataString = getCustomCareDataRecordCount(fromDate, toDate, msisdn, subscriberName, operator, app, api);
+        String dataString;		
+		dataString = getCustomCareDataRecordCount(fromDate, toDate, msisdn, subscriberName, operator, app, api);	
 
         return dataString;
     }
@@ -276,9 +293,10 @@ public class BillingHostObject extends ScriptableObject {
      */
     public static String jsFunction_getCustomApiTrafficReportFileContent(Context cx, Scriptable thisObj,
             Object[] args, Function funObj)
-            throws APIManagementException {
+            throws BusinessException {
         if (args == null || args.length == 0) {
-            handleException("Invalid number of parameters.");
+            //handleException("Invalid number of parameters.");
+        	throw new BusinessException(ReportingServiceError.INPUT_ERROR);
         }
 
         String fromDate = (String) args[0];
@@ -308,10 +326,11 @@ public class BillingHostObject extends ScriptableObject {
      */
     public static NativeArray jsFunction_getAPIUsageforSubscriber(Context cx, Scriptable thisObj,
             Object[] args, Function funObj)
-            throws APIManagementException {
+            throws BusinessException {
         List<APIVersionUserUsageDTO> list = null;
         if (args == null || args.length == 0) {
-            handleException("Invalid number of parameters.");
+            //handleException("Invalid number of parameters.");
+        	throw new BusinessException(ReportingServiceError.INPUT_ERROR);
         }
         NativeArray ret = null;
         try {
@@ -350,10 +369,11 @@ public class BillingHostObject extends ScriptableObject {
      */
     public static NativeArray jsFunction_getCostPerAPI(Context cx, Scriptable thisObj,
             Object[] args, Function funObj)
-            throws Exception {
+            throws BusinessException {
         List<APIVersionUserUsageDTO> list = null;
         if (args == null || args.length == 0) {
-            handleException("Invalid number of parameters.");
+           // handleException("Invalid number of parameters.");
+        	throw new BusinessException(ReportingServiceError.INPUT_ERROR);
         }
         NativeArray myn = new NativeArray(0);
         if (!SbHostObjectUtils.checkDataPublishingEnabled()) {
@@ -474,7 +494,7 @@ public class BillingHostObject extends ScriptableObject {
      * @return the native array
      * @throws Exception 
      */
-    private static NativeArray generateReport(String subscriberName, String period, boolean persistReport, boolean isNorthbound, String operatorName) throws Exception {
+    private static NativeArray generateReport(String subscriberName, String period, boolean persistReport, boolean isNorthbound, String operatorName) throws BusinessException {
 
         //createTierPricingMap();
         Map<RateKey, ChargeRate> rateCard = (isNorthbound) ? NbHostObjectUtils.getRateCard() : SbHostObjectUtils.getRateCard();
@@ -482,12 +502,10 @@ public class BillingHostObject extends ScriptableObject {
         NativeArray ret = null;
         try {
             ret = (isNorthbound) ? NbHostObjectUtils.generateReportofSubscriber(persistReport, subscriberName, period, rateCard) : SbHostObjectUtils.generateReportofSubscriber(persistReport, subscriberName, period, rateCard, operatorName);
-        } catch (APIMgtUsageQueryServiceClientException e) {
-            handleException("Error occurred while executing the dummyQuery.", e);
-        } catch (SQLException e) {
-            handleException("Error occurred while retrieving data.", e);
-        } catch (IOException e) {
-            handleException("Error occurred while generating report.", e);
+        } catch (Exception e) {
+            //handleException("Error occurred while generating report.", e);
+        	log.error("",e);
+        	throw new BusinessException(ReportingServiceError.INTERNAL_SERVER_ERROR);
         }
         return ret;
     }
@@ -506,21 +524,24 @@ public class BillingHostObject extends ScriptableObject {
      * @return the native array
      * @throws APIManagementException the API management exception
      */
-    private static NativeArray generateCustomApiTrafficReport(String fromDate, String toDate, String subscriberName, String operator, String api, String timeOffset, String resType, boolean isNorthbound) throws APIManagementException {
+    private static NativeArray generateCustomApiTrafficReport(String fromDate, String toDate, String subscriberName, String operator, String api, String timeOffset, String resType, boolean isNorthbound) throws BusinessException {
 
         NativeArray ret = null;
         try {
             if (isNorthbound) {
-                ret = NbHostObjectUtils.generateCustomTrafficReport(true, fromDate, toDate, subscriberName, operator, api, timeOffset, resType);
+                try {
+					ret = NbHostObjectUtils.generateCustomTrafficReport(true, fromDate, toDate, subscriberName, operator, api, timeOffset, resType);
+				} catch (Exception e) {
+					
+					e.printStackTrace();
+				}
             } else {
                 ret = SbHostObjectUtils.generateCustomTrafficReport(true, fromDate, toDate, subscriberName, operator, api, timeOffset, resType);
             }
-        } catch (APIMgtUsageQueryServiceClientException e) {
-            handleException("Error occurred while executing the dummyQuery.", e);
-        } catch (SQLException e) {
-            handleException("Error occurred while retrieving data.", e);
-        } catch (IOException e) {
-            handleException("Error occurred while generating report.", e);
+        } catch (Exception e) {
+            log.error("",e);
+        	//handleException("Error occurred while generating report.", e);
+            throw new BusinessException(ReportingServiceError.INTERNAL_SERVER_ERROR);
         }
         return ret;
     }
@@ -541,15 +562,14 @@ public class BillingHostObject extends ScriptableObject {
      * @return the custom care data report
      * @throws APIManagementException the API management exception
      */
-    private static NativeArray getCustomCareDataReport(String fromDate, String toDate, String msisdn, String subscriberName, String operator, String app, String api, String stLimit, String endLimit, String timeOffset) throws APIManagementException {
+    private static NativeArray getCustomCareDataReport(String fromDate, String toDate, String msisdn, String subscriberName, String operator, String app, String api, String stLimit, String endLimit, String timeOffset) throws BusinessException {
 
         NativeArray ret = null;
         try {
             ret = SbHostObjectUtils.generateCustomrCareDataReport(true, fromDate, toDate, msisdn, subscriberName, operator, app, api, stLimit, endLimit, timeOffset);
-        } catch (APIMgtUsageQueryServiceClientException e) {
-            handleException("Error occurred while executing the dummyQuery.", e);
-        } catch (SQLException e) {
-            handleException("Error occurred while retrieving data.", e);
+        } catch (Exception e) {
+            //handleException("Error occurred while retrieving data.", e);
+        	throw new BusinessException(ReportingServiceError.INPUT_ERROR);
         }
         return ret;
     }
@@ -566,18 +586,17 @@ public class BillingHostObject extends ScriptableObject {
      * @param api the api
      * @return the custom care data record count
      * @throws APIManagementException the API management exception
+     * @throws BusinessException 
      */
-    private static String getCustomCareDataRecordCount(String fromDate, String toDate, String msisdn, String subscriberName, String operator, String app, String api) throws APIManagementException {
+    private static String getCustomCareDataRecordCount(String fromDate, String toDate, String msisdn, String subscriberName, String operator, String app, String api) throws BusinessException {
 
         String ret = null;
         try {
             ret = SbHostObjectUtils.generateCustomrCareDataRecordCount(true, fromDate, toDate, msisdn, subscriberName, operator, app, api);
-        } catch (APIMgtUsageQueryServiceClientException e) {
-            handleException("Error occurred while executing the dummyQuery.", e);
-        } catch (SQLException e) {
-            handleException("Error occurred while retrieving data.", e);
-        } catch (IOException e) {
-            handleException("Error occurred while generating report.", e);
+        } catch (Exception e) {
+            //handleException("Error occurred while generating report.", e);
+        	log.error("",e);
+        	throw new BusinessException(ReportingServiceError.INTERNAL_SERVER_ERROR);
         }
         return ret;
     }
@@ -1456,11 +1475,10 @@ public class BillingHostObject extends ScriptableObject {
      * @param args the args
      * @param funObj the fun obj
      * @return the native array
-     * @throws APIManagementException the API management exception
-     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws Exception 
      */
     @SuppressWarnings("null")
-    public static NativeArray jsFunction_getSPforBlacklist(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws APIManagementException, APIMgtUsageQueryServiceClientException {
+    public static NativeArray jsFunction_getSPforBlacklist(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
         if (args == null || args.length == 0) {
             handleException("Invalid number of parameters.");
         }
@@ -1505,10 +1523,9 @@ public class BillingHostObject extends ScriptableObject {
      * @param args the args
      * @param funObj the fun obj
      * @return the native object
-     * @throws APIManagementException the API management exception
-     * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+     * @throws Exception 
      */
-    public static NativeObject jsFunction_getAppforBlacklist(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws APIManagementException, APIMgtUsageQueryServiceClientException {
+    public static NativeObject jsFunction_getAppforBlacklist(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws Exception {
         if (args == null || args.length == 0) {
             handleException("Invalid number of parameters.");
         }
