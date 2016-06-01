@@ -24,7 +24,7 @@ import org.wso2.carbon.utils.ConfigurationContextService;
 import com.wso2telco.dep.workflow.internal.ServiceReferenceHolder;
 
 /**
- * @scr.component name="axiata.workflow" immediate="true"
+ * @scr.component name="dep.workflow" immediate="true"
  * @scr.reference name="config.context.service"
  * 				  interface="org.wso2.carbon.utils.ConfigurationContextService"
  * 				  cardinality="1..1" 
@@ -52,12 +52,12 @@ public class WorkflowComponent {
     }
     
 	protected void setAPIManagerConfigurationService(APIManagerConfigurationService amcService) {
-		log.debug("API manager configuration service bound to AxiataWorlflowHandler.");
+		log.debug("API manager configuration service bound to WorlflowHandler.");
 		configuration = amcService.getAPIManagerConfiguration();
 	}
 
 	protected void unsetAPIManagerConfigurationService(APIManagerConfigurationService amcService) {
-		log.debug("API manager configuration service unbound from AxiataWorlflowHandler.");
+		log.debug("API manager configuration service unbound from WorlflowHandler.");
 		configuration = null;
 	}
 	
