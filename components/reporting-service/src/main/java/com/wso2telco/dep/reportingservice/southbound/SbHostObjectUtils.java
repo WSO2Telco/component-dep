@@ -74,6 +74,7 @@ import com.wso2telco.dep.reportingservice.dao.BillingDAO;
 import com.wso2telco.dep.reportingservice.dao.OperatorDAO;
 import com.wso2telco.dep.reportingservice.dao.TaxDAO;
 import com.wso2telco.dep.reportingservice.dao.TxCardDAO;
+import com.wso2telco.dep.reportingservice.exception.ReportingServiceError;
 import com.wso2telco.dep.reportingservice.internal.HostObjectComponent;
 import com.wso2telco.dep.reportingservice.util.CategoryEntity;
 import com.wso2telco.dep.reportingservice.util.ChargeRate;
@@ -85,6 +86,7 @@ import com.wso2telco.dep.reportingservice.util.RateType;
 import com.wso2telco.dep.reportingservice.util.SubCategory;
 import com.wso2telco.dep.reportingservice.util.SurchargeEntity;
 import com.wso2telco.dep.reportingservice.util.UsageTiers;
+import com.wso2telco.utils.exception.BusinessException;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -130,11 +132,11 @@ public class SbHostObjectUtils {
 	 * @return the billing subscriptions for user
 	 * @throws APIManagementException the API management exception
 	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws BusinessException 
 	 */
 	public static Map<Application, Set<BillingSubscription>> getBillingSubscriptionsForUser(
 			String username, String year, String month)
-			throws APIManagementException,
-			APIMgtUsageQueryServiceClientException {
+			throws Exception {
 		Subscriber subscriber = new Subscriber(username);
 		ApiMgtDAO apiMgtDAO = new ApiMgtDAO();
 		// Adding null as param
@@ -175,14 +177,19 @@ public class SbHostObjectUtils {
 	 * @return true, if is subscription valid for month
 	 * @throws APIManagementException the API management exception
 	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws BusinessException 
 	 */
 	private static boolean isSubscriptionValidForMonth(SubscribedAPI subAPI,
-			String year, String month) throws APIManagementException,
-			APIMgtUsageQueryServiceClientException {
+			String year, String month) throws BusinessException {
 		BillingDAO billingDAO = new BillingDAO();
-		java.util.Date createdTime = billingDAO
-				.getSubscriptionCreatedTime(subAPI.getApplication().getId(),
-						subAPI.getApiId());
+		java.util.Date createdTime;
+		try {
+			createdTime = billingDAO
+					.getSubscriptionCreatedTime(subAPI.getApplication().getId(),
+							subAPI.getApiId());
+		} catch (Exception e) {
+			throw new BusinessException(ReportingServiceError.INTERNAL_SERVER_ERROR);
+		}
 		Date reportDate = Date.valueOf(year + "-" + month + "-01");
 		Calendar calendar = Calendar.getInstance();
 		calendar.setTime(reportDate);
@@ -921,13 +928,11 @@ public class SbHostObjectUtils {
 	 *
 	 * @param subscription the subscription
 	 * @param rateCard the rate card
-	 * @throws APIManagementException the API management exception
-	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws Exception 
 	 */
 	private static void populateOperatorDetailsOfSubscription(
 			BillingSubscription subscription, Map<RateKey, ChargeRate> rateCard)
-			throws APIManagementException,
-			APIMgtUsageQueryServiceClientException {
+			throws Exception {
 		int appId = subscription.getApplication().getId();
 		int apiId = subscription.getApiIdInt();
 		List<BillingSubscription.OperatorSubscription> opSubscriptionList = new ArrayList<BillingSubscription.OperatorSubscription>();
@@ -963,12 +968,11 @@ public class SbHostObjectUtils {
 	 * Populate category vise api counts.
 	 *
 	 * @param subscription the subscription
-	 * @throws APIManagementException the API management exception
-	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws Exception 
+	 * @throws  
 	 */
 	private static void populateCategoryViseAPICounts(
-			BillingSubscription subscription) throws APIManagementException,
-			APIMgtUsageQueryServiceClientException {
+			BillingSubscription subscription) throws Exception {
 
 		Application application = subscription.getApplication();
 		if (application == null) {
@@ -1003,12 +1007,10 @@ public class SbHostObjectUtils {
 	 *
 	 * @param username the username
 	 * @return the response times for subscriber
-	 * @throws APIManagementException the API management exception
-	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws Exception 
 	 */
 	public static Map<String, String> getResponseTimesForSubscriber(
-			String username) throws APIManagementException,
-			APIMgtUsageQueryServiceClientException {
+			String username) throws Exception {
 		log.debug("Starting getResponseTimesForSubscriber funtion with name username "
 				+ username);
 		Subscriber subscriber = new Subscriber(username);
@@ -1048,13 +1050,11 @@ public class SbHostObjectUtils {
 	 * @param fromDate the from date
 	 * @param toDate the to date
 	 * @return the all response times
-	 * @throws APIManagementException the API management exception
-	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws Exception 
 	 */
 	public static Map<String, List<APIResponseDTO>> getAllResponseTimes(
 			String opName, String username, String application, String appId,
-			String fromDate, String toDate) throws APIManagementException,
-			APIMgtUsageQueryServiceClientException {
+			String fromDate, String toDate) throws Exception {
 		log.debug("Starting getAllResponseTimes function with username "
 				+ username + " for app " + application + " from " + fromDate
 				+ " to " + toDate);
@@ -1275,16 +1275,13 @@ public class SbHostObjectUtils {
 	 * @param endLimit the end limit
 	 * @param timeOffset the time offset
 	 * @return the native array
-	 * @throws SQLException the SQL exception
-	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
-	 * @throws APIManagementException the API management exception
+	 * @throws Exception 
 	 */
 	public static NativeArray generateCustomrCareDataReport(
 			boolean isPersistReport, String fromDate, String toDate,
 			String msisdn, String subscriberName, String operator, String app,
 			String api, String stLimit, String endLimit, String timeOffset)
-			throws SQLException, APIMgtUsageQueryServiceClientException,
-			APIManagementException {
+			throws Exception {
 
 		NativeArray nativeArray = new NativeArray(0);
 		List<String[]> user_data_all = SbHostObjectUtils
@@ -1317,16 +1314,12 @@ public class SbHostObjectUtils {
 	 * @param app the app
 	 * @param api the api
 	 * @return the string
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws SQLException the SQL exception
-	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
-	 * @throws APIManagementException the API management exception
+	 * @throws Exception 
 	 */
 	public static String generateCustomrCareDataRecordCount(
 			boolean isPersistReport, String fromDate, String toDate,
 			String msisdn, String subscriberName, String operator, String app,
-			String api) throws IOException, SQLException,
-			APIMgtUsageQueryServiceClientException, APIManagementException {
+			String api) throws Exception {
 		BillingDAO billingDAO = new BillingDAO();
 		String user_data_count = billingDAO
 				.getCustomerCareReportDataCount(fromDate, toDate, msisdn,
@@ -1347,17 +1340,12 @@ public class SbHostObjectUtils {
 	 * @param timeOffset the time offset
 	 * @param resType the res type
 	 * @return the native array
-	 * @throws IOException Signals that an I/O exception has occurred.
-	 * @throws SQLException the SQL exception
-	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
-	 * @throws APIManagementException the API management exception
+	 * @throws Exception 
 	 */
 	public static NativeArray generateCustomTrafficReport(
 			boolean isPersistReport, String fromDate, String toDate,
 			String subscriberName, String operator, String api,
-			String timeOffset, String resType) throws IOException,
-			SQLException, APIMgtUsageQueryServiceClientException,
-			APIManagementException {
+			String timeOffset, String resType) throws Exception {
 
 		// This is to test
 		int operationType = Integer.valueOf(api);
@@ -2121,12 +2109,9 @@ public class SbHostObjectUtils {
 	 * Gets the operation types.
 	 *
 	 * @return the operation types
-	 * @throws SQLException the SQL exception
-	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
-	 * @throws APIManagementException the API management exception
+	 * @throws Exception 
 	 */
-	public static List<String[]> getOperationTypes() throws SQLException,
-			APIMgtUsageQueryServiceClientException, APIManagementException {
+	public static List<String[]> getOperationTypes() throws Exception {
 		BillingDAO billingDAO = new BillingDAO();
 		List<String[]> txTypes = billingDAO.getAllOperationTypes();
 		return txTypes;
@@ -2154,14 +2139,11 @@ public class SbHostObjectUtils {
 	 * @param subscriber the subscriber
 	 * @param api the api
 	 * @return the operatorbreakdown
-	 * @throws SQLException the SQL exception
-	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
-	 * @throws APIManagementException the API management exception
+	 * @throws Exception 
 	 */
 	public static Map<String, Integer> getOperatorbreakdown(
 			String applicationid, String year, String month, String subscriber,
-			String api) throws SQLException,
-			APIMgtUsageQueryServiceClientException, APIManagementException {
+			String api) throws Exception {
 		BillingDAO billingDAO = new BillingDAO();
 		String consumerkey = "%";
 		if (applicationid != null) {
@@ -2189,12 +2171,16 @@ public class SbHostObjectUtils {
 	 * @throws APIManagementException the API management exception
 	 */
 	public static String getApplicationNameById(String applicationid)
-			throws SQLException, APIMgtUsageQueryServiceClientException,
-			APIManagementException {
+			throws BusinessException {
 		BillingDAO billingDAO = new BillingDAO();
-		String appName = billingDAO.getApplicationName(
-				Integer.parseInt(applicationid),
-				APIConstants.API_KEY_TYPE_PRODUCTION);
+		String appName = null;
+		try {
+			appName = billingDAO.getApplicationName(
+					Integer.parseInt(applicationid),
+					APIConstants.API_KEY_TYPE_PRODUCTION);
+		} catch (Exception e) {
+			log.error("",e);
+		}
 
 		return appName;
 
@@ -2209,14 +2195,11 @@ public class SbHostObjectUtils {
 	 * @param operator the operator
 	 * @param applicationId the application id
 	 * @return the total api traffic for pie chart
-	 * @throws SQLException the SQL exception
-	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
-	 * @throws APIManagementException the API management exception
+	 * @throws Exception 
 	 */
 	public static List<String[]> getTotalAPITrafficForPieChart(String fromDate,
 			String toDate, String subscriber, String operator, int applicationId)
-			throws SQLException, APIMgtUsageQueryServiceClientException,
-			APIManagementException {
+			throws Exception {
 		BillingDAO billingDAO = new BillingDAO();
 		List<String[]> api_request = billingDAO
 				.getTotalAPITrafficForPieChart(fromDate, toDate, subscriber,
@@ -2234,14 +2217,11 @@ public class SbHostObjectUtils {
 	 * @param applicationId the application id
 	 * @param api the api
 	 * @return the total api traffic for histogram
-	 * @throws SQLException the SQL exception
-	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
-	 * @throws APIManagementException the API management exception
+	 * @throws Exception 
 	 */
 	public static List<String[]> getTotalAPITrafficForHistogram(
 			String fromDate, String toDate, String subscriber, String operator,
-			int applicationId, String api) throws SQLException,
-			APIMgtUsageQueryServiceClientException, APIManagementException {
+			int applicationId, String api) throws Exception {
 		BillingDAO billingDAO = new BillingDAO();
 		List<String[]> api_request = billingDAO
 				.getTotalAPITrafficForHistogram(fromDate, toDate, subscriber,
@@ -2258,14 +2238,11 @@ public class SbHostObjectUtils {
 	 * @param api the api
 	 * @param applicationId the application id
 	 * @return the operator wise api traffic for pie chart
-	 * @throws SQLException the SQL exception
-	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
-	 * @throws APIManagementException the API management exception
+	 * @throws Exception 
 	 */
 	public static List<String[]> getOperatorWiseAPITrafficForPieChart(
 			String fromDate, String toDate, String subscriber, String api,
-			int applicationId) throws SQLException,
-			APIMgtUsageQueryServiceClientException, APIManagementException {
+			int applicationId) throws Exception {
 		BillingDAO billingDAO = new BillingDAO();
 		List<String[]> api_request = billingDAO
 				.getOperatorWiseAPITrafficForPieChart(fromDate, toDate,
@@ -2301,13 +2278,10 @@ public class SbHostObjectUtils {
 	 * @param applicationId the application id
 	 * @param operator the operator
 	 * @return the approval history app
-	 * @throws SQLException the SQL exception
-	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
-	 * @throws APIManagementException the API management exception
+	 * @throws Exception 
 	 */
 	public static List<Approval> getApprovalHistoryApp(int applicationId,
-			String operator) throws SQLException,
-			APIMgtUsageQueryServiceClientException, APIManagementException {
+			String operator) throws Exception {
 		BillingDAO billingDAO = new BillingDAO();
 		List<Approval> api_request = billingDAO
 				.getApprovalHistoryApp(applicationId, operator);
@@ -2324,14 +2298,11 @@ public class SbHostObjectUtils {
 	 * @param applicationId the application id
 	 * @param api the api
 	 * @return the all ap is
-	 * @throws SQLException the SQL exception
-	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
-	 * @throws APIManagementException the API management exception
+	 * @throws Exception 
 	 */
 	public static List<String[]> getAllAPIs(String fromDate, String toDate,
 			String subscriber, String operator, int applicationId, String api)
-			throws SQLException, APIMgtUsageQueryServiceClientException,
-			APIManagementException {
+			throws Exception {
 		BillingDAO billingDAO = new BillingDAO();
 		List<String[]> apis = billingDAO.getAllAPIs(fromDate,
 				toDate, subscriber, operator, applicationId, api);
@@ -2348,14 +2319,11 @@ public class SbHostObjectUtils {
 	 * @param applicationId the application id
 	 * @param api the api
 	 * @return the all error response codes
-	 * @throws SQLException the SQL exception
-	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
-	 * @throws APIManagementException the API management exception
+	 * @throws Exception 
 	 */
 	public static List<String[]> getAllErrorResponseCodes(String fromDate,
 			String toDate, String subscriber, String operator,
-			int applicationId, String api) throws SQLException,
-			APIMgtUsageQueryServiceClientException, APIManagementException {
+			int applicationId, String api) throws Exception {
 		BillingDAO billingDAO = new BillingDAO();
 		List<String[]> resCodes = billingDAO
 				.getAllErrorResponseCodes(fromDate, toDate, subscriber,
@@ -2513,14 +2481,11 @@ public class SbHostObjectUtils {
 	 * @param operator the operator
 	 * @param api the api
 	 * @return the API wise traffic for report
-	 * @throws SQLException the SQL exception
-	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
-	 * @throws APIManagementException the API management exception
+	 * @throws Exception 
 	 */
 	public static List<String[]> getAPIWiseTrafficForReport(String fromDate,
 			String toDate, String subscriber, String operator, String api)
-			throws SQLException, APIMgtUsageQueryServiceClientException,
-			APIManagementException {
+			throws Exception {
 		BillingDAO billingDAO = new BillingDAO();
 		List<String[]> api_request_data = billingDAO
 				.getAPIWiseTrafficForReport(fromDate, toDate, subscriber,
@@ -2542,15 +2507,12 @@ public class SbHostObjectUtils {
 	 * @param endLimit the end limit
 	 * @param timeOffset the time offset
 	 * @return the filtered customer care report
-	 * @throws SQLException the SQL exception
-	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
-	 * @throws APIManagementException the API management exception
+	 * @throws Exception 
 	 */
 	public static List<String[]> getFilteredCustomerCareReport(String fromDate,
 			String toDate, String msisdn, String subscriber, String operator,
 			String app, String api, String stLimit, String endLimit,
-			String timeOffset) throws SQLException,
-			APIMgtUsageQueryServiceClientException, APIManagementException {
+			String timeOffset) throws Exception {
 		BillingDAO billingDAO = new BillingDAO();
 		List<String[]> api_request_data = billingDAO
 				.getCustomerCareReportData(fromDate, toDate, msisdn,
@@ -2568,14 +2530,11 @@ public class SbHostObjectUtils {
 	 * @param operator the operator
 	 * @param api the api
 	 * @return the API wise traffic for report charging
-	 * @throws SQLException the SQL exception
-	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
-	 * @throws APIManagementException the API management exception
+	 * @throws Exception 
 	 */
 	public static List<String[]> getAPIWiseTrafficForReportCharging(
 			String fromDate, String toDate, String subscriber, String operator,
-			String api) throws SQLException,
-			APIMgtUsageQueryServiceClientException, APIManagementException {
+			String api) throws Exception {
 		BillingDAO billingDAO = new BillingDAO();
 		List<String[]> charging_request_data = billingDAO
 				.getAPIWiseTrafficForReportCharging(fromDate, toDate,
@@ -2672,14 +2631,11 @@ public class SbHostObjectUtils {
 	 * @param applicationId the application id
 	 * @param api the api
 	 * @return the error response codes for pie chart
-	 * @throws SQLException the SQL exception
-	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
-	 * @throws APIManagementException the API management exception
+	 * @throws Exception 
 	 */
 	public static List<String[]> getErrorResponseCodesForPieChart(
 			String fromDate, String toDate, String subscriber, String operator,
-			int applicationId, String api) throws SQLException,
-			APIMgtUsageQueryServiceClientException, APIManagementException {
+			int applicationId, String api) throws Exception {
 		BillingDAO billingDAO = new BillingDAO();
 		List<String[]> api_request = billingDAO
 				.getErrorResponseCodesForPieChart(fromDate, toDate, subscriber,
@@ -2697,14 +2653,11 @@ public class SbHostObjectUtils {
 	 * @param applicationId the application id
 	 * @param api the api
 	 * @return the error response codes for histogram
-	 * @throws SQLException the SQL exception
-	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
-	 * @throws APIManagementException the API management exception
+	 * @throws Exception 
 	 */
 	public static List<String[]> getErrorResponseCodesForHistogram(
 			String fromDate, String toDate, String subscriber, String operator,
-			int applicationId, String api) throws SQLException,
-			APIMgtUsageQueryServiceClientException, APIManagementException {
+			int applicationId, String api) throws Exception {
 		BillingDAO billingDAO = new BillingDAO();
 		List<String[]> api_response_codes = billingDAO
 				.getErrorResponseCodesForHistogram(fromDate, toDate,
@@ -3340,14 +3293,11 @@ public class SbHostObjectUtils {
 	 * @param applicationId the application id
 	 * @param api the api
 	 * @return the total api traffic for line chart
-	 * @throws SQLException the SQL exception
-	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
-	 * @throws APIManagementException the API management exception
+	 * @throws Exception 
 	 */
 	public static List<String[]> getTotalAPITrafficForLineChart(
 			String fromDate, String toDate, String subscriber, String operator,
-			int applicationId, String api) throws SQLException,
-			APIMgtUsageQueryServiceClientException, APIManagementException {
+			int applicationId, String api) throws Exception {
 		BillingDAO billingDAO = new BillingDAO();
 		List<String[]> api_request = billingDAO
 				.getTotalAPITrafficForLineChart(fromDate, toDate, subscriber,
@@ -3364,14 +3314,11 @@ public class SbHostObjectUtils {
 	 * @param operator the operator
 	 * @param timeRange the time range
 	 * @return the total api response time for line chart
-	 * @throws SQLException the SQL exception
-	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
-	 * @throws APIManagementException the API management exception
+	 * @throws Exception 
 	 */
 	public static List<APIResponseDTO> getTotalAPIResponseTimeForLineChart(
 			String fromDate, String toDate, String subscriber, String operator,
-			String timeRange) throws SQLException,
-			APIMgtUsageQueryServiceClientException, APIManagementException {
+			String timeRange) throws Exception {
 		BillingDAO billingDAO = new BillingDAO();
 		List<APIResponseDTO> apiResponse = billingDAO
 				.getAllResponseTimesForAllAPIs(operator, subscriber, fromDate,
@@ -3387,13 +3334,11 @@ public class SbHostObjectUtils {
 	 * @param fromDate the from date
 	 * @param toDate the to date
 	 * @return the all response times by date
-	 * @throws APIManagementException the API management exception
-	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws Exception 
 	 */
 	public static Map<String, List<APIResponseDTO>> getAllResponseTimesByDate(
 			String opName, String username, String fromDate, String toDate)
-			throws APIManagementException,
-			APIMgtUsageQueryServiceClientException {
+			throws Exception {
 
 		Map<String, List<APIResponseDTO>> responseTimes = new HashMap<String, List<APIResponseDTO>>();
 		List<API> allAPIs = APIManagerFactory.getInstance().getAPIConsumer()
@@ -3417,13 +3362,11 @@ public class SbHostObjectUtils {
 	 * @param fromDate the from date
 	 * @param toDate the to date
 	 * @return the time consumption for all ap is
-	 * @throws APIManagementException the API management exception
-	 * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
+	 * @throws Exception 
 	 */
 	public static Map<String, String[]> getTimeConsumptionForAllAPIs(
 			String opName, String username, String fromDate, String toDate)
-			throws APIManagementException,
-			APIMgtUsageQueryServiceClientException {
+			throws Exception {
 
 		Map<String, String[]> responseTimes = new HashMap<String, String[]>();
 		List<API> allAPIs = APIManagerFactory.getInstance().getAPIConsumer()

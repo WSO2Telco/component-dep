@@ -15,9 +15,19 @@
  ******************************************************************************/
 package com.wso2telco.dep.reportingservice;
 
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.mozilla.javascript.*;
+import org.mozilla.javascript.Context;
+import org.mozilla.javascript.Function;
+import org.mozilla.javascript.NativeArray;
+import org.mozilla.javascript.NativeObject;
+import org.mozilla.javascript.Scriptable;
+import org.mozilla.javascript.ScriptableObject;
 import org.wso2.carbon.apimgt.api.APIConsumer;
 import org.wso2.carbon.apimgt.api.APIManagementException;
 import org.wso2.carbon.apimgt.api.model.Tier;
@@ -26,13 +36,10 @@ import org.wso2.carbon.apimgt.impl.dao.ApiMgtDAO;
 import org.wso2.carbon.apimgt.impl.dto.WorkflowDTO;
 
 import com.wso2telco.dep.reportingservice.dao.WorkflowDAO;
+import com.wso2telco.dep.reportingservice.exception.ReportingServiceError;
 import com.wso2telco.dep.reportingservice.southbound.SbHostObjectUtils;
 import com.wso2telco.dep.reportingservice.util.ChargeRate;
-
-import java.util.Iterator;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
+import com.wso2telco.utils.exception.BusinessException;
 
  
 // TODO: Auto-generated Javadoc
@@ -81,12 +88,13 @@ public class WorkflowHostObject extends ScriptableObject {
 	 */
 	public static String jsFunction_setSubscriptionTier(Context cx,
 													Scriptable thisObj, Object[] args, Function funObj)
-													throws Exception {
+													throws BusinessException {
 		
 		String status = "";
 		
 		if (args == null || args.length == 0) {
-			handleException("Invalid number of parameters.");
+			log.error("jsFunction_setSubscriptionTier null or empty arguments");
+			throw new BusinessException(ReportingServiceError.INTERNAL_SERVER_ERROR);
 		}
 		
 		String workflowReference = (String) args[0];
@@ -94,13 +102,24 @@ public class WorkflowHostObject extends ScriptableObject {
 		
 		if(workflowReference != null) {
 			ApiMgtDAO apiMgtDAO = new ApiMgtDAO();
-			WorkflowDTO workflowDTO = apiMgtDAO.retrieveWorkflow(workflowReference);
+			WorkflowDTO workflowDTO;
+			try {
+				workflowDTO = apiMgtDAO.retrieveWorkflow(workflowReference);
+			} catch (APIManagementException e) {
+				log.error("jsFunction_setSubscriptionTier",e);
+				throw new BusinessException(ReportingServiceError.INTERNAL_SERVER_ERROR);
+			}
 			
 			if(workflowDTO != null) {
 				
 				String subscriptionId = workflowDTO.getWorkflowReference();
 				WorkflowDAO WorkflowDAO = new WorkflowDAO();
-				WorkflowDAO.updateSubscriptionTier(subscriptionId, tierId);
+				try {
+					WorkflowDAO.updateSubscriptionTier(subscriptionId, tierId);
+				} catch (Exception e) {
+					log.error("jsFunction_setSubscriptionTier",e);
+					throw new BusinessException(ReportingServiceError.INTERNAL_SERVER_ERROR);
+				}
 				
 				status = CONST_SUCCESS;
 				
@@ -124,9 +143,10 @@ public class WorkflowHostObject extends ScriptableObject {
          * @return the string
          * @throws APIManagementException the API management exception
          */
-        public static String jsFunction_setSubscriptionChargeRate(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws APIManagementException {
+        public static String jsFunction_setSubscriptionChargeRate(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws BusinessException {
             if (args == null || args.length == 0) {
-                handleException("Invalid number of parameters.");
+                log.error("Invalid number of parameters.");
+                throw new BusinessException(ReportingServiceError.INTERNAL_SERVER_ERROR);
             }
             
             String appId = (String) args[0];
@@ -154,9 +174,10 @@ public class WorkflowHostObject extends ScriptableObject {
      * @return the string
      * @throws APIManagementException the API management exception
      */
-    public static String jsFunction_setSubscriptionChargeRateNB(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws APIManagementException {
+    public static String jsFunction_setSubscriptionChargeRateNB(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws BusinessException {
         if (args == null || args.length == 0) {
-            handleException("Invalid number of parameters.");
+            log.error("Invalid number of parameters.");
+            throw new BusinessException(ReportingServiceError.INTERNAL_SERVER_ERROR);
         }
 
         String appId = (String) args[0];
@@ -185,12 +206,17 @@ public class WorkflowHostObject extends ScriptableObject {
      */
     public static NativeArray jsFunction_getSubscriptionRatesForOperator(Context cx,
             Scriptable thisObj, Object[] args, Function funObj)
-            throws APIManagementException {    
+            throws BusinessException {    
         
         String apiName = (String) args[0];
         String opName = (String) args[1];
 
-        List<ChargeRate> rateList = SbHostObjectUtils.getRatesForOperatorApi(opName, apiName);
+        List<ChargeRate> rateList;
+		try {
+			rateList = SbHostObjectUtils.getRatesForOperatorApi(opName, apiName);
+		} catch (APIManagementException e1) {
+			throw new BusinessException(ReportingServiceError.INTERNAL_SERVER_ERROR);
+		}
         
         NativeArray nativeArray = new NativeArray(0);
         try {
@@ -203,9 +229,8 @@ public class WorkflowHostObject extends ScriptableObject {
                 i++;
             }
         } catch (Exception e){
-            log.error("Error occurred getSubscriptionRatesForOperator");
-            log.error(e.getStackTrace());
-            handleException("Error occurred while getting getSubscriptionRatesForOperator", e);
+            log.error("Error occurred getSubscriptionRatesForOperator",e);
+            throw new BusinessException(ReportingServiceError.INTERNAL_SERVER_ERROR);
         }
         return nativeArray;
     }
@@ -222,7 +247,7 @@ public class WorkflowHostObject extends ScriptableObject {
      */
     public static NativeArray jsFunction_getTierDetails(Context cx,
             Scriptable thisObj, Object[] args, Function funObj)
-            throws APIManagementException {    
+            throws BusinessException {    
         NativeArray nativeArray = new NativeArray(0);
         Set<Tier> tiers;
         try {
@@ -242,14 +267,9 @@ public class WorkflowHostObject extends ScriptableObject {
                 nativeArray.put(i, nativeArray, row);
                 i++;
             }
-        } catch (APIManagementException apiManagementException) {
-            log.error("Error occurred getTierDetails");
-            log.error(apiManagementException.getStackTrace());
-            handleException("Error occurred while getting tier details", apiManagementException);
         } catch (Exception e){
             log.error("Error occurred getTierDetails");
-            log.error(e.getStackTrace());
-            handleException("Error occurred while getting tier details", e);
+            throw new BusinessException(ReportingServiceError.INTERNAL_SERVER_ERROR);
         }
         return nativeArray;
     }
@@ -287,12 +307,13 @@ public class WorkflowHostObject extends ScriptableObject {
 	 */
 	public static String jsFunction_setApplicationTier(Context cx,
 													Scriptable thisObj, Object[] args, Function funObj)
-													throws Exception {
+													throws BusinessException {
 		
 		String status = "";
 		
 		if (args == null || args.length == 0) {
-			handleException("Invalid number of parameters.");
+			log.error("Invalid number of parameters.");
+			throw new BusinessException(ReportingServiceError.INTERNAL_SERVER_ERROR);
 		}
 		
 		String workflowReference = (String) args[0];
@@ -300,13 +321,22 @@ public class WorkflowHostObject extends ScriptableObject {
 		
 		if(workflowReference != null) {
 			ApiMgtDAO apiMgtDAO = new ApiMgtDAO();
-			WorkflowDTO workflowDTO = apiMgtDAO.retrieveWorkflow(workflowReference);
+			WorkflowDTO workflowDTO;
+			try {
+				workflowDTO = apiMgtDAO.retrieveWorkflow(workflowReference);
+			} catch (APIManagementException e) {
+				throw new BusinessException(ReportingServiceError.INTERNAL_SERVER_ERROR);
+			}
 			
 			if(workflowDTO != null) {
 				
 				String applicationId = workflowDTO.getWorkflowReference();
 				WorkflowDAO WorkflowDAO = new WorkflowDAO();
-				WorkflowDAO.updateApplicationTier(applicationId, tierId);
+				try {
+					WorkflowDAO.updateApplicationTier(applicationId, tierId);
+				} catch (Exception e) {
+					throw new BusinessException(ReportingServiceError.INTERNAL_SERVER_ERROR);
+				}
 				
 				status = CONST_SUCCESS;
 				
@@ -317,30 +347,5 @@ public class WorkflowHostObject extends ScriptableObject {
 			status = CONST_FAILURE;
 		}
 		return status;
-	}
-	
-	 
-	/**
-	 * Handle exception.
-	 *
-	 * @param msg the msg
-	 * @throws APIManagementException the API management exception
-	 */
-	private static void handleException(String msg) throws APIManagementException {
-		log.error(msg);
-		throw new APIManagementException(msg);
-	}
-
-	 
-	/**
-	 * Handle exception.
-	 *
-	 * @param msg the msg
-	 * @param t the t
-	 * @throws APIManagementException the API management exception
-	 */
-	private static void handleException(String msg, Throwable t) throws APIManagementException {
-		log.error(msg, t);
-		throw new APIManagementException(msg, t);
-	}
+	}	
 }
