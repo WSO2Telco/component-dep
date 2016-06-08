@@ -60,7 +60,7 @@
 		<module>components/subscription-validator</module> 
 		<module>components/publish-events-data</module>
 		<module>components/data-publisher</module>
-		<module>components/reporting-service</module>
+		<!--module>components/reporting-service</module-->
 		<module>components/operator-service</module>
        		<module>components/verification-handler</module>
        		<module>components/mediator</module>

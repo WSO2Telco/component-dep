@@ -13,19 +13,48 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package org.wso2.carbon.apimgt.hostobjects;
+package com.wso2telco.dep.reportingservice.util;
 
-import java.util.HashMap;
+// TODO: Auto-generated Javadoc
+/**
+ * The Enum ChargingPlanType.
+ */
+public enum ChargingPlanType {
 
-import com.wso2telco.dep.reportingservice.ApiTxCard;
+	/** The unlimited. */
+	UNLIMITED("Unlimited"),
+	/** The gold. */
+	GOLD("Gold"),
+	/** The silver. */
+	SILVER("Silver"),
+	/** The bronze. */
+	BRONZE("Bronze"),
+	/** The premium. */
+	PREMIUM("Premium"),
+	/** The subscription. */
+	SUBSCRIPTION("Subscription"),
+	/** The request based. */
+	REQUEST_BASED("Requestbased");
 
-public class TxCardTest {
-	
-	public static void main(String args[]){
-		ApiTxCard card = new ApiTxCard();
-		HashMap<Integer, Object> txCardTemp = card.getTxCardTemp();
-		//TxCardDAO currentDao = (TxCardDAO) txCardTemp.get(new Integer(100));
-		//System.out.println(currentDao.getHeaderList().size()+"");
+	/** The value. */
+	private String value;
+
+	/**
+	 * Instantiates a new charging plan type.
+	 *
+	 * @param value
+	 *            the value
+	 */
+	private ChargingPlanType(String value) {
+		this.value = value;
 	}
-	
+
+	/**
+	 * Gets the value.
+	 *
+	 * @return the value
+	 */
+	public String getValue() {
+		return value;
+	}
 }
