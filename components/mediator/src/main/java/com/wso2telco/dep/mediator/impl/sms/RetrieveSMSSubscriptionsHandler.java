@@ -21,7 +21,6 @@ import com.wso2telco.datapublisher.DataPublisherConstants;
 import com.wso2telco.dep.operatorservice.model.OperatorSubscriptionDTO;
 import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
-import com.wso2telco.dep.mediator.dao.SMSMessagingDAO;
 import com.wso2telco.dep.mediator.entity.CallbackReference;
 import com.wso2telco.dep.mediator.entity.nb.DestinationAddresses;
 import com.wso2telco.dep.mediator.entity.nb.NBSubscribeRequest;
@@ -31,6 +30,7 @@ import com.wso2telco.dep.mediator.internal.ApiUtils;
 import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
+import com.wso2telco.dep.mediator.service.SMSMessagingService;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.oneapivalidation.service.impl.sms.ValidateCancelSubscription;
@@ -65,7 +65,7 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 	private OriginatingCountryCalculatorIDD occi;
 
 	/** The smsMessagingDAO. */
-	private SMSMessagingDAO smsMessagingDAO;
+	private SMSMessagingService smsMessagingService;
 
 	/** The executor. */
 	private SMSExecutor executor;
@@ -80,9 +80,10 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 	 *            the executor
 	 */
 	public RetrieveSMSSubscriptionsHandler(SMSExecutor executor) {
+
 		this.executor = executor;
 		occi = new OriginatingCountryCalculatorIDD();
-		smsMessagingDAO = new SMSMessagingDAO();
+		smsMessagingService = new SMSMessagingService();
 		apiUtils = new ApiUtils();
 	}
 
@@ -179,7 +180,7 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 			List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(API_TYPE, executor.getSubResourcePath(),
 					executor.getValidoperators());
 
-			Integer moSubscriptionId = smsMessagingDAO.subscriptionEntry(
+			Integer moSubscriptionId = smsMessagingService.subscriptionEntry(
 					subsrequst.getSubscription().getCallbackReference().getNotifyURL(), serviceProvider);
 
 			String subsEndpoint = mediatorConfMap.get("hubSubsGatewayEndpoint") + "/" + moSubscriptionId;
@@ -201,12 +202,12 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 					if (subsresponse.getSubscription() == null) {
 						executor.handlePluginException(notifyres);
 					}
-					domainsubs.add(
-							new OperatorSubscriptionDTO(endpoint.getOperator(), subsresponse.getSubscription().getResourceURL()));
+					domainsubs.add(new OperatorSubscriptionDTO(endpoint.getOperator(),
+							subsresponse.getSubscription().getResourceURL()));
 				}
 			}
 
-			boolean issubs = smsMessagingDAO.operatorsubsEntry(domainsubs, moSubscriptionId);
+			boolean issubs = smsMessagingService.operatorSubsEntry(domainsubs, moSubscriptionId);
 
 			String ResourceUrlPrefix = mediatorConfMap.get("hubGateway");
 			subsresponse.getSubscription()
@@ -232,7 +233,7 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 			List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(API_TYPE, executor.getSubResourcePath(),
 					executor.getValidoperators());
 
-			Integer moSubscriptionId = smsMessagingDAO.subscriptionEntry(
+			Integer moSubscriptionId = smsMessagingService.subscriptionEntry(
 					nbSubsrequst.getSubscription().getCallbackReference().getNotifyURL(), serviceProvider);
 
 			String subsEndpoint = mediatorConfMap.get("hubSubsGatewayEndpoint") + "/" + moSubscriptionId;
@@ -296,7 +297,7 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 				}
 			}
 
-			boolean issubs = smsMessagingDAO.operatorsubsEntry(domainsubs, moSubscriptionId);
+			boolean issubs = smsMessagingService.operatorSubsEntry(domainsubs, moSubscriptionId);
 
 			String ResourceUrlPrefix = mediatorConfMap.get("hubGateway");
 
@@ -332,6 +333,7 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 			((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 201);
 			executor.setResponse(context, nbResponseBody.toString());
 		}
+
 		return true;
 	}
 
@@ -345,24 +347,30 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 	 *             the exception
 	 */
 	private boolean deleteSubscriptions(MessageContext context) throws Exception {
+
 		String requestPath = executor.getSubResourcePath();
 		String moSubscriptionId = requestPath.substring(requestPath.lastIndexOf("/") + 1);
 
 		String requestid = UID.getUniqueID(Type.DELRETSUB.getCode(), context, executor.getApplicationid());
 
-		List<OperatorSubscriptionDTO> domainsubs = (smsMessagingDAO.subscriptionQuery(Integer.valueOf(moSubscriptionId)));
+		List<OperatorSubscriptionDTO> domainsubs = (smsMessagingService
+				.subscriptionQuery(Integer.valueOf(moSubscriptionId)));
 		if (domainsubs.isEmpty()) {
+
 			throw new CustomException("POL0001", "",
 					new String[] { "SMS Receipt Subscription Not Found: " + moSubscriptionId });
 		}
 
 		String resStr = "";
+
 		for (OperatorSubscriptionDTO subs : domainsubs) {
+
 			resStr = executor.makeDeleteRequest(
 					new OperatorEndpoint(new EndpointReference(subs.getDomain()), subs.getOperator()), subs.getDomain(),
 					null, true, context);
 		}
-		smsMessagingDAO.subscriptionDelete(Integer.valueOf(moSubscriptionId));
+
+		smsMessagingService.subscriptionDelete(Integer.valueOf(moSubscriptionId));
 		executor.removeHeaders(context);
 		((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 204);
 
@@ -377,17 +385,22 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 	 * @return the string
 	 */
 	private String removeResourceURL(String sbSubsrequst) {
+
 		String sbrequestString = "";
+
 		try {
+
 			JSONObject objJSONObject = new JSONObject(sbSubsrequst);
 			JSONObject objSubscriptionRequest = (JSONObject) objJSONObject.get("subscription");
 			objSubscriptionRequest.remove("resourceURL");
 
 			sbrequestString = objSubscriptionRequest.toString();
 		} catch (JSONException ex) {
+
 			log.error("Error in removeResourceURL" + ex.getMessage());
 			throw new CustomException("POL0299", "", new String[] { "Error registering subscription" });
 		}
+
 		return "{\"subscription\":" + sbrequestString + "}";
 	}
 }

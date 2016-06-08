@@ -22,10 +22,10 @@ import com.wso2telco.datapublisher.DataPublisherConstants;
 import com.wso2telco.dep.mediator.MSISDNConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.ResponseHandler;
-import com.wso2telco.dep.mediator.dao.SMSMessagingDAO;
 import com.wso2telco.dep.mediator.entity.QuerySMSStatusResponse;
 import com.wso2telco.dep.mediator.internal.Util;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
+import com.wso2telco.dep.mediator.service.SMSMessagingService;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.oneapivalidation.service.impl.sms.ValidateDeliveryStatus;
@@ -62,7 +62,7 @@ public class QuerySMSStatusHandler implements SMSHandler {
 	private SMSExecutor executor;
 
 	/** The smsMessagingDAO. */
-	private SMSMessagingDAO smsMessagingDAO;
+	private SMSMessagingService smsMessagingService;
 
 	/** The response handler. */
 	private ResponseHandler responseHandler;
@@ -80,9 +80,10 @@ public class QuerySMSStatusHandler implements SMSHandler {
 	 *            the executor
 	 */
 	public QuerySMSStatusHandler(SMSExecutor executor) {
+
 		occi = new OriginatingCountryCalculatorIDD();
 		this.executor = executor;
-		smsMessagingDAO = new SMSMessagingDAO();
+		smsMessagingService = new SMSMessagingService();
 		responseHandler = new ResponseHandler();
 	}
 
@@ -120,7 +121,7 @@ public class QuerySMSStatusHandler implements SMSHandler {
 	@Override
 	public boolean handle(MessageContext context) throws Exception {
 
-		Map<String, String> requestIdMap = smsMessagingDAO.getSmsRequestIds(requestId, senderAddress);
+		Map<String, String> requestIdMap = smsMessagingService.getSMSRequestIds(requestId, senderAddress);
 		Map<String, QuerySMSStatusResponse> responseMap = sendStatusQueries(context, requestIdMap, senderAddress);
 		if (Util.isAllNull(responseMap.values())) {
 			throw new CustomException("SVC0001", "", new String[] { "Could not complete querying SMS statuses" });

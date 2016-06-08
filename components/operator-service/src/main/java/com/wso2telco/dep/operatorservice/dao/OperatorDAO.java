@@ -57,20 +57,26 @@ public class OperatorDAO {
 	 * @throws APIMgtUsageQueryServiceClientException
 	 *             the API mgt usage query service client exception
 	 */
-	public List<Operator> retrieveOperatorList() throws Exception {
+	public List<Operator> retrieveOperatorList() throws SQLException, Exception {
+
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		List<Operator> operatorList = new ArrayList<Operator>();
 
 		try {
+
 			conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 
-			String query = "SELECT ID, operatorname, description from operators";
-			ps = conn.prepareStatement(query);
+			StringBuilder query = new StringBuilder("SELECT ID, operatorname, description ");
+			query.append("FROM ");
+			query.append(OparatorTable.OPERATORS.getTObject());
+
+			ps = conn.prepareStatement(query.toString());
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
+
 				Operator operator = new Operator();
 				operator.setOperatorId(rs.getInt("ID"));
 				operator.setOperatorName(rs.getString("operatorname"));
@@ -78,13 +84,19 @@ public class OperatorDAO {
 
 				operatorList.add(operator);
 			}
+		} catch (SQLException e) {
 
+			log.error("DATABASE OPERATION ERROR IN retrieveOperatorList : ", e);
+			throw e;
 		} catch (Exception e) {
-			log.error("", e);
+
+			log.error("ERROR IN retrieveOperatorList : ", e);
 			throw e;
 		} finally {
+
 			DbUtils.closeAllConnections(ps, conn, rs);
 		}
+
 		return operatorList;
 	}
 
@@ -107,12 +119,13 @@ public class OperatorDAO {
 	 *             the API mgt usage query service client exception
 	 */
 	public void persistOperators(String apiName, String apiVersion, String apiProvider, int appId, String operatorList)
-			throws Exception {
+			throws SQLException, Exception {
 
 		Connection conn = null;
 		PreparedStatement ps = null;
 
 		try {
+
 			conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 
 			StringBuilder query = new StringBuilder();
@@ -128,17 +141,21 @@ public class OperatorDAO {
 			ps.setInt(4, appId);
 			ps.setString(5, operatorList);
 			ps.execute();
+		} catch (SQLException e) {
 
-		} catch (Exception e) {
-			log.error("persistOperators", e);
+			log.error("DATABASE OPERATION ERROR IN persistOperators : ", e);
 			throw e;
+		} catch (Exception e) {
 
+			log.error("ERROR IN persistOperators : ", e);
+			throw e;
 		} finally {
+
 			DbUtils.closeAllConnections(ps, conn, null);
 		}
 	}
 
-	public List<Operator> seachOparators(OperatorSearchDTO searchDTO) throws Exception {
+	public List<Operator> seachOparators(OperatorSearchDTO searchDTO) throws SQLException, Exception {
 
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -146,30 +163,31 @@ public class OperatorDAO {
 		List<Operator> operatorList = new ArrayList<Operator>();
 
 		try {
+
 			conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 			StringBuilder sql = new StringBuilder();
 			sql.append("SELECT ID, operatorname, description ");
-			sql.append(" FROM ").append(OparatorTable.OPARATOR.getTObject());
+			sql.append(" FROM ").append(OparatorTable.OPERATORS.getTObject());
 			sql.append(" WHERE 1=1 ");
 
-			if (searchDTO.getName() != null && searchDTO.getName().trim().length() > 0) {
+			if (searchDTO.hasName()) {
+
 				sql.append(" AND operatorname").append(" =?");
 			}
 
 			log.debug(" seachOparators : " + sql);
 
-			if (searchDTO.hasName()) {
-				sql.append(" AND operatorname").append(" =?");
-			}
 			ps = conn.prepareStatement(sql.toString());
 
 			if (searchDTO.hasName()) {
+
 				ps.setString(1, searchDTO.getName().trim());
 			}
 
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
+
 				Operator operator = new Operator();
 				operator.setOperatorId(rs.getInt("ID"));
 				operator.setOperatorName(rs.getString("operatorname"));
@@ -177,23 +195,31 @@ public class OperatorDAO {
 
 				operatorList.add(operator);
 			}
-
 		} catch (SQLException e) {
-			throw new Exception(e);
+
+			log.error("DATABASE OPERATION ERROR IN seachOparators : ", e);
+			throw e;
+		} catch (Exception e) {
+
+			log.error("ERROR IN seachOparators : ", e);
+			throw e;
 		} finally {
+
 			DbUtils.closeAllConnections(ps, conn, rs);
 		}
+
 		return operatorList;
 	}
 
 	public void insertBlacklistAggregatoRows(final Integer appID, final String subscriber, final int operatorid,
-			final String[] merchants) throws Exception {
-		log.debug(" ");
+			final String[] merchants) throws SQLException, Exception {
+
 		Connection con = null;
 		final StringBuilder sql = new StringBuilder();
 		PreparedStatement pst = null;
 
 		try {
+
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 
 			sql.append(" INSERT INTO ");
@@ -230,9 +256,21 @@ public class OperatorDAO {
 			 * commit the transaction if all success
 			 */
 			con.commit();
+		} catch (SQLException e) {
 
+			log.error("DATABASE OPERATION ERROR IN insertBlacklistAggregatoRows : ", e);
+			/**
+			 * rollback if Exception occurs
+			 */
+			con.rollback();
+
+			/**
+			 * throw it into upper layer
+			 */
+			throw e;
 		} catch (Exception e) {
-			log.error("DAO.blacklistAggregator ", e);
+
+			log.error("ERROR IN insertBlacklistAggregatoRows : ", e);
 			/**
 			 * rollback if Exception occurs
 			 */
@@ -255,7 +293,7 @@ public class OperatorDAO {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public List<OperatorEndPointDTO> getOperatorEndpoints() throws Exception {
+	public List<OperatorEndPointDTO> getOperatorEndpoints() throws SQLException, Exception {
 
 		final int opEndpointsID = 0;
 
@@ -278,7 +316,11 @@ public class OperatorDAO {
 				}
 
 				StringBuilder queryString = new StringBuilder("SELECT operatorid, operatorname, api, endpoint ");
-				queryString.append("FROM operatorendpoints, operators ");
+				queryString.append("FROM ");
+				queryString.append(OparatorTable.OPERATOR_ENDPOINTS.getTObject());
+				queryString.append(" operatorendpoints, ");
+				queryString.append(OparatorTable.OPERATORS.getTObject());
+				queryString.append(" operators ");
 				queryString.append("WHERE operatorendpoints.operatorid = operators.id");
 
 				ps = con.prepareStatement(queryString.toString());
@@ -290,9 +332,14 @@ public class OperatorDAO {
 					endPoints.add(new OperatorEndPointDTO(rs.getInt("operatorid"), rs.getString("operatorname"),
 							rs.getString("api"), rs.getString("endpoint")));
 				}
+			} catch (SQLException e) {
+
+				log.error("DATABASE OPERATION ERROR IN getOperatorEndpoints : ", e);
+				throw e;
 			} catch (Exception e) {
 
-				DbUtils.handleException("Error while retrieving operator endpoint. ", e);
+				log.error("ERROR IN getOperatorEndpoints : ", e);
+				throw e;
 			} finally {
 
 				DbUtils.closeAllConnections(ps, con, rs);
@@ -315,7 +362,7 @@ public class OperatorDAO {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public List<OperatorApplicationDTO> getApplicationOperators(Integer applicationId) throws Exception {
+	public List<OperatorApplicationDTO> getApplicationOperators(Integer applicationId) throws SQLException, Exception {
 
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 		PreparedStatement ps = null;
@@ -331,7 +378,11 @@ public class OperatorDAO {
 
 			StringBuilder queryString = new StringBuilder(
 					"SELECT oa.id id, oa.applicationid, oa.operatorid, o.operatorname, o.refreshtoken, o.tokenvalidity, o.tokentime, o.token, o.tokenurl, o.tokenauth ");
-			queryString.append("FROM operatorapps oa, operators o ");
+			queryString.append("FROM ");
+			queryString.append(OparatorTable.OPERATOR_APPS.getTObject());
+			queryString.append(" oa, ");
+			queryString.append(OparatorTable.OPERATORS.getTObject());
+			queryString.append(" o ");
 			queryString.append("WHERE oa.operatorid = o.id AND oa.isactive = 1  AND oa.applicationid = ?");
 
 			ps = con.prepareStatement(queryString.toString());
@@ -355,9 +406,12 @@ public class OperatorDAO {
 				oper.setTokenauth(rs.getString("tokenauth"));
 				operators.add(oper);
 			}
+		} catch (SQLException e) {
+
+			log.error("DATABASE OPERATION ERROR IN getApplicationOperators : ", e);
 		} catch (Exception e) {
 
-			DbUtils.handleException("Error while selecting from operatorapps, operators. ", e);
+			log.error("ERROR IN getApplicationOperators : ", e);
 		} finally {
 
 			DbUtils.closeAllConnections(ps, con, rs);
@@ -379,8 +433,7 @@ public class OperatorDAO {
 	 * @throws AxataDBUtilException
 	 *             the AxataDBUtilException
 	 */
-	public List<Integer> getActiveApplicationOperators(Integer appId, String apiType)
-			throws SQLException, AxataDBUtilException {
+	public List<Integer> getActiveApplicationOperators(Integer appId, String apiType) throws SQLException, Exception {
 
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -396,7 +449,11 @@ public class OperatorDAO {
 			}
 
 			StringBuilder queryString = new StringBuilder("SELECT o.operatorid ");
-			queryString.append("FROM endpointapps e, operatorendpoints o ");
+			queryString.append("FROM ");
+			queryString.append(OparatorTable.ENDPOINT_APPS.getTObject());
+			queryString.append(" e, ");
+			queryString.append(OparatorTable.OPERATOR_ENDPOINTS.getTObject());
+			queryString.append(" o ");
 			queryString.append("WHERE o.id = e.endpointid AND e.applicationid = ?");
 			queryString.append(" AND e.isactive = 1 AND o.api = ?");
 
@@ -414,9 +471,14 @@ public class OperatorDAO {
 				Integer operatorid = (rs.getInt("operatorid"));
 				operators.add(operatorid);
 			}
+		} catch (SQLException e) {
+
+			log.error("DATABASE OPERATION ERROR IN getActiveApplicationOperators : ", e);
+			throw e;
 		} catch (Exception e) {
 
-			DbUtils.handleException("Error while selecting from endpointapps, operatorendpoints ", e);
+			log.error("ERROR IN getActiveApplicationOperators : ", e);
+			throw e;
 		} finally {
 
 			DbUtils.closeAllConnections(ps, con, rs);
@@ -442,12 +504,11 @@ public class OperatorDAO {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public Integer updateOperatorToken(int id, String refreshToken, long tokenValidity, long tokenTime, String token)
-			throws Exception {
+	public void updateOperatorToken(int operatorId, String refreshToken, long tokenValidity, long tokenTime, String token)
+			throws SQLException, Exception {
 
 		Connection con = null;
 		PreparedStatement ps = null;
-		Integer newid = 0;
 
 		try {
 
@@ -457,8 +518,9 @@ public class OperatorDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder queryString = new StringBuilder("UPDATE operators ");
-			queryString.append("SET refreshtoken = ?");
+			StringBuilder queryString = new StringBuilder("UPDATE ");
+			queryString.append(OparatorTable.OPERATORS);
+			queryString.append(" SET refreshtoken = ?");
 			queryString.append(" ,tokenvalidity = ?");
 			queryString.append(" ,tokentime = ?");
 			queryString.append(" ,token = ?");
@@ -470,17 +532,20 @@ public class OperatorDAO {
 			ps.setLong(2, tokenValidity);
 			ps.setLong(3, tokenTime);
 			ps.setString(4, token);
-			ps.setInt(5, id);
+			ps.setInt(5, operatorId);
 
 			ps.executeUpdate();
+		} catch (SQLException e) {
+
+			log.error("DATABASE OPERATION ERROR IN updateOperatorToken : ", e);
+			throw e;
 		} catch (Exception e) {
 
-			DbUtils.handleException("Error while updating operators. ", e);
+			log.error("ERROR IN updateOperatorToken : ", e);
+			throw e;
 		} finally {
 
 			DbUtils.closeAllConnections(ps, con, null);
 		}
-
-		return newid;
 	}
 }

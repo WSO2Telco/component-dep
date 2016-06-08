@@ -17,7 +17,6 @@ package com.wso2telco.dep.mediator.impl.ussd;
 
 import com.wso2telco.dep.mediator.RequestExecutor;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
-
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

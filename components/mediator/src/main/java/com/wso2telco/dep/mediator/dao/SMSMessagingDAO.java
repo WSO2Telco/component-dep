@@ -18,12 +18,14 @@ package com.wso2telco.dep.mediator.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import com.wso2telco.dbutils.AxataDBUtilException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import com.wso2telco.dbutils.DbUtils;
 import com.wso2telco.dep.operatorservice.model.OperatorSubscriptionDTO;
 import com.wso2telco.dbutils.util.DataSourceNames;
@@ -31,7 +33,10 @@ import com.wso2telco.dep.mediator.util.DatabaseTables;
 
 public class SMSMessagingDAO {
 
-	public Integer outboundSubscriptionEntry(String notifyURL, String serviceProvider) throws Exception {
+	/** The Constant log. */
+	private final Log log = LogFactory.getLog(SMSMessagingDAO.class);
+
+	public Integer outboundSubscriptionEntry(String notifyURL, String serviceProvider) throws SQLException, Exception {
 
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -65,9 +70,14 @@ public class SMSMessagingDAO {
 
 				newId = rs.getInt(1);
 			}
+		} catch (SQLException e) {
+
+			log.error("DATABASE OPERATION ERROR IN outboundSubscriptionEntry : ", e);
+			throw e;
 		} catch (Exception e) {
 
-			DbUtils.handleException("Error while inserting in to subscriptions. ", e);
+			log.error("ERROR IN outboundSubscriptionEntry : ", e);
+			throw e;
 		} finally {
 
 			DbUtils.closeAllConnections(ps, con, rs);
@@ -87,7 +97,8 @@ public class SMSMessagingDAO {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public boolean outboundOperatorsubsEntry(List<OperatorSubscriptionDTO> domainsubs, Integer dnSubscriptionId) throws Exception {
+	public boolean outboundOperatorsubsEntry(List<OperatorSubscriptionDTO> domainsubs, Integer dnSubscriptionId)
+			throws SQLException, Exception {
 
 		Connection con = null;
 		PreparedStatement insertStatement = null;
@@ -96,6 +107,7 @@ public class SMSMessagingDAO {
 		try {
 
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+
 			if (con == null) {
 
 				throw new Exception("Connection not found");
@@ -140,6 +152,15 @@ public class SMSMessagingDAO {
 			 * commit the transaction if all success
 			 */
 			con.commit();
+		} catch (SQLException e) {
+
+			/**
+			 * rollback if Exception occurs
+			 */
+			con.rollback();
+
+			log.error("DATABASE OPERATION ERROR IN outboundOperatorsubsEntry : ", e);
+			throw e;
 		} catch (Exception e) {
 
 			/**
@@ -147,7 +168,8 @@ public class SMSMessagingDAO {
 			 */
 			con.rollback();
 
-			DbUtils.handleException("Error while inserting in to operatorsubs. ", e);
+			log.error("ERROR IN outboundOperatorsubsEntry : ", e);
+			throw e;
 		} finally {
 
 			DbUtils.closeAllConnections(insertStatement, con, null);
@@ -165,10 +187,8 @@ public class SMSMessagingDAO {
 	 * @param senderAddress
 	 *            the sender address
 	 * @return the sms request ids
-	 * @throws AxataDBUtilException
-	 *             the axata db util exception
 	 */
-	public Map<String, String> getSmsRequestIds(String requestId, String senderAddress) throws AxataDBUtilException {
+	public Map<String, String> getSMSRequestIds(String requestId, String senderAddress) throws SQLException, Exception {
 
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -194,9 +214,14 @@ public class SMSMessagingDAO {
 
 				gatewayRequestIds.put(rs.getString("delivery_address"), rs.getString("plugin_requestid"));
 			}
+		} catch (SQLException e) {
+
+			log.error("DATABASE OPERATION ERROR IN getSMSRequestIds : ", e);
+			throw e;
 		} catch (Exception e) {
 
-			DbUtils.handleException("Error while inserting in to sendsms_reqid. ", e);
+			log.error("ERROR IN getSMSRequestIds : ", e);
+			throw e;
 		} finally {
 
 			DbUtils.closeAllConnections(ps, con, rs);
@@ -205,7 +230,7 @@ public class SMSMessagingDAO {
 		return gatewayRequestIds;
 	}
 
-	public Integer subscriptionEntry(String notifyURL, String serviceProvider) throws Exception {
+	public Integer subscriptionEntry(String notifyURL, String serviceProvider) throws SQLException, Exception {
 
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -239,9 +264,14 @@ public class SMSMessagingDAO {
 
 				newId = rs.getInt(1);
 			}
+		} catch (SQLException e) {
+
+			log.error("DATABASE OPERATION ERROR IN subscriptionEntry : ", e);
+			throw e;
 		} catch (Exception e) {
 
-			DbUtils.handleException("Error while inserting in to subscriptions. ", e);
+			log.error("ERROR IN subscriptionEntry : ", e);
+			throw e;
 		} finally {
 
 			DbUtils.closeAllConnections(ps, con, rs);
@@ -261,7 +291,8 @@ public class SMSMessagingDAO {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public boolean operatorsubsEntry(List<OperatorSubscriptionDTO> domainsubs, Integer moSubscriptionId) throws Exception {
+	public boolean operatorSubsEntry(List<OperatorSubscriptionDTO> domainsubs, Integer moSubscriptionId)
+			throws SQLException, Exception {
 
 		Connection con = null;
 		PreparedStatement insertStatement = null;
@@ -314,13 +345,24 @@ public class SMSMessagingDAO {
 			 * commit the transaction if all success
 			 */
 			con.commit();
+		} catch (SQLException e) {
+
+			/**
+			 * rollback if Exception occurs
+			 */
+			con.rollback();
+
+			log.error("DATABASE OPERATION ERROR IN operatorSubsEntry : ", e);
+			throw e;
 		} catch (Exception e) {
 
 			/**
 			 * rollback if Exception occurs
 			 */
 			con.rollback();
-			DbUtils.handleException("Error while inserting in to operatorsubs. ", e);
+
+			log.error("ERROR IN operatorSubsEntry : ", e);
+			throw e;
 		} finally {
 
 			DbUtils.closeAllConnections(insertStatement, con, null);
@@ -339,7 +381,7 @@ public class SMSMessagingDAO {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public List<OperatorSubscriptionDTO> subscriptionQuery(Integer moSubscriptionId) throws Exception {
+	public List<OperatorSubscriptionDTO> subscriptionQuery(Integer moSubscriptionId) throws SQLException, Exception {
 
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 		PreparedStatement ps = null;
@@ -368,9 +410,14 @@ public class SMSMessagingDAO {
 
 				domainsubs.add(new OperatorSubscriptionDTO(rs.getString("operator"), rs.getString("domainurl")));
 			}
+		} catch (SQLException e) {
+
+			log.error("DATABASE OPERATION ERROR IN subscriptionQuery : ", e);
+			throw e;
 		} catch (Exception e) {
 
-			DbUtils.handleException("Error while selecting selecting from operatorsubs. ", e);
+			log.error("ERROR IN subscriptionQuery : ", e);
+			throw e;
 		} finally {
 
 			DbUtils.closeAllConnections(ps, con, rs);
@@ -388,7 +435,7 @@ public class SMSMessagingDAO {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public boolean subscriptionDelete(Integer moSubscriptionId) throws Exception {
+	public boolean subscriptionDelete(Integer moSubscriptionId) throws SQLException, Exception {
 
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 		PreparedStatement deleteSubscriptionsStatement = null;
@@ -431,13 +478,24 @@ public class SMSMessagingDAO {
 			 * commit the transaction if all success
 			 */
 			con.commit();
+		} catch (SQLException e) {
+
+			/**
+			 * rollback if Exception occurs
+			 */
+			con.rollback();
+
+			log.error("DATABASE OPERATION ERROR IN subscriptionDelete : ", e);
+			throw e;
 		} catch (Exception e) {
 
 			/**
 			 * rollback if Exception occurs
 			 */
 			con.rollback();
-			DbUtils.handleException("Error while deleting subscriptions. ", e);
+
+			log.error("ERROR IN subscriptionDelete : ", e);
+			throw e;
 		} finally {
 
 			DbUtils.closeAllConnections(deleteSubscriptionsStatement, con, null);
@@ -457,12 +515,10 @@ public class SMSMessagingDAO {
 	 * @param pluginRequestIDs
 	 *            the plugin request i ds
 	 * @return true, if successful
-	 * @throws AxataDBUtilException
-	 *             the axata db util exception
 	 * @throws Exception
 	 */
-	public boolean insertSmsRequestIds(String requestId, String senderAddress, Map<String, String> gatewayRequestIds)
-			throws AxataDBUtilException, Exception {
+	public boolean insertSMSRequestIds(String requestId, String senderAddress, Map<String, String> gatewayRequestIds)
+			throws SQLException, Exception {
 
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -499,13 +555,24 @@ public class SMSMessagingDAO {
 			 * commit the transaction if all success
 			 */
 			con.commit();
+		} catch (SQLException e) {
+
+			/**
+			 * rollback if Exception occurs
+			 */
+			con.rollback();
+
+			log.error("DATABASE OPERATION ERROR IN insertSMSRequestIds : ", e);
+			throw e;
 		} catch (Exception e) {
 
 			/**
 			 * rollback if Exception occurs
 			 */
 			con.rollback();
-			DbUtils.handleException("Error while inserting in to sendsms_reqid. ", e);
+
+			log.error("ERROR IN insertSMSRequestIds : ", e);
+			throw e;
 		} finally {
 
 			DbUtils.closeAllConnections(ps, con, null);
@@ -514,7 +581,7 @@ public class SMSMessagingDAO {
 		return true;
 	}
 
-	public HashMap<String, String> subscriptionNotifiMap(Integer moSubscriptionId) throws Exception {
+	public HashMap<String, String> subscriptionNotifiMap(Integer moSubscriptionId) throws SQLException, Exception {
 
 		HashMap<String, String> subscriptionDetails = new HashMap<String, String>();
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
@@ -544,9 +611,14 @@ public class SMSMessagingDAO {
 				subscriptionDetails.put("notifyurl", rs.getString("notifyurl"));
 				subscriptionDetails.put("serviceProvider", rs.getString("service_provider"));
 			}
+		} catch (SQLException e) {
+
+			log.error("DATABASE OPERATION ERROR IN subscriptionNotifiMap : ", e);
+			throw e;
 		} catch (Exception e) {
 
-			DbUtils.handleException("Error while selecting from subscriptions. ", e);
+			log.error("ERROR IN subscriptionNotifiMap : ", e);
+			throw e;
 		} finally {
 
 			DbUtils.closeAllConnections(ps, con, rs);
@@ -555,7 +627,7 @@ public class SMSMessagingDAO {
 		return subscriptionDetails;
 	}
 
-	public HashMap<String, String> subscriptionDNNotifiMap(Integer dnSubscriptionId) throws Exception {
+	public HashMap<String, String> subscriptionDNNotifiMap(Integer dnSubscriptionId) throws SQLException, Exception {
 
 		HashMap<String, String> dnSubscriptionDetails = new HashMap<String, String>();
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
@@ -585,9 +657,14 @@ public class SMSMessagingDAO {
 				dnSubscriptionDetails.put("notifyurl", rs.getString("notifyurl"));
 				dnSubscriptionDetails.put("serviceProvider", rs.getString("service_provider"));
 			}
+		} catch (SQLException e) {
+
+			log.error("DATABASE OPERATION ERROR IN subscriptionDNNotifiMap : ", e);
+			throw e;
 		} catch (Exception e) {
 
-			DbUtils.handleException("Error while selecting from subscriptions. ", e);
+			log.error("ERROR IN subscriptionDNNotifiMap : ", e);
+			throw e;
 		} finally {
 
 			DbUtils.closeAllConnections(ps, con, rs);
@@ -605,7 +682,8 @@ public class SMSMessagingDAO {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public List<OperatorSubscriptionDTO> outboudSubscriptionQuery(Integer dnSubscriptionId) throws Exception {
+	public List<OperatorSubscriptionDTO> outboudSubscriptionQuery(Integer dnSubscriptionId)
+			throws SQLException, Exception {
 
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 		PreparedStatement ps = null;
@@ -635,9 +713,14 @@ public class SMSMessagingDAO {
 				domainsubs.add(new OperatorSubscriptionDTO(rs.getString("operator"), rs.getString("domainurl")));
 			}
 
+		} catch (SQLException e) {
+
+			log.error("DATABASE OPERATION ERROR IN outboudSubscriptionQuery : ", e);
+			throw e;
 		} catch (Exception e) {
 
-			DbUtils.handleException("Error while selecting selecting from operatorsubs. ", e);
+			log.error("ERROR IN outboudSubscriptionQuery : ", e);
+			throw e;
 		} finally {
 
 			DbUtils.closeAllConnections(ps, con, rs);
@@ -655,7 +738,7 @@ public class SMSMessagingDAO {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public boolean outboundSubscriptionDelete(Integer dnSubscriptionId) throws Exception {
+	public boolean outboundSubscriptionDelete(Integer dnSubscriptionId) throws SQLException, Exception {
 
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 		PreparedStatement deleteSubscriptionsStatement = null;
@@ -698,13 +781,24 @@ public class SMSMessagingDAO {
 			 * commit the transaction if all success
 			 */
 			con.commit();
+		} catch (SQLException e) {
+
+			/**
+			 * rollback if Exception occurs
+			 */
+			con.rollback();
+
+			log.error("DATABASE OPERATION ERROR IN outboundSubscriptionDelete : ", e);
+			throw e;
 		} catch (Exception e) {
 
 			/**
 			 * rollback if Exception occurs
 			 */
 			con.rollback();
-			DbUtils.handleException("Error while deleting subscriptions. ", e);
+
+			log.error("ERROR IN outboundSubscriptionDelete : ", e);
+			throw e;
 		} finally {
 
 			DbUtils.closeAllConnections(deleteSubscriptionsStatement, con, null);

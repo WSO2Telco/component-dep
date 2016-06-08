@@ -18,12 +18,18 @@ package com.wso2telco.dep.mediator.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Statement;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import com.wso2telco.dbutils.DbUtils;
 import com.wso2telco.dbutils.util.DataSourceNames;
 import com.wso2telco.dep.mediator.util.DatabaseTables;
 
 public class USSDDAO {
+
+	/** The Constant log. */
+	private final Log log = LogFactory.getLog(USSDDAO.class);
 
 	/**
 	 * Ussd request entry.
@@ -34,7 +40,7 @@ public class USSDDAO {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public Integer ussdRequestEntry(String notifyURL) throws Exception {
+	public Integer ussdRequestEntry(String notifyURL) throws SQLException, Exception {
 
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -66,9 +72,14 @@ public class USSDDAO {
 
 				newId = rs.getInt(1);
 			}
+		} catch (SQLException e) {
+
+			log.error("DATABASE OPERATION ERROR IN ussdRequestEntry : ", e);
+			throw e;
 		} catch (Exception e) {
 
-			DbUtils.handleException("Error while inserting in to ussd_request_entry. ", e);
+			log.error("ERROR IN ussdRequestEntry : ", e);
+			throw e;
 		} finally {
 
 			DbUtils.closeAllConnections(ps, con, rs);
@@ -86,7 +97,7 @@ public class USSDDAO {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public String getUSSDNotify(Integer subscriptionId) throws Exception {
+	public String getUSSDNotify(Integer subscriptionId) throws SQLException, Exception {
 
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 		PreparedStatement ps = null;
@@ -116,9 +127,14 @@ public class USSDDAO {
 				notifyurls = rs.getString("notifyurl");
 			}
 
+		} catch (SQLException e) {
+
+			log.error("DATABASE OPERATION ERROR IN getUSSDNotify : ", e);
+			throw e;
 		} catch (Exception e) {
 
-			DbUtils.handleException("Error while selecting from ussd_request_entry. ", e);
+			log.error("ERROR IN getUSSDNotify : ", e);
+			throw e;
 		} finally {
 
 			DbUtils.closeAllConnections(ps, con, rs);
@@ -136,7 +152,7 @@ public class USSDDAO {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public boolean ussdEntryDelete(Integer subscriptionId) throws Exception {
+	public boolean ussdEntryDelete(Integer subscriptionId) throws SQLException, Exception {
 
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 		PreparedStatement ps = null;
@@ -157,9 +173,14 @@ public class USSDDAO {
 			ps.setInt(1, subscriptionId);
 
 			ps.executeUpdate();
+		} catch (SQLException e) {
+
+			log.error("DATABASE OPERATION ERROR IN ussdEntryDelete : ", e);
+			throw e;
 		} catch (Exception e) {
 
-			DbUtils.handleException("Error while deleting ussd_request_entry. ", e);
+			log.error("ERROR IN ussdEntryDelete : ", e);
+			throw e;
 		} finally {
 
 			DbUtils.closeAllConnections(ps, con, null);

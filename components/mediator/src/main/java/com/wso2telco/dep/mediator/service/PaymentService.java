@@ -13,29 +13,38 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.dep.mediator.util;
+package com.wso2telco.dep.mediator.service;
 
-public enum DatabaseTables {
+import java.util.List;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import com.wso2telco.dep.mediator.dao.PaymentDAO;
+import com.wso2telco.utils.exception.BusinessException;
+import com.wso2telco.utils.exception.GenaralError;
 
-	MERCHANT_OPERATOR_BLACKLIST("merchantopco_blacklist"), 
-	OPERATORS("operators"), 
-	VALID_PAYMENT_CATEGORIES("valid_payment_categories"), 
-	USSD_REQUEST_ENTRY("ussd_request_entry"), 
-	OUTBOUND_SUBSCRIPTIONS("outbound_subscriptions"), 
-	OUTBOUND_OPERATORSUBS("outbound_operatorsubs"), 
-	SEND_SMS_REQID("sendsms_reqid"), 
-	SUBSCRIPTIONS("subscriptions"), 
-	OPERATORSUBS("operatorsubs");
+public class PaymentService {
 
-	private String tableName;
+	/** The Constant log. */
+	private final Log log = LogFactory.getLog(PaymentService.class);
 
-	DatabaseTables(String tableName) {
+	PaymentDAO paymentDAO;
 
-		this.tableName = tableName;
+	{
+		paymentDAO = new PaymentDAO();
 	}
 
-	public String getTableName() {
+	public List<String> getValidPayCategories() throws BusinessException {
 
-		return this.tableName;
+		List<String> categories = null;
+
+		try {
+
+			categories = paymentDAO.getValidPayCategories();
+		} catch (Exception e) {
+
+			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
+		}
+
+		return categories;
 	}
 }

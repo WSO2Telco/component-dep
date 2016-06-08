@@ -19,14 +19,11 @@ import com.wso2telco.datapublisher.DataPublisherConstants;
 import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.MSISDNConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
-import com.wso2telco.dep.mediator.dao.USSDDAO;
-import com.wso2telco.dep.mediator.internal.Util;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
+import com.wso2telco.dep.mediator.service.USSDService;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.subscriptionvalidator.util.ValidatorUtils;
-
 import java.util.Map;
-
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -53,7 +50,7 @@ public class SendUSSDHandler implements USSDHandler {
 	private USSDExecutor executor;
 
 	/** The ussdDAO. */
-	private USSDDAO ussdDAO;
+	private USSDService ussdService;
 
 	/**
 	 * Instantiates a new send ussd handler.
@@ -64,7 +61,7 @@ public class SendUSSDHandler implements USSDHandler {
 	public SendUSSDHandler(USSDExecutor executor) {
 		occi = new OriginatingCountryCalculatorIDD();
 		this.executor = executor;
-		ussdDAO = new USSDDAO();
+		ussdService = new USSDService();
 	}
 
 	/*
@@ -87,7 +84,7 @@ public class SendUSSDHandler implements USSDHandler {
 
 		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
 
-		Integer subscriptionId = ussdDAO.ussdRequestEntry(notifyUrl);
+		Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl);
 
 		String subsEndpoint = mediatorConfMap.get("ussdGatewayEndpoint") + subscriptionId;
 		log.info("Subsendpoint - " + subsEndpoint);

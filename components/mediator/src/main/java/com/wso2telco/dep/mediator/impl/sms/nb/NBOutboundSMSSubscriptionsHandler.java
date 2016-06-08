@@ -19,7 +19,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
-import com.wso2telco.dep.mediator.dao.SMSMessagingDAO;
 import com.wso2telco.dep.mediator.entity.CallbackReference;
 import com.wso2telco.dep.mediator.entity.nb.NBDeliveryReceiptSubscriptionRequest;
 import com.wso2telco.dep.mediator.entity.nb.SenderAddresses;
@@ -31,6 +30,7 @@ import com.wso2telco.dep.mediator.internal.ApiUtils;
 import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
+import com.wso2telco.dep.mediator.service.SMSMessagingService;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.oneapivalidation.service.impl.sms.ValidateCancelSubscription;
@@ -63,7 +63,7 @@ public class NBOutboundSMSSubscriptionsHandler implements SMSHandler {
 	private OriginatingCountryCalculatorIDD occi;
 
 	/** The smsMessagingDAO. */
-	private SMSMessagingDAO smsMessagingDAO;
+	private SMSMessagingService smsMessagingService;
 
 	/** The executor. */
 	private SMSExecutor executor;
@@ -80,7 +80,7 @@ public class NBOutboundSMSSubscriptionsHandler implements SMSHandler {
 	public NBOutboundSMSSubscriptionsHandler(SMSExecutor executor) {
 		this.executor = executor;
 		occi = new OriginatingCountryCalculatorIDD();
-		smsMessagingDAO = new SMSMessagingDAO();
+		smsMessagingService = new SMSMessagingService();
 		apiUtils = new ApiUtils();
 	}
 
@@ -163,7 +163,7 @@ public class NBOutboundSMSSubscriptionsHandler implements SMSHandler {
 		List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(API_TYPE, executor.getSubResourcePath(),
 				executor.getValidoperators());
 
-		Integer dnSubscriptionId = smsMessagingDAO.outboundSubscriptionEntry(nbDeliveryReceiptSubscriptionRequest
+		Integer dnSubscriptionId = smsMessagingService.outboundSubscriptionEntry(nbDeliveryReceiptSubscriptionRequest
 				.getDeliveryReceiptSubscription().getCallbackReference().getNotifyURL(), serviceProvider);
 		String subsEndpoint = mediatorConfMap.get("hubSubsGatewayEndpoint") + "/" + dnSubscriptionId;
 		nbDeliveryReceiptSubscriptionRequest.getDeliveryReceiptSubscription().getCallbackReference()
@@ -221,9 +221,9 @@ public class NBOutboundSMSSubscriptionsHandler implements SMSHandler {
 						if (sbDeliveryReceiptSubscriptionResponse.getDeliveryReceiptSubscription() == null) {
 							senderAddresses[i].setStatus("NotCreated");
 						} else {
-							domainsubs
-									.add(new OperatorSubscriptionDTO(endpoint.getOperator(), sbDeliveryReceiptSubscriptionResponse
-											.getDeliveryReceiptSubscription().getResourceURL()));
+							domainsubs.add(new OperatorSubscriptionDTO(endpoint.getOperator(),
+									sbDeliveryReceiptSubscriptionResponse.getDeliveryReceiptSubscription()
+											.getResourceURL()));
 							senderAddresses[i].setStatus("Created");
 						}
 					}
@@ -232,7 +232,7 @@ public class NBOutboundSMSSubscriptionsHandler implements SMSHandler {
 			}
 		}
 
-		boolean issubs = smsMessagingDAO.outboundOperatorsubsEntry(domainsubs, dnSubscriptionId);
+		boolean issubs = smsMessagingService.outboundOperatorsubsEntry(domainsubs, dnSubscriptionId);
 		String ResourceUrlPrefix = mediatorConfMap.get("hubGateway");
 
 		SenderAddresses[] responseSenderAddresses = new SenderAddresses[senderAddresses.length];

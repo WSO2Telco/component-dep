@@ -1,24 +1,31 @@
 package com.wso2telco.dep.operatorservice.service;
 
-import java.sql.SQLException;
 import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import com.wso2telco.dbutils.AxataDBUtilException;
 import com.wso2telco.dep.operatorservice.dao.OperatorDAO;
+import com.wso2telco.dep.operatorservice.exception.APIException;
+import com.wso2telco.dep.operatorservice.exception.APIException.APIErrorType;
+import com.wso2telco.dep.operatorservice.exception.ApplicationException;
+import com.wso2telco.dep.operatorservice.exception.ApplicationException.ApplicationErrorType;
+import com.wso2telco.dep.operatorservice.exception.TokenException;
+import com.wso2telco.dep.operatorservice.exception.TokenException.TokenErrorType;
 import com.wso2telco.dep.operatorservice.model.Operator;
 import com.wso2telco.dep.operatorservice.model.OperatorSearchDTO;
 import com.wso2telco.dep.operatorservice.model.ProvisionReq;
 import com.wso2telco.dep.operatorservice.util.OparatorError;
 import com.wso2telco.utils.exception.BusinessException;
+import com.wso2telco.utils.exception.GenaralError;
+import edu.emory.mathcs.backport.java.util.Collections;
 import com.wso2telco.dep.operatorservice.model.OperatorEndPointDTO;
 import com.wso2telco.dep.operatorservice.model.OperatorApplicationDTO;
 
 public class OparatorService {
+
+	/** The Constant log. */
 	Log LOG = LogFactory.getLog(OparatorService.class);
+
 	OperatorDAO dao;
 
 	{
@@ -32,10 +39,27 @@ public class OparatorService {
 	 * @return
 	 * @throws Exception
 	 */
-	public List<Operator> loadOperators(OperatorSearchDTO searchDTO) throws Exception {
-		LOG.debug(" Got request to loadOperators  searchDTO :" + searchDTO);
-		dao.seachOparators(searchDTO);
-		return dao.seachOparators(searchDTO);
+	@SuppressWarnings("unchecked")
+	public List<Operator> loadOperators(OperatorSearchDTO searchDTO) throws BusinessException {
+
+		LOG.debug(" Got request to loadOperators  searchDTO : " + searchDTO);
+		List<Operator> operatorList = null;
+
+		try {
+
+			operatorList = dao.seachOparators(searchDTO);
+		} catch (Exception e) {
+
+			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
+		}
+
+		if (operatorList != null) {
+
+			return operatorList;
+		} else {
+
+			return Collections.emptyList();
+		}
 	}
 
 	public void blacklistAggregator(ProvisionReq provisionreq) throws BusinessException {
@@ -75,32 +99,133 @@ public class OparatorService {
 
 			dao.insertBlacklistAggregatoRows(applicationid, subscriber, oparator.getOperatorId(), merchants);
 		} catch (Exception e) {
-			LOG.error("blacklistAggregator", e);
-			throw new BusinessException(OparatorError.INVALID_OPARATOR_NAME);
 
+			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
+		}
+	}
+
+	@SuppressWarnings("unchecked")
+	public List<OperatorEndPointDTO> getOperatorEndpoints() throws BusinessException {
+
+		List<OperatorEndPointDTO> endPoints = null;
+
+		try {
+
+			endPoints = dao.getOperatorEndpoints();
+		} catch (Exception e) {
+
+			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
 
+		if (endPoints != null) {
+
+			return endPoints;
+		} else {
+
+			return Collections.emptyList();
+		}
 	}
 
-	public List<OperatorEndPointDTO> getOperatorEndpoints() throws Exception {
+	@SuppressWarnings("unchecked")
+	public List<OperatorApplicationDTO> getApplicationOperators(Integer applicationId)
+			throws ApplicationException, BusinessException {
 
-		return dao.getOperatorEndpoints();
+		if (applicationId == null || applicationId <= 0) {
+
+			throw new ApplicationException(ApplicationErrorType.INVALID_APPLICATION_ID);
+		}
+
+		List<OperatorApplicationDTO> operators = null;
+
+		try {
+
+			operators = dao.getApplicationOperators(applicationId);
+		} catch (Exception e) {
+
+			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
+		}
+
+		if (operators != null) {
+
+			return operators;
+		} else {
+
+			return Collections.emptyList();
+		}
 	}
 
-	public List<OperatorApplicationDTO> getApplicationOperators(Integer applicationId) throws Exception {
-
-		return dao.getApplicationOperators(applicationId);
-	}
-
+	@SuppressWarnings("unchecked")
 	public List<Integer> getActiveApplicationOperators(Integer appId, String apiType)
-			throws SQLException, AxataDBUtilException {
+			throws ApplicationException, APIException, BusinessException {
 
-		return dao.getActiveApplicationOperators(appId, apiType);
+		if (appId == null || appId <= 0) {
+
+			throw new ApplicationException(ApplicationErrorType.INVALID_APPLICATION_ID);
+		}
+
+		if (apiType == null || apiType.trim().length() <= 0) {
+
+			throw new APIException(APIErrorType.INVALID_API_NAME);
+		}
+
+		List<Integer> operators = null;
+
+		try {
+
+			operators = dao.getActiveApplicationOperators(appId, apiType);
+		} catch (Exception e) {
+
+			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
+		}
+
+		if (operators != null) {
+
+			return operators;
+		} else {
+
+			return Collections.emptyList();
+		}
 	}
 
-	public Integer updateOperatorToken(int id, String refreshToken, long tokenValidity, long tokenTime, String token)
-			throws Exception {
+	public void updateOperatorToken(int operatorId, String refreshToken, long tokenValidity, long tokenTime,
+			String token) throws TokenException, BusinessException {
 
-		return dao.updateOperatorToken(id, refreshToken, tokenValidity, tokenTime, token);
+		if (operatorId <= 0) {
+
+			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID); // why
+																			// don't
+																			// we
+																			// use
+																			// operator
+																			// exception
+		}
+
+		if (refreshToken == null || refreshToken.trim().length() <= 0) {
+
+			throw new TokenException(TokenErrorType.INVALID_REFRESH_TOKEN);
+		}
+
+		if (tokenValidity <= 0) {
+
+			throw new TokenException(TokenErrorType.INVALID_TOKEN_VALIDITY);
+		}
+
+		if (tokenTime <= 0) {
+
+			throw new TokenException(TokenErrorType.INVALID_TOKEN_TIME);
+		}
+
+		if (token == null || token.trim().length() <= 0) {
+
+			throw new TokenException(TokenErrorType.INVALID_TOKEN);
+		}
+
+		try {
+
+			dao.updateOperatorToken(operatorId, refreshToken, tokenValidity, tokenTime, token);
+		} catch (Exception e) {
+
+			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
+		}
 	}
 }

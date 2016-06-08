@@ -20,11 +20,10 @@ import com.google.gson.GsonBuilder;
 import com.wso2telco.datapublisher.DataPublisherConstants;
 import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
-import com.wso2telco.dep.mediator.dao.SMSMessagingDAO;
 import com.wso2telco.dep.mediator.entity.InboundRequest;
 import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
-import com.wso2telco.dep.mediator.internal.Util;
+import com.wso2telco.dep.mediator.service.SMSMessagingService;
 import com.wso2telco.mnc.resolver.MNCQueryClient;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import java.text.DateFormat;
@@ -32,7 +31,6 @@ import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
-
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.synapse.MessageContext;
@@ -47,7 +45,7 @@ import org.wso2.carbon.apimgt.gateway.APIMgtGatewayConstants;
 public class SMSInboundNotificationsHandler implements SMSHandler {
 
 	/** The smsMessagingDAO. */
-	private SMSMessagingDAO smsMessagingDAO;
+	private SMSMessagingService smsMessagingService;
 
 	/** The executor. */
 	private SMSExecutor executor;
@@ -62,8 +60,9 @@ public class SMSInboundNotificationsHandler implements SMSHandler {
 	 *            the executor
 	 */
 	public SMSInboundNotificationsHandler(SMSExecutor executor) {
+
 		this.executor = executor;
-		smsMessagingDAO = new SMSMessagingDAO();
+		smsMessagingService = new SMSMessagingService();
 		mncQueryclient = new MNCQueryClient();
 	}
 
@@ -85,7 +84,7 @@ public class SMSInboundNotificationsHandler implements SMSHandler {
 		FileReader fileReader = new FileReader();
 		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
 
-		HashMap<String, String> subscriptionDetails = smsMessagingDAO
+		HashMap<String, String> subscriptionDetails = smsMessagingService
 				.subscriptionNotifiMap(Integer.valueOf(moSubscriptionId));
 		String notifyurl = subscriptionDetails.get("notifyurl");
 		String serviceProvider = subscriptionDetails.get("serviceProvider");

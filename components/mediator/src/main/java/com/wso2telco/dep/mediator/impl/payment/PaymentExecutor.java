@@ -21,12 +21,12 @@ import com.wso2telco.dep.mediator.MSISDNConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.RequestExecutor;
 import com.wso2telco.dep.mediator.ResponseHandler;
-import com.wso2telco.dep.mediator.dao.PaymentDAO;
 import com.wso2telco.dep.mediator.internal.AggregatorValidator;
 import com.wso2telco.dep.mediator.internal.Base64Coder;
 import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
+import com.wso2telco.dep.mediator.service.PaymentService;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.impl.payment.ValidateChargeReservation;
 import com.wso2telco.oneapivalidation.service.impl.payment.ValidateListTransactions;
@@ -65,7 +65,7 @@ public class PaymentExecutor extends RequestExecutor {
 	private OriginatingCountryCalculatorIDD occi;
 
 	/** The paymentDAO. */
-	private PaymentDAO paymentDAO;
+	private PaymentService paymentService;
 
 	/** The response handler. */
 	private ResponseHandler responseHandler;
@@ -75,7 +75,7 @@ public class PaymentExecutor extends RequestExecutor {
 	 */
 	public PaymentExecutor() {
 		occi = new OriginatingCountryCalculatorIDD();
-		paymentDAO = new PaymentDAO();
+		paymentService = new PaymentService();
 		responseHandler = new ResponseHandler();
 	}
 
@@ -245,7 +245,7 @@ public class PaymentExecutor extends RequestExecutor {
 			mc.setProperty(DataPublisherConstants.CATEGORY, chargingdmeta.getString("purchaseCategoryCode"));
 		}
 		// validate payment categoreis
-		List<String> validCategoris = paymentDAO.getValidPayCategories();
+		List<String> validCategoris = paymentService.getValidPayCategories();
 		validatePaymentCategory(chargingdmeta, validCategoris);
 
 		String responseStr = makeRequest(endpoint, sending_add, jsonBody.toString(), true, mc);

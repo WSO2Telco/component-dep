@@ -20,7 +20,7 @@ package com.wso2telco.dep.mediator.entity;
 /**
  * The Class inboundSMSMessage.
  */
-public class inboundSMSMessage {
+public class InboundSMSMessage {
     
     /** The date time. */
     private String dateTime = "";
@@ -41,7 +41,7 @@ public class inboundSMSMessage {
     /**
      * Instantiates a new inbound sms message.
      */
-    public inboundSMSMessage() {
+    public InboundSMSMessage() {
     }
     
     /**

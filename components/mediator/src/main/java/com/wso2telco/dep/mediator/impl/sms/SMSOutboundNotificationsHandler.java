@@ -25,12 +25,11 @@ import com.google.gson.GsonBuilder;
 import com.wso2telco.datapublisher.DataPublisherConstants;
 import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
-import com.wso2telco.dep.mediator.dao.SMSMessagingDAO;
 import com.wso2telco.dep.mediator.entity.OutboundRequest;
 import com.wso2telco.dep.mediator.entity.OutboundRequestOp;
 import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
-import com.wso2telco.dep.mediator.internal.Util;
+import com.wso2telco.dep.mediator.service.SMSMessagingService;
 import com.wso2telco.mnc.resolver.MNCQueryClient;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import java.util.HashMap;
@@ -45,7 +44,7 @@ import org.wso2.carbon.apimgt.gateway.APIMgtGatewayConstants;
 public class SMSOutboundNotificationsHandler implements SMSHandler {
 
 	/** The smsMessagingDAO. */
-	private SMSMessagingDAO smsMessagingDAO;
+	private SMSMessagingService smsMessagingService;
 
 	/** The executor. */
 	private SMSExecutor executor;
@@ -61,7 +60,7 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 	 */
 	public SMSOutboundNotificationsHandler(SMSExecutor executor) {
 		this.executor = executor;
-		smsMessagingDAO = new SMSMessagingDAO();
+		smsMessagingService = new SMSMessagingService();
 		mncQueryclient = new MNCQueryClient();
 	}
 
@@ -79,11 +78,11 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 
 		String requestPath = executor.getSubResourcePath();
 		String moSubscriptionId = requestPath.substring(requestPath.lastIndexOf("/") + 1);
-		
+
 		FileReader fileReader = new FileReader();
 		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
 
-		HashMap<String, String> dnSubscriptionDetails = smsMessagingDAO
+		HashMap<String, String> dnSubscriptionDetails = smsMessagingService
 				.subscriptionDNNotifiMap(Integer.valueOf(moSubscriptionId));
 		String notifyurl = dnSubscriptionDetails.get("notifyurl");
 		String serviceProvider = dnSubscriptionDetails.get("serviceProvider");
@@ -126,6 +125,7 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 		executor.removeHeaders(context);
 
 		if (notifyret == 0) {
+
 			throw new CustomException("SVC1000", "", new String[] { null });
 		}
 

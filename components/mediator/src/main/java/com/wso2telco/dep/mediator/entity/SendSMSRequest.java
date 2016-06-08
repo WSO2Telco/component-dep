@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class SendSMSRequest implements ISMSresponse {
     
     /** The outbound sms message request. */
-    private outboundSMSMessageRequest outboundSMSMessageRequest;
+    private OutboundSMSMessageRequest outboundSMSMessageRequest;
     
     /**
      * Instantiates a new send sms request.
@@ -40,7 +40,7 @@ public class SendSMSRequest implements ISMSresponse {
      *
      * @return the outbound sms message request
      */
-    public outboundSMSMessageRequest getOutboundSMSMessageRequest() {
+    public OutboundSMSMessageRequest getOutboundSMSMessageRequest() {
             return outboundSMSMessageRequest;
     }
 

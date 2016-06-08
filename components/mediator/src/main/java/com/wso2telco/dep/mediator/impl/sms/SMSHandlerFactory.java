@@ -20,7 +20,6 @@ import com.wso2telco.dep.mediator.impl.sms.nb.NBRetrieveSMSHandler;
 import com.wso2telco.dep.mediator.impl.sms.sb.SBOutboundSMSSubscriptionsHandler;
 import com.wso2telco.dep.mediator.impl.sms.sb.SBRetrieveSMSHandler;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;
