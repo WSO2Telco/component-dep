@@ -45,7 +45,7 @@ i18n.init(request,localeResourcesBasePath);
 
     <!--Loca styles-->
     <link href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("css/localstyles.css"))%>" rel="stylesheet">
-    <link href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("css/styles-axiata.css"))%>" rel="stylesheet">
+    <link href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("css/styles-sandbox.css"))%>" rel="stylesheet">
     <!--[if lt IE 9]><link rel="stylesheet" type="text/css" href="<%=jagg.getAbsoluteUrl("/site/themes/default/css/style-ie7-8.css")%>" media="all"/><![endif]-->
     <!--[if IE 7]><link rel="stylesheet" type="text/css" href="<%=jagg.getAbsoluteUrl("/site/themes/default/css/style-ie7.css")%>" media="all"/><![endif]-->
 

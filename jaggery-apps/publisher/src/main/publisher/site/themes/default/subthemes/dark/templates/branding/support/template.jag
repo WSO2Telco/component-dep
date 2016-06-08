@@ -1,6 +1,6 @@
 <% jagg.template("branding/support", function(inputs, outputs, jagg) {
 %>
-<link rel="stylesheet" type="text/css" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("css/styles-axiata.css"))%>" media="all"/>
+<link rel="stylesheet" type="text/css" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("css/styles-publisher.css"))%>" media="all"/>
 <style>
 body{
 background:none;
@@ -31,10 +31,6 @@ background:none;
     </div>
     <div class="content-section shadow-up">
         <div class="content-data span5">
-			<h3>Forward your queries to the following email address:</h3>
-			<div class="title-section">
-        		<h4>test@dialog.lk</h4>
-    		</div>
         </div>
     </div>
 </div>

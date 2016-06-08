@@ -183,8 +183,8 @@ public class SubscriptionCreationWSWorkflowExecutor extends WorkflowExecutor {
                 tiersStr = tiersStr.replace("$g", tierAttributesString);
             }
 
-    		WorkflowAPIConsumer axiataAPIConsumer = new WorkflowAPIConsumerImpl();
-            int apiID = axiataAPIConsumer.getAPIID(apiIdentifier);
+    		WorkflowAPIConsumer workFlowAPIConsumer = new WorkflowAPIConsumerImpl();
+            int apiID = workFlowAPIConsumer.getAPIID(apiIdentifier);
 
             payload = payload.replace("$1", apiName);
             payload = payload.replace("$2", version);
