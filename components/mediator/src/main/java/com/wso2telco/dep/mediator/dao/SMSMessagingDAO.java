@@ -97,7 +97,7 @@ public class SMSMessagingDAO {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public boolean outboundOperatorsubsEntry(List<OperatorSubscriptionDTO> domainsubs, Integer dnSubscriptionId)
+	public void outboundOperatorsubsEntry(List<OperatorSubscriptionDTO> domainsubs, Integer dnSubscriptionId)
 			throws SQLException, Exception {
 
 		Connection con = null;
@@ -175,8 +175,6 @@ public class SMSMessagingDAO {
 			DbUtils.closeAllConnections(insertStatement, con, null);
 			DbUtils.closeAllConnections(updateStatement, null, null);
 		}
-
-		return true;
 	}
 
 	/**
@@ -291,7 +289,7 @@ public class SMSMessagingDAO {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public boolean operatorSubsEntry(List<OperatorSubscriptionDTO> domainsubs, Integer moSubscriptionId)
+	public void operatorSubsEntry(List<OperatorSubscriptionDTO> domainsubs, Integer moSubscriptionId)
 			throws SQLException, Exception {
 
 		Connection con = null;
@@ -368,8 +366,6 @@ public class SMSMessagingDAO {
 			DbUtils.closeAllConnections(insertStatement, con, null);
 			DbUtils.closeAllConnections(updateStatement, null, null);
 		}
-
-		return true;
 	}
 
 	/**
@@ -435,7 +431,7 @@ public class SMSMessagingDAO {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public boolean subscriptionDelete(Integer moSubscriptionId) throws SQLException, Exception {
+	public void subscriptionDelete(Integer moSubscriptionId) throws SQLException, Exception {
 
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 		PreparedStatement deleteSubscriptionsStatement = null;
@@ -501,8 +497,6 @@ public class SMSMessagingDAO {
 			DbUtils.closeAllConnections(deleteSubscriptionsStatement, con, null);
 			DbUtils.closeAllConnections(deleteOperatorSubscriptionsStatement, null, null);
 		}
-
-		return true;
 	}
 
 	/**
@@ -517,7 +511,7 @@ public class SMSMessagingDAO {
 	 * @return true, if successful
 	 * @throws Exception
 	 */
-	public boolean insertSMSRequestIds(String requestId, String senderAddress, Map<String, String> gatewayRequestIds)
+	public void insertSMSRequestIds(String requestId, String senderAddress, Map<String, String> gatewayRequestIds)
 			throws SQLException, Exception {
 
 		Connection con = null;
@@ -577,8 +571,6 @@ public class SMSMessagingDAO {
 
 			DbUtils.closeAllConnections(ps, con, null);
 		}
-
-		return true;
 	}
 
 	public HashMap<String, String> subscriptionNotifiMap(Integer moSubscriptionId) throws SQLException, Exception {
@@ -738,7 +730,7 @@ public class SMSMessagingDAO {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public boolean outboundSubscriptionDelete(Integer dnSubscriptionId) throws SQLException, Exception {
+	public void outboundSubscriptionDelete(Integer dnSubscriptionId) throws SQLException, Exception {
 
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 		PreparedStatement deleteSubscriptionsStatement = null;
@@ -804,7 +796,5 @@ public class SMSMessagingDAO {
 			DbUtils.closeAllConnections(deleteSubscriptionsStatement, con, null);
 			DbUtils.closeAllConnections(deleteOperatorSubscriptionsStatement, null, null);
 		}
-
-		return true;
 	}
 }

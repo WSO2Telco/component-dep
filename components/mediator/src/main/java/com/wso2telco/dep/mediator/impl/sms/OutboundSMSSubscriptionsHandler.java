@@ -190,7 +190,7 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
 				}
 			}
 
-			boolean issubs = smsMessagingService.outboundOperatorsubsEntry(domainsubs, dnSubscriptionId);
+			smsMessagingService.outboundOperatorsubsEntry(domainsubs, dnSubscriptionId);
 			String ResourceUrlPrefix = mediatorConfMap.get("hubGateway");
 			subsresponse.getDeliveryReceiptSubscription()
 					.setResourceURL(ResourceUrlPrefix + executor.getResourceUrl() + "/" + dnSubscriptionId);

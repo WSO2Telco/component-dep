@@ -22,6 +22,8 @@ import com.wso2telco.dep.mediator.dao.PaymentDAO;
 import com.wso2telco.utils.exception.BusinessException;
 import com.wso2telco.utils.exception.GenaralError;
 
+import edu.emory.mathcs.backport.java.util.Collections;
+
 public class PaymentService {
 
 	/** The Constant log. */
@@ -33,6 +35,7 @@ public class PaymentService {
 		paymentDAO = new PaymentDAO();
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<String> getValidPayCategories() throws BusinessException {
 
 		List<String> categories = null;
@@ -45,6 +48,12 @@ public class PaymentService {
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
 
-		return categories;
+		if (categories != null) {
+
+			return categories;
+		} else {
+
+			return Collections.emptyList();
+		}
 	}
 }

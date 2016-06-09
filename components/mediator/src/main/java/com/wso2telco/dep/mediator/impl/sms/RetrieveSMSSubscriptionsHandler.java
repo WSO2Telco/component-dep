@@ -207,7 +207,7 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 				}
 			}
 
-			boolean issubs = smsMessagingService.operatorSubsEntry(domainsubs, moSubscriptionId);
+			smsMessagingService.operatorSubsEntry(domainsubs, moSubscriptionId);
 
 			String ResourceUrlPrefix = mediatorConfMap.get("hubGateway");
 			subsresponse.getSubscription()
@@ -297,7 +297,7 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 				}
 			}
 
-			boolean issubs = smsMessagingService.operatorSubsEntry(domainsubs, moSubscriptionId);
+			smsMessagingService.operatorSubsEntry(domainsubs, moSubscriptionId);
 
 			String ResourceUrlPrefix = mediatorConfMap.get("hubGateway");
 

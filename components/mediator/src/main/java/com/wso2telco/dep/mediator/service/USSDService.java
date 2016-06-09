@@ -18,6 +18,7 @@ package com.wso2telco.dep.mediator.service;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.wso2telco.dep.mediator.dao.USSDDAO;
+import com.wso2telco.dep.mediator.util.ErrorType;
 import com.wso2telco.utils.exception.BusinessException;
 import com.wso2telco.utils.exception.GenaralError;
 
@@ -34,6 +35,11 @@ public class USSDService {
 
 	public Integer ussdRequestEntry(String notifyURL) throws BusinessException {
 
+		if (notifyURL == null || notifyURL.trim().length() <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_NOTIFY_URL);
+		}
+
 		Integer newId = 0;
 
 		try {
@@ -49,6 +55,11 @@ public class USSDService {
 
 	public String getUSSDNotify(Integer subscriptionId) throws BusinessException {
 
+		if (subscriptionId == null || subscriptionId <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_USSD_REQUEST_DID);
+		}
+
 		String notifyurls = "";
 
 		try {
@@ -63,6 +74,11 @@ public class USSDService {
 	}
 
 	public boolean ussdEntryDelete(Integer subscriptionId) throws BusinessException {
+
+		if (subscriptionId == null || subscriptionId <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_USSD_REQUEST_DID);
+		}
 
 		try {
 

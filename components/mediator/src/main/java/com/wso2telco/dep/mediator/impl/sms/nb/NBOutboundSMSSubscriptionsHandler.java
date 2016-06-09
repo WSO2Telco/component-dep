@@ -232,7 +232,7 @@ public class NBOutboundSMSSubscriptionsHandler implements SMSHandler {
 			}
 		}
 
-		boolean issubs = smsMessagingService.outboundOperatorsubsEntry(domainsubs, dnSubscriptionId);
+		smsMessagingService.outboundOperatorsubsEntry(domainsubs, dnSubscriptionId);
 		String ResourceUrlPrefix = mediatorConfMap.get("hubGateway");
 
 		SenderAddresses[] responseSenderAddresses = new SenderAddresses[senderAddresses.length];

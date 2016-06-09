@@ -21,9 +21,13 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.wso2telco.dep.mediator.dao.SMSMessagingDAO;
+import com.wso2telco.dep.mediator.util.ErrorType;
 import com.wso2telco.dep.operatorservice.model.OperatorSubscriptionDTO;
+import com.wso2telco.dep.operatorservice.util.OparatorError;
 import com.wso2telco.utils.exception.BusinessException;
 import com.wso2telco.utils.exception.GenaralError;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 public class SMSMessagingService {
 
@@ -38,6 +42,16 @@ public class SMSMessagingService {
 
 	public Integer outboundSubscriptionEntry(String notifyURL, String serviceProvider) throws BusinessException {
 
+		if (notifyURL == null || notifyURL.trim().length() <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_NOTIFY_URL);
+		}
+
+		if (serviceProvider == null || serviceProvider.trim().length() <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_SUBSCRIBER_NAME);
+		}
+
 		Integer newId = 0;
 
 		try {
@@ -51,8 +65,18 @@ public class SMSMessagingService {
 		return newId;
 	}
 
-	public boolean outboundOperatorsubsEntry(List<OperatorSubscriptionDTO> domainsubs, Integer dnSubscriptionId)
+	public void outboundOperatorsubsEntry(List<OperatorSubscriptionDTO> domainsubs, Integer dnSubscriptionId)
 			throws BusinessException {
+
+		if (dnSubscriptionId == null || dnSubscriptionId <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_DN_SUBSCRIPTION_ID);
+		}
+
+		if (domainsubs == null || domainsubs.size() <= 0) {
+
+			throw new BusinessException(OparatorError.INVALID_OPERATOR_SUBSCRIPTION_LIST);
+		}
 
 		try {
 
@@ -61,11 +85,20 @@ public class SMSMessagingService {
 
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
-
-		return true;
 	}
 
+	@SuppressWarnings("unchecked")
 	public Map<String, String> getSMSRequestIds(String requestId, String senderAddress) throws BusinessException {
+
+		if (requestId == null || requestId.trim().length() <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_REQUEST_ID);
+		}
+
+		if (senderAddress == null || senderAddress.trim().length() <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_SENDER_ADDRESS);
+		}
 
 		Map<String, String> gatewayRequestIds = null;
 
@@ -77,10 +110,26 @@ public class SMSMessagingService {
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
 
-		return gatewayRequestIds;
+		if (gatewayRequestIds != null) {
+
+			return gatewayRequestIds;
+		} else {
+
+			return Collections.emptyMap();
+		}
 	}
 
 	public Integer subscriptionEntry(String notifyURL, String serviceProvider) throws BusinessException {
+
+		if (notifyURL == null || notifyURL.trim().length() <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_NOTIFY_URL);
+		}
+
+		if (serviceProvider == null || serviceProvider.trim().length() <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_SUBSCRIBER_NAME);
+		}
 
 		Integer newId = 0;
 
@@ -95,8 +144,18 @@ public class SMSMessagingService {
 		return newId;
 	}
 
-	public boolean operatorSubsEntry(List<OperatorSubscriptionDTO> domainsubs, Integer moSubscriptionId)
+	public void operatorSubsEntry(List<OperatorSubscriptionDTO> domainsubs, Integer moSubscriptionId)
 			throws BusinessException {
+
+		if (moSubscriptionId == null || moSubscriptionId <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_MO_SUBSCRIPTION_ID);
+		}
+
+		if (domainsubs == null || domainsubs.size() <= 0) {
+
+			throw new BusinessException(OparatorError.INVALID_OPERATOR_SUBSCRIPTION_LIST);
+		}
 
 		try {
 
@@ -105,11 +164,15 @@ public class SMSMessagingService {
 
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
-
-		return true;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<OperatorSubscriptionDTO> subscriptionQuery(Integer moSubscriptionId) throws BusinessException {
+
+		if (moSubscriptionId == null || moSubscriptionId <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_MO_SUBSCRIPTION_ID);
+		}
 
 		List<OperatorSubscriptionDTO> domainsubs = null;
 
@@ -121,10 +184,21 @@ public class SMSMessagingService {
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
 
-		return domainsubs;
+		if (domainsubs != null) {
+
+			return domainsubs;
+		} else {
+
+			return Collections.emptyList();
+		}
 	}
 
-	public boolean subscriptionDelete(Integer moSubscriptionId) throws BusinessException {
+	public void subscriptionDelete(Integer moSubscriptionId) throws BusinessException {
+
+		if (moSubscriptionId == null || moSubscriptionId <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_MO_SUBSCRIPTION_ID);
+		}
 
 		try {
 
@@ -133,12 +207,25 @@ public class SMSMessagingService {
 
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
-
-		return true;
 	}
 
-	public boolean insertSMSRequestIds(String requestId, String senderAddress, Map<String, String> gatewayRequestIds)
+	public void insertSMSRequestIds(String requestId, String senderAddress, Map<String, String> gatewayRequestIds)
 			throws BusinessException {
+
+		if (requestId == null || requestId.trim().length() <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_REQUEST_ID);
+		}
+
+		if (senderAddress == null || senderAddress.trim().length() <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_SENDER_ADDRESS);
+		}
+
+		if (gatewayRequestIds == null || gatewayRequestIds.size() <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_REQUEST_ID_LIST);
+		}
 
 		try {
 
@@ -147,11 +234,14 @@ public class SMSMessagingService {
 
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
-
-		return true;
 	}
 
 	public HashMap<String, String> subscriptionNotifiMap(Integer moSubscriptionId) throws BusinessException {
+
+		if (moSubscriptionId == null || moSubscriptionId <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_MO_SUBSCRIPTION_ID);
+		}
 
 		HashMap<String, String> subscriptionDetails = null;
 
@@ -163,10 +253,24 @@ public class SMSMessagingService {
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
 
+		/*
+		 * if(subscriptionDetails != null){
+		 * 
+		 * return subscriptionDetails; }else {
+		 * 
+		 * 
+		 * }
+		 */
+
 		return subscriptionDetails;
 	}
 
 	public HashMap<String, String> subscriptionDNNotifiMap(Integer dnSubscriptionId) throws BusinessException {
+
+		if (dnSubscriptionId == null || dnSubscriptionId <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_DN_SUBSCRIPTION_ID);
+		}
 
 		HashMap<String, String> dnSubscriptionDetails = null;
 
@@ -181,7 +285,13 @@ public class SMSMessagingService {
 		return dnSubscriptionDetails;
 	}
 
+	@SuppressWarnings("unchecked")
 	public List<OperatorSubscriptionDTO> outboudSubscriptionQuery(Integer dnSubscriptionId) throws BusinessException {
+
+		if (dnSubscriptionId == null || dnSubscriptionId <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_DN_SUBSCRIPTION_ID);
+		}
 
 		List<OperatorSubscriptionDTO> domainsubs = null;
 
@@ -193,10 +303,21 @@ public class SMSMessagingService {
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
 
-		return domainsubs;
+		if (domainsubs != null) {
+
+			return domainsubs;
+		} else {
+
+			return Collections.emptyList();
+		}
 	}
 
-	public boolean outboundSubscriptionDelete(Integer dnSubscriptionId) throws BusinessException {
+	public void outboundSubscriptionDelete(Integer dnSubscriptionId) throws BusinessException {
+
+		if (dnSubscriptionId == null || dnSubscriptionId <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_DN_SUBSCRIPTION_ID);
+		}
 
 		try {
 
@@ -205,7 +326,5 @@ public class SMSMessagingService {
 
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
-
-		return true;
 	}
 }

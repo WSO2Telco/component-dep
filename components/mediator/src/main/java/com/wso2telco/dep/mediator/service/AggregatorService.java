@@ -18,8 +18,12 @@ package com.wso2telco.dep.mediator.service;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.wso2telco.dep.mediator.dao.AggregatorDAO;
+import com.wso2telco.dep.mediator.util.ErrorType;
 import com.wso2telco.utils.exception.BusinessException;
 import com.wso2telco.utils.exception.GenaralError;
+import com.wso2telco.dep.operatorservice.exception.ApplicationException;
+import com.wso2telco.dep.operatorservice.exception.ApplicationException.ApplicationErrorType;
+import com.wso2telco.dep.operatorservice.util.OparatorError;
 
 public class AggregatorService {
 
@@ -33,7 +37,27 @@ public class AggregatorService {
 	}
 
 	public String blacklistedmerchant(int appId, String operatorId, String subscriber, String merchant)
-			throws BusinessException {
+			throws ApplicationException, BusinessException {
+
+		if (appId <= 0) {
+
+			throw new ApplicationException(ApplicationErrorType.INVALID_APPLICATION_ID);
+		}
+
+		if (operatorId == null || operatorId.trim().length() <= 0) {
+
+			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
+		}
+
+		if (subscriber == null || subscriber.trim().length() <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_SUBSCRIBER_NAME);
+		}
+
+		if (merchant == null || merchant.trim().length() <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_MERCHANT_NAME);
+		}
 
 		String resultcode = null;
 
@@ -49,6 +73,21 @@ public class AggregatorService {
 	}
 
 	public String blacklistedmerchant(String operatorId, String subscriber, String merchant) throws BusinessException {
+
+		if (operatorId == null || operatorId.trim().length() <= 0) {
+
+			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
+		}
+
+		if (subscriber == null || subscriber.trim().length() <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_SUBSCRIBER_NAME);
+		}
+
+		if (merchant == null || merchant.trim().length() <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_MERCHANT_NAME);
+		}
 
 		String resultcode = null;
 
