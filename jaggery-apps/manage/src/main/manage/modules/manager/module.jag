@@ -23,8 +23,8 @@ jagg.module("manager", {
 	getCustomBilling:function () {
 		return jagg.require(jagg.getModulesDir() + "manager/manager.jag").getCustomBilling.apply(this, arguments);
 	},
-	getAxiataWorkflow:function () {
-		return jagg.require(jagg.getModulesDir() + "manager/manager.jag").getAxiataWorkflow.apply(this, arguments);
+	getWorkflowHostObject:function () {
+		return jagg.require(jagg.getModulesDir() + "manager/manager.jag").getWorkflowHostObject.apply(this, arguments);
 	}
 
 });

@@ -130,7 +130,7 @@ var setSubscriptionTier = function (taskId, taskType, tierId, endpoint) {
 	var refId = getRefId(taskId, endpoint, taskType);
 
 	var workflow, result;
-	workflow = jagg.module("manager").getAxiataWorkflow();
+	workflow = jagg.module("manager").getWorkflowHostObject();
 	
 	try {
 		result = workflow.setSubscriptionTier(refId,tierId);
@@ -153,7 +153,7 @@ var setSubscriptionTier = function (taskId, taskType, tierId, endpoint) {
 var setSubscriptionChargeRate = function (appId, apiId, opName, rateNameNB,operationId) {
 	
 	var workflow, result;
-	workflow = jagg.module("manager").getAxiataWorkflow();
+	workflow = jagg.module("manager").getWorkflowHostObject();
 	
 	try {
 		result = workflow.setSubscriptionChargeRate(appId, apiId, opName, rateNameNB, operationId);
@@ -171,7 +171,7 @@ var setSubscriptionChargeRate = function (appId, apiId, opName, rateNameNB,opera
 var setSubscriptionChargeRateNB = function (appId, apiId) {
 	
 	var workflow, result;
-	workflow = jagg.module("manager").getAxiataWorkflow();
+	workflow = jagg.module("manager").getWorkflowHostObject();
 	
 	try {
 		result = workflow.setSubscriptionChargeRateNB(appId, apiId);
@@ -191,7 +191,7 @@ var setApplicationTier = function (taskId, taskType, tierId, endpoint) {
 	var refId = getRefId(taskId, endpoint, taskType);
 
 	var workflow, result;
-	workflow = jagg.module("manager").getAxiataWorkflow();
+	workflow = jagg.module("manager").getWorkflowHostObject();
 	
 	try {
 		result = workflow.setApplicationTier(refId,tierId);
