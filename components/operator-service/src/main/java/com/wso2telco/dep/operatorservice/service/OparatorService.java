@@ -192,12 +192,7 @@ public class OparatorService {
 
 		if (operatorId <= 0) {
 
-			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID); // why
-																			// don't
-																			// we
-																			// use
-																			// operator
-																			// exception
+			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID); 
 		}
 
 		if (refreshToken == null || refreshToken.trim().length() <= 0) {

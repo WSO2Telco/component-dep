@@ -61,6 +61,8 @@ public class SMSMessagingDAO {
 			ps.setString(1, notifyURL);
 			ps.setString(2, serviceProvider);
 			ps.setInt(3, 0);
+			
+			log.debug("SQL QUERY IN outboundSubscriptionEntry : " + ps);
 
 			ps.executeUpdate();
 
@@ -133,6 +135,8 @@ public class SMSMessagingDAO {
 
 				insertStatement.addBatch();
 			}
+			
+			log.debug("SQL QUERY IN outboundOperatorsubsEntry : " + insertStatement);
 
 			insertStatement.executeBatch();
 
@@ -145,6 +149,8 @@ public class SMSMessagingDAO {
 
 			updateStatement.setInt(1, 1);
 			updateStatement.setInt(2, dnSubscriptionId);
+			
+			log.debug("SQL QUERY IN outboundOperatorsubsEntry : " + updateStatement);
 
 			updateStatement.executeUpdate();
 
@@ -206,6 +212,9 @@ public class SMSMessagingDAO {
 
 			ps.setString(1, requestId);
 			ps.setString(2, senderAddress);
+			
+			log.debug("SQL QUERY IN getSMSRequestIds : " + ps);
+			
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
@@ -253,6 +262,8 @@ public class SMSMessagingDAO {
 			ps.setString(1, notifyURL);
 			ps.setString(2, serviceProvider);
 			ps.setInt(3, 0);
+			
+			log.debug("SQL QUERY IN subscriptionEntry : " + ps);
 
 			ps.executeUpdate();
 
@@ -324,6 +335,8 @@ public class SMSMessagingDAO {
 
 				insertStatement.addBatch();
 			}
+			
+			log.debug("SQL QUERY IN operatorSubsEntry : " + insertStatement);
 
 			insertStatement.executeBatch();
 
@@ -336,6 +349,8 @@ public class SMSMessagingDAO {
 
 			updateStatement.setInt(1, 1);
 			updateStatement.setInt(2, moSubscriptionId);
+			
+			log.debug("SQL QUERY IN operatorSubsEntry : " + updateStatement);
 
 			updateStatement.executeUpdate();
 
@@ -399,6 +414,8 @@ public class SMSMessagingDAO {
 			ps = con.prepareStatement(queryString.toString());
 
 			ps.setInt(1, moSubscriptionId);
+			
+			log.debug("SQL QUERY IN subscriptionQuery : " + ps);
 
 			rs = ps.executeQuery();
 
@@ -456,6 +473,8 @@ public class SMSMessagingDAO {
 			deleteSubscriptionsStatement = con.prepareStatement(deleteSubscriptionsQueryString.toString());
 
 			deleteSubscriptionsStatement.setInt(1, moSubscriptionId);
+			
+			log.debug("SQL QUERY IN subscriptionDelete : " + deleteSubscriptionsStatement);
 
 			deleteSubscriptionsStatement.executeUpdate();
 
@@ -467,6 +486,8 @@ public class SMSMessagingDAO {
 					.prepareStatement(deleteOperatorSubscriptionsQueryString.toString());
 
 			deleteOperatorSubscriptionsStatement.setInt(1, moSubscriptionId);
+			
+			log.debug("SQL QUERY IN subscriptionDelete : " + deleteOperatorSubscriptionsStatement);
 
 			deleteOperatorSubscriptionsStatement.executeUpdate();
 
@@ -542,6 +563,8 @@ public class SMSMessagingDAO {
 
 				ps.addBatch();
 			}
+			
+			log.debug("SQL QUERY IN insertSMSRequestIds : " + ps);
 
 			ps.executeBatch();
 
@@ -573,9 +596,9 @@ public class SMSMessagingDAO {
 		}
 	}
 
-	public HashMap<String, String> subscriptionNotifiMap(Integer moSubscriptionId) throws SQLException, Exception {
+	public Map<String, String> subscriptionNotifiMap(Integer moSubscriptionId) throws SQLException, Exception {
 
-		HashMap<String, String> subscriptionDetails = new HashMap<String, String>();
+		Map<String, String> subscriptionDetails = new HashMap<String, String>();
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -595,6 +618,8 @@ public class SMSMessagingDAO {
 			ps = con.prepareStatement(queryString.toString());
 
 			ps.setInt(1, moSubscriptionId);
+			
+			log.debug("SQL QUERY IN subscriptionNotifiMap : " + ps);
 
 			rs = ps.executeQuery();
 
@@ -619,9 +644,9 @@ public class SMSMessagingDAO {
 		return subscriptionDetails;
 	}
 
-	public HashMap<String, String> subscriptionDNNotifiMap(Integer dnSubscriptionId) throws SQLException, Exception {
+	public Map<String, String> subscriptionDNNotifiMap(Integer dnSubscriptionId) throws SQLException, Exception {
 
-		HashMap<String, String> dnSubscriptionDetails = new HashMap<String, String>();
+		Map<String, String> dnSubscriptionDetails = new HashMap<String, String>();
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -641,6 +666,8 @@ public class SMSMessagingDAO {
 			ps = con.prepareStatement(queryString.toString());
 
 			ps.setInt(1, dnSubscriptionId);
+			
+			log.debug("SQL QUERY IN subscriptionDNNotifiMap : " + ps);
 
 			rs = ps.executeQuery();
 
@@ -697,6 +724,8 @@ public class SMSMessagingDAO {
 			ps = con.prepareStatement(queryString.toString());
 
 			ps.setInt(1, dnSubscriptionId);
+			
+			log.debug("SQL QUERY IN outboudSubscriptionQuery : " + ps);
 
 			rs = ps.executeQuery();
 
@@ -755,6 +784,8 @@ public class SMSMessagingDAO {
 			deleteSubscriptionsStatement = con.prepareStatement(deleteSubscriptionsQueryString.toString());
 
 			deleteSubscriptionsStatement.setInt(1, dnSubscriptionId);
+			
+			log.debug("SQL QUERY IN outboundSubscriptionDelete : " + deleteSubscriptionsStatement);
 
 			deleteSubscriptionsStatement.executeUpdate();
 
@@ -766,6 +797,8 @@ public class SMSMessagingDAO {
 					.prepareStatement(deleteOperatorSubscriptionsQueryString.toString());
 
 			deleteOperatorSubscriptionsStatement.setInt(1, dnSubscriptionId);
+			
+			log.debug("SQL QUERY IN outboundSubscriptionDelete : " + deleteOperatorSubscriptionsStatement);
 
 			deleteOperatorSubscriptionsStatement.executeUpdate();
 

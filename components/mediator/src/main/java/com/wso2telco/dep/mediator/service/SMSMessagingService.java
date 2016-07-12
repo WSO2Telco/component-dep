@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.service;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.logging.Log;
@@ -236,14 +235,15 @@ public class SMSMessagingService {
 		}
 	}
 
-	public HashMap<String, String> subscriptionNotifiMap(Integer moSubscriptionId) throws BusinessException {
+	@SuppressWarnings("unchecked")
+	public Map<String, String> subscriptionNotifiMap(Integer moSubscriptionId) throws BusinessException {
 
 		if (moSubscriptionId == null || moSubscriptionId <= 0) {
 
 			throw new BusinessException(ErrorType.INVALID_MO_SUBSCRIPTION_ID);
 		}
 
-		HashMap<String, String> subscriptionDetails = null;
+		Map<String, String> subscriptionDetails = null;
 
 		try {
 
@@ -253,26 +253,24 @@ public class SMSMessagingService {
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
 
-		/*
-		 * if(subscriptionDetails != null){
-		 * 
-		 * return subscriptionDetails; }else {
-		 * 
-		 * 
-		 * }
-		 */
+		if (subscriptionDetails != null) {
 
-		return subscriptionDetails;
+			return subscriptionDetails;
+		} else {
+
+			return Collections.emptyMap();
+		}
 	}
 
-	public HashMap<String, String> subscriptionDNNotifiMap(Integer dnSubscriptionId) throws BusinessException {
+	@SuppressWarnings("unchecked")
+	public Map<String, String> subscriptionDNNotifiMap(Integer dnSubscriptionId) throws BusinessException {
 
 		if (dnSubscriptionId == null || dnSubscriptionId <= 0) {
 
 			throw new BusinessException(ErrorType.INVALID_DN_SUBSCRIPTION_ID);
 		}
 
-		HashMap<String, String> dnSubscriptionDetails = null;
+		Map<String, String> dnSubscriptionDetails = null;
 
 		try {
 
@@ -282,7 +280,13 @@ public class SMSMessagingService {
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
 
-		return dnSubscriptionDetails;
+		if (dnSubscriptionDetails != null) {
+
+			return dnSubscriptionDetails;
+		} else {
+
+			return Collections.emptyMap();
+		}
 	}
 
 	@SuppressWarnings("unchecked")

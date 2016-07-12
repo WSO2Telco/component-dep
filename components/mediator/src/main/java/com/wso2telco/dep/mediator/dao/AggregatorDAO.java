@@ -85,6 +85,8 @@ public class AggregatorDAO {
 			ps.setString(2, operatorId);
 			ps.setString(3, subscriber);
 			ps.setString(4, merchant.toLowerCase());
+			
+			log.debug("SQL QUERY IN blacklistedmerchant : " + ps);
 
 			rs = ps.executeQuery();
 
@@ -159,6 +161,8 @@ public class AggregatorDAO {
 			ps.setString(1, subscriber);
 			ps.setString(2, operatorId);
 			ps.setString(3, merchant.toLowerCase());
+			
+			log.debug("SQL QUERY IN blacklistedmerchant : " + ps);
 
 			rs = ps.executeQuery();
 

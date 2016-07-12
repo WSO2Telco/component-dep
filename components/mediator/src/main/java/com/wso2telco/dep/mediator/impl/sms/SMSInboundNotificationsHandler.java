@@ -84,7 +84,7 @@ public class SMSInboundNotificationsHandler implements SMSHandler {
 		FileReader fileReader = new FileReader();
 		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
 
-		HashMap<String, String> subscriptionDetails = smsMessagingService
+		HashMap<String, String> subscriptionDetails =(HashMap<String, String>) smsMessagingService
 				.subscriptionNotifiMap(Integer.valueOf(moSubscriptionId));
 		String notifyurl = subscriptionDetails.get("notifyurl");
 		String serviceProvider = subscriptionDetails.get("serviceProvider");

@@ -28,6 +28,12 @@
 
 	<dependencies>
 		<dependency>
+			<groupId>mysql</groupId>
+			<artifactId>mysql-connector-java</artifactId>
+			<version>5.1.38</version>
+		</dependency>
+	
+		<dependency>
 			<groupId>commons-httpclient.wso2</groupId>
 			<artifactId>commons-httpclient</artifactId>
 			<version>${commons-httpclient.wso2.version}</version>

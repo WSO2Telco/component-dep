@@ -63,6 +63,8 @@ public class USSDDAO {
 			ps = con.prepareStatement(insertQueryString.toString(), Statement.RETURN_GENERATED_KEYS);
 
 			ps.setString(1, notifyURL);
+			
+			log.debug("SQL QUERY IN ussdRequestEntry : " + ps);
 
 			ps.executeUpdate();
 
@@ -97,7 +99,7 @@ public class USSDDAO {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public String getUSSDNotify(Integer subscriptionId) throws SQLException, Exception {
+	public String getUSSDNotifyURL(Integer subscriptionId) throws SQLException, Exception {
 
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 		PreparedStatement ps = null;
@@ -119,6 +121,8 @@ public class USSDDAO {
 			ps = con.prepareStatement(queryString.toString());
 
 			ps.setInt(1, subscriptionId);
+			
+			log.debug("SQL QUERY IN getUSSDNotifyURL : " + ps);
 
 			rs = ps.executeQuery();
 
@@ -171,6 +175,8 @@ public class USSDDAO {
 			ps = con.prepareStatement(queryString.toString());
 
 			ps.setInt(1, subscriptionId);
+			
+			log.debug("SQL QUERY IN ussdEntryDelete : " + ps);
 
 			ps.executeUpdate();
 		} catch (SQLException e) {

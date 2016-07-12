@@ -58,6 +58,8 @@ public class PaymentDAO {
 			queryString.append(DatabaseTables.VALID_PAYMENT_CATEGORIES.getTableName());
 
 			ps = con.prepareStatement(queryString.toString());
+			
+			log.debug("SQL QUERY IN getValidPayCategories : " + ps);
 
 			rs = ps.executeQuery();
 

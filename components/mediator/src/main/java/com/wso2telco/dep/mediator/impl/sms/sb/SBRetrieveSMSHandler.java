@@ -89,12 +89,9 @@ public class SBRetrieveSMSHandler implements SMSHandler {
 		SOAPBody body = context.getEnvelope().getBody();
 		Gson gson = new GsonBuilder().serializeNulls().create();
 		Properties prop = new Properties();
-		// SOAPHeader soapHeader = context.getEnvelope().getHeader();
-		// System.out.println(soapHeader.toString());
 
 		String reqType = "retrive_sms";
 		String requestid = UID.getUniqueID(Type.SMSRETRIVE.getCode(), context, executor.getApplicationid());
-		// String appID = apiUtil.getAppID(context, reqType);
 
 		int batchSize = 100;
 
@@ -132,10 +129,7 @@ public class SBRetrieveSMSHandler implements SMSHandler {
 			endpoints.add(aEndpoint);
 			String url = aEndpoint.getEndpointref().getAddress();
 			APICall ac = apiUtil.setBatchSize(url, body.toString(), reqType, perOpCoLimit);
-			// String url =
-			// aEndpoint.getAddress()+getResourceUrl().replace("test_api1/1.0.0/",
-			// "");//aEndpoint
-			// .getAddress() + ac.getUri();
+			
 			JSONObject obj = ac.getBody();
 			String retStr = null;
 			log.debug("Retrieving messages of operator: " + aEndpoint.getOperator());

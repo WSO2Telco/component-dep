@@ -81,7 +81,7 @@ public class USSDInboundHandler implements USSDHandler {
 		// remove non numeric chars
 		subscriptionId = subscriptionId.replaceAll("[^\\d.]", "");
 		log.debug("subscriptionId - " + subscriptionId);
-		String notifyurl = ussdService.getUSSDNotify(Integer.valueOf(subscriptionId));
+		String notifyurl = ussdService.getUSSDNotifyURL(Integer.valueOf(subscriptionId));
 
 		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
 

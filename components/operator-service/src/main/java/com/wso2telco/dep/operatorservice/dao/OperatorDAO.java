@@ -388,6 +388,8 @@ public class OperatorDAO {
 			ps = con.prepareStatement(queryString.toString());
 
 			ps.setInt(1, applicationId);
+			
+			log.debug("SQL QUERY IN getApplicationOperators : " + ps);
 
 			rs = ps.executeQuery();
 
@@ -462,7 +464,7 @@ public class OperatorDAO {
 			ps.setInt(1, appId);
 			ps.setString(2, apiType);
 
-			log.debug("getActiveApplicationOperators : " + queryString.toString());
+			log.debug("SQL QUERY IN getActiveApplicationOperators : " + ps);
 
 			rs = ps.executeQuery();
 
@@ -533,6 +535,8 @@ public class OperatorDAO {
 			ps.setLong(3, tokenTime);
 			ps.setString(4, token);
 			ps.setInt(5, operatorId);
+			
+			log.debug("SQL QUERY IN updateOperatorToken : " + ps);
 
 			ps.executeUpdate();
 		} catch (SQLException e) {

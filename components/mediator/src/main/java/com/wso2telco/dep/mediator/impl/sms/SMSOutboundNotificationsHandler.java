@@ -82,7 +82,7 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 		FileReader fileReader = new FileReader();
 		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
 
-		HashMap<String, String> dnSubscriptionDetails = smsMessagingService
+		HashMap<String, String> dnSubscriptionDetails =(HashMap<String, String>) smsMessagingService
 				.subscriptionDNNotifiMap(Integer.valueOf(moSubscriptionId));
 		String notifyurl = dnSubscriptionDetails.get("notifyurl");
 		String serviceProvider = dnSubscriptionDetails.get("serviceProvider");

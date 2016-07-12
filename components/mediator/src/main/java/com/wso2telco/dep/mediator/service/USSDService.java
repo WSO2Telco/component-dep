@@ -53,7 +53,7 @@ public class USSDService {
 		return newId;
 	}
 
-	public String getUSSDNotify(Integer subscriptionId) throws BusinessException {
+	public String getUSSDNotifyURL(Integer subscriptionId) throws BusinessException {
 
 		if (subscriptionId == null || subscriptionId <= 0) {
 
@@ -64,7 +64,7 @@ public class USSDService {
 
 		try {
 
-			notifyurls = ussdDAO.getUSSDNotify(subscriptionId);
+			notifyurls = ussdDAO.getUSSDNotifyURL(subscriptionId);
 		} catch (Exception e) {
 
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
