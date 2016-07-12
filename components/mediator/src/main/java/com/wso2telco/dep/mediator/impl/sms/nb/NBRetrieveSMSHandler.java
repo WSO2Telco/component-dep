@@ -31,7 +31,6 @@ import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.oneapivalidation.service.impl.sms.nb.ValidateNBRetrieveSms;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -83,12 +82,9 @@ public class NBRetrieveSMSHandler implements SMSHandler {
 
         SOAPBody body = context.getEnvelope().getBody();
         Gson gson = new GsonBuilder().serializeNulls().create();
-        //SOAPHeader soapHeader = context.getEnvelope().getHeader();
-        //System.out.println(soapHeader.toString());
 
         String reqType = "retrive_sms";
         String requestid = UID.getUniqueID(Type.SMSRETRIVE.getCode(), context, executor.getApplicationid());
-        //String appID = apiUtil.getAppID(context, reqType);
 
         int batchSize = 100;
 
@@ -169,17 +165,18 @@ public class NBRetrieveSMSHandler implements SMSHandler {
             }
 
             APICall ac = apiUtil.setBatchSize(url, body.toString(), reqType, perOpCoLimit);
-            //String url = aEndpoint.getAddress()+getResourceUrl().replace("test_api1/1.0.0/", "");//aEndpoint
-            // .getAddress() + ac.getUri();
+
             JSONObject obj = ac.getBody();
             String retStr = null;
             log.debug("Retrieving messages of operator: " + aEndpoint.getOperator());
 
             context.setDoingGET(true);
             if (context.isDoingGET()) {
+            	
                 log.debug("Doing makeGetRequest");
                 retStr = executor.makeGetRequest(aEndpoint, ac.getUri(), null, true, context);
             } else {
+            	
                 log.debug("Doing makeRequest");
                 retStr = executor.makeRequest(aEndpoint, ac.getUri(), obj.toString(), true, context);
             }

@@ -23,18 +23,18 @@ import javax.xml.bind.annotation.XmlRootElement;
  * The Class inboundSMSMessageNotification.
  */
 @XmlRootElement(name = "inboundSMSMessageNotification")
-public class inboundSMSMessageNotification {
+public class InboundSMSMessageNotification {
     
     /** The callback data. */
     private String callbackData = "";
     
     /** The inbound sms message. */
-    private inboundSMSMessage inboundSMSMessage;
+    private InboundSMSMessage inboundSMSMessage;
     
     /**
      * Instantiates a new inbound sms message notification.
      */
-    public inboundSMSMessageNotification() {
+    public InboundSMSMessageNotification() {
     }
     
     /**
@@ -60,7 +60,7 @@ public class inboundSMSMessageNotification {
      *
      * @return the inbound sms message
      */
-    public inboundSMSMessage getInboundSMSMessage() {
+    public InboundSMSMessage getInboundSMSMessage() {
             return inboundSMSMessage;
     }
     
@@ -69,7 +69,7 @@ public class inboundSMSMessageNotification {
      *
      * @param inboundSMSMessage the new inbound sms message
      */
-    public void setInboundSMSMessage (inboundSMSMessage inboundSMSMessage) {
+    public void setInboundSMSMessage (InboundSMSMessage inboundSMSMessage) {
             this.inboundSMSMessage = inboundSMSMessage;
     }
     

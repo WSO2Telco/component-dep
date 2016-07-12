@@ -17,10 +17,15 @@ package com.wso2telco.dep.mediator.util;
 
 public enum DatabaseTables {
 
-	MERCHANT_OPERATOR_BLACKLIST("merchantopco_blacklist"), OPERATORS("operators"), VALID_PAYMENT_CATEGORIES(
-			"valid_payment_categories"), USSD_REQUEST_ENTRY("ussd_request_entry"), OUTBOUND_SUBSCRIPTIONS(
-					"outbound_subscriptions"), OUTBOUND_OPERATORSUBS("outbound_operatorsubs"), SEND_SMS_REQID(
-							"sendsms_reqid"), SUBSCRIPTIONS("subscriptions"), OPERATORSUBS("operatorsubs");
+	MERCHANT_OPERATOR_BLACKLIST("merchantopco_blacklist"), 
+	OPERATORS("operators"), 
+	VALID_PAYMENT_CATEGORIES("valid_payment_categories"), 
+	USSD_REQUEST_ENTRY("ussd_request_entry"), 
+	OUTBOUND_SUBSCRIPTIONS("outbound_subscriptions"), 
+	OUTBOUND_OPERATORSUBS("outbound_operatorsubs"), 
+	SEND_SMS_REQID("sendsms_reqid"), 
+	SUBSCRIPTIONS("subscriptions"), 
+	OPERATORSUBS("operatorsubs");
 
 	private String tableName;
 

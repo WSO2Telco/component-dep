@@ -18,13 +18,19 @@ package com.wso2telco.dep.mediator.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import com.wso2telco.dep.mediator.util.DatabaseTables;
 import com.wso2telco.dbutils.DbUtils;
 import com.wso2telco.dbutils.util.DataSourceNames;
 
 public class PaymentDAO {
+
+	/** The Constant log. */
+	private final Log log = LogFactory.getLog(PaymentDAO.class);
 
 	/**
 	 * Gets the valid pay categories.
@@ -33,7 +39,7 @@ public class PaymentDAO {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public List<String> getValidPayCategories() throws Exception {
+	public List<String> getValidPayCategories() throws SQLException, Exception {
 
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 		PreparedStatement ps = null;
@@ -52,6 +58,8 @@ public class PaymentDAO {
 			queryString.append(DatabaseTables.VALID_PAYMENT_CATEGORIES.getTableName());
 
 			ps = con.prepareStatement(queryString.toString());
+			
+			log.debug("SQL QUERY IN getValidPayCategories : " + ps);
 
 			rs = ps.executeQuery();
 
@@ -59,10 +67,14 @@ public class PaymentDAO {
 
 				categories.add(rs.getString("category"));
 			}
+		} catch (SQLException e) {
 
+			log.error("DATABASE OPERATION ERROR IN getValidPayCategories : ", e);
+			throw e;
 		} catch (Exception e) {
 
-			DbUtils.handleException("Error while retrieving valid payment categories. ", e);
+			log.error("ERROR IN getValidPayCategories : ", e);
+			throw e;
 		} finally {
 
 			DbUtils.closeAllConnections(ps, con, rs);

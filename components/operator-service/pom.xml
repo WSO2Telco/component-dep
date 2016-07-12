@@ -13,8 +13,8 @@
 
 	<parent>
 		<groupId>com.wso2telco.dep</groupId>
-		<artifactId>component-dep</artifactId>
-		<version>1.8.0-SNAPSHOT</version>
+		<artifactId>component-dep-parent</artifactId>
+		<version>${com.wso2telco.dep.version}</version>
 		<relativePath>../../parent/pom.xml</relativePath>
 	</parent>
 
@@ -24,7 +24,7 @@
 	<description>WSO2.Telco - HostObject for API management - Custom Modifications for Store</description>
 
 	<dependencies>
-	
+
 		<dependency>
 			<groupId>rhino.wso2</groupId>
 			<artifactId>js</artifactId>
@@ -76,8 +76,10 @@
 			<artifactId>msisdn-validator</artifactId>
 			<scope>provided</scope>
 		</dependency>
-
-
+		<dependency>
+			<groupId>org.wso2.carbon</groupId>
+			<artifactId>javax.cache.wso2</artifactId>
+		</dependency>
 	</dependencies>
 
 	<build>

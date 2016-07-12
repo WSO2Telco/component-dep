@@ -29,7 +29,6 @@ import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.oneapivalidation.service.impl.sms.sb.ValidateSBRetrieveSms;
-
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -50,180 +49,187 @@ import org.json.JSONObject;
  */
 public class SBRetrieveSMSHandler implements SMSHandler {
 
-    /** The log. */
-    private static Log log = LogFactory.getLog(SBRetrieveSMSHandler.class);
-    
-    /** The Constant API_TYPE. */
-    private static final String API_TYPE = "sms";
-    
-    /** The occi. */
-    private OriginatingCountryCalculatorIDD occi;
-    
-    /** The api util. */
-    private ApiUtils apiUtil;
-    
-    /** The executor. */
-    private SMSExecutor executor;
+	/** The log. */
+	private static Log log = LogFactory.getLog(SBRetrieveSMSHandler.class);
 
-    /**
-     * Instantiates a new SB retrieve sms handler.
-     *
-     * @param executor the executor
-     */
-    public SBRetrieveSMSHandler(SMSExecutor executor) {
-        this.executor = executor;
-        occi = new OriginatingCountryCalculatorIDD();
-        apiUtil = new ApiUtils();
-    }
+	/** The Constant API_TYPE. */
+	private static final String API_TYPE = "sms";
 
-    /* (non-Javadoc)
-     * @see com.wso2telco.mediator.impl.sms.SMSHandler#handle(org.apache.synapse.MessageContext)
-     */
-    @Override
-    public boolean handle(MessageContext context) throws CustomException, AxisFault, Exception {
+	/** The occi. */
+	private OriginatingCountryCalculatorIDD occi;
 
-        SOAPBody body = context.getEnvelope().getBody();
-        Gson gson = new GsonBuilder().serializeNulls().create();
-        Properties prop = new Properties();
-        //SOAPHeader soapHeader = context.getEnvelope().getHeader();
-        //System.out.println(soapHeader.toString());
+	/** The api util. */
+	private ApiUtils apiUtil;
 
-        String reqType = "retrive_sms";
-        String requestid = UID.getUniqueID(Type.SMSRETRIVE.getCode(), context, executor.getApplicationid());
-        //String appID = apiUtil.getAppID(context, reqType);
+	/** The executor. */
+	private SMSExecutor executor;
 
-        int batchSize = 100;
+	/**
+	 * Instantiates a new SB retrieve sms handler.
+	 *
+	 * @param executor
+	 *            the executor
+	 */
+	public SBRetrieveSMSHandler(SMSExecutor executor) {
+		this.executor = executor;
+		occi = new OriginatingCountryCalculatorIDD();
+		apiUtil = new ApiUtils();
+	}
 
-        URL retrieveURL = new URL("http://example.com/smsmessaging/v1" + executor.getSubResourcePath());
-        String urlQuery = retrieveURL.getQuery();
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wso2telco.mediator.impl.sms.SMSHandler#handle(org.apache.synapse.
+	 * MessageContext)
+	 */
+	@Override
+	public boolean handle(MessageContext context) throws CustomException, AxisFault, Exception {
 
-        if (urlQuery != null) {
-            if (urlQuery.contains("maxBatchSize")) {
-                String queryParts[] = urlQuery.split("=");
-                if (queryParts.length > 1) {
-                    if (Integer.parseInt(queryParts[1]) < 100) {
-                        batchSize = Integer.parseInt(queryParts[1]);
-                    }
-                }
-            }
-        }
+		SOAPBody body = context.getEnvelope().getBody();
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		Properties prop = new Properties();
 
-        List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(API_TYPE, executor.getSubResourcePath(),
-                executor.getValidoperators());
+		String reqType = "retrive_sms";
+		String requestid = UID.getUniqueID(Type.SMSRETRIVE.getCode(), context, executor.getApplicationid());
 
-        log.debug("Endpoints size: " + endpoints.size());
+		int batchSize = 100;
 
-        Collections.shuffle(endpoints);
-        int perOpCoLimit = batchSize / (endpoints.size());
+		URL retrieveURL = new URL("http://example.com/smsmessaging/v1" + executor.getSubResourcePath());
+		String urlQuery = retrieveURL.getQuery();
 
-        log.debug("Per OpCo limit :" + perOpCoLimit);
+		if (urlQuery != null) {
+			if (urlQuery.contains("maxBatchSize")) {
+				String queryParts[] = urlQuery.split("=");
+				if (queryParts.length > 1) {
+					if (Integer.parseInt(queryParts[1]) < 100) {
+						batchSize = Integer.parseInt(queryParts[1]);
+					}
+				}
+			}
+		}
 
-        JSONArray results = new JSONArray();
+		List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(API_TYPE, executor.getSubResourcePath(),
+				executor.getValidoperators());
 
-         
-        int count = 0;
-         
-        ArrayList<String> responses = new ArrayList<String>();
-        while (results.length() < batchSize) {
-            OperatorEndpoint aEndpoint = endpoints.remove(0);
-            endpoints.add(aEndpoint);
-            String url = aEndpoint.getEndpointref().getAddress();
-            APICall ac = apiUtil.setBatchSize(url, body.toString(), reqType, perOpCoLimit);
-            //String url = aEndpoint.getAddress()+getResourceUrl().replace("test_api1/1.0.0/", "");//aEndpoint
-            // .getAddress() + ac.getUri();
-            JSONObject obj = ac.getBody();
-            String retStr = null;
-            log.debug("Retrieving messages of operator: " + aEndpoint.getOperator());
+		log.debug("Endpoints size: " + endpoints.size());
 
-            if (context.isDoingGET()) {
-                log.debug("Doing makeGetRequest");
-                retStr = executor.makeGetRequest(aEndpoint, ac.getUri(), null, true, context);
-            } else {
-                log.debug("Doing makeRequest");
-                retStr = executor.makeRequest(aEndpoint, ac.getUri(), obj.toString(), true, context);
-            }
+		Collections.shuffle(endpoints);
+		int perOpCoLimit = batchSize / (endpoints.size());
 
-            log.debug("Retrieved messages of " + aEndpoint.getOperator() + " operator: " + retStr);
+		log.debug("Per OpCo limit :" + perOpCoLimit);
 
-            if (retStr == null) {
-                count++;
-                if (count == endpoints.size()) {
-                    log.debug("Break because count == endpoints.size() ------> count :" + count + " endpoints.size() :" + endpoints.size());
-                    break;
-                } else {
-                    continue;
-                }
-            }
+		JSONArray results = new JSONArray();
 
-            JSONArray resList = apiUtil.getResults(reqType, retStr);
-            if (resList != null) {
-                for (int i = 0; i < resList.length(); i++) {
-                    results.put(resList.get(i));
-                }
-                responses.add(retStr);
-            }
+		int count = 0;
 
-            count++;
-            if (count == (endpoints.size() * 2)) {
-                log.debug("Break because count == (endpoints.size() * 2) ------> count :" + count + " (endpoints.size() * 2) :" + endpoints.size() * 2);
-                break;
-            }
-        }
+		ArrayList<String> responses = new ArrayList<String>();
+		while (results.length() < batchSize) {
+			OperatorEndpoint aEndpoint = endpoints.remove(0);
+			endpoints.add(aEndpoint);
+			String url = aEndpoint.getEndpointref().getAddress();
+			APICall ac = apiUtil.setBatchSize(url, body.toString(), reqType, perOpCoLimit);
+			
+			JSONObject obj = ac.getBody();
+			String retStr = null;
+			log.debug("Retrieving messages of operator: " + aEndpoint.getOperator());
 
-        log.debug("Final value of count :" + count);
-        log.debug("Results length of retrieve messages: " + results.length());
+			if (context.isDoingGET()) {
+				log.debug("Doing makeGetRequest");
+				retStr = executor.makeGetRequest(aEndpoint, ac.getUri(), null, true, context);
+			} else {
+				log.debug("Doing makeRequest");
+				retStr = executor.makeRequest(aEndpoint, ac.getUri(), obj.toString(), true, context);
+			}
 
-        JSONObject paylodObject = apiUtil.generateResponse(context, reqType, results, responses, requestid);
-        String strjsonBody = paylodObject.toString();
+			log.debug("Retrieved messages of " + aEndpoint.getOperator() + " operator: " + retStr);
 
-         
-        SBRetrieveResponse sbRetrieveResponse = gson.fromJson(strjsonBody, SBRetrieveResponse.class);
-        if (sbRetrieveResponse != null) {
-            String resourceURL = sbRetrieveResponse.getInboundSMSMessageList().getResourceURL();            
-            InboundSMSMessage[] inboundSMSMessageResponses = sbRetrieveResponse.getInboundSMSMessageList().getInboundSMSMessage();
+			if (retStr == null) {
+				count++;
+				if (count == endpoints.size()) {
+					log.debug("Break because count == endpoints.size() ------> count :" + count + " endpoints.size() :"
+							+ endpoints.size());
+					break;
+				} else {
+					continue;
+				}
+			}
 
-            for (int i = 0; i < inboundSMSMessageResponses.length; i++) {   
-                String messageId = inboundSMSMessageResponses[i].getMessageId();                
-                inboundSMSMessageResponses[i].setResourceURL(resourceURL + "/" + messageId);
-            }
-            sbRetrieveResponse.getInboundSMSMessageList().setInboundSMSMessage(inboundSMSMessageResponses);
-        }
+			JSONArray resList = apiUtil.getResults(reqType, retStr);
+			if (resList != null) {
+				for (int i = 0; i < resList.length(); i++) {
+					results.put(resList.get(i));
+				}
+				responses.add(retStr);
+			}
 
-        executor.removeHeaders(context);
-        executor.setResponse(context, gson.toJson(sbRetrieveResponse));
+			count++;
+			if (count == (endpoints.size() * 2)) {
+				log.debug("Break because count == (endpoints.size() * 2) ------> count :" + count
+						+ " (endpoints.size() * 2) :" + endpoints.size() * 2);
+				break;
+			}
+		}
 
-        ((Axis2MessageContext) context).getAxis2MessageContext().setProperty("messageType", "application/json");
+		log.debug("Final value of count :" + count);
+		log.debug("Results length of retrieve messages: " + results.length());
 
-        return true;
-    }
+		JSONObject paylodObject = apiUtil.generateResponse(context, reqType, results, responses, requestid);
+		String strjsonBody = paylodObject.toString();
 
-    /* (non-Javadoc)
-     * @see com.wso2telco.mediator.impl.sms.SMSHandler#validate(java.lang.String, java.lang.String, org.json.JSONObject, org.apache.synapse.MessageContext)
-     */
-    @Override
-    public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context) throws Exception {
-        if (!httpMethod.equalsIgnoreCase("GET")) {
-            ((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 405);
-            throw new Exception("Method not allowed");
-        }
+		SBRetrieveResponse sbRetrieveResponse = gson.fromJson(strjsonBody, SBRetrieveResponse.class);
+		if (sbRetrieveResponse != null) {
+			String resourceURL = sbRetrieveResponse.getInboundSMSMessageList().getResourceURL();
+			InboundSMSMessage[] inboundSMSMessageResponses = sbRetrieveResponse.getInboundSMSMessageList()
+					.getInboundSMSMessage();
 
-        if (httpMethod.equalsIgnoreCase("GET")) {
-            IServiceValidate validator;
-            String urlParts = apiUtil.getAppID(context, "retrive_sms");
-            String appID = "";
-            String criteria = "";
-            String[] param = urlParts.split("/");
-            if (param.length == 2) {
-                appID = param[0];
-                criteria = param[1];
-            }
+			for (int i = 0; i < inboundSMSMessageResponses.length; i++) {
+				String messageId = inboundSMSMessageResponses[i].getMessageId();
+				inboundSMSMessageResponses[i].setResourceURL(resourceURL + "/" + messageId);
+			}
+			sbRetrieveResponse.getInboundSMSMessageList().setInboundSMSMessage(inboundSMSMessageResponses);
+		}
 
-            String[] params = {appID, criteria, ""};
-            validator = new ValidateSBRetrieveSms();
-            validator.validateUrl(requestPath);
-            validator.validate(params);
-        }
+		executor.removeHeaders(context);
+		executor.setResponse(context, gson.toJson(sbRetrieveResponse));
 
-        return true;
-    }
+		((Axis2MessageContext) context).getAxis2MessageContext().setProperty("messageType", "application/json");
+
+		return true;
+	}
+
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wso2telco.mediator.impl.sms.SMSHandler#validate(java.lang.String,
+	 * java.lang.String, org.json.JSONObject, org.apache.synapse.MessageContext)
+	 */
+	@Override
+	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context)
+			throws Exception {
+		if (!httpMethod.equalsIgnoreCase("GET")) {
+			((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 405);
+			throw new Exception("Method not allowed");
+		}
+
+		if (httpMethod.equalsIgnoreCase("GET")) {
+			IServiceValidate validator;
+			String urlParts = apiUtil.getAppID(context, "retrive_sms");
+			String appID = "";
+			String criteria = "";
+			String[] param = urlParts.split("/");
+			if (param.length == 2) {
+				appID = param[0];
+				criteria = param[1];
+			}
+
+			String[] params = { appID, criteria, "" };
+			validator = new ValidateSBRetrieveSms();
+			validator.validateUrl(requestPath);
+			validator.validate(params);
+		}
+
+		return true;
+	}
 }

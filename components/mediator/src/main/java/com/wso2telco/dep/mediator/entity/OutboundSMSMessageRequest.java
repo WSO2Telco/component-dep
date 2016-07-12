@@ -22,7 +22,7 @@ import java.util.List;
 /**
  * The Class outboundSMSMessageRequest.
  */
-public class outboundSMSMessageRequest {
+public class OutboundSMSMessageRequest {
     
 
     /** The client correlator. */
@@ -38,7 +38,7 @@ public class outboundSMSMessageRequest {
     private String senderName = "";
     
     /** The outbound sms text message. */
-    private outboundSMSTextMessage outboundSMSTextMessage;
+    private OutboundSMSTextMessage outboundSMSTextMessage;
     
     /** The receipt request. */
     private ReceiptRequest receiptRequest;
@@ -48,7 +48,7 @@ public class outboundSMSMessageRequest {
     /**
      * Instantiates a new outbound sms message request.
      */
-    public outboundSMSMessageRequest() {
+    public OutboundSMSMessageRequest() {
     }
 
 
@@ -111,7 +111,7 @@ public class outboundSMSMessageRequest {
      *
      * @return the outbound text message
      */
-    public outboundSMSTextMessage getOutboundTextMessage() {
+    public OutboundSMSTextMessage getOutboundTextMessage() {
             return outboundSMSTextMessage;
     }
 
@@ -120,7 +120,7 @@ public class outboundSMSMessageRequest {
      *
      * @param outboundSMSTextMessage the new outbound text message
      */
-    public void setOutboundTextMessage(outboundSMSTextMessage outboundSMSTextMessage) {
+    public void setOutboundTextMessage(OutboundSMSTextMessage outboundSMSTextMessage) {
             this.outboundSMSTextMessage = outboundSMSTextMessage;
     }
     

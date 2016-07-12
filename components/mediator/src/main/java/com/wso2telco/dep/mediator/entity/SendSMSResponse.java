@@ -23,14 +23,14 @@ package com.wso2telco.dep.mediator.entity;
 public class SendSMSResponse {
 
     /** The outbound sms message request. */
-    private outboundSMSMessageResponse outboundSMSMessageRequest;
+    private OutboundSMSMessageResponse outboundSMSMessageRequest;
 
     /**
      * Gets the outbound sms message request.
      *
      * @return the outbound sms message request
      */
-    public outboundSMSMessageResponse getOutboundSMSMessageRequest() {
+    public OutboundSMSMessageResponse getOutboundSMSMessageRequest() {
         return outboundSMSMessageRequest;
     }
 
@@ -39,7 +39,7 @@ public class SendSMSResponse {
      *
      * @param outboundSMSMessageRequest the new outbound sms message request
      */
-    public void setOutboundSMSMessageRequest(outboundSMSMessageResponse outboundSMSMessageRequest) {
+    public void setOutboundSMSMessageRequest(OutboundSMSMessageResponse outboundSMSMessageRequest) {
         this.outboundSMSMessageRequest = outboundSMSMessageRequest;
     }
 }

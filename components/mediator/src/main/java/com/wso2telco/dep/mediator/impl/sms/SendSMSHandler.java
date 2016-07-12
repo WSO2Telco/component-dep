@@ -19,18 +19,17 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.google.gson.JsonSyntaxException;
 import com.wso2telco.datapublisher.DataPublisherConstants;
-import com.wso2telco.dbutils.AxataDBUtilException;
 import com.wso2telco.dep.operatorservice.model.OperatorApplicationDTO;
 import com.wso2telco.dep.mediator.MSISDNConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.ResponseHandler;
-import com.wso2telco.dep.mediator.dao.SMSMessagingDAO;
 import com.wso2telco.dep.mediator.entity.SendSMSRequest;
 import com.wso2telco.dep.mediator.entity.SendSMSResponse;
 import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.internal.Util;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
+import com.wso2telco.dep.mediator.service.SMSMessagingService;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.oneapivalidation.service.impl.sms.ValidateSendSms;
@@ -69,7 +68,7 @@ public class SendSMSHandler implements SMSHandler {
 	private SMSExecutor executor;
 
 	/** The smsMessagingDAO. */
-	private SMSMessagingDAO smsMessagingDAO;
+	private SMSMessagingService smsMessagingService;
 
 	/**
 	 * Instantiates a new send sms handler.
@@ -81,7 +80,7 @@ public class SendSMSHandler implements SMSHandler {
 		this.executor = executor;
 		occi = new OriginatingCountryCalculatorIDD();
 		responseHandler = new ResponseHandler();
-		smsMessagingDAO = new SMSMessagingDAO();
+		smsMessagingService = new SMSMessagingService();
 	}
 
 	/*
@@ -261,18 +260,25 @@ public class SendSMSHandler implements SMSHandler {
 	 */
 	private void storeRequestIDs(String requestID, String senderAddress, Map<String, SendSMSResponse> smsResponses)
 			throws Exception {
+
 		Map<String, String> reqIdMap = new HashMap<String, String>(smsResponses.size());
+
 		for (Map.Entry<String, SendSMSResponse> entry : smsResponses.entrySet()) {
+
 			SendSMSResponse smsResponse = entry.getValue();
 			String pluginReqId = null;
+
 			if (smsResponse != null) {
+
 				String resourceURL = smsResponse.getOutboundSMSMessageRequest().getResourceURL().trim();
 				String[] segments = resourceURL.split("/");
 				pluginReqId = segments[segments.length - 1];
 			}
+
 			reqIdMap.put(entry.getKey(), pluginReqId);
 		}
-		smsMessagingDAO.insertSmsRequestIds(requestID, senderAddress, reqIdMap);
+
+		smsMessagingService.insertSMSRequestIds(requestID, senderAddress, reqIdMap);
 	}
 
 	/**

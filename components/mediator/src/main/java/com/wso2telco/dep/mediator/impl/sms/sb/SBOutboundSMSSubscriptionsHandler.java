@@ -20,14 +20,13 @@ import com.google.gson.GsonBuilder;
 import com.wso2telco.dep.operatorservice.model.OperatorSubscriptionDTO;
 import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
-import com.wso2telco.dep.mediator.dao.SMSMessagingDAO;
 import com.wso2telco.dep.mediator.entity.sb.SBDeliveryReceiptSubscriptionRequest;
 import com.wso2telco.dep.mediator.impl.sms.*;
 import com.wso2telco.dep.mediator.internal.ApiUtils;
 import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
-import com.wso2telco.dep.mediator.internal.Util;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
+import com.wso2telco.dep.mediator.service.SMSMessagingService;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.oneapivalidation.service.impl.sms.ValidateCancelSubscription;
@@ -35,7 +34,6 @@ import com.wso2telco.oneapivalidation.service.impl.sms.sb.ValidateSBOutboundSubs
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.axis2.AxisFault;
 import java.util.HashMap;
 import org.apache.commons.logging.Log;
@@ -61,7 +59,7 @@ public class SBOutboundSMSSubscriptionsHandler implements SMSHandler {
 	private OriginatingCountryCalculatorIDD occi;
 
 	/** The smsMessagingDAO. */
-	private SMSMessagingDAO smsMessagingDAO;
+	private SMSMessagingService smsMessagingService;
 
 	/** The executor. */
 	private SMSExecutor executor;
@@ -78,7 +76,7 @@ public class SBOutboundSMSSubscriptionsHandler implements SMSHandler {
 	public SBOutboundSMSSubscriptionsHandler(SMSExecutor executor) {
 		this.executor = executor;
 		occi = new OriginatingCountryCalculatorIDD();
-		smsMessagingDAO = new SMSMessagingDAO();
+		smsMessagingService = new SMSMessagingService();
 		apiUtils = new ApiUtils();
 	}
 
@@ -141,7 +139,7 @@ public class SBOutboundSMSSubscriptionsHandler implements SMSHandler {
 
 		String requestid = UID.getUniqueID(Type.RETRIVSUB.getCode(), context, executor.getApplicationid());
 		Gson gson = new GsonBuilder().serializeNulls().create();
-		
+
 		FileReader fileReader = new FileReader();
 		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
 
@@ -164,9 +162,9 @@ public class SBOutboundSMSSubscriptionsHandler implements SMSHandler {
 		List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(API_TYPE, executor.getSubResourcePath(),
 				executor.getValidoperators());
 
-		Integer dnSubscriptionId = smsMessagingDAO.outboundSubscriptionEntry(
+		Integer dnSubscriptionId = smsMessagingService.outboundSubscriptionEntry(
 				subsrequst.getDeliveryReceiptSubscription().getCallbackReference().getNotifyURL(), serviceProvider);
-		
+
 		String subsEndpoint = mediatorConfMap.get("hubSubsGatewayEndpoint") + "/" + dnSubscriptionId;
 		jsondstaddr.getJSONObject("callbackReference").put("notifyURL", subsEndpoint);
 		subsrequst.getDeliveryReceiptSubscription().getCallbackReference().setNotifyURL(subsEndpoint);
@@ -181,9 +179,12 @@ public class SBOutboundSMSSubscriptionsHandler implements SMSHandler {
 			log.debug("Delivery notification adaptor request url of " + endpoint.getOperator() + " operator: " + url);
 
 			String notifyres = executor.makeRequest(endpoint, url, sbRequestBody, true, context);
+
 			if (notifyres == null) {
+
 				throw new CustomException("POL0299", "", new String[] { "Error registering subscription" });
 			} else {
+
 				subsresponse = gson.fromJson(notifyres, SBDeliveryReceiptSubscriptionRequest.class);
 				if (subsrequst.getDeliveryReceiptSubscription() == null) {
 					executor.handlePluginException(notifyres);
@@ -193,7 +194,7 @@ public class SBOutboundSMSSubscriptionsHandler implements SMSHandler {
 			}
 		}
 
-		boolean issubs = smsMessagingDAO.outboundOperatorsubsEntry(domainsubs, dnSubscriptionId);
+		smsMessagingService.outboundOperatorsubsEntry(domainsubs, dnSubscriptionId);
 		String ResourceUrlPrefix = mediatorConfMap.get("hubGateway");
 		subsresponse.getDeliveryReceiptSubscription()
 				.setResourceURL(ResourceUrlPrefix + executor.getResourceUrl() + "/" + dnSubscriptionId);
@@ -231,5 +232,4 @@ public class SBOutboundSMSSubscriptionsHandler implements SMSHandler {
 		}
 		return "{\"deliveryReceiptSubscription\":" + sbDeliveryNotificationrequestString + "}";
 	}
-
 }

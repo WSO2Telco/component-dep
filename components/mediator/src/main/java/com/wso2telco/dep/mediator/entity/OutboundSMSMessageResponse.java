@@ -20,7 +20,7 @@ package com.wso2telco.dep.mediator.entity;
 /**
  * The Class outboundSMSMessageResponse.
  */
-public class outboundSMSMessageResponse {
+public class OutboundSMSMessageResponse {
 
     /** The address. */
     private String[] address;
@@ -32,7 +32,7 @@ public class outboundSMSMessageResponse {
     private String senderAddress;
     
     /** The outbound sms text message. */
-    private outboundSMSTextMessage outboundSMSTextMessage;
+    private OutboundSMSTextMessage outboundSMSTextMessage;
     
     /** The client correlator. */
     private String clientCorrelator;
@@ -105,7 +105,7 @@ public class outboundSMSMessageResponse {
      *
      * @return the outbound sms text message
      */
-    public com.wso2telco.dep.mediator.entity.outboundSMSTextMessage getOutboundSMSTextMessage() {
+    public com.wso2telco.dep.mediator.entity.OutboundSMSTextMessage getOutboundSMSTextMessage() {
         return outboundSMSTextMessage;
     }
 
@@ -114,7 +114,7 @@ public class outboundSMSMessageResponse {
      *
      * @param outboundSMSTextMessage the new outbound sms text message
      */
-    public void setOutboundSMSTextMessage(com.wso2telco.dep.mediator.entity.outboundSMSTextMessage
+    public void setOutboundSMSTextMessage(com.wso2telco.dep.mediator.entity.OutboundSMSTextMessage
                                                   outboundSMSTextMessage) {
         this.outboundSMSTextMessage = outboundSMSTextMessage;
     }

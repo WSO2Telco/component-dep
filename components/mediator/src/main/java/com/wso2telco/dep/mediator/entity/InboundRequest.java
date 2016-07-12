@@ -26,7 +26,7 @@ import javax.xml.bind.annotation.XmlRootElement;
 public class InboundRequest {
     
     /** The inbound sms message notification. */
-    private inboundSMSMessageNotification inboundSMSMessageNotification;
+    private InboundSMSMessageNotification inboundSMSMessageNotification;
     
     /**
      * Instantiates a new inbound request.
@@ -40,7 +40,7 @@ public class InboundRequest {
      *
      * @return the inbound sms message request
      */
-    public inboundSMSMessageNotification getInboundSMSMessageRequest() {
+    public InboundSMSMessageNotification getInboundSMSMessageRequest() {
             return inboundSMSMessageNotification;
     }
 
@@ -50,7 +50,7 @@ public class InboundRequest {
      *
      * @param inboundSMSMessageNotification the new inbound sms message request
      */
-    public void setInboundSMSMessageRequest(inboundSMSMessageNotification inboundSMSMessageNotification) {
+    public void setInboundSMSMessageRequest(InboundSMSMessageNotification inboundSMSMessageNotification) {
             this.inboundSMSMessageNotification = inboundSMSMessageNotification;
     }
     

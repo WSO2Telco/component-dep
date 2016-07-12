@@ -24,10 +24,10 @@ import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONObject;
 import com.wso2telco.dep.operatorservice.model.OperatorSubscriptionDTO;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
-import com.wso2telco.dep.mediator.dao.SMSMessagingDAO;
 import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
+import com.wso2telco.dep.mediator.service.SMSMessagingService;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.oneapivalidation.service.impl.sms.ValidateDNCancelSubscription;
@@ -49,7 +49,7 @@ public class StopOutboundSMSSubscriptionsHandler implements SMSHandler {
 	private OriginatingCountryCalculatorIDD occi;
 
 	/** The smsMessagingDAO. */
-	private SMSMessagingDAO smsMessagingDAO;
+	private SMSMessagingService smsMessagingService;
 
 	/** The executor. */
 	private SMSExecutor executor;
@@ -61,9 +61,10 @@ public class StopOutboundSMSSubscriptionsHandler implements SMSHandler {
 	 *            the executor
 	 */
 	public StopOutboundSMSSubscriptionsHandler(SMSExecutor executor) {
+
 		this.executor = executor;
 		occi = new OriginatingCountryCalculatorIDD();
-		smsMessagingDAO = new SMSMessagingDAO();
+		smsMessagingService = new SMSMessagingService();
 	}
 
 	/*
@@ -132,7 +133,8 @@ public class StopOutboundSMSSubscriptionsHandler implements SMSHandler {
 
 		String requestid = UID.getUniqueID(Type.DELRETSUB.getCode(), context, executor.getApplicationid());
 		Integer dnSubscriptionId = Integer.parseInt(subid.replaceFirst("sub", ""));
-		List<OperatorSubscriptionDTO> domainsubs = (smsMessagingDAO.outboudSubscriptionQuery(Integer.valueOf(dnSubscriptionId)));
+		List<OperatorSubscriptionDTO> domainsubs = (smsMessagingService
+				.outboudSubscriptionQuery(Integer.valueOf(dnSubscriptionId)));
 		if (domainsubs.isEmpty()) {
 
 			throw new CustomException("POL0001", "",
@@ -145,7 +147,7 @@ public class StopOutboundSMSSubscriptionsHandler implements SMSHandler {
 					new OperatorEndpoint(new EndpointReference(subs.getDomain()), subs.getOperator()), subs.getDomain(),
 					null, true, context);
 		}
-		smsMessagingDAO.outboundSubscriptionDelete(Integer.valueOf(dnSubscriptionId));
+		smsMessagingService.outboundSubscriptionDelete(Integer.valueOf(dnSubscriptionId));
 
 		executor.removeHeaders(context);
 		((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 204);

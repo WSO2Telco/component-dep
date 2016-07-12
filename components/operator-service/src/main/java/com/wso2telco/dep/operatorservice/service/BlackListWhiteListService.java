@@ -13,7 +13,7 @@ import com.wso2telco.core.msisdnvalidator.MSISDNUtil;
 import com.wso2telco.dep.operatorservice.dao.BlackListWhiteListDAO;
 import com.wso2telco.dep.operatorservice.exception.NumberBlackListException;
 import com.wso2telco.dep.operatorservice.exception.SubscriptionWhiteListException;
-import com.wso2telco.dep.operatorservice.exception.SubscriptionWhiteListException.ErrorType;
+import com.wso2telco.dep.operatorservice.exception.SubscriptionWhiteListException.SubscriptionWhiteListErrorType;
 import com.wso2telco.dep.operatorservice.model.BlackListDTO;
 import com.wso2telco.dep.operatorservice.model.MSISDNSearchDTO;
 import com.wso2telco.dep.operatorservice.model.WhiteListDTO;
@@ -124,7 +124,7 @@ public class BlackListWhiteListService {
 				subscriptionID = dao.findSubscriptionId(applicationID, apiID);
 			}
 			if (subscriptionID == null || subscriptionID.trim().length() <= 0) {
-				throw new SubscriptionWhiteListException(ErrorType.NULL_SUBSCRIPTION);
+				throw new SubscriptionWhiteListException(SubscriptionWhiteListErrorType.NULL_SUBSCRIPTION);
 			}
 		} catch (Exception e1) {
 			throw new SubscriptionWhiteListException(GenaralError.INTERNAL_SERVER_ERROR);
@@ -146,7 +146,7 @@ public class BlackListWhiteListService {
 		// All numbers already white listed then throw exception
 		if (numberA.isEmpty()) {
 			LOG.debug(" All the numbers already black listed");
-			throw new SubscriptionWhiteListException(ErrorType.SUBSCRIPTION_ALREADY_WHITELISTED);
+			throw new SubscriptionWhiteListException(SubscriptionWhiteListErrorType.SUBSCRIPTION_ALREADY_WHITELISTED);
 		}
 		// persistence goes hare
 		try {

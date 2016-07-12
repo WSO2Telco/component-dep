@@ -18,54 +18,29 @@ package com.wso2telco.dep.mediator.entity;
  
 // TODO: Auto-generated Javadoc
 /**
- * The Class errorreturn.
+ * The Class outboundSMSTextMessage.
  */
-public class errorreturn {
+public class OutboundSMSTextMessage {
     
-    /** The errvar. */
-    private String[] errvar;
-    
-    /** The errcode. */
-    private String errcode;
+    /** The message. */
+    private String message;
     
     /**
-     * Instantiates a new errorreturn.
+     * Gets the message.
+     *
+     * @return the message
      */
-    public errorreturn() {
-        
+    public String getMessage() {
+            return message;
     }
 
     /**
-     * Gets the error return code.
+     * Sets the message.
      *
-     * @return the error return code
+     * @param message the new message
      */
-    public String getErrorReturnCode() {
-            return errcode;
+    public void setMessage(String message) {
+            this.message = message;
     }
-    
-    /**
-     * Sets the error return code.
-     */
-    public void setErrorReturnCode() {
-            this.errcode = errcode;
-    }
-    
-    /**
-     * Gets the error var.
-     *
-     * @return the error var
-     */
-    public String[] getErrorVar() {
-            return errvar;
-    }
-    
-    /**
-     * Sets the error var.
-     */
-    public void setErrorVar() {
-            this.errvar = errvar;
-    }
-    
     
 }

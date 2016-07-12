@@ -18,8 +18,8 @@ package com.wso2telco.dep.mediator.impl.ussd;
 import com.wso2telco.datapublisher.DataPublisherConstants;
 import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
-import com.wso2telco.dep.mediator.dao.USSDDAO;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
+import com.wso2telco.dep.mediator.service.USSDService;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import java.util.Map;
 import org.apache.axis2.AxisFault;
@@ -43,7 +43,7 @@ public class USSDInboundHandler implements USSDHandler {
 	private static final String API_TYPE = "ussd";
 
 	/** The ussdDAO. */
-	private USSDDAO ussdDAO;
+	private USSDService ussdService;
 
 	/** The executor. */
 	private USSDExecutor executor;
@@ -58,8 +58,9 @@ public class USSDInboundHandler implements USSDHandler {
 	 *            the executor
 	 */
 	public USSDInboundHandler(USSDExecutor executor) {
+
 		this.executor = executor;
-		ussdDAO = new USSDDAO();
+		ussdService = new USSDService();
 		occi = new OriginatingCountryCalculatorIDD();
 	}
 
@@ -80,7 +81,7 @@ public class USSDInboundHandler implements USSDHandler {
 		// remove non numeric chars
 		subscriptionId = subscriptionId.replaceAll("[^\\d.]", "");
 		log.debug("subscriptionId - " + subscriptionId);
-		String notifyurl = ussdDAO.getUSSDNotify(Integer.valueOf(subscriptionId));
+		String notifyurl = ussdService.getUSSDNotifyURL(Integer.valueOf(subscriptionId));
 
 		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
 
@@ -114,7 +115,7 @@ public class USSDInboundHandler implements USSDHandler {
 			replyobj.getJSONObject("outboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL",
 					subsEndpoint);
 
-			boolean deleted = ussdDAO.ussdEntryDelete(Integer.valueOf(subscriptionId));
+			boolean deleted = ussdService.ussdEntryDelete(Integer.valueOf(subscriptionId));
 			log.info("Entry deleted " + deleted);
 
 		}

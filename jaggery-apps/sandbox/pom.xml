@@ -5,8 +5,8 @@
   <modelVersion>4.0.0</modelVersion>
      <parent>
                 <groupId>com.wso2telco.dep</groupId>
-                <artifactId>component-dep</artifactId>
-                <version>1.8.0-SNAPSHOT</version>
+                <artifactId>component-dep-parent</artifactId>
+                <version>${com.wso2telco.dep.version}</version>
                 <relativePath>../../parent/pom.xml</relativePath>
   </parent>
 
