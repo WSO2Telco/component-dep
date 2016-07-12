@@ -14,7 +14,7 @@
 	<parent>
 		<groupId>com.wso2telco.dep</groupId>
 		<artifactId>component-dep-parent</artifactId>
-		<version>1.8.0-SNAPSHOT</version>
+		<version>${com.wso2telco.dep.version}</version>
 		<relativePath>../../parent/pom.xml</relativePath>
 	</parent>
 
