@@ -70,7 +70,7 @@ public class ApplicationCreationWSWorkflowExecutor extends WorkflowExecutor {
     public WorkflowResponse execute(WorkflowDTO workflowDTO) throws WorkflowException {
 
         if (log.isDebugEnabled()) {
-            log.debug("Executing Axiata Application creation Workflow..");
+            log.debug("Executing Componenet Dep Application creation Workflow..");
         }
         super.execute(workflowDTO);
         try {
@@ -190,7 +190,7 @@ public class ApplicationCreationWSWorkflowExecutor extends WorkflowExecutor {
             payload = payload.replace("$9", callBackURL != null ? callBackURL : "?");
             payload = payload.replace("$a", tiersStr);
 
-            log.debug("[END] AxiataApplicationCreationWSWorkflowExecutor.execute ");
+            log.debug("[END] Componenet Dep ApplicationCreationWSWorkflowExecutor.execute ");
             client.fireAndForget(AXIOMUtil.stringToOM(payload));
 
         } catch (AxisFault axisFault) {

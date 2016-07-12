@@ -1,6 +1,6 @@
 <% jagg.template("home", function(inputs, outputs, jagg) {
 %>
-<link rel="stylesheet" type="text/css" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("css/styles-axiata.css"))%>" media="all"/>
+<link rel="stylesheet" type="text/css" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("css/styles-store.css"))%>" media="all"/>
 <div id="listing">
     <div class="title-section">
         <h2>Home</h2>
