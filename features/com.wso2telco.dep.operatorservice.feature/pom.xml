@@ -8,20 +8,11 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>com.wso2telco.dep.workflowmanager.feature</artifactId>
+    <artifactId>com.wso2telco.dep.operatorservice.feature</artifactId>
     <packaging>pom</packaging>
-    <name>Workflow Manager Feature</name>
-    <url>http://wso2.org</url>
-    <description>This feature contains the server bundles required for Workflow Manager</description>
-
-    <dependencies>
-        <!--dependency>
-            <groupId>com.wso2telco.ids</groupId>
-            <artifactId>authenticate-selector</artifactId>
-            <version>${com.wso2telco.ids.version}</version>
-        </dependency-->
-    </dependencies>
-
+    <name>WSO2.Telco Operator Service Feature</name>
+    <description>This feature contains the server bundles required for Operator Service</description>
+    
     <build>
         <plugins>
             <plugin>
@@ -36,7 +27,7 @@
                             <goal>p2-feature-gen</goal>
                         </goals>
                         <configuration>
-                            <id>com.wso2telco.dep.workflowmanager</id>
+                            <id>com.wso2telco.dep.operator-service</id>
                             <propertiesFile>../feature.properties</propertiesFile>
                             <adviceFile>
                                 <properties>
@@ -45,15 +36,12 @@
                                 </properties>
                             </adviceFile>
                             <bundles>
-                               <bundleDef>com.wso2telco.dep:workflow-manager:${com.wso2telco.dep.version}</bundleDef>
+                                <bundleDef>com.wso2telco.dep:operator-service:${com.wso2telco.dep.version}</bundleDef>
                             </bundles>
                         </configuration>
                     </execution>
                 </executions>
             </plugin>
         </plugins>
-    </build>
-    <properties>
-       <carbon.p2.plugin.version>1.5.4</carbon.p2.plugin.version>
-    </properties>
+    </build>    
 </project>
