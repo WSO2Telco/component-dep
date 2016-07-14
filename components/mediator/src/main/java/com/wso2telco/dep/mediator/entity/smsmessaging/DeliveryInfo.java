@@ -13,47 +13,53 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.dep.mediator.entity;
-
-import javax.xml.bind.annotation.XmlRootElement;
-
- 
+package com.wso2telco.dep.mediator.entity.smsmessaging;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class ErrorResponse.
+ * The Class DeliveryInfo.
  */
-@XmlRootElement(name = "errorreturn")
-@Deprecated
-public class ErrorResponse {
+public class DeliveryInfo {
     
-    /** The errorreturn. */
-    private ErrorReturn errorreturn;
+    /** The address. */
+    private String address;
     
-    /**
-     * Instantiates a new error response.
-     */
-    public ErrorResponse() {
-        
-    }
-    
-    /**
-     * Gets the error response.
-     *
-     * @return the error response
-     */
-    public ErrorReturn getErrorResponse() {
-            return errorreturn;
-    }
-
+    /** The delivery status. */
+    private String deliveryStatus;
 
     /**
-     * Sets the error response.
+     * Gets the address.
      *
-     * @param errorreturn the new error response
+     * @return the address
      */
-    public void setErrorResponse(ErrorReturn errorreturn) {
-            this.errorreturn = errorreturn;
+    public String getAddress() {
+        return address;
     }
-    
+
+    /**
+     * Sets the address.
+     *
+     * @param address the new address
+     */
+    public void setAddress(String address) {
+        this.address = address;
+    }
+
+    /**
+     * Gets the delivery status.
+     *
+     * @return the delivery status
+     */
+    public String getDeliveryStatus() {
+        return deliveryStatus;
+    }
+
+    /**
+     * Sets the delivery status.
+     *
+     * @param deliveryStatus the new delivery status
+     */
+    public void setDeliveryStatus(String deliveryStatus) {
+        this.deliveryStatus = deliveryStatus;
+    }
 }

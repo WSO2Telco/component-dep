@@ -13,47 +13,36 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.dep.mediator.entity;
+package com.wso2telco.dep.mediator.entity.smsmessaging.southbound;
 
-import javax.xml.bind.annotation.XmlRootElement;
+import com.wso2telco.dep.mediator.entity.smsmessaging.ISMSresponse;
+
 
  
-
 // TODO: Auto-generated Javadoc
 /**
- * The Class ErrorResponse.
+ * The Class SBSubscribeRequest.
  */
-@XmlRootElement(name = "errorreturn")
-@Deprecated
-public class ErrorResponse {
-    
-    /** The errorreturn. */
-    private ErrorReturn errorreturn;
-    
-    /**
-     * Instantiates a new error response.
-     */
-    public ErrorResponse() {
-        
-    }
-    
-    /**
-     * Gets the error response.
-     *
-     * @return the error response
-     */
-    public ErrorReturn getErrorResponse() {
-            return errorreturn;
-    }
+public class SouthboundSubscribeRequest implements ISMSresponse {
 
+    /** The subscription. */
+    private Subscription subscription;      
 
     /**
-     * Sets the error response.
+     * Gets the subscription.
      *
-     * @param errorreturn the new error response
+     * @return the subscription
      */
-    public void setErrorResponse(ErrorReturn errorreturn) {
-            this.errorreturn = errorreturn;
+    public Subscription getSubscription() {
+        return subscription;
     }
-    
+
+    /**
+     * Sets the subscription.
+     *
+     * @param subscription the new subscription
+     */
+    public void setSubscription(Subscription subscription) {
+        this.subscription = subscription;
+    }
 }

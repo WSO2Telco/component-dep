@@ -13,47 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.dep.mediator.entity;
-
-import javax.xml.bind.annotation.XmlRootElement;
+package com.wso2telco.dep.mediator.entity.smsmessaging.northbound;
 
  
-
 // TODO: Auto-generated Javadoc
 /**
- * The Class ErrorResponse.
+ * The Class NBSubscribeRequest.
  */
-@XmlRootElement(name = "errorreturn")
-@Deprecated
-public class ErrorResponse {
+public class NorthboundSubscribeRequest {
     
-    /** The errorreturn. */
-    private ErrorReturn errorreturn;
-    
-    /**
-     * Instantiates a new error response.
-     */
-    public ErrorResponse() {
-        
-    }
-    
-    /**
-     * Gets the error response.
-     *
-     * @return the error response
-     */
-    public ErrorReturn getErrorResponse() {
-            return errorreturn;
-    }
-
+    /** The subscription. */
+    private Subscription subscription;
 
     /**
-     * Sets the error response.
+     * Gets the subscription.
      *
-     * @param errorreturn the new error response
+     * @return the subscription
      */
-    public void setErrorResponse(ErrorReturn errorreturn) {
-            this.errorreturn = errorreturn;
+    public Subscription getSubscription() {
+        return subscription;
     }
-    
+
+    /**
+     * Sets the nb subscription.
+     *
+     * @param subscription the new nb subscription
+     */
+    public void setNbSubscription(Subscription subscription) {
+        this.subscription = subscription;
+    }
 }

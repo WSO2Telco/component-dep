@@ -13,47 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.dep.mediator.entity;
-
-import javax.xml.bind.annotation.XmlRootElement;
+package com.wso2telco.dep.mediator.entity.smsmessaging.northbound;
 
  
-
 // TODO: Auto-generated Javadoc
 /**
- * The Class ErrorResponse.
+ * The Class NBDeliveryReceiptSubscriptionRequest.
  */
-@XmlRootElement(name = "errorreturn")
-@Deprecated
-public class ErrorResponse {
-    
-    /** The errorreturn. */
-    private ErrorReturn errorreturn;
-    
+public class NorthboundDeliveryReceiptSubscriptionRequest {
+
+    /** The delivery receipt subscription. */
+    private DeliveryReceiptSubscription deliveryReceiptSubscription;
+
+     
     /**
-     * Instantiates a new error response.
-     */
-    public ErrorResponse() {
-        
-    }
-    
-    /**
-     * Gets the error response.
+     * Gets the delivery receipt subscription.
      *
-     * @return the error response
+     * @return the delivery receipt subscription
      */
-    public ErrorReturn getErrorResponse() {
-            return errorreturn;
+    public DeliveryReceiptSubscription getDeliveryReceiptSubscription() {
+        return deliveryReceiptSubscription;
     }
 
-
+     
     /**
-     * Sets the error response.
+     * Sets the delivery receipt subscription.
      *
-     * @param errorreturn the new error response
+     * @param deliveryReceiptSubscription the new delivery receipt subscription
      */
-    public void setErrorResponse(ErrorReturn errorreturn) {
-            this.errorreturn = errorreturn;
+    public void setDeliveryReceiptSubscription(DeliveryReceiptSubscription deliveryReceiptSubscription) {
+        this.deliveryReceiptSubscription = deliveryReceiptSubscription;
     }
-    
 }

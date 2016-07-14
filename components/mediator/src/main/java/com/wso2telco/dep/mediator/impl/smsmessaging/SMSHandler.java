@@ -13,47 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.dep.mediator.entity;
+package com.wso2telco.dep.mediator.impl.smsmessaging;
 
-import javax.xml.bind.annotation.XmlRootElement;
-
- 
+import org.apache.synapse.MessageContext;
+import org.json.JSONObject;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class ErrorResponse.
+ * The Interface SMSHandler.
  */
-@XmlRootElement(name = "errorreturn")
-@Deprecated
-public class ErrorResponse {
-    
-    /** The errorreturn. */
-    private ErrorReturn errorreturn;
-    
-    /**
-     * Instantiates a new error response.
-     */
-    public ErrorResponse() {
-        
-    }
-    
-    /**
-     * Gets the error response.
-     *
-     * @return the error response
-     */
-    public ErrorReturn getErrorResponse() {
-            return errorreturn;
-    }
-
+public interface SMSHandler {
 
     /**
-     * Sets the error response.
+     * Validate.
      *
-     * @param errorreturn the new error response
+     * @param httpMethod the http method
+     * @param requestPath the request path
+     * @param jsonBody the json body
+     * @param context the context
+     * @return true, if successful
+     * @throws Exception the exception
      */
-    public void setErrorResponse(ErrorReturn errorreturn) {
-            this.errorreturn = errorreturn;
-    }
-    
+    public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context) throws Exception ;
+
+    /**
+     * Handle.
+     *
+     * @param context the context
+     * @return true, if successful
+     * @throws Exception the exception
+     */
+    public boolean handle(MessageContext context) throws Exception;
 }

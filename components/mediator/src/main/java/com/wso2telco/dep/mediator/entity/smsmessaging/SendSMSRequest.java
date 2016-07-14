@@ -13,47 +13,45 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.dep.mediator.entity;
+package com.wso2telco.dep.mediator.entity.smsmessaging;
 
 import javax.xml.bind.annotation.XmlRootElement;
 
  
-
 // TODO: Auto-generated Javadoc
 /**
- * The Class ErrorResponse.
+ * The Class SendSMSRequest.
  */
-@XmlRootElement(name = "errorreturn")
-@Deprecated
-public class ErrorResponse {
+@XmlRootElement(name = "outboundSMSMessageRequest")
+public class SendSMSRequest implements ISMSresponse {
     
-    /** The errorreturn. */
-    private ErrorReturn errorreturn;
-    
-    /**
-     * Instantiates a new error response.
-     */
-    public ErrorResponse() {
-        
-    }
+    /** The outbound sms message request. */
+    private OutboundSMSMessageRequest outboundSMSMessageRequest;
     
     /**
-     * Gets the error response.
-     *
-     * @return the error response
+     * Instantiates a new send sms request.
      */
-    public ErrorReturn getErrorResponse() {
-            return errorreturn;
+    public SendSMSRequest() {
     }
 
 
     /**
-     * Sets the error response.
+     * Gets the outbound sms message request.
      *
-     * @param errorreturn the new error response
+     * @return the outbound sms message request
      */
-    public void setErrorResponse(ErrorReturn errorreturn) {
-            this.errorreturn = errorreturn;
+    public OutboundSMSMessageRequest getOutboundSMSMessageRequest() {
+            return outboundSMSMessageRequest;
+    }
+
+
+    /**
+     * Sets the outbound sms message request.
+     *
+     * @param receiptRequest the new outbound sms message request
+     */
+    public void setOutboundSMSMessageRequest(String receiptRequest) {
+            this.outboundSMSMessageRequest = outboundSMSMessageRequest;
     }
     
 }
