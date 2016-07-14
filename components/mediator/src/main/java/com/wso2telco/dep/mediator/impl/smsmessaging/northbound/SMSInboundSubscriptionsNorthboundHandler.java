@@ -79,19 +79,18 @@ public class SMSInboundSubscriptionsNorthboundHandler implements SMSHandler {
 	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context)
 			throws Exception {
 
-		context.setProperty(DataPublisherConstants.OPERATION_TYPE, 205);
-		IServiceValidate validator;
-
-		if (httpMethod.equalsIgnoreCase("POST")) {
-
-			validator = new ValidateNBSubscription();
-			validator.validateUrl(requestPath);
-			validator.validate(jsonBody.toString());
-		} else {
+		if (!httpMethod.equalsIgnoreCase("POST")) {
 
 			((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 405);
 			throw new Exception("Method not allowed");
 		}
+
+		context.setProperty(DataPublisherConstants.OPERATION_TYPE, 205);
+		IServiceValidate validator;
+
+		validator = new ValidateNBSubscription();
+		validator.validateUrl(requestPath);
+		validator.validate(jsonBody.toString());
 
 		return true;
 	}
