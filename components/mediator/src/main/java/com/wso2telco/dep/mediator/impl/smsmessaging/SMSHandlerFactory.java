@@ -179,12 +179,12 @@ public class SMSHandlerFactory {
 
 			if (!objSubscription.isNull("criteria")) {
 
-				handler = new SMSInboundSubscriptionsNorthboundHandler(executor);
-				log.debug("INVOKING SMS INBOUND SMS SUBSCRIPTIONS NORTHBOUND HANDLER");
+				handler = new SMSInboundSubscriptionsHandler(executor);
+				log.debug("INVOKING SMS INBOUND SUBSCRIPTIONS HANDLER");
 			} else {
 
-				handler = new SMSInboundSubscriptionsHandler(executor);
-				log.debug("INVOKING SMS INBOUND SUBSCRIPTIONS NORTHBOUND HANDLER");
+				handler = new SMSInboundSubscriptionsNorthboundHandler(executor);
+				log.debug("INVOKING SMS INBOUND SMS SUBSCRIPTIONS NORTHBOUND HANDLER");
 			}
 		} catch (Exception e) {
 
