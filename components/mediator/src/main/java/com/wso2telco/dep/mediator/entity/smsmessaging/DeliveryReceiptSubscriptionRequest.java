@@ -13,47 +13,33 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.dep.mediator.entity;
-
-import javax.xml.bind.annotation.XmlRootElement;
-
- 
+package com.wso2telco.dep.mediator.entity.smsmessaging;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class ErrorResponse.
+ * The Class DeliveryReceiptSubscriptionRequest.
  */
-@XmlRootElement(name = "errorreturn")
-@Deprecated
-public class ErrorResponse {
-    
-    /** The errorreturn. */
-    private ErrorReturn errorreturn;
-    
-    /**
-     * Instantiates a new error response.
-     */
-    public ErrorResponse() {
-        
-    }
-    
-    /**
-     * Gets the error response.
-     *
-     * @return the error response
-     */
-    public ErrorReturn getErrorResponse() {
-            return errorreturn;
-    }
+public class DeliveryReceiptSubscriptionRequest implements ISMSresponse {
 
+	/** The delivery receipt subscription. */
+	private DeliveryReceiptSubscription deliveryReceiptSubscription;
 
-    /**
-     * Sets the error response.
-     *
-     * @param errorreturn the new error response
-     */
-    public void setErrorResponse(ErrorReturn errorreturn) {
-            this.errorreturn = errorreturn;
-    }
-    
+	/**
+	 * Gets the delivery receipt subscription.
+	 *
+	 * @return the delivery receipt subscription
+	 */
+	public DeliveryReceiptSubscription getDeliveryReceiptSubscription() {
+		return deliveryReceiptSubscription;
+	}
+
+	/**
+	 * Sets the delivery receipt subscription.
+	 *
+	 * @param deliveryReceiptSubscription the new delivery receipt subscription
+	 */
+	public void setDeliveryReceiptSubscription(DeliveryReceiptSubscription deliveryReceiptSubscription) {
+		this.deliveryReceiptSubscription = deliveryReceiptSubscription;
+	}
+
 }

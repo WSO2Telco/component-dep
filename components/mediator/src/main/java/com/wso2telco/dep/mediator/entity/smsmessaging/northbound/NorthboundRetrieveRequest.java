@@ -13,47 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.dep.mediator.entity;
-
-import javax.xml.bind.annotation.XmlRootElement;
+package com.wso2telco.dep.mediator.entity.smsmessaging.northbound;
 
  
-
 // TODO: Auto-generated Javadoc
 /**
- * The Class ErrorResponse.
+ * The Class NBRetrieveRequest.
  */
-@XmlRootElement(name = "errorreturn")
-@Deprecated
-public class ErrorResponse {
+public class NorthboundRetrieveRequest {
     
-    /** The errorreturn. */
-    private ErrorReturn errorreturn;
-    
+    /** The inbound sms messages. */
+    private InboundSMSMessages inboundSMSMessages;
+
+     
     /**
-     * Instantiates a new error response.
-     */
-    public ErrorResponse() {
-        
-    }
-    
-    /**
-     * Gets the error response.
+     * Gets the inbound sms messages.
      *
-     * @return the error response
+     * @return the inbound sms messages
      */
-    public ErrorReturn getErrorResponse() {
-            return errorreturn;
+    public InboundSMSMessages getInboundSMSMessages() {
+        return inboundSMSMessages;
     }
 
-
+     
     /**
-     * Sets the error response.
+     * Sets the inbound sms messages.
      *
-     * @param errorreturn the new error response
+     * @param inboundSMSMessages the new inbound sms messages
      */
-    public void setErrorResponse(ErrorReturn errorreturn) {
-            this.errorreturn = errorreturn;
+    public void setInboundSMSMessages(InboundSMSMessages inboundSMSMessages) {
+        this.inboundSMSMessages = inboundSMSMessages;
     }
-    
 }

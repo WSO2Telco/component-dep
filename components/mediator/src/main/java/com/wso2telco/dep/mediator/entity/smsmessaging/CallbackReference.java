@@ -13,47 +13,54 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.dep.mediator.entity;
-
-import javax.xml.bind.annotation.XmlRootElement;
+package com.wso2telco.dep.mediator.entity.smsmessaging;
 
  
-
 // TODO: Auto-generated Javadoc
 /**
- * The Class ErrorResponse.
+ * The Class CallbackReference.
  */
-@XmlRootElement(name = "errorreturn")
-@Deprecated
-public class ErrorResponse {
-    
-    /** The errorreturn. */
-    private ErrorReturn errorreturn;
-    
-    /**
-     * Instantiates a new error response.
-     */
-    public ErrorResponse() {
-        
-    }
-    
-    /**
-     * Gets the error response.
-     *
-     * @return the error response
-     */
-    public ErrorReturn getErrorResponse() {
-            return errorreturn;
-    }
+public class CallbackReference {
 
+    /** The callback data. */
+    private String callbackData;
 
     /**
-     * Sets the error response.
+     * Gets the callback data.
      *
-     * @param errorreturn the new error response
+     * @return the callback data
      */
-    public void setErrorResponse(ErrorReturn errorreturn) {
-            this.errorreturn = errorreturn;
+    public String getCallbackData() {
+        return callbackData;
+    }
+
+    /**
+     * Sets the callback data.
+     *
+     * @param callbackData the new callback data
+     */
+    public void setCallbackData(String callbackData) {
+        this.callbackData = callbackData;
     }
     
+    /** The notify url. */
+    private String notifyURL;
+
+    /**
+     * Gets the notify url.
+     *
+     * @return the notify url
+     */
+    public String getNotifyURL() {
+        return notifyURL;
+    }
+
+    /**
+     * Sets the notify url.
+     *
+     * @param notifyURL the new notify url
+     */
+    public void setNotifyURL(String notifyURL) {
+        this.notifyURL = notifyURL;
+    }
 }

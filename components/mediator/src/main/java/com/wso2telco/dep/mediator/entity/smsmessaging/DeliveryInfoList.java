@@ -13,47 +13,53 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.dep.mediator.entity;
-
-import javax.xml.bind.annotation.XmlRootElement;
-
- 
+package com.wso2telco.dep.mediator.entity.smsmessaging;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class ErrorResponse.
+ * The Class DeliveryInfoList.
  */
-@XmlRootElement(name = "errorreturn")
-@Deprecated
-public class ErrorResponse {
-    
-    /** The errorreturn. */
-    private ErrorReturn errorreturn;
-    
-    /**
-     * Instantiates a new error response.
-     */
-    public ErrorResponse() {
-        
-    }
-    
-    /**
-     * Gets the error response.
-     *
-     * @return the error response
-     */
-    public ErrorReturn getErrorResponse() {
-            return errorreturn;
-    }
+public class DeliveryInfoList {
 
+    /** The delivery info. */
+    private DeliveryInfo[] deliveryInfo;
+    
+    /** The resource url. */
+    private String resourceURL;
 
     /**
-     * Sets the error response.
+     * Gets the delivery info.
      *
-     * @param errorreturn the new error response
+     * @return the delivery info
      */
-    public void setErrorResponse(ErrorReturn errorreturn) {
-            this.errorreturn = errorreturn;
+    public DeliveryInfo[] getDeliveryInfo() {
+        return deliveryInfo;
     }
-    
+
+    /**
+     * Sets the delivery info.
+     *
+     * @param deliveryInfo the new delivery info
+     */
+    public void setDeliveryInfo(DeliveryInfo[] deliveryInfo) {
+        this.deliveryInfo = deliveryInfo;
+    }
+
+    /**
+     * Gets the resource url.
+     *
+     * @return the resource url
+     */
+    public String getResourceURL() {
+        return resourceURL;
+    }
+
+    /**
+     * Sets the resource url.
+     *
+     * @param resourceURL the new resource url
+     */
+    public void setResourceURL(String resourceURL) {
+        this.resourceURL = resourceURL;
+    }
 }

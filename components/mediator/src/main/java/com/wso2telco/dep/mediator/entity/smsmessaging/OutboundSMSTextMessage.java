@@ -13,47 +13,34 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.dep.mediator.entity;
-
-import javax.xml.bind.annotation.XmlRootElement;
+package com.wso2telco.dep.mediator.entity.smsmessaging;
 
  
-
 // TODO: Auto-generated Javadoc
 /**
- * The Class ErrorResponse.
+ * The Class outboundSMSTextMessage.
  */
-@XmlRootElement(name = "errorreturn")
-@Deprecated
-public class ErrorResponse {
+public class OutboundSMSTextMessage {
     
-    /** The errorreturn. */
-    private ErrorReturn errorreturn;
+    /** The message. */
+    private String message;
     
     /**
-     * Instantiates a new error response.
-     */
-    public ErrorResponse() {
-        
-    }
-    
-    /**
-     * Gets the error response.
+     * Gets the message.
      *
-     * @return the error response
+     * @return the message
      */
-    public ErrorReturn getErrorResponse() {
-            return errorreturn;
+    public String getMessage() {
+            return message;
     }
 
-
     /**
-     * Sets the error response.
+     * Sets the message.
      *
-     * @param errorreturn the new error response
+     * @param message the new message
      */
-    public void setErrorResponse(ErrorReturn errorreturn) {
-            this.errorreturn = errorreturn;
+    public void setMessage(String message) {
+            this.message = message;
     }
     
 }

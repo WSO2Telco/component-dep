@@ -13,47 +13,32 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.dep.mediator.entity;
-
-import javax.xml.bind.annotation.XmlRootElement;
-
- 
+package com.wso2telco.dep.mediator.entity.smsmessaging;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class ErrorResponse.
+ * The Class QuerySMSStatusResponse.
  */
-@XmlRootElement(name = "errorreturn")
-@Deprecated
-public class ErrorResponse {
-    
-    /** The errorreturn. */
-    private ErrorReturn errorreturn;
-    
-    /**
-     * Instantiates a new error response.
-     */
-    public ErrorResponse() {
-        
-    }
-    
-    /**
-     * Gets the error response.
-     *
-     * @return the error response
-     */
-    public ErrorReturn getErrorResponse() {
-            return errorreturn;
-    }
+public class QuerySMSStatusResponse {
 
+    /** The delivery info list. */
+    private DeliveryInfoList deliveryInfoList;
 
     /**
-     * Sets the error response.
+     * Gets the delivery info list.
      *
-     * @param errorreturn the new error response
+     * @return the delivery info list
      */
-    public void setErrorResponse(ErrorReturn errorreturn) {
-            this.errorreturn = errorreturn;
+    public DeliveryInfoList getDeliveryInfoList() {
+        return deliveryInfoList;
     }
-    
+
+    /**
+     * Sets the delivery info list.
+     *
+     * @param deliveryInfoList the new delivery info list
+     */
+    public void setDeliveryInfoList(DeliveryInfoList deliveryInfoList) {
+        this.deliveryInfoList = deliveryInfoList;
+    }
 }

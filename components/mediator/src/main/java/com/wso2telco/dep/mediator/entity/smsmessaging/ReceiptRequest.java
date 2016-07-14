@@ -13,47 +13,55 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.dep.mediator.entity;
-
-import javax.xml.bind.annotation.XmlRootElement;
+package com.wso2telco.dep.mediator.entity.smsmessaging;
 
  
-
 // TODO: Auto-generated Javadoc
 /**
- * The Class ErrorResponse.
+ * The Class ReceiptRequest.
  */
-@XmlRootElement(name = "errorreturn")
-@Deprecated
-public class ErrorResponse {
+public class ReceiptRequest {
     
-    /** The errorreturn. */
-    private ErrorReturn errorreturn;
+    /** The notify url. */
+    private String notifyURL;
     
-    /**
-     * Instantiates a new error response.
-     */
-    public ErrorResponse() {
-        
-    }
+    /** The callback data. */
+    private String callbackData;
     
     /**
-     * Gets the error response.
+     * Gets the notify url.
      *
-     * @return the error response
+     * @return the notify url
      */
-    public ErrorReturn getErrorResponse() {
-            return errorreturn;
+    public String getNotifyURL() {
+            return notifyURL;
     }
 
+    /**
+     * Sets the notify url.
+     *
+     * @param notifyURL the new notify url
+     */
+    public void setNotifyURL(String notifyURL) {
+            this.notifyURL= notifyURL;
+    }
+    
+     /**
+      * Gets the callback data.
+      *
+      * @return the callback data
+      */
+     public String getcallbackData() {
+            return callbackData;
+    }
 
     /**
-     * Sets the error response.
+     * Sets the callback data.
      *
-     * @param errorreturn the new error response
+     * @param callbackData the new callback data
      */
-    public void setErrorResponse(ErrorReturn errorreturn) {
-            this.errorreturn = errorreturn;
+    public void setcallbackData(String callbackData) {
+            this.callbackData = callbackData;
     }
     
 }
