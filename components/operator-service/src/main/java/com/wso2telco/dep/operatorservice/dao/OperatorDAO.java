@@ -73,6 +73,9 @@ public class OperatorDAO {
 			query.append(OparatorTable.OPERATORS.getTObject());
 
 			ps = conn.prepareStatement(query.toString());
+			
+			log.debug("sql query in retrieveOperatorList : " + ps);
+			
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
@@ -86,11 +89,11 @@ public class OperatorDAO {
 			}
 		} catch (SQLException e) {
 
-			log.error("DATABASE OPERATION ERROR IN retrieveOperatorList : ", e);
+			log.error("database operation error in retrieveOperatorList : ", e);
 			throw e;
 		} catch (Exception e) {
 
-			log.error("ERROR IN retrieveOperatorList : ", e);
+			log.error("error in retrieveOperatorList : ", e);
 			throw e;
 		} finally {
 
@@ -140,14 +143,17 @@ public class OperatorDAO {
 			ps.setString(3, apiProvider);
 			ps.setInt(4, appId);
 			ps.setString(5, operatorList);
+			
+			log.debug("sql query in persistOperators : " + ps);
+			
 			ps.execute();
 		} catch (SQLException e) {
 
-			log.error("DATABASE OPERATION ERROR IN persistOperators : ", e);
+			log.error("database operation error in persistOperators : ", e);
 			throw e;
 		} catch (Exception e) {
 
-			log.error("ERROR IN persistOperators : ", e);
+			log.error("error in persistOperators : ", e);
 			throw e;
 		} finally {
 
@@ -183,6 +189,8 @@ public class OperatorDAO {
 
 				ps.setString(1, searchDTO.getName().trim());
 			}
+			
+			log.debug("sql query in seachOparators : " + ps);
 
 			rs = ps.executeQuery();
 
@@ -197,11 +205,11 @@ public class OperatorDAO {
 			}
 		} catch (SQLException e) {
 
-			log.error("DATABASE OPERATION ERROR IN seachOparators : ", e);
+			log.error("database operation error in seachOparators : ", e);
 			throw e;
 		} catch (Exception e) {
 
-			log.error("ERROR IN seachOparators : ", e);
+			log.error("error in seachOparators : ", e);
 			throw e;
 		} finally {
 
@@ -249,6 +257,8 @@ public class OperatorDAO {
 				pst.setString(4, merchant);
 				pst.addBatch();
 			}
+			
+			log.debug("sql query in insertBlacklistAggregatoRows : " + pst);
 
 			pst.executeBatch();
 
@@ -258,7 +268,7 @@ public class OperatorDAO {
 			con.commit();
 		} catch (SQLException e) {
 
-			log.error("DATABASE OPERATION ERROR IN insertBlacklistAggregatoRows : ", e);
+			log.error("database operation error in insertBlacklistAggregatoRows : ", e);
 			/**
 			 * rollback if Exception occurs
 			 */
@@ -270,7 +280,7 @@ public class OperatorDAO {
 			throw e;
 		} catch (Exception e) {
 
-			log.error("ERROR IN insertBlacklistAggregatoRows : ", e);
+			log.error("error in insertBlacklistAggregatoRows : ", e);
 			/**
 			 * rollback if Exception occurs
 			 */
@@ -324,6 +334,8 @@ public class OperatorDAO {
 				queryString.append("WHERE operatorendpoints.operatorid = operators.id");
 
 				ps = con.prepareStatement(queryString.toString());
+				
+				log.debug("sql query in getOperatorEndpoints : " + ps);
 
 				rs = ps.executeQuery();
 
@@ -334,11 +346,11 @@ public class OperatorDAO {
 				}
 			} catch (SQLException e) {
 
-				log.error("DATABASE OPERATION ERROR IN getOperatorEndpoints : ", e);
+				log.error("database operation error in getOperatorEndpoints : ", e);
 				throw e;
 			} catch (Exception e) {
 
-				log.error("ERROR IN getOperatorEndpoints : ", e);
+				log.error("error in getOperatorEndpoints : ", e);
 				throw e;
 			} finally {
 
@@ -389,7 +401,7 @@ public class OperatorDAO {
 
 			ps.setInt(1, applicationId);
 			
-			log.debug("SQL QUERY IN getApplicationOperators : " + ps);
+			log.debug("sql query in getApplicationOperators : " + ps);
 
 			rs = ps.executeQuery();
 
@@ -410,10 +422,10 @@ public class OperatorDAO {
 			}
 		} catch (SQLException e) {
 
-			log.error("DATABASE OPERATION ERROR IN getApplicationOperators : ", e);
+			log.error("database operation error in getApplicationOperators : ", e);
 		} catch (Exception e) {
 
-			log.error("ERROR IN getApplicationOperators : ", e);
+			log.error("error in getApplicationOperators : ", e);
 		} finally {
 
 			DbUtils.closeAllConnections(ps, con, rs);
@@ -464,7 +476,7 @@ public class OperatorDAO {
 			ps.setInt(1, appId);
 			ps.setString(2, apiType);
 
-			log.debug("SQL QUERY IN getActiveApplicationOperators : " + ps);
+			log.debug("sql query in getActiveApplicationOperators : " + ps);
 
 			rs = ps.executeQuery();
 
@@ -475,11 +487,11 @@ public class OperatorDAO {
 			}
 		} catch (SQLException e) {
 
-			log.error("DATABASE OPERATION ERROR IN getActiveApplicationOperators : ", e);
+			log.error("database operation error in getActiveApplicationOperators : ", e);
 			throw e;
 		} catch (Exception e) {
 
-			log.error("ERROR IN getActiveApplicationOperators : ", e);
+			log.error("error in getActiveApplicationOperators : ", e);
 			throw e;
 		} finally {
 
@@ -515,6 +527,7 @@ public class OperatorDAO {
 		try {
 
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+			
 			if (con == null) {
 
 				throw new Exception("Connection not found");
@@ -536,16 +549,16 @@ public class OperatorDAO {
 			ps.setString(4, token);
 			ps.setInt(5, operatorId);
 			
-			log.debug("SQL QUERY IN updateOperatorToken : " + ps);
+			log.debug("sql query in updateOperatorToken : " + ps);
 
 			ps.executeUpdate();
 		} catch (SQLException e) {
 
-			log.error("DATABASE OPERATION ERROR IN updateOperatorToken : ", e);
+			log.error("database operation error in updateOperatorToken : ", e);
 			throw e;
 		} catch (Exception e) {
 
-			log.error("ERROR IN updateOperatorToken : ", e);
+			log.error("error in updateOperatorToken : ", e);
 			throw e;
 		} finally {
 

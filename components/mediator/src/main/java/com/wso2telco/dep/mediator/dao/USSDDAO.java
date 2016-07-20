@@ -64,7 +64,7 @@ public class USSDDAO {
 
 			ps.setString(1, notifyURL);
 			
-			log.debug("SQL QUERY IN ussdRequestEntry : " + ps);
+			log.debug("sql query in ussdRequestEntry : " + ps);
 
 			ps.executeUpdate();
 
@@ -76,11 +76,11 @@ public class USSDDAO {
 			}
 		} catch (SQLException e) {
 
-			log.error("DATABASE OPERATION ERROR IN ussdRequestEntry : ", e);
+			log.error("database operation error in ussdRequestEntry : ", e);
 			throw e;
 		} catch (Exception e) {
 
-			log.error("ERROR IN ussdRequestEntry : ", e);
+			log.error("error in ussdRequestEntry : ", e);
 			throw e;
 		} finally {
 
@@ -122,7 +122,7 @@ public class USSDDAO {
 
 			ps.setInt(1, subscriptionId);
 			
-			log.debug("SQL QUERY IN getUSSDNotifyURL : " + ps);
+			log.debug("sql query in getUSSDNotifyURL : " + ps);
 
 			rs = ps.executeQuery();
 
@@ -133,11 +133,11 @@ public class USSDDAO {
 
 		} catch (SQLException e) {
 
-			log.error("DATABASE OPERATION ERROR IN getUSSDNotify : ", e);
+			log.error("database operation error in getUSSDNotify : ", e);
 			throw e;
 		} catch (Exception e) {
 
-			log.error("ERROR IN getUSSDNotify : ", e);
+			log.error("error in getUSSDNotify : ", e);
 			throw e;
 		} finally {
 
@@ -176,16 +176,16 @@ public class USSDDAO {
 
 			ps.setInt(1, subscriptionId);
 			
-			log.debug("SQL QUERY IN ussdEntryDelete : " + ps);
+			log.debug("sql query in ussdEntryDelete : " + ps);
 
 			ps.executeUpdate();
 		} catch (SQLException e) {
 
-			log.error("DATABASE OPERATION ERROR IN ussdEntryDelete : ", e);
+			log.error("database operation error in ussdEntryDelete : ", e);
 			throw e;
 		} catch (Exception e) {
 
-			log.error("ERROR IN ussdEntryDelete : ", e);
+			log.error("error in ussdEntryDelete : ", e);
 			throw e;
 		} finally {
 

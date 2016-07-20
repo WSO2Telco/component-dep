@@ -59,7 +59,7 @@ public class PaymentDAO {
 
 			ps = con.prepareStatement(queryString.toString());
 			
-			log.debug("SQL QUERY IN getValidPayCategories : " + ps);
+			log.debug("sql query in getValidPayCategories : " + ps);
 
 			rs = ps.executeQuery();
 
@@ -69,11 +69,11 @@ public class PaymentDAO {
 			}
 		} catch (SQLException e) {
 
-			log.error("DATABASE OPERATION ERROR IN getValidPayCategories : ", e);
+			log.error("database operation error in getValidPayCategories : ", e);
 			throw e;
 		} catch (Exception e) {
 
-			log.error("ERROR IN getValidPayCategories : ", e);
+			log.error("error in getValidPayCategories : ", e);
 			throw e;
 		} finally {
 
