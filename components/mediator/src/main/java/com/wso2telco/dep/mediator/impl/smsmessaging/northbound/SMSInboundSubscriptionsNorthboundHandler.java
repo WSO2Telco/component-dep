@@ -114,7 +114,7 @@ public class SMSInboundSubscriptionsNorthboundHandler implements SMSHandler {
 		}
 
 		String serviceProvider = jwtDetails.get("subscriber");
-		log.debug("Subscriber Name : " + serviceProvider);
+		log.debug("subscriber Name : " + serviceProvider);
 
 		NorthboundSubscribeRequest nbSubsrequst = gson.fromJson(jsonBody.toString(), NorthboundSubscribeRequest.class);
 		String origNotiUrl = nbSubsrequst.getSubscription().getCallbackReference().getNotifyURL();
@@ -130,7 +130,7 @@ public class SMSInboundSubscriptionsNorthboundHandler implements SMSHandler {
 
 		jsondstaddr.put("clientCorrelator", orgclientcl + ":" + requestid);
 
-		log.debug("Subscription northbound request body : " + gson.toJson(nbSubsrequst));
+		log.debug("subscription northbound request body : " + gson.toJson(nbSubsrequst));
 
 		List<OperatorSubscriptionDTO> domainsubs = new ArrayList<OperatorSubscriptionDTO>();
 		SouthboundSubscribeRequest sbSubsresponse = null;
@@ -141,7 +141,7 @@ public class SMSInboundSubscriptionsNorthboundHandler implements SMSHandler {
 
 			for (int i = 0; i < destinationAddresses.length; i++) {
 				if (destinationAddresses[i].getOperatorCode().equalsIgnoreCase(endpoint.getOperator())) {
-					log.debug("Operator name: " + endpoint.getOperator());
+					log.debug("operator name: " + endpoint.getOperator());
 					SouthboundSubscribeRequest sbSubsrequst = new SouthboundSubscribeRequest();
 					Subscription sbrequest = new Subscription();
 					CallbackReference callbackReference = new CallbackReference();
@@ -157,13 +157,13 @@ public class SMSInboundSubscriptionsNorthboundHandler implements SMSHandler {
 					sbSubsrequst.setSubscription(sbrequest);
 
 					String sbRequestBody = removeResourceURL(gson.toJson(sbSubsrequst));
-					log.debug("Subscription southbound request body of " + endpoint.getOperator() + " operator: "
+					log.debug("subscription southbound request body of " + endpoint.getOperator() + " operator: "
 							+ sbRequestBody);
 
 					String notifyres = executor.makeRequest(endpoint, endpoint.getEndpointref().getAddress(),
 							sbRequestBody, true, context);
 
-					log.debug("Subscription southbound response body of " + endpoint.getOperator() + " operator: "
+					log.debug("subscription southbound response body of " + endpoint.getOperator() + " operator: "
 							+ notifyres);
 
 					if (notifyres == null) {
@@ -216,7 +216,7 @@ public class SMSInboundSubscriptionsNorthboundHandler implements SMSHandler {
 
 		String nbResponseBody = gson.toJson(nbSubsrequst);
 
-		log.debug("Subscription northbound response body : " + nbResponseBody);
+		log.debug("subscription northbound response body : " + nbResponseBody);
 
 		executor.removeHeaders(context);
 		((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 201);
@@ -238,7 +238,7 @@ public class SMSInboundSubscriptionsNorthboundHandler implements SMSHandler {
 			sbrequestString = objSubscriptionRequest.toString();
 		} catch (JSONException ex) {
 
-			log.error("Error in removeResourceURL" + ex.getMessage());
+			log.error("error in removeResourceURL" + ex.getMessage());
 			throw new CustomException("POL0299", "", new String[] { "Error registering subscription" });
 		}
 

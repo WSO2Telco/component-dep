@@ -105,7 +105,7 @@ public class SMSInboundSubscriptionsHandler implements SMSHandler {
 		}
 
 		String serviceProvider = jwtDetails.get("subscriber");
-		log.debug("Subscriber Name : " + serviceProvider);
+		log.debug("subscriber Name : " + serviceProvider);
 
 		SouthboundSubscribeRequest subsrequst = gson.fromJson(jsonBody.toString(), SouthboundSubscribeRequest.class);
 		String origNotiUrl = subsrequst.getSubscription().getCallbackReference().getNotifyURL();

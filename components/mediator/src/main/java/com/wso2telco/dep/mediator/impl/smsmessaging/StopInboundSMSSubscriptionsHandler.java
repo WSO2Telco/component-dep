@@ -104,7 +104,7 @@ public class StopInboundSMSSubscriptionsHandler implements SMSHandler {
 		if (domainsubs.isEmpty()) {
 
 			throw new CustomException("POL0001", "",
-					new String[] { "SMS Receipt Subscription Not Found: " + moSubscriptionId });
+					new String[] { "SMS eceipt Subscription Not Found: " + moSubscriptionId });
 		}
 
 		String resStr = "";

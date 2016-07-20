@@ -86,7 +86,7 @@ public class AggregatorDAO {
 			ps.setString(3, subscriber);
 			ps.setString(4, merchant.toLowerCase());
 			
-			log.debug("SQL QUERY IN blacklistedmerchant : " + ps);
+			log.debug("sql query in blacklistedmerchant : " + ps);
 
 			rs = ps.executeQuery();
 
@@ -96,11 +96,11 @@ public class AggregatorDAO {
 			}
 		} catch (SQLException e) {
 
-			log.error("DATABASE OPERATION ERROR IN blacklistedmerchant : ", e);
+			log.error("database operation error in blacklistedmerchant : ", e);
 			throw e;
 		} catch (Exception e) {
 
-			log.error("ERROR IN blacklistedmerchant : ", e);
+			log.error("error in blacklistedmerchant : ", e);
 			throw e;
 		} finally {
 
@@ -162,7 +162,7 @@ public class AggregatorDAO {
 			ps.setString(2, operatorId);
 			ps.setString(3, merchant.toLowerCase());
 			
-			log.debug("SQL QUERY IN blacklistedmerchant : " + ps);
+			log.debug("sql query in blacklistedmerchant : " + ps);
 
 			rs = ps.executeQuery();
 
@@ -172,11 +172,11 @@ public class AggregatorDAO {
 			}
 		} catch (SQLException e) {
 
-			log.error("DATABASE OPERATION ERROR IN blacklistedmerchant : ", e);
+			log.error("database operation error in blacklistedmerchant : ", e);
 			throw e;
 		} catch (Exception e) {
 
-			log.error("ERROR IN blacklistedmerchant : ", e);
+			log.error("error in blacklistedmerchant : ", e);
 			throw e;
 		} finally {
 
