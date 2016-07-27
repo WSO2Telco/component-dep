@@ -440,6 +440,11 @@
 				<artifactId>mnc-resolver</artifactId>
 				<version>${com.wso2telco.core.version}</version>
 			</dependency>
+			<dependency>
+		        <groupId>org.wso2.carbon.analytics</groupId>
+		        <artifactId>org.wso2.carbon.analytics.spark.core</artifactId>
+		        <version>${org.wso2.carbon.analytics.version}</version>
+		    </dependency>
 		</dependencies>
 
 	</dependencyManagement>
@@ -488,6 +493,7 @@
 		<org.codehaus.jettison.version>1.1</org.codehaus.jettison.version>
 		<commons-fileupload.version>1.2.1</commons-fileupload.version>
 		<asm.version>3.3.1</asm.version>
+		<org.wso2.carbon.analytics.version>1.0.6-SNAPSHOT</org.wso2.carbon.analytics.version>
 	</properties>
 
 	<build>
