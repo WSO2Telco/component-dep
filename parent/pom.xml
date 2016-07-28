@@ -173,6 +173,7 @@
 				<groupId>org.json.wso2</groupId>
 				<artifactId>json</artifactId>
 				<version>${org.json.wso2.version}</version>
+				<type>jar</type>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
