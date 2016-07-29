@@ -24,6 +24,7 @@ import javax.xml.bind.annotation.XmlRootElement;
  * The Class ErrorResponse.
  */
 @XmlRootElement(name = "errorreturn")
+@Deprecated
 public class ErrorResponse {
     
     /** The errorreturn. */

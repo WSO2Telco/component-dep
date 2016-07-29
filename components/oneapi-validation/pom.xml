@@ -29,10 +29,6 @@
 	<name>WSO2.Telco OneAPI Validation Module</name>
 	<description>WSO2.Telco OneAPI Validation Module</description>
 
-	<!-- <properties>
-		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-	</properties> -->
-
 	<dependencies>
 		<dependency>
 			<groupId>log4j</groupId>
@@ -41,12 +37,10 @@
 		<dependency>
 			<groupId>org.json.wso2</groupId>
 			<artifactId>json</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
 			<artifactId>junit</artifactId>
-			<scope>test</scope>
 		</dependency>
 	</dependencies>
 

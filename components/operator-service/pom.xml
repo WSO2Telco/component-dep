@@ -65,16 +65,13 @@
 			<groupId>commons-io.wso2</groupId>
 			<artifactId>commons-io</artifactId>
 		</dependency>
-
 		<dependency>
 			<groupId>com.wso2telco.core</groupId>
 			<artifactId>dbutils</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.wso2telco.core</groupId>
 			<artifactId>msisdn-validator</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.wso2.carbon</groupId>

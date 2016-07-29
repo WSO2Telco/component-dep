@@ -8,9 +8,7 @@
 		<relativePath>../../parent/pom.xml</relativePath>
 	</parent> 
 
-	<!-- <groupId>com.wso2telco.dep</groupId> -->
 	<artifactId>blcklist-whitelist-service</artifactId>
-	<!-- <version>${com.wso2telco.dep.version}</version> -->
 	
 	<name>WSO2.Telco BlackList WhiteList Service</name>
 	<description>WSO2Telco DEP Aggregate Pom</description>
@@ -18,72 +16,51 @@
 
 	<packaging>war</packaging>
 
-<properties>
-<servlet.api.version>2.5</servlet.api.version>
-</properties>
 	<dependencies>
 		<dependency>
 			<groupId>com.wso2telco.core</groupId>
 			<artifactId>msisdn-validator</artifactId>
-			<scope>provided</scope>
 		</dependency>
-		
 		<dependency>
 			<groupId>com.google.code.gson</groupId>
 			<artifactId>gson</artifactId>
-			<version>1.7.2</version>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.jettison</groupId>
 			<artifactId>jettison</artifactId>
-			<version>1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.16</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
-			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
-			<version>1.2.1</version>
 		</dependency>
-	
 		<dependency>
 			<groupId>asm</groupId>
 			<artifactId>asm-all</artifactId>
-			<version>3.3.1</version>
 		</dependency>
-
 		<dependency>
 			<groupId>com.wso2telco.dep</groupId>
 			<artifactId>operator-service</artifactId>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>javax.servlet</groupId>
 			<artifactId>servlet-api</artifactId>
-			<version>${servlet.api.version}</version>
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>org.apache.cxf</groupId>
 			<artifactId>cxf-bundle</artifactId>
-			<version>2.7.0</version>
-			<!-- <version>${cxf.bundle.version}</version> -->
-			<scope>provided</scope>
 		</dependency>
 		<dependency>
 			<groupId>com.wso2telco.core</groupId>
 			<artifactId>dbutils</artifactId>
-			<scope>provided</scope>
 		</dependency>
-		
 	</dependencies>
 
 		<build>

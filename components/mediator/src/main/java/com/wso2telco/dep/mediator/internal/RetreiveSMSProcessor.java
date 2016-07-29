@@ -17,7 +17,7 @@ package com.wso2telco.dep.mediator.internal;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.wso2telco.dep.mediator.entity.nb.InboundSMSMessage;
+import com.wso2telco.dep.mediator.entity.smsmessaging.northbound.InboundSMSMessage;
 
 import java.text.MessageFormat;
 import java.util.ArrayList;

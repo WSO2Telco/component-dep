@@ -62,7 +62,7 @@ public class SMSMessagingDAO {
 			ps.setString(2, serviceProvider);
 			ps.setInt(3, 0);
 			
-			log.debug("SQL QUERY IN outboundSubscriptionEntry : " + ps);
+			log.debug("sql query in outboundSubscriptionEntry : " + ps);
 
 			ps.executeUpdate();
 
@@ -74,11 +74,11 @@ public class SMSMessagingDAO {
 			}
 		} catch (SQLException e) {
 
-			log.error("DATABASE OPERATION ERROR IN outboundSubscriptionEntry : ", e);
+			log.error("database operation error in outboundSubscriptionEntry : ", e);
 			throw e;
 		} catch (Exception e) {
 
-			log.error("ERROR IN outboundSubscriptionEntry : ", e);
+			log.error("error in outboundSubscriptionEntry : ", e);
 			throw e;
 		} finally {
 
@@ -136,7 +136,7 @@ public class SMSMessagingDAO {
 				insertStatement.addBatch();
 			}
 			
-			log.debug("SQL QUERY IN outboundOperatorsubsEntry : " + insertStatement);
+			log.debug("sql query in outboundOperatorsubsEntry : " + insertStatement);
 
 			insertStatement.executeBatch();
 
@@ -150,7 +150,7 @@ public class SMSMessagingDAO {
 			updateStatement.setInt(1, 1);
 			updateStatement.setInt(2, dnSubscriptionId);
 			
-			log.debug("SQL QUERY IN outboundOperatorsubsEntry : " + updateStatement);
+			log.debug("sql query in outboundOperatorsubsEntry : " + updateStatement);
 
 			updateStatement.executeUpdate();
 
@@ -165,7 +165,7 @@ public class SMSMessagingDAO {
 			 */
 			con.rollback();
 
-			log.error("DATABASE OPERATION ERROR IN outboundOperatorsubsEntry : ", e);
+			log.error("database operation error in outboundOperatorsubsEntry : ", e);
 			throw e;
 		} catch (Exception e) {
 
@@ -174,7 +174,7 @@ public class SMSMessagingDAO {
 			 */
 			con.rollback();
 
-			log.error("ERROR IN outboundOperatorsubsEntry : ", e);
+			log.error("error in outboundOperatorsubsEntry : ", e);
 			throw e;
 		} finally {
 
@@ -213,7 +213,7 @@ public class SMSMessagingDAO {
 			ps.setString(1, requestId);
 			ps.setString(2, senderAddress);
 			
-			log.debug("SQL QUERY IN getSMSRequestIds : " + ps);
+			log.debug("sql query in getSMSRequestIds : " + ps);
 			
 			rs = ps.executeQuery();
 
@@ -223,11 +223,11 @@ public class SMSMessagingDAO {
 			}
 		} catch (SQLException e) {
 
-			log.error("DATABASE OPERATION ERROR IN getSMSRequestIds : ", e);
+			log.error("database operation error in getSMSRequestIds : ", e);
 			throw e;
 		} catch (Exception e) {
 
-			log.error("ERROR IN getSMSRequestIds : ", e);
+			log.error("error in getSMSRequestIds : ", e);
 			throw e;
 		} finally {
 
@@ -263,7 +263,7 @@ public class SMSMessagingDAO {
 			ps.setString(2, serviceProvider);
 			ps.setInt(3, 0);
 			
-			log.debug("SQL QUERY IN subscriptionEntry : " + ps);
+			log.debug("sql query in subscriptionEntry : " + ps);
 
 			ps.executeUpdate();
 
@@ -275,11 +275,11 @@ public class SMSMessagingDAO {
 			}
 		} catch (SQLException e) {
 
-			log.error("DATABASE OPERATION ERROR IN subscriptionEntry : ", e);
+			log.error("database operation error in subscriptionEntry : ", e);
 			throw e;
 		} catch (Exception e) {
 
-			log.error("ERROR IN subscriptionEntry : ", e);
+			log.error("error in subscriptionEntry : ", e);
 			throw e;
 		} finally {
 
@@ -336,7 +336,7 @@ public class SMSMessagingDAO {
 				insertStatement.addBatch();
 			}
 			
-			log.debug("SQL QUERY IN operatorSubsEntry : " + insertStatement);
+			log.debug("sql query in operatorSubsEntry : " + insertStatement);
 
 			insertStatement.executeBatch();
 
@@ -350,7 +350,7 @@ public class SMSMessagingDAO {
 			updateStatement.setInt(1, 1);
 			updateStatement.setInt(2, moSubscriptionId);
 			
-			log.debug("SQL QUERY IN operatorSubsEntry : " + updateStatement);
+			log.debug("sql query in operatorSubsEntry : " + updateStatement);
 
 			updateStatement.executeUpdate();
 
@@ -365,7 +365,7 @@ public class SMSMessagingDAO {
 			 */
 			con.rollback();
 
-			log.error("DATABASE OPERATION ERROR IN operatorSubsEntry : ", e);
+			log.error("database operation error in operatorSubsEntry : ", e);
 			throw e;
 		} catch (Exception e) {
 
@@ -374,7 +374,7 @@ public class SMSMessagingDAO {
 			 */
 			con.rollback();
 
-			log.error("ERROR IN operatorSubsEntry : ", e);
+			log.error("error in operatorSubsEntry : ", e);
 			throw e;
 		} finally {
 
@@ -415,7 +415,7 @@ public class SMSMessagingDAO {
 
 			ps.setInt(1, moSubscriptionId);
 			
-			log.debug("SQL QUERY IN subscriptionQuery : " + ps);
+			log.debug("sql query in subscriptionQuery : " + ps);
 
 			rs = ps.executeQuery();
 
@@ -425,11 +425,11 @@ public class SMSMessagingDAO {
 			}
 		} catch (SQLException e) {
 
-			log.error("DATABASE OPERATION ERROR IN subscriptionQuery : ", e);
+			log.error("database operation error in subscriptionQuery : ", e);
 			throw e;
 		} catch (Exception e) {
 
-			log.error("ERROR IN subscriptionQuery : ", e);
+			log.error("error in subscriptionQuery : ", e);
 			throw e;
 		} finally {
 
@@ -474,7 +474,7 @@ public class SMSMessagingDAO {
 
 			deleteSubscriptionsStatement.setInt(1, moSubscriptionId);
 			
-			log.debug("SQL QUERY IN subscriptionDelete : " + deleteSubscriptionsStatement);
+			log.debug("sql query in subscriptionDelete : " + deleteSubscriptionsStatement);
 
 			deleteSubscriptionsStatement.executeUpdate();
 
@@ -487,7 +487,7 @@ public class SMSMessagingDAO {
 
 			deleteOperatorSubscriptionsStatement.setInt(1, moSubscriptionId);
 			
-			log.debug("SQL QUERY IN subscriptionDelete : " + deleteOperatorSubscriptionsStatement);
+			log.debug("sql query in subscriptionDelete : " + deleteOperatorSubscriptionsStatement);
 
 			deleteOperatorSubscriptionsStatement.executeUpdate();
 
@@ -502,7 +502,7 @@ public class SMSMessagingDAO {
 			 */
 			con.rollback();
 
-			log.error("DATABASE OPERATION ERROR IN subscriptionDelete : ", e);
+			log.error("database operation error in subscriptionDelete : ", e);
 			throw e;
 		} catch (Exception e) {
 
@@ -511,7 +511,7 @@ public class SMSMessagingDAO {
 			 */
 			con.rollback();
 
-			log.error("ERROR IN subscriptionDelete : ", e);
+			log.error("error in subscriptionDelete : ", e);
 			throw e;
 		} finally {
 
@@ -564,7 +564,7 @@ public class SMSMessagingDAO {
 				ps.addBatch();
 			}
 			
-			log.debug("SQL QUERY IN insertSMSRequestIds : " + ps);
+			log.debug("sql query in insertSMSRequestIds : " + ps);
 
 			ps.executeBatch();
 
@@ -579,7 +579,7 @@ public class SMSMessagingDAO {
 			 */
 			con.rollback();
 
-			log.error("DATABASE OPERATION ERROR IN insertSMSRequestIds : ", e);
+			log.error("database operation error in insertSMSRequestIds : ", e);
 			throw e;
 		} catch (Exception e) {
 
@@ -588,7 +588,7 @@ public class SMSMessagingDAO {
 			 */
 			con.rollback();
 
-			log.error("ERROR IN insertSMSRequestIds : ", e);
+			log.error("error in insertSMSRequestIds : ", e);
 			throw e;
 		} finally {
 
@@ -619,7 +619,7 @@ public class SMSMessagingDAO {
 
 			ps.setInt(1, moSubscriptionId);
 			
-			log.debug("SQL QUERY IN subscriptionNotifiMap : " + ps);
+			log.debug("sql query in subscriptionNotifiMap : " + ps);
 
 			rs = ps.executeQuery();
 
@@ -630,11 +630,11 @@ public class SMSMessagingDAO {
 			}
 		} catch (SQLException e) {
 
-			log.error("DATABASE OPERATION ERROR IN subscriptionNotifiMap : ", e);
+			log.error("database operation error in subscriptionNotifiMap : ", e);
 			throw e;
 		} catch (Exception e) {
 
-			log.error("ERROR IN subscriptionNotifiMap : ", e);
+			log.error("error in subscriptionNotifiMap : ", e);
 			throw e;
 		} finally {
 
@@ -667,7 +667,7 @@ public class SMSMessagingDAO {
 
 			ps.setInt(1, dnSubscriptionId);
 			
-			log.debug("SQL QUERY IN subscriptionDNNotifiMap : " + ps);
+			log.debug("sql query in subscriptionDNNotifiMap : " + ps);
 
 			rs = ps.executeQuery();
 
@@ -678,11 +678,11 @@ public class SMSMessagingDAO {
 			}
 		} catch (SQLException e) {
 
-			log.error("DATABASE OPERATION ERROR IN subscriptionDNNotifiMap : ", e);
+			log.error("database operation error in subscriptionDNNotifiMap : ", e);
 			throw e;
 		} catch (Exception e) {
 
-			log.error("ERROR IN subscriptionDNNotifiMap : ", e);
+			log.error("error in subscriptionDNNotifiMap : ", e);
 			throw e;
 		} finally {
 
@@ -725,7 +725,7 @@ public class SMSMessagingDAO {
 
 			ps.setInt(1, dnSubscriptionId);
 			
-			log.debug("SQL QUERY IN outboudSubscriptionQuery : " + ps);
+			log.debug("sql query in outboudSubscriptionQuery : " + ps);
 
 			rs = ps.executeQuery();
 
@@ -736,11 +736,11 @@ public class SMSMessagingDAO {
 
 		} catch (SQLException e) {
 
-			log.error("DATABASE OPERATION ERROR IN outboudSubscriptionQuery : ", e);
+			log.error("database operation error in outboudSubscriptionQuery : ", e);
 			throw e;
 		} catch (Exception e) {
 
-			log.error("ERROR IN outboudSubscriptionQuery : ", e);
+			log.error("error in outboudSubscriptionQuery : ", e);
 			throw e;
 		} finally {
 
@@ -785,7 +785,7 @@ public class SMSMessagingDAO {
 
 			deleteSubscriptionsStatement.setInt(1, dnSubscriptionId);
 			
-			log.debug("SQL QUERY IN outboundSubscriptionDelete : " + deleteSubscriptionsStatement);
+			log.debug("sql query in outboundSubscriptionDelete : " + deleteSubscriptionsStatement);
 
 			deleteSubscriptionsStatement.executeUpdate();
 
@@ -798,7 +798,7 @@ public class SMSMessagingDAO {
 
 			deleteOperatorSubscriptionsStatement.setInt(1, dnSubscriptionId);
 			
-			log.debug("SQL QUERY IN outboundSubscriptionDelete : " + deleteOperatorSubscriptionsStatement);
+			log.debug("sql query in outboundSubscriptionDelete : " + deleteOperatorSubscriptionsStatement);
 
 			deleteOperatorSubscriptionsStatement.executeUpdate();
 
@@ -813,7 +813,7 @@ public class SMSMessagingDAO {
 			 */
 			con.rollback();
 
-			log.error("DATABASE OPERATION ERROR IN outboundSubscriptionDelete : ", e);
+			log.error("database operation error in outboundSubscriptionDelete : ", e);
 			throw e;
 		} catch (Exception e) {
 
@@ -822,7 +822,7 @@ public class SMSMessagingDAO {
 			 */
 			con.rollback();
 
-			log.error("ERROR IN outboundSubscriptionDelete : ", e);
+			log.error("error in outboundSubscriptionDelete : ", e);
 			throw e;
 		} finally {
 

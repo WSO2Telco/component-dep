@@ -26,22 +26,11 @@
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
-	<!--<parent>
-		<groupId>org.wso2.carbon</groupId>
-		<artifactId>apimgt</artifactId>
-		<version>1.2.0</version>
-		<relativePath>../../pom.xml</relativePath>
-	</parent> -->
-
 	<artifactId>workflow-manager</artifactId>
 
 	<packaging>bundle</packaging>
 	<name>WSO2.Telco Workflow Manager Module</name>
 	<description>WSO2.Telco Workflow Manager Module</description>
-
-	<!-- <properties>
-		<CApp.type>lib/synapse/mediator</CApp.type>
-	</properties> -->
 
 	<dependencies>
 		<dependency>
