@@ -10,9 +10,7 @@
    folk test M	--><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<!--groupId>org.wso2.carbon.identity</groupId> <artifactId>carbon-identity</artifactId> 
-		<packaging>pom</packaging> <version>5.0.8-SNAPSHOT</version> <name>WSO2 Carbon 
-		- Platform Aggregator Pom</name> <url>http://wso2.org</url -->
+
 	<parent>
    		<groupId>org.wso2</groupId>
    		<artifactId>wso2</artifactId>
@@ -36,6 +34,10 @@
 	<prerequisites>
 		<maven>3.0.0</maven>
 	</prerequisites>
+
+    <properties>
+        <com.wso2telco.dep.version>1.8.0-SNAPSHOT</com.wso2telco.dep.version>    
+    </properties>
 	
 	<distributionManagement>
                 <snapshotRepository>
@@ -53,8 +55,7 @@
 
 	
 	<modules>       
-        <module>parent</module>
-		<!--module>components/authentication-endpoint</module-->		
+        <module>parent</module>		
 	    <module>components/oneapi-validation</module> 
 		<module>components/subscription-validator</module> 
 		<module>components/publish-events-data</module>
