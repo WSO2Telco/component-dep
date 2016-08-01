@@ -3,7 +3,7 @@
         <parent>
                 <groupId>com.wso2telco.dep</groupId>
                 <artifactId>component-dep-parent</artifactId>
-                <version>${com.wso2telco.dep.version}</version>
+                <version>1.8.0-SNAPSHOT</version>
                 <relativePath>../parent/pom.xml</relativePath>
         </parent>
         <modelVersion>4.0.0</modelVersion>
