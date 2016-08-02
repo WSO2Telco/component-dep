@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.internal;
 
-import com.wso2telco.dep.mediator.dao.AggregatorDAO;
+import com.wso2telco.dep.mediator.service.AggregatorService;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 
 // TODO: Auto-generated Javadoc
@@ -25,13 +25,13 @@ import com.wso2telco.oneapivalidation.exceptions.CustomException;
 public class AggregatorValidator {
 
 	/** The Db service. */
-	private AggregatorDAO aggregatorDAO;
+	private AggregatorService aggregatorService;
 
 	/**
 	 * Instantiates a new aggregator validator.
 	 */
 	public AggregatorValidator() {
-		aggregatorDAO = new AggregatorDAO();
+		aggregatorService = new AggregatorService();
 	}
 
 	/**
@@ -50,11 +50,11 @@ public class AggregatorValidator {
 	 */
 	public void validateMerchant(int appid, String operatorid, String subscriber, String merchant) throws Exception {
 
-		String merchantid = aggregatorDAO.blacklistedmerchant(appid, operatorid, subscriber, merchant);
+		String merchantid = aggregatorService.blacklistedmerchant(appid, operatorid, subscriber, merchant);
 
 		if (merchantid == null) {
 
-			merchantid = aggregatorDAO.blacklistedmerchant(operatorid, subscriber, merchant);
+			merchantid = aggregatorService.blacklistedmerchant(operatorid, subscriber, merchant);
 		}
 
 		if (merchantid != null) {

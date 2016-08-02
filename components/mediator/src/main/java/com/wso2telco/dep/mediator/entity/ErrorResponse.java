@@ -24,10 +24,11 @@ import javax.xml.bind.annotation.XmlRootElement;
  * The Class ErrorResponse.
  */
 @XmlRootElement(name = "errorreturn")
+@Deprecated
 public class ErrorResponse {
     
     /** The errorreturn. */
-    private errorreturn errorreturn;
+    private ErrorReturn errorreturn;
     
     /**
      * Instantiates a new error response.
@@ -41,7 +42,7 @@ public class ErrorResponse {
      *
      * @return the error response
      */
-    public errorreturn getErrorResponse() {
+    public ErrorReturn getErrorResponse() {
             return errorreturn;
     }
 
@@ -51,7 +52,7 @@ public class ErrorResponse {
      *
      * @param errorreturn the new error response
      */
-    public void setErrorResponse(errorreturn errorreturn) {
+    public void setErrorResponse(ErrorReturn errorreturn) {
             this.errorreturn = errorreturn;
     }
     

@@ -5,9 +5,10 @@
   <parent>
         <groupId>com.wso2telco.dep</groupId>
         <artifactId>component-dep-parent</artifactId>
-        <version>${com.wso2telco.dep.version}</version>
+        <version>1.8.0-SNAPSHOT</version>
         <relativePath>../../parent/pom.xml</relativePath>
   </parent>
+
   <artifactId>analytics-common-functions</artifactId>
   <packaging>jar</packaging>
 
@@ -15,14 +16,12 @@
 
   <properties>
     <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
-    <carbon.analytics.version>1.0.6-SNAPSHOT</carbon.analytics.version>
   </properties>
 
   <dependencies>
     <dependency>
       <groupId>org.wso2.carbon.analytics</groupId>
       <artifactId>org.wso2.carbon.analytics.spark.core</artifactId>
-      <version>${carbon.analytics.version}</version>
     </dependency>
   </dependencies>
   
@@ -39,5 +38,4 @@
 			</plugin>
 		</plugins>
 	</build>
-
 </project>

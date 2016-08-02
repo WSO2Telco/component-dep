@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.internal;
 
-import com.wso2telco.dep.mediator.entity.nb.InboundSMSMessage;
+import com.wso2telco.dep.mediator.entity.smsmessaging.northbound.InboundSMSMessage;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 
 import java.util.ArrayList;

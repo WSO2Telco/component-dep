@@ -101,15 +101,15 @@ CREATE TABLE IF NOT EXISTS `operators` (
 --
 
 CREATE TABLE IF NOT EXISTS `operatorsubs` (
-  `ID` int(20) NOT NULL AUTO_INCREMENT,
-  `axiataid` int(11) DEFAULT NULL,
+  `id` int(20) NOT NULL AUTO_INCREMENT,
+  `mo_subscription_did` int(20) DEFAULT NULL,
   `domainurl` varchar(255) DEFAULT NULL,
   `operator` varchar(45) DEFAULT NULL,
   `created` varchar(25) DEFAULT NULL,
   `created_date` timestamp NULL DEFAULT NULL,
   `lastupdated` varchar(25) DEFAULT NULL,
   `lastupdated_date` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`id`)
 );
 
 --
@@ -117,15 +117,15 @@ CREATE TABLE IF NOT EXISTS `operatorsubs` (
 --
 
 CREATE TABLE IF NOT EXISTS `subscriptions` (
-  `ID` int(20) NOT NULL AUTO_INCREMENT,
-  `axiataid` int(11) DEFAULT NULL,
+  `mo_subscription_did` int(20) NOT NULL AUTO_INCREMENT,
   `notifyurl` varchar(255) DEFAULT NULL,
+  `service_provider` varchar(255) DEFAULT NULL,
+  `is_active` int(10) DEFAULT NULL,
   `created` varchar(25) DEFAULT NULL,
   `created_date` timestamp NULL DEFAULT NULL,
   `lastupdated` varchar(25) DEFAULT NULL,
   `lastupdated_date` timestamp NULL DEFAULT NULL,
-  `service_provider` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`mo_subscription_did`)
 );
 
 /*
@@ -229,27 +229,27 @@ CREATE TABLE IF NOT EXISTS `sendsms_reqid` (
 );
 
 CREATE TABLE IF NOT EXISTS `outbound_operatorsubs` (
-  `ID` int(20) NOT NULL AUTO_INCREMENT,
-  `axiataid` int(11) DEFAULT NULL,
+  `id` int(20) NOT NULL AUTO_INCREMENT,
+  `dn_subscription_did` int(20) DEFAULT NULL,
   `domainurl` varchar(255) DEFAULT NULL,
   `operator` varchar(45) DEFAULT NULL,
   `created` varchar(25) DEFAULT NULL,
   `created_date` timestamp NULL DEFAULT NULL,
   `lastupdated` varchar(25) DEFAULT NULL,
   `lastupdated_date` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`id`)
 );
 
 CREATE TABLE IF NOT EXISTS `outbound_subscriptions` (
-  `ID` int(20) NOT NULL AUTO_INCREMENT,
-  `axiataid` int(11) DEFAULT NULL,
+  `dn_subscription_did` int(20) NOT NULL AUTO_INCREMENT,
   `notifyurl` varchar(255) DEFAULT NULL,
+  `service_provider` varchar(255) DEFAULT NULL,
+  `is_active` int(10) DEFAULT NULL,
   `created` varchar(25) DEFAULT NULL,
   `created_date` timestamp NULL DEFAULT NULL,
   `lastupdated` varchar(25) DEFAULT NULL,
   `lastupdated_date` timestamp NULL DEFAULT NULL,
-  `service_provider` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`dn_subscription_did`)
 );
 
 /*

@@ -18,11 +18,17 @@ package com.wso2telco.dep.mediator.dao;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import com.wso2telco.dbutils.DbUtils;
 import com.wso2telco.dbutils.util.DataSourceNames;
 import com.wso2telco.dep.mediator.util.DatabaseTables;
 
 public class AggregatorDAO {
+
+	/** The Constant log. */
+	private final Log log = LogFactory.getLog(AggregatorDAO.class);
 
 	/**
 	 * Blacklistedmerchant.
@@ -40,7 +46,7 @@ public class AggregatorDAO {
 	 *             the exception
 	 */
 	public String blacklistedmerchant(int appId, String operatorId, String subscriber, String merchant)
-			throws Exception {
+			throws SQLException, Exception {
 
 		String resultcode = null;
 		Connection con = null;
@@ -64,9 +70,10 @@ public class AggregatorDAO {
 			StringBuilder queryString = new StringBuilder("SELECT merchantopco_blacklist.id id ");
 			queryString.append("FROM ");
 			queryString.append(DatabaseTables.MERCHANT_OPERATOR_BLACKLIST.getTableName());
-			queryString.append(" , ");
+			queryString.append(" merchantopco_blacklist, ");
 			queryString.append(DatabaseTables.OPERATORS.getTableName());
-			queryString.append(" WHERE merchantopco_blacklist.operator_id = operators.id ");
+			queryString.append(" operators ");
+			queryString.append("WHERE merchantopco_blacklist.operator_id = operators.id ");
 			queryString.append("AND application_id = ?");
 			queryString.append(" AND operatorname = ?");
 			queryString.append(" AND subscriber = ?");
@@ -78,6 +85,8 @@ public class AggregatorDAO {
 			ps.setString(2, operatorId);
 			ps.setString(3, subscriber);
 			ps.setString(4, merchant.toLowerCase());
+			
+			log.debug("sql query in blacklistedmerchant : " + ps);
 
 			rs = ps.executeQuery();
 
@@ -85,9 +94,14 @@ public class AggregatorDAO {
 
 				resultcode = String.valueOf(rs.getInt("id"));
 			}
+		} catch (SQLException e) {
+
+			log.error("database operation error in blacklistedmerchant : ", e);
+			throw e;
 		} catch (Exception e) {
 
-			DbUtils.handleException("Error while selecting black listed merchant. ", e);
+			log.error("error in blacklistedmerchant : ", e);
+			throw e;
 		} finally {
 
 			DbUtils.closeAllConnections(ps, con, rs);
@@ -109,7 +123,8 @@ public class AggregatorDAO {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public String blacklistedmerchant(String operatorId, String subscriber, String merchant) throws Exception {
+	public String blacklistedmerchant(String operatorId, String subscriber, String merchant)
+			throws SQLException, Exception {
 
 		String resultcode = null;
 		Connection con = null;
@@ -132,9 +147,10 @@ public class AggregatorDAO {
 			StringBuilder merchantQueryString = new StringBuilder("SELECT merchantopco_blacklist.id id ");
 			merchantQueryString.append("FROM ");
 			merchantQueryString.append(DatabaseTables.MERCHANT_OPERATOR_BLACKLIST.getTableName());
-			merchantQueryString.append(" , ");
+			merchantQueryString.append(" merchantopco_blacklist, ");
 			merchantQueryString.append(DatabaseTables.OPERATORS.getTableName());
-			merchantQueryString.append(" WHERE merchantopco_blacklist.operator_id = operators.id ");
+			merchantQueryString.append(" operators ");
+			merchantQueryString.append("WHERE merchantopco_blacklist.operator_id = operators.id ");
 			merchantQueryString.append("AND application_id is null ");
 			merchantQueryString.append("AND subscriber = ?");
 			merchantQueryString.append(" AND operatorname = ?");
@@ -145,6 +161,8 @@ public class AggregatorDAO {
 			ps.setString(1, subscriber);
 			ps.setString(2, operatorId);
 			ps.setString(3, merchant.toLowerCase());
+			
+			log.debug("sql query in blacklistedmerchant : " + ps);
 
 			rs = ps.executeQuery();
 
@@ -152,9 +170,14 @@ public class AggregatorDAO {
 
 				resultcode = String.valueOf(rs.getInt("id"));
 			}
+		} catch (SQLException e) {
+
+			log.error("database operation error in blacklistedmerchant : ", e);
+			throw e;
 		} catch (Exception e) {
 
-			DbUtils.handleException("Error while selecting black listed merchant. ", e);
+			log.error("error in blacklistedmerchant : ", e);
+			throw e;
 		} finally {
 
 			DbUtils.closeAllConnections(ps, con, rs);

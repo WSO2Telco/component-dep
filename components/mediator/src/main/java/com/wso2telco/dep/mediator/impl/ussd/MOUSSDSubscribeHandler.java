@@ -17,8 +17,8 @@ package com.wso2telco.dep.mediator.impl.ussd;
 
 import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
-import com.wso2telco.dep.mediator.dao.USSDDAO;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
+import com.wso2telco.dep.mediator.service.USSDService;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
@@ -31,6 +31,7 @@ import java.util.Map;
 /**
  * The Class MOUSSDSubscribeHandler.
  */
+
 public class MOUSSDSubscribeHandler implements USSDHandler {
 
 	/** The log. */
@@ -46,7 +47,7 @@ public class MOUSSDSubscribeHandler implements USSDHandler {
 	private USSDExecutor executor;
 
 	/** The ussdDAO. */
-	private USSDDAO ussdDAO;
+	private USSDService ussdService;
 
 	/**
 	 * Instantiates a new MOUSSD subscribe handler.
@@ -58,7 +59,7 @@ public class MOUSSDSubscribeHandler implements USSDHandler {
 
 		occi = new OriginatingCountryCalculatorIDD();
 		this.executor = ussdExecutor;
-		ussdDAO = new USSDDAO();
+		ussdService = new USSDService();
 	}
 
 	/*
@@ -76,7 +77,7 @@ public class MOUSSDSubscribeHandler implements USSDHandler {
 		String notifyUrl = jsonBody.getJSONObject("subscription").getJSONObject("callbackReference")
 				.getString("notifyURL");
 
-		Integer subscriptionId = ussdDAO.ussdRequestEntry(notifyUrl);
+		Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl);
 
 		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
 

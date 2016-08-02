@@ -11,19 +11,18 @@
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<!--groupId>org.wso2.carbon.identity</groupId> <artifactId>carbon-identity</artifactId> 
-		<packaging>pom</packaging> <version>5.0.8-SNAPSHOT</version> <name>WSO2 Carbon 
-		- Platform Aggregator Pom</name> <url>http://wso2.org</url -->
+
 	<parent>
 		<groupId>org.wso2</groupId>
 		<artifactId>wso2</artifactId>
 		<version>1</version>
-	</parent>
+	</parent> 
+
 	<groupId>com.wso2telco.dep</groupId>
 	<artifactId>component-dep-parent</artifactId>
 	<packaging>pom</packaging>
 	<url>http://wso2telco.com</url>
-	<version>${com.wso2telco.dep.version}</version>
+	<version>1.8.0-SNAPSHOT</version>
 	<name>WSO2Telco -Digital Enable Platform Component</name>
 	<description>WSO2Telco DEP Aggregate Pom</description>
 
@@ -139,6 +138,7 @@
 				<groupId>com.wso2telco.dep</groupId>
 				<artifactId>operator-service</artifactId>
 				<version>${com.wso2telco.dep.version}</version> 
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>log4j</groupId>
@@ -148,7 +148,7 @@
 			<dependency>
 				<groupId>com.google.code.gson</groupId>
 				<artifactId>gson</artifactId>
-				<version>${google.code.gson.version}</version>
+				<version>${com.google.code.gson.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.glassfish.jersey.core</groupId>
@@ -159,31 +159,39 @@
 				<groupId>com.wso2telco.core</groupId>
 				<artifactId>dbutils</artifactId>
 				<version>${com.wso2telco.core.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.wso2telco.core</groupId>
 				<artifactId>msisdn-validator</artifactId>
 				<version>${com.wso2telco.core.version}</version>
+				<scope>provided</scope>
 			</dependency>			
 			<dependency>
 				<groupId>org.json.wso2</groupId>
 				<artifactId>json</artifactId>
 				<version>${org.json.wso2.version}</version>
+				<type>jar</type>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>junit</groupId>
 				<artifactId>junit</artifactId>
 				<version>${junit.version}</version>
+				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.synapse</groupId>
 				<artifactId>synapse-core</artifactId>
 				<version>${org.apache.synapse.core.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.wso2.carbon.apimgt</groupId>
 				<artifactId>org.wso2.carbon.apimgt.gateway</artifactId>
 				<version>${org.wso2.carbon.apimgt.version}</version>
+				<type>jar</type>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.wso2.carbon</groupId>
@@ -268,21 +276,25 @@
 				<groupId>commons-codec.wso2</groupId>
 				<artifactId>commons-codec</artifactId>
 				<version>${commons-codec.wso2.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>wsdl4j.wso2</groupId>
 				<artifactId>wsdl4j</artifactId>
 				<version>${wsdl4j.wso2.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.axis2.wso2</groupId>
 				<artifactId>axis2</artifactId>
 				<version>${org.apache.axis2.wso2.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.abdera.wso2</groupId>
 				<artifactId>abdera</artifactId>
 				<version>${org.apache.abdera.wso2.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.geronimo.specs.wso2</groupId>
@@ -293,16 +305,19 @@
 				<groupId>org.apache.httpcomponents.wso2</groupId>
 				<artifactId>httpcore</artifactId>
 				<version>${org.apache.httpcomponents.wso2.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.wso2.orbit.org.apache.neethi</groupId>
 				<artifactId>neethi</artifactId>
 				<version>${org.wso2.orbit.org.apache.neethi.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.woden.wso2</groupId>
 				<artifactId>woden</artifactId>
 				<version>${org.apache.woden.wso2.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>commons-logging</groupId>
@@ -313,6 +328,7 @@
 				<groupId>org.apache.ws.commons.axiom.wso2</groupId>
 				<artifactId>axiom</artifactId>
 				<version>${org.apache.ws.commons.axiom.wso2.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>com.h2database.wso2</groupId>
@@ -323,11 +339,13 @@
 				<groupId>org.wso2.carbon</groupId>
 				<artifactId>org.wso2.carbon.user.api</artifactId>
 				<version>${org.wso2.carbon.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.wso2.carbon</groupId>
 				<artifactId>org.wso2.carbon.core</artifactId>
 				<version>${org.wso2.carbon.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>commons-httpclient.wso2</groupId>
@@ -338,6 +356,7 @@
 				<groupId>org.apache.ws.commons.schema.wso2</groupId>
 				<artifactId>XmlSchema</artifactId>
 				<version>${org.apache.ws.commons.schema.wso2.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.apache.ws.commons.axiom</groupId>
@@ -358,10 +377,74 @@
 			<dependency>
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-bundle</artifactId>
-				<version>${cxf.bundle.version}</version>
+				<version>${org.apache.cxf.version}</version>
 			</dependency>
-		
-		
+			<dependency>
+				<groupId>org.wso2.carbon</groupId>
+				<artifactId>javax.cache.wso2</artifactId>
+				<version>${org.wso2.carbon.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.codehaus.jettison</groupId>
+				<artifactId>jettison</artifactId>
+				<version>${org.codehaus.jettison.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>commons-fileupload</groupId>
+				<artifactId>commons-fileupload</artifactId>
+				<version>${commons-fileupload.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>asm</groupId>
+				<artifactId>asm-all</artifactId>
+				<version>${asm.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.wso2.orbit.org.apache.httpcomponents</groupId>
+				<artifactId>httpclient</artifactId>
+				<version>${org.wso2.orbit.org.apache.httpcomponents.version}</version>
+				<type>jar</type>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.apache.synapse</groupId>
+				<artifactId>synapse-commons</artifactId>
+				<version>${org.apache.synapse.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.wso2telco.dep</groupId>
+				<artifactId>oneapi-validation</artifactId>
+				<version>${com.wso2telco.dep.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.wso2telco.dep</groupId>
+				<artifactId>subscription-validator</artifactId>
+				<version>${com.wso2telco.dep.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.wso2telco.dep</groupId>
+				<artifactId>data-publisher</artifactId>
+				<version>${com.wso2telco.dep.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.wso2telco.dep</groupId>
+				<artifactId>publish-events-data</artifactId>
+				<version>${com.wso2telco.dep.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.wso2telco.core</groupId>
+				<artifactId>mnc-resolver</artifactId>
+				<version>${com.wso2telco.core.version}</version>
+			</dependency>
+			<dependency>
+		        <groupId>org.wso2.carbon.analytics</groupId>
+		        <artifactId>org.wso2.carbon.analytics.spark.core</artifactId>
+		        <version>${org.wso2.carbon.analytics.version}</version>
+		    </dependency>
 		</dependencies>
 
 	</dependencyManagement>
@@ -369,13 +452,12 @@
 	<properties>
 		<com.wso2telco.dep.version>1.8.0-SNAPSHOT</com.wso2telco.dep.version>
 		<log4j.version>1.2.13</log4j.version>
-		<google.code.gson.version>2.3.1</google.code.gson.version>
+		<com.google.code.gson.version>2.3.1</com.google.code.gson.version>
 		<org.glassfish.jersey.core.version>2.4</org.glassfish.jersey.core.version>
 		<com.wso2telco.core.version>2.0.03-SNAPSHOT</com.wso2telco.core.version>
 		<org.json.wso2.version>3.0.0.wso2v1</org.json.wso2.version>
 		<junit.version>3.8.1</junit.version>
 		<org.apache.synapse.core.version>2.1.7-wso2v1</org.apache.synapse.core.version>
-		<!-- <org.wso2.carbon.utils>4.2.0</org.wso2.carbon.utils> -->
 		<org.wso2.carbon.commons.version>4.4.8</org.wso2.carbon.commons.version>
 		<org.wso2.carbon.apimgt.version>5.0.3</org.wso2.carbon.apimgt.version>
 		<org.wso2.hazelcast>3.5.2.wso2v1</org.wso2.hazelcast>
@@ -385,7 +467,6 @@
 		<joda-time.wso2.version>1.6.0.wso2v1</joda-time.wso2.version>
 		<carbon.governance.version>4.5.8</carbon.governance.version>
 		<commons-httpclient.wso2.version>3.1.0.wso2v2</commons-httpclient.wso2.version>
-		<org.json.wso2.version>3.0.0.wso2v1</org.json.wso2.version>
 		<org.wso2.orbit.org.apache.httpcomponents.version>4.3.1.wso2v2</org.wso2.orbit.org.apache.httpcomponents.version>
 		<org.apache.synapse.version>2.1.5-wso2v2</org.apache.synapse.version>
 		<commons-codec.wso2.version>1.4.0.wso2v1</commons-codec.wso2.version>
@@ -399,7 +480,6 @@
 		<org.apache.woden.wso2.version>1.0.0.M9-wso2v1</org.apache.woden.wso2.version>
 		<commons-logging.version>1.1.1</commons-logging.version>
 		<org.apache.ws.commons.axiom.wso2.version>1.2.11.wso2v9</org.apache.ws.commons.axiom.wso2.version>
-		<com.h2database.version>1.4.191</com.h2database.version>
 		<org.wso2.carbon.version>4.4.3</org.wso2.carbon.version>		
 		<synapse.version>2.1.7-wso2v1</synapse.version>
 		<carbon.apimgt.version>5.0.3</carbon.apimgt.version>
@@ -407,10 +487,13 @@
 		<com.h2database.wso2.version>1.2.140.wso2v3</com.h2database.wso2.version>
 		<org.apache.ws.commons.axiom.version>1.2.18</org.apache.ws.commons.axiom.version>
 		<com.sun.mail.version>1.5.5</com.sun.mail.version>
-		<cxf.bundle.version>2.7.6</cxf.bundle.version>
+		<org.apache.cxf.version>2.7.6</org.apache.cxf.version>
 		<carbon.p2.plugin.version>1.5.3</carbon.p2.plugin.version>
 		<servlet.api.version>2.5</servlet.api.version>
-		
+		<org.codehaus.jettison.version>1.1</org.codehaus.jettison.version>
+		<commons-fileupload.version>1.2.1</commons-fileupload.version>
+		<asm.version>3.3.1</asm.version>
+		<org.wso2.carbon.analytics.version>1.0.6-SNAPSHOT</org.wso2.carbon.analytics.version>
 	</properties>
 
 	<build>

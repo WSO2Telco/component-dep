@@ -22,9 +22,7 @@ import org.apache.synapse.MessageContext;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.wso2.carbon.apimgt.gateway.APIMgtGatewayConstants;
-
 import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
-
 import com.wso2telco.datapublisher.DataPublisherConstants;
 import com.wso2telco.datapublisher.SouthboundDataPublisher;
 import com.wso2telco.datapublisher.dto.NorthboundResponsePublisherDTO;
@@ -66,34 +64,38 @@ public class NorthboundPublisher {
 	 *            the message context
 	 */
 	public void publishNBErrorResponseData(CustomException ax, String retStr, MessageContext messageContext) {
-		// set properties for response data publisher
-		// messageContext.setProperty(SouthboundPublisherConstants.RESPONSE_CODE,
-		// Integer.toString(statusCode));
-		// messageContext.setProperty(SouthboundPublisherConstants.MSISDN,
-		// messageContext.getProperty(MSISDNConstants.USER_MSISDN));
 
+		// set properties for response data publisher
 		boolean isPaymentReq = false;
 
 		if (retStr != null && !retStr.isEmpty()) {
+
 			// get serverReferenceCode property for payment API response
 			JSONObject paymentRes = null;
 			// get exception property for exception response
 			JSONObject exception = null;
+
 			try {
+
 				JSONObject response = new JSONObject(retStr);
 				paymentRes = response.optJSONObject("amountTransaction");
+
 				if (paymentRes != null) {
+
 					if (paymentRes.has("serverReferenceCode")) {
+
 						messageContext.setProperty(DataPublisherConstants.OPERATOR_REF,
 								paymentRes.optString("serverReferenceCode"));
 					} else if (paymentRes.has("originalServerReferenceCode")) {
+
 						messageContext.setProperty(DataPublisherConstants.OPERATOR_REF,
 								paymentRes.optString("originalServerReferenceCode"));
 					}
+
 					isPaymentReq = true;
 				}
-
 			} catch (JSONException e) {
+
 				log.error("Error in converting response to json. " + e.getMessage(), e);
 			}
 		}
@@ -155,20 +157,18 @@ public class NorthboundPublisher {
 		String errorObjectString = "";
 		try {
 			errorObjectString = new JSONObject(error).toString();
-			// JSONObject j = new JSONObject(errorObjectString);
 			JSONObject innerObj = new JSONObject(error);
 			if (innerObj.isNull("serviceException")) {
-				// .out.println("serviceException is null");
+
 				innerObj.remove("serviceException");
 			} else if (innerObj.isNull("policyException")) {
-				// System.out.println("serviceException is null");
+
 				innerObj.remove("policyException");
 			}
-			// System.out.println(j.toJSONString());
 			errorObjectString = innerObj.toString();
+		} catch (Exception e) {
 
-		} catch (Exception ex) {
-			System.out.println("NortboundPublisher>getErrorJSONString: " + ex);
+			log.error("ERROR IN getErrorJSONString : ", e);
 		}
 		return errorObjectString;
 	}
