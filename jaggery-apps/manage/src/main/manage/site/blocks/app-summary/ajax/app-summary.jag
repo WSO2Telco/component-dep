@@ -26,8 +26,8 @@ include("/jagg/jagg.jag");
         if (user.isAdmin) {
             username = selectedSubscriber;
         }
-		var dialogbillingModule = jagg.module("dialogbilling");
-        result = dialogbillingModule.getProviderAPIUsage(username,period);
+		var operatorbillingModule = jagg.module("operatorbilling");
+        result = operatorbillingModule.getProviderAPIUsage(username,period);
         
 		log.debug("::: Period result: >> "+ stringify(result));
 		
@@ -55,8 +55,8 @@ include("/jagg/jagg.jag");
         var fromDate = request.getParameter("fromDate");
         var toDate = request.getParameter("toDate");
 
-        var dialogbillingModule = jagg.module("dialogbilling");     
-        responseTimes = dialogbillingModule.getAllResponseTimes(subscriberName,appName,fromDate,toDate);
+        var operatorbillingModule = jagg.module("operatorbilling");     
+        responseTimes = operatorbillingModule.getAllResponseTimes(subscriberName,appName,fromDate,toDate);
         log.debug("::: ResponseTimes: >> "+ stringify(responseTimes));
         
         if (responseTimes.error) {
