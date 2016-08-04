@@ -18,7 +18,12 @@ getOutputs:function (inputs) {
 	    var logedop = jagg.getUser().operator;
 	    
         mod = jagg.module("approvalaudit");
-
+        
+        var op = mod.getAllOperator();
+                
+        var log = new Log();
+        log.info("getOutputs:function"+ apis);
+        
         if (user.isAdmin) {
         	operator = "%";
         } else if (logedop == 'DIALOG') {

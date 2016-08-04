@@ -21,14 +21,14 @@ include("/jagg/jagg.jag");
         date.setMonth(date.getMonth()-1);
         var period = date.getFullYear() + "-" + (date.getMonth() + 1);
 
-        var dialogbillingModule = jagg.module("dialogbilling");
+        var operatorbillingModule = jagg.module("operatorbilling");
         var subscriber = username;
 
         if(user.isAdmin) {
             subscriber = "__ALL__";
         }
-        //result = dialogbillingModule.getDashboardProviderAPIUsage(subscriber, vendor.toUpperCase(), timeRange);
-        result = dialogbillingModule.getDashboardProviderAPIUsage(subscriber, vendor.toUpperCase(), period);
+        //result = operatorbillingModule.getDashboardProviderAPIUsage(subscriber, vendor.toUpperCase(), timeRange);
+        result = operatorbillingModule.getDashboardProviderAPIUsage(subscriber, vendor.toUpperCase(), period);
 
         var total = 0;
 
