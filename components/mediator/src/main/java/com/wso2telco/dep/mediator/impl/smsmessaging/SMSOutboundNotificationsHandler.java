@@ -30,8 +30,9 @@ import com.wso2telco.dep.mediator.entity.smsmessaging.OutboundRequestOp;
 import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.service.SMSMessagingService;
+import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.mnc.resolver.MNCQueryClient;
-import com.wso2telco.oneapivalidation.exceptions.CustomException;
+
 import java.util.HashMap;
 import java.util.Map;
 

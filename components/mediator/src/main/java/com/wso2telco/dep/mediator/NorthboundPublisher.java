@@ -26,10 +26,10 @@ import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 import com.wso2telco.datapublisher.DataPublisherConstants;
 import com.wso2telco.datapublisher.SouthboundDataPublisher;
 import com.wso2telco.datapublisher.dto.NorthboundResponsePublisherDTO;
-import com.wso2telco.oneapivalidation.exceptions.CustomException;
-import com.wso2telco.oneapivalidation.exceptions.PolicyException;
-import com.wso2telco.oneapivalidation.exceptions.RequestError;
-import com.wso2telco.oneapivalidation.exceptions.ServiceException;
+import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
+import com.wso2telco.dep.oneapivalidation.exceptions.PolicyException;
+import com.wso2telco.dep.oneapivalidation.exceptions.RequestError;
+import com.wso2telco.dep.oneapivalidation.exceptions.ServiceException;
 import com.wso2telco.publisheventsdata.publisher.EventsDataPublisherClient;
 
 // TODO: Auto-generated Javadoc

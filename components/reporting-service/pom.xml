@@ -99,7 +99,7 @@
 						</Private-Package>
 						<Export-Package>
 							!com.wso2telco.dep.reportingservice.internal,
-							com.wso2telco.dep.reportingservice,
+							com.wso2telco.dep.reportingservice.*,
 							com.wso2telco.dep.reportingservice.util,
 							com.wso2telco.dep.reportingservice.dao,
 							com.wso2telco.dep.reportingservice.northbound,

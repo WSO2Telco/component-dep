@@ -16,7 +16,7 @@
 package com.wso2telco.dep.mediator.internal;
 
 import com.wso2telco.dep.mediator.service.AggregatorService;
-import com.wso2telco.oneapivalidation.exceptions.CustomException;
+import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 
 // TODO: Auto-generated Javadoc
 /**
