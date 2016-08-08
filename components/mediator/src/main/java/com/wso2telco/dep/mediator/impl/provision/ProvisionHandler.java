@@ -13,31 +13,14 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.dep.mediator.util;
+package com.wso2telco.dep.mediator.impl.provision;
 
-public enum DatabaseTables {
+import org.apache.synapse.MessageContext;
+import org.json.JSONObject;
 
-	MERCHANT_OPERATOR_BLACKLIST("merchantopco_blacklist"), 
-	OPERATORS("operators"), 
-	VALID_PAYMENT_CATEGORIES("valid_payment_categories"), 
-	USSD_REQUEST_ENTRY("ussd_request_entry"), 
-	OUTBOUND_SUBSCRIPTIONS("outbound_subscriptions"), 
-	OUTBOUND_OPERATORSUBS("outbound_operatorsubs"), 
-	SEND_SMS_REQID("sendsms_reqid"), 
-	SUBSCRIPTIONS("subscriptions"), 
-	OPERATORSUBS("operatorsubs"),
-	PROVISION_SERVICE_ENTRY("provision_services"),
-	PROVISION_SERVICE_OPERATOR_ENDPOINTS("provision_service_operator_endpoints");
+public interface ProvisionHandler {
 
-	private String tableName;
+	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context) throws Exception ;
 
-	DatabaseTables(String tableName) {
-
-		this.tableName = tableName;
-	}
-
-	public String getTableName() {
-
-		return this.tableName;
-	}
+    public boolean handle(MessageContext context) throws Exception;
 }

@@ -13,31 +13,35 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.dep.mediator.util;
+package com.wso2telco.dep.mediator.entity.provision;
 
-public enum DatabaseTables {
+public class ServiceList {
 
-	MERCHANT_OPERATOR_BLACKLIST("merchantopco_blacklist"), 
-	OPERATORS("operators"), 
-	VALID_PAYMENT_CATEGORIES("valid_payment_categories"), 
-	USSD_REQUEST_ENTRY("ussd_request_entry"), 
-	OUTBOUND_SUBSCRIPTIONS("outbound_subscriptions"), 
-	OUTBOUND_OPERATORSUBS("outbound_operatorsubs"), 
-	SEND_SMS_REQID("sendsms_reqid"), 
-	SUBSCRIPTIONS("subscriptions"), 
-	OPERATORSUBS("operatorsubs"),
-	PROVISION_SERVICE_ENTRY("provision_services"),
-	PROVISION_SERVICE_OPERATOR_ENDPOINTS("provision_service_operator_endpoints");
+	private ServiceInfo[] serviceInfo;
+	private String currencyCode;
+	private String resourceURL;
 
-	private String tableName;
-
-	DatabaseTables(String tableName) {
-
-		this.tableName = tableName;
+	public ServiceInfo[] getServiceInfo() {
+		return serviceInfo;
 	}
 
-	public String getTableName() {
+	public void setServiceInfo(ServiceInfo[] serviceInfo) {
+		this.serviceInfo = serviceInfo;
+	}
 
-		return this.tableName;
+	public String getCurrencyCode() {
+		return currencyCode;
+	}
+
+	public void setCurrencyCode(String currencyCode) {
+		this.currencyCode = currencyCode;
+	}
+
+	public String getResourceURL() {
+		return resourceURL;
+	}
+
+	public void setResourceURL(String resourceURL) {
+		this.resourceURL = resourceURL;
 	}
 }

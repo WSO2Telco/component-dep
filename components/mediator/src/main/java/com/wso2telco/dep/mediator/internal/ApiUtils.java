@@ -17,7 +17,7 @@ package com.wso2telco.dep.mediator.internal;
 
 import com.wso2telco.dep.mediator.entity.smsmessaging.northbound.InboundSMSMessage;
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
-
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
@@ -245,4 +245,27 @@ public class ApiUtils {
 
 		return jwtDetails;
 	}
+	
+	public String getHashString(String text) {
+
+        String hashText = null;
+
+        try {
+            MessageDigest digest = MessageDigest.getInstance("MD5");
+            byte[] hashedBytes = digest.digest(text.getBytes("UTF-8"));
+
+            StringBuffer stringBuffer = new StringBuffer();
+            for (int i = 0; i < hashedBytes.length; i++) {
+                stringBuffer.append(Integer.toString((hashedBytes[i] & 0xff) + 0x100, 16)
+                        .substring(1));
+            }
+
+            hashText = stringBuffer.toString();
+        } catch (Exception e) {
+
+            log.error("Error in getHashString : " + e.getMessage());
+            throw new CustomException("SVC1000", "", new String[]{null});
+        }
+        return hashText;
+    }
 }
