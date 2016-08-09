@@ -42,7 +42,7 @@ public class ValidateSBRetrieveSms implements IServiceValidate{
         
         ValidationRule[] rules = {
                 new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_NUMBER, "registrationId", regId),
-                new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "criteria", criteria),
+                new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "criteria", criteria),
                 new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL_INT_GE_ZERO, "maxBatchSize", maxBatchSize),};
         
         Validation.checkRequestParams(rules);
