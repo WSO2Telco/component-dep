@@ -224,7 +224,7 @@ public class Validation {
                                 int msgChaCount = parameterValueString.length();
                                  
                                  
-                                if (msgChaCount > 160) {
+                                if (msgChaCount > 800) {
 
                                     valid = false;
                                     logger.debug("Message too long. " + msgChaCount);
