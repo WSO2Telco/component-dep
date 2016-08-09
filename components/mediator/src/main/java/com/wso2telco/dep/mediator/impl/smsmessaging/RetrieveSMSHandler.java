@@ -17,24 +17,22 @@ package com.wso2telco.dep.mediator.impl.smsmessaging;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.entity.smsmessaging.northbound.InboundSMSMessage;
 import com.wso2telco.dep.mediator.entity.smsmessaging.northbound.NorthboundRetrieveRequest;
 import com.wso2telco.dep.mediator.entity.smsmessaging.northbound.NorthboundRetrieveResponse;
 import com.wso2telco.dep.mediator.entity.smsmessaging.northbound.Registrations;
-
 import com.wso2telco.dep.mediator.internal.APICall;
 import com.wso2telco.dep.mediator.internal.ApiUtils;
 import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
-
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.oneapivalidation.service.impl.sms.nb.ValidateNBRetrieveSms;
 import com.wso2telco.oneapivalidation.service.impl.sms.sb.ValidateSBRetrieveSms;
 
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
@@ -96,10 +94,27 @@ public class RetrieveSMSHandler implements SMSHandler {
 		Gson gson = new GsonBuilder().serializeNulls().create();
 
 		String reqType = "retrive_sms";
-		String requestid = UID.getUniqueID(Type.SMSRETRIVE.getCode(), context,executor.getApplicationid());
-		 //String appID = apiUtil.getAppID(context, reqType);
+		String requestid = UID.getUniqueID(Type.SMSRETRIVE.getCode(), context,
+				executor.getApplicationid());
+		// String appID = apiUtil.getAppID(context, reqType);
+
+		int batchSize = 100;
 
 		if (context.isDoingGET()) {
+
+			URL retrieveURL = new URL("http://example.com/smsmessaging/v1"
+					+ executor.getSubResourcePath());
+			String urlQuery = retrieveURL.getQuery();
+
+			if (urlQuery.contains("maxBatchSize")) {
+				String queryParts[] = urlQuery.split("=");
+				if (queryParts.length > 1) {
+					if (Integer.parseInt(queryParts[1]) < 100) {
+						batchSize = Integer.parseInt(queryParts[1]);
+					}
+				}
+			}
+
 			List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(
 					API_TYPE, executor.getSubResourcePath(),
 					executor.getValidoperators());
@@ -107,7 +122,6 @@ public class RetrieveSMSHandler implements SMSHandler {
 			log.debug("Endpoints size: " + endpoints.size());
 
 			Collections.shuffle(endpoints);
-			int batchSize = 100;
 
 			int perOpCoLimit = batchSize / (endpoints.size());
 
@@ -221,7 +235,6 @@ public class RetrieveSMSHandler implements SMSHandler {
 			log.debug("Endpoints size: " + validEndpoints.size());
 
 			Collections.shuffle(validEndpoints);
-			int batchSize = 100;
 			int perOpCoLimit = batchSize / (validEndpoints.size());
 
 			log.debug("Per OpCo limit :" + perOpCoLimit);
@@ -252,8 +265,7 @@ public class RetrieveSMSHandler implements SMSHandler {
 						getRequestURL = "/"
 								+ registrations[i].getRegistrationID()
 								+ "/messages?maxBatchSize="
-								+ nbRetrieveRequest.getInboundSMSMessages()
-										.getMaxBatchSize();
+								+ batchSize;
 						url = url.replace("/messages", getRequestURL);
 						criteria = registrations[i].getCriteria();
 						operatorCode = registrations[i].getOperatorCode();
