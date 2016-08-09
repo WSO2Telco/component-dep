@@ -262,13 +262,10 @@ public class RetrieveSMSHandler implements SMSHandler {
 					if (registrations[i].getOperatorCode().equalsIgnoreCase(
 							aEndpoint.getOperator())) {
 						/* create request url for southbound operators */
-						getRequestURL = "/"
-								+ registrations[i].getRegistrationID()
-								+ "/messages?maxBatchSize="
-								+ batchSize;
-						url = url.replace("/messages", getRequestURL);
 						criteria = registrations[i].getCriteria();
 						operatorCode = registrations[i].getOperatorCode();
+						getRequestURL = "/" + registrations[i].getRegistrationID() + "/" + criteria + "/messages?maxBatchSize=" + batchSize;
+                        url = url.replace("/messages", getRequestURL);
 						break;
 					}
 				}
@@ -388,8 +385,16 @@ public class RetrieveSMSHandler implements SMSHandler {
 
 		if (httpMethod.equalsIgnoreCase("GET")) {
 			IServiceValidate validator;
-			String appID = apiUtil.getAppID(context, "retrive_sms");
-			String[] params = { appID, "" };
+			String urlParts = apiUtil.getAppID(context, "retrive_sms");
+			String appID = "";
+			String criteria = "";
+			String[] param = urlParts.split("/");
+			if (param.length == 2) {
+				appID = param[0];
+				criteria = param[1];
+			}
+
+			String[] params = { appID, criteria, "" };
 			validator = new ValidateSBRetrieveSms();
 			validator.validateUrl(requestPath);
 			validator.validate(params);
