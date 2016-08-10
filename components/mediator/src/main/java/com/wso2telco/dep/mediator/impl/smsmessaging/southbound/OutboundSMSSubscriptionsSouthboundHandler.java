@@ -157,7 +157,7 @@ public class OutboundSMSSubscriptionsSouthboundHandler implements SMSHandler {
 		SouthboundDeliveryReceiptSubscriptionRequest subsrequst = gson.fromJson(jsonBody.toString(),
 				SouthboundDeliveryReceiptSubscriptionRequest.class);
 		String origNotiUrl = subsrequst.getDeliveryReceiptSubscription().getCallbackReference().getNotifyURL();
-		subsrequst.getDeliveryReceiptSubscription().setClientCorrelator(orgclientcl + ":" + requestid);
+		//subsrequst.getDeliveryReceiptSubscription().setClientCorrelator(orgclientcl + ":" + requestid);
 
 		List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(API_TYPE, executor.getSubResourcePath(),
 				executor.getValidoperators());

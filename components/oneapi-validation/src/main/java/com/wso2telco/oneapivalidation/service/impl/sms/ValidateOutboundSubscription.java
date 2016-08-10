@@ -70,7 +70,7 @@ public class ValidateOutboundSubscription implements IServiceValidate {
 			}
 
 			filterCriteria = nullOrTrimmed(objSubscription.getString("filterCriteria"));
-			rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_URL,"filterCriteria", filterCriteria));
+			rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY,"filterCriteria", filterCriteria));
 
 		} catch (Exception e) {
 			System.out.println("Manipulating recived JSON Object: " + e);

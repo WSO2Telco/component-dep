@@ -190,8 +190,8 @@ public class OutboundSMSSubscriptionsNorthboundHandler implements SMSHandler {
 							.getDeliveryReceiptSubscription().getCallbackReference().getCallbackData());
 					callbackReference.setNotifyURL(subsEndpoint);
 					deliveryReceiptSubscriptionRequest.setCallbackReference(callbackReference);
-					deliveryReceiptSubscriptionRequest.setClientCorrelator(orgclientcl + ":" + requestid);
-					deliveryReceiptSubscriptionRequest.setOperatorCode(senderAddresses[i].getOperatorCode());
+					//deliveryReceiptSubscriptionRequest.setClientCorrelator(orgclientcl + ":" + requestid);
+					//deliveryReceiptSubscriptionRequest.setOperatorCode(senderAddresses[i].getOperatorCode());
 					deliveryReceiptSubscriptionRequest.setFilterCriteria(senderAddresses[i].getFilterCriteria());
 					sbDeliveryReceiptSubscriptionRequest
 							.setDeliveryReceiptSubscription(deliveryReceiptSubscriptionRequest);
