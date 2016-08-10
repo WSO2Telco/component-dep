@@ -134,7 +134,7 @@ public class SMSMessagingService {
 
 		try {
 
-			newId = smsMessagingDAO.subscriptionEntry(notifyURL, serviceProvider);
+			newId = smsMessagingDAO.subscriptionEntry(notifyURL/*, serviceProvider */);
 		} catch (Exception e) {
 
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
