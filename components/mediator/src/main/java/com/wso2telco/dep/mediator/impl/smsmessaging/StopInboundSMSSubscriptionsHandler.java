@@ -16,13 +16,16 @@
 package com.wso2telco.dep.mediator.impl.smsmessaging;
 
 import java.util.List;
+
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONObject;
+
 import com.wso2telco.datapublisher.DataPublisherConstants;
+import com.wso2telco.dbutils.Operatorsubs;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.internal.ApiUtils;
 import com.wso2telco.dep.mediator.internal.Type;
@@ -99,8 +102,7 @@ public class StopInboundSMSSubscriptionsHandler implements SMSHandler {
 
 		String requestid = UID.getUniqueID(Type.DELRETSUB.getCode(), context, executor.getApplicationid());
 
-		List<OperatorSubscriptionDTO> domainsubs = (smsMessagingService
-				.subscriptionQuery(Integer.valueOf(moSubscriptionId)));
+		List<Operatorsubs> domainsubs = (smsMessagingService.subscriptionQuery(Integer.valueOf(moSubscriptionId)));
 		if (domainsubs.isEmpty()) {
 
 			throw new CustomException("POL0001", "",
@@ -109,7 +111,7 @@ public class StopInboundSMSSubscriptionsHandler implements SMSHandler {
 
 		String resStr = "";
 
-		for (OperatorSubscriptionDTO subs : domainsubs) {
+		for (Operatorsubs subs : domainsubs) {
 
 			resStr = executor.makeDeleteRequest(
 					new OperatorEndpoint(new EndpointReference(subs.getDomain()), subs.getOperator()), subs.getDomain(),
