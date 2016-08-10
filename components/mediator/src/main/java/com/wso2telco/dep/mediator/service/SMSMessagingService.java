@@ -17,11 +17,8 @@ package com.wso2telco.dep.mediator.service;
 
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import com.wso2telco.dbutils.Operatorsubs;
 import com.wso2telco.dep.mediator.dao.SMSMessagingDAO;
 import com.wso2telco.dep.mediator.util.ErrorType;
 import com.wso2telco.dep.operatorservice.model.OperatorSubscriptionDTO;
@@ -121,22 +118,23 @@ public class SMSMessagingService {
 		}
 	}
 
-	public Integer subscriptionEntry(String notifyURL) throws BusinessException {
+	public Integer subscriptionEntry(String notifyURL, String serviceProvider) throws BusinessException {
 
 		if (notifyURL == null || notifyURL.trim().length() <= 0) {
 
 			throw new BusinessException(ErrorType.INVALID_NOTIFY_URL);
 		}
 
+		if (serviceProvider == null || serviceProvider.trim().length() <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_SUBSCRIBER_NAME);
+		}
+
 		Integer newId = 0;
 
 		try {
 
-
-			newId = smsMessagingDAO.subscriptionEntry(notifyURL/*, serviceProvider */);
-
-			newId = smsMessagingDAO.subscriptionEntry(notifyURL);
-
+			newId = smsMessagingDAO.subscriptionEntry(notifyURL, serviceProvider);
 		} catch (Exception e) {
 
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
@@ -168,14 +166,14 @@ public class SMSMessagingService {
 	}
 
 	@SuppressWarnings("unchecked")
-	public List<Operatorsubs> subscriptionQuery(Integer moSubscriptionId) throws BusinessException {
+	public List<OperatorSubscriptionDTO> subscriptionQuery(Integer moSubscriptionId) throws BusinessException {
 
 		if (moSubscriptionId == null || moSubscriptionId <= 0) {
 
 			throw new BusinessException(ErrorType.INVALID_MO_SUBSCRIPTION_ID);
 		}
 
-		List<Operatorsubs> domainsubs = null;
+		List<OperatorSubscriptionDTO> domainsubs = null;
 
 		try {
 
