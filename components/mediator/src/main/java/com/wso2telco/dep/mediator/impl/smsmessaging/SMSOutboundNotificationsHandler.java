@@ -49,9 +49,6 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 	/** The executor. */
 	private SMSExecutor executor;
 
-	/** The mnc queryclient. */
-	MNCQueryClient mncQueryclient = null;
-
 	/**
 	 * Instantiates a new SMS outbound notifications handler.
 	 *
@@ -61,7 +58,6 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 	public SMSOutboundNotificationsHandler(SMSExecutor executor) {
 		this.executor = executor;
 		smsMessagingService = new SMSMessagingService();
-		mncQueryclient = new MNCQueryClient();
 	}
 
 	/*
@@ -82,9 +78,10 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 		FileReader fileReader = new FileReader();
 		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
 
-		HashMap<String, String> dnSubscriptionDetails =(HashMap<String, String>) smsMessagingService
-				.subscriptionDNNotifiMap(Integer.valueOf(moSubscriptionId));
+		HashMap<String, String> dnSubscriptionDetails =(HashMap<String, String>) smsMessagingService.subscriptionDNNotifiMap(Integer.valueOf(moSubscriptionId));
 		String notifyurl = dnSubscriptionDetails.get("notifyurl");
+		
+		
 		String serviceProvider = dnSubscriptionDetails.get("serviceProvider");
 
 		String notifyurlRoute = notifyurl;
@@ -104,7 +101,6 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 					OutboundRequestOp.class);
 			formattedString = gson.toJson(outboundRequestOp);
 			String[] params = outboundRequestOp.getDeliveryInfoNotification().getDeliveryInfo().getAddress().split(":");
-			String operator = mncQueryclient.QueryNetwork(mcc, params[1]);
 			context.setProperty(DataPublisherConstants.MSISDN, params[1]);
 			context.setProperty(DataPublisherConstants.OPERATOR_ID, operator);
 			context.setProperty(APIMgtGatewayConstants.USER_ID, serviceProvider);
@@ -113,7 +109,6 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 			OutboundRequest outboundRequest = gson.fromJson(executor.getJsonBody().toString(), OutboundRequest.class);
 			formattedString = gson.toJson(outboundRequest);
 			String[] params = outboundRequest.getDeliveryInfoNotification().getDeliveryInfo().getAddress().split(":");
-			String operator = mncQueryclient.QueryNetwork(mcc, params[1]);
 			context.setProperty(DataPublisherConstants.MSISDN, params[1]);
 			context.setProperty(DataPublisherConstants.OPERATOR_ID, operator);
 			context.setProperty(APIMgtGatewayConstants.USER_ID, serviceProvider);

@@ -24,9 +24,12 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 import com.wso2telco.dbutils.DbUtils;
+import com.wso2telco.dbutils.Operatorsubs;
 import com.wso2telco.dep.operatorservice.model.OperatorSubscriptionDTO;
 import com.wso2telco.dbutils.util.DataSourceNames;
 import com.wso2telco.dep.mediator.util.DatabaseTables;
@@ -182,6 +185,92 @@ public class SMSMessagingDAO {
 			DbUtils.closeAllConnections(updateStatement, null, null);
 		}
 	}
+	
+	
+	
+	public boolean operatorsubsEntry(List<Operatorsubs> domainsubs, Integer dnSubscriptionId) throws SQLException, Exception {
+
+		Connection con = null;
+		PreparedStatement insertStatement = null;
+		PreparedStatement updateStatement = null;
+
+		try {
+
+			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+
+			if (con == null) {
+
+				throw new Exception("Connection not found");
+			}
+
+			/**
+			 * Set autocommit off to handle the transaction
+			 */
+			con.setAutoCommit(false);
+
+			StringBuilder queryString = new StringBuilder("INSERT INTO ");
+			queryString.append(DatabaseTables.OUTBOUND_OPERATORSUBS.getTableName());
+			queryString.append(" (dn_subscription_did, domainurl, operator) ");
+			queryString.append("VALUES (?, ?, ?)");
+
+			insertStatement = con.prepareStatement(queryString.toString());
+
+			for (Operatorsubs d : domainsubs) {
+
+				insertStatement.setInt(1, dnSubscriptionId);
+				insertStatement.setString(2, d.getDomain());
+				insertStatement.setString(3, d.getOperator());
+
+				insertStatement.addBatch();
+			}
+
+			log.debug("sql query in outboundOperatorsubsEntry : "+ insertStatement);
+
+			insertStatement.executeBatch();
+
+			StringBuilder updateQueryString = new StringBuilder("UPDATE ");
+			updateQueryString.append(DatabaseTables.OUTBOUND_SUBSCRIPTIONS.getTableName());
+			updateQueryString.append(" SET is_active = ?");
+			updateQueryString.append(" WHERE dn_subscription_did = ?");
+
+			updateStatement = con.prepareStatement(updateQueryString.toString());
+
+			updateStatement.setInt(1, 1);
+			updateStatement.setInt(2, dnSubscriptionId);
+
+			log.debug("sql query in outboundOperatorsubsEntry : "+ updateStatement);
+
+			updateStatement.executeUpdate();
+
+			/**
+			 * commit the transaction if all success
+			 */
+			con.commit();
+		} catch (SQLException e) {
+
+			/**
+			 * rollback if Exception occurs
+			 */
+			con.rollback();
+
+			log.error("database operation error in outboundOperatorsubsEntry : ",e);
+			throw e;
+		} catch (Exception e) {
+
+			/**
+			 * rollback if Exception occurs
+			 */
+			con.rollback();
+
+			log.error("error in outboundOperatorsubsEntry : ", e);
+			throw e;
+		} finally {
+
+			DbUtils.closeAllConnections(insertStatement, con, null);
+			DbUtils.closeAllConnections(updateStatement, null, null);
+		}
+		return true;
+	}
 
 	/**
 	 * Gets the sms request ids.
@@ -237,7 +326,7 @@ public class SMSMessagingDAO {
 		return gatewayRequestIds;
 	}
 
-	public Integer subscriptionEntry(String notifyURL, String serviceProvider) throws SQLException, Exception {
+	public Integer subscriptionEntry(String notifyURL) throws SQLException, Exception {
 
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -254,14 +343,13 @@ public class SMSMessagingDAO {
 
 			StringBuilder insertQueryString = new StringBuilder("INSERT INTO ");
 			insertQueryString.append(DatabaseTables.SUBSCRIPTIONS.getTableName());
-			insertQueryString.append(" (notifyurl, service_provider, is_active) ");
-			insertQueryString.append("VALUES (?, ?, ?)");
+			insertQueryString.append(" (notifyurl, is_active) ");
+			insertQueryString.append("VALUES (?, ?)");
 
 			ps = con.prepareStatement(insertQueryString.toString(), Statement.RETURN_GENERATED_KEYS);
 
 			ps.setString(1, notifyURL);
-			ps.setString(2, serviceProvider);
-			ps.setInt(3, 0);
+			ps.setInt(2, 0);
 			
 			log.debug("sql query in subscriptionEntry : " + ps);
 
@@ -392,12 +480,12 @@ public class SMSMessagingDAO {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public List<OperatorSubscriptionDTO> subscriptionQuery(Integer moSubscriptionId) throws SQLException, Exception {
+	public List<Operatorsubs> subscriptionQuery(Integer moSubscriptionId) throws SQLException, Exception {
 
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		List<OperatorSubscriptionDTO> domainsubs = new ArrayList();
+		List<Operatorsubs> domainsubs = new ArrayList();
 
 		try {
 
@@ -421,7 +509,7 @@ public class SMSMessagingDAO {
 
 			while (rs.next()) {
 
-				domainsubs.add(new OperatorSubscriptionDTO(rs.getString("operator"), rs.getString("domainurl")));
+				domainsubs.add(new Operatorsubs(rs.getString("operator"), rs.getString("domainurl")));
 			}
 		} catch (SQLException e) {
 
