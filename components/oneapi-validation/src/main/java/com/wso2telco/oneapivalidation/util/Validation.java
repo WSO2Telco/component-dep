@@ -228,7 +228,7 @@ public class Validation {
 
                                     valid = false;
                                     logger.debug("Message too long. " + msgChaCount);
-                                    //sendError(response, BAD_REQUEST, RequestError.SERVICEEXCEPTION, "SVC0280", "Message too long. Maximum length is %1 characters", "150");
+                                    //sendError(response, BAD_REQUEST, RequestError.SERVICEEXCEPTION, "SVC0280", "Message too long. Maximum length is %1 characters", "800");
                                     throw new CustomException("SVC0280", "Message too long. Maximum length is %1 characters", new String[]{"800"});
                                 }
                             }

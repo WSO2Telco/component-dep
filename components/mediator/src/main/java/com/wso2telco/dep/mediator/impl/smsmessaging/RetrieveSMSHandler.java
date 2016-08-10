@@ -106,11 +106,13 @@ public class RetrieveSMSHandler implements SMSHandler {
 					+ executor.getSubResourcePath());
 			String urlQuery = retrieveURL.getQuery();
 
-			if (urlQuery.contains("maxBatchSize")) {
-				String queryParts[] = urlQuery.split("=");
-				if (queryParts.length > 1) {
-					if (Integer.parseInt(queryParts[1]) < 100) {
-						batchSize = Integer.parseInt(queryParts[1]);
+			if (urlQuery != null) {
+				if (urlQuery.contains("maxBatchSize")) {
+					String queryParts[] = urlQuery.split("=");
+					if (queryParts.length > 1) {
+						if (Integer.parseInt(queryParts[1]) < 100) {
+							batchSize = Integer.parseInt(queryParts[1]);
+						}
 					}
 				}
 			}

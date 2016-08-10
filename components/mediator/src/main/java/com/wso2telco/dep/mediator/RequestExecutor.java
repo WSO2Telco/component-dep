@@ -377,10 +377,6 @@ public abstract class RequestExecutor {
 		String messagid = null;
 		String variables = null;
 
-		if (errResp == null) {
-			throw new CustomException("SVC1000", "", new String[] { variables });
-		}
-
 		if (errResp.contains("requestError")) {
 			errResp = errResp.replace("[", "").replace("]", "");
 		}
