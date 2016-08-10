@@ -15,6 +15,11 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.impl.smsmessaging;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
+
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.synapse.MessageContext;
@@ -24,24 +29,12 @@ import org.json.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wso2telco.datapublisher.DataPublisherConstants;
-import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.entity.smsmessaging.InboundRequest;
-import com.wso2telco.dep.mediator.entity.smsmessaging.OutboundRequest;
-import com.wso2telco.dep.mediator.entity.smsmessaging.OutboundRequestOp;
 import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.service.SMSMessagingService;
-import com.wso2telco.mnc.resolver.MNCQueryClient;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
-
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.Map;
-
-import org.wso2.carbon.apimgt.gateway.APIMgtGatewayConstants;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -64,6 +57,7 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 	public SMSOutboundNotificationsHandler(SMSExecutor executor) {
 		this.executor = executor;
 		smsMessagingService = new SMSMessagingService();
+		
 	}
 
 	/*
@@ -83,6 +77,7 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 
 		HashMap<String, String> dnSubscriptionDetails =(HashMap<String, String>) smsMessagingService.subscriptionDNNotifiMap(Integer.valueOf(moSubscriptionId));
 		String notifyurl = dnSubscriptionDetails.get("notifyurl");
+		
 
         //Date Time issue
         Gson gson = new GsonBuilder().serializeNulls().create();
@@ -106,6 +101,7 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 
 		return true;
 	}
+
 	/*
 	 * (non-Javadoc)
 	 * 
