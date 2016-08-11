@@ -99,11 +99,7 @@ public class RetrieveSMSNorthboundHandler implements SMSHandler {
         List<OperatorEndpoint> validEndpoints = new ArrayList<OperatorEndpoint>();
         Registrations[] registrations = nbRetrieveRequest.getInboundSMSMessages().getRegistrations();
 
-        String requestBodyBatchSize = nbRetrieveRequest.getInboundSMSMessages().getMaxBatchSize();
-		if (Integer.parseInt(requestBodyBatchSize) < 100) {
-			batchSize = Integer.parseInt(requestBodyBatchSize);
-		}
-       /* if (nbRetrieveRequest.getInboundSMSMessages().getMaxBatchSize() != null) {
+        if (nbRetrieveRequest.getInboundSMSMessages().getMaxBatchSize() != null) {
             String requestBodyBatchSize = nbRetrieveRequest.getInboundSMSMessages().getMaxBatchSize();
 
             if (!requestBodyBatchSize.equals("")) {
@@ -111,7 +107,7 @@ public class RetrieveSMSNorthboundHandler implements SMSHandler {
                     batchSize = Integer.parseInt(requestBodyBatchSize);
                 }
             }
-        }*/
+        }
 
         for (OperatorEndpoint operatorEndpoint : endpoints) {
 
