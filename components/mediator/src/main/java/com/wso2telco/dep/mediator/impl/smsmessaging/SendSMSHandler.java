@@ -102,11 +102,17 @@ public class SendSMSHandler implements SMSHandler {
 		SendSMSRequest subsrequest = gson.fromJson(jsonBody.toString(), SendSMSRequest.class);
 		String senderAddress = subsrequest.getOutboundSMSMessageRequest().getSenderAddress();
 
+		// ========================UNICODE PATCH
+		byte[] preUtf8 = subsrequest.getOutboundSMSMessageRequest().getOutboundTextMessage().getMessage().getBytes("UTF-8");
+		String utf8String = new String(preUtf8, "UTF-8");
+		subsrequest.getOutboundSMSMessageRequest().getOutboundTextMessage().setMessage(utf8String);
+		// ========================UNICODE PATCH
+		        
+		
 		if (!ValidatorUtils.getValidatorForSubscription(context).validate(context)) {
 			throw new CustomException("SVC0001", "", new String[] { "Subscription Validation Unsuccessful" });
 		}
-		int smsCount = getSMSMessageCount(
-				subsrequest.getOutboundSMSMessageRequest().getOutboundTextMessage().getMessage());
+		int smsCount = getSMSMessageCount(subsrequest.getOutboundSMSMessageRequest().getOutboundTextMessage().getMessage());
 		context.setProperty(DataPublisherConstants.RESPONSE, String.valueOf(smsCount));
 
 		Map<String, SendSMSResponse> smsResponses = smssendmulti(context, subsrequest,
