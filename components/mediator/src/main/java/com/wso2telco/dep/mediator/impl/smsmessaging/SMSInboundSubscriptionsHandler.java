@@ -114,7 +114,7 @@ public class SMSInboundSubscriptionsHandler implements SMSHandler {
 				executor.getValidoperators());
 
 		Integer moSubscriptionId = smsMessagingService
-				.subscriptionEntry(subsrequst.getSubscription().getCallbackReference().getNotifyURL(), serviceProvider);
+				.subscriptionEntry(subsrequst.getSubscription().getCallbackReference().getNotifyURL()/*, serviceProvider*/);
 
 		String subsEndpoint = mediatorConfMap.get("hubSubsGatewayEndpoint") + "/" + moSubscriptionId;
 		jsondstaddr.getJSONObject("callbackReference").put("notifyURL", subsEndpoint);
