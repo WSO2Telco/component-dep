@@ -172,7 +172,7 @@ public class OutboundSMSSubscriptionsSouthboundHandler implements SMSHandler {
 		String subsEndpoint = mediatorConfMap.get("hubSubsGatewayEndpoint") + "/" + dnSubscriptionId;
 		jsondstaddr.getJSONObject("callbackReference").put("notifyURL", subsEndpoint);
 		
-		//subsrequst.getDeliveryReceiptSubscription().getCallbackReference().setNotifyURL(subsEndpoint);
+		subsrequst.getDeliveryReceiptSubscription().getCallbackReference().setNotifyURL(subsEndpoint);
 
 		//String sbRequestBody = removeResourceURL(gson.toJson(subsrequst));
 		
