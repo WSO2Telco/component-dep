@@ -40,6 +40,7 @@ import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.internal.Util;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.dep.mediator.service.SMSMessagingService;
+import com.wso2telco.dep.operatorservice.model.OperatorSubscriptionDTO;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.oneapivalidation.service.impl.sms.ValidateCancelSubscription;
@@ -60,8 +61,8 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
 	/** The occi. */
 	private OriginatingCountryCalculatorIDD occi;
 
-	/** The smsMessagingDAO. */
-	private SMSMessagingDAO smsMessagingDAO;
+	/** The smsMessagingService. */
+	private SMSMessagingService smsMessagingService;
 
 	/** The executor. */
 	private SMSExecutor executor;
@@ -76,7 +77,7 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
 
 		this.executor = executor;
 		occi = new OriginatingCountryCalculatorIDD();
-		smsMessagingDAO = new SMSMessagingDAO();
+		smsMessagingService = new SMSMessagingService();
 		
 	}
 
@@ -98,8 +99,7 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
 	}
 
 	@Override
-	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context)
-			throws Exception {
+	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context) throws Exception {
 		//context.setProperty("mife.prop.operationType", 205);
 		IServiceValidate validator;
 		if (httpMethod.equalsIgnoreCase("POST")) {
@@ -148,17 +148,18 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
 			DeliveryReceiptSubscriptionRequest subsrequst = gson.fromJson(jsonBody.toString(),DeliveryReceiptSubscriptionRequest.class);
 			String origNotiUrl = subsrequst.getDeliveryReceiptSubscription().getCallbackReference().getNotifyURL();
 			subsrequst.getDeliveryReceiptSubscription().setClientCorrelator(orgclientcl + ":" + requestid);
-			List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(API_TYPE, executor.getSubResourcePath(),executor.getValidoperators());
+			List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(API_TYPE, executor.getSubResourcePath(), executor.getValidoperators());
 
-			Integer dnSubscriptionId = smsMessagingDAO.subscriptionEntry(subsrequst.getDeliveryReceiptSubscription().getCallbackReference().getNotifyURL());
-			Util.getPropertyFile();
-			String subsEndpoint = Util.getApplicationProperty("hubSubsGatewayEndpoint")+ "/"+ dnSubscriptionId;
-			
+			Integer dnSubscriptionId = smsMessagingService.subscriptionEntry(subsrequst.getDeliveryReceiptSubscription().getCallbackReference().getNotifyURL());
+			String subsEndpoint = mediatorConfMap.get("hubSubsGatewayEndpoint") + "/"+ dnSubscriptionId;
+			jsondstaddr.getJSONObject("callbackReference").put("notifyURL", subsEndpoint); 
 
-			List<Operatorsubs> domainsubs = new ArrayList<Operatorsubs>();
+			String sbRequestBody = removeResourceURL(gson.toJson(subsrequst));
+			List<OperatorSubscriptionDTO> domainsubs = new ArrayList<OperatorSubscriptionDTO>();
 			DeliveryReceiptSubscriptionRequest subsresponse = null;
+			
 			for (OperatorEndpoint endpoint : endpoints) {
-				String notifyres = executor.makeRequest(endpoint, endpoint.getEndpointref().getAddress(), jsonBody.toString(),true, context);
+				String notifyres = executor.makeRequest(endpoint, endpoint.getEndpointref().getAddress(),sbRequestBody,true, context);
 				if (notifyres == null) {
 					throw new CustomException("POL0299", "",new String[] { "Error registering subscription" });
 				} else {
@@ -166,18 +167,18 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
 					if (subsrequst.getDeliveryReceiptSubscription() == null) {
 						executor.handlePluginException(notifyres);
 					}
-					domainsubs.add(new Operatorsubs(endpoint.getOperator(),subsrequst.getDeliveryReceiptSubscription().getResourceURL()));
+					domainsubs.add(new OperatorSubscriptionDTO(endpoint.getOperator(),subsrequst.getDeliveryReceiptSubscription().getResourceURL()));
 
 				}
 			}
 
-			boolean issubs = smsMessagingDAO.operatorsubsEntry(domainsubs,dnSubscriptionId);
+			smsMessagingService.outboundOperatorsubsEntry(domainsubs,dnSubscriptionId);
 			String ResourceUrlPrefix = mediatorConfMap.get("hubGateway");
 			subsrequst.getDeliveryReceiptSubscription().setResourceURL(ResourceUrlPrefix + executor.getResourceUrl() + "/"+ dnSubscriptionId);
 			JSONObject replyobj = new JSONObject(subsresponse);
 			JSONObject replysubs = replyobj.getJSONObject("deliveryReceiptSubscription");
 			// String replydest = replysubs.getString("destinationAddress");
-
+			replysubs.put("clientCorrelator", orgclientcl);
 			/*
 			 * JSONArray arradd = new JSONArray(); arradd.put(replydest);
 			 * replysubs.put("destinationAddress", arradd);
@@ -290,33 +291,36 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
 		return true;
 
 	}
-		private String removeResourceURL(String sbSubsrequst) {
-			        String sbrequestString = "";
-			        try {
-			            JSONObject objJSONObject = new JSONObject(sbSubsrequst);
-			           JSONObject objSubscriptionRequest = (JSONObject) objJSONObject.get("subscription");
-			            objSubscriptionRequest.remove("resourceURL");
-						           sbrequestString = objSubscriptionRequest.toString();
-			        } catch (JSONException ex) {
-			            throw new CustomException("POL0299", "", new String[]{"Error registering subscription"});
-			        }
-			        return "{\"subscription\":" + sbrequestString + "}";
-			    }
+
+	private String removeResourceURL(String sbSubsrequst) {
+		String sbDeliveryNotificationrequestString = "";
+		try {
+			JSONObject objJSONObject = new JSONObject(sbSubsrequst);
+			JSONObject objDeliveryNotificationRequest = (JSONObject) objJSONObject.get("deliveryReceiptSubscription");
+			objDeliveryNotificationRequest.remove("resourceURL");
+			
+			sbDeliveryNotificationrequestString = objDeliveryNotificationRequest.toString();
+		} catch (JSONException ex) {
+			log.error("Error in removeResourceURL" + ex.getMessage());
+			throw new CustomException("POL0299", "",new String[] { "Error registering subscription" });
+		}
+		 return "{\"deliveryReceiptSubscription\":" + sbDeliveryNotificationrequestString + "}";
+	}
 	
 	
 	private boolean deleteSubscriptions(MessageContext context) throws Exception {
 		        String requestPath = executor.getSubResourcePath();
 		        String dnSubscriptionId = requestPath.substring(requestPath.lastIndexOf("/") + 1);
 		
-		        String requestid = UID.getUniqueID(Type.RETRIVSUB.getCode(), context, executor.getApplicationid());
+		        String requestid = UID.getUniqueID(Type.DELRETSUB.getCode(), context, executor.getApplicationid());
 		
-		        List<Operatorsubs> domainsubs = smsMessagingDAO.subscriptionQuery(Integer.valueOf(dnSubscriptionId));
+		        List<OperatorSubscriptionDTO> domainsubs = smsMessagingService.outboudSubscriptionQuery(Integer.valueOf(dnSubscriptionId));
 		        if (domainsubs.isEmpty()) {
 		           throw new CustomException("POL0001", "", new String[]{"SMS Receipt Subscription Not Found: " + dnSubscriptionId});
 		        }
 		
 		        String resStr = "";
-		        for (Operatorsubs subs : domainsubs) {
+		        for (OperatorSubscriptionDTO subs : domainsubs) {
 		            resStr = executor.makeDeleteRequest(new OperatorEndpoint(new EndpointReference(subs.getDomain()), subs.getOperator()), subs.getDomain(), null, true, context);
 		        }
 		        new SMSMessagingService().subscriptionDelete(Integer.valueOf(dnSubscriptionId));

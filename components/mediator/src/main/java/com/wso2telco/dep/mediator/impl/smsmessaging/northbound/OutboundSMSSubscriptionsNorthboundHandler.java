@@ -202,6 +202,7 @@ public class OutboundSMSSubscriptionsNorthboundHandler implements SMSHandler {
 					deliveryReceiptSubscriptionRequest.setClientCorrelator(orgclientcl + ":" + requestid);
 					deliveryReceiptSubscriptionRequest.setOperatorCode(senderAddresses[i].getOperatorCode());
 					deliveryReceiptSubscriptionRequest.setFilterCriteria(senderAddresses[i].getFilterCriteria());
+					
 					sbDeliveryReceiptSubscriptionRequest.setDeliveryReceiptSubscription(deliveryReceiptSubscriptionRequest);
 
 					String sbRequestBody = removeResourceURL(gson.toJson(sbDeliveryReceiptSubscriptionRequest));
