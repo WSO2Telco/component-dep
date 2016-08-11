@@ -446,7 +446,7 @@ public abstract class RequestExecutor {
 			connection.setRequestMethod("POST");
 			connection.setRequestProperty("Content-Type", "application/json");
 			connection.setRequestProperty("Accept", "application/json");
-			connection.setRequestProperty("charset", "utf-8");
+			//connection.setRequestProperty("charset", "utf-8");
 			if (auth) {
 				connection.setRequestProperty("Authorization",
 						"Bearer " + getAccessToken(operatorendpoint.getOperator()));
