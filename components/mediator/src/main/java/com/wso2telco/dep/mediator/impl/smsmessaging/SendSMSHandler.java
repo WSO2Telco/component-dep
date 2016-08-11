@@ -56,7 +56,7 @@ public class SendSMSHandler implements SMSHandler {
 	private Log log = LogFactory.getLog(SendSMSHandler.class);
 
 	/** The Constant API_TYPE. */
-	private static final String API_TYPE = "sms";
+	private static final String API_TYPE = "smsmessaging";
 
 	/** The occi. */
 	private OriginatingCountryCalculatorIDD occi;

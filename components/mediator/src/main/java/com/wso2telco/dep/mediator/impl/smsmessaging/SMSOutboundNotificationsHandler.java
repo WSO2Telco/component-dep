@@ -19,6 +19,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.Map;
 
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
@@ -29,8 +30,11 @@ import org.json.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wso2telco.datapublisher.DataPublisherConstants;
+import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.entity.smsmessaging.InboundRequest;
+import com.wso2telco.dep.mediator.entity.smsmessaging.OutboundRequest;
+import com.wso2telco.dep.mediator.entity.smsmessaging.OutboundRequestOp;
 import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.service.SMSMessagingService;
@@ -78,10 +82,18 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 		HashMap<String, String> dnSubscriptionDetails =(HashMap<String, String>) smsMessagingService.subscriptionDNNotifiMap(Integer.valueOf(moSubscriptionId));
 		String notifyurl = dnSubscriptionDetails.get("notifyurl");
 		
+		String notifyurlRoute = notifyurl;
+		FileReader fileReader = new FileReader();
+		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
+		String requestRouterUrl = mediatorConfMap.get("requestRouterUrl");
+		if (requestRouterUrl != null) {
+			notifyurlRoute = requestRouterUrl + notifyurlRoute;
+		}
 
         //Date Time issue
+		String formattedString = null;
         Gson gson = new GsonBuilder().serializeNulls().create();
-        InboundRequest inboundRequest = gson.fromJson(executor.getJsonBody().toString(), InboundRequest.class);
+        /*InboundRequest inboundRequest = gson.fromJson(executor.getJsonBody().toString(), InboundRequest.class);
 		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 		// get current date time with Date()
 		Date date = new Date();
@@ -91,10 +103,19 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 		inboundRequest.getInboundSMSMessageRequest().getInboundSMSMessage().setdateTime(formattedDate);
 		String formattedString = gson.toJson(inboundRequest);
 		String notifyret = executor.makeRequest(new OperatorEndpoint(new EndpointReference(notifyurl), null), notifyurl,formattedString, true, context);
-
+*/
+        if (executor.getJsonBody().toString().contains("operatorCode")) {
+        	        	OutboundRequestOp outboundRequestOp = gson.fromJson(executor.getJsonBody().toString(), OutboundRequestOp.class);
+        	        	formattedString = gson.toJson(outboundRequestOp);
+        			}else {
+        				OutboundRequest outboundRequest = gson.fromJson(executor.getJsonBody().toString(), OutboundRequest.class);
+        				formattedString = gson.toJson(outboundRequest);
+        			}
+        	        
+        String notifyret = executor.makeRequest(new OperatorEndpoint(new EndpointReference(notifyurl), null), notifyurlRoute,formattedString, true, context);        	
 		executor.removeHeaders(context);
 		if (notifyret == null) {
-			throw new CustomException("POL0299", "",new String[] { "Error invoking Endpoint" });
+			throw new CustomException("POL0299", "",new String[] { "Error invoking SMSOutboundNotifications Endpoint" });
 		}
 		((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 201);
 		executor.setResponse(context, new JSONObject(notifyret).toString());
