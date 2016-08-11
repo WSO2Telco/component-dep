@@ -106,7 +106,7 @@ public class SMSHandlerFactory {
 				&& lastWord.equals(subscriptionKeyString)) {
 
 			apiType = RequestType.START_OUTBOUND_SUBSCRIPTION;
-			handler = new OutboundSMSSubscriptionsHandler(executor);//ADDED
+			//handler = new OutboundSMSSubscriptionsHandler(executor);//ADDED
 			if (ResourceURL.toLowerCase().contains("/outbound/subscriptions")) {
 
 				handler = new OutboundSMSSubscriptionsNorthboundHandler(executor);

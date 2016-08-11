@@ -15,22 +15,23 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.entity.smsmessaging.southbound;
 
-import com.wso2telco.dep.mediator.entity.*;
-import com.wso2telco.dep.mediator.entity.smsmessaging.CallbackReference;
+import com.wso2telco.dep.mediator.entity.smsmessaging.*;
+
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class DeliveryReceiptSubscription.
  */
 public class DeliveryReceiptSubscription {
-
-    /** The callback reference. */
+ 
     private CallbackReference callbackReference;
-       
-    /** The filter criteria. */
-    private String filterCriteria;
     
-    /** The resource url. */
+    private String operatorCode;
+  
+    private String clientCorrelator;
+    
+    private String filterCriteria;
+
     private String resourceURL;
 
     /**
@@ -87,5 +88,26 @@ public class DeliveryReceiptSubscription {
         this.resourceURL = resourceURL;
     }
 
-    
+	public String getOperatorCode() {
+		return operatorCode;
+	}
+
+	public void setOperatorCode(String operatorCode) {
+		this.operatorCode = operatorCode;
+	}
+
+	/**
+	 * @return the clientCorrelator
+	 */
+	public String getClientCorrelator() {
+		return clientCorrelator;
+	}
+
+	/**
+	 * @param clientCorrelator
+	 *            the clientCorrelator to set
+	 */
+	public void setClientCorrelator(String clientCorrelator) {
+		this.clientCorrelator = clientCorrelator;
+	}
 }

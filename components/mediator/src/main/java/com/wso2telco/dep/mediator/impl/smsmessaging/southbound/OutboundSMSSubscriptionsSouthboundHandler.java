@@ -31,11 +31,16 @@ import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.oneapivalidation.service.impl.sms.ValidateCancelSubscription;
 import com.wso2telco.oneapivalidation.service.impl.sms.sb.ValidateSBOutboundSubscription;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.axis2.AxisFault;
+import org.apache.axis2.addressing.EndpointReference;
+
 import java.util.HashMap;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
@@ -53,7 +58,7 @@ public class OutboundSMSSubscriptionsSouthboundHandler implements SMSHandler {
 	private static Log log = LogFactory.getLog(OutboundSMSSubscriptionsSouthboundHandler.class);
 
 	/** The Constant API_TYPE. */
-	private static final String API_TYPE = "smsmessaging";
+	private static final String API_TYPE = "sms";
 
 	/** The occi. */
 	private OriginatingCountryCalculatorIDD occi;
@@ -64,8 +69,8 @@ public class OutboundSMSSubscriptionsSouthboundHandler implements SMSHandler {
 	/** The executor. */
 	private SMSExecutor executor;
 
-	/** The api utils. */
-	private ApiUtils apiUtils;
+/*	*//** The api utils. *//*
+	private ApiUtils apiUtils;*/
 
 	/**
 	 * Instantiates a new SB outbound sms subscriptions handler.
@@ -77,7 +82,7 @@ public class OutboundSMSSubscriptionsSouthboundHandler implements SMSHandler {
 		this.executor = executor;
 		occi = new OriginatingCountryCalculatorIDD();
 		smsMessagingService = new SMSMessagingService();
-		apiUtils = new ApiUtils();
+	//	apiUtils = new ApiUtils();
 	}
 
 	/*
@@ -91,7 +96,9 @@ public class OutboundSMSSubscriptionsSouthboundHandler implements SMSHandler {
 	public boolean handle(MessageContext context) throws CustomException, AxisFault, Exception {
 		if (executor.getHttpMethod().equalsIgnoreCase("POST")) {
 			return createSubscriptions(context);
-		}
+		} else if (executor.getHttpMethod().equalsIgnoreCase("DELETE")) {
+			           return deleteSubscriptions(context);
+			        }
 
 		return false;
 	}
@@ -143,42 +150,42 @@ public class OutboundSMSSubscriptionsSouthboundHandler implements SMSHandler {
 		FileReader fileReader = new FileReader();
 		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
 
-		HashMap<String, String> jwtDetails = apiUtils.getJwtTokenDetails(context);
+		//HashMap<String, String> jwtDetails = apiUtils.getJwtTokenDetails(context);
 		JSONObject jsonBody = executor.getJsonBody();
 		JSONObject jsondstaddr = jsonBody.getJSONObject("deliveryReceiptSubscription");
-		String orgclientcl = "";
-		if (!jsondstaddr.isNull("clientCorrelator")) {
-			orgclientcl = jsondstaddr.getString("clientCorrelator");
-		}
+		String orgclientcl = jsondstaddr.getString("clientCorrelator");
 
-		String serviceProvider = jwtDetails.get("subscriber");
-		log.debug("Subscriber Name : " + serviceProvider);
+		/*String serviceProvider = jwtDetails.get("subscriber");
+		log.debug("Subscriber Name : " + serviceProvider);*/
 
 		SouthboundDeliveryReceiptSubscriptionRequest subsrequst = gson.fromJson(jsonBody.toString(),
 				SouthboundDeliveryReceiptSubscriptionRequest.class);
 		String origNotiUrl = subsrequst.getDeliveryReceiptSubscription().getCallbackReference().getNotifyURL();
-		//subsrequst.getDeliveryReceiptSubscription().setClientCorrelator(orgclientcl + ":" + requestid);
+		subsrequst.getDeliveryReceiptSubscription().setClientCorrelator(orgclientcl + ":" + requestid);
 
 		List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(API_TYPE, executor.getSubResourcePath(),
 				executor.getValidoperators());
 
 		Integer dnSubscriptionId = smsMessagingService.outboundSubscriptionEntry(
-				subsrequst.getDeliveryReceiptSubscription().getCallbackReference().getNotifyURL(), serviceProvider);
+				subsrequst.getDeliveryReceiptSubscription().getCallbackReference().getNotifyURL()/*, serviceProvider*/);
 
 		String subsEndpoint = mediatorConfMap.get("hubSubsGatewayEndpoint") + "/" + dnSubscriptionId;
 		jsondstaddr.getJSONObject("callbackReference").put("notifyURL", subsEndpoint);
-		subsrequst.getDeliveryReceiptSubscription().getCallbackReference().setNotifyURL(subsEndpoint);
+		
+		//subsrequst.getDeliveryReceiptSubscription().getCallbackReference().setNotifyURL(subsEndpoint);
 
-		String sbRequestBody = removeResourceURL(gson.toJson(subsrequst));
+		//String sbRequestBody = removeResourceURL(gson.toJson(subsrequst));
+		
 		List<OperatorSubscriptionDTO> domainsubs = new ArrayList<OperatorSubscriptionDTO>();
 		SouthboundDeliveryReceiptSubscriptionRequest subsresponse = null;
+		
 		for (OperatorEndpoint endpoint : endpoints) {
 
 			String url = endpoint.getEndpointref().getAddress();
 			url = url.replace("/subscriptions", "/subscriptionsMultipleOperators");
 			log.debug("Delivery notification adaptor request url of " + endpoint.getOperator() + " operator: " + url);
 
-			String notifyres = executor.makeRequest(endpoint, url, sbRequestBody, true, context);
+			String notifyres = executor.makeRequest(endpoint, url, jsonBody.toString(), true, context);
 
 			if (notifyres == null) {
 
@@ -189,15 +196,13 @@ public class OutboundSMSSubscriptionsSouthboundHandler implements SMSHandler {
 				if (subsrequst.getDeliveryReceiptSubscription() == null) {
 					executor.handlePluginException(notifyres);
 				}
-				domainsubs.add(new OperatorSubscriptionDTO(endpoint.getOperator(),
-						subsresponse.getDeliveryReceiptSubscription().getResourceURL()));
+				domainsubs.add(new OperatorSubscriptionDTO(endpoint.getOperator(),subsresponse.getDeliveryReceiptSubscription().getResourceURL()));
 			}
 		}
 
 		smsMessagingService.outboundOperatorsubsEntry(domainsubs, dnSubscriptionId);
 		String ResourceUrlPrefix = mediatorConfMap.get("hubGateway");
-		subsresponse.getDeliveryReceiptSubscription()
-				.setResourceURL(ResourceUrlPrefix + executor.getResourceUrl() + "/" + dnSubscriptionId);
+		subsrequst.getDeliveryReceiptSubscription().setResourceURL(ResourceUrlPrefix + executor.getResourceUrl() + "/" + dnSubscriptionId); ////CHeck
 		JSONObject replyobj = new JSONObject(subsresponse);
 		JSONObject replysubs = replyobj.getJSONObject("deliveryReceiptSubscription");
 		replysubs.put("clientCorrelator", orgclientcl);
@@ -218,7 +223,7 @@ public class OutboundSMSSubscriptionsSouthboundHandler implements SMSHandler {
 	 *            the sb subsrequst
 	 * @return the string
 	 */
-	private String removeResourceURL(String sbSubsrequst) {
+	/*private String removeResourceURL(String sbSubsrequst) {
 		String sbDeliveryNotificationrequestString = "";
 		try {
 			JSONObject objJSONObject = new JSONObject(sbSubsrequst);
@@ -231,5 +236,32 @@ public class OutboundSMSSubscriptionsSouthboundHandler implements SMSHandler {
 			throw new CustomException("POL0299", "", new String[] { "Error registering subscription" });
 		}
 		return "{\"deliveryReceiptSubscription\":" + sbDeliveryNotificationrequestString + "}";
-	}
+	}*/
+	
+	private boolean deleteSubscriptions(MessageContext context) throws Exception {
+        String requestPath = executor.getSubResourcePath();
+        String dnSubscriptionId = requestPath.substring(requestPath.lastIndexOf("/") + 1);
+
+        String requestid = UID.getUniqueID(Type.DELRETSUB.getCode(), context, executor.getApplicationid());
+
+        List<OperatorSubscriptionDTO> domainsubs = (smsMessagingService.outboudSubscriptionQuery(Integer.valueOf(dnSubscriptionId)));
+        if (domainsubs.isEmpty()) {
+            throw new CustomException("POL0001", "", new String[]{"SMS Receipt Subscription Not Found: " + dnSubscriptionId});
+        }
+
+        String resStr = "";
+        for (OperatorSubscriptionDTO subs : domainsubs) {
+			resStr = executor.makeDeleteRequest(
+					new OperatorEndpoint(new EndpointReference(subs.getDomain()), subs.getOperator()), subs.getDomain(),
+					null, true, context);
+		}
+        new SMSMessagingService().outboundSubscriptionDelete(Integer.valueOf(dnSubscriptionId));
+
+       executor.removeHeaders(context);
+        ((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 204);
+
+        return true;
+    }
+	
+	
 }
