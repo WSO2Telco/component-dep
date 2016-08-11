@@ -132,8 +132,7 @@ public class SendSMSHandler implements SMSHandler {
 	 * java.lang.String, org.json.JSONObject, org.apache.synapse.MessageContext)
 	 */
 	@Override
-	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context)
-			throws Exception {
+	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context) throws Exception {
 
 		if (!httpMethod.equalsIgnoreCase("POST")) {
 			((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 405);
@@ -192,8 +191,7 @@ public class SendSMSHandler implements SMSHandler {
 	 * @throws Exception
 	 *             the exception
 	 */
-	private Map<String, SendSMSResponse> smssendmulti(MessageContext smsmc, SendSMSRequest sendreq, JSONArray listaddr,
-			String apitype, List<OperatorApplicationDTO> operators) throws Exception {
+	private Map<String, SendSMSResponse> smssendmulti(MessageContext smsmc, SendSMSRequest sendreq, JSONArray listaddr, String apitype, List<OperatorApplicationDTO> operators) throws Exception {
 
 		OperatorEndpoint endpoint = null;
 		String jsonStr;

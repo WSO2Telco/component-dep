@@ -210,11 +210,12 @@ public class DataPublisherClient {
         responsePublisherDTO.setExceptionId((String) mc.getProperty(DataPublisherConstants.EXCEPTION_ID));
         responsePublisherDTO.setExceptionMessage((String) mc.getProperty(DataPublisherConstants.EXCEPTION_MESSAGE));
         responsePublisherDTO.setJsonBody(jsonBody);
-        if (mc.getProperty(DataPublisherConstants.RESPONSE) != null) {
+        responsePublisherDTO.setResponse(Integer.parseInt((String) mc.getProperty(DataPublisherConstants.RESPONSE)));
+       /* if (mc.getProperty(DataPublisherConstants.RESPONSE) != null) {
             responsePublisherDTO.setResponse(Integer.parseInt((String) mc.getProperty(DataPublisherConstants.RESPONSE)));
         } else {
             responsePublisherDTO.setResponse(1);
-        }
+        }*/
 
         responsePublisherDTO.setOperationType((Integer) mc.getProperty(DataPublisherConstants.OPERATION_TYPE));
         responsePublisherDTO.setMerchantId((String) mc.getProperty(DataPublisherConstants.MERCHANT_ID));
