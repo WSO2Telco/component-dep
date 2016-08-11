@@ -75,16 +75,16 @@ public class SMSHandlerFactory {
 				log.debug("invoking retrieve sms northbound handler");
 			} else {
 
-				String[] resourceURLParts = ResourceURL.split("/");
-				if (resourceURLParts.length == 6) {
+				/*String[] resourceURLParts = ResourceURL.split("/");
+				if (resourceURLParts.length == 6) {*/
 
 					handler = new RetrieveSMSSouthboundHandler(executor);
 					log.debug("invoking retrieve sms southbound handler");
-				} else if (resourceURLParts.length == 5) {
+				/*} else if (resourceURLParts.length == 5) {
 
 					handler = new RetrieveSMSHandler(executor);
 					log.debug("invoking retrieve sms handler");
-				}
+				}*/
 			}
 		} else if (ResourceURL.toLowerCase().contains(retrieveSMSString.toLowerCase())
 				&& ResourceURL.toLowerCase().contains(subscriptionKeyString.toLowerCase())) {

@@ -21,8 +21,6 @@ import org.apache.synapse.MessageContext;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
-import com.wso2telco.dep.mediator.entity.smsmessaging.northbound.InboundSMSMessage;
-
 // TODO: Auto-generated Javadoc
 /**
  * The Interface Processor.
@@ -75,5 +73,5 @@ public interface Processor {
      * @param responses the responses
      * @return the JSON object
      */
-    public JSONObject generateResponse(MessageContext context, List<InboundSMSMessage> inboundSMSMessageList, String resourceURL, ArrayList<String> responses); //throws Exception;
+    public JSONObject generateResponse(MessageContext context, List<com.wso2telco.dep.mediator.entity.smsmessaging.northbound.InboundSMSMessage> inboundSMSMessageList, String resourceURL, ArrayList<String> responses); //throws Exception;
 }

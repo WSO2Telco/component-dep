@@ -329,13 +329,6 @@ public class RetrieveSMSHandler implements SMSHandler {
 							.setInboundSMSMessage(inboundSMSMessageResponses);
 					responses.add(gson.toJson(sbRetrieveResponse));
 				}
-
-				/*
-				 * JSONArray resList = apiUtil.getResults(reqType, retStr); if
-				 * (resList != null) { for (int i = 0; i < resList.length();
-				 * i++) { results.put(resList.get(i)); } responses.add(retStr);
-				 * }
-				 */
 				count++;
 				if (count == (validEndpoints.size() * 2)) {
 					log.debug("-------------------------------------------------> Break because count == (validEndpoints.size() * 2) ------> count :"

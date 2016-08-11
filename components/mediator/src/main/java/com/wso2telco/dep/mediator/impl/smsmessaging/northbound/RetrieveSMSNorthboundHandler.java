@@ -99,7 +99,11 @@ public class RetrieveSMSNorthboundHandler implements SMSHandler {
         List<OperatorEndpoint> validEndpoints = new ArrayList<OperatorEndpoint>();
         Registrations[] registrations = nbRetrieveRequest.getInboundSMSMessages().getRegistrations();
 
-        if (nbRetrieveRequest.getInboundSMSMessages().getMaxBatchSize() != null) {
+        String requestBodyBatchSize = nbRetrieveRequest.getInboundSMSMessages().getMaxBatchSize();
+		if (Integer.parseInt(requestBodyBatchSize) < 100) {
+			batchSize = Integer.parseInt(requestBodyBatchSize);
+		}
+       /* if (nbRetrieveRequest.getInboundSMSMessages().getMaxBatchSize() != null) {
             String requestBodyBatchSize = nbRetrieveRequest.getInboundSMSMessages().getMaxBatchSize();
 
             if (!requestBodyBatchSize.equals("")) {
@@ -107,7 +111,7 @@ public class RetrieveSMSNorthboundHandler implements SMSHandler {
                     batchSize = Integer.parseInt(requestBodyBatchSize);
                 }
             }
-        }
+        }*/
 
         for (OperatorEndpoint operatorEndpoint : endpoints) {
 
@@ -143,8 +147,13 @@ public class RetrieveSMSNorthboundHandler implements SMSHandler {
 
             for (int i = 0; i < registrations.length; i++) {
                 if (registrations[i].getOperatorCode().equalsIgnoreCase(aEndpoint.getOperator())) {
-                     
-                    if (registrations[i].getCriteria() != null) {
+                	/*create request url for southbound operators*/
+                	criteria = registrations[i].getCriteria();
+					operatorCode = registrations[i].getOperatorCode();
+					getRequestURL = "/" + registrations[i].getRegistrationID()+ "/" + criteria + "/messages?maxBatchSize="+ batchSize;
+					url = url.replace("/messages", getRequestURL);
+					break;
+                   /* if (registrations[i].getCriteria() != null) {
                         criteria = registrations[i].getCriteria();
                     }
 
@@ -160,7 +169,7 @@ public class RetrieveSMSNorthboundHandler implements SMSHandler {
                         log.debug("Invoke SBRetrieveSMSHandler of plugin");
                     }
 
-                    break;
+                    break;*/
                 }
             }
 
@@ -193,7 +202,7 @@ public class RetrieveSMSNorthboundHandler implements SMSHandler {
                 }
             }
 
-             
+            /*add criteria and operatorCode to the southbound response*/ 
             NorthboundRetrieveResponse sbRetrieveResponse = gson.fromJson(retStr, NorthboundRetrieveResponse.class);
 
             if (sbRetrieveResponse != null) {
@@ -222,7 +231,7 @@ public class RetrieveSMSNorthboundHandler implements SMSHandler {
         JSONObject paylodObject = apiUtil.generateResponse(context, reqType, inboundSMSMessageList, responses, requestid);
         String strjsonBody = paylodObject.toString();
 
-         
+        /*create northbound response. add clientCorrelator and resourceURL*/
         NorthboundRetrieveResponse nbRetrieveResponse = gson.fromJson(strjsonBody, NorthboundRetrieveResponse.class);
         nbRetrieveResponse.getInboundSMSMessageList().setClientCorrelator(nbRetrieveRequest.getInboundSMSMessages().getClientCorrelator());
         String resourceURL = nbRetrieveResponse.getInboundSMSMessageList().getResourceURL();

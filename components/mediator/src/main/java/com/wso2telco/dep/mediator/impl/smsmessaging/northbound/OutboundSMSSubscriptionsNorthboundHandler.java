@@ -220,7 +220,7 @@ public class OutboundSMSSubscriptionsNorthboundHandler implements SMSHandler {
 
 					if (notifyres == null) {
 						senderAddresses[i].setStatus("Failed");
-						 /*throw new AxiataException("POL0299", "", new String[]{"Error registering subscription"});*/
+						
 					} else {
 						// plugin exception handling
 						sbDeliveryReceiptSubscriptionResponse = gson.fromJson(notifyres,SouthboundDeliveryReceiptSubscriptionRequest.class);

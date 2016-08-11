@@ -177,11 +177,11 @@ public class RetrieveSMSSouthboundHandler implements SMSHandler {
 		JSONObject paylodObject = apiUtil.generateResponse(context, reqType, results, responses, requestid);
 		String strjsonBody = paylodObject.toString();
 
+		/*add resourceURL to the southbound response*/
 		SouthboundRetrieveResponse sbRetrieveResponse = gson.fromJson(strjsonBody, SouthboundRetrieveResponse.class);
 		if (sbRetrieveResponse != null) {
 			String resourceURL = sbRetrieveResponse.getInboundSMSMessageList().getResourceURL();
-			InboundSMSMessage[] inboundSMSMessageResponses = sbRetrieveResponse.getInboundSMSMessageList()
-					.getInboundSMSMessage();
+			InboundSMSMessage[] inboundSMSMessageResponses = sbRetrieveResponse.getInboundSMSMessageList().getInboundSMSMessage();
 
 			for (int i = 0; i < inboundSMSMessageResponses.length; i++) {
 				String messageId = inboundSMSMessageResponses[i].getMessageId();

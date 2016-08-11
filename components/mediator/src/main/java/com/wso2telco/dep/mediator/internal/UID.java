@@ -71,6 +71,9 @@ public class UID {
        return resUrl.substring(0,resUrl.lastIndexOf("/")+1)+reqid+"/"+msg;
     }
     
+	public static String retriveMsgResourceURL(String resUrl, String msg) {
+		return resUrl.substring(0, resUrl.lastIndexOf("/") + 1) + msg;
+	}
 }
 
 

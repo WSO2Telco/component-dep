@@ -142,8 +142,11 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
 		JSONObject jsonBody = executor.getJsonBody();
 		JSONObject jsondstaddr = jsonBody.getJSONObject("deliveryReceiptSubscription");
 		
-		String orgclientcl = jsondstaddr.getString("clientCorrelator");
-
+		//String orgclientcl = jsondstaddr.getString("clientCorrelator");
+		String orgclientcl = "";
+		if (!jsondstaddr.isNull("clientCorrelator")) {
+			orgclientcl = jsondstaddr.getString("clientCorrelator");
+		}
 		if (!jsondstaddr.isNull("filterCriteria")) {
 			DeliveryReceiptSubscriptionRequest subsrequst = gson.fromJson(jsonBody.toString(),DeliveryReceiptSubscriptionRequest.class);
 			String origNotiUrl = subsrequst.getDeliveryReceiptSubscription().getCallbackReference().getNotifyURL();
@@ -154,6 +157,8 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
 			String subsEndpoint = mediatorConfMap.get("hubSubsGatewayEndpoint") + "/"+ dnSubscriptionId;
 			jsondstaddr.getJSONObject("callbackReference").put("notifyURL", subsEndpoint); 
 
+			subsrequst.getDeliveryReceiptSubscription().getCallbackReference().setNotifyURL(subsEndpoint);
+			
 			String sbRequestBody = removeResourceURL(gson.toJson(subsrequst));
 			List<OperatorSubscriptionDTO> domainsubs = new ArrayList<OperatorSubscriptionDTO>();
 			DeliveryReceiptSubscriptionRequest subsresponse = null;
@@ -185,109 +190,13 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
 			 */
 
 			replysubs.getJSONObject("callbackReference").put("notifyURL",origNotiUrl);
-			jsondstaddr.put("resourceURL",ResourceUrlPrefix + executor.getResourceUrl() + "/"+ dnSubscriptionId);
-
+			//jsondstaddr.put("resourceURL",ResourceUrlPrefix + executor.getResourceUrl() + "/"+ dnSubscriptionId);
+			replysubs.put("resourceURL", ResourceUrlPrefix + executor.getResourceUrl() + "/" + dnSubscriptionId);
+			
 			executor.removeHeaders(context);
 			((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 201);
 			executor.setResponse(context, replyobj.toString());
-		} else {/*
-				 * NBSubscribeRequest nbSubsrequst =
-				 * gson.fromJson(jsonBody.toString(), NBSubscribeRequest.class);
-				 * String origNotiUrl =
-				 * nbSubsrequst.getSubscription().getCallbackReference
-				 * ().getNotifyURL();
-				 * 
-				 * List<OperatorEndpoint> endpoints =
-				 * occi.getAPIEndpointsByApp(API_TYPE,
-				 * executor.getSubResourcePath(),executor.getValidoperators());
-				 * 
-				 * Integer axiataid =
-				 * dbservice.subscriptionEntry(nbSubsrequst.getSubscription
-				 * ().getCallbackReference().getNotifyURL());
-				 * Util.getPropertyFile(); String subsEndpoint =
-				 * Util.getApplicationProperty("hubSubsGatewayEndpoint") + "/" +
-				 * axiataid;
-				 * jsondstaddr.getJSONObject("callbackReference").put("notifyURL"
-				 * , subsEndpoint);
-				 * 
-				 * 
-				 * List<Operatorsubs> domainsubs = new
-				 * ArrayList<Operatorsubs>(); SBOutboundSubscriptionRequest
-				 * sbSubsresponse = null; DestinationAddresses[]
-				 * destinationAddresses =
-				 * nbSubsrequst.getSubscription().getDestinationAddresses();
-				 * 
-				 * for (OperatorEndpoint endpoint : endpoints) {
-				 * 
-				 * for (int i = 0; i < destinationAddresses.length; i++) { if
-				 * (destinationAddresses
-				 * [i].getOperatorCode().equalsIgnoreCase(endpoint
-				 * .getOperator())) { SBOutboundSubscriptionRequest sbSubsrequst
-				 * = new SBOutboundSubscriptionRequest(); Subscription sbrequest
-				 * = new Subscription(); CallbackReference callbackReference =
-				 * new CallbackReference();
-				 * 
-				 * callbackReference.setCallbackData(nbSubsrequst.getSubscription
-				 * ().getCallbackReference().getCallbackData());
-				 * callbackReference.setNotifyURL(subsEndpoint);
-				 * sbrequest.setCallbackReference(callbackReference);
-				 * 
-				 * sbrequest.setNotificationFormat(nbSubsrequst.getSubscription()
-				 * .getNotificationFormat());
-				 * sbrequest.setCriteria(destinationAddresses[i].getCriteria());
-				 * sbrequest.setDestinationAddress(destinationAddresses[i].
-				 * getDestinationAddress());
-				 * sbSubsrequst.setSubscription(sbrequest); String sbRequestBody
-				 * = removeResourceURL(gson.toJson(sbSubsrequst)); String
-				 * notifyres = executor.makeRequest(endpoint,
-				 * endpoint.getEndpointref().getAddress(), sbRequestBody, true,
-				 * context); if (notifyres == null) {
-				 * destinationAddresses[i].setStatus("Failed"); } else {
-				 * sbSubsresponse = gson.fromJson(notifyres,
-				 * SBOutboundSubscriptionRequest.class); if
-				 * (sbSubsresponse.getSubscription() == null) {
-				 * destinationAddresses[i].setStatus("NotCreated"); } else {
-				 * domainsubs.add(new Operatorsubs(endpoint.getOperator(),
-				 * sbSubsresponse.getSubscription().getResourceURL()));
-				 * destinationAddresses[i].setStatus("Created"); } } break; } }
-				 * }
-				 * 
-				 * boolean issubs = dbservice.operatorsubsEntry(domainsubs,
-				 * axiataid); String ResourceUrlPrefix =
-				 * Util.getApplicationProperty("hubGateway");
-				 * DestinationAddresses[] responseDestinationAddresses = new
-				 * DestinationAddresses[destinationAddresses.length]; int
-				 * destinationAddressesCount = 0; int successResultCount = 0;
-				 * for (DestinationAddresses destinationAddressesResult :
-				 * destinationAddresses) { String subscriptionStatus =
-				 * destinationAddressesResult.getStatus(); if
-				 * (subscriptionStatus == null) {
-				 * destinationAddressesResult.setStatus("Failed"); } else if
-				 * (subscriptionStatus.equals("Created")) {
-				 * successResultCount++; }
-				 * responseDestinationAddresses[destinationAddressesCount] =
-				 * destinationAddressesResult; destinationAddressesCount++; }
-				 * 
-				 * if (successResultCount == 0) { throw new
-				 * AxiataException("POL0299", "", new
-				 * String[]{"Error registering subscription"}); }
-				 * 
-				 * nbSubsrequst.getSubscription().setDestinationAddresses(
-				 * responseDestinationAddresses);
-				 * nbSubsrequst.getSubscription().
-				 * setResourceURL(ResourceUrlPrefix + executor.getResourceUrl()
-				 * + "/" + axiataid);
-				 * 
-				 * nbSubsrequst.getSubscription().getCallbackReference().
-				 * setNotifyURL(origNotiUrl);
-				 * 
-				 * String nbResponseBody = gson.toJson(nbSubsrequst);
-				 * executor.removeHeaders(context); ((Axis2MessageContext)
-				 * context).getAxis2MessageContext().setProperty("HTTP_SC",
-				 * 201); executor.setResponse(context,
-				 * nbResponseBody.toString());
-				 */
-		}
+		} 
 		return true;
 
 	}
