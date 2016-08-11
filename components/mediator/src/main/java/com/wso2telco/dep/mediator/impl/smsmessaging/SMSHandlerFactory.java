@@ -212,20 +212,16 @@ public class SMSHandlerFactory {
 
 			JSONObject objJSONObject = executor.getJsonBody();
 			JSONObject objInboundNotificationsHandler = objJSONObject.getJSONObject("deliveryInfoNotification");
-			if (objInboundNotificationsHandler!=null) {
-				            	handler = new SMSOutboundNotificationsHandler(executor);
-				            } else {
-				            	handler = new SMSInboundNotificationsHandler(executor); 
-				            }
-			/*if (objJSONObject.isNull("inboundSMSMessageNotification")) {
+			
+			if (objJSONObject.isNull("inboundSMSMessageNotification")) {
 
 				handler = new SMSOutboundNotificationsHandler(executor);
-				log.debug("invoking sms outbound notifications handler");
+				//log.debug("invoking sms outbound notifications handler");
 			} else if (objJSONObject.isNull("deliveryInfoNotification")) {
 
 				handler = new SMSInboundNotificationsHandler(executor);
-				log.debug("invoking sms inbound notifications handler");
-			}*/
+				//log.debug("invoking sms inbound notifications handler");
+			}
 		} catch (Exception e) {
 
 			//log.error("error in findSMSInboundNotificationsHandlerType : " + e.getMessage());

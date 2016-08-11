@@ -263,19 +263,13 @@ public abstract class RequestExecutor {
 		log.debug("DEBUG LOGS FOR LBS 08 : activeoperators = " + activeoperators);
 
 		List<OperatorApplicationDTO> validoperatorsDup = new ArrayList<OperatorApplicationDTO>();
-		log.debug("MEDIATOR DEBUG LOGS 00 : validoperators Array Before = "
-				+ Arrays.toString(validoperatorsDup.toArray()));
-		log.debug("MEDIATOR DEBUG LOGS 00 : activeoperators Array Before = "
-				+ Arrays.toString(activeoperators.toArray()));
+		
 		for (OperatorApplicationDTO operator : validoperators) {
 			if (activeoperators.contains(operator.getOperatorid())) {
-				log.debug("MEDIATOR DEBUG LOGS 01 : getOperatorid = " + operator.getOperatorid());
-				log.debug("MEDIATOR DEBUG LOGS 02 : getApplicationid = " + operator.getApplicationid());
-				log.debug("MEDIATOR DEBUG LOGS 03 : getIsactive = " + operator.getIsactive());
 				validoperatorsDup.add(operator);
 			}
 		}
-		log.debug("MEDIATOR DEBUG LOGS 04 : Array After = " + Arrays.toString(validoperatorsDup.toArray()));
+		
 		if (validoperatorsDup.isEmpty()) {
 			throw new CustomException("SVC0001", "", new String[] { "Requested service is not provisioned" });
 		}
