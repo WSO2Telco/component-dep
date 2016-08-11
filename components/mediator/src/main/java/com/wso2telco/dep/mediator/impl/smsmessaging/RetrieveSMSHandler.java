@@ -18,10 +18,8 @@ package com.wso2telco.dep.mediator.impl.smsmessaging;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
-import com.wso2telco.dep.mediator.entity.smsmessaging.northbound.InboundSMSMessage;
-import com.wso2telco.dep.mediator.entity.smsmessaging.northbound.NorthboundRetrieveRequest;
-import com.wso2telco.dep.mediator.entity.smsmessaging.northbound.NorthboundRetrieveResponse;
-import com.wso2telco.dep.mediator.entity.smsmessaging.northbound.Registrations;
+import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.InboundSMSMessage;
+import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.SouthboundRetrieveResponse;
 import com.wso2telco.dep.mediator.internal.APICall;
 import com.wso2telco.dep.mediator.internal.ApiUtils;
 import com.wso2telco.dep.mediator.internal.Type;
@@ -29,8 +27,7 @@ import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
-import com.wso2telco.oneapivalidation.service.impl.sms.nb.ValidateNBRetrieveSms;
-import com.wso2telco.oneapivalidation.service.impl.sms.sb.ValidateSBRetrieveSms;
+import com.wso2telco.oneapivalidation.service.impl.sms.ValidateRetrieveSms;
 
 import java.net.URL;
 import java.util.ArrayList;
@@ -100,12 +97,9 @@ public class RetrieveSMSHandler implements SMSHandler {
 
 		int batchSize = 100;
 
-		if (context.isDoingGET()) {
-
-			URL retrieveURL = new URL("http://example.com/smsmessaging/v1"
-					+ executor.getSubResourcePath());
-			String urlQuery = retrieveURL.getQuery();
-
+		URL retrieveURL = new URL("http://example.com/smsmessaging/v1" + executor.getSubResourcePath());
+		String urlQuery = retrieveURL.getQuery();
+		
 			if (urlQuery != null) {
 				if (urlQuery.contains("maxBatchSize")) {
 					String queryParts[] = urlQuery.split("=");
@@ -115,11 +109,8 @@ public class RetrieveSMSHandler implements SMSHandler {
 						}
 					}
 				}
-			}
-
-			List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(
-					API_TYPE, executor.getSubResourcePath(),
-					executor.getValidoperators());
+				
+			List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp( API_TYPE, executor.getSubResourcePath(), executor.getValidoperators());
 
 			log.debug("Endpoints size: " + endpoints.size());
 
@@ -200,164 +191,27 @@ public class RetrieveSMSHandler implements SMSHandler {
 					reqType, results, responses, requestid);
 			String strjsonBody = paylodObject.toString();
 
+			
+			/*add resourceURL to the southbound response*/
+			SouthboundRetrieveResponse sbRetrieveResponse = gson.fromJson(strjsonBody, SouthboundRetrieveResponse.class);
+	        if (sbRetrieveResponse != null) {
+	            String resourceURL = sbRetrieveResponse.getInboundSMSMessageList().getResourceURL();            
+	            InboundSMSMessage[] inboundSMSMessageResponses = sbRetrieveResponse.getInboundSMSMessageList().getInboundSMSMessage();
+	 
+	        for (int i = 0; i < inboundSMSMessageResponses.length; i++) {   
+		                String messageId = inboundSMSMessageResponses[i].getMessageId();                
+		                 inboundSMSMessageResponses[i].setResourceURL(resourceURL + "/" + messageId);
+		             }
+		             sbRetrieveResponse.getInboundSMSMessageList().setInboundSMSMessage(inboundSMSMessageResponses);
+		         }
+			 
 			executor.removeHeaders(context);
-			executor.setResponse(context, strjsonBody);
+			executor.setResponse(context, gson.toJson(sbRetrieveResponse));
 			// routeToEndPoint(context, sendResponse, "", "", strjsonBody);
 
-			((Axis2MessageContext) context).getAxis2MessageContext()
-					.setProperty("messageType", "application/json");
-
-		} else {
-			JSONObject jsonBody = executor.getJsonBody();
-			NorthboundRetrieveRequest nbRetrieveRequest = gson.fromJson(
-					jsonBody.toString(), NorthboundRetrieveRequest.class);
-			log.debug("-------------------------------------- Retrieve messages sent to your Web application --------------------------------------");
-			log.debug("Retrieve northbound request body : "
-					+ gson.toJson(nbRetrieveRequest));
-
-			List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(
-					API_TYPE, executor.getSubResourcePath(),
-					executor.getValidoperators());
-			List<OperatorEndpoint> validEndpoints = new ArrayList<OperatorEndpoint>();
-
-			Registrations[] registrations = nbRetrieveRequest
-					.getInboundSMSMessages().getRegistrations();
-
-			for (OperatorEndpoint operatorEndpoint : endpoints) {
-
-				for (int i = 0; i < registrations.length; i++) {
-					if (registrations[i].getOperatorCode().equalsIgnoreCase(
-							operatorEndpoint.getOperator())) {
-						validEndpoints.add(operatorEndpoint);
-						break;
-					}
-				}
-			}
-
-			log.debug("Endpoints size: " + validEndpoints.size());
-
-			Collections.shuffle(validEndpoints);
-			int perOpCoLimit = batchSize / (validEndpoints.size());
-
-			log.debug("Per OpCo limit :" + perOpCoLimit);
-
-			/* JSONArray results = new JSONArray(); */
-			List<InboundSMSMessage> inboundSMSMessageList = new ArrayList<InboundSMSMessage>();
-
-			/**
-			 * TODO FIX
-			 */
-			int count = 0;
-			/**
-			 * TODO FIX
-			 */
-			ArrayList<String> responses = new ArrayList<String>();
-			while (inboundSMSMessageList.size() < batchSize) {
-				OperatorEndpoint aEndpoint = validEndpoints.remove(0);
-				validEndpoints.add(aEndpoint);
-				String url = aEndpoint.getEndpointref().getAddress();
-				String getRequestURL = null;
-				String criteria = null;
-				String operatorCode = null;
-
-				for (int i = 0; i < registrations.length; i++) {
-					if (registrations[i].getOperatorCode().equalsIgnoreCase(
-							aEndpoint.getOperator())) {
-						/* create request url for southbound operators */
-						criteria = registrations[i].getCriteria();
-						operatorCode = registrations[i].getOperatorCode();
-						getRequestURL = "/" + registrations[i].getRegistrationID() + "/" + criteria + "/messages?maxBatchSize=" + batchSize;
-                        url = url.replace("/messages", getRequestURL);
-						break;
-					}
-				}
-
-				APICall ac = apiUtil.setBatchSize(url, body.toString(),
-						reqType, perOpCoLimit);
-				// String url =
-				// aEndpoint.getAddress()+getResourceUrl().replace("test_api1/1.0.0/",
-				// "");//aEndpoint
-				// .getAddress() + ac.getUri();
-				JSONObject obj = ac.getBody();
-				String retStr = null;
-				log.debug("Retrieving messages of operator: "
-						+ aEndpoint.getOperator());
-				context.setDoingGET(true);
-				if (context.isDoingGET()) {
-					log.debug("Doing makeGetRequest");
-					retStr = executor.makeGetRequest(aEndpoint, ac.getUri(),
-							null, true, context);
-				} else {
-					log.debug("Doing makeRequest");
-					retStr = executor.makeRequest(aEndpoint, ac.getUri(),
-							obj.toString(), true, context);
-				}
-
-				log.debug("Retrieved messages of " + aEndpoint.getOperator()
-						+ " operator: " + retStr);
-
-				if (retStr == null) {
-					count++;
-					if (count == validEndpoints.size()) {
-						log.debug("-------------------------------------------------> Break because count == validEndpoints.size() ------> count :"
-								+ count
-								+ " validEndpoints.size() :"
-								+ validEndpoints.size());
-						break;
-					} else {
-						continue;
-					}
-				}
-
-				/* add criteria and operatorCode to the southbound response */
-				NorthboundRetrieveResponse sbRetrieveResponse = gson.fromJson(
-						retStr, NorthboundRetrieveResponse.class);
-
-				if (sbRetrieveResponse != null) {
-					InboundSMSMessage[] inboundSMSMessageResponses = sbRetrieveResponse
-							.getInboundSMSMessageList().getInboundSMSMessage();
-
-					for (int i = 0; i < inboundSMSMessageResponses.length; i++) {
-						inboundSMSMessageResponses[i].setCriteria(criteria);
-						inboundSMSMessageResponses[i]
-								.setOperatorCode(operatorCode);
-
-						inboundSMSMessageList
-								.add(inboundSMSMessageResponses[i]);
-					}
-					sbRetrieveResponse.getInboundSMSMessageList()
-							.setInboundSMSMessage(inboundSMSMessageResponses);
-					responses.add(gson.toJson(sbRetrieveResponse));
-				}
-				count++;
-				if (count == (validEndpoints.size() * 2)) {
-					log.debug("-------------------------------------------------> Break because count == (validEndpoints.size() * 2) ------> count :"
-							+ count
-							+ " (validEndpoints.size() * 2) :"
-							+ validEndpoints.size() * 2);
-					break;
-				}
-			}
-			log.debug("Final value of count :" + count);
-			log.debug("Results length of retrieve messages: "
-					+ inboundSMSMessageList.size());
-
-			JSONObject paylodObject = apiUtil.generateResponse(context,
-					reqType, inboundSMSMessageList, responses, requestid);
-			String strjsonBody = paylodObject.toString();
-
-			/* create northbound response */
-			NorthboundRetrieveResponse nbRetrieveResponse = gson.fromJson(
-					strjsonBody.toString(), NorthboundRetrieveResponse.class);
-			nbRetrieveResponse.getInboundSMSMessageList().setClientCorrelator(
-					nbRetrieveRequest.getInboundSMSMessages()
-							.getClientCorrelator());
-			executor.removeHeaders(context);
-			executor.setResponse(context, gson.toJson(nbRetrieveResponse));
-			// routeToEndPoint(context, sendResponse, "", "", strjsonBody);
-			((Axis2MessageContext) context).getAxis2MessageContext()
-					.setProperty("messageType", "application/json");
-		}
+			((Axis2MessageContext) context).getAxis2MessageContext().setProperty("messageType", "application/json");
+			
+		} 
 		return true;
 	}
 
@@ -371,39 +225,18 @@ public class RetrieveSMSHandler implements SMSHandler {
 	@Override
 	public boolean validate(String httpMethod, String requestPath,
 			JSONObject jsonBody, MessageContext context) throws Exception {
-		if (!httpMethod.equalsIgnoreCase("POST")
-				&& !httpMethod.equalsIgnoreCase("GET")) {
+		if (!httpMethod.equalsIgnoreCase("GET")) {
 			((Axis2MessageContext) context).getAxis2MessageContext()
 					.setProperty("HTTP_SC", 405);
 			throw new Exception("Method not allowed");
 		}
 
-		if (httpMethod.equalsIgnoreCase("GET")) {
-			IServiceValidate validator;
-			String urlParts = apiUtil.getAppID(context, "retrive_sms");
-			String appID = "";
-			String criteria = "";
-			String[] param = urlParts.split("/");
-			if (param.length == 2) {
-				appID = param[0];
-				criteria = param[1];
-			}
-
-			String[] params = { appID, criteria, "" };
-			validator = new ValidateSBRetrieveSms();
-			validator.validateUrl(requestPath);
-			validator.validate(params);
-		} else {
-			IServiceValidate validator;
-			/*
-			 * String appID = apiUtil.getAppID(context, "retrive_sms"); String[]
-			 * params = {appID, ""};
-			 */
-			validator = new ValidateNBRetrieveSms();
-			validator.validateUrl(requestPath);
-			/* validator.validate(params); */
-			validator.validate(jsonBody.toString());
-		}
+		IServiceValidate validator;
+		String appID = apiUtil.getAppID(context, "retrive_sms");
+		String[] params = { appID, "" };
+		validator = new ValidateRetrieveSms();
+		validator.validateUrl(requestPath);
+		validator.validate(params);
 		return true;
 	}
 }

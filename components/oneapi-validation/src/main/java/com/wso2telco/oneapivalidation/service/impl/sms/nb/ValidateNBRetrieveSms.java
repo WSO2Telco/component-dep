@@ -139,18 +139,18 @@ public class ValidateNBRetrieveSms implements IServiceValidate {
                         } else if (details[0].equalsIgnoreCase("operatorCode")) {
                             rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "operatorCode", details[1]));
                         } else if (details[0].equalsIgnoreCase("criteria")) {
-                            rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "criteria", details[1]));
+                            rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "criteria", details[1]));
                         }
                     }
                 } else {
                     rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "registrationID", ""));
                     rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "operatorCode", ""));
-                    rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "criteria", ""));
+                    rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "criteria", ""));
                 }
             } else {
                 rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "registrationID", ""));
                 rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "operatorCode", ""));
-                rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "criteria", ""));
+                rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "criteria", ""));
             }
 
             if (!objInboundSMSMessages.isNull("maxBatchSize")) {

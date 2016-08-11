@@ -144,12 +144,8 @@ public class RetrieveSMSNorthboundHandler implements SMSHandler {
             for (int i = 0; i < registrations.length; i++) {
                 if (registrations[i].getOperatorCode().equalsIgnoreCase(aEndpoint.getOperator())) {
                 	/*create request url for southbound operators*/
-                	criteria = registrations[i].getCriteria();
-					operatorCode = registrations[i].getOperatorCode();
-					getRequestURL = "/" + registrations[i].getRegistrationID()+ "/" + criteria + "/messages?maxBatchSize="+ batchSize;
-					url = url.replace("/messages", getRequestURL);
-					break;
-                   /* if (registrations[i].getCriteria() != null) {
+                	
+                    if (registrations[i].getCriteria() != null) {
                         criteria = registrations[i].getCriteria();
                     }
 
@@ -165,7 +161,7 @@ public class RetrieveSMSNorthboundHandler implements SMSHandler {
                         log.debug("Invoke SBRetrieveSMSHandler of plugin");
                     }
 
-                    break;*/
+                    break;
                 }
             }
 
