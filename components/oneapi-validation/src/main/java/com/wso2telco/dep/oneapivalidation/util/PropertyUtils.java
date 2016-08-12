@@ -24,7 +24,7 @@ import com.wso2telco.dbutils.fileutils.FileReader;
 public class PropertyUtils {
 
 	private Log log = LogFactory.getLog(PropertyUtils.class);
-			
+
 	/**
 	 * Gets the SMS batch size.
 	 *
@@ -46,14 +46,59 @@ public class PropertyUtils {
 				result = 25;
 				log.debug("sms.batchSize property is empty. set default value 25 for sms batch size");
 			} else {
-				
+
 				result = Integer.parseInt(batchSize);
 				log.debug("set sms batch size to " + batchSize);
 			}
 		} catch (Exception e) {
-			
+
 			result = 25;
 			log.error("error in accessing sms.batchSize property. set default value 25 for sms batch size");
+		}
+
+		return result;
+	}
+
+	public boolean getApiTypeAvailability(String apiTypeParam) {
+
+		FileReader fileReader = new FileReader();
+		boolean isAvailable = false;
+
+		try {
+
+			Map<String, String> oneAPIValidationConfMap = fileReader.readOneAPIValidationConfFile();
+			String value = oneAPIValidationConfMap.get(apiTypeParam);
+
+			if (!value.equals("")) {
+
+				isAvailable = Boolean.valueOf(value);
+			}
+		} catch (Exception e) {
+
+			log.error("Exception in getApiTypeAvailability(" + apiTypeParam + ") :: " + e);
+			isAvailable = false;
+		}
+
+		return isAvailable;
+	}
+
+	public boolean getIsSMSLimitToOne() {
+		
+		FileReader fileReader = new FileReader();
+		boolean result = true;
+		
+		try {
+			
+			Map<String, String> oneAPIValidationConfMap = fileReader.readOneAPIValidationConfFile();
+			String value = oneAPIValidationConfMap.get("sms.limitToOne");
+			
+			if (value.equals("false")) {
+				
+				result = false;
+			}
+		} catch (Exception e) {
+			
+			log.error("Exception in getIsSMSLimitToOne() :: " + e);
 		}
 		
 		return result;
