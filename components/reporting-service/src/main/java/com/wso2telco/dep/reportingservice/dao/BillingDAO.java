@@ -1502,16 +1502,22 @@ public class BillingDAO {
             api = "%";
         }
 
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet results = null;
-        StringBuilder sql = new StringBuilder(); 
-        sql.append("SELECT x.time, x.jsonBody, x.api FROM ")
-        .append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject())
-        .append(" x WHERE STR_TO_DATE(x.time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') AND operatorId LIKE ? AND userid LIKE ? AND api LIKE ? AND consumerKey LIKE ? AND msisdn LIKE ? LIMIT ")
-        .append(startLimit)
-        .append(" ,")
-        .append(endLimit);
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet results = null;
+		StringBuilder sql = new StringBuilder();
+		sql.append("SELECT x.time, x.jsonBody, x.api FROM ")
+		.append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject())
+		.append(" x WHERE STR_TO_DATE(x.time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') AND operatorId LIKE ? AND userid LIKE ? AND api LIKE ? AND consumerKey LIKE ? ");
+		if (!msisdn.isEmpty()) {
+			sql.append(" AND msisdn LIKE ? LIMIT ");
+		} else {
+			sql.append(" LIMIT ");
+		}
+
+		sql.append(startLimit)
+		.append(" ,")
+		.append(endLimit);
         
         List<String[]> api_request_data = new ArrayList<String[]>();
 
@@ -1524,7 +1530,11 @@ public class BillingDAO {
             ps.setString(4, subscriber);
             ps.setString(5, api);
             ps.setString(6, consumerKey);
-            ps.setString(7, "%" + msisdn);
+            //ps.setString(7, "%" + msisdn);
+            
+			if (!msisdn.isEmpty()) {
+				ps.setString(7, "%" + msisdn);
+			}
 
             log.debug("getCustomerCareReportData");
             results = ps.executeQuery();
@@ -1580,8 +1590,10 @@ public class BillingDAO {
         StringBuilder sql = new StringBuilder(); 
         sql.append("SELECT COUNT(*) FROM ")
         .append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject())
-        .append(" x WHERE STR_TO_DATE(x.time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') AND operatorId LIKE ? AND userid LIKE ? AND api LIKE ? AND consumerKey LIKE ? AND msisdn LIKE ?");
- 
+        .append(" x WHERE STR_TO_DATE(x.time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') AND operatorId LIKE ? AND userid LIKE ? AND api LIKE ? AND consumerKey LIKE ? ");
+        if(!msisdn.isEmpty()) {
+        	sql.append(" AND msisdn LIKE ? ");
+        }
         List<String[]> api_request_data = new ArrayList<String[]>();
 
         try {
@@ -1593,8 +1605,11 @@ public class BillingDAO {
             ps.setString(4, subscriber);
             ps.setString(5, api);
             ps.setString(6, consumerKey);
-            ps.setString(7, "%" + msisdn);
-
+           // ps.setString(7, "%" + msisdn);
+            if (!msisdn.isEmpty()) {
+				ps.setString(7, "%" + msisdn);
+			}
+            
             log.debug("getCustomerCareReportData");
             results = ps.executeQuery();
             results.next();
