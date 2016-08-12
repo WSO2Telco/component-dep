@@ -38,9 +38,9 @@
     "IS_URL" : "https://localhost:9444/",
 	"webapp_URL" : "http://localhost:9763/",
     "chart1":"false",
-    "chart2":"true",
+    "chart2":"false",
     "chart3":"false",
     "chart4":"fasle",
-    "chart5":"true",
+    "chart5":"false",
     "chart6":"false"
 }

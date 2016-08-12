@@ -56,15 +56,19 @@ public class LocationExecutor extends RequestExecutor {
         context.setProperty(MSISDNConstants.USER_MSISDN, params[0].substring(5));
         OperatorEndpoint endpoint = null;
         if (ValidatorUtils.getValidatorForSubscription(context).validate(context)) {
-            endpoint = occi.getAPIEndpointsByMSISDN(params[0].replace("tel:", ""), "location", getSubResourcePath(), true,
-                    getValidoperators());
+            endpoint = occi.getAPIEndpointsByMSISDN(params[0].replace("tel:", ""), "location", getSubResourcePath(), true, getValidoperators());
         }
         String sending_add = endpoint.getEndpointref().getAddress();
 
-        String responseStr = makeGetRequest(endpoint, sending_add, getSubResourcePath(), true, context);
+        String responseStr = makeGetRequest(endpoint, sending_add, getSubResourcePath(), true, context, false);
 
         removeHeaders(context);
-        handlePluginException(responseStr);
+        
+		if (responseStr == null || responseStr.equals("") || responseStr.isEmpty()) {
+			throw new CustomException("SVC1000", "", new String[] { null });
+		} else {
+			handlePluginException(responseStr);
+		}
         //set response re-applied
         setResponse(context, responseStr);
         ((Axis2MessageContext) context).getAxis2MessageContext().setProperty("messageType", "application/json");

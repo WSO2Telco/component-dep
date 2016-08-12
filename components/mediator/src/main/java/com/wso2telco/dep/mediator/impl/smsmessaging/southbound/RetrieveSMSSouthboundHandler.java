@@ -53,7 +53,7 @@ public class RetrieveSMSSouthboundHandler implements SMSHandler {
 	private static Log log = LogFactory.getLog(RetrieveSMSSouthboundHandler.class);
 
 	/** The Constant API_TYPE. */
-	private static final String API_TYPE = "sms";
+	private static final String API_TYPE = "smsmessaging";
 
 	/** The occi. */
 	private OriginatingCountryCalculatorIDD occi;
@@ -136,10 +136,10 @@ public class RetrieveSMSSouthboundHandler implements SMSHandler {
 
 			if (context.isDoingGET()) {
 				log.debug("Doing makeGetRequest");
-				retStr = executor.makeGetRequest(aEndpoint, ac.getUri(), null, true, context);
+				retStr = executor.makeGetRequest(aEndpoint, ac.getUri(), null, true, context,false);
 			} else {
 				log.debug("Doing makeRequest");
-				retStr = executor.makeRequest(aEndpoint, ac.getUri(), obj.toString(), true, context);
+				retStr = executor.makeRequest(aEndpoint, ac.getUri(), obj.toString(), true, context,false);
 			}
 
 			log.debug("Retrieved messages of " + aEndpoint.getOperator() + " operator: " + retStr);
@@ -177,11 +177,11 @@ public class RetrieveSMSSouthboundHandler implements SMSHandler {
 		JSONObject paylodObject = apiUtil.generateResponse(context, reqType, results, responses, requestid);
 		String strjsonBody = paylodObject.toString();
 
+		/*add resourceURL to the southbound response*/
 		SouthboundRetrieveResponse sbRetrieveResponse = gson.fromJson(strjsonBody, SouthboundRetrieveResponse.class);
 		if (sbRetrieveResponse != null) {
 			String resourceURL = sbRetrieveResponse.getInboundSMSMessageList().getResourceURL();
-			InboundSMSMessage[] inboundSMSMessageResponses = sbRetrieveResponse.getInboundSMSMessageList()
-					.getInboundSMSMessage();
+			InboundSMSMessage[] inboundSMSMessageResponses = sbRetrieveResponse.getInboundSMSMessageList().getInboundSMSMessage();
 
 			for (int i = 0; i < inboundSMSMessageResponses.length; i++) {
 				String messageId = inboundSMSMessageResponses[i].getMessageId();

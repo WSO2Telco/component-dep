@@ -44,43 +44,61 @@ public class ValidateOutboundSubscription implements IServiceValidate {
         String callbackData = null;
         String filterCriteria = null;
         String clientCorrelator = null;
-
+       
         try {
 
             JSONObject objJSONObject = new JSONObject(json);
+            /*JSONObject objSubscription = (JSONObject) objJSONObject.get("deliveryReceiptSubscription");
+            
+            JSONObject objCallbackReference = (JSONObject) objSubscription.get("callbackReference");*/
             JSONObject objDeliveryReceiptSubscription = (JSONObject) objJSONObject.get("deliveryReceiptSubscription");
-
+            
             if (!objDeliveryReceiptSubscription.isNull("filterCriteria")) {
-                filterCriteria = nullOrTrimmed(objDeliveryReceiptSubscription.getString("filterCriteria"));
-            }
+				filterCriteria = nullOrTrimmed(objDeliveryReceiptSubscription.getString("filterCriteria"));
+			}
 
-            if (!objDeliveryReceiptSubscription.isNull("clientCorrelator")) {
-                clientCorrelator = nullOrTrimmed(objDeliveryReceiptSubscription.getString("clientCorrelator"));
-            }
+			if (!objDeliveryReceiptSubscription.isNull("clientCorrelator")) {
+				clientCorrelator = nullOrTrimmed(objDeliveryReceiptSubscription.getString("clientCorrelator"));
+			}
+			JSONObject objCallbackReference = (JSONObject) objDeliveryReceiptSubscription.get("callbackReference");
+            
+			
+			
+			
+			if (!objCallbackReference.isNull("callbackData")) {
+				callbackData = nullOrTrimmed(objCallbackReference.getString("callbackData"));
+				/*rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY,"callbackData", callbackData));
+			} else {
+				rules.add(new ValidationRule(
+						ValidationRule.VALIDATION_TYPE_MANDATORY,"callbackData", callbackData));*/
+			}
+			if (!objCallbackReference.isNull("notifyURL")) {
+				notifyURL = nullOrTrimmed(objCallbackReference.getString("notifyURL"));
+				/*rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_URL,"notifyURL", notifyURL));
+			} else {
+				rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_URL,"notifyURL", notifyURL));*/
+			}
 
-            JSONObject objCallbackReference = (JSONObject) objDeliveryReceiptSubscription.get("callbackReference");
+			/*filterCriteria = nullOrTrimmed(objSubscription.getString("filterCriteria"));
+			rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY,"filterCriteria", filterCriteria));
+*/
+		} catch (Exception e) {
+			System.out.println("Manipulating recived JSON Object: " + e);
+			throw new CustomException("POL0299", "Unexpected Error",new String[] { "" });
+		}
 
-            if (!objCallbackReference.isNull("callbackData")) {
-                callbackData = nullOrTrimmed(objCallbackReference.getString("callbackData"));
-            }
-
-            if (!objCallbackReference.isNull("notifyURL")) {
-                notifyURL = nullOrTrimmed(objCallbackReference.getString("notifyURL"));
-            }
-        } catch (Exception e) {
-            System.out.println("Manipulating recived JSON Object: " + e);
-            throw new CustomException("POL0299", "Unexpected Error", new String[]{""});
-        }
-
-        ValidationRule[] rules = null;
-        rules = new ValidationRule[]{
-            new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "filterCriteria", filterCriteria),
-            new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "clientCorrelator", clientCorrelator),
-            new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "callbackData", callbackData),
-            new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_URL, "notifyURL", notifyURL)
-        };
-
-        Validation.checkRequestParams(rules);
+		/*ValidationRule[] validationRuleArray = new ValidationRule[rules.size()];
+		validationRuleArray = rules.toArray(validationRuleArray);*/
+        
+		ValidationRule[] rules = null;
+		rules = new ValidationRule[] {
+				new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY,"filterCriteria", filterCriteria),
+				new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL,"clientCorrelator", clientCorrelator),
+				new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL,"callbackData", callbackData),
+				new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_URL,"notifyURL", notifyURL) };
+        
+		//Validation.checkRequestParams(validationRuleArray);
+		Validation.checkRequestParams(rules);
     }
 
     /**

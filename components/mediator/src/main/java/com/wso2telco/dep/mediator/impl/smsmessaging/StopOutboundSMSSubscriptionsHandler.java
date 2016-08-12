@@ -43,7 +43,7 @@ public class StopOutboundSMSSubscriptionsHandler implements SMSHandler {
 	private static Log log = LogFactory.getLog(StopOutboundSMSSubscriptionsHandler.class);
 
 	/** The Constant API_TYPE. */
-	private static final String API_TYPE = "sms";
+	private static final String API_TYPE = "smsmessaging";
 
 	/** The occi. */
 	private OriginatingCountryCalculatorIDD occi;
@@ -77,11 +77,12 @@ public class StopOutboundSMSSubscriptionsHandler implements SMSHandler {
 	@Override
 	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context)
 			throws Exception {
+		
 		IServiceValidate validator;
 		if (httpMethod.equalsIgnoreCase("DELETE")) {
 			String dnSubscriptionId = requestPath.substring(requestPath.lastIndexOf("/") + 1);
 			String[] params = { dnSubscriptionId };
-
+		
 			String[] urlElements = requestPath.split("/");
 			int elements = urlElements.length;
 			if (elements == 5) {
@@ -137,15 +138,13 @@ public class StopOutboundSMSSubscriptionsHandler implements SMSHandler {
 				.outboudSubscriptionQuery(Integer.valueOf(dnSubscriptionId)));
 		if (domainsubs.isEmpty()) {
 
-			throw new CustomException("POL0001", "",
-					new String[] { "SMS Receipt Subscription Not Found: " + dnSubscriptionId });
+			throw new CustomException("POL0001", "",new String[] { "SMS Receipt Subscription Not Found: " + dnSubscriptionId });
 		}
 
 		String resStr = "";
 		for (OperatorSubscriptionDTO subs : domainsubs) {
-			resStr = executor.makeDeleteRequest(
-					new OperatorEndpoint(new EndpointReference(subs.getDomain()), subs.getOperator()), subs.getDomain(),
-					null, true, context);
+			resStr = executor.makeDeleteRequest(new OperatorEndpoint(new EndpointReference(subs.getDomain()), subs.getOperator()), subs.getDomain(),
+					null, true, context,false);
 		}
 		smsMessagingService.outboundSubscriptionDelete(Integer.valueOf(dnSubscriptionId));
 

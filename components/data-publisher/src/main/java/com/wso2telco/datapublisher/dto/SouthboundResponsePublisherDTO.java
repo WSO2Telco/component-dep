@@ -379,11 +379,11 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
                 + "          {'name':'operatorRef','type':'STRING'},"
                 + "          {'name':'exceptionId','type':'STRING'},"
                 + "          {'name':'exceptionMessage','type':'STRING'},"
-                + "          {'name':'jsonBody','type':'STRING'},"
-                + "          {'name':'operationType','type':'INT'},"
+                + "          {'name':'jsonBody','type':'STRING'}"//look comma
+               /* + "          {'name':'operationType','type':'INT'},"
                 + "          {'name':'merchantId','type':'STRING'},"
                 + "          {'name':'category','type':'STRING'},"
-                + "          {'name':'subCategory','type':'STRING'}"
+                + "          {'name':'subCategory','type':'STRING'}"*/
                 + "  ]"
                 + "}";
 
@@ -400,6 +400,6 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
             getVersion(), this.getResponse(), getResponseTime(), getServiceTime(), getUsername(), getTenantDomain(), getHostName(),
             getApiPublisher(), getApplicationName(), getApplicationId(),
             getRequestId(), getOperatorId(), getResponseCode(), getMsisdn(), getChargeAmount(), getPurchaseCategoryCode(),
-            getOperatorRef(), getExceptionId(), getExceptionMessage(), getJsonBody(), getOperationType(), getMerchantId(), getCategory(), getSubCategory()};
+            getOperatorRef(), getExceptionId(), getExceptionMessage(), getJsonBody()/*, getOperationType(), getMerchantId(), getCategory(), getSubCategory()*/};
     }
 }

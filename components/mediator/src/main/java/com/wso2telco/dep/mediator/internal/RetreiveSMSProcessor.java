@@ -15,10 +15,7 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.internal;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
 import com.wso2telco.dep.mediator.entity.smsmessaging.northbound.InboundSMSMessage;
-
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +29,9 @@ import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -159,7 +159,7 @@ public class RetreiveSMSProcessor implements Processor {
      * @see com.wso2telco.mediator.internal.Processor#generateResponse(org.apache.synapse.MessageContext, java.util.List, java.lang.String, java.util.ArrayList)
      */
     @Override
-    public JSONObject generateResponse(MessageContext context, List<InboundSMSMessage> inboundSMSMessageList, String resourceURL, ArrayList<String> responses) {
+    public JSONObject generateResponse(MessageContext context, List<com.wso2telco.dep.mediator.entity.smsmessaging.northbound.InboundSMSMessage> inboundSMSMessageList, String resourceURL, ArrayList<String> responses) {
         String resultsList = "";
         JSONObject retobj = null;
 

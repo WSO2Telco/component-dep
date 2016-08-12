@@ -15,8 +15,8 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.internal;
 
-import com.wso2telco.dep.mediator.entity.smsmessaging.northbound.InboundSMSMessage;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
+import com.wso2telco.dep.mediator.entity.smsmessaging.northbound.InboundSMSMessage;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -173,7 +173,7 @@ public class ApiUtils {
 		try {
 			String resourceURL = prop.getProperty(apiType + "_resource_url");
 			Processor p = getProcessor(apiType);
-			return p.generateResponse(context, results, UID.resourceURLWithappend(resourceURL, requestid, "messages"),
+			return p.generateResponse(context, results, UID.retriveMsgResourceURL(resourceURL, requestid),
 					responses);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -197,12 +197,11 @@ public class ApiUtils {
 	 * @return the JSON object
 	 */
 	public JSONObject generateResponse(MessageContext context, String apiType,
-			List<InboundSMSMessage> inboundSMSMessageList, ArrayList<String> responses, String requestid) {
+			List<com.wso2telco.dep.mediator.entity.smsmessaging.northbound.InboundSMSMessage> inboundSMSMessageList, ArrayList<String> responses, String requestid) {
 		try {
 			String resourceURL = prop.getProperty(apiType + "_resource_url_post");
 			Processor p = getProcessor(apiType);
-			return p.generateResponse(context, inboundSMSMessageList,
-					UID.resourceURLWithappend(resourceURL, requestid, "messages"), responses);
+			return p.generateResponse(context, inboundSMSMessageList,UID.retriveMsgResourceURL(resourceURL, requestid ), responses);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;

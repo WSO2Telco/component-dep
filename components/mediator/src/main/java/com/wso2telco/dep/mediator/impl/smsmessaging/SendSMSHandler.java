@@ -56,7 +56,7 @@ public class SendSMSHandler implements SMSHandler {
 	private Log log = LogFactory.getLog(SendSMSHandler.class);
 
 	/** The Constant API_TYPE. */
-	private static final String API_TYPE = "sms";
+	private static final String API_TYPE = "smsmessaging";
 
 	/** The occi. */
 	private OriginatingCountryCalculatorIDD occi;
@@ -102,11 +102,17 @@ public class SendSMSHandler implements SMSHandler {
 		SendSMSRequest subsrequest = gson.fromJson(jsonBody.toString(), SendSMSRequest.class);
 		String senderAddress = subsrequest.getOutboundSMSMessageRequest().getSenderAddress();
 
+		// ========================UNICODE PATCH
+		byte[] preUtf8 = subsrequest.getOutboundSMSMessageRequest().getOutboundTextMessage().getMessage().getBytes("UTF-8");
+		String utf8String = new String(preUtf8, "UTF-8");
+		subsrequest.getOutboundSMSMessageRequest().getOutboundTextMessage().setMessage(utf8String);
+		// ========================UNICODE PATCH
+		        
+		
 		if (!ValidatorUtils.getValidatorForSubscription(context).validate(context)) {
 			throw new CustomException("SVC0001", "", new String[] { "Subscription Validation Unsuccessful" });
 		}
-		int smsCount = getSMSMessageCount(
-				subsrequest.getOutboundSMSMessageRequest().getOutboundTextMessage().getMessage());
+		int smsCount = getSMSMessageCount(subsrequest.getOutboundSMSMessageRequest().getOutboundTextMessage().getMessage());
 		context.setProperty(DataPublisherConstants.RESPONSE, String.valueOf(smsCount));
 
 		Map<String, SendSMSResponse> smsResponses = smssendmulti(context, subsrequest,
@@ -132,8 +138,7 @@ public class SendSMSHandler implements SMSHandler {
 	 * java.lang.String, org.json.JSONObject, org.apache.synapse.MessageContext)
 	 */
 	@Override
-	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context)
-			throws Exception {
+	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context) throws Exception {
 
 		if (!httpMethod.equalsIgnoreCase("POST")) {
 			((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 405);
@@ -192,8 +197,7 @@ public class SendSMSHandler implements SMSHandler {
 	 * @throws Exception
 	 *             the exception
 	 */
-	private Map<String, SendSMSResponse> smssendmulti(MessageContext smsmc, SendSMSRequest sendreq, JSONArray listaddr,
-			String apitype, List<OperatorApplicationDTO> operators) throws Exception {
+	private Map<String, SendSMSResponse> smssendmulti(MessageContext smsmc, SendSMSRequest sendreq, JSONArray listaddr, String apitype, List<OperatorApplicationDTO> operators) throws Exception {
 
 		OperatorEndpoint endpoint = null;
 		String jsonStr;
@@ -216,7 +220,7 @@ public class SendSMSHandler implements SMSHandler {
 			String sending_add = endpoint.getEndpointref().getAddress();
 			log.info("sending endpoint found: " + sending_add);
 
-			String responseStr = executor.makeRequest(endpoint, sending_add, jsonStr, true, smsmc);
+			String responseStr = executor.makeRequest(endpoint, sending_add, jsonStr, true, smsmc,false);
 			sendSMSResponse = parseJsonResponse(responseStr);
 
 			smsResponses.put(address, sendSMSResponse);

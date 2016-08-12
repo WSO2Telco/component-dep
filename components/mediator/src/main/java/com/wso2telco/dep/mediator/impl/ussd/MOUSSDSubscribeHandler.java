@@ -73,33 +73,34 @@ public class MOUSSDSubscribeHandler implements USSDHandler {
 	public boolean handle(MessageContext context) throws Exception {
 
 		FileReader fileReader = new FileReader();
+		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
+		
 		JSONObject jsonBody = executor.getJsonBody();
-		String notifyUrl = jsonBody.getJSONObject("subscription").getJSONObject("callbackReference")
-				.getString("notifyURL");
+		String notifyUrl = jsonBody.getJSONObject("subscription").getJSONObject("callbackReference").getString("notifyURL");
 
 		Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl);
-
-		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
+		log.info("created subscriptionId  -  " + subscriptionId);	
 
 		String subsEndpoint = mediatorConfMap.get("ussdGatewayEndpoint") + subscriptionId;
+		log.info("Subsendpoint - " +subsEndpoint);
 
 		jsonBody.getJSONObject("subscription").getJSONObject("callbackReference").put("notifyURL", subsEndpoint);
 
-		List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(API_TYPE, executor.getSubResourcePath(),
-				executor.getValidoperators());
+		List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(API_TYPE, executor.getSubResourcePath(),executor.getValidoperators());
 
 		executor.removeHeaders(context);
 
 		String responseStr = "";
 		for (OperatorEndpoint endpoint : endpoints) {
 
-			responseStr = executor.makeRequest(endpoint, endpoint.getEndpointref().getAddress(), jsonBody.toString(),
-					true, context);
+			responseStr = executor.makeRequest(endpoint, endpoint.getEndpointref().getAddress(), jsonBody.toString(),true, context,false);
 			executor.handlePluginException(responseStr);
 
 		}
-
-		executor.setResponse(context, responseStr);
+		JSONObject jObject  = new JSONObject(responseStr);
+		jObject.getJSONObject("subscription").getJSONObject("callbackReference").put("notifyUrl",notifyUrl);
+		String responseobj =jObject.toString();
+		executor.setResponse(context, responseobj);
 		((Axis2MessageContext) context).getAxis2MessageContext().setProperty("messageType", "application/json");
 
 		return true;
@@ -113,8 +114,7 @@ public class MOUSSDSubscribeHandler implements USSDHandler {
 	 * java.lang.String, org.json.JSONObject, org.apache.synapse.MessageContext)
 	 */
 	@Override
-	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context)
-			throws Exception {
+	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context) throws Exception {
 
 		return false;
 	}

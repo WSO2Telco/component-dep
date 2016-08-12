@@ -13,8 +13,8 @@ jagg.block("billing-nb", {
        
  	var data, user = inputs.user;
  	if (user.isAdmin){
- 		var dialogbillingModule = jagg.module("dialogbilling");
- 		var result = dialogbillingModule.getAllSubscribers();
+ 		var operatorbillingModule = jagg.module("operatorbilling");
+ 		var result = operatorbillingModule.getAllSubscribers();
  		data = result.data;
  	}
  	return {

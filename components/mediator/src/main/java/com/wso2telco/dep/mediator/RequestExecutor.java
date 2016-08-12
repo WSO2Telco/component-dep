@@ -123,28 +123,37 @@ public abstract class RequestExecutor {
 			}
 		}
 		//
+		
+		log.debug("Token time : " + op.getTokentime());
+		log.debug("Token validity : " + op.getTokenvalidity());
+		
 		long timeexpires = (long) (op.getTokentime() + (op.getTokenvalidity() * 1000));
+		log.debug("Expire time : " + timeexpires);
+		
 		long currtime = new Date().getTime();
-
-		log.debug("DEBUG LOGS FOR LBS 02: timeexpires = " + timeexpires);
-		log.debug("DEBUG LOGS FOR LBS 03 : currtime = " + currtime);
+		log.debug("Current time : " + currtime);
+		
+		
+		 
+		
 
 		if (timeexpires > currtime) {
 			token = op.getToken();
+			log.debug("Token of " + op.getOperatorname() + " operator is active");
 		} else {
-
-			String Strtoken = makeTokenrequest(op.getTokenurl(),
-					"grant_type=refresh_token&refresh_token=" + op.getRefreshtoken(), ("" + op.getTokenauth()));
+			
+			log.debug("Regenerating the token of " + op.getOperatorname() + " operator");
+			String Strtoken = makeTokenrequest(op.getTokenurl(), "grant_type=refresh_token&refresh_token=" + op.getRefreshtoken(), ("" + op.getTokenauth()));
+			
 			if (Strtoken != null && Strtoken.length() > 0) {
-				log.debug("Token regeneration response String: " + Strtoken);
-
+				log.debug("Token regeneration response of " + op.getOperatorname() + " operator : " + Strtoken);
 				JSONObject jsontoken = new JSONObject(Strtoken);
 				token = jsontoken.getString("access_token");
 				new OparatorService().updateOperatorToken(op.getOperatorid(), jsontoken.getString("refresh_token"),
 						Long.parseLong(jsontoken.getString("expires_in")), new Date().getTime(), token);
 
 			} else {
-				log.error("Token regeneration response is invalid.");
+				log.error("Token regeneration response of " + op.getOperatorname() + " operator is invalid.");
 			}
 		}
 
@@ -263,19 +272,13 @@ public abstract class RequestExecutor {
 		log.debug("DEBUG LOGS FOR LBS 08 : activeoperators = " + activeoperators);
 
 		List<OperatorApplicationDTO> validoperatorsDup = new ArrayList<OperatorApplicationDTO>();
-		log.debug("MEDIATOR DEBUG LOGS 00 : validoperators Array Before = "
-				+ Arrays.toString(validoperatorsDup.toArray()));
-		log.debug("MEDIATOR DEBUG LOGS 00 : activeoperators Array Before = "
-				+ Arrays.toString(activeoperators.toArray()));
+		
 		for (OperatorApplicationDTO operator : validoperators) {
 			if (activeoperators.contains(operator.getOperatorid())) {
-				log.debug("MEDIATOR DEBUG LOGS 01 : getOperatorid = " + operator.getOperatorid());
-				log.debug("MEDIATOR DEBUG LOGS 02 : getApplicationid = " + operator.getApplicationid());
-				log.debug("MEDIATOR DEBUG LOGS 03 : getIsactive = " + operator.getIsactive());
 				validoperatorsDup.add(operator);
 			}
 		}
-		log.debug("MEDIATOR DEBUG LOGS 04 : Array After = " + Arrays.toString(validoperatorsDup.toArray()));
+		
 		if (validoperatorsDup.isEmpty()) {
 			throw new CustomException("SVC0001", "", new String[] { "Requested service is not provisioned" });
 		}
@@ -377,10 +380,6 @@ public abstract class RequestExecutor {
 		String messagid = null;
 		String variables = null;
 
-		if (errResp == null) {
-			throw new CustomException("SVC1000", "", new String[] { variables });
-		}
-
 		if (errResp.contains("requestError")) {
 			errResp = errResp.replace("[", "").replace("]", "");
 		}
@@ -425,8 +424,7 @@ public abstract class RequestExecutor {
 	 *            the message context
 	 * @return the string
 	 */
-	public String makeRequest(OperatorEndpoint operatorendpoint, String url, String requestStr, boolean auth,
-			MessageContext messageContext) {
+	public String makeRequest(OperatorEndpoint operatorendpoint, String url, String requestStr, boolean auth, MessageContext messageContext , boolean inclueHeaders) {
 		log.debug("DEBUG LOGS FOR LBS 21 : url = " + url);
 		log.debug("DEBUG LOGS FOR LBS 22 : requestStr = " + requestStr);
 		log.debug("DEBUG LOGS FOR LBS 23 : messageContext = " + messageContext);
@@ -450,7 +448,7 @@ public abstract class RequestExecutor {
 			connection.setRequestMethod("POST");
 			connection.setRequestProperty("Content-Type", "application/json");
 			connection.setRequestProperty("Accept", "application/json");
-
+			//connection.setRequestProperty("charset", "utf-8");
 			if (auth) {
 				connection.setRequestProperty("Authorization",
 						"Bearer " + getAccessToken(operatorendpoint.getOperator()));
@@ -477,6 +475,24 @@ public abstract class RequestExecutor {
 				}
 			}
 
+			
+			if (inclueHeaders) {
+				org.apache.axis2.context.MessageContext axis2MessageContext = ((Axis2MessageContext) messageContext)
+						.getAxis2MessageContext();
+				Object headers = axis2MessageContext
+						.getProperty(org.apache.axis2.context.MessageContext.TRANSPORT_HEADERS);
+				if (headers != null && headers instanceof Map) {
+					Map headersMap = (Map) headers;
+					Iterator it = headersMap.entrySet().iterator();
+					while (it.hasNext()) {
+						Map.Entry entry = (Map.Entry) it.next();
+						connection.setRequestProperty((String) entry.getKey(),
+								(String) entry.getValue()); // avoids a
+															// ConcurrentModificationException
+					}
+				}
+			}
+			 
 			connection.setUseCaches(false);
 			connection.setDoInput(true);
 			connection.setDoOutput(true);
@@ -487,11 +503,19 @@ public abstract class RequestExecutor {
 				log.debug("Southbound Request Body: " + requestStr);
 			}
 
-			DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-			wr.writeBytes(requestStr);
+			
+			//========================UNICODE PATCH=========================================
+			BufferedOutputStream wr = new BufferedOutputStream(connection.getOutputStream());
+			wr.write(requestStr.getBytes("UTF-8"));
+
 			wr.flush();
 			wr.close();
-
+			//========================UNICODE PATCH=========================================
+			 
+           /*DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+             wr.writeBytes(requestStr);
+            wr.flush();
+            wr.close();*/
 			statusCode = connection.getResponseCode();
 			log.debug("DEBUG LOGS FOR LBS 29 : statusCode = " + statusCode);
 			if ((statusCode != 200) && (statusCode != 201) && (statusCode != 400) && (statusCode != 401)) {
@@ -558,9 +582,7 @@ public abstract class RequestExecutor {
 				byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
 				int postDataLength = postData.length;
 				URL url = new URL(tokenurl);
-
-				log.debug("DEBUG LOGS FOR LBS 32 : tokenurl = " + tokenurl);
-
+				
 				connection = (HttpURLConnection) url.openConnection();
 				connection.setDoOutput(true);
 				connection.setInstanceFollowRedirects(false);
@@ -589,8 +611,6 @@ public abstract class RequestExecutor {
 					is = connection.getErrorStream();
 				}
 
-				log.debug("DEBUG LOGS FOR LBS 33 : is = " + is);
-
 				BufferedReader br = new BufferedReader(new InputStreamReader(is));
 				String output;
 				while ((output = br.readLine()) != null) {
@@ -609,7 +629,7 @@ public abstract class RequestExecutor {
 		} else {
 			log.error("Token refresh details are invalid.");
 		}
-		log.debug("DEBUG LOGS FOR LBS 34 : retStr = " + retStr);
+
 		return retStr;
 	}
 
@@ -629,7 +649,7 @@ public abstract class RequestExecutor {
 	 * @return the string
 	 */
 	public String makeGetRequest(OperatorEndpoint operatorendpoint, String url, String requestStr, boolean auth,
-			MessageContext messageContext) {
+			MessageContext messageContext, boolean inclueHeaders) {
 
 		publishRequestData(operatorendpoint, url, null, messageContext);
 		int statusCode = 0;
@@ -667,6 +687,25 @@ public abstract class RequestExecutor {
 					}
 				}
 			}
+			
+			if (inclueHeaders) {
+				org.apache.axis2.context.MessageContext axis2MessageContext = ((Axis2MessageContext) messageContext)
+						.getAxis2MessageContext();
+				Object headers = axis2MessageContext
+						.getProperty(org.apache.axis2.context.MessageContext.TRANSPORT_HEADERS);
+				if (headers != null && headers instanceof Map) {
+					Map headersMap = (Map) headers;
+					Iterator it = headersMap.entrySet().iterator();
+					while (it.hasNext()) {
+						Map.Entry entry = (Map.Entry) it.next();
+						connection.setRequestProperty((String) entry.getKey(),
+								(String) entry.getValue()); // avoids a
+															// ConcurrentModificationException
+					}
+				}
+			}
+				             
+				 
 			connection.setUseCaches(false);
 
 			if (log.isDebugEnabled()) {
@@ -729,7 +768,7 @@ public abstract class RequestExecutor {
 	 * @return the string
 	 */
 	public String makeDeleteRequest(OperatorEndpoint operatorendpoint, String url, String requestStr, boolean auth,
-			MessageContext messageContext) {
+			MessageContext messageContext , boolean inclueHeaders) {
 
 		publishRequestData(operatorendpoint, url, requestStr, messageContext);
 		int statusCode = 0;
@@ -767,6 +806,25 @@ public abstract class RequestExecutor {
 					}
 				}
 			}
+			
+			
+			if (inclueHeaders) {
+				org.apache.axis2.context.MessageContext axis2MessageContext = ((Axis2MessageContext) messageContext)
+						.getAxis2MessageContext();
+				Object headers = axis2MessageContext
+						.getProperty(org.apache.axis2.context.MessageContext.TRANSPORT_HEADERS);
+				if (headers != null && headers instanceof Map) {
+					Map headersMap = (Map) headers;
+					Iterator it = headersMap.entrySet().iterator();
+					while (it.hasNext()) {
+						Map.Entry entry = (Map.Entry) it.next();
+						connection.setRequestProperty((String) entry.getKey(),
+								(String) entry.getValue()); // avoids a
+															// ConcurrentModificationException
+					}
+				}
+			}
+			
 			connection.setUseCaches(false);
 
 			if (log.isDebugEnabled()) {

@@ -53,7 +53,7 @@ public class SMSInboundSubscriptionsNorthboundHandler implements SMSHandler {
 	private static Log log = LogFactory.getLog(SMSInboundSubscriptionsNorthboundHandler.class);
 
 	/** The Constant API_TYPE. */
-	private static final String API_TYPE = "sms";
+	private static final String API_TYPE = "smsmessaging";
 
 	/** The occi. */
 	private OriginatingCountryCalculatorIDD occi;
@@ -123,7 +123,7 @@ public class SMSInboundSubscriptionsNorthboundHandler implements SMSHandler {
 				executor.getValidoperators());
 
 		Integer moSubscriptionId = smsMessagingService.subscriptionEntry(
-				nbSubsrequst.getSubscription().getCallbackReference().getNotifyURL(), serviceProvider);
+				nbSubsrequst.getSubscription().getCallbackReference().getNotifyURL()/*, serviceProvider*/);
 
 		String subsEndpoint = mediatorConfMap.get("hubSubsGatewayEndpoint") + "/" + moSubscriptionId;
 		jsondstaddr.getJSONObject("callbackReference").put("notifyURL", subsEndpoint);
@@ -161,7 +161,7 @@ public class SMSInboundSubscriptionsNorthboundHandler implements SMSHandler {
 							+ sbRequestBody);
 
 					String notifyres = executor.makeRequest(endpoint, endpoint.getEndpointref().getAddress(),
-							sbRequestBody, true, context);
+							sbRequestBody, true, context,false);
 
 					log.debug("subscription southbound response body of " + endpoint.getOperator() + " operator: "
 							+ notifyres);

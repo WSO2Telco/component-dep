@@ -90,7 +90,7 @@ public class USSDInboundHandler implements USSDHandler {
 				notifyurl);
 
 		String notifyret = executor.makeRequest(new OperatorEndpoint(new EndpointReference(notifyurl), null), notifyurl,
-				jsonBody.toString(), true, context);
+				jsonBody.toString(), true, context,false);
 
 		log.debug(notifyret);
 		if (notifyret == null) {

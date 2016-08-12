@@ -15,8 +15,6 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.entity.smsmessaging.northbound;
 
-import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.*;
-
  
 // TODO: Auto-generated Javadoc
 /**

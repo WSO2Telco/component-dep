@@ -17,7 +17,7 @@ $(document)
 							.click(
 									function() {
 										row = $("<tr></tr>");
-										col1 = $('<td class="editable_td"><input type="text" class="required number shortcode_exist" placeholder="Ex: 7788" /></td>');
+										col1 = $('<td class="editable_td"><input type="text" class="required shortcode_exist" placeholder="Ex: 7788" /></td>');
 										col2 = $('<td class="editable_td"><input type="text" class="required" placeholder="Ex: Tesing number" /></td>');
 										col3 = $('<td class="da-icon-column"><input type="hidden" class="row_data_key" value="" /><a title="Save" class="save_data_icon"><img src="/sandbox/site/themes/default/images/icons/color/disk.png"/></a><a title="Cancel" class="cancel_added_row"><img src="/sandbox/site/themes/default/images/icons/color/cross.png" /></a></td>');
 										row.append(col1, col2, col3).prependTo(
@@ -68,7 +68,7 @@ $(document)
 
 										$(closestTR.find('td').children()[0])
 												.attr("class",
-														"required number shortcode_exist");
+														"required shortcode_exist");
 										$(closestTR.find('td').children()[1])
 												.attr("class", "required");
 

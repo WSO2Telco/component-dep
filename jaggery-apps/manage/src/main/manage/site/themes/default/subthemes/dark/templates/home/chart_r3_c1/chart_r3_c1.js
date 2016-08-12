@@ -1,5 +1,5 @@
-axiata_db.r3_c1 = {};
-axiata_db.r3_c1.init = function(){
+operator_db.r3_c1 = {};
+operator_db.r3_c1.init = function(){
 
 
 
@@ -11,7 +11,7 @@ axiata_db.r3_c1.init = function(){
     requestData.action = "getAPITrafic";
 
 //    $('#r3_c1 .single-pie-container').get(0)
-    axiata_db.xhr_get({
+    operator_db.xhr_get({
         url: '/manage/site/blocks/home/ajax/chart_r3_c1_ajax.jag',
         id:"r3_c1",
         data: requestData,
@@ -78,12 +78,12 @@ axiata_db.r3_c1.init = function(){
 
 
 $(document).ready(function(){
-    axiata_db.r3_c1.init();
-    axiata_db.chartBox.initDropdown('operator_r3_c1',function(){
-        axiata_db.r3_c1.init();
+	operator_db.r3_c1.init();
+	operator_db.chartBox.initDropdown('operator_r3_c1',function(){
+		operator_db.r3_c1.init();
     });
 
-    axiata_db.chartBox.initDropdown('time_r3_c1',function(){
-        axiata_db.r3_c1.init();
+	operator_db.chartBox.initDropdown('time_r3_c1',function(){
+		operator_db.r3_c1.init();
     });
 });

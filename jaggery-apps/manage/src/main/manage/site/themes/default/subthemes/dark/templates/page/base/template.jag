@@ -46,7 +46,7 @@ i18n.init(request,localeResourcesBasePath);
     <link href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("css/localstyles.css"))%>" rel="stylesheet">
     <!--[if lt IE 9]><link rel="stylesheet" type="text/css" href="<%=jagg.getAbsoluteUrl("/site/themes/default/css/style-ie7-8.css")%>" media="all"/><![endif]-->
     <!--[if IE 7]><link rel="stylesheet" type="text/css" href="<%=jagg.getAbsoluteUrl("/site/themes/default/css/style-ie7.css")%>" media="all"/><![endif]-->
-    <link href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("css/styles-axiata.css"))%>" rel="stylesheet">
+    <link href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("css/styles-operator.css"))%>" rel="stylesheet">
 
     <!-- Le HTML5 shim, for IE6-8 support of HTML5 elements -->
     <!--[if lt IE 9]><script src="<%=jagg.getAbsoluteUrl("/site/themes/default/lib/html5/html5.js")%>"></script><![endif]-->

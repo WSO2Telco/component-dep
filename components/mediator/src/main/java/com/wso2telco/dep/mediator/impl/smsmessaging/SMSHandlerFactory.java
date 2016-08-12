@@ -79,11 +79,11 @@ public class SMSHandlerFactory {
 				if (resourceURLParts.length == 6) {
 
 					handler = new RetrieveSMSSouthboundHandler(executor);
-					log.debug("invoking retrieve sms southbound handler");
+					log.debug("nvoke SouthBound Retrieve SMS Handler ");
 				} else if (resourceURLParts.length == 5) {
 
 					handler = new RetrieveSMSHandler(executor);
-					log.debug("invoking retrieve sms handler");
+					log.debug("Invoke RetrieveSMSHandler");
 				}
 			}
 		} else if (ResourceURL.toLowerCase().contains(retrieveSMSString.toLowerCase())
@@ -101,11 +101,13 @@ public class SMSHandlerFactory {
 		} else if (ResourceURL.toLowerCase().contains(deliveryNotifyString.toLowerCase())) {
 
 			apiType = RequestType.SMS_INBOUND_NOTIFICATIONS;
+			//handler = findSMSInboundNotificationsHandlerType(executor);
 			handler = findSMSInboundNotificationsHandlerType(executor);
 		} else if (ResourceURL.toLowerCase().contains(sendSMSKeyString.toLowerCase())
 				&& lastWord.equals(subscriptionKeyString)) {
 
 			apiType = RequestType.START_OUTBOUND_SUBSCRIPTION;
+			//handler = new OutboundSMSSubscriptionsHandler(executor);//ADDED
 			if (ResourceURL.toLowerCase().contains("/outbound/subscriptions")) {
 
 				handler = new OutboundSMSSubscriptionsNorthboundHandler(executor);
@@ -209,21 +211,21 @@ public class SMSHandlerFactory {
 		try {
 
 			JSONObject objJSONObject = executor.getJsonBody();
-
+			JSONObject objInboundNotificationsHandler = objJSONObject.getJSONObject("deliveryInfoNotification");
+			
 			if (objJSONObject.isNull("inboundSMSMessageNotification")) {
 
 				handler = new SMSOutboundNotificationsHandler(executor);
-				log.debug("invoking sms outbound notifications handler");
+				//log.debug("invoking sms outbound notifications handler");
 			} else if (objJSONObject.isNull("deliveryInfoNotification")) {
 
 				handler = new SMSInboundNotificationsHandler(executor);
-				log.debug("invoking sms inbound notifications handler");
+				//log.debug("invoking sms inbound notifications handler");
 			}
 		} catch (Exception e) {
 
-			log.error("error in findSMSInboundNotificationsHandlerType : " + e.getMessage());
-			throw new CustomException("SVC0005", "Error when selecting Delivery reciept handler",
-					new String[] { null });
+			//log.error("error in findSMSInboundNotificationsHandlerType : " + e.getMessage());
+			throw new CustomException("SVC0005", "Error when selecting Delivery reciept handler",new String[] { null });
 		}
 
 		return handler;

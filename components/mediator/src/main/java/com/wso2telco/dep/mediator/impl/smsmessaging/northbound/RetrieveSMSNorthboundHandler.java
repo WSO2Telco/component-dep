@@ -52,7 +52,7 @@ public class RetrieveSMSNorthboundHandler implements SMSHandler {
     private static Log log = LogFactory.getLog(RetrieveSMSNorthboundHandler.class);
     
     /** The Constant API_TYPE. */
-    private static final String API_TYPE = "sms";
+    private static final String API_TYPE = "smsmessaging";
     
     /** The occi. */
     private OriginatingCountryCalculatorIDD occi;
@@ -143,7 +143,8 @@ public class RetrieveSMSNorthboundHandler implements SMSHandler {
 
             for (int i = 0; i < registrations.length; i++) {
                 if (registrations[i].getOperatorCode().equalsIgnoreCase(aEndpoint.getOperator())) {
-                     
+                	/*create request url for southbound operators*/
+                	
                     if (registrations[i].getCriteria() != null) {
                         criteria = registrations[i].getCriteria();
                     }
@@ -174,11 +175,11 @@ public class RetrieveSMSNorthboundHandler implements SMSHandler {
             if (context.isDoingGET()) {
             	
                 log.debug("Doing makeGetRequest");
-                retStr = executor.makeGetRequest(aEndpoint, ac.getUri(), null, true, context);
+                retStr = executor.makeGetRequest(aEndpoint, ac.getUri(), null, true, context,false);
             } else {
             	
                 log.debug("Doing makeRequest");
-                retStr = executor.makeRequest(aEndpoint, ac.getUri(), obj.toString(), true, context);
+                retStr = executor.makeRequest(aEndpoint, ac.getUri(), obj.toString(), true, context,false);
             }
 
             log.debug("Retrieved messages of " + aEndpoint.getOperator() + " operator: " + retStr);
@@ -193,7 +194,7 @@ public class RetrieveSMSNorthboundHandler implements SMSHandler {
                 }
             }
 
-             
+            /*add criteria and operatorCode to the southbound response*/ 
             NorthboundRetrieveResponse sbRetrieveResponse = gson.fromJson(retStr, NorthboundRetrieveResponse.class);
 
             if (sbRetrieveResponse != null) {
@@ -222,7 +223,7 @@ public class RetrieveSMSNorthboundHandler implements SMSHandler {
         JSONObject paylodObject = apiUtil.generateResponse(context, reqType, inboundSMSMessageList, responses, requestid);
         String strjsonBody = paylodObject.toString();
 
-         
+        /*create northbound response. add clientCorrelator and resourceURL*/
         NorthboundRetrieveResponse nbRetrieveResponse = gson.fromJson(strjsonBody, NorthboundRetrieveResponse.class);
         nbRetrieveResponse.getInboundSMSMessageList().setClientCorrelator(nbRetrieveRequest.getInboundSMSMessages().getClientCorrelator());
         String resourceURL = nbRetrieveResponse.getInboundSMSMessageList().getResourceURL();
