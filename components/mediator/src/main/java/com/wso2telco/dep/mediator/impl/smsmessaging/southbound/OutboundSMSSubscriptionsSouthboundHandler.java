@@ -205,7 +205,7 @@ public class OutboundSMSSubscriptionsSouthboundHandler implements SMSHandler {
 
 		smsMessagingService.outboundOperatorsubsEntry(domainsubs, dnSubscriptionId);
 		String ResourceUrlPrefix = mediatorConfMap.get("hubGateway");
-		subsrequst.getDeliveryReceiptSubscription().setResourceURL(ResourceUrlPrefix + executor.getResourceUrl() + "/" + dnSubscriptionId);
+		subsresponse.getDeliveryReceiptSubscription().setResourceURL(ResourceUrlPrefix + executor.getResourceUrl() + "/" + dnSubscriptionId);
 		JSONObject replyobj = new JSONObject(subsresponse);
 		JSONObject replysubs = replyobj.getJSONObject("deliveryReceiptSubscription");
 		replysubs.put("clientCorrelator", orgclientcl);

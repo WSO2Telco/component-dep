@@ -172,7 +172,7 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
 					if (subsrequst.getDeliveryReceiptSubscription() == null) {
 						executor.handlePluginException(notifyres);
 					}
-					domainsubs.add(new OperatorSubscriptionDTO(endpoint.getOperator(),subsrequst.getDeliveryReceiptSubscription().getResourceURL()));
+					domainsubs.add(new OperatorSubscriptionDTO(endpoint.getOperator(),subsresponse.getDeliveryReceiptSubscription().getResourceURL()));
 
 				}
 			}

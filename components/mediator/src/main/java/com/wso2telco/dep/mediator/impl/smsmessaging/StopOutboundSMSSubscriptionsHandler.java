@@ -43,7 +43,7 @@ public class StopOutboundSMSSubscriptionsHandler implements SMSHandler {
 	private static Log log = LogFactory.getLog(StopOutboundSMSSubscriptionsHandler.class);
 
 	/** The Constant API_TYPE. */
-	private static final String API_TYPE = "sms";
+	private static final String API_TYPE = "smsmessaging";
 
 	/** The occi. */
 	private OriginatingCountryCalculatorIDD occi;
@@ -77,13 +77,15 @@ public class StopOutboundSMSSubscriptionsHandler implements SMSHandler {
 	@Override
 	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context)
 			throws Exception {
-		return false;
-		/*IServiceValidate validator;
+		
+		IServiceValidate validator;
 		if (httpMethod.equalsIgnoreCase("DELETE")) {
 			String dnSubscriptionId = requestPath.substring(requestPath.lastIndexOf("/") + 1);
 			String[] params = { dnSubscriptionId };
 
-			String[] urlElements = requestPath.split("/");
+			validator = new ValidateDNCancelSubscriptionPlugin();
+			
+			/*String[] urlElements = requestPath.split("/");
 			int elements = urlElements.length;
 			if (elements == 5) {
 				validator = new ValidateDNCancelSubscriptionPlugin();
@@ -93,7 +95,7 @@ public class StopOutboundSMSSubscriptionsHandler implements SMSHandler {
 				log.debug("Invoke validation - ValidateDNCancelSubscription");
 			} else {
 				throw new Exception("requestPath not valid");
-			}
+			}*/
 
 			validator.validateUrl(requestPath);
 			validator.validate(params);
@@ -101,7 +103,7 @@ public class StopOutboundSMSSubscriptionsHandler implements SMSHandler {
 		} else {
 			((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 405);
 			throw new Exception("Method not allowed");
-		}*/
+		}
 	}
 
 	/*
@@ -113,9 +115,9 @@ public class StopOutboundSMSSubscriptionsHandler implements SMSHandler {
 	 */
 	@Override
 	public boolean handle(MessageContext context) throws Exception {
-		/*if (executor.getHttpMethod().equalsIgnoreCase("DELETE")) {
+		if (executor.getHttpMethod().equalsIgnoreCase("DELETE")) {
 			return deleteSubscriptions(context);
-		}*/
+		}
 		return false;
 	}
 
@@ -128,7 +130,7 @@ public class StopOutboundSMSSubscriptionsHandler implements SMSHandler {
 	 * @throws Exception
 	 *             the exception
 	 */
-	/*private boolean deleteSubscriptions(MessageContext context) throws Exception {
+	private boolean deleteSubscriptions(MessageContext context) throws Exception {
 		String requestPath = executor.getSubResourcePath();
 		String subid = requestPath.substring(requestPath.lastIndexOf("/") + 1);
 
@@ -138,14 +140,12 @@ public class StopOutboundSMSSubscriptionsHandler implements SMSHandler {
 				.outboudSubscriptionQuery(Integer.valueOf(dnSubscriptionId)));
 		if (domainsubs.isEmpty()) {
 
-			throw new CustomException("POL0001", "",
-					new String[] { "SMS Receipt Subscription Not Found: " + dnSubscriptionId });
+			throw new CustomException("POL0001", "",new String[] { "SMS Receipt Subscription Not Found: " + dnSubscriptionId });
 		}
 
 		String resStr = "";
 		for (OperatorSubscriptionDTO subs : domainsubs) {
-			resStr = executor.makeDeleteRequest(
-					new OperatorEndpoint(new EndpointReference(subs.getDomain()), subs.getOperator()), subs.getDomain(),
+			resStr = executor.makeDeleteRequest(new OperatorEndpoint(new EndpointReference(subs.getDomain()), subs.getOperator()), subs.getDomain(),
 					null, true, context,false);
 		}
 		smsMessagingService.outboundSubscriptionDelete(Integer.valueOf(dnSubscriptionId));
@@ -154,5 +154,5 @@ public class StopOutboundSMSSubscriptionsHandler implements SMSHandler {
 		((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 204);
 
 		return true;
-	}*/
+	}
 }
