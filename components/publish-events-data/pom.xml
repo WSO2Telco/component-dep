@@ -74,11 +74,11 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Private-Package>
-                            com.wso2telco.publisheventsdata.internal
+                            com.wso2telco.dep.publisheventsdata.internal
                         </Private-Package>
                         <Export-Package>
-                            !com.wso2telco.publisheventsdata.internal,
-                            com.wso2telco.publisheventsdata.*
+                            !com.wso2telco.dep.publisheventsdata.internal,
+                            com.wso2telco.dep.publisheventsdata.*
                         </Export-Package>
                         <Import-Package>
                             javax.servlet;version="[2.6.0, 3.0.0)",

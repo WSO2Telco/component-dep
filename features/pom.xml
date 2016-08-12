@@ -15,6 +15,7 @@
                 <module>com.wso2telco.dep.workflowmanager.feature</module>
                 <module>com.wso2telco.dep.operatorservice.feature</module>
                 <module>com.wso2telco.dep.mediator.feature</module>
+                <module>com.wso2telco.dep.oneapivalidation.feature</module>
         </modules>
 
 </project>
