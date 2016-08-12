@@ -16,7 +16,6 @@
 package com.wso2telco.dep.oneapivalidation.util;
 
 import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.wso2telco.dbutils.fileutils.FileReader;
@@ -75,7 +74,7 @@ public class PropertyUtils {
 			}
 		} catch (Exception e) {
 
-			log.error("Exception in getApiTypeAvailability(" + apiTypeParam + ") :: " + e);
+			log.error("error in getApiTypeAvailability ", e);
 			isAvailable = false;
 		}
 
@@ -98,7 +97,7 @@ public class PropertyUtils {
 			}
 		} catch (Exception e) {
 			
-			log.error("Exception in getIsSMSLimitToOne() :: " + e);
+			log.error("error in getIsSMSLimitToOne ", e);
 		}
 		
 		return result;
