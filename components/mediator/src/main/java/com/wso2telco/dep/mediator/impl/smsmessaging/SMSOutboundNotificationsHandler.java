@@ -112,7 +112,7 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
         				formattedString = gson.toJson(outboundRequest);
         			}
         	        
-        String notifyret = executor.makeRequest(new OperatorEndpoint(new EndpointReference(notifyurl), null), notifyurlRoute,formattedString, true, context);        	
+        String notifyret = executor.makeRequest(new OperatorEndpoint(new EndpointReference(notifyurl), null), notifyurlRoute,formattedString, true, context,false);        	
 		executor.removeHeaders(context);
 		if (notifyret == null) {
 			throw new CustomException("POL0299", "",new String[] { "Error invoking SMSOutboundNotifications Endpoint" });

@@ -53,7 +53,7 @@ public class RetrieveSMSHandler implements SMSHandler {
 	private static Log log = LogFactory.getLog(RetrieveSMSHandler.class);
 
 	/** The Constant API_TYPE. */
-	private static final String API_TYPE = "sms";
+	private static final String API_TYPE = "smsmessaging";
 
 	/** The occi. */
 	private OriginatingCountryCalculatorIDD occi;
@@ -91,8 +91,7 @@ public class RetrieveSMSHandler implements SMSHandler {
 		Gson gson = new GsonBuilder().serializeNulls().create();
 
 		String reqType = "retrive_sms";
-		String requestid = UID.getUniqueID(Type.SMSRETRIVE.getCode(), context,
-				executor.getApplicationid());
+		String requestid = UID.getUniqueID(Type.SMSRETRIVE.getCode(), context,executor.getApplicationid());
 		// String appID = apiUtil.getAppID(context, reqType);
 
 		int batchSize = 100;
@@ -141,24 +140,18 @@ public class RetrieveSMSHandler implements SMSHandler {
 
 				if (context.isDoingGET()) {
 					log.debug("Doing makeGetRequest");
-					retStr = executor.makeGetRequest(aEndpoint, ac.getUri(),
-							null, true, context);
+					retStr = executor.makeGetRequest(aEndpoint, ac.getUri(),null, true, context,false);
 				} else {
 					log.debug("Doing makeRequest");
-					retStr = executor.makeRequest(aEndpoint, ac.getUri(),
-							obj.toString(), true, context);
+					retStr = executor.makeRequest(aEndpoint, ac.getUri(),obj.toString(), true, context,false);
 				}
 
-				log.debug("Retrieved messages of " + aEndpoint.getOperator()
-						+ " operator: " + retStr);
+				log.debug("Retrieved messages of " + aEndpoint.getOperator() + " operator: " + retStr);
 
 				if (retStr == null) {
 					count++;
 					if (count == endpoints.size()) {
-						log.debug("Break because count == endpoints.size() ------> count :"
-								+ count
-								+ " endpoints.size() :"
-								+ endpoints.size());
+						log.debug("Break because count == endpoints.size() ------> count :"+ count+ " endpoints.size() :"+ endpoints.size());
 						break;
 					} else {
 						continue;
@@ -175,20 +168,15 @@ public class RetrieveSMSHandler implements SMSHandler {
 
 				count++;
 				if (count == (endpoints.size() * 2)) {
-					log.debug("Break because count == (endpoints.size() * 2) ------> count :"
-							+ count
-							+ " (endpoints.size() * 2) :"
-							+ endpoints.size() * 2);
+					log.debug("Break because count == (endpoints.size() * 2) ------> count :"+ count + " (endpoints.size() * 2) :"+ endpoints.size() * 2);
 					break;
 				}
 			}
 
 			log.debug("Final value of count :" + count);
-			log.debug("Results length of retrieve messages: "
-					+ results.length());
+			log.debug("Results length of retrieve messages: "+ results.length());
 
-			JSONObject paylodObject = apiUtil.generateResponse(context,
-					reqType, results, responses, requestid);
+			JSONObject paylodObject = apiUtil.generateResponse(context,reqType, results, responses, requestid);
 			String strjsonBody = paylodObject.toString();
 
 			
@@ -223,11 +211,9 @@ public class RetrieveSMSHandler implements SMSHandler {
 	 * java.lang.String, org.json.JSONObject, org.apache.synapse.MessageContext)
 	 */
 	@Override
-	public boolean validate(String httpMethod, String requestPath,
-			JSONObject jsonBody, MessageContext context) throws Exception {
+	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context) throws Exception {
 		if (!httpMethod.equalsIgnoreCase("GET")) {
-			((Axis2MessageContext) context).getAxis2MessageContext()
-					.setProperty("HTTP_SC", 405);
+			((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 405);
 			throw new Exception("Method not allowed");
 		}
 

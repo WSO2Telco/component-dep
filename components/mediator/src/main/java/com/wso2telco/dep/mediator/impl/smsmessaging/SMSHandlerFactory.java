@@ -79,11 +79,11 @@ public class SMSHandlerFactory {
 				if (resourceURLParts.length == 6) {
 
 					handler = new RetrieveSMSSouthboundHandler(executor);
-					log.debug("invoking retrieve sms southbound handler");
+					log.debug("nvoke SouthBound Retrieve SMS Handler ");
 				} else if (resourceURLParts.length == 5) {
 
 					handler = new RetrieveSMSHandler(executor);
-					log.debug("invoking retrieve sms handler");
+					log.debug("Invoke RetrieveSMSHandler");
 				}
 			}
 		} else if (ResourceURL.toLowerCase().contains(retrieveSMSString.toLowerCase())

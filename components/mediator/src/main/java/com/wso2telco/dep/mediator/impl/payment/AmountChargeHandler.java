@@ -117,7 +117,7 @@ public class AmountChargeHandler implements PaymentHandler {
 		validatePaymentCategory(chargingdmeta, validCategoris);
 
 		String responseStr = executor.makeRequest(endpoint, sending_add,
-				jsonBody.toString(), true, context);
+				jsonBody.toString(), true, context,false);
 		// Payment Error Exception Correction
 		String base = str_piece(str_piece(responseStr, '{', 2), ':', 1);
 

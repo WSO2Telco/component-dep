@@ -115,7 +115,7 @@ public class StopInboundSMSSubscriptionsHandler implements SMSHandler {
 
 			resStr = executor.makeDeleteRequest(
 					new OperatorEndpoint(new EndpointReference(subs.getDomain()), subs.getOperator()), subs.getDomain(),
-					null, true, context);
+					null, true, context,false);
 		}
 
 		smsMessagingService.subscriptionDelete(Integer.valueOf(moSubscriptionId));

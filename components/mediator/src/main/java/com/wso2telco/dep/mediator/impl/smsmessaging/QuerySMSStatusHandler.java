@@ -167,7 +167,7 @@ public class QuerySMSStatusHandler implements SMSHandler {
 				String sending_add = endpoint.getEndpointref().getAddress();
 				log.info("sending endpoint found: " + sending_add);
 
-				String responseStr = executor.makeGetRequest(endpoint, sending_add, resourcePath, true, context);
+				String responseStr = executor.makeGetRequest(endpoint, sending_add, resourcePath, true, context,false);
 				QuerySMSStatusResponse statusResponse = parseJsonResponse(responseStr);
 				statusResponses.put(address, statusResponse);
 			} else {

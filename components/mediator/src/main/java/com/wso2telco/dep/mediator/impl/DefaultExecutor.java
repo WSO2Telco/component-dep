@@ -65,11 +65,11 @@ public class DefaultExecutor extends RequestExecutor {
 
         String responseString = null;
         if (getHttpMethod().equalsIgnoreCase("POST")) {
-            responseString = makeRequest(endpoint, sending_add, getJsonBody().toString(), true, context);
+            responseString = makeRequest(endpoint, sending_add, getJsonBody().toString(), true, context,false);
         } else if (getHttpMethod().equalsIgnoreCase("GET")) {
-            responseString = makeGetRequest(endpoint, sending_add, null, true, context);
+            responseString = makeGetRequest(endpoint, sending_add, null, true, context,false);
         } else if (getHttpMethod().equalsIgnoreCase("DELETE")) {
-            responseString = makeDeleteRequest(endpoint, sending_add, null, true, context);
+            responseString = makeDeleteRequest(endpoint, sending_add, null, true, context,false);
         }
 
         removeHeaders(context);

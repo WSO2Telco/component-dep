@@ -58,7 +58,7 @@ public class OutboundSMSSubscriptionsSouthboundHandler implements SMSHandler {
 	private static Log log = LogFactory.getLog(OutboundSMSSubscriptionsSouthboundHandler.class);
 
 	/** The Constant API_TYPE. */
-	private static final String API_TYPE = "sms";
+	private static final String API_TYPE = "smsmessaging";
 
 	/** The occi. */
 	private OriginatingCountryCalculatorIDD occi;
@@ -188,7 +188,7 @@ public class OutboundSMSSubscriptionsSouthboundHandler implements SMSHandler {
 			url = url.replace("/subscriptions", "/subscriptionsMultipleOperators");
 			log.debug("Delivery notification adaptor request url of " + endpoint.getOperator() + " operator: " + url);
 
-			String notifyres = executor.makeRequest(endpoint, url, jsonBody.toString(), true, context);
+			String notifyres = executor.makeRequest(endpoint, url, jsonBody.toString(), true, context,false);
 
 			if (notifyres == null) {
 
@@ -256,7 +256,7 @@ public class OutboundSMSSubscriptionsSouthboundHandler implements SMSHandler {
         for (OperatorSubscriptionDTO subs : domainsubs) {
 			resStr = executor.makeDeleteRequest(
 					new OperatorEndpoint(new EndpointReference(subs.getDomain()), subs.getOperator()), subs.getDomain(),
-					null, true, context);
+					null, true, context,false);
 		}
         new SMSMessagingService().outboundSubscriptionDelete(Integer.valueOf(dnSubscriptionId));
 

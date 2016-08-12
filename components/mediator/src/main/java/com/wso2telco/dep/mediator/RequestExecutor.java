@@ -415,8 +415,7 @@ public abstract class RequestExecutor {
 	 *            the message context
 	 * @return the string
 	 */
-	public String makeRequest(OperatorEndpoint operatorendpoint, String url, String requestStr, boolean auth,
-			MessageContext messageContext) {
+	public String makeRequest(OperatorEndpoint operatorendpoint, String url, String requestStr, boolean auth, MessageContext messageContext , boolean inclueHeaders) {
 		log.debug("DEBUG LOGS FOR LBS 21 : url = " + url);
 		log.debug("DEBUG LOGS FOR LBS 22 : requestStr = " + requestStr);
 		log.debug("DEBUG LOGS FOR LBS 23 : messageContext = " + messageContext);
@@ -467,6 +466,24 @@ public abstract class RequestExecutor {
 				}
 			}
 
+			
+			if (inclueHeaders) {
+				org.apache.axis2.context.MessageContext axis2MessageContext = ((Axis2MessageContext) messageContext)
+						.getAxis2MessageContext();
+				Object headers = axis2MessageContext
+						.getProperty(org.apache.axis2.context.MessageContext.TRANSPORT_HEADERS);
+				if (headers != null && headers instanceof Map) {
+					Map headersMap = (Map) headers;
+					Iterator it = headersMap.entrySet().iterator();
+					while (it.hasNext()) {
+						Map.Entry entry = (Map.Entry) it.next();
+						connection.setRequestProperty((String) entry.getKey(),
+								(String) entry.getValue()); // avoids a
+															// ConcurrentModificationException
+					}
+				}
+			}
+			 
 			connection.setUseCaches(false);
 			connection.setDoInput(true);
 			connection.setDoOutput(true);
@@ -619,7 +636,7 @@ public abstract class RequestExecutor {
 	 * @return the string
 	 */
 	public String makeGetRequest(OperatorEndpoint operatorendpoint, String url, String requestStr, boolean auth,
-			MessageContext messageContext) {
+			MessageContext messageContext, boolean inclueHeaders) {
 
 		publishRequestData(operatorendpoint, url, null, messageContext);
 		int statusCode = 0;
@@ -657,6 +674,25 @@ public abstract class RequestExecutor {
 					}
 				}
 			}
+			
+			if (inclueHeaders) {
+				org.apache.axis2.context.MessageContext axis2MessageContext = ((Axis2MessageContext) messageContext)
+						.getAxis2MessageContext();
+				Object headers = axis2MessageContext
+						.getProperty(org.apache.axis2.context.MessageContext.TRANSPORT_HEADERS);
+				if (headers != null && headers instanceof Map) {
+					Map headersMap = (Map) headers;
+					Iterator it = headersMap.entrySet().iterator();
+					while (it.hasNext()) {
+						Map.Entry entry = (Map.Entry) it.next();
+						connection.setRequestProperty((String) entry.getKey(),
+								(String) entry.getValue()); // avoids a
+															// ConcurrentModificationException
+					}
+				}
+			}
+				             
+				 
 			connection.setUseCaches(false);
 
 			if (log.isDebugEnabled()) {
@@ -719,7 +755,7 @@ public abstract class RequestExecutor {
 	 * @return the string
 	 */
 	public String makeDeleteRequest(OperatorEndpoint operatorendpoint, String url, String requestStr, boolean auth,
-			MessageContext messageContext) {
+			MessageContext messageContext , boolean inclueHeaders) {
 
 		publishRequestData(operatorendpoint, url, requestStr, messageContext);
 		int statusCode = 0;
@@ -757,6 +793,25 @@ public abstract class RequestExecutor {
 					}
 				}
 			}
+			
+			
+			if (inclueHeaders) {
+				org.apache.axis2.context.MessageContext axis2MessageContext = ((Axis2MessageContext) messageContext)
+						.getAxis2MessageContext();
+				Object headers = axis2MessageContext
+						.getProperty(org.apache.axis2.context.MessageContext.TRANSPORT_HEADERS);
+				if (headers != null && headers instanceof Map) {
+					Map headersMap = (Map) headers;
+					Iterator it = headersMap.entrySet().iterator();
+					while (it.hasNext()) {
+						Map.Entry entry = (Map.Entry) it.next();
+						connection.setRequestProperty((String) entry.getKey(),
+								(String) entry.getValue()); // avoids a
+															// ConcurrentModificationException
+					}
+				}
+			}
+			
 			connection.setUseCaches(false);
 
 			if (log.isDebugEnabled()) {

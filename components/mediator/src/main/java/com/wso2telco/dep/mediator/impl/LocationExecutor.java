@@ -60,7 +60,7 @@ public class LocationExecutor extends RequestExecutor {
         }
         String sending_add = endpoint.getEndpointref().getAddress();
 
-        String responseStr = makeGetRequest(endpoint, sending_add, getSubResourcePath(), true, context);
+        String responseStr = makeGetRequest(endpoint, sending_add, getSubResourcePath(), true, context, false);
 
         removeHeaders(context);
         

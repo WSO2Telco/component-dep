@@ -220,7 +220,7 @@ public class SendSMSHandler implements SMSHandler {
 			String sending_add = endpoint.getEndpointref().getAddress();
 			log.info("sending endpoint found: " + sending_add);
 
-			String responseStr = executor.makeRequest(endpoint, sending_add, jsonStr, true, smsmc);
+			String responseStr = executor.makeRequest(endpoint, sending_add, jsonStr, true, smsmc,false);
 			sendSMSResponse = parseJsonResponse(responseStr);
 
 			smsResponses.put(address, sendSMSResponse);

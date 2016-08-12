@@ -61,7 +61,7 @@ public class QueryPaymentStatusHandler implements PaymentHandler {
 
 		String sending_add = endpoint.getEndpointref().getAddress();
 
-		String responseStr = executor.makeGetRequest(endpoint, sending_add,	executor.getSubResourcePath(), true, context);
+		String responseStr = executor.makeGetRequest(endpoint, sending_add,	executor.getSubResourcePath(), true, context, false);
 
 		executor.removeHeaders(context);
 

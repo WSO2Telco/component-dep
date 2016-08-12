@@ -145,7 +145,7 @@ public class StopOutboundSMSSubscriptionsHandler implements SMSHandler {
 		for (OperatorSubscriptionDTO subs : domainsubs) {
 			resStr = executor.makeDeleteRequest(
 					new OperatorEndpoint(new EndpointReference(subs.getDomain()), subs.getOperator()), subs.getDomain(),
-					null, true, context);
+					null, true, context,false);
 		}
 		smsMessagingService.outboundSubscriptionDelete(Integer.valueOf(dnSubscriptionId));
 

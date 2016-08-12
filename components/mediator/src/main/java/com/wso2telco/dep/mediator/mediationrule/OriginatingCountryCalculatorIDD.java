@@ -17,7 +17,11 @@ package com.wso2telco.dep.mediator.mediationrule;
 
 import java.util.ArrayList;
 import java.util.List;
+
 import org.apache.axis2.addressing.EndpointReference;
+
+import com.wso2telco.dbutils.Operator;
+import com.wso2telco.dbutils.Operatorendpoint;
 import com.wso2telco.dep.operatorservice.model.OperatorApplicationDTO;
 import com.wso2telco.dep.operatorservice.model.OperatorEndPointDTO;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
@@ -259,12 +263,61 @@ public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculato
 
 		for (OperatorEndPointDTO d : operatorEndpoints) {
 
-			if ((d.getApi().contains(api)) && (validoperator.equalsIgnoreCase(d.getOperatorcode()))) {
+			if ((d.getApi().equalsIgnoreCase(api)) && (validoperator.equalsIgnoreCase(d.getOperatorcode()) ) ) {
 
 				validoperendpoint = d;
+				 break;
 			}
 		}
 
 		return validoperendpoint;
 	}
+	
+	public OperatorEndpoint getAPIEndpointsByMNO(String mobileOpco,
+			String apikey, String requestPathURL, boolean isredirect,
+			List<OperatorApplicationDTO> operators) throws Exception {
+
+		String operator = mobileOpco;
+
+		// Initialize End points
+		initialize();
+
+		if (operator == null) {
+			throw new CustomException("SVC0001", "",
+					new String[] { "No valid operator found" });
+		}
+
+		// is operator provisioned
+		OperatorApplicationDTO valid = null;
+		for (OperatorApplicationDTO d : operators) {
+			if (d.getOperatorname() != null
+					&& d.getOperatorname().contains(operator.toUpperCase())) {
+				valid = d;
+				break;
+			}
+		}
+
+		if (valid == null) {
+			throw new CustomException("SVC0001", "",
+					new String[] { "Requested service is not provisioned" });
+		}
+
+		OperatorEndPointDTO validOperatorendpoint = getValidEndpoints(apikey,
+				operator);
+		if (validOperatorendpoint == null) {
+			throw new CustomException("SVC0001", "",
+					new String[] { "Requested service is not provisioned" });
+		}
+
+		String extremeEndpoint = validOperatorendpoint.getEndpoint();
+		if (!isredirect) {
+			extremeEndpoint = validOperatorendpoint.getEndpoint()
+					+ requestPathURL;
+		}
+		EndpointReference eprMSISDN = new EndpointReference(extremeEndpoint);
+
+		return new OperatorEndpoint(eprMSISDN, operator.toUpperCase());
+
+	}
+		 
 }

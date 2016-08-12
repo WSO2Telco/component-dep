@@ -103,7 +103,7 @@ public class SendUSSDHandler implements USSDHandler {
 
 		executor.removeHeaders(context);
 
-		String responseStr = executor.makeRequest(endpoint, sending_add, jsonBody.toString(), true, context);
+		String responseStr = executor.makeRequest(endpoint, sending_add, jsonBody.toString(), true, context,false);
 		executor.handlePluginException(responseStr);
 
 		executor.setResponse(context, responseStr);

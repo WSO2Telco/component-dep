@@ -164,7 +164,7 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
 			DeliveryReceiptSubscriptionRequest subsresponse = null;
 			
 			for (OperatorEndpoint endpoint : endpoints) {
-				String notifyres = executor.makeRequest(endpoint, endpoint.getEndpointref().getAddress(),sbRequestBody,true, context);
+				String notifyres = executor.makeRequest(endpoint, endpoint.getEndpointref().getAddress(),sbRequestBody,true, context, false);
 				if (notifyres == null) {
 					throw new CustomException("POL0299", "",new String[] { "Error registering subscription" });
 				} else {
@@ -230,7 +230,7 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
 		
 		        String resStr = "";
 		        for (OperatorSubscriptionDTO subs : domainsubs) {
-		            resStr = executor.makeDeleteRequest(new OperatorEndpoint(new EndpointReference(subs.getDomain()), subs.getOperator()), subs.getDomain(), null, true, context);
+		            resStr = executor.makeDeleteRequest(new OperatorEndpoint(new EndpointReference(subs.getDomain()), subs.getOperator()), subs.getDomain(), null, true, context,false);
 		        }
 		        new SMSMessagingService().subscriptionDelete(Integer.valueOf(dnSubscriptionId));
 				        //JSONObject reply = new JSONObject();

@@ -93,7 +93,7 @@ public class MOUSSDSubscribeHandler implements USSDHandler {
 		String responseStr = "";
 		for (OperatorEndpoint endpoint : endpoints) {
 
-			responseStr = executor.makeRequest(endpoint, endpoint.getEndpointref().getAddress(), jsonBody.toString(),true, context);
+			responseStr = executor.makeRequest(endpoint, endpoint.getEndpointref().getAddress(), jsonBody.toString(),true, context,false);
 			executor.handlePluginException(responseStr);
 
 		}

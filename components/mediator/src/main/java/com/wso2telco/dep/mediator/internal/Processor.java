@@ -20,6 +20,7 @@ import java.util.List;
 import org.apache.synapse.MessageContext;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import com.wso2telco.dep.mediator.entity.smsmessaging.northbound.InboundSMSMessage;
 
 // TODO: Auto-generated Javadoc
 /**

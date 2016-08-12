@@ -33,4 +33,11 @@ public final class MSISDNConstants {
     
     /** The Constant MSISDN_REGEX_PROPERTY. */
     public static final String MSISDN_REGEX_PROPERTY = "default.MSISDN.regex";
+    
+    public static final String MNO_LOCATION_PROPERTY = "default.MNO.location";
+    
+    public static final String MNO_REGEX_PROPERTY = "default.MNO.regex";
+    
+    public static final String MNO_POSITION_PROPERTY = "default.MNO.position";
+    
 }

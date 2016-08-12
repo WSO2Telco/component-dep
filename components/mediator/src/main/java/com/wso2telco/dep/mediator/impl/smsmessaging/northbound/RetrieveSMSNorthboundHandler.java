@@ -52,7 +52,7 @@ public class RetrieveSMSNorthboundHandler implements SMSHandler {
     private static Log log = LogFactory.getLog(RetrieveSMSNorthboundHandler.class);
     
     /** The Constant API_TYPE. */
-    private static final String API_TYPE = "sms";
+    private static final String API_TYPE = "smsmessaging";
     
     /** The occi. */
     private OriginatingCountryCalculatorIDD occi;
@@ -175,11 +175,11 @@ public class RetrieveSMSNorthboundHandler implements SMSHandler {
             if (context.isDoingGET()) {
             	
                 log.debug("Doing makeGetRequest");
-                retStr = executor.makeGetRequest(aEndpoint, ac.getUri(), null, true, context);
+                retStr = executor.makeGetRequest(aEndpoint, ac.getUri(), null, true, context,false);
             } else {
             	
                 log.debug("Doing makeRequest");
-                retStr = executor.makeRequest(aEndpoint, ac.getUri(), obj.toString(), true, context);
+                retStr = executor.makeRequest(aEndpoint, ac.getUri(), obj.toString(), true, context,false);
             }
 
             log.debug("Retrieved messages of " + aEndpoint.getOperator() + " operator: " + retStr);

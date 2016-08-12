@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.internal;
 
+import com.wso2telco.dep.mediator.entity.smsmessaging.northbound.InboundSMSMessage;
 import java.text.MessageFormat;
 import java.util.ArrayList;
 import java.util.List;
