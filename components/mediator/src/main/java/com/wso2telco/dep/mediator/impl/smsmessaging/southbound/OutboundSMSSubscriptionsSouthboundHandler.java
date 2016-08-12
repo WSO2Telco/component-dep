@@ -96,9 +96,9 @@ public class OutboundSMSSubscriptionsSouthboundHandler implements SMSHandler {
 	public boolean handle(MessageContext context) throws CustomException, AxisFault, Exception {
 		if (executor.getHttpMethod().equalsIgnoreCase("POST")) {
 			return createSubscriptions(context);
-		} else if (executor.getHttpMethod().equalsIgnoreCase("DELETE")) {
+		} /*else if (executor.getHttpMethod().equalsIgnoreCase("DELETE")) {
 			           return deleteSubscriptions(context);
-			        }
+			        }*/
 
 		return false;
 	}
@@ -241,7 +241,7 @@ public class OutboundSMSSubscriptionsSouthboundHandler implements SMSHandler {
 		return "{\"deliveryReceiptSubscription\":" + sbDeliveryNotificationrequestString + "}";
 	}*/
 	
-	private boolean deleteSubscriptions(MessageContext context) throws Exception {
+	/*private boolean deleteSubscriptions(MessageContext context) throws Exception {
         String requestPath = executor.getSubResourcePath();
         String dnSubscriptionId = requestPath.substring(requestPath.lastIndexOf("/") + 1);
 
@@ -264,7 +264,7 @@ public class OutboundSMSSubscriptionsSouthboundHandler implements SMSHandler {
         ((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 204);
 
         return true;
-    }
+    }*/
 	
 	
 }

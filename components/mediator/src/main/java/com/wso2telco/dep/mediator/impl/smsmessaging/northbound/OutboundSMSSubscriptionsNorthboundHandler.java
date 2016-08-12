@@ -132,9 +132,9 @@ public class OutboundSMSSubscriptionsNorthboundHandler implements SMSHandler {
 
 		if (executor.getHttpMethod().equalsIgnoreCase("POST")) {
 			return createSubscriptions(context);
-		} else if (executor.getHttpMethod().equalsIgnoreCase("DELETE")) {
+		} /*else if (executor.getHttpMethod().equalsIgnoreCase("DELETE")) {
 			return deleteSubscriptions(context);
-		}
+		}*/
 
 		return false;
 	}
@@ -169,7 +169,7 @@ public class OutboundSMSSubscriptionsNorthboundHandler implements SMSHandler {
 
 		List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(API_TYPE, executor.getSubResourcePath(),executor.getValidoperators());
 
-		Integer dnSubscriptionId = smsMessagingService.subscriptionEntry(nbDeliveryReceiptSubscriptionRequest.getDeliveryReceiptSubscription().getCallbackReference().getNotifyURL()/*, serviceProvider*/);
+		Integer dnSubscriptionId = smsMessagingService.outboundSubscriptionEntry(nbDeliveryReceiptSubscriptionRequest.getDeliveryReceiptSubscription().getCallbackReference().getNotifyURL()/*, serviceProvider*/);
 		
 		String subsEndpoint = mediatorConfMap.get("hubSubsGatewayEndpoint") + "/" + dnSubscriptionId;
 		//jsondstaddr.getJSONObject("callbackReference").put("notifyURL", subsEndpoint);
@@ -299,7 +299,7 @@ public class OutboundSMSSubscriptionsNorthboundHandler implements SMSHandler {
 		return "{\"deliveryReceiptSubscription\":" + sbDeliveryNotificationrequestString + "}";
 	}
 	
-	private boolean deleteSubscriptions(MessageContext context) throws Exception {
+	/*private boolean deleteSubscriptions(MessageContext context) throws Exception {
 		        String requestPath = executor.getSubResourcePath();
 		        String dnSubscriptionId = requestPath.substring(requestPath.lastIndexOf("/") + 1);
 		
@@ -322,5 +322,5 @@ public class OutboundSMSSubscriptionsNorthboundHandler implements SMSHandler {
 		        ((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 204);
 		
 		        return true;
-		    }
+		    }*/
 	}
