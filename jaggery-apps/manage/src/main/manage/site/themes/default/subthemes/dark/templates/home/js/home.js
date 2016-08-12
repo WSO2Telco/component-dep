@@ -1,11 +1,11 @@
-if( !('axiata_db' in window) ) window['axiata_db'] = {}; //see the object axiata_db exists and create it if not.
+if( !('operator_db' in window) ) window['operator_db'] = {}; //see the object operator_db exists and create it if not.
 /*******************************
  *
  * Handling a single chartBox
  *
  *****************************/
-axiata_db.chartBox = {};
-axiata_db.chartBox.initDropdown = function(opid,updateCallBack){
+operator_db.chartBox = {};
+operator_db.chartBox.initDropdown = function(opid,updateCallBack){
     var $dropdown_r1_c1 = $('#'+opid);
 
     var dropdown_r1_c1_value = amplify.store(opid);
@@ -25,7 +25,7 @@ axiata_db.chartBox.initDropdown = function(opid,updateCallBack){
         }
     });
 };
-axiata_db.xhr_get = function(params) {
+operator_db.xhr_get = function(params) {
 
     return $.ajax({
         url: params.url,

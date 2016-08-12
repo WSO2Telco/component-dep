@@ -32,7 +32,7 @@
 
 
 <link rel="stylesheet" type="text/css" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("templates/utils/font-awesome/css/font-awesome.min.css"))%>" media="all"/>
-<link rel="stylesheet" type="text/css" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("css/styles-axiata.css"))%>" media="all"/>
+<link rel="stylesheet" type="text/css" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("css/styles-operator.css"))%>" media="all"/>
 <div id="listing">
     <div class="title-section">
         <h2>Home</h2>
