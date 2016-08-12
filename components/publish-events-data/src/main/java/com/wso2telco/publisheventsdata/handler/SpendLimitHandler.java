@@ -40,7 +40,7 @@ public class SpendLimitHandler {
         Properties properties = MifeEventsDataHolder.getMifeEventsProps();
         String eventsEnabled = properties.getProperty(MifeEventsConstants.CEP_SPEND_LIMIT_HANDLER_ENABLED_PROPERTY);
         isEventsEnabled = Boolean.parseBoolean(eventsEnabled);
-        dbservice = new AxiataDbService();
+        dbservice = new AxiataDbService(); 
     }
 
     /**
