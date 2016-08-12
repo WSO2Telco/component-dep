@@ -77,7 +77,8 @@ public class StopOutboundSMSSubscriptionsHandler implements SMSHandler {
 	@Override
 	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context)
 			throws Exception {
-		IServiceValidate validator;
+		return false;
+		/*IServiceValidate validator;
 		if (httpMethod.equalsIgnoreCase("DELETE")) {
 			String dnSubscriptionId = requestPath.substring(requestPath.lastIndexOf("/") + 1);
 			String[] params = { dnSubscriptionId };
@@ -100,7 +101,7 @@ public class StopOutboundSMSSubscriptionsHandler implements SMSHandler {
 		} else {
 			((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 405);
 			throw new Exception("Method not allowed");
-		}
+		}*/
 	}
 
 	/*
@@ -112,9 +113,9 @@ public class StopOutboundSMSSubscriptionsHandler implements SMSHandler {
 	 */
 	@Override
 	public boolean handle(MessageContext context) throws Exception {
-		if (executor.getHttpMethod().equalsIgnoreCase("DELETE")) {
+		/*if (executor.getHttpMethod().equalsIgnoreCase("DELETE")) {
 			return deleteSubscriptions(context);
-		}
+		}*/
 		return false;
 	}
 
@@ -127,7 +128,7 @@ public class StopOutboundSMSSubscriptionsHandler implements SMSHandler {
 	 * @throws Exception
 	 *             the exception
 	 */
-	private boolean deleteSubscriptions(MessageContext context) throws Exception {
+	/*private boolean deleteSubscriptions(MessageContext context) throws Exception {
 		String requestPath = executor.getSubResourcePath();
 		String subid = requestPath.substring(requestPath.lastIndexOf("/") + 1);
 
@@ -153,5 +154,5 @@ public class StopOutboundSMSSubscriptionsHandler implements SMSHandler {
 		((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 204);
 
 		return true;
-	}
+	}*/
 }
