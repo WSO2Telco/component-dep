@@ -17,6 +17,7 @@
                 <module>com.wso2telco.dep.mediator.feature</module>
 		<module>com.wso2telco.dep.verificationhandler.feature</module>
 		<module>com.wso2telco.dep.store.feature</module>
+		<module>com.wso2telco.dep.datapublisher.feature</module>
         </modules>
 
 </project>
