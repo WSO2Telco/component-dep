@@ -136,6 +136,10 @@
 			<artifactId>mnc-resolver</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.wso2telco.core</groupId>
+			<artifactId>msisdn-validator</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.wso2telco.dep</groupId>
 			<artifactId>publish-events-data</artifactId>
 		</dependency>

@@ -78,7 +78,7 @@ public class USSDInboundHandler implements USSDHandler {
 	@Override
 	public boolean handle(MessageContext context) throws CustomException, AxisFault, Exception {
 
-		String requestid = UID.getUniqueID(Type.RETRIEVE_USSD.getCode(), context, getApplicationid());
+		String requestid = UID.getUniqueID(Type.RETRIEVE_USSD.getCode(), context, executor.getApplicationid());
 		String requestPath = executor.getSubResourcePath();
 		String subscriptionId = requestPath.substring(requestPath.lastIndexOf("/") + 1);
 		FileReader fileReader = new FileReader();

@@ -15,17 +15,6 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.impl.ussd;
 
-import com.wso2telco.datapublisher.DataPublisherConstants;
-import com.wso2telco.dbutils.fileutils.FileReader;
-import com.wso2telco.dep.mediator.MSISDNConstants;
-import com.wso2telco.dep.mediator.OperatorEndpoint;
-import com.wso2telco.dep.mediator.internal.Type;
-import com.wso2telco.dep.mediator.internal.UID;
-import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
-import com.wso2telco.dep.mediator.service.USSDService;
-import com.wso2telco.oneapivalidation.exceptions.CustomException;
-import com.wso2telco.subscriptionvalidator.util.ValidatorUtils;
-
 import java.util.Map;
 
 import org.apache.axis2.AxisFault;
@@ -34,6 +23,19 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONObject;
+
+import com.wso2telco.datapublisher.DataPublisherConstants;
+import com.wso2telco.dbutils.fileutils.FileReader;
+import com.wso2telco.dep.mediator.MSISDNConstants;
+import com.wso2telco.dep.mediator.OperatorEndpoint;
+import com.wso2telco.dep.mediator.entity.OparatorEndPointSearchDTO;
+import com.wso2telco.dep.mediator.internal.Type;
+import com.wso2telco.dep.mediator.internal.UID;
+import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
+import com.wso2telco.dep.mediator.service.USSDService;
+import com.wso2telco.dep.mediator.util.APIType;
+import com.wso2telco.oneapivalidation.exceptions.CustomException;
+import com.wso2telco.subscriptionvalidator.util.ValidatorUtils;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -100,8 +102,20 @@ public class SendUSSDHandler implements USSDHandler {
 		context.setProperty(MSISDNConstants.USER_MSISDN, msisdn);
 		OperatorEndpoint endpoint = null;
 		if (ValidatorUtils.getValidatorForSubscription(context).validate(context)) {
-			endpoint = occi.getAPIEndpointsByMSISDN(address.replace("tel:", ""), API_TYPE,
-					executor.getSubResourcePath(), false, executor.getValidoperators());
+			/*endpoint = occi.getAPIEndpointsByMSISDN(address.replace("tel:", ""), API_TYPE,
+					executor.getSubResourcePath(), false, executor.getValidoperators());*/
+			
+			
+			OparatorEndPointSearchDTO searchDTO = new OparatorEndPointSearchDTO();
+			searchDTO.setApi(APIType.USSD);
+			searchDTO.setContext(context);
+			searchDTO.setIsredirect(false);
+			searchDTO.setMSISDN(address);
+			searchDTO.setOperators(executor.getValidoperators());
+			searchDTO.setRequestPathURL(executor.getSubResourcePath());
+
+			endpoint = occi.getOperatorEndpoint(searchDTO);
+			
 		}
 		String sending_add = endpoint.getEndpointref().getAddress();
 		log.info("sending endpoint found: " + sending_add);

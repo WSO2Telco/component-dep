@@ -16,18 +16,26 @@
 package com.wso2telco.dep.mediator.mediationrule;
 
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
 import org.apache.axis2.addressing.EndpointReference;
+import org.apache.axis2.context.MessageContext;
 
-import com.wso2telco.dbutils.Operator;
-import com.wso2telco.dbutils.Operatorendpoint;
+import com.wso2telco.core.msisdnvalidator.*;
+import com.wso2telco.dbutils.fileutils.FileReader;
+import com.wso2telco.dep.mediator.OperatorEndpoint;
+import com.wso2telco.dep.mediator.entity.OparatorEndPointSearchDTO;
+import com.wso2telco.dep.mediator.util.ErrorHolder;
+import com.wso2telco.dep.operatorservice.model.Operator;
 import com.wso2telco.dep.operatorservice.model.OperatorApplicationDTO;
 import com.wso2telco.dep.operatorservice.model.OperatorEndPointDTO;
-import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.operatorservice.service.OparatorService;
 import com.wso2telco.mnc.resolver.MNCQueryClient;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
+import org.apache.synapse.core.axis2.Axis2MessageContext;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -43,6 +51,11 @@ public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculato
 
 	/** The mnc queryclient. */
 	MNCQueryClient mncQueryclient = null;
+	
+	private MSISDNUtil phoneUtil ;
+	    
+	private  static Set<String> countryLookUpOnHeader = new HashSet<String>();
+	
 
 	/*
 	 * (non-Javadoc)
@@ -54,8 +67,25 @@ public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculato
 
 		operatorEndpoints = new OparatorService().getOperatorEndpoints();
 		mncQueryclient = new MNCQueryClient();
+		phoneUtil = new MSISDNUtil();
 	}
 
+	static{
+		
+		FileReader fileReader = new FileReader();
+		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
+		String countries = mediatorConfMap.get("search.oparatorOnHeader");
+		if (countries != null) {
+			// Split the comma separated country codes
+			String[] countryArray = countries.split(",");
+			for (String string : countryArray) {
+				countryLookUpOnHeader.add(string.trim());
+			}
+		}
+	}
+	
+
+	
 	/**
 	 * Gets the API endpoints by msisdn.
 	 *
@@ -122,6 +152,122 @@ public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculato
 
 		return new OperatorEndpoint(eprMSISDN, operator.toUpperCase());
 	}
+	
+	
+	  /**
+	       * this will return the end point base on serchDTO
+	       * @param searchDTO
+	       * @return
+	       * @throws Exception
+	       */
+	public OperatorEndpoint getOperatorEndpoint(
+			final OparatorEndPointSearchDTO searchDTO) throws Exception {
+
+		if (searchDTO == null) {
+			throw new CustomException(
+					ErrorHolder.INVALID_SERVICE_INVORK.getCode(), "",
+					new String[] { ErrorHolder.INVALID_SERVICE_INVORK
+							.getDescription() });
+		}
+
+		String operator = null;
+
+		// Initialize End points
+		initialize();
+
+		/**
+		 * MSISDN provided at JSon body convert into Phone number object.
+		 */
+		MSISDN numberProto = phoneUtil.parse(searchDTO.getMSISDN());
+
+		/**
+		 * obtain the country code form the phone number object
+		 */
+		int countryCode = numberProto.getCountryCode();
+
+		/**
+		 * if the country code within the header look up context , the operator
+		 * taken from the header object
+		 */
+		if (countryLookUpOnHeader.contains(String.valueOf(countryCode))) {
+
+			MessageContext axis2MessageContext = ((Axis2MessageContext) searchDTO
+					.getContext()).getAxis2MessageContext();
+			Object headers = axis2MessageContext
+					.getProperty(MessageContext.TRANSPORT_HEADERS);
+			if (headers != null && headers instanceof Map) {
+				Map headersMap = (Map) headers;
+				operator = (String) headersMap.get("oparator");
+
+			}
+
+		}
+		/**
+		 * build the MSISDN
+		 */
+		StringBuffer msisdn = new StringBuffer();
+		msisdn.append("+").append(numberProto.getCountryCode())
+				.append(numberProto.getNationalNumber());
+
+		/**
+		 * if the operator still not selected the operator selection logic goes
+		 * as previous .ie select from MCC_NUMBER_RANGE
+		 */
+		if (operator == null) {
+
+			String mcc = null;
+
+			/*
+			 * if(countryCode>=0){ mcc = String.valueOf("+"+countryCode); }
+			 */
+			// mcc not known in mediator
+			operator = mncQueryclient.QueryNetwork(mcc, msisdn.toString());
+		}
+
+		if (operator == null) {
+			throw new CustomException(ErrorHolder.NO_VALID_OPARATOR.getCode(),
+					"",
+					new String[] { ErrorHolder.NO_VALID_OPARATOR
+							.getDescription() });
+		}
+
+		// is operator provisioned
+		OperatorApplicationDTO valid = null;
+		for (OperatorApplicationDTO d : searchDTO.getOperators()) {
+			if (d.getOperatorname() != null
+					&& d.getOperatorname().contains(operator.toUpperCase())) {
+				valid = d;
+				break;
+			}
+		}
+
+		if (valid == null) {
+			throw new CustomException(
+					ErrorHolder.OPARATOR_NOT_PROVISIONED.getCode(), "",
+					new String[] { ErrorHolder.OPARATOR_NOT_PROVISIONED
+							.getDescription() });
+		}
+
+		OperatorEndPointDTO validOperatorendpoint = getValidEndpoints(searchDTO
+				.getApiType().getCode(), operator);
+		if (validOperatorendpoint == null) {
+			throw new CustomException(
+					ErrorHolder.OPARATOR_ENDPOINT_NOT_DEFIEND.getCode(), "",
+					new String[] { ErrorHolder.OPARATOR_ENDPOINT_NOT_DEFIEND
+							.getDescription() });
+		}
+
+		String extremeEndpoint = validOperatorendpoint.getEndpoint();
+		if (!searchDTO.isIsredirect()) {
+			extremeEndpoint = validOperatorendpoint.getEndpoint()
+					+ searchDTO.getRequestPathURL();
+		}
+		EndpointReference eprMSISDN = new EndpointReference(extremeEndpoint);
+
+		return new OperatorEndpoint(eprMSISDN, operator.toUpperCase());
+
+	}
+	
 
 	/**
 	 * Gets the API endpoints by app.
