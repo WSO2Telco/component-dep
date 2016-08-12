@@ -21,10 +21,13 @@ import com.wso2telco.dep.mediator.MSISDNConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.RequestExecutor;
 import com.wso2telco.dep.mediator.internal.ResourceURLUtil;
+import com.wso2telco.dep.mediator.internal.Type;
+import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.impl.location.ValidateLocation;
 import com.wso2telco.subscriptionvalidator.util.ValidatorUtils;
+
 import org.apache.axis2.AxisFault;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
@@ -52,6 +55,7 @@ public class LocationExecutor extends RequestExecutor {
     @Override
     public boolean execute(MessageContext context) throws CustomException, AxisFault, Exception {
 
+    	String requestid = UID.getUniqueID(Type.LOCREQ.getCode(), context, getApplicationid());
         String[] params = new ResourceURLUtil().getParamValues(getSubResourcePath());
         context.setProperty(MSISDNConstants.USER_MSISDN, params[0].substring(5));
         OperatorEndpoint endpoint = null;

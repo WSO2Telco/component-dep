@@ -132,8 +132,7 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
 	private boolean createSubscriptions(MessageContext context)
 			throws Exception {
 
-		String requestid = UID.getUniqueID(Type.RETRIVSUB.getCode(), context,
-				executor.getApplicationid());
+		String requestid = UID.getUniqueID(Type.RETRIVSUB.getCode(), context,executor.getApplicationid());
 		Gson gson = new GsonBuilder().serializeNulls().create();
 		
 		FileReader fileReader = new FileReader();

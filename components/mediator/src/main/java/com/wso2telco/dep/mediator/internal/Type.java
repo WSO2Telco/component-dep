@@ -22,20 +22,23 @@ package com.wso2telco.dep.mediator.internal;
  */
 public enum Type {
         
-        /** The smssend. */
-        SMSSEND("SM"), 
- /** The smsretrive. */
- SMSRETRIVE("RM"), 
- /** The retrivsub. */
- RETRIVSUB("RS"), 
- /** The delretsub. */
- DELRETSUB("DS"), 
- /** The payment. */
- PAYMENT("PA"), 
- /** The alertinbound. */
- ALERTINBOUND("AI"), 
- /** The locreq. */
- LOCREQ("LR");
+	/** The smssend. */
+	SMSSEND("SM"),
+	/** The smsretrive. */
+	SMSRETRIVE("RM"),
+	/** The retrivsub. */
+	RETRIVSUB("RS"),
+	/** The delretsub. */
+	DELRETSUB("DS"),
+	/** The payment. */
+	PAYMENT("PA"),
+	/** The alertinbound. */
+	ALERTINBOUND("AI"),
+	/** The locreq. */
+	LOCREQ("LR"), 
+	SEND_USSD("SU"), 
+	RETRIEVE_USSD("RU"), 
+	MO_USSD("RU");
         
         /** The code. */
         private String code;

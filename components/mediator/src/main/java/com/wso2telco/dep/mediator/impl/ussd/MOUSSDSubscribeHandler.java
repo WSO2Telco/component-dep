@@ -17,13 +17,17 @@ package com.wso2telco.dep.mediator.impl.ussd;
 
 import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
+import com.wso2telco.dep.mediator.internal.Type;
+import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.dep.mediator.service.USSDService;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONObject;
+
 import java.util.List;
 import java.util.Map;
 
@@ -74,6 +78,8 @@ public class MOUSSDSubscribeHandler implements USSDHandler {
 
 		FileReader fileReader = new FileReader();
 		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
+		
+		String requestid = UID.getUniqueID(Type.MO_USSD.getCode(), context, executor.getApplicationid());
 		
 		JSONObject jsonBody = executor.getJsonBody();
 		String notifyUrl = jsonBody.getJSONObject("subscription").getJSONObject("callbackReference").getString("notifyURL");
