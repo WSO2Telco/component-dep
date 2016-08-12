@@ -166,7 +166,7 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
 						<Bundle-Name>${project.artifactId}</Bundle-Name>
 						<Export-Package>!com.wso2telco.dep.mediator.internal,com.wso2telco.dep.mediator.*</Export-Package>
 						<Import-Package>javax.xml.parsers; version="0.0.0"</Import-Package>
