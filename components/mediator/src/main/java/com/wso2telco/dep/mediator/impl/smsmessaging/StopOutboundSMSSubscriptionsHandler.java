@@ -82,10 +82,8 @@ public class StopOutboundSMSSubscriptionsHandler implements SMSHandler {
 		if (httpMethod.equalsIgnoreCase("DELETE")) {
 			String dnSubscriptionId = requestPath.substring(requestPath.lastIndexOf("/") + 1);
 			String[] params = { dnSubscriptionId };
-
-			validator = new ValidateDNCancelSubscriptionPlugin();
-			
-			/*String[] urlElements = requestPath.split("/");
+		
+			String[] urlElements = requestPath.split("/");
 			int elements = urlElements.length;
 			if (elements == 5) {
 				validator = new ValidateDNCancelSubscriptionPlugin();
@@ -95,7 +93,7 @@ public class StopOutboundSMSSubscriptionsHandler implements SMSHandler {
 				log.debug("Invoke validation - ValidateDNCancelSubscription");
 			} else {
 				throw new Exception("requestPath not valid");
-			}*/
+			}
 
 			validator.validateUrl(requestPath);
 			validator.validate(params);
