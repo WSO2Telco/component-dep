@@ -21,6 +21,7 @@
 		<module>com.wso2telco.dep.verificationhandler.feature</module>
 		<module>com.wso2telco.dep.store.feature</module>
 		<module>com.wso2telco.dep.datapublisher.feature</module>
+                <module>com.wso2telco.dep.oneapivalidation.feature</module>
         </modules>
 
 </project>

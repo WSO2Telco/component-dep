@@ -15,47 +15,49 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.internal;
 
- 
 // TODO: Auto-generated Javadoc
 /**
  * The Enum Type.
  */
 public enum Type {
-        
-        /** The smssend. */
-        SMSSEND("SM"), 
- /** The smsretrive. */
- SMSRETRIVE("RM"), 
- /** The retrivsub. */
- RETRIVSUB("RS"), 
- /** The delretsub. */
- DELRETSUB("DS"), 
- /** The payment. */
- PAYMENT("PA"), 
- /** The alertinbound. */
- ALERTINBOUND("AI"), 
- /** The locreq. */
- LOCREQ("LR");
-        
-        /** The code. */
-        private String code;
 
-        /**
-         * Instantiates a new type.
-         *
-         * @param value the value
-         */
-        private Type(String value) {
-                this.code = value;
-        }
-        
-        /**
-         * Gets the code.
-         *
-         * @return the code
-         */
-        public String getCode() {
-            return code;
-        }
-             
+	/** The smssend. */
+	SMSSEND("SM"),
+	/** The smsretrive. */
+	SMSRETRIVE("RM"),
+	/** The retrivsub. */
+	RETRIVSUB("RS"),
+	/** The delretsub. */
+	DELRETSUB("DS"),
+	/** The payment. */
+	PAYMENT("PA"),
+	/** The alertinbound. */
+	ALERTINBOUND("AI"),
+	/** The locreq. */
+	LOCREQ("LR"),
+	/** The provision. */
+	PROVISION("PR");
+
+	/** The code. */
+	private String code;
+
+	/**
+	 * Instantiates a new type.
+	 *
+	 * @param value
+	 *            the value
+	 */
+	private Type(String value) {
+		this.code = value;
+	}
+
+	/**
+	 * Gets the code.
+	 *
+	 * @return the code
+	 */
+	public String getCode() {
+		return code;
+	}
+
 };
