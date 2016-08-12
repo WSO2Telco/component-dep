@@ -13,12 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.publisheventsdata.dto;
+package com.wso2telco.dep.publisheventsdata.dto;
 
 
 import org.wso2.carbon.apimgt.usage.publisher.dto.ResponsePublisherDTO;
-
-import com.wso2telco.publisheventsdata.MifeEventsConstants;
+import com.wso2telco.dep.publisheventsdata.EventsConstants;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -112,11 +111,12 @@ public class SpendLimitDataPublisherDTO extends ResponsePublisherDTO {
      * @return the stream definition
      */
     public static String getStreamDefinition() {
+    	
         String streamDefinition = "{" +
-                "  'name':'" + MifeEventsConstants .MIFE_SPEND_LIMIT_DATA_STREAM_NAME + "'," +
-                "  'version':'" + MifeEventsConstants.MIFE_SPEND_LIMIT_DATA_STREAM_VERSION + "'," +
-                "  'nickName': 'MIFE Spend Limit Data'," +
-                "  'description': 'MIFE Spend Limit Data'," +
+                "  'name':'" + EventsConstants.SPEND_LIMIT_DATA_STREAM_NAME + "'," +
+                "  'version':'" + EventsConstants.SPEND_LIMIT_DATA_STREAM_VERSION + "'," +
+                "  'nickName': 'Spend Limit Data'," +
+                "  'description': 'Spend Limit Data'," +
                 "  'metaData':[" +
                 "          {'name':'clientType','type':'STRING'}" +
                 "  ]," +

@@ -13,36 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.publisheventsdata;
+package com.wso2telco.dep.publisheventsdata;
 
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class MifeEventsConstants.
+ * The Class EventsConstants.
  */
-public class MifeEventsConstants {
+public class EventsConstants {
 
-    /** The Constant MIFE_SPEND_LIMIT_DATA_STREAM_NAME. */
-    public static final String MIFE_SPEND_LIMIT_DATA_STREAM_NAME = "mife.events.spend.limit.data";
+    /** The Constant SPEND_LIMIT_DATA_STREAM_NAME. */
+    public static final String SPEND_LIMIT_DATA_STREAM_NAME = "com.wso2telco.events.spend.limit.data";
     
-    /** The Constant MIFE_SPEND_LIMIT_DATA_STREAM_VERSION. */
-    public static final String MIFE_SPEND_LIMIT_DATA_STREAM_VERSION = "1.0.0";
-
-    /** The Constant MIFE_EVENTS_PROPERTIES_FILE. */
-    public static final String MIFE_EVENTS_PROPERTIES_FILE = "mife-events.properties";
+    /** The Constant SPEND_LIMIT_DATA_STREAM_VERSION. */
+    public static final String SPEND_LIMIT_DATA_STREAM_VERSION = "1.0.0";
     
-    /** The Constant CEP_SPEND_LIMIT_HANDLER_ENABLED_PROPERTY. */
-    public static final String CEP_SPEND_LIMIT_HANDLER_ENABLED_PROPERTY = "mife.events.spend.limit.handler.enabled";
-    
-    /** The Constant CEP_URL_PROPERTY. */
-    public static final String CEP_URL_PROPERTY = "mife.events.cep.url";
-    
-    /** The Constant CEP_USERNAME_PROPERTY. */
-    public static final String CEP_USERNAME_PROPERTY = "mife.events.cep.username";
-    
-    /** The Constant CEP_PASSWORD_PROPERTY. */
-    public static final String CEP_PASSWORD_PROPERTY = "mife.events.cep.password";
-
     /** The Constant MSISDN_HAZELCAST_MAP_NAME. */
     public static final String MSISDN_HAZELCAST_MAP_NAME = "msisdnSpendLimitMap";
     
@@ -53,14 +38,14 @@ public class MifeEventsConstants {
     public static final String OPERATOR_HAZELCAST_MAP_NAME = "operatorSpendLimitMap";
 
     /** The Constant OPERATOR_ID. */
-    public static final String OPERATOR_ID = "mife.prop.operatorId";
+    public static final String OPERATOR_ID = "com.wso2telco.prop.operatorId";
     
     /** The Constant MSISDN. */
-    public static final String MSISDN = "mife.prop.msisdn";
+    public static final String MSISDN = "com.wso2telco.prop.msisdn";
     
     /** The Constant CHARGE_AMOUNT. */
-    public static final String CHARGE_AMOUNT = "mife.prop.chargeAmount";
+    public static final String CHARGE_AMOUNT = "com.wso2telco.prop.chargeAmount";
     
     /** The Constant RESPONSE_CODE. */
-    public static final String RESPONSE_CODE = "mife.prop.responseCode";
+    public static final String RESPONSE_CODE = "com.wso2telco.prop.responseCode";
 }

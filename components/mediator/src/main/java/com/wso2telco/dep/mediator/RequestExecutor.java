@@ -24,7 +24,7 @@ import com.wso2telco.dep.oneapivalidation.exceptions.RequestError;
 import com.wso2telco.dep.oneapivalidation.exceptions.ResponseError;
 import com.wso2telco.dep.operatorservice.model.OperatorApplicationDTO;
 import com.wso2telco.dep.operatorservice.service.OparatorService;
-import com.wso2telco.publisheventsdata.publisher.EventsDataPublisherClient;
+import com.wso2telco.dep.publisheventsdata.publisher.EventsDataPublisherClient;
 import java.io.BufferedOutputStream;
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
