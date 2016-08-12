@@ -503,11 +503,19 @@ public abstract class RequestExecutor {
 				log.debug("Southbound Request Body: " + requestStr);
 			}
 
-			DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
-			wr.writeBytes(requestStr);
+			
+			//========================UNICODE PATCH=========================================
+			BufferedOutputStream wr = new BufferedOutputStream(connection.getOutputStream());
+			wr.write(requestStr.getBytes("UTF-8"));
+
 			wr.flush();
 			wr.close();
-
+			//========================UNICODE PATCH=========================================
+			 
+           /*DataOutputStream wr = new DataOutputStream(connection.getOutputStream());
+             wr.writeBytes(requestStr);
+            wr.flush();
+            wr.close();*/
 			statusCode = connection.getResponseCode();
 			log.debug("DEBUG LOGS FOR LBS 29 : statusCode = " + statusCode);
 			if ((statusCode != 200) && (statusCode != 201) && (statusCode != 400) && (statusCode != 401)) {
