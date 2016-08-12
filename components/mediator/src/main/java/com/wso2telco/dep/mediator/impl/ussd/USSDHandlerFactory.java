@@ -17,7 +17,8 @@ package com.wso2telco.dep.mediator.impl.ussd;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import com.wso2telco.oneapivalidation.exceptions.CustomException;
+
+import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 
 // TODO: Auto-generated Javadoc
 /**

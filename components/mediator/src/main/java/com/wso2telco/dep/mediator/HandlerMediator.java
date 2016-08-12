@@ -16,7 +16,8 @@
 package com.wso2telco.dep.mediator;
 
 import com.wso2telco.dep.mediator.internal.Base64Coder;
-import com.wso2telco.oneapivalidation.exceptions.CustomException;
+import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
+
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
