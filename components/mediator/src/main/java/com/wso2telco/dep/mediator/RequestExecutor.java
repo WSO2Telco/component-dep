@@ -123,28 +123,37 @@ public abstract class RequestExecutor {
 			}
 		}
 		//
+		
+		log.debug("Token time : " + op.getTokentime());
+		log.debug("Token validity : " + op.getTokenvalidity());
+		
 		long timeexpires = (long) (op.getTokentime() + (op.getTokenvalidity() * 1000));
+		log.debug("Expire time : " + timeexpires);
+		
 		long currtime = new Date().getTime();
-
-		log.debug("DEBUG LOGS FOR LBS 02: timeexpires = " + timeexpires);
-		log.debug("DEBUG LOGS FOR LBS 03 : currtime = " + currtime);
+		log.debug("Current time : " + currtime);
+		
+		
+		 
+		
 
 		if (timeexpires > currtime) {
 			token = op.getToken();
+			log.debug("Token of " + op.getOperatorname() + " operator is active");
 		} else {
-
-			String Strtoken = makeTokenrequest(op.getTokenurl(),
-					"grant_type=refresh_token&refresh_token=" + op.getRefreshtoken(), ("" + op.getTokenauth()));
+			
+			log.debug("Regenerating the token of " + op.getOperatorname() + " operator");
+			String Strtoken = makeTokenrequest(op.getTokenurl(), "grant_type=refresh_token&refresh_token=" + op.getRefreshtoken(), ("" + op.getTokenauth()));
+			
 			if (Strtoken != null && Strtoken.length() > 0) {
-				log.debug("Token regeneration response String: " + Strtoken);
-
+				log.debug("Token regeneration response of " + op.getOperatorname() + " operator : " + Strtoken);
 				JSONObject jsontoken = new JSONObject(Strtoken);
 				token = jsontoken.getString("access_token");
 				new OparatorService().updateOperatorToken(op.getOperatorid(), jsontoken.getString("refresh_token"),
 						Long.parseLong(jsontoken.getString("expires_in")), new Date().getTime(), token);
 
 			} else {
-				log.error("Token regeneration response is invalid.");
+				log.error("Token regeneration response of " + op.getOperatorname() + " operator is invalid.");
 			}
 		}
 
@@ -565,9 +574,7 @@ public abstract class RequestExecutor {
 				byte[] postData = urlParameters.getBytes(StandardCharsets.UTF_8);
 				int postDataLength = postData.length;
 				URL url = new URL(tokenurl);
-
-				log.debug("DEBUG LOGS FOR LBS 32 : tokenurl = " + tokenurl);
-
+				
 				connection = (HttpURLConnection) url.openConnection();
 				connection.setDoOutput(true);
 				connection.setInstanceFollowRedirects(false);
@@ -596,8 +603,6 @@ public abstract class RequestExecutor {
 					is = connection.getErrorStream();
 				}
 
-				log.debug("DEBUG LOGS FOR LBS 33 : is = " + is);
-
 				BufferedReader br = new BufferedReader(new InputStreamReader(is));
 				String output;
 				while ((output = br.readLine()) != null) {
@@ -616,7 +621,7 @@ public abstract class RequestExecutor {
 		} else {
 			log.error("Token refresh details are invalid.");
 		}
-		log.debug("DEBUG LOGS FOR LBS 34 : retStr = " + retStr);
+
 		return retStr;
 	}
 
