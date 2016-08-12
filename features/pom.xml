@@ -15,14 +15,13 @@
                 <module>com.wso2telco.dep.workflowmanager.feature</module>
                 <module>com.wso2telco.dep.operatorservice.feature</module>
                 <module>com.wso2telco.dep.mediator.feature</module>
-<<<<<<< HEAD
+                <module>com.wso2telco.dep.publisheventsdata.feature</module>
+                <module>com.wso2telco.dep.subscriptionvalidator.feature</module>
 		<module>com.wso2telco.dep.reportingservice.feature</module>
 		<module>com.wso2telco.dep.verificationhandler.feature</module>
 		<module>com.wso2telco.dep.store.feature</module>
 		<module>com.wso2telco.dep.datapublisher.feature</module>
-=======
                 <module>com.wso2telco.dep.oneapivalidation.feature</module>
->>>>>>> 1.8.development_p2
         </modules>
 
 </project>
