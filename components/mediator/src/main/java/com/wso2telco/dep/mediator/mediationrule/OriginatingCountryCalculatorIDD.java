@@ -23,11 +23,14 @@ import java.util.Set;
 
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.context.MessageContext;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import com.wso2telco.core.msisdnvalidator.*;
 import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.entity.OparatorEndPointSearchDTO;
+import com.wso2telco.dep.mediator.impl.smsmessaging.SendSMSHandler;
 import com.wso2telco.dep.mediator.util.ErrorHolder;
 import com.wso2telco.dep.operatorservice.model.Operator;
 import com.wso2telco.dep.operatorservice.model.OperatorApplicationDTO;
@@ -35,6 +38,7 @@ import com.wso2telco.dep.operatorservice.model.OperatorEndPointDTO;
 import com.wso2telco.dep.operatorservice.service.OparatorService;
 import com.wso2telco.mnc.resolver.MNCQueryClient;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
+
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 
 // TODO: Auto-generated Javadoc
@@ -43,6 +47,7 @@ import org.apache.synapse.core.axis2.Axis2MessageContext;
  */
 public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculator {
 
+	private Log log = LogFactory.getLog(OriginatingCountryCalculatorIDD.class);
 	/** The error message. */
 	private String ERROR_MESSAGE = "Error.No API endpoint matched your request";
 
@@ -188,6 +193,8 @@ public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculato
 		 * taken from the header object
 		 */
 		if (countryLookUpOnHeader.contains(String.valueOf(countryCode))) {
+			
+			log.info(" The request countryCode in the lookup set ");
 
 			MessageContext axis2MessageContext = ((Axis2MessageContext) searchDTO
 					.getContext()).getAxis2MessageContext();
@@ -196,8 +203,11 @@ public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculato
 			if (headers != null && headers instanceof Map) {
 				Map headersMap = (Map) headers;
 				operator = (String) headersMap.get("oparator");
-
+				log.info(" Operator pick from the Header : "+operator );
+			}else{
+			 	log.info(" The request doesnot obtain from the header");
 			}
+			
 
 		}
 		/**
@@ -219,6 +229,7 @@ public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculato
 			 * if(countryCode>=0){ mcc = String.valueOf("+"+countryCode); }
 			 */
 			// mcc not known in mediator
+			log.info(" Unable to obtain Operator   from the Header ,Oprator look for mcc_range_table ,operator:"+operator+ " mcc :"+mcc+ "msisdn: " +msisdn.toString());
 			operator = mncQueryclient.QueryNetwork(mcc, msisdn.toString());
 		}
 
