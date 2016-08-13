@@ -202,8 +202,16 @@ public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculato
 					.getProperty(MessageContext.TRANSPORT_HEADERS);
 			if (headers != null && headers instanceof Map) {
 				Map headersMap = (Map) headers;
+				if (headersMap != null) {
+					log.info("printing header");
+					for (Object iterator : headersMap.entrySet()) {
+						Map.Entry entry = (Map.Entry) iterator;
+						log.info("Key :" + entry.getKey() + " value : "
+								+ entry.getValue());
+					}
+				}
 				operator = (String) headersMap.get("oparator");
-				log.info(" Operator pick from the Header : "+operator );
+				log.info(" Operator pick from the Header : " + operator);
 			}else{
 			 	log.info(" The request doesnot obtain from the header");
 			}
