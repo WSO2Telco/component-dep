@@ -20,10 +20,12 @@ import com.wso2telco.datapublisher.DataPublisherConstants;
 import com.wso2telco.dep.mediator.MSISDNConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.RequestExecutor;
+import com.wso2telco.dep.mediator.entity.OparatorEndPointSearchDTO;
 import com.wso2telco.dep.mediator.internal.ResourceURLUtil;
 import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
+import com.wso2telco.dep.mediator.util.APIType;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.impl.location.ValidateLocation;
 import com.wso2telco.subscriptionvalidator.util.ValidatorUtils;
@@ -59,9 +61,26 @@ public class LocationExecutor extends RequestExecutor {
         String[] params = new ResourceURLUtil().getParamValues(getSubResourcePath());
         context.setProperty(MSISDNConstants.USER_MSISDN, params[0].substring(5));
         OperatorEndpoint endpoint = null;
-        if (ValidatorUtils.getValidatorForSubscription(context).validate(context)) {
-            endpoint = occi.getAPIEndpointsByMSISDN(params[0].replace("tel:", ""), "location", getSubResourcePath(), true, getValidoperators());
-        }
+		if (ValidatorUtils.getValidatorForSubscription(context).validate(
+				context)) {
+			// MIFE-805
+			OparatorEndPointSearchDTO searchDTO = new OparatorEndPointSearchDTO();
+			searchDTO.setApi(APIType.LOCATION);
+			searchDTO.setContext(context);
+			searchDTO.setIsredirect(true);
+			searchDTO.setMSISDN(params[0]);
+			searchDTO.setOperators(getValidoperators());
+			searchDTO.setRequestPathURL(getSubResourcePath());
+
+			endpoint = occi.getOperatorEndpoint(searchDTO);
+
+			/*
+			 * endpoint = occi.getAPIEndpointsByMSISDN(params[0].replace("tel:",
+			 * ""), "location", getSubResourcePath(), true,
+			 * getValidoperators());
+			 */
+
+		}
         String sending_add = endpoint.getEndpointref().getAddress();
 
         String responseStr = makeGetRequest(endpoint, sending_add, getSubResourcePath(), true, context, false);

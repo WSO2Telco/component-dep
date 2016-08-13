@@ -103,9 +103,7 @@ public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculato
 	 * @throws Exception
 	 *             the exception
 	 */
-	public OperatorEndpoint getAPIEndpointsByMSISDN(String userMSISDN, String apikey, String requestPathURL,
-			boolean isredirect, List<OperatorApplicationDTO> operators) throws Exception {
-
+	 /* public OperatorEndpoint getAPIEndpointsByMSISDN(String userMSISDN, String apikey, String requestPathURL, boolean isredirect, List<Operator> operators) throws Exception {
 		String operator;
 		String userName = userMSISDN.substring(1);
 
@@ -151,7 +149,7 @@ public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculato
 		EndpointReference eprMSISDN = new EndpointReference(extremeEndpoint);
 
 		return new OperatorEndpoint(eprMSISDN, operator.toUpperCase());
-	}
+	}*/
 	
 	
 	  /**
@@ -248,8 +246,8 @@ public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculato
 							.getDescription() });
 		}
 
-		OperatorEndPointDTO validOperatorendpoint = getValidEndpoints(searchDTO
-				.getApiType().getCode(), operator);
+		OperatorEndPointDTO validOperatorendpoint = getValidEndpoints(searchDTO.getApiName()!=null?searchDTO.getApiName(): searchDTO.getApiType().getCode(), operator);
+
 		if (validOperatorendpoint == null) {
 			throw new CustomException(
 					ErrorHolder.OPARATOR_ENDPOINT_NOT_DEFIEND.getCode(), "",

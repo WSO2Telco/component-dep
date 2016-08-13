@@ -23,6 +23,7 @@ import com.wso2telco.dep.operatorservice.model.OperatorApplicationDTO;
 import com.wso2telco.dep.mediator.MSISDNConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.ResponseHandler;
+import com.wso2telco.dep.mediator.entity.OparatorEndPointSearchDTO;
 import com.wso2telco.dep.mediator.entity.smsmessaging.SendSMSRequest;
 import com.wso2telco.dep.mediator.entity.smsmessaging.SendSMSResponse;
 import com.wso2telco.dep.mediator.internal.Type;
@@ -34,6 +35,7 @@ import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.oneapivalidation.service.impl.sms.ValidateSendSms;
 import com.wso2telco.subscriptionvalidator.util.ValidatorUtils;
+
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,6 +43,7 @@ import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -210,9 +213,19 @@ public class SendSMSHandler implements SMSHandler {
 
 			log.info("id : " + address);
 			smsmc.setProperty(MSISDNConstants.USER_MSISDN, address.substring(5));
-			endpoint = occi.getAPIEndpointsByMSISDN(address.replace("tel:", ""), apitype, executor.getSubResourcePath(),
-					false, operators); // smsSend;
+			OparatorEndPointSearchDTO searchDTO = new OparatorEndPointSearchDTO();
+			searchDTO.setApiName(apitype);
+			searchDTO.setContext(smsmc);
+			searchDTO.setIsredirect(false);
+			searchDTO.setMSISDN(address);
+			searchDTO.setOperators(operators);
+			searchDTO.setRequestPathURL(executor.getSubResourcePath());
 
+			endpoint = occi.getOperatorEndpoint(searchDTO);
+
+			/*endpoint = occi.getAPIEndpointsByMSISDN(address.replace("tel:", ""), apitype, executor.getSubResourcePath(),
+					false, operators); // smsSend;
+*/
 			List<String> sendAdr = new ArrayList<String>();
 			sendAdr.add(address);
 			sendreq.getOutboundSMSMessageRequest().setAddress(sendAdr);

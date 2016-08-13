@@ -19,12 +19,14 @@ import com.wso2telco.dbutils.AxataDBUtilException;
 import com.wso2telco.dep.mediator.MSISDNConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.ResponseHandler;
+import com.wso2telco.dep.mediator.entity.OparatorEndPointSearchDTO;
 import com.wso2telco.dep.mediator.internal.AggregatorValidator;
 import com.wso2telco.dep.mediator.internal.Base64Coder;
 import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.dep.mediator.service.PaymentService;
+import com.wso2telco.dep.mediator.util.APIType;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.impl.payment.ValidatePaymentCharge;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
@@ -40,6 +42,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.wso2.carbon.apimgt.gateway.handlers.security.APISecurityUtils;
 import org.wso2.carbon.apimgt.gateway.handlers.security.AuthenticationContext;
+
 import java.util.List;
 import java.util.Map;
 
@@ -78,7 +81,28 @@ public class AmountChargeHandler implements PaymentHandler {
 		OperatorEndpoint endpoint = null;
 
 		if (ValidatorUtils.getValidatorForSubscription(context).validate(context)) {
-			endpoint = occi.getAPIEndpointsByMSISDN( endUserId.replace("tel:", ""), API_TYPE, executor.getSubResourcePath(), false,	executor.getValidoperators());
+			OparatorEndPointSearchDTO searchDTO = new OparatorEndPointSearchDTO();
+			searchDTO.setApi(APIType.PAYMENT);
+			searchDTO.setContext(context);
+			searchDTO.setIsredirect(false);
+			searchDTO.setMSISDN(endUserId);
+			searchDTO.setOperators(executor.getValidoperators());
+			searchDTO.setRequestPathURL(executor.getSubResourcePath());
+
+			endpoint = occi.getOperatorEndpoint(searchDTO); /*
+															 * occi.
+															 * getAPIEndpointsByMSISDN
+															 * (
+															 * endUserId.replace
+															 * ("tel:", ""),
+															 * API_TYPE,
+															 * executor
+															 * .getSubResourcePath
+															 * (), false,
+															 * executor
+															 * .getValidoperators
+															 * ());
+															 */
 		}
 
 		String sending_add = endpoint.getEndpointref().getAddress();

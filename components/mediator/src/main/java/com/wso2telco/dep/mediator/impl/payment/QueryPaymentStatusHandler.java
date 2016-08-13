@@ -17,9 +17,11 @@
 package com.wso2telco.dep.mediator.impl.payment;
 
 import com.wso2telco.dep.mediator.service.PaymentService;
+import com.wso2telco.dep.mediator.util.APIType;
 import com.wso2telco.dep.mediator.MSISDNConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.ResponseHandler;
+import com.wso2telco.dep.mediator.entity.OparatorEndPointSearchDTO;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.oneapivalidation.service.impl.payment.ValidateQueryPaymentStatus;
 import com.wso2telco.subscriptionvalidator.util.ValidatorUtils;
@@ -55,9 +57,22 @@ public class QueryPaymentStatusHandler implements PaymentHandler {
 		String[] params = executor.getSubResourcePath().split("/");
 		context.setProperty(MSISDNConstants.USER_MSISDN, params[1].substring(5));
 		OperatorEndpoint endpoint = null;
-		if (ValidatorUtils.getValidatorForSubscription(context).validate(context)) {
-			endpoint = occi.getAPIEndpointsByMSISDN(params[1].replace("tel:", ""), API_TYPE, executor.getSubResourcePath(), true, executor.getValidoperators());
-		}
+		if (ValidatorUtils.getValidatorForSubscription(context).validate(
+				context)) {
+			OparatorEndPointSearchDTO searchDTO = new OparatorEndPointSearchDTO();
+			searchDTO.setApi(APIType.PAYMENT);
+			searchDTO.setContext(context);
+			searchDTO.setIsredirect(true);
+			searchDTO.setMSISDN(params[1]);
+			searchDTO.setOperators(executor.getValidoperators());
+			searchDTO.setRequestPathURL(executor.getSubResourcePath());
+
+			endpoint = occi.getOperatorEndpoint(searchDTO);
+			/*
+			 * occi.getAPIEndpointsByMSISDN(params[1].replace("tel:", ""),
+			 * API_TYPE, executor.getSubResourcePath(), true,
+			 * executor.getValidoperators());
+			 */}
 
 		String sending_add = endpoint.getEndpointref().getAddress();
 

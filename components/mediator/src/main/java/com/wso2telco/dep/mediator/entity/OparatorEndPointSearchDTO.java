@@ -32,6 +32,7 @@ public class OparatorEndPointSearchDTO implements Serializable {
 		private static final long serialVersionUID = -2314179270730291269L;
 	
 		private APIType api;
+		private String apiName;
 		private String requestPathURL;
 		private boolean isredirect;
 		private List<OperatorApplicationDTO> operators;
@@ -39,7 +40,13 @@ public class OparatorEndPointSearchDTO implements Serializable {
 		private String MSISDN ;
 		
 		
+		public String getApiName() {
+			return apiName;
+		}
 		
+		public void setApiName(String apiName) {
+			this.apiName = apiName;
+		}
 	
 		public String getMSISDN() {
 			return MSISDN;

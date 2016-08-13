@@ -22,19 +22,23 @@ import com.wso2telco.datapublisher.DataPublisherConstants;
 import com.wso2telco.dep.mediator.MSISDNConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.ResponseHandler;
+import com.wso2telco.dep.mediator.entity.OparatorEndPointSearchDTO;
 import com.wso2telco.dep.mediator.entity.smsmessaging.QuerySMSStatusResponse;
 import com.wso2telco.dep.mediator.internal.Util;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.dep.mediator.service.SMSMessagingService;
+import com.wso2telco.dep.mediator.util.APIType;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.oneapivalidation.service.impl.sms.ValidateDeliveryStatus;
 import com.wso2telco.subscriptionvalidator.util.ValidatorUtils;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONObject;
+
 import java.io.UnsupportedEncodingException;
 import java.net.URLDecoder;
 import java.net.URLEncoder;
@@ -160,9 +164,22 @@ public class QuerySMSStatusHandler implements SMSHandler {
 				context.setProperty(MSISDNConstants.USER_MSISDN, address.substring(5));
 				OperatorEndpoint endpoint = null;
 				String resourcePath = resourcePathPrefix + reqId + "/deliveryInfos";
-				if (ValidatorUtils.getValidatorForSubscription(context).validate(context)) {
-					endpoint = occi.getAPIEndpointsByMSISDN(address.replace("tel:", ""), API_TYPE, resourcePath, true,
-							executor.getValidoperators());
+				if (ValidatorUtils.getValidatorForSubscription(context)
+						.validate(context)) {
+					OparatorEndPointSearchDTO searchDTO = new OparatorEndPointSearchDTO();
+					searchDTO.setApi(APIType.SMS);
+					searchDTO.setContext(context);
+					searchDTO.setIsredirect(true);
+					searchDTO.setMSISDN(address);
+					searchDTO.setOperators(executor.getValidoperators());
+					searchDTO.setRequestPathURL(resourcePath);
+
+					endpoint = occi.getOperatorEndpoint(searchDTO);
+					/*
+					 * occi.getAPIEndpointsByMSISDN(address.replace("tel:", ""),
+					 * API_TYPE, resourcePath, true,
+					 * executor.getValidoperators());
+					 */
 				}
 				String sending_add = endpoint.getEndpointref().getAddress();
 				log.info("sending endpoint found: " + sending_add);
