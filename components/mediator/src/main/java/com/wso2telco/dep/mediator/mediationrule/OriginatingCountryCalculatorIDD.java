@@ -194,7 +194,7 @@ public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculato
 		 */
 		if (countryLookUpOnHeader.contains(String.valueOf(countryCode))) {
 			
-			log.info(" The request countryCode in the lookup set ");
+			log.debug(" The request countryCode in the lookup set ");
 
 			MessageContext axis2MessageContext = ((Axis2MessageContext) searchDTO
 					.getContext()).getAxis2MessageContext();
@@ -202,18 +202,18 @@ public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculato
 					.getProperty(MessageContext.TRANSPORT_HEADERS);
 			if (headers != null && headers instanceof Map) {
 				Map headersMap = (Map) headers;
-				if (headersMap != null) {
+				/*if (headersMap != null) {
 					log.info("printing header");
 					for (Object iterator : headersMap.entrySet()) {
 						Map.Entry entry = (Map.Entry) iterator;
 						log.info("Key :" + entry.getKey() + " value : "
 								+ entry.getValue());
 					}
-				}
+				}*/
 				operator = (String) headersMap.get("oparator");
-				log.info(" Operator pick from the Header : " + operator);
+				log.debug(" Operator pick from the Header : " + operator);
 			}else{
-			 	log.info(" The request doesnot obtain from the header");
+			 	log.debug(" The request doesnot obtain from the header");
 			}
 			
 
@@ -237,7 +237,7 @@ public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculato
 			 * if(countryCode>=0){ mcc = String.valueOf("+"+countryCode); }
 			 */
 			// mcc not known in mediator
-			log.info(" Unable to obtain Operator   from the Header ,Oprator look for mcc_range_table ,operator:"+operator+ " mcc :"+mcc+ "msisdn: " +msisdn.toString());
+			log.debug(" Unable to obtain Operator   from the Header ,Oprator look for mcc_range_table ,operator:"+operator+ " mcc :"+mcc+ "msisdn: " +msisdn.toString());
 			operator = mncQueryclient.QueryNetwork(mcc, msisdn.toString());
 		}
 
