@@ -81,12 +81,6 @@ public class AmountChargeHandler implements PaymentHandler {
         String clientCorrelator = null;
         String requestResourceURL = executor.getResourceUrl();
 
-        String carbonHome = System.getProperty("user.dir");
-        log.debug("Carbon home : " + carbonHome);
-
-        String fileLocation = carbonHome + "/repository/conf/axiataMediator_conf.properties";
-        log.debug("Property file location : " + fileLocation);
-
         FileReader fileReader = new FileReader();
 		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
         		
