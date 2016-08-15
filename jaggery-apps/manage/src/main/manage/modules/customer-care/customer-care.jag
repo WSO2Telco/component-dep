@@ -16,10 +16,6 @@ function getCustomerCareData(fromDate, toDate, msisdn, selectedSubscriber, selec
 			selectedSubscriber = jagg.getUser().username;
 		}
 	}
-	
-	if(stLimit != 0){
-		stLimit = (stLimit-1).toString();
-	}
 
 	log.info("From Date: "+fromDate);
 	log.info("To Date: "+toDate);

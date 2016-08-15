@@ -179,7 +179,12 @@
 								<option value="2">Error Responses</option>
 							</select>
 						</td>
-						
+
+						<td><select id="isError" size="1" style="width: 150px">
+								<option value="false" selected="selected">Successful</option>
+								<option value="true">Error</option>
+						</select>
+						</td>
 						<td>
 							<!-- <button class="btn btn-primary" id="generate"
 								onclick="getAPIWiseTraffic()">Generate</button>
@@ -193,7 +198,7 @@
 			</div>
 
 			<br /> <br />
-
+			<div id="loader"></div>
 			<div id="api-wise-traffic-histogram"
 				style="width: 700px; height: 400px"></div>
 			<br /> <br />
@@ -209,6 +214,7 @@
     <input type="hidden" id="selected_api" name="api" value=""/>
     <input type="hidden" id="selected_res_type" name="resType" value=""/>
     <input type="hidden" id="timeOffset" name="timeOffset" value=""/>
+    <input type="hidden" id="selected_iserror" name="isError" value=""/>
 </form>
 
 <% } else { %>

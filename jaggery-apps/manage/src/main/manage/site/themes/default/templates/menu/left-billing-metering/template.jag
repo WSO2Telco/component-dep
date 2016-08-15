@@ -136,6 +136,11 @@ log.info("--------------------------------isCustomerCare" + isCustomerCare);
 			href="<%=listMappedUrl%>?task=performance-error-rates"
 			onclick="jagg.sessionAwareJS({redirect:'<%=listMappedUrl%>?task=performance-error-rates',e:event,ssoEnabled:<%=ssoEnabled%>})"><%=i18n.localize("performance-error-rates")%>
 		</a></li>
+		<li <%if(request.getParameter("task")=="performance-tps-rates"){%>
+			class="active" <% } %>><a
+			href="<%=listMappedUrl%>?task=performance-tps-rates"
+			onclick="jagg.sessionAwareJS({redirect:'<%=listMappedUrl%>?task=performance-tps-rates',e:event,ssoEnabled:<%=ssoEnabled%>})"><%=i18n.localize("performance-tps-rates")%>
+		</a></li>
 		<%
         }
         %>

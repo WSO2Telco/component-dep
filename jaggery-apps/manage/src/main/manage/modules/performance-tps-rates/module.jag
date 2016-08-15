@@ -1,0 +1,25 @@
+<%
+jagg.module("performance-tps-rates", {
+	getAllSubscribers:function () {
+		return jagg.require(jagg.getModulesDir() + "performance-tps-rates/performance-tps-rates.jag").getAllSubscribers.apply(this, arguments);
+	},
+	getAllOperators:function () {
+		return jagg.require(jagg.getModulesDir() + "performance-tps-rates/performance-tps-rates.jag").getAllOperators.apply(this, arguments);
+	},
+	getAllAPIs:function () {
+		return jagg.require(jagg.getModulesDir() + "performance-tps-rates/performance-tps-rates.jag").getAllAPIs.apply(this, arguments);
+	},
+	getAppsBySubscriber:function () {
+		return jagg.require(jagg.getModulesDir() + "performance-tps-rates/performance-tps-rates.jag").getAppsBySubscriber.apply(this, arguments);
+	},
+	getTpsSummary:function () {
+		return jagg.require(jagg.getModulesDir() + "performance-tps-rates/performance-tps-rates.jag").getTpsSummary.apply(this, arguments);
+	},
+	getOperatorsBySubscriber:function () {
+			return jagg.require(jagg.getModulesDir() + "performance-tps-rates/performance-tps-rates.jag").getOperatorsBySubscriber.apply(this, arguments);
+	},
+	getSubscribersByOperator:function () {
+			return jagg.require(jagg.getModulesDir() + "performance-tps-rates/performance-tps-rates.jag").getSubscribersByOperator.apply(this, arguments);
+	}
+});
+%>

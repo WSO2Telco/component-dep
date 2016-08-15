@@ -54,7 +54,7 @@ function getReportFileContent(subscriberName,period,isNorthbound) {
 	        	return {error:true};
 			} else {
 				log.error(usage);
-				return usage;
+				print(usage);
 			}
 		} catch (e) {
 		        log.error(e.message);

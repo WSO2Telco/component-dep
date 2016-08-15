@@ -6,13 +6,13 @@ var log = new Log();
 	var action = request.getParameter("action");
 	var user = jagg.getUser();
 	
-	var subscriber = request.getParameter("subscriber_username");
+	var subscriber = request.getHeader("subscriber_username");
 	var appName = request.getParameter("appName");
 	var appDescription = request.getParameter("appDesc");
 	var oauthConsumerKeyvalue = request.getParameter("consumerKeyval");
 	var oauthconsumerSecretvalvalue = request.getParameter("consumerSecretval");
 	
-	var spAppName = subscriber + "_" + appName;
+	var spAppName = appName;
 	
 	var amConfig = getAmConfig();
 	var adminUsername = String(amConfig.AuthManager.Username.text());
@@ -24,12 +24,13 @@ var log = new Log();
 		//var oauthConsumerKey = oauthData.oauthConsumerKey;
 		//var oauthConsumerSecret = oauthData.oauthConsumerSecret;
 
+                //log.info("---------------------------------------------------------------"+spAppName+","+ appDescription+","+ adminUsername+", "+adminPassword);
 		createApplication(spAppName, appDescription, adminUsername, adminPassword);
 
-		var appData = getApplicationID(spAppName, adminPassword, adminPassword);
+		var appData = getApplicationID(spAppName, adminUsername, adminPassword);
 		var appID = appData.applicationID;
-		
-		updateApplication(appID, spAppName, appDescription, oauthConsumerKeyvalue, oauthconsumerSecretvalvalue, adminPassword, adminPassword);
+		//log.info("-------------------------------------------------"+appID+","+ spAppName+","+ appDescription+","+ oauthConsumerKeyvalue+","+ oauthconsumerSecretvalvalue+","+ adminUsername+","+ adminPassword);
+		updateApplication(appID, spAppName, appDescription, oauthConsumerKeyvalue, oauthconsumerSecretvalvalue, adminUsername, adminPassword);
 				        
 	} else if (action == "removeSpAppIs") {
         removeApplication(spAppName, adminUsername, adminPassword);

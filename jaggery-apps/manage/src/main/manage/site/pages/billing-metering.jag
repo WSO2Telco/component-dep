@@ -38,6 +38,8 @@ if(pageName=="finance"){
 	middlePage="response-times";
 }else if (pageName=="transaction-log-nb"){
 	middlePage="transaction-log-nb";
+}else if (pageName=="performance-tps-rates"){
+	middlePage="performance-tps-rates";
 }
 var isCustomerCare = jagg.getUser().isCustomerCare;
 if(isCustomerCare != null){

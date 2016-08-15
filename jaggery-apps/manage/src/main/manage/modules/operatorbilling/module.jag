@@ -22,6 +22,9 @@ jagg.module("operatorbilling", {
     getAllResponseTimes:function () {
         return jagg.require(jagg.getModulesDir() + "operatorbilling/operatorusage.jag").getAllResponseTimes.apply(this, arguments);
     },
+    getTpsSummary:function () {
+        return jagg.require(jagg.getModulesDir() + "operatorbilling/operatorusage.jag").getTpsSummary.apply(this, arguments);
+    },
     getDashboardProviderAPIUsage: function () {
         return jagg.require(jagg.getModulesDir() + "operatorbilling/operatorusage.jag").getDashboardProviderAPIUsage.apply(this, arguments);
     },
