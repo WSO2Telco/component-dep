@@ -1,0 +1,121 @@
+<!-- Use this file to deploy some handlers/chains and services      -->
+<!-- Two ways to do this:                                           -->
+<!--   java org.apache.axis.client.AdminClient deploy.wsdd          -->
+<!--      after the axis server is running                          -->
+<!-- or                                                             -->
+<!--   java org.apache.axis.utils.Admin client|server deploy.wsdd   -->
+<!--      from the same directory that the Axis engine runs         -->
+
+<deployment
+    xmlns="http://xml.apache.org/axis/wsdd/"
+    xmlns:java="http://xml.apache.org/axis/wsdd/providers/java">
+
+  <!-- Services from AxiataWorkflowApprovalService WSDL service -->
+
+  <service name="AxiataWorkflowApprovalServiceSOAP" provider="java:RPC" style="document" use="literal">
+      <parameter name="wsdlTargetNamespace" value="http://org.wso2.carbon/axiata/workflow"/>
+      <parameter name="wsdlServiceElement" value="AxiataWorkflowApprovalService"/>
+      <parameter name="schemaQualified" value="http://org.wso2.carbon/axiata/workflow/common,http://org.wso2.carbon/axiata/workflow/subscription,http://org.wso2.carbon/axiata/workflow/application,http://org.wso2.carbon/axiata/workflow/audit"/>
+      <parameter name="wsdlServicePort" value="AxiataWorkflowApprovalServiceSOAP"/>
+      <parameter name="className" value="carbon.wso2.org.axiata.workflow.AxiataWorkflowApprovalServiceSOAPSkeleton"/>
+      <parameter name="wsdlPortType" value="AxiataWorkflowApprovalServicePT"/>
+      <parameter name="typeMappingVersion" value="1.2"/>
+      <parameter name="allowedMethods" value="*"/>
+
+      <typeMapping
+        xmlns:ns="http://org.wso2.carbon/axiata/workflow/audit"
+        qname="ns:AppApprovalAuditRequestType"
+        type="java:carbon.wso2.org.axiata.workflow.audit.AppApprovalAuditRequestType"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://org.wso2.carbon/axiata/workflow/subscription"
+        qname="ns:SubHUBApprovalDBUpdateRequestType"
+        type="java:carbon.wso2.org.axiata.workflow.subscription.SubHUBApprovalDBUpdateRequestType"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://org.wso2.carbon/axiata/workflow/common"
+        qname="ns:OperatorType"
+        type="java:carbon.wso2.org.axiata.workflow.common.OperatorType"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://org.wso2.carbon/axiata/workflow/subscription"
+        qname="ns:SubOperatorRetrievalResponseType"
+        type="java:carbon.wso2.org.axiata.workflow.subscription.SubOperatorRetrievalResponseType"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://org.wso2.carbon/axiata/workflow/common"
+        qname="ns:OperatorRetrievalRequestType"
+        type="java:carbon.wso2.org.axiata.workflow.common.OperatorRetrievalRequestType"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://org.wso2.carbon/axiata/workflow/application"
+        qname="ns:AppOpApprovalDBUpdateRequestType"
+        type="java:carbon.wso2.org.axiata.workflow.application.AppOpApprovalDBUpdateRequestType"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <arrayMapping
+        xmlns:ns="http://org.wso2.carbon/axiata/workflow/common"
+        qname="ns:OperatorRetrievalResponseType"
+        type="java:carbon.wso2.org.axiata.workflow.common.OperatorType[]"
+        innerType="cmp-ns:OperatorType" xmlns:cmp-ns="http://org.wso2.carbon/axiata/workflow/common"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://org.wso2.carbon/axiata/workflow/application"
+        qname="ns:AppHUBApprovalDBUpdateRequestType"
+        type="java:carbon.wso2.org.axiata.workflow.application.AppHUBApprovalDBUpdateRequestType"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://org.wso2.carbon/axiata/workflow/subscription"
+        qname="ns:SubOperatorRetrievalRequestType"
+        type="java:carbon.wso2.org.axiata.workflow.subscription.SubOperatorRetrievalRequestType"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://org.wso2.carbon/axiata/workflow/audit"
+        qname="ns:SubApprovalAuditRequestType"
+        type="java:carbon.wso2.org.axiata.workflow.audit.SubApprovalAuditRequestType"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://org.wso2.carbon/axiata/workflow/subscription"
+        qname="ns:SubOpApprovalDBUpdateRequestType"
+        type="java:carbon.wso2.org.axiata.workflow.subscription.SubOpApprovalDBUpdateRequestType"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+      <typeMapping
+        xmlns:ns="http://org.wso2.carbon/axiata/workflow/subscription"
+        qname="ns:HUBApprovalSubValidatorRequestType"
+        type="java:carbon.wso2.org.axiata.workflow.subscription.HUBApprovalSubValidatorRequestType"
+        serializer="org.apache.axis.encoding.ser.BeanSerializerFactory"
+        deserializer="org.apache.axis.encoding.ser.BeanDeserializerFactory"
+        encodingStyle=""
+      />
+  </service>
+</deployment>
