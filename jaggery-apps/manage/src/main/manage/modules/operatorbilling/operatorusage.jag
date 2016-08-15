@@ -54,7 +54,7 @@ function getReportFileContent(subscriberName,period,isNorthbound) {
 	        	return {error:true};
 			} else {
 				log.error(usage);
-				print(usage);
+				 return(usage);
 			}
 		} catch (e) {
 		        log.error(e.message);
@@ -91,20 +91,6 @@ function getAllSubscribers(){
 			return { error:true,message:e.message};
 		}
 	}
-
-function getAllResponseTimes(subscriberName,appName,fromDate,toDate){
-	var log = new Log();
-    var store = jagg.module("manager").getCustomBilling();
-	var responseTimes = [];
-	try {
-	    	responseTimes = store.getAllResponseTimes(subscriberName,appName,fromDate,toDate);
-			return {error:false,data : responseTimes};
-			
-		} catch (e) {
-		    log.error(e.message);
-		    return { error:true,message:e.message};
-		}
-}
 
 function executeDummyQuery(subscriberName,period){
 

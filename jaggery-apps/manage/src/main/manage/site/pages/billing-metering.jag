@@ -36,10 +36,6 @@ if(pageName=="finance"){
 	middlePage="performance-error-rates";
 }else if (pageName=="response-times"){
 	middlePage="response-times";
-}else if (pageName=="transaction-log-nb"){
-	middlePage="transaction-log-nb";
-}else if (pageName=="performance-tps-rates"){
-	middlePage="performance-tps-rates";
 }
 var isCustomerCare = jagg.getUser().isCustomerCare;
 if(isCustomerCare != null){

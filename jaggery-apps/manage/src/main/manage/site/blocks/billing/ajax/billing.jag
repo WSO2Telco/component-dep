@@ -164,45 +164,6 @@ include("/jagg/jagg.jag");
             }
         }
         print(obj);
-        
-        } else if (action == "getTpsSummary"){
-                var responseTimes;
-                var subscriberName = user.username;
-                var selectedSubscriber = request.getParameter("subscriber");
-                if (user.isAdmin || user.operator != null) {
-                    subscriberName = selectedSubscriber;
-                }
-                var operator = request.getParameter("operator");
-                var appName = request.getParameter("application");
-                var fromDate = request.getParameter("fromDate");
-                //var toDate = request.getParameter("toDate");
-        
-                if(operator == null && user.operator != null){
-                    operator = user.operator
-                }
-         
-                var dialogbillingModule = jagg.module("manager").getCustomBilling(); //jagg.module("dialogbilling");     
-                log.info(operator" : "subscriberName" : "appName" : "fromDate" : "toDate);
-                responseTimes = dialogbillingModule.getTotalTpsForHistogram(fromDate, subscriber, application, operator, api);
-                log.info("::: ResponseTimes: >> " stringify(responseTimes));
-                
-                if (responseTimes.error) {
-                    obj = {
-                        error:responseTimes.error,
-                        message:msg.error.authError(action, subscriberName)
-                    };
-                } else {
-                    obj = {
-                        error:false,
-                        data:responseTimes
-                    }
-                }
-                print(obj);
-        
-                
-    
-
-
         	}
 	else{
         print({
