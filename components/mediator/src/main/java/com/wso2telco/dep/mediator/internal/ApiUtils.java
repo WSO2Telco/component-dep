@@ -18,11 +18,13 @@ package com.wso2telco.dep.mediator.internal;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.dep.mediator.entity.smsmessaging.northbound.InboundSMSMessage;
 
+import java.security.MessageDigest;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Hashtable;
 import java.util.List;
 import java.util.Properties;
+
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONArray;
@@ -30,6 +32,7 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 import java.util.Map;
 
 // TODO: Auto-generated Javadoc
@@ -62,7 +65,8 @@ public class ApiUtils {
 	public static void loadProperties() {
 		try {
 			prop = new Properties();
-			prop.load(ApiUtils.class.getResourceAsStream("/processors.properties"));
+			prop.load(ApiUtils.class
+					.getResourceAsStream("/processors.properties"));
 		} catch (Exception e) {
 			e.printStackTrace();
 		}
@@ -81,7 +85,8 @@ public class ApiUtils {
 			if (p == null) {
 				String className = prop.getProperty(apiType);
 				@SuppressWarnings("unchecked")
-				Class<Processor> clazz = (Class<Processor>) Class.forName(className);
+				Class<Processor> clazz = (Class<Processor>) Class
+						.forName(className);
 				p = clazz.newInstance();
 				processors.put(apiType, p);
 			}
@@ -124,7 +129,8 @@ public class ApiUtils {
 	 *            the batch size
 	 * @return the API call
 	 */
-	public APICall setBatchSize(String uri, String body, String apiType, int batchSize) {
+	public APICall setBatchSize(String uri, String body, String apiType,
+			int batchSize) {
 		try {
 			Processor p = getProcessor(apiType);
 			return p.setBatchSize(uri, body, batchSize);
@@ -168,12 +174,13 @@ public class ApiUtils {
 	 *            the requestid
 	 * @return the JSON object
 	 */
-	public JSONObject generateResponse(MessageContext context, String apiType, JSONArray results,
-			ArrayList<String> responses, String requestid) {
+	public JSONObject generateResponse(MessageContext context, String apiType,
+			JSONArray results, ArrayList<String> responses, String requestid) {
 		try {
 			String resourceURL = prop.getProperty(apiType + "_resource_url");
 			Processor p = getProcessor(apiType);
-			return p.generateResponse(context, results, UID.retriveMsgResourceURL(resourceURL, requestid),
+			return p.generateResponse(context, results,
+					UID.retriveMsgResourceURL(resourceURL, requestid),
 					responses);
 		} catch (Exception e) {
 			e.printStackTrace();
@@ -196,12 +203,18 @@ public class ApiUtils {
 	 *            the requestid
 	 * @return the JSON object
 	 */
-	public JSONObject generateResponse(MessageContext context, String apiType,
-			List<com.wso2telco.dep.mediator.entity.smsmessaging.northbound.InboundSMSMessage> inboundSMSMessageList, ArrayList<String> responses, String requestid) {
+	public JSONObject generateResponse(
+			MessageContext context,
+			String apiType,
+			List<com.wso2telco.dep.mediator.entity.smsmessaging.northbound.InboundSMSMessage> inboundSMSMessageList,
+			ArrayList<String> responses, String requestid) {
 		try {
-			String resourceURL = prop.getProperty(apiType + "_resource_url_post");
+			String resourceURL = prop.getProperty(apiType
+					+ "_resource_url_post");
 			Processor p = getProcessor(apiType);
-			return p.generateResponse(context, inboundSMSMessageList,UID.retriveMsgResourceURL(resourceURL, requestid ), responses);
+			return p.generateResponse(context, inboundSMSMessageList,
+					UID.retriveMsgResourceURL(resourceURL, requestid),
+					responses);
 		} catch (Exception e) {
 			e.printStackTrace();
 			return null;
@@ -215,13 +228,15 @@ public class ApiUtils {
 	 *            the context
 	 * @return the jwt token details
 	 */
+
 	public HashMap<String, String> getJwtTokenDetails(MessageContext context) {
 
 		HashMap<String, String> jwtDetails = new HashMap<String, String>();
 
 		org.apache.axis2.context.MessageContext axis2MessageContext = ((Axis2MessageContext) context)
 				.getAxis2MessageContext();
-		Object headers = axis2MessageContext.getProperty(org.apache.axis2.context.MessageContext.TRANSPORT_HEADERS);
+		Object headers = axis2MessageContext
+				.getProperty(org.apache.axis2.context.MessageContext.TRANSPORT_HEADERS);
 
 		if (headers != null && headers instanceof Map) {
 
@@ -232,9 +247,12 @@ public class ApiUtils {
 				String[] jwttoken = jwtparam.split("\\.");
 				String jwtbody = Base64Coder.decodeString(jwttoken[1]);
 				JSONObject jwtobj = new JSONObject(jwtbody);
-				jwtDetails.put("applicationid", jwtobj.getString("http://wso2.org/claims/applicationid"));
-				jwtDetails.put("subscriber", jwtobj.getString("http://wso2.org/claims/subscriber"));
-				jwtDetails.put("version", jwtobj.getString("http://wso2.org/claims/version"));
+				jwtDetails.put("applicationid", jwtobj
+						.getString("http://wso2.org/claims/applicationid"));
+				jwtDetails.put("subscriber",
+						jwtobj.getString("http://wso2.org/claims/subscriber"));
+				jwtDetails.put("version",
+						jwtobj.getString("http://wso2.org/claims/version"));
 			} catch (JSONException ex) {
 
 				log.error("Error in getJwtTokenDetails : " + ex.getMessage());
@@ -243,5 +261,27 @@ public class ApiUtils {
 		}
 
 		return jwtDetails;
+	}
+
+	public String getHashString(String text) {
+
+		String hashText = null;
+		try {
+			MessageDigest digest = MessageDigest.getInstance("MD5");
+			byte[] hashedBytes = digest.digest(text.getBytes("UTF-8"));
+
+			StringBuffer stringBuffer = new StringBuffer();
+			for (int i = 0; i < hashedBytes.length; i++) {
+				stringBuffer.append(Integer.toString(
+						(hashedBytes[i] & 0xff) + 0x100, 16).substring(1));
+			}
+
+			hashText = stringBuffer.toString();
+		} catch (Exception e) {
+
+			log.error("Error in getHashString : " + e.getMessage());
+			throw new CustomException("SVC1000", "", new String[] { null });
+		}
+		return hashText;
 	}
 }

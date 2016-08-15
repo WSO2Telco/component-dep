@@ -15,36 +15,31 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.impl.payment;
 
-import com.wso2telco.dbutils.AxataDBUtilException;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.synapse.MessageContext;
+import org.apache.synapse.core.axis2.Axis2MessageContext;
+import org.json.JSONObject;
+
+import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.MSISDNConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.ResponseHandler;
 import com.wso2telco.dep.mediator.entity.OparatorEndPointSearchDTO;
 import com.wso2telco.dep.mediator.internal.AggregatorValidator;
-import com.wso2telco.dep.mediator.internal.Base64Coder;
+import com.wso2telco.dep.mediator.internal.ApiUtils;
 import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.dep.mediator.service.PaymentService;
 import com.wso2telco.dep.mediator.util.APIType;
-import com.wso2telco.oneapivalidation.exceptions.CustomException;
-import com.wso2telco.oneapivalidation.service.impl.payment.ValidatePaymentCharge;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
-import com.wso2telco.publisheventsdata.handler.SpendLimitHandler;
+import com.wso2telco.oneapivalidation.service.impl.payment.ValidatePaymentCharge;
 import com.wso2telco.subscriptionvalidator.util.ValidatorUtils;
-
-import org.apache.axis2.AxisFault;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.synapse.MessageContext;
-import org.apache.synapse.core.axis2.Axis2MessageContext;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.wso2.carbon.apimgt.gateway.handlers.security.APISecurityUtils;
-import org.wso2.carbon.apimgt.gateway.handlers.security.AuthenticationContext;
-
-import java.util.List;
-import java.util.Map;
 
 /**
  *
@@ -63,22 +58,52 @@ public class AmountChargeHandler implements PaymentHandler {
 	private ResponseHandler responseHandler;
 
 	private PaymentExecutor executor;
+	
+	private ApiUtils apiUtils;
+	
+	private PaymentUtil paymentUtil;
 
 	public AmountChargeHandler(PaymentExecutor executor) {
 		this.executor = executor;
 		occi = new OriginatingCountryCalculatorIDD();
 		paymentService = new PaymentService();
 		responseHandler = new ResponseHandler();
+		apiUtils = new ApiUtils();
+		paymentUtil = new PaymentUtil();
 	}
 
 	public boolean handle(MessageContext context) throws Exception {
 
 		String requestid = UID.getUniqueID(Type.PAYMENT.getCode(), context,	executor.getApplicationid());
+		
+		HashMap<String, String> jwtDetails = apiUtils.getJwtTokenDetails(context);
+        OperatorEndpoint endpoint = null;
+        String clientCorrelator = null;
+        String requestResourceURL = executor.getResourceUrl();
+
+        String carbonHome = System.getProperty("user.dir");
+        log.debug("Carbon home : " + carbonHome);
+
+        String fileLocation = carbonHome + "/repository/conf/axiataMediator_conf.properties";
+        log.debug("Property file location : " + fileLocation);
+
+        FileReader fileReader = new FileReader();
+		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
+        		
+        String hub_gateway_id = mediatorConfMap.get("hub_gateway_id");
+        log.debug("Hub / Gateway Id : " + hub_gateway_id);
+
+        String appId = jwtDetails.get("applicationid");
+        log.debug("Application Id : " + appId);
+        String subscriber = jwtDetails.get("subscriber");
+        log.debug("Subscriber Name : " + subscriber);
 		JSONObject jsonBody = executor.getJsonBody();
+		
+				
 		String endUserId = jsonBody.getJSONObject("amountTransaction").getString("endUserId");
 		String msisdn = endUserId.substring(5);
 		context.setProperty(MSISDNConstants.USER_MSISDN, msisdn);
-		OperatorEndpoint endpoint = null;
+		//OperatorEndpoint endpoint = null;
 
 		if (ValidatorUtils.getValidatorForSubscription(context).validate(context)) {
 			OparatorEndPointSearchDTO searchDTO = new OparatorEndPointSearchDTO();
@@ -109,21 +134,40 @@ public class AmountChargeHandler implements PaymentHandler {
 		log.info("sending endpoint found: " + sending_add);
 
 		// Check if Spend Limits are exceeded
-		checkSpendLimit(msisdn, endpoint.getOperator(), context);
-
+		//checkSpendLimit(msisdn, endpoint.getOperator(), context);
+		paymentUtil.checkSpendLimit(msisdn, endpoint.getOperator(), context);
 		// routeToEndpoint(endpoint, mc, sending_add);
 		// apend request id to client co-relator
 
-		JSONObject clientclr = jsonBody.getJSONObject("amountTransaction");
-		clientclr.put("clientCorrelator", clientclr.getString("clientCorrelator") + ":" + requestid);
+		/*JSONObject clientclr = jsonBody.getJSONObject("amountTransaction");
+		clientclr.put("clientCorrelator", clientclr.getString("clientCorrelator") + ":" + requestid);*/
+		 JSONObject objAmountTransaction = jsonBody.getJSONObject("amountTransaction");
+		if (!objAmountTransaction.isNull("clientCorrelator")) {
+			clientCorrelator = nullOrTrimmed(objAmountTransaction.get(
+					"clientCorrelator").toString());
+		}
 
-		JSONObject chargingdmeta = clientclr.getJSONObject("paymentAmount") .getJSONObject("chargingMetaData");
+		if (clientCorrelator == null || clientCorrelator.equals("")) {
 
-		String subscriber = storeSubscription(context);
-		boolean isaggrigator = isAggregator(context);
+			log.debug("clientCorrelator not provided by application and hub/plugin generating clientCorrelator on behalf of application");
+			String hashString = apiUtils.getHashString(jsonBody.toString());
+			log.debug("hashString : " + hashString);
+			objAmountTransaction.put("clientCorrelator", hashString + "-"
+					+ requestid + ":" + hub_gateway_id + ":" + appId);
+		} else {
+
+			log.debug("clientCorrelator provided by application");
+			objAmountTransaction.put("clientCorrelator", clientCorrelator + ":"
+					+ hub_gateway_id + ":" + appId);
+		}
+			 
+		JSONObject chargingdmeta = objAmountTransaction.getJSONObject(
+				"paymentAmount").getJSONObject("chargingMetaData");
+
+		boolean isaggrigator = paymentUtil.isAggregator(context);
 
 		if (isaggrigator) {
-
+			//JSONObject chargingdmeta = objAmountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingMetaData");
 			if (!chargingdmeta.isNull("onBehalfOf")) {
 				new AggregatorValidator().validateMerchant(
 						Integer.valueOf(executor.getApplicationid()),
@@ -138,10 +182,10 @@ public class AmountChargeHandler implements PaymentHandler {
 		}
 		// validate payment categoreis
 		List<String> validCategoris = paymentService.getValidPayCategories();
-		validatePaymentCategory(chargingdmeta, validCategoris);
-
-		String responseStr = executor.makeRequest(endpoint, sending_add,
-				jsonBody.toString(), true, context,false);
+		//validatePaymentCategory(chargingdmeta, validCategoris);
+		paymentUtil.validatePaymentCategory(chargingdmeta, validCategoris);
+		
+		String responseStr = executor.makeRequest(endpoint, sending_add, jsonBody.toString(), true, context, false);
 		// Payment Error Exception Correction
 		String base = str_piece(str_piece(responseStr, '{', 2), ':', 1);
 
@@ -152,7 +196,7 @@ public class AmountChargeHandler implements PaymentHandler {
 			executor.handlePluginException(responseStr);
 		}
 
-		responseStr = responseHandler.makePaymentResponse(responseStr, requestid);
+		responseStr = responseHandler.makePaymentResponse(responseStr, clientCorrelator, requestResourceURL, requestid);
 
 		// set response re-applied
 		executor.setResponse(context, responseStr);
@@ -187,7 +231,7 @@ public class AmountChargeHandler implements PaymentHandler {
 	 * @throws AxataDBUtilException
 	 *             the axata db util exception
 	 */
-	private boolean checkSpendLimit(String msisdn, String operator, MessageContext context) throws AxataDBUtilException {
+	/*private boolean checkSpendLimit(String msisdn, String operator, MessageContext context) throws AxataDBUtilException {
 		AuthenticationContext authContext = APISecurityUtils.getAuthenticationContext(context);
 		String consumerKey = "";
 		if (authContext != null) {
@@ -203,7 +247,7 @@ public class AmountChargeHandler implements PaymentHandler {
 			throw new CustomException("POL1001","The %1 charging limit for this operator has been exceeded",new String[] { "daily" });
 		}
 		return true;
-	}
+	}*/
 
 	/**
 	 * Store subscription.
@@ -214,7 +258,7 @@ public class AmountChargeHandler implements PaymentHandler {
 	 * @throws AxisFault
 	 *             the axis fault
 	 */
-	private String storeSubscription(MessageContext context) throws AxisFault {
+	/*private String storeSubscription(MessageContext context) throws AxisFault {
 		String subscription = null;
 
 		org.apache.axis2.context.MessageContext axis2MessageContext = ((Axis2MessageContext) context).getAxis2MessageContext();
@@ -234,7 +278,7 @@ public class AmountChargeHandler implements PaymentHandler {
 		}
 
 		return subscription;
-	}
+	}*/
 
 	/**
 	 * Checks if is aggregator.
@@ -245,7 +289,7 @@ public class AmountChargeHandler implements PaymentHandler {
 	 * @throws AxisFault
 	 *             the axis fault
 	 */
-	private boolean isAggregator(MessageContext context) throws AxisFault {
+	/*private boolean isAggregator(MessageContext context) throws AxisFault {
 		boolean aggregator = false;
 
 		try {
@@ -273,7 +317,7 @@ public class AmountChargeHandler implements PaymentHandler {
 		}
 
 		return aggregator;
-	}
+	}*/
 
 	/**
 	 * Validate payment category.
@@ -285,7 +329,7 @@ public class AmountChargeHandler implements PaymentHandler {
 	 * @throws JSONException
 	 *             the JSON exception
 	 */
-	private void validatePaymentCategory(JSONObject chargingdmeta, List<String> lstCategories) throws JSONException {
+	/*private void validatePaymentCategory(JSONObject chargingdmeta, List<String> lstCategories) throws JSONException {
 		boolean isvalid = false;
 		String chargeCategory = "";
 		if ((!chargingdmeta.isNull("purchaseCategoryCode"))	&& (!chargingdmeta.getString("purchaseCategoryCode").isEmpty())) {
@@ -305,7 +349,7 @@ public class AmountChargeHandler implements PaymentHandler {
 			throw new CustomException("POL0001","A policy error occurred. Error code is %1",new String[] { "Invalid " + "purchaseCategoryCode : "+ chargeCategory });
 		}
 	}
-
+*/
 	/**
 	 * Str_piece.
 	 *
@@ -334,5 +378,14 @@ public class AmountChargeHandler implements PaymentHandler {
 		}
 		return str_result;
 	}
+	
+	public static String nullOrTrimmed(String s) {
+		String rv = null;
+		if (s != null && s.trim().length() > 0) {
+			rv = s.trim();
+		}
+		return rv;
+	}
+	 
 
 }

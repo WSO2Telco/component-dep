@@ -139,7 +139,7 @@ public class ResponseHandler {
 	 * @throws JSONException
 	 *             the JSON exception
 	 */
-	public String makePaymentResponse(String jsonBody, String requestid) throws JSONException {
+	public String makePaymentResponse(String jsonBody, String clientCorrelator, String requestResourceURL, String requestid) throws JSONException {
 
 		String jsonPayload = null;
 
@@ -155,13 +155,15 @@ public class ResponseHandler {
 		String pluginResourceUrl = objPay.getString("resourceURL");
 		log.debug("Creating payment charge response -> pluginResourceUrl : " + pluginResourceUrl);
 		String pluginResourceUrlParts[] = pluginResourceUrl.split("/");
-		String hubResourceURL = mediatorConfMap.get("hubGateway") + "/payment/v1/" + endUserId + "/transactions/amount/" + pluginResourceUrlParts[pluginResourceUrlParts.length - 1];
-
+/*		String hubResourceURL = mediatorConfMap.get("hubGateway") + "/payment/v1/" + endUserId + "/transactions/amount/" + pluginResourceUrlParts[pluginResourceUrlParts.length - 1];
+*/
+		String hubResourceURL = mediatorConfMap.get("hubGateway")  + requestResourceURL + "/" + pluginResourceUrlParts[pluginResourceUrlParts.length - 1];
 		log.debug("Creating payment charge response -> hubResourceURL : " + hubResourceURL);
 		log.debug("Creating payment charge response -> requestid : " + requestid);
 
 		try {
-			objPay.put("clientCorrelator", objPay.get("clientCorrelator").toString().split(":")[0]);
+			//objPay.put("clientCorrelator", objPay.get("clientCorrelator").toString().split(":")[0]);
+			objPay.put("clientCorrelator", clientCorrelator);
 			objPay.remove("resourceURL");
 			objPay.put("resourceURL", UID.resourceURL(hubResourceURL, requestid));
 		} catch (Exception e) {
