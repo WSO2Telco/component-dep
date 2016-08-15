@@ -63,68 +63,68 @@ public class ValidateRefund implements IServiceValidate {
             JSONObject objJSONObject = new JSONObject(json);
             JSONObject objAmountTransaction = (JSONObject) objJSONObject.get("amountTransaction");
 
-            if (objAmountTransaction.get("clientCorrelator") != null) {
+            if (objAmountTransaction.isNull("clientCorrelator") ) {
                 clientCorrelator = nullOrTrimmed(objAmountTransaction.get("clientCorrelator").toString());
             }
-            if (objAmountTransaction.get("endUserId") != null) {
+            if (objAmountTransaction.isNull("endUserId") ) {
                 endUserId = nullOrTrimmed(objAmountTransaction.get("endUserId").toString());
             }
-            if (objAmountTransaction.get("callbackData") != null) {
+            if (objAmountTransaction.isNull("callbackData") ) {
                 callbackData = nullOrTrimmed(objAmountTransaction.get("callbackData").toString());
             }
-            if (objAmountTransaction.get("notifyURL") != null) {
+            if (objAmountTransaction.isNull("notifyURL") ) {
                 notifyURL = nullOrTrimmed(objAmountTransaction.get("notifyURL").toString());
             }
-            if (objAmountTransaction.get("notificationFormat") != null) {
+            if (objAmountTransaction.isNull("notificationFormat")) {
                 notificationFormat = nullOrTrimmed(objAmountTransaction.get("notificationFormat").toString());
             }
-            if (objAmountTransaction.get("referenceCode") != null) {
+            if (objAmountTransaction.isNull("referenceCode") ) {
                 referenceCode = nullOrTrimmed(objAmountTransaction.get("referenceCode").toString());
             }
-            if (objAmountTransaction.get("originalServerReferenceCode") != null) {
+            if (objAmountTransaction.isNull("originalServerReferenceCode")) {
                 originalServerReferenceCode = nullOrTrimmed(objAmountTransaction.get("originalServerReferenceCode").toString());
             }
-            if (objAmountTransaction.get("transactionOperationStatus") != null) {
+            if (objAmountTransaction.isNull("transactionOperationStatus") ) {
                 transactionOperationStatus = nullOrTrimmed(objAmountTransaction.get("transactionOperationStatus").toString());
             }
 
             JSONObject objPaymentAmount = (JSONObject) objAmountTransaction.get("paymentAmount");
             JSONObject objChargingInformation = (JSONObject) objPaymentAmount.get("chargingInformation");
 
-            if (objChargingInformation.get("amount") != null) {
+            if (objChargingInformation.isNull("amount") ) {
                 amount = Double.parseDouble(nullOrTrimmed(objChargingInformation.get("amount").toString()));
             }
-            if (objChargingInformation.get("currency") != null) {
+            if (objChargingInformation.isNull("currency")) {
                 currency = nullOrTrimmed(objChargingInformation.get("currency").toString());
             }
-            if (objChargingInformation.get("description") != null) {
+            if (objChargingInformation.isNull("description") ) {
                 description = nullOrTrimmed(objChargingInformation.get("description").toString());
             }
-            if (objChargingInformation.get("code") != null) {
+            if (objChargingInformation.isNull("code")) {
                 code = nullOrTrimmed(objChargingInformation.get("code").toString());
             }
 
             JSONObject objChargingMetaData = (JSONObject) objPaymentAmount.get("chargingMetaData");
 
-            if (objChargingMetaData.get("onBehalfOf") != null) {
+            if (objChargingMetaData.isNull("onBehalfOf") ) {
                 onBehalfOf = nullOrTrimmed(objChargingMetaData.get("onBehalfOf").toString());
             }
-            if (objChargingMetaData.get("purchaseCategoryCode") != null) {
+            if (objChargingMetaData.isNull("purchaseCategoryCode")) {
                 purchaseCategoryCode = nullOrTrimmed(objChargingMetaData.get("purchaseCategoryCode").toString());
             }
-            if (objChargingMetaData.get("channel") != null) {
+            if (objChargingMetaData.isNull("channel") ) {
                 channel = nullOrTrimmed(objChargingMetaData.get("channel").toString());
             }
-            if (objChargingMetaData.get("taxAmount") != null) {
+            if (objChargingMetaData.isNull("taxAmount") ) {
                 taxAmount = Double.parseDouble(nullOrTrimmed(objChargingMetaData.get("taxAmount").toString()));
             }
-            if (objChargingMetaData.get("mandateId") != null) {
+            if (objChargingMetaData.isNull("mandateId") ) {
                 mandateId = nullOrTrimmed(objChargingMetaData.get("mandateId").toString());
             }
-            if (objChargingMetaData.get("productId") != null) {
+            if (objChargingMetaData.isNull("productId") ) {
                 productId = nullOrTrimmed(objChargingMetaData.get("productId").toString());
             }
-            if (objChargingMetaData.get("serviceId") != null) {
+            if (objChargingMetaData.isNull("serviceId")) {
                 serviceId = nullOrTrimmed(objChargingMetaData.get("serviceId").toString());
             }
             

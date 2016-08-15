@@ -65,10 +65,11 @@ public class ValidateListTransactions  implements IServiceValidate {
         
         //String endUserId = nullOrTrimmed(params[0]);
     	String endUserId = nullOrTrimmed(params[1]);
+    	logger.debug("ValidateListTransactions -- validate -> endUserId : " + endUserId);
         ValidationRule[] rules = {
-           /* new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_TEL_END_USER_ID, "endUserId", endUserId),
-        };*/
-        new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_TEL_END_USER_ID, "endUserId", endUserId),};        
+            new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_TEL_END_USER_ID, "endUserId", endUserId)
+        };
+              
         Validation.checkRequestParams(rules);
     }
     

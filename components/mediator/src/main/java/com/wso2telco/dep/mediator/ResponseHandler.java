@@ -55,8 +55,7 @@ public class ResponseHandler {
 	 *            the requestid
 	 * @return the string
 	 */
-	public String makeSmsSendResponse(MessageContext mc, String requestBody, Map<String, SendSMSResponse> responseMap,
-			String requestid) {
+	public String makeSmsSendResponse(MessageContext mc, String requestBody, Map<String, SendSMSResponse> responseMap, String requestid) {
 		log.debug("Building Send SMS Response: " + requestBody);
 
 		Gson gson = new GsonBuilder().create();
@@ -156,8 +155,8 @@ public class ResponseHandler {
 		String pluginResourceUrl = objPay.getString("resourceURL");
 		log.debug("Creating payment charge response -> pluginResourceUrl : " + pluginResourceUrl);
 		String pluginResourceUrlParts[] = pluginResourceUrl.split("/");
-		String hubResourceURL = mediatorConfMap.get("hubGateway") + "/payment/v1/" + endUserId + "/transactions/amount/"
-				+ pluginResourceUrlParts[pluginResourceUrlParts.length - 1];
+		String hubResourceURL = mediatorConfMap.get("hubGateway") + "/payment/v1/" + endUserId + "/transactions/amount/" + pluginResourceUrlParts[pluginResourceUrlParts.length - 1];
+
 		log.debug("Creating payment charge response -> hubResourceURL : " + hubResourceURL);
 		log.debug("Creating payment charge response -> requestid : " + requestid);
 
@@ -184,8 +183,7 @@ public class ResponseHandler {
 	 *            the response map
 	 * @return the string
 	 */
-	public String makeQuerySmsStatusResponse(MessageContext mc, String senderAddress, String requestid,
-			Map<String, QuerySMSStatusResponse> responseMap) {
+	public String makeQuerySmsStatusResponse(MessageContext mc, String senderAddress, String requestid, Map<String, QuerySMSStatusResponse> responseMap) {
 		log.debug("Building Query SMS Status Response");
 
 		Gson gson = new GsonBuilder().create();
