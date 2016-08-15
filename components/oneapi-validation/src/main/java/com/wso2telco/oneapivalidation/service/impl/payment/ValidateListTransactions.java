@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.wso2telco.oneapivalidation.service.impl.payment;
 
+import org.apache.log4j.Logger;
+
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.oneapivalidation.util.UrlValidator;
@@ -28,6 +30,9 @@ import com.wso2telco.oneapivalidation.util.ValidationRule;
  */
 public class ValidateListTransactions  implements IServiceValidate {
     
+	
+	static Logger logger = Logger.getLogger(ValidateListTransactions.class);
+	
     /** The validation rules. */
     private final String[] validationRules = {"*", "transactions"};
 
@@ -58,11 +63,12 @@ public class ValidateListTransactions  implements IServiceValidate {
      */
     public void validate(String[] params) throws CustomException {
         
-        String endUserId = nullOrTrimmed(params[0]);
+        //String endUserId = nullOrTrimmed(params[0]);
+    	String endUserId = nullOrTrimmed(params[1]);
         ValidationRule[] rules = {
-            new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_TEL_END_USER_ID, "endUserId", endUserId),
-        };
-        
+           /* new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_TEL_END_USER_ID, "endUserId", endUserId),
+        };*/
+        new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_TEL_END_USER_ID, "endUserId", endUserId),};        
         Validation.checkRequestParams(rules);
     }
     
