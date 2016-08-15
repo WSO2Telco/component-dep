@@ -114,6 +114,19 @@ public abstract class RequestExecutor {
 		if (operator == null) {
 			return token;
 		}
+		
+		//===================================PATCH FOR REFRESH TOKEN======================================
+        String applicationid = getApplicationid();
+        OparatorService dbservice = new OparatorService();
+        if (applicationid == null) {
+            throw new CustomException("SVC0001", "", new String[]{"Requested service is not provisioned"});
+        }
+        validoperators = dbservice.getApplicationOperators(Integer.valueOf(applicationid));
+        if (validoperators.isEmpty()) {
+            throw new CustomException("SVC0001", "", new String[]{"Requested service is not provisioned"});
+        }     
+        //================================================================================================    
+
 
 		for (OperatorApplicationDTO d : validoperators) {
 			if (d.getOperatorname() != null && d.getOperatorname().contains(operator)) {
