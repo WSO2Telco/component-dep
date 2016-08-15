@@ -38,6 +38,7 @@ import com.wso2telco.dep.mediator.entity.smsmessaging.OutboundRequestOp;
 import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.service.SMSMessagingService;
+import com.wso2telco.mnc.resolver.MNCQueryClient;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 
 // TODO: Auto-generated Javadoc
@@ -51,6 +52,8 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 
 	/** The executor. */
 	private SMSExecutor executor;
+	
+	 MNCQueryClient mncQueryclient = null;
 
 	/**
 	 * Instantiates a new SMS outbound notifications handler.
@@ -61,6 +64,7 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 	public SMSOutboundNotificationsHandler(SMSExecutor executor) {
 		this.executor = executor;
 		smsMessagingService = new SMSMessagingService();
+		mncQueryclient = new MNCQueryClient();
 		
 	}
 
@@ -92,25 +96,25 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 
         //Date Time issue
 		String formattedString = null;
-        Gson gson = new GsonBuilder().serializeNulls().create();
-        /*InboundRequest inboundRequest = gson.fromJson(executor.getJsonBody().toString(), InboundRequest.class);
-		DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-		// get current date time with Date()
-		Date date = new Date();
-		String currentDate = dateFormat.format(date);
-		String formattedDate = currentDate.replace(' ', 'T');
+		String mcc = null;
+        String operatormar = "+";
 
-		inboundRequest.getInboundSMSMessageRequest().getInboundSMSMessage().setdateTime(formattedDate);
-		String formattedString = gson.toJson(inboundRequest);
-		String notifyret = executor.makeRequest(new OperatorEndpoint(new EndpointReference(notifyurl), null), notifyurl,formattedString, true, context);
-*/
-        if (executor.getJsonBody().toString().contains("operatorCode")) {
-        	        	OutboundRequestOp outboundRequestOp = gson.fromJson(executor.getJsonBody().toString(), OutboundRequestOp.class);
-        	        	formattedString = gson.toJson(outboundRequestOp);
-        			}else {
-        				OutboundRequest outboundRequest = gson.fromJson(executor.getJsonBody().toString(), OutboundRequest.class);
-        				formattedString = gson.toJson(outboundRequest);
-        			}
+        //String[] params = executor.getSubResourcePath().split("/");
+        Gson gson = new GsonBuilder().serializeNulls().create();
+       
+		if (executor.getJsonBody().toString().contains("operatorCode")) {
+			OutboundRequestOp outboundRequestOp = gson.fromJson(executor.getJsonBody().toString(), OutboundRequestOp.class);
+			formattedString = gson.toJson(outboundRequestOp);
+			 String[] params = outboundRequestOp.getDeliveryInfoNotification().getDeliveryInfo().getAddress().split(":");
+			String operator = mncQueryclient.QueryNetwork(mcc, params[1]);
+			context.setProperty(DataPublisherConstants.MSISDN, params[1]);
+			context.setProperty(DataPublisherConstants.OPERATOR_ID,
+					operator);
+		} else {
+			OutboundRequest outboundRequest = gson.fromJson(executor
+					.getJsonBody().toString(), OutboundRequest.class);
+			formattedString = gson.toJson(outboundRequest);
+		}
         	        
         int notifyret = executor.makeNorthBoundRequest(new OperatorEndpoint(new EndpointReference(notifyurl), null), notifyurlRoute,formattedString, true, context,false);        	
 		executor.removeHeaders(context);
