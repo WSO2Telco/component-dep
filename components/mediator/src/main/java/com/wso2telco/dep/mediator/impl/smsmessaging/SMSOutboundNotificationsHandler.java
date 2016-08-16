@@ -26,6 +26,8 @@ import org.apache.axis2.addressing.EndpointReference;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONObject;
+import org.wso2.carbon.apimgt.gateway.APIMgtGatewayConstants;
+import org.wso2.carbon.apimgt.usage.publisher.APIMgtUsagePublisherConstants;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -78,13 +80,14 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 	@Override
 	public boolean handle(MessageContext context) throws CustomException, AxisFault, Exception {
 
-		String requestid = UID.getUniqueID(Type.ALERTINBOUND.getCode(), context, executor.getApplicationid());
+		//String requestid = UID.getUniqueID(Type.ALERTINBOUND.getCode(), context, executor.getApplicationid());
 
 		String requestPath = executor.getSubResourcePath();
 		String moSubscriptionId = requestPath.substring(requestPath.lastIndexOf("/") + 1);
 
 		HashMap<String, String> dnSubscriptionDetails =(HashMap<String, String>) smsMessagingService.subscriptionDNNotifiMap(Integer.valueOf(moSubscriptionId));
 		String notifyurl = dnSubscriptionDetails.get("notifyurl");
+		String serviceProvider = dnSubscriptionDetails.get("serviceProvider");
 		
 		String notifyurlRoute = notifyurl;
 		FileReader fileReader = new FileReader();
@@ -108,12 +111,16 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 			 String[] params = outboundRequestOp.getDeliveryInfoNotification().getDeliveryInfo().getAddress().split(":");
 			String operator = mncQueryclient.QueryNetwork(mcc, params[1]);
 			context.setProperty(DataPublisherConstants.MSISDN, params[1]);
-			context.setProperty(DataPublisherConstants.OPERATOR_ID,
-					operator);
+			context.setProperty(DataPublisherConstants.OPERATOR_ID,operator);
+			context.setProperty(APIMgtGatewayConstants.USER_ID, serviceProvider);
 		} else {
-			OutboundRequest outboundRequest = gson.fromJson(executor
-					.getJsonBody().toString(), OutboundRequest.class);
+			OutboundRequest outboundRequest = gson.fromJson(executor.getJsonBody().toString(), OutboundRequest.class);
 			formattedString = gson.toJson(outboundRequest);
+			String[] params = outboundRequest.getDeliveryInfoNotification().getDeliveryInfo().getAddress().split(":");
+            String  operator = mncQueryclient.QueryNetwork(mcc,params[1]);
+            context.setProperty(DataPublisherConstants.MSISDN, params[1]);
+			context.setProperty(DataPublisherConstants.OPERATOR_ID,operator);
+			context.setProperty(APIMgtGatewayConstants.USER_ID, serviceProvider);
 		}
         	        
         int notifyret = executor.makeNorthBoundRequest(new OperatorEndpoint(new EndpointReference(notifyurl), null), notifyurlRoute,formattedString, true, context,false);        	

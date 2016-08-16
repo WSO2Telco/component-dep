@@ -42,23 +42,23 @@ public class SMSMessagingService {
 		smsMessagingDAO = new SMSMessagingDAO();
 	}
 
-	public Integer outboundSubscriptionEntry(String notifyURL/*, String serviceProvider*/) throws BusinessException {
+	public Integer outboundSubscriptionEntry(String notifyURL, String serviceProvider) throws BusinessException {
 
 		if (notifyURL == null || notifyURL.trim().length() <= 0) {
 
 			throw new BusinessException(ErrorType.INVALID_NOTIFY_URL);
 		}
-/*
+
 		if (serviceProvider == null || serviceProvider.trim().length() <= 0) {
 
 			throw new BusinessException(ErrorType.INVALID_SUBSCRIBER_NAME);
-		}*/
+		}
 
 		Integer newId = 0;
 
 		try {
 
-			newId = smsMessagingDAO.outboundSubscriptionEntry(notifyURL/*, serviceProvider*/);
+			newId = smsMessagingDAO.outboundSubscriptionEntry(notifyURL, serviceProvider);
 		} catch (Exception e) {
 
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);

@@ -16,6 +16,7 @@
 package com.wso2telco.dep.mediator.impl.smsmessaging;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -35,6 +36,7 @@ import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.dao.SMSMessagingDAO;
 import com.wso2telco.dep.mediator.entity.smsmessaging.DeliveryReceiptSubscriptionRequest;
+import com.wso2telco.dep.mediator.internal.ApiUtils;
 import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.internal.Util;
@@ -67,6 +69,8 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
 	/** The executor. */
 	private SMSExecutor executor;
 
+	private ApiUtils apiUtils;
+	 
 	/**
 	 * Instantiates a new outbound sms subscriptions handler.
 	 *
@@ -78,6 +82,7 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
 		this.executor = executor;
 		occi = new OriginatingCountryCalculatorIDD();
 		smsMessagingService = new SMSMessagingService();
+		apiUtils = new ApiUtils();
 		
 	}
 
@@ -138,6 +143,9 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
 		FileReader fileReader = new FileReader();
 		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
 
+		
+		HashMap<String, String> jwtDetails = apiUtils.getJwtTokenDetails(context);
+		
 		JSONObject jsonBody = executor.getJsonBody();
 		JSONObject jsondstaddr = jsonBody.getJSONObject("deliveryReceiptSubscription");
 		
@@ -146,13 +154,17 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
 		if (!jsondstaddr.isNull("clientCorrelator")) {
 			orgclientcl = jsondstaddr.getString("clientCorrelator");
 		}
+		
+		String serviceProvider = jwtDetails.get("subscriber");
+		log.debug("Subscriber Name : " + serviceProvider);
+		
 		if (!jsondstaddr.isNull("filterCriteria")) {
 			DeliveryReceiptSubscriptionRequest subsrequst = gson.fromJson(jsonBody.toString(),DeliveryReceiptSubscriptionRequest.class);
 			String origNotiUrl = subsrequst.getDeliveryReceiptSubscription().getCallbackReference().getNotifyURL();
 			subsrequst.getDeliveryReceiptSubscription().setClientCorrelator(orgclientcl + ":" + requestid);
 			List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(API_TYPE, executor.getSubResourcePath(), executor.getValidoperators());
 
-			Integer dnSubscriptionId = smsMessagingService.outboundSubscriptionEntry(subsrequst.getDeliveryReceiptSubscription().getCallbackReference().getNotifyURL());
+			Integer dnSubscriptionId = smsMessagingService.outboundSubscriptionEntry(subsrequst.getDeliveryReceiptSubscription().getCallbackReference().getNotifyURL(), serviceProvider);
 			String subsEndpoint = mediatorConfMap.get("hubSubsGatewayEndpoint") + "/"+ dnSubscriptionId;
 			jsondstaddr.getJSONObject("callbackReference").put("notifyURL", subsEndpoint); 
 

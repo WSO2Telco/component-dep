@@ -112,7 +112,7 @@ public class SMSInboundNotificationsHandler implements SMSHandler {
 		String operator = mncQueryclient.QueryNetwork(mcc, operatormar.concat(inboundRequest.getInboundSMSMessageRequest().getInboundSMSMessage().getSenderAddress()));
 		context.setProperty(DataPublisherConstants.MSISDN,inboundRequest.getInboundSMSMessageRequest().getInboundSMSMessage().getSenderAddress());
 		context.setProperty(DataPublisherConstants.OPERATOR_ID, operator);
-		//context.setProperty(APIMgtGatewayConstants.USER_ID, serviceProvider);
+		context.setProperty(APIMgtGatewayConstants.USER_ID, serviceProvider);
 
 		int notifyret = executor.makeNorthBoundRequest(new OperatorEndpoint(new EndpointReference(notifyurl), null),
 				notifyurlRoute, formattedString, true, context, false);

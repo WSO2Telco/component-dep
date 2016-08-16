@@ -69,8 +69,8 @@ public class OutboundSMSSubscriptionsSouthboundHandler implements SMSHandler {
 	/** The executor. */
 	private SMSExecutor executor;
 
-/*	*//** The api utils. *//*
-	private ApiUtils apiUtils;*/
+	/** The api utils. */
+	private ApiUtils apiUtils;
 
 	/**
 	 * Instantiates a new SB outbound sms subscriptions handler.
@@ -82,7 +82,7 @@ public class OutboundSMSSubscriptionsSouthboundHandler implements SMSHandler {
 		this.executor = executor;
 		occi = new OriginatingCountryCalculatorIDD();
 		smsMessagingService = new SMSMessagingService();
-	//	apiUtils = new ApiUtils();
+		apiUtils = new ApiUtils();
 	}
 
 	/*
@@ -150,7 +150,7 @@ public class OutboundSMSSubscriptionsSouthboundHandler implements SMSHandler {
 		FileReader fileReader = new FileReader();
 		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
 
-		//HashMap<String, String> jwtDetails = apiUtils.getJwtTokenDetails(context);
+		HashMap<String, String> jwtDetails = apiUtils.getJwtTokenDetails(context);
 		JSONObject jsonBody = executor.getJsonBody();
 		JSONObject jsondstaddr = jsonBody.getJSONObject("deliveryReceiptSubscription");
 		//String orgclientcl = jsondstaddr.getString("clientCorrelator");
@@ -158,8 +158,8 @@ public class OutboundSMSSubscriptionsSouthboundHandler implements SMSHandler {
 		if (!jsondstaddr.isNull("clientCorrelator")) {
 			orgclientcl = jsondstaddr.getString("clientCorrelator");
 		}
-		/*String serviceProvider = jwtDetails.get("subscriber");
-		log.debug("Subscriber Name : " + serviceProvider);*/
+		String serviceProvider = jwtDetails.get("subscriber");
+		log.debug("Subscriber Name : " + serviceProvider);
 
 		SouthboundDeliveryReceiptSubscriptionRequest subsrequst = gson.fromJson(jsonBody.toString(),
 				SouthboundDeliveryReceiptSubscriptionRequest.class);
@@ -169,8 +169,7 @@ public class OutboundSMSSubscriptionsSouthboundHandler implements SMSHandler {
 		List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(API_TYPE, executor.getSubResourcePath(),
 				executor.getValidoperators());
 
-		Integer dnSubscriptionId = smsMessagingService.outboundSubscriptionEntry(
-				subsrequst.getDeliveryReceiptSubscription().getCallbackReference().getNotifyURL()/*, serviceProvider*/);
+		Integer dnSubscriptionId = smsMessagingService.outboundSubscriptionEntry(subsrequst.getDeliveryReceiptSubscription().getCallbackReference().getNotifyURL(), serviceProvider);
 
 		String subsEndpoint = mediatorConfMap.get("hubSubsGatewayEndpoint") + "/" + dnSubscriptionId;
 		jsondstaddr.getJSONObject("callbackReference").put("notifyURL", subsEndpoint);

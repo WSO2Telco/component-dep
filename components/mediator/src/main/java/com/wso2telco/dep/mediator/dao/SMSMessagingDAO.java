@@ -39,7 +39,7 @@ public class SMSMessagingDAO {
 	/** The Constant log. */
 	private final Log log = LogFactory.getLog(SMSMessagingDAO.class);
 
-	public Integer outboundSubscriptionEntry(String notifyURL/*, String serviceProvider*/) throws SQLException, Exception {
+	public Integer outboundSubscriptionEntry(String notifyURL, String serviceProvider) throws SQLException, Exception {
 
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -56,14 +56,14 @@ public class SMSMessagingDAO {
 
 			StringBuilder insertQueryString = new StringBuilder("INSERT INTO ");
 			insertQueryString.append(DatabaseTables.OUTBOUND_SUBSCRIPTIONS.getTableName());
-			insertQueryString.append(" (notifyurl , is_active) ");
-			insertQueryString.append("VALUES (?,  ?)");
+			insertQueryString.append(" (notifyurl, service_provider, is_active) ");
+			insertQueryString.append("VALUES (?, ?, ?)");
 
 			ps = con.prepareStatement(insertQueryString.toString(), Statement.RETURN_GENERATED_KEYS);
 
 			ps.setString(1, notifyURL);
-			//ps.setString(2, serviceProvider);
-			ps.setInt(2, 0);
+			ps.setString(2, serviceProvider);
+			ps.setInt(3, 0);
 			
 			log.debug("sql query in outboundSubscriptionEntry : " + ps);
 
