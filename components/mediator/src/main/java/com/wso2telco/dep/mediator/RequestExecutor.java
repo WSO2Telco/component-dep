@@ -43,6 +43,7 @@ import com.google.gson.GsonBuilder;
 import com.wso2telco.datapublisher.DataPublisherClient;
 import com.wso2telco.datapublisher.DataPublisherConstants;
 import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.InboundSMSMessage;
+import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.InboundSMSMessageList;
 import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.SouthboundRetrieveResponse;
 import com.wso2telco.dep.operatorservice.model.OperatorApplicationDTO;
 import com.wso2telco.dep.operatorservice.service.OparatorService;
@@ -1126,9 +1127,23 @@ public abstract class RequestExecutor {
 
 			SouthboundRetrieveResponse sbRetrieveResponse = gson.fromJson(retStr,SouthboundRetrieveResponse.class);
 			if (sbRetrieveResponse != null) {
-				InboundSMSMessage[] inboundSMSMessageResponses = sbRetrieveResponse.getInboundSMSMessageList().getInboundSMSMessage();
-				messageContext.setProperty(DataPublisherConstants.RESPONSE,String.valueOf(inboundSMSMessageResponses.length));
-			} else {
+				
+				if (sbRetrieveResponse.getInboundSMSMessageList().getInboundSMSMessage()!=null && sbRetrieveResponse.getInboundSMSMessageList().getInboundSMSMessage().length!=0) {
+           		InboundSMSMessage[] inboundSMSMessageResponses = sbRetrieveResponse.getInboundSMSMessageList().getInboundSMSMessage();
+                    messageContext.setProperty(DataPublisherConstants.RESPONSE, String.valueOf(inboundSMSMessageResponses.length));
+        		}else{
+        			InboundSMSMessage[] inboundSMSMessageResponses = new InboundSMSMessage[0];
+        			InboundSMSMessageList inboundSMSMessageList=new InboundSMSMessageList();
+        			inboundSMSMessageList.setInboundSMSMessage(inboundSMSMessageResponses);
+        			inboundSMSMessageList.setNumberOfMessagesInThisBatch("0");
+        			inboundSMSMessageList.setResourceURL("Not Available");
+        			inboundSMSMessageList.setTotalNumberOfPendingMessages("0");
+        			sbRetrieveResponse.setInboundSMSMessageList(inboundSMSMessageList);
+				
+				InboundSMSMessage[] inboundSMSMessageResponsesN = sbRetrieveResponse.getInboundSMSMessageList().getInboundSMSMessage();
+				messageContext.setProperty(DataPublisherConstants.RESPONSE,String.valueOf(inboundSMSMessageResponsesN.length));
+        		} 
+			}else {
 				messageContext.setProperty(DataPublisherConstants.RESPONSE,String.valueOf(0));
 			}
 		} catch (Exception e) {

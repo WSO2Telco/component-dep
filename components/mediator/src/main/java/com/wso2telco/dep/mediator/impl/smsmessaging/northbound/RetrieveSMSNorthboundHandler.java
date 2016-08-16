@@ -31,6 +31,7 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.entity.smsmessaging.northbound.InboundSMSMessage;
+import com.wso2telco.dep.mediator.entity.smsmessaging.northbound.InboundSMSMessageList;
 import com.wso2telco.dep.mediator.entity.smsmessaging.northbound.NorthboundRetrieveRequest;
 import com.wso2telco.dep.mediator.entity.smsmessaging.northbound.NorthboundRetrieveResponse;
 import com.wso2telco.dep.mediator.entity.smsmessaging.northbound.Registrations;
@@ -202,16 +203,41 @@ public class RetrieveSMSNorthboundHandler implements SMSHandler {
             NorthboundRetrieveResponse sbRetrieveResponse = gson.fromJson(retStr, NorthboundRetrieveResponse.class);
 
             if (sbRetrieveResponse != null) {
-                InboundSMSMessage[] inboundSMSMessageResponses = sbRetrieveResponse.getInboundSMSMessageList().getInboundSMSMessage();
+            	if (sbRetrieveResponse.getInboundSMSMessageList().getInboundSMSMessage()!=null && sbRetrieveResponse.getInboundSMSMessageList().getInboundSMSMessage().length!=0) {
+            		InboundSMSMessage[] inboundSMSMessageResponses = sbRetrieveResponse.getInboundSMSMessageList().getInboundSMSMessage();
+            		log.debug("001 SECTION");
+                    for (int i = 0; i < inboundSMSMessageResponses.length; i++) {
+                        inboundSMSMessageResponses[i].setCriteria(criteria);
+                        inboundSMSMessageResponses[i].setOperatorCode(operatorCode);
 
-                for (int i = 0; i < inboundSMSMessageResponses.length; i++) {
-                    inboundSMSMessageResponses[i].setCriteria(criteria);
-                    inboundSMSMessageResponses[i].setOperatorCode(operatorCode);
+                        inboundSMSMessageList.add(inboundSMSMessageResponses[i]);
+                    }
+                    sbRetrieveResponse.getInboundSMSMessageList().setInboundSMSMessage(inboundSMSMessageResponses);
+                    responses.add(gson.toJson(sbRetrieveResponse));                    
+                    
+        		}else{
+        			log.debug("002 SECTION");
+       			InboundSMSMessage[] inboundSMSMessageResponses = new InboundSMSMessage[0];
+        			InboundSMSMessageList inboundSMSMessageListN=new InboundSMSMessageList();
+        			inboundSMSMessageListN.setInboundSMSMessage(inboundSMSMessageResponses);
+       			inboundSMSMessageListN.setNumberOfMessagesInThisBatch("0");
+        			inboundSMSMessageListN.setResourceURL("Not Available");
+        			inboundSMSMessageListN.setTotalNumberOfPendingMessages("0");
+        			sbRetrieveResponse.setInboundSMSMessageList(inboundSMSMessageListN);
+        			
+            		//inboundSMSMessageResponses = sbRetrieveResponse.getInboundSMSMessageList().getInboundSMSMessage();
+            		
+                    for (int i = 0; i < inboundSMSMessageResponses.length; i++) {
+                        inboundSMSMessageResponses[i].setCriteria(criteria);
+                        inboundSMSMessageResponses[i].setOperatorCode(operatorCode);
 
-                    inboundSMSMessageList.add(inboundSMSMessageResponses[i]);
-                }
-                sbRetrieveResponse.getInboundSMSMessageList().setInboundSMSMessage(inboundSMSMessageResponses);
-                responses.add(gson.toJson(sbRetrieveResponse));
+                       inboundSMSMessageList.add(inboundSMSMessageResponses[i]);
+                    }
+                    sbRetrieveResponse.getInboundSMSMessageList().setInboundSMSMessage(inboundSMSMessageResponses);
+                    responses.add(gson.toJson(sbRetrieveResponse));  
+                    
+        		}
+
             }
 
             count++;
