@@ -15,18 +15,6 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.impl.smsmessaging;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.wso2telco.datapublisher.DataPublisherConstants;
-import com.wso2telco.dbutils.fileutils.FileReader;
-import com.wso2telco.dep.mediator.OperatorEndpoint;
-import com.wso2telco.dep.mediator.entity.smsmessaging.InboundRequest;
-import com.wso2telco.dep.mediator.internal.Type;
-import com.wso2telco.dep.mediator.internal.UID;
-import com.wso2telco.dep.mediator.service.SMSMessagingService;
-import com.wso2telco.mnc.resolver.MNCQueryClient;
-import com.wso2telco.oneapivalidation.exceptions.CustomException;
-
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -41,6 +29,20 @@ import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONObject;
 import org.wso2.carbon.apimgt.gateway.APIMgtGatewayConstants;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.wso2telco.datapublisher.DataPublisherConstants;
+import com.wso2telco.dbutils.fileutils.FileReader;
+import com.wso2telco.dep.mediator.OperatorEndpoint;
+import com.wso2telco.dep.mediator.entity.smsmessaging.InboundRequest;
+import com.wso2telco.dep.mediator.internal.Type;
+import com.wso2telco.dep.mediator.internal.UID;
+import com.wso2telco.dep.mediator.service.SMSMessagingService;
+import com.wso2telco.mnc.resolver.MNCQueryClient;
+import com.wso2telco.oneapivalidation.exceptions.CustomException;
+import com.wso2telco.oneapivalidation.service.IServiceValidate;
+import com.wso2telco.oneapivalidation.service.impl.sms.ValidateInboundSMSMessageNotification;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -114,8 +116,21 @@ public class SMSInboundNotificationsHandler implements SMSHandler {
 		String formattedString = gson.toJson(inboundRequest);
 		String mcc = null;
 		String operatormar = "+";
-		String operator = mncQueryclient.QueryNetwork(mcc, operatormar.concat(inboundRequest.getInboundSMSMessageRequest().getInboundSMSMessage().getSenderAddress()));
-		context.setProperty(DataPublisherConstants.MSISDN,inboundRequest.getInboundSMSMessageRequest().getInboundSMSMessage().getSenderAddress());
+		//String operator = mncQueryclient.QueryNetwork(mcc, operatormar.concat(inboundRequest.getInboundSMSMessageRequest().getInboundSMSMessage().getSenderAddress()));
+		
+		String msisdn = inboundRequest.getInboundSMSMessageRequest().getInboundSMSMessage().getSenderAddress();
+		if (msisdn.startsWith("tel:")) {
+			String[] params = inboundRequest.getInboundSMSMessageRequest().getInboundSMSMessage().getSenderAddress().split(":");
+			if (params[1].startsWith("+")) {
+				msisdn = params[1];
+			} else {
+				msisdn = operatormar.concat(params[1]);
+			}
+		}
+		String operator = mncQueryclient.QueryNetwork(mcc, msisdn);
+		context.setProperty(DataPublisherConstants.MSISDN, msisdn);
+		
+		//context.setProperty(DataPublisherConstants.MSISDN,inboundRequest.getInboundSMSMessageRequest().getInboundSMSMessage().getSenderAddress());
 		context.setProperty(DataPublisherConstants.OPERATOR_ID, operator);
 		context.setProperty(APIMgtGatewayConstants.USER_ID, serviceProvider);
 
@@ -141,10 +156,17 @@ public class SMSInboundNotificationsHandler implements SMSHandler {
 	 * java.lang.String, org.json.JSONObject, org.apache.synapse.MessageContext)
 	 */
 	@Override
-	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context)
-			throws Exception {
+	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context)throws Exception {
 
-		context.setProperty(DataPublisherConstants.OPERATION_TYPE, 207);
+		if (!httpMethod.equalsIgnoreCase("POST")) {
+			((Axis2MessageContext) context).getAxis2MessageContext()
+					.setProperty("HTTP_SC", 405);
+			throw new Exception("Method not allowed");
+		}
+
+		IServiceValidate validator = new ValidateInboundSMSMessageNotification();
+		validator.validateUrl(requestPath);
+		validator.validate(jsonBody.toString());
 		return true;
 	}
 }

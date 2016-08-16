@@ -15,9 +15,6 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.impl.smsmessaging;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -29,14 +26,12 @@ import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONObject;
 import org.wso2.carbon.apimgt.gateway.APIMgtGatewayConstants;
-import org.wso2.carbon.apimgt.usage.publisher.APIMgtUsagePublisherConstants;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wso2telco.datapublisher.DataPublisherConstants;
 import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
-import com.wso2telco.dep.mediator.entity.smsmessaging.InboundRequest;
 import com.wso2telco.dep.mediator.entity.smsmessaging.OutboundRequest;
 import com.wso2telco.dep.mediator.entity.smsmessaging.OutboundRequestOp;
 import com.wso2telco.dep.mediator.internal.Type;
@@ -44,6 +39,9 @@ import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.service.SMSMessagingService;
 import com.wso2telco.mnc.resolver.MNCQueryClient;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
+import com.wso2telco.oneapivalidation.service.IServiceValidate;
+import com.wso2telco.oneapivalidation.service.impl.sms.nb.ValidateNBDeliveryInfoNotification;
+import com.wso2telco.oneapivalidation.service.impl.sms.sb.ValidateSBDeliveryInfoNotification;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -112,17 +110,33 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 		if (executor.getJsonBody().toString().contains("operatorCode")) {
 			OutboundRequestOp outboundRequestOp = gson.fromJson(executor.getJsonBody().toString(), OutboundRequestOp.class);
 			formattedString = gson.toJson(outboundRequestOp);
-			 String[] params = outboundRequestOp.getDeliveryInfoNotification().getDeliveryInfo().getAddress().split(":");
-			String operator = mncQueryclient.QueryNetwork(mcc, params[1]);
-			context.setProperty(DataPublisherConstants.MSISDN, params[1]);
+			String msisdn = outboundRequestOp.getDeliveryInfoNotification().getDeliveryInfo().getAddress();
+			if (msisdn.startsWith("tel:")) {
+				String[] params = outboundRequestOp.getDeliveryInfoNotification().getDeliveryInfo().getAddress().split(":");
+				if (params[1].startsWith("+")) {
+					msisdn = params[1];
+				} else {
+					msisdn = operatormar.concat(params[1]);
+				}
+			}
+			String operator = mncQueryclient.QueryNetwork(mcc, msisdn);
+			context.setProperty(DataPublisherConstants.MSISDN, msisdn);
 			context.setProperty(DataPublisherConstants.OPERATOR_ID,operator);
 			context.setProperty(APIMgtGatewayConstants.USER_ID, serviceProvider);
 		} else {
 			OutboundRequest outboundRequest = gson.fromJson(executor.getJsonBody().toString(), OutboundRequest.class);
 			formattedString = gson.toJson(outboundRequest);
-			String[] params = outboundRequest.getDeliveryInfoNotification().getDeliveryInfo().getAddress().split(":");
-            String  operator = mncQueryclient.QueryNetwork(mcc,params[1]);
-            context.setProperty(DataPublisherConstants.MSISDN, params[1]);
+			String msisdn = outboundRequest.getDeliveryInfoNotification().getDeliveryInfo().getAddress();
+			if (msisdn.startsWith("tel:")) {
+				String[] params = outboundRequest.getDeliveryInfoNotification().getDeliveryInfo().getAddress().split(":");
+				if (params[1].startsWith("+")) {
+					msisdn = params[1];
+				} else {
+					msisdn = operatormar.concat(params[1]);
+				}
+			}
+			String operator = mncQueryclient.QueryNetwork(mcc, msisdn);
+			context.setProperty(DataPublisherConstants.MSISDN, msisdn);
 			context.setProperty(DataPublisherConstants.OPERATOR_ID,operator);
 			context.setProperty(APIMgtGatewayConstants.USER_ID, serviceProvider);
 		}
@@ -150,6 +164,23 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 			throws Exception {
 
 		context.setProperty(DataPublisherConstants.OPERATION_TYPE, 207);
+		
+		if (!httpMethod.equalsIgnoreCase("POST")) {
+			((Axis2MessageContext) context).getAxis2MessageContext()
+					.setProperty("HTTP_SC", 405);
+			throw new Exception("Method not allowed");
+		}
+
+		if (jsonBody.toString().contains("operatorCode")) {
+			IServiceValidate validator = new ValidateNBDeliveryInfoNotification();
+			validator.validateUrl(requestPath);
+			validator.validate(jsonBody.toString());
+		} else {
+			IServiceValidate validator = new ValidateSBDeliveryInfoNotification();
+			validator.validateUrl(requestPath);
+			validator.validate(jsonBody.toString());
+		}
+			
 		return true;
 	}
 }
