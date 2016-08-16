@@ -163,6 +163,9 @@ public class OutboundSMSSubscriptionsNorthboundHandler implements SMSHandler {
 		String serviceProvider = jwtDetails.get("subscriber");
 		log.debug("Subscriber Name : " + serviceProvider);
 		
+		String hubDNSubsGatewayEndpoint = mediatorConfMap.get("hubDNSubsGatewayEndpoint");
+		log.debug("Hub / Gateway DN Notify URL : " + hubDNSubsGatewayEndpoint);
+		
 		NorthboundDeliveryReceiptSubscriptionRequest nbDeliveryReceiptSubscriptionRequest = gson.fromJson(jsonBody.toString(), NorthboundDeliveryReceiptSubscriptionRequest.class);
 		String orgclientcl = nbDeliveryReceiptSubscriptionRequest.getDeliveryReceiptSubscription().getClientCorrelator();
 		String origNotiUrl = nbDeliveryReceiptSubscriptionRequest.getDeliveryReceiptSubscription().getCallbackReference().getNotifyURL();
@@ -170,8 +173,9 @@ public class OutboundSMSSubscriptionsNorthboundHandler implements SMSHandler {
 		List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(API_TYPE, executor.getSubResourcePath(),executor.getValidoperators());
 
 		Integer dnSubscriptionId = smsMessagingService.outboundSubscriptionEntry(nbDeliveryReceiptSubscriptionRequest.getDeliveryReceiptSubscription().getCallbackReference().getNotifyURL(), serviceProvider);
+		String subsEndpoint = hubDNSubsGatewayEndpoint + "/" + dnSubscriptionId;
+		/*String subsEndpoint = mediatorConfMap.get("hubSubsGatewayEndpoint") + "/" + dnSubscriptionId;*/
 		
-		String subsEndpoint = mediatorConfMap.get("hubSubsGatewayEndpoint") + "/" + dnSubscriptionId;
 		//jsondstaddr.getJSONObject("callbackReference").put("notifyURL", subsEndpoint);
 		
 		
