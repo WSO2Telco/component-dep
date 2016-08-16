@@ -87,7 +87,13 @@ public class Util {
 	@Deprecated
 	public static void getPropertyFile() {
 		try {
-			props.load(Util.class.getResourceAsStream("/application.properties"));
+			String carbonHome = System.getProperty("user.dir");
+            log.debug("Carbon home : " + carbonHome);
+
+            props.load(Util.class.getResourceAsStream( carbonHome + "/repository/conf/axiataMediator_conf.properties"));
+            log.debug( Util.getApplicationProperty("sendSMSResourceURL"));
+            log.debug (Util.getApplicationProperty("hubGateway"));
+            log.debug(Util.getApplicationProperty("ussdGatewayEndpoint"));
 		} catch (FileNotFoundException e) {
 			// e.printStackTrace();
 			log.info("FileNotFound");
