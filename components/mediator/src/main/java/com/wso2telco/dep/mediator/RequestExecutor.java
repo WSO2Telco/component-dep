@@ -305,11 +305,34 @@ public abstract class RequestExecutor {
 		log.debug("DEBUG LOGS FOR LBS 11 : resourceUrl = " + resourceUrl);
 		log.debug("DEBUG LOGS FOR LBS 12 : httpMethod = " + httpMethod);
 
-		String jsonPayloadToString = JsonUtil
+		/*String jsonPayloadToString = JsonUtil
 				.jsonPayloadToString(((Axis2MessageContext) context).getAxis2MessageContext());
 		log.debug("DEBUG LOGS FOR LBS 13 : jsonPayloadToString = " + jsonPayloadToString);
 		jsonBody = new JSONObject(jsonPayloadToString);
+*/
+		try {
+			String jsonPayloadToString = JsonUtil
+					.jsonPayloadToString(((Axis2MessageContext) context)
+							.getAxis2MessageContext());
+			jsonBody = new JSONObject(jsonPayloadToString);
+		} catch (JSONException e) {
+			log.error(e.getMessage());
+			// ((Axis2MessageContext) context).setAxis2MessageContext("");
+			// JsonUtil.newJsonPayload(((Axis2MessageContext)
+			// context).getAxis2MessageContext(), "{}", true, true);
+			// JsonUtil.removeJsonPayload(((Axis2MessageContext)
+			// context).getAxis2MessageContext());
 
+			// Axis2MessageContext axctx = ((Axis2MessageContext) context);
+			// AxisMessage axmsg =
+			// axctx.getAxis2MessageContext().getAxisMessage();
+			//
+			// axctx.getAxis2MessageContext().setAxisMessage(new AxisMessage());
+			throw new CustomException(
+					"SVC0001",
+					"Json Error",
+					new String[] { "Request is missing required URI components" });
+		}
 		return true;
 	}
 
