@@ -15,25 +15,12 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.impl.smsmessaging.southbound;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.wso2telco.dep.mediator.OperatorEndpoint;
-import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.InboundSMSMessage;
-import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.SouthboundRetrieveResponse;
-import com.wso2telco.dep.mediator.impl.smsmessaging.*;
-import com.wso2telco.dep.mediator.internal.APICall;
-import com.wso2telco.dep.mediator.internal.ApiUtils;
-import com.wso2telco.dep.mediator.internal.Type;
-import com.wso2telco.dep.mediator.internal.UID;
-import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
-import com.wso2telco.oneapivalidation.exceptions.CustomException;
-import com.wso2telco.oneapivalidation.service.IServiceValidate;
-import com.wso2telco.oneapivalidation.service.impl.sms.sb.ValidateSBRetrieveSms;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Properties;
+
 import org.apache.axiom.soap.SOAPBody;
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
@@ -42,6 +29,22 @@ import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONArray;
 import org.json.JSONObject;
+
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.wso2telco.dep.mediator.OperatorEndpoint;
+import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.InboundSMSMessage;
+import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.SouthboundRetrieveResponse;
+import com.wso2telco.dep.mediator.impl.smsmessaging.SMSExecutor;
+import com.wso2telco.dep.mediator.impl.smsmessaging.SMSHandler;
+import com.wso2telco.dep.mediator.internal.APICall;
+import com.wso2telco.dep.mediator.internal.ApiUtils;
+import com.wso2telco.dep.mediator.internal.Type;
+import com.wso2telco.dep.mediator.internal.UID;
+import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
+import com.wso2telco.oneapivalidation.exceptions.CustomException;
+import com.wso2telco.oneapivalidation.service.IServiceValidate;
+import com.wso2telco.oneapivalidation.service.impl.sms.sb.ValidateSBRetrieveSms;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -135,8 +138,8 @@ public class RetrieveSMSSouthboundHandler implements SMSHandler {
 			log.debug("Retrieving messages of operator: " + aEndpoint.getOperator());
 
 			if (context.isDoingGET()) {
-				log.debug("Doing makeGetRequest");
-				retStr = executor.makeGetRequest(aEndpoint, ac.getUri(), null, true, context,false);
+				log.debug("Doing makeRetrieveSMSGetRequest");
+				retStr = executor.makeRetrieveSMSGetRequest(aEndpoint, ac.getUri(), null, true, context,false);
 			} else {
 				log.debug("Doing makeRequest");
 				retStr = executor.makeRequest(aEndpoint, ac.getUri(), obj.toString(), true, context,false);

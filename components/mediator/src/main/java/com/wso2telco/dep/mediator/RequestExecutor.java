@@ -42,6 +42,8 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wso2telco.datapublisher.DataPublisherClient;
 import com.wso2telco.datapublisher.DataPublisherConstants;
+import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.InboundSMSMessage;
+import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.SouthboundRetrieveResponse;
 import com.wso2telco.dep.operatorservice.model.OperatorApplicationDTO;
 import com.wso2telco.dep.operatorservice.service.OparatorService;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
@@ -1026,6 +1028,121 @@ public abstract class RequestExecutor {
 		}
 
 		return statusCode;
+	}
+	
+	
+	public String makeRetrieveSMSGetRequest(OperatorEndpoint operatorendpoint, String url, String requestStr, boolean auth,
+			MessageContext messageContext, boolean inclueHeaders) {
+
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		publishRequestData(operatorendpoint, url, null, messageContext);
+		int statusCode = 0;
+		String retStr = "";
+		URL neturl;
+		HttpURLConnection connection = null;
+
+		try {
+
+			// String Authtoken = AccessToken;
+			// //FileUtil.getApplicationProperty("wow.api.bearer.token");
+			// DefaultHttpClient httpClient = new DefaultHttpClient();
+			String encurl = (requestStr != null) ? url + requestStr : url;
+			neturl = new URL(encurl);
+			connection = (HttpURLConnection) neturl.openConnection();
+			connection.setRequestMethod("GET");
+			connection.setRequestProperty("Accept", "application/json");
+
+			if (auth) {
+				connection.setRequestProperty("Authorization", "Bearer "
+						+ getAccessToken(operatorendpoint.getOperator()));
+
+				// Add JWT token header
+				org.apache.axis2.context.MessageContext axis2MessageContext = ((Axis2MessageContext) messageContext)
+						.getAxis2MessageContext();
+				Object headers = axis2MessageContext
+						.getProperty(org.apache.axis2.context.MessageContext.TRANSPORT_HEADERS);
+				if (headers != null && headers instanceof Map) {
+					Map headersMap = (Map) headers;
+					String jwtparam = (String) headersMap
+							.get("x-jwt-assertion");
+					if (jwtparam != null) {
+						connection.setRequestProperty("x-jwt-assertion",
+								jwtparam);
+					}
+				}
+			}
+
+			if (inclueHeaders) {
+				org.apache.axis2.context.MessageContext axis2MessageContext = ((Axis2MessageContext) messageContext)
+						.getAxis2MessageContext();
+				Object headers = axis2MessageContext
+						.getProperty(org.apache.axis2.context.MessageContext.TRANSPORT_HEADERS);
+				if (headers != null && headers instanceof Map) {
+					Map headersMap = (Map) headers;
+					Iterator it = headersMap.entrySet().iterator();
+					while (it.hasNext()) {
+						Map.Entry entry = (Map.Entry) it.next();
+						connection.setRequestProperty((String) entry.getKey(),
+								(String) entry.getValue()); // avoids a
+															// ConcurrentModificationException
+					}
+				}
+			}
+
+			connection.setUseCaches(false);
+
+			if (log.isDebugEnabled()) {
+				log.debug("Southbound Request URL: " + connection.getRequestMethod() + " "+ connection.getURL());
+				log.debug("Southbound Request Headers: " + connection.getRequestProperties());
+				log.debug("Southbound Request Body: " + requestStr);
+			}
+
+			statusCode = connection.getResponseCode();
+			if ((statusCode != 200) && (statusCode != 201) && (statusCode != 400) && (statusCode != 401)) {
+				throw new RuntimeException("Failed : HTTP error code : " + statusCode);
+			}
+
+			InputStream is = null;
+			if ((statusCode == 200) || (statusCode == 201)) {
+				is = connection.getInputStream();
+			} else {
+				is = connection.getErrorStream();
+			}
+
+			BufferedReader br = new BufferedReader(new InputStreamReader(is));
+			String output;
+			while ((output = br.readLine()) != null) {
+				retStr += output;
+			}
+			br.close();
+
+			if (log.isDebugEnabled()) {
+				log.debug("Southbound Response Status: " + statusCode + " "
+						+ connection.getResponseMessage());
+				log.debug("Southbound Response Headers: "
+						+ connection.getHeaderFields());
+				log.debug("Southbound Response Body: " + retStr);
+			}
+
+			SouthboundRetrieveResponse sbRetrieveResponse = gson.fromJson(retStr,SouthboundRetrieveResponse.class);
+			if (sbRetrieveResponse != null) {
+				InboundSMSMessage[] inboundSMSMessageResponses = sbRetrieveResponse.getInboundSMSMessageList().getInboundSMSMessage();
+				messageContext.setProperty(DataPublisherConstants.RESPONSE,String.valueOf(inboundSMSMessageResponses.length));
+			} else {
+				messageContext.setProperty(DataPublisherConstants.RESPONSE,String.valueOf(0));
+			}
+		} catch (Exception e) {
+			log.error("[WSRequestService ], makerequest, " + e.getMessage(), e);
+			messageContext.setProperty(DataPublisherConstants.RESPONSE,String.valueOf(0));
+			return null;
+		} finally {
+			if (connection != null) {
+				connection.disconnect();
+			}
+			publishResponseData(statusCode, retStr, messageContext);
+		}
+
+		return retStr;
 	}
 
 	/**

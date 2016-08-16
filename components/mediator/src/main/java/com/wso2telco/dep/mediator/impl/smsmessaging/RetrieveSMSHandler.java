@@ -139,8 +139,8 @@ public class RetrieveSMSHandler implements SMSHandler {
 						+ aEndpoint.getOperator());
 
 				if (context.isDoingGET()) {
-					log.debug("Doing makeGetRequest");
-					retStr = executor.makeGetRequest(aEndpoint, ac.getUri(),null, true, context,false);
+					log.debug("Doing makeRetrieveSMSGetRequest");
+					retStr = executor.makeRetrieveSMSGetRequest(aEndpoint, ac.getUri(), null, true, context,false);
 				} else {
 					log.debug("Doing makeRequest");
 					retStr = executor.makeRequest(aEndpoint, ac.getUri(),obj.toString(), true, context,false);

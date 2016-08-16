@@ -15,6 +15,18 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.impl.smsmessaging.northbound;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
+import org.apache.axiom.soap.SOAPBody;
+import org.apache.axis2.AxisFault;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.synapse.MessageContext;
+import org.apache.synapse.core.axis2.Axis2MessageContext;
+import org.json.JSONObject;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
@@ -22,7 +34,8 @@ import com.wso2telco.dep.mediator.entity.smsmessaging.northbound.InboundSMSMessa
 import com.wso2telco.dep.mediator.entity.smsmessaging.northbound.NorthboundRetrieveRequest;
 import com.wso2telco.dep.mediator.entity.smsmessaging.northbound.NorthboundRetrieveResponse;
 import com.wso2telco.dep.mediator.entity.smsmessaging.northbound.Registrations;
-import com.wso2telco.dep.mediator.impl.smsmessaging.*;
+import com.wso2telco.dep.mediator.impl.smsmessaging.SMSExecutor;
+import com.wso2telco.dep.mediator.impl.smsmessaging.SMSHandler;
 import com.wso2telco.dep.mediator.internal.APICall;
 import com.wso2telco.dep.mediator.internal.ApiUtils;
 import com.wso2telco.dep.mediator.internal.Type;
@@ -31,16 +44,6 @@ import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.oneapivalidation.service.impl.sms.nb.ValidateNBRetrieveSms;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.List;
-import org.apache.axiom.soap.SOAPBody;
-import org.apache.axis2.AxisFault;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.apache.synapse.MessageContext;
-import org.apache.synapse.core.axis2.Axis2MessageContext;
-import org.json.JSONObject;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -174,8 +177,9 @@ public class RetrieveSMSNorthboundHandler implements SMSHandler {
             context.setDoingGET(true);
             if (context.isDoingGET()) {
             	
-                log.debug("Doing makeGetRequest");
-                retStr = executor.makeGetRequest(aEndpoint, ac.getUri(), null, true, context,false);
+                log.debug("Doing makeRetrieveSMSGetRequest");
+                retStr = executor.makeRetrieveSMSGetRequest(aEndpoint, ac.getUri(), null, true, context,false);
+                
             } else {
             	
                 log.debug("Doing makeRequest");
