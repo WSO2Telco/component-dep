@@ -74,6 +74,14 @@ public class UID {
 	public static String retriveMsgResourceURL(String resUrl, String msg) {
 		return resUrl.substring(0, resUrl.lastIndexOf("/") + 1) + msg;
 	}
+	
+	public static String getRequestID(MessageContext messageContext) {
+    	String requestId = "";
+    	if (messageContext != null) {
+        	requestId = (String) messageContext.getProperty(DataPublisherConstants.REQUEST_ID);
+    	}
+    	return requestId;
+    }
 }
 
 

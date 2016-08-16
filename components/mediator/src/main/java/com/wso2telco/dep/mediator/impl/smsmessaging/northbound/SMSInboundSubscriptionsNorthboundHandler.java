@@ -123,7 +123,7 @@ public class SMSInboundSubscriptionsNorthboundHandler implements SMSHandler {
 				executor.getValidoperators());
 
 		Integer moSubscriptionId = smsMessagingService.subscriptionEntry(
-				nbSubsrequst.getSubscription().getCallbackReference().getNotifyURL()/*, serviceProvider*/);
+				nbSubsrequst.getSubscription().getCallbackReference().getNotifyURL(), serviceProvider);
 
 		String subsEndpoint = mediatorConfMap.get("hubSubsGatewayEndpoint") + "/" + moSubscriptionId;
 		jsondstaddr.getJSONObject("callbackReference").put("notifyURL", subsEndpoint);

@@ -102,7 +102,7 @@ public class StopInboundSMSSubscriptionsHandler implements SMSHandler {
 
 		String requestid = UID.getUniqueID(Type.DELRETSUB.getCode(), context, executor.getApplicationid());
 
-		List<Operatorsubs> domainsubs = (smsMessagingService.subscriptionQuery(Integer.valueOf(moSubscriptionId)));
+		List<OperatorSubscriptionDTO> domainsubs = (smsMessagingService.subscriptionQuery(Integer.valueOf(moSubscriptionId)));
 		if (domainsubs.isEmpty()) {
 
 			throw new CustomException("POL0001", "",
@@ -111,7 +111,7 @@ public class StopInboundSMSSubscriptionsHandler implements SMSHandler {
 
 		String resStr = "";
 
-		for (Operatorsubs subs : domainsubs) {
+		for (OperatorSubscriptionDTO subs : domainsubs) {
 
 			resStr = executor.makeDeleteRequest(
 					new OperatorEndpoint(new EndpointReference(subs.getDomain()), subs.getOperator()), subs.getDomain(),

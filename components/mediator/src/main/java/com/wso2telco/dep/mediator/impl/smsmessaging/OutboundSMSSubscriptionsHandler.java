@@ -21,7 +21,6 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.axis2.AxisFault;
-import org.apache.axis2.addressing.EndpointReference;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
@@ -31,15 +30,12 @@ import org.json.JSONObject;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.wso2telco.dbutils.Operatorsubs;
 import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
-import com.wso2telco.dep.mediator.dao.SMSMessagingDAO;
 import com.wso2telco.dep.mediator.entity.smsmessaging.DeliveryReceiptSubscriptionRequest;
 import com.wso2telco.dep.mediator.internal.ApiUtils;
 import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
-import com.wso2telco.dep.mediator.internal.Util;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.dep.mediator.service.SMSMessagingService;
 import com.wso2telco.dep.operatorservice.model.OperatorSubscriptionDTO;

@@ -121,18 +121,18 @@ public class SMSMessagingService {
 		}
 	}
 
-	public Integer subscriptionEntry(String notifyURL/*, String serviceProvider*/) throws BusinessException {
+	public Integer subscriptionEntry(String notifyURL, String serviceProvider) throws BusinessException {
 
 		if (notifyURL == null || notifyURL.trim().length() <= 0) {
 
 			throw new BusinessException(ErrorType.INVALID_NOTIFY_URL);
 		}
 
-		/*if (serviceProvider == null || serviceProvider.trim().length() <= 0) {
+		if (serviceProvider == null || serviceProvider.trim().length() <= 0) {
 
 			throw new BusinessException(ErrorType.INVALID_SUBSCRIBER_NAME);
 		}
-*/
+
 		Integer newId = 0;
 
 		try {
@@ -168,15 +168,14 @@ public class SMSMessagingService {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
-	public List<Operatorsubs> subscriptionQuery(Integer moSubscriptionId) throws BusinessException {
+	public List<OperatorSubscriptionDTO> subscriptionQuery(Integer moSubscriptionId) throws BusinessException {
 
 		if (moSubscriptionId == null || moSubscriptionId <= 0) {
 
 			throw new BusinessException(ErrorType.INVALID_MO_SUBSCRIPTION_ID);
 		}
 
-		List<Operatorsubs> domainsubs = null;
+		List<OperatorSubscriptionDTO> domainsubs = null;
 
 		try {
 

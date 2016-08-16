@@ -74,10 +74,10 @@
 					</tr>
 					<tr>
 						<td><input type="text" id="from_date" class="input-large"
-							style="margin-bottom: 0px; width: 150px;">
+							style="margin-bottom: 0px; width: 140px;">
 						</td>
 						<td><input type="text" id="to_date" class="input-large"
-							style="margin-bottom: 0px; width: 150px;">
+							style="margin-bottom: 0px; width: 140px;">
 						</td>
 
 						<%
@@ -85,7 +85,7 @@
 								var operatorList = outputs.operators;
 								if(operatorList != null){
 						%>
-						<td><select id="operator" style="width: 150px;">
+						<td><select id="operator" style="width: 140px;">
 								<option value="__ALL__">All</option>
 								<%
 								for (i = 0; i < operatorList.length; i++) {
@@ -106,7 +106,7 @@
 							  	var subscriberList = outputs.subscribers;
 							  	if(subscriberList != null){
 						%>
-						<td><select id="subscriber" size="1" style="width: 150px"
+						<td><select id="subscriber" size="1" style="width: 140px"
 							onchange="getSelectedSubscriber()" name="subscriber">
 								<option value="__ALL__">All</option>
 								<%
@@ -127,7 +127,7 @@
 						<td><%		
 						var apiList = outputs.apis;
 						if(apiList != null){
-							%> <select id="api" style="width: 150px;" autofocus="autofocus">
+							%> <select id="api" style="width: 140px;" autofocus="autofocus">
 								<%
 								if(isAdmin == true || isOperator != null){
 								for (i = 0; i < apiList.length; i++) {
@@ -158,7 +158,7 @@
 						 <td><%		
 						var opList = outputs.operations;
 						if(opList != null){
-							%> <select id="api" style="width: 150px;" autofocus="autofocus">
+							%> <select id="api" style="width: 140px;" autofocus="autofocus">
 								
 								<%
 								for (i = 0; i < opList.length; i++) {

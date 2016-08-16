@@ -480,12 +480,12 @@ public class SMSMessagingDAO {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public List<Operatorsubs> subscriptionQuery(Integer moSubscriptionId) throws SQLException, Exception {
+	public List<OperatorSubscriptionDTO> subscriptionQuery(Integer moSubscriptionId) throws SQLException, Exception {
 
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		List<Operatorsubs> domainsubs = new ArrayList();
+		List<OperatorSubscriptionDTO> domainsubs = new ArrayList();
 
 		try {
 
@@ -509,7 +509,7 @@ public class SMSMessagingDAO {
 
 			while (rs.next()) {
 
-				domainsubs.add(new Operatorsubs(rs.getString("operator"), rs.getString("domainurl")));
+				domainsubs.add(new OperatorSubscriptionDTO(rs.getString("operator"), rs.getString("domainurl")));
 			}
 		} catch (SQLException e) {
 
