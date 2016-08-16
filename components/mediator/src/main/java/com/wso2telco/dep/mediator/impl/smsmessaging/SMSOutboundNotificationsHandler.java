@@ -23,6 +23,8 @@ import java.util.Map;
 
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONObject;
@@ -54,8 +56,10 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 
 	/** The executor. */
 	private SMSExecutor executor;
-	
-	 MNCQueryClient mncQueryclient = null;
+
+	MNCQueryClient mncQueryclient = null;
+
+	private static Log log = LogFactory.getLog(SMSOutboundNotificationsHandler.class);
 
 	/**
 	 * Instantiates a new SMS outbound notifications handler.
@@ -80,8 +84,8 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 	@Override
 	public boolean handle(MessageContext context) throws CustomException, AxisFault, Exception {
 
-		//String requestid = UID.getUniqueID(Type.ALERTINBOUND.getCode(), context, executor.getApplicationid());
-
+		String requestid = UID.getUniqueID(Type.ALERTINBOUND.getCode(), context, executor.getApplicationid());
+		log.debug("Incoming DN Notification from Gateway : " + executor.getJsonBody().toString());
 		String requestPath = executor.getSubResourcePath();
 		String moSubscriptionId = requestPath.substring(requestPath.lastIndexOf("/") + 1);
 

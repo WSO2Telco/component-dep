@@ -96,11 +96,13 @@ public class SMSHandlerFactory {
 		} else if (ResourceURL.toLowerCase().contains(receivedInfoNotification.toLowerCase())) {
 
 			apiType = RequestType.SMS_INBOUND_NOTIFICATIONS;
+	        log.debug("Invoke SMSInboundNotificationsHandler");
 			handler = new SMSInboundNotificationsHandler(executor);
 			
 		} else if (ResourceURL.toLowerCase().contains(deliveryNotifyString.toLowerCase())) {
 			
             apiType = RequestType.SMS_OUTBOUND_NOTIFICATIONS;
+            log.debug("Invoke SMSOutboundNotificationsHandler");
             handler = new SMSOutboundNotificationsHandler(executor);
             
 		}else if (ResourceURL.toLowerCase().contains(sendSMSKeyString.toLowerCase())

@@ -26,13 +26,17 @@ import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.service.SMSMessagingService;
 import com.wso2telco.mnc.resolver.MNCQueryClient;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONObject;
@@ -53,6 +57,7 @@ public class SMSInboundNotificationsHandler implements SMSHandler {
 	/** The mnc queryclient. */
 	MNCQueryClient mncQueryclient = null;
 
+	private static Log log = LogFactory.getLog(SMSInboundNotificationsHandler.class);
 	/**
 	 * Instantiates a new SMS inbound notifications handler.
 	 *
@@ -77,7 +82,7 @@ public class SMSInboundNotificationsHandler implements SMSHandler {
 	public boolean handle(MessageContext context) throws CustomException, AxisFault, Exception {
 
 		String requestid = UID.getUniqueID(Type.ALERTINBOUND.getCode(), context, executor.getApplicationid());
-
+		log.debug("Incoming MO Notification from Gateway : " + executor.getJsonBody().toString());
 		String requestPath = executor.getSubResourcePath();
 		String moSubscriptionId = requestPath.substring(requestPath.lastIndexOf("/") + 1);
 
