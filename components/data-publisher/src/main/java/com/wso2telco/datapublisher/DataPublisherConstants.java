@@ -102,4 +102,6 @@ public final class DataPublisherConstants {
     
     /** The Constant RESPONSE. */
     public static final String RESPONSE = "com.wso2telco.prop.response";
+    
+    //public static final String MIFE_DEFAULT_OPERATOR = "";
 }
