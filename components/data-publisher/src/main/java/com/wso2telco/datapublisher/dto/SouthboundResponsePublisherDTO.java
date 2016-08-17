@@ -74,6 +74,8 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
     private String channel;
     private String onBehalfOf;
     private String description;
+    private String ussdAction;
+    private String ussdSessionId;
 
     /**
      * Gets the request id.
@@ -344,6 +346,22 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
         this.response = response;
     }
     
+    public String getUssdAction() {
+        return ussdAction;
+    }
+
+    public void setUssdAction(String ussdAction) {
+        this.ussdAction = ussdAction;
+    }
+
+    public String getUssdSessionId() {
+        return ussdSessionId;
+    }
+
+    public void setUssdSessionId(String ussdSessionId) {
+        this.ussdSessionId = ussdSessionId;
+    }
+
     public String getTaxAmount() {
 		return taxAmount;
 	}
@@ -420,7 +438,9 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
                 + "          {'name':'taxAmount','type':'STRING'}," 
                 + "          {'name':'channel','type':'STRING'}," 
                 + "          {'name':'onBehalfOf','type':'STRING'}," 
-                + "          {'name':'description','type':'STRING'}"    
+                + "          {'name':'description','type':'STRING'},"
+                + "          {'name':'ussdAction','type':'STRING'},"
+                + "          {'name':'ussdSessionId','type':'STRING'}" 
                /* + "          {'name':'operationType','type':'INT'},"
                 + "          {'name':'merchantId','type':'STRING'},"
                 + "          {'name':'category','type':'STRING'},"
@@ -440,6 +460,6 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
         return new Object[]{getConsumerKey(), getContext(), getApi_version(), getApi(), getResourcePath(), getMethod(),
             getVersion(), this.getResponse(), getResponseTime(), getServiceTime(), getUsername(), getTenantDomain(), getHostName(),
             getApiPublisher(), getApplicationName(), getApplicationId(),
-            getRequestId(), getOperatorId(), getResponseCode(), getMsisdn(), getChargeAmount(), getPurchaseCategoryCode(), getOperatorRef(), getExceptionId(), getExceptionMessage(), getJsonBody(), getTaxAmount() ,getChannel(), getOnBehalfOf(), getDescription()};
+            getRequestId(), getOperatorId(), getResponseCode(), getMsisdn(), getChargeAmount(), getPurchaseCategoryCode(), getOperatorRef(), getExceptionId(), getExceptionMessage(), getJsonBody(), getTaxAmount() ,getChannel(), getOnBehalfOf(), getDescription(),getUssdAction(), getUssdSessionId()};
     }
 }
