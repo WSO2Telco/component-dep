@@ -124,12 +124,14 @@ public class DataPublisherClient {
         String description = null;
         try {
         	amountTransaction = new JSONObject(jsonBody).optJSONObject("amountTransaction");
-        	JSONObject chargingMetaData = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingMetaData");
-        	taxAmount = chargingMetaData.optString("taxAmount");
-        	channel = chargingMetaData.optString("channel"); 
-        	onBehalfOf = chargingMetaData.optString("onBehalfOf");
-        	JSONObject chargingInformation = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingInformation");
-        	description = chargingInformation.optString("description");
+        	if(amountTransaction !=null){
+    			JSONObject chargingMetaData = amountTransaction.optJSONObject("paymentAmount").optJSONObject("chargingMetaData");
+    			taxAmount = chargingMetaData.optString("taxAmount");
+    			channel = chargingMetaData.optString("channel"); 
+    			onBehalfOf = chargingMetaData.optString("onBehalfOf");
+    			JSONObject chargingInformation = amountTransaction.optJSONObject("paymentAmount").optJSONObject("chargingInformation");
+    			description = chargingInformation.optString("description");
+        	}
         } catch (JSONException e) {
             log.error("Error in converting request to json. " + e.getMessage(), e);
         }
@@ -214,12 +216,14 @@ public class DataPublisherClient {
         String description = null;
            try {
             amountTransaction = new JSONObject(jsonBody).optJSONObject("amountTransaction");
-        	JSONObject chargingMetaData = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingMetaData");
-        	taxAmount = chargingMetaData.optString("taxAmount");
+            if(amountTransaction != null){
+    		JSONObject chargingMetaData = amountTransaction.optJSONObject("paymentAmount").optJSONObject("chargingMetaData");        	
+    		taxAmount = chargingMetaData.optString("taxAmount");
         	channel = chargingMetaData.optString("channel"); 
         	onBehalfOf = chargingMetaData.optString("onBehalfOf");
-        	JSONObject chargingInformation = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingInformation");
+        	JSONObject chargingInformation = amountTransaction.optJSONObject("paymentAmount").optJSONObject("chargingInformation");
         	description = chargingInformation.optString("description");
+            }
         } catch (JSONException e) {
             log.error("Error in converting request to json. " + e.getMessage(), e);
         }
