@@ -95,7 +95,7 @@ public class ValidateNBDeliveryInfoNotification implements IServiceValidate {
 						"address", address),
 				new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY,
 						"operatorCode", operatorCode),
-				new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY,
+				new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL,
 						"filterCriteria", filterCriteria),
 				new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY,
 						"deliveryStatus", deliveryStatus) };

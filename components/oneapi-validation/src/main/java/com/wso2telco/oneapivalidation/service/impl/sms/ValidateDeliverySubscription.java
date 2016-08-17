@@ -68,7 +68,7 @@ public class ValidateDeliverySubscription implements com.wso2telco.oneapivalidat
                 new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_URL, "notifyURL", notifyURL),
                 new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "clientCorrelator", clientCorrelator),
                 new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "callbackData", callbackData),
-                new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "filterCriteria", filterCriteria),};
+                new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "filterCriteria", filterCriteria),};
         
         Validation.checkRequestParams(rules);
 

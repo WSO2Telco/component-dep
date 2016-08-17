@@ -122,12 +122,12 @@ public class ValidateNBOutboundSubscription implements IServiceValidate {
                 } else {
                     rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "senderAddress", ""));
                     rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "operatorCode", ""));
-                    rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "filterCriteria", ""));
+                    rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "filterCriteria", ""));
                 }
             } else {
                 rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "senderAddress", ""));
                 rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "operatorCode", ""));
-                rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "filterCriteria", ""));
+                rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "filterCriteria", ""));
             }
 
             JSONObject objCallbackReference = (JSONObject) objDeliveryReceiptSubscription.get("callbackReference");
