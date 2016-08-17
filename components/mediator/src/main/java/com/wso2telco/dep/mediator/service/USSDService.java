@@ -15,12 +15,19 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.service;
 
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 import com.wso2telco.dep.mediator.dao.USSDDAO;
 import com.wso2telco.dep.mediator.util.ErrorType;
+import com.wso2telco.dep.operatorservice.model.OperatorSubscriptionDTO;
+import com.wso2telco.dep.operatorservice.util.OparatorError;
 import com.wso2telco.utils.exception.BusinessException;
 import com.wso2telco.utils.exception.GenaralError;
+
+import edu.emory.mathcs.backport.java.util.Collections;
 
 public class USSDService {
 
@@ -90,4 +97,70 @@ public class USSDService {
 
 		return true;
 	}
+	
+	public void moUssdSubscriptionEntry(List<OperatorSubscriptionDTO> domainsubs, Integer moSubscriptionId) throws BusinessException { 
+		
+		if (domainsubs == null || domainsubs.size() <= 0) {
+
+			throw new BusinessException(OparatorError.INVALID_OPERATOR_SUBSCRIPTION_LIST);
+		}
+
+		if (moSubscriptionId == null || moSubscriptionId <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_MO_SUBSCRIPTION_ID);
+		}
+		
+		try {
+
+			ussdDAO.moUssdSubscriptionEntry(domainsubs, moSubscriptionId);
+		} catch (Exception e) {
+
+			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
+		}
+
+	}
+		
+	public List<OperatorSubscriptionDTO> moUssdSubscriptionQuery(Integer moSubscriptionId) throws Exception {
+		
+		if (moSubscriptionId == null || moSubscriptionId <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_MO_SUBSCRIPTION_ID);
+		}
+
+		List<OperatorSubscriptionDTO> domainsubs = null;
+
+		try {
+
+			domainsubs = ussdDAO.moUssdSubscriptionQuery(moSubscriptionId);
+		} catch (Exception e) {
+
+			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
+		}
+
+		if (domainsubs != null) {
+
+			return domainsubs;
+		} else {
+
+			return Collections.emptyList();
+		}
+		
+	}
+		
+	public void moUssdSubscriptionDelete(Integer dnSubscriptionId) throws BusinessException {		
+
+			if (dnSubscriptionId == null || dnSubscriptionId <= 0) {
+
+				throw new BusinessException(ErrorType.INVALID_DN_SUBSCRIPTION_ID);
+			}
+
+			try {
+
+				ussdDAO.moUssdSubscriptionDelete(dnSubscriptionId);
+			} catch (Exception e) {
+
+				throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
+			}
+		}
+		
 }

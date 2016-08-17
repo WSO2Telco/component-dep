@@ -15,12 +15,16 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.impl.ussd;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
+import com.wso2telco.dep.mediator.entity.SubscriptionRequest;
 import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.dep.mediator.service.USSDService;
+import com.wso2telco.dep.operatorservice.model.OperatorSubscriptionDTO;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -28,6 +32,7 @@ import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONObject;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -83,7 +88,7 @@ public class MOUSSDSubscribeHandler implements USSDHandler {
 		
 		JSONObject jsonBody = executor.getJsonBody();
 		String notifyUrl = jsonBody.getJSONObject("subscription").getJSONObject("callbackReference").getString("notifyURL");
-
+		Gson gson = new GsonBuilder().serializeNulls().create();
 		Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl);
 		log.info("created subscriptionId  -  " + subscriptionId);	
 
@@ -97,14 +102,20 @@ public class MOUSSDSubscribeHandler implements USSDHandler {
 		executor.removeHeaders(context);
 
 		String responseStr = "";
+		SubscriptionRequest subscription_request;
+		List<OperatorSubscriptionDTO> operatorsubses = new ArrayList<OperatorSubscriptionDTO>();
+		
 		for (OperatorEndpoint endpoint : endpoints) {
 
 			responseStr = executor.makeRequest(endpoint, endpoint.getEndpointref().getAddress(), jsonBody.toString(),true, context,false);
+			subscription_request = gson.fromJson(responseStr, SubscriptionRequest.class);
+			operatorsubses.add(new OperatorSubscriptionDTO(endpoint.getOperator(), subscription_request.getSubscription().getResourceURL()));		
 			executor.handlePluginException(responseStr);
 
 		}
 		JSONObject jObject  = new JSONObject(responseStr);
 		jObject.getJSONObject("subscription").getJSONObject("callbackReference").put("notifyUrl",notifyUrl);
+		ussdService.moUssdSubscriptionEntry(operatorsubses, subscriptionId);
 		String responseobj =jObject.toString();
 		executor.setResponse(context, responseobj);
 		((Axis2MessageContext) context).getAxis2MessageContext().setProperty("messageType", "application/json");

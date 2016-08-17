@@ -124,7 +124,26 @@ public class USSDInboundHandler implements USSDHandler {
 			log.info("Entry deleted " + deleted);
 
 		}
+		
+		if(action.equalsIgnoreCase("mocont")){
+			
+            String subsEndpoint = mediatorConfMap.get("ussdGatewayEndpoint")+subscriptionId;
+            log.info("Subsendpoint - " +subsEndpoint);
+            replyobj.getJSONObject("outboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL", subsEndpoint);
 
+		}
+			
+		if(action.equalsIgnoreCase("mofin")){
+			
+            String subsEndpoint = mediatorConfMap.get("ussdGatewayEndpoint")+subscriptionId;
+            log.info("Subsendpoint - " +subsEndpoint);
+            replyobj.getJSONObject("outboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL", subsEndpoint);
+	
+	        //boolean deleted = dbservice.ussdEntryDelete(Integer.valueOf(axiataid));
+	        //log.info("Entry deleted after session expired" + deleted);
+            
+		}
+			 
 		executor.removeHeaders(context);
 
 		((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 201);
