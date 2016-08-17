@@ -265,15 +265,13 @@ public abstract class RequestExecutor {
 	public boolean initialize(MessageContext context) throws Exception {
 
 		// Get valid operators
-		log.debug("DEBUG LOGS FOR LBS 05 : context = " + context);
-		log.debug("DEBUG LOGS FOR LBS 06 : applicationid = " + applicationid);
+		
 		String applicationid = getApplicationid();
 		OparatorService operatorService = new OparatorService();
 		if (applicationid == null) {
 			throw new CustomException("SVC0001", "", new String[] { "Requested service is not provisioned" });
 		}
 		validoperators = operatorService.getApplicationOperators(Integer.valueOf(applicationid));
-		log.debug("DEBUG LOGS FOR LBS 07 : validoperators = " + validoperators);
 		if (validoperators.isEmpty()) {
 			throw new CustomException("SVC0001", "", new String[] { "Requested service is not provisioned" });
 		}
@@ -281,9 +279,6 @@ public abstract class RequestExecutor {
 		String apiName = (String) context.getProperty("API_NAME");
 		List<Integer> activeoperators = operatorService.getActiveApplicationOperators(Integer.valueOf(applicationid),
 				apiName);
-
-		log.debug("DEBUG LOGS FOR LBS 08 : activeoperators = " + activeoperators);
-
 		List<OperatorApplicationDTO> validoperatorsDup = new ArrayList<OperatorApplicationDTO>();
 		
 		for (OperatorApplicationDTO operator : validoperators) {
@@ -297,16 +292,10 @@ public abstract class RequestExecutor {
 		}
 
 		validoperators = validoperatorsDup;
-
-		log.debug("DEBUG LOGS FOR LBS 09 : validoperators = " + validoperators);
-
 		subResourcePath = (String) context.getProperty("REST_SUB_REQUEST_PATH");
 		resourceUrl = (String) context.getProperty("REST_FULL_REQUEST_PATH");
 		httpMethod = (String) context.getProperty("REST_METHOD");
 
-		log.debug("DEBUG LOGS FOR LBS 10 : subResourcePath = " + subResourcePath);
-		log.debug("DEBUG LOGS FOR LBS 11 : resourceUrl = " + resourceUrl);
-		log.debug("DEBUG LOGS FOR LBS 12 : httpMethod = " + httpMethod);
 
 		/*String jsonPayloadToString = JsonUtil
 				.jsonPayloadToString(((Axis2MessageContext) context).getAxis2MessageContext());
@@ -395,7 +384,6 @@ public abstract class RequestExecutor {
 	public void removeHeaders(MessageContext context) {
 		Object headers = ((Axis2MessageContext) context).getAxis2MessageContext()
 				.getProperty(org.apache.axis2.context.MessageContext.TRANSPORT_HEADERS);
-		log.debug("DEBUG LOGS FOR LBS 14 : headers = " + headers);
 		if (headers != null && headers instanceof Map) {
 			Map headersMap = (Map) headers;
 			headersMap.clear();
@@ -411,7 +399,6 @@ public abstract class RequestExecutor {
 	 *             the custom exception
 	 */
 	public void handlePluginException(String errResp) throws CustomException {
-		log.debug("DEBUG LOGS FOR LBS 15 : errResp = " + errResp);
 		Gson gson = new GsonBuilder().serializeNulls().create();
 		String messagid = null;
 		String variables = null;
@@ -432,13 +419,9 @@ public abstract class RequestExecutor {
 		if (reqerror.getPolicyException() != null) {
 			messagid = reqerror.getPolicyException().getMessageId();
 			variables = reqerror.getPolicyException().getVariables();
-			log.debug("DEBUG LOGS FOR LBS 16 : messagid = " + messagid);
-			log.debug("DEBUG LOGS FOR LBS 17 : variables = " + variables);
 		} else if (reqerror.getServiceException() != null) {
 			messagid = reqerror.getServiceException().getMessageId();
 			variables = reqerror.getServiceException().getVariables();
-			log.debug("DEBUG LOGS FOR LBS 18 : messagid = " + messagid);
-			log.debug("DEBUG LOGS FOR LBS 19 : variables = " + variables);
 		} else {
 			return;
 		}
@@ -461,12 +444,24 @@ public abstract class RequestExecutor {
 	 * @return the string
 	 */
 	public String makeRequest(OperatorEndpoint operatorendpoint, String url, String requestStr, boolean auth, MessageContext messageContext , boolean inclueHeaders) {
-		log.debug("DEBUG LOGS FOR LBS 21 : url = " + url);
-		log.debug("DEBUG LOGS FOR LBS 22 : requestStr = " + requestStr);
-		log.debug("DEBUG LOGS FOR LBS 23 : messageContext = " + messageContext);
 
 		publishRequestData(operatorendpoint, url, requestStr, messageContext);
 
+		 //MO Callback
+        boolean isMoCallBack=false;
+		JSONObject jsonObject = null;
+		try {
+			jsonObject = new JSONObject(requestStr);
+		} catch (JSONException error) {
+			error.printStackTrace();
+		}
+		Iterator<String> keys = jsonObject.keys();
+		if( keys.hasNext() ){
+		   String key = (String)keys.next();
+		   if (key.equals("deliveryInfoNotification")) {
+		   isMoCallBack=true;
+	   }		   
+		}
 		ICallresponse icallresponse = null;
 		String retStr = "";
 		int statusCode = 0;
@@ -489,24 +484,17 @@ public abstract class RequestExecutor {
 				connection.setRequestProperty("Authorization",
 						"Bearer " + getAccessToken(operatorendpoint.getOperator()));
 
-				log.debug("DEBUG LOGS FOR LBS 24 : auth = " + auth);
-				log.debug("DEBUG LOGS FOR LBS 25 : operatorendpoint.getOperator() = " + operatorendpoint.getOperator());
-
 				// Add JWT token header
 				org.apache.axis2.context.MessageContext axis2MessageContext = ((Axis2MessageContext) messageContext)
 						.getAxis2MessageContext();
 				Object headers = axis2MessageContext
 						.getProperty(org.apache.axis2.context.MessageContext.TRANSPORT_HEADERS);
 
-				log.debug("DEBUG LOGS FOR LBS 26 : axis2MessageContext = " + axis2MessageContext);
-				log.debug("DEBUG LOGS FOR LBS 27 : headers = " + headers);
-
 				if (headers != null && headers instanceof Map) {
 					Map headersMap = (Map) headers;
 					String jwtparam = (String) headersMap.get("x-jwt-assertion");
 					if (jwtparam != null) {
 						connection.setRequestProperty("x-jwt-assertion", jwtparam);
-						log.debug("DEBUG LOGS FOR LBS 28 : jwtparam = " + jwtparam);
 					}
 				}
 			}
@@ -553,7 +541,6 @@ public abstract class RequestExecutor {
             wr.flush();
             wr.close();*/
 			statusCode = connection.getResponseCode();
-			log.debug("DEBUG LOGS FOR LBS 29 : statusCode = " + statusCode);
 			if ((statusCode != 200) && (statusCode != 201) && (statusCode != 400) && (statusCode != 401)) {
 				throw new RuntimeException("Failed : HTTP error code : " + statusCode);
 			}
@@ -564,8 +551,7 @@ public abstract class RequestExecutor {
 			} else {
 				is = connection.getErrorStream();
 			}
-			log.debug("DEBUG LOGS FOR LBS 30 : is = " + is);
-
+			
 			BufferedReader br = new BufferedReader(new InputStreamReader(is));
 			String output;
 			while ((output = br.readLine()) != null) {
@@ -585,9 +571,12 @@ public abstract class RequestExecutor {
 			if (connection != null) {
 				connection.disconnect();
 			}
-			publishResponseData(statusCode, retStr, messageContext);
+			  if (isMoCallBack) {
+              	publishResponseData(statusCode, requestStr, messageContext);
+  			}else {
+  				publishResponseData(statusCode, retStr, messageContext);
+  			}
 		}
-		log.debug("DEBUG LOGS FOR LBS 31 : retStr = " + retStr);
 		return retStr;
 	}
 
@@ -699,7 +688,6 @@ public abstract class RequestExecutor {
 			// //FileUtil.getApplicationProperty("wow.api.bearer.token");
 			// DefaultHttpClient httpClient = new DefaultHttpClient();
 			String encurl = (requestStr != null) ? url + requestStr : url;
-			log.debug("DEBUG LOGS FOR LBS 35 : encurl = " + encurl);
 			neturl = new URL(encurl);
 			connection = (HttpURLConnection) neturl.openConnection();
 			connection.setRequestMethod("GET");
@@ -719,7 +707,6 @@ public abstract class RequestExecutor {
 					String jwtparam = (String) headersMap.get("x-jwt-assertion");
 					if (jwtparam != null) {
 						connection.setRequestProperty("x-jwt-assertion", jwtparam);
-						log.debug("DEBUG LOGS FOR LBS 36 : jwtparam = " + jwtparam);
 					}
 				}
 			}
@@ -751,7 +738,6 @@ public abstract class RequestExecutor {
 			}
 
 			statusCode = connection.getResponseCode();
-			log.debug("DEBUG LOGS FOR LBS 37 : statusCode = " + statusCode);
 			if ((statusCode != 200) && (statusCode != 201) && (statusCode != 400) && (statusCode != 401)) {
 				throw new RuntimeException("Failed : HTTP error code : " + statusCode);
 			}
@@ -784,7 +770,6 @@ public abstract class RequestExecutor {
 			}
 			publishResponseData(statusCode, retStr, messageContext);
 		}
-		log.debug("DEBUG LOGS FOR LBS 38 : retStr = " + retStr);
 		return retStr;
 	}
 
@@ -817,7 +802,6 @@ public abstract class RequestExecutor {
 			// String Authtoken = AccessToken;
 			// //FileUtil.getApplicationProperty("wow.api.bearer.token");
 			// DefaultHttpClient httpClient = new DefaultHttpClient();
-			log.debug("DEBUG LOGS FOR LBS 39 : makeDeleteRequest = " + "makeDeleteRequest METHOD");
 
 			String encurl = (requestStr != null) ? url + requestStr : url;
 			neturl = new URL(encurl);
@@ -1177,11 +1161,7 @@ public abstract class RequestExecutor {
 		// set properties for request data publisher
 		messageContext.setProperty(DataPublisherConstants.OPERATOR_ID, operatorendpoint.getOperator());
 		messageContext.setProperty(DataPublisherConstants.SB_ENDPOINT, url);
-
-		log.debug("DEBUG LOGS FOR LBS 39 : url = " + url);
-		log.debug("DEBUG LOGS FOR LBS 40 : requestStr = " + requestStr);
-		log.debug("DEBUG LOGS FOR LBS 41 : messageContext = " + messageContext);
-
+		
 		if (requestStr != null) {
 			// get chargeAmount property for payment API request
 			JSONObject paymentReq = null;
@@ -1225,8 +1205,6 @@ public abstract class RequestExecutor {
 
 		boolean isPaymentReq = false;
 
-		log.debug("DEBUG LOGS FOR LBS 42 : statusCode = " + statusCode);
-		log.debug("DEBUG LOGS FOR LBS 43 : retStr = " + retStr);
 
 		if (retStr != null && !retStr.isEmpty()) {
 			// get serverReferenceCode property for payment API response
