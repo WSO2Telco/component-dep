@@ -32,7 +32,7 @@
 					<tr>
 						<td><select id="apiSelect" style="width: 150px;" name="api">
 								<option value="ussd">USSD</option>
-								<option value="sms">smsmessaging</option>
+								<option value="sms">SMS</option>
 								<option value="location">LBS</option>
 								<option value="payment">Payment</option>
 						</select>
