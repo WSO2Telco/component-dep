@@ -118,9 +118,6 @@ public class DataPublisherClient {
         String tenantDomain = MultitenantUtils.getTenantDomain(username);
         
         JSONObject amountTransaction = null;
-        JSONObject outboundUSSDMessageRequest = null;
-        String ussdAction = null;
-        String ussdSessionId = null;
         String taxAmount = null;
         String channel= null; 
         String onBehalfOf = null;
@@ -135,11 +132,6 @@ public class DataPublisherClient {
     			JSONObject chargingInformation = amountTransaction.optJSONObject("paymentAmount").optJSONObject("chargingInformation");
     			description = chargingInformation.optString("description");
         	}
-        	outboundUSSDMessageRequest = new JSONObject(jsonBody).optJSONObject("outboundUSSDMessageRequest");
-            if(outboundUSSDMessageRequest != null) {
-                ussdAction = outboundUSSDMessageRequest.optString("ussdAction");
-                ussdSessionId = outboundUSSDMessageRequest.optString("sessionID");
-            }
         } catch (JSONException e) {
             log.error("Error in converting request to json. " + e.getMessage(), e);
         }
@@ -176,8 +168,6 @@ public class DataPublisherClient {
         requestPublisherDTO.setChannel(channel);
         requestPublisherDTO.setOnBehalfOf(onBehalfOf);
         requestPublisherDTO.setDescription(description);
-        responsePublisherDTO.setUssdAction(ussdAction);
-        responsePublisherDTO.setUssdSessionId(ussdSessionId);
 
         //added to get Subscriber in end User request scenario 
         String userIdToPublish = requestPublisherDTO.getUsername();
