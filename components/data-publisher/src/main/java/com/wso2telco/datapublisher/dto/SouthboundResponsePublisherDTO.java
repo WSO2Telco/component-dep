@@ -69,6 +69,11 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
     
     /** The response. */
     private int response;
+    
+    private String taxAmount;
+    private String channel;
+    private String onBehalfOf;
+    private String description;
 
     /**
      * Gets the request id.
@@ -338,6 +343,37 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
     public void setResponse(int response) {
         this.response = response;
     }
+    
+    public String getTaxAmount() {
+		return taxAmount;
+	}
+	public void setTaxAmount(String taxAmount) {
+		this.taxAmount = taxAmount;
+	}
+
+	public String getChannel() {
+		return channel;
+	}
+
+	public void setChannel(String channel) {
+		this.channel = channel;
+	}
+
+	public String getOnBehalfOf() {
+		return onBehalfOf;
+	}
+
+	public void setOnBehalfOf(String onBehalfOf) {
+		this.onBehalfOf = onBehalfOf;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
 
     /**
      * Gets the stream definition.
@@ -380,6 +416,11 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
                 + "          {'name':'exceptionId','type':'STRING'},"
                 + "          {'name':'exceptionMessage','type':'STRING'},"
                 + "          {'name':'jsonBody','type':'STRING'}"//look comma
+                + "          {'name':'jsonBody','type':'STRING'}," 
+                + "          {'name':'taxAmount','type':'STRING'}," 
+                + "          {'name':'channel','type':'STRING'}," 
+                + "          {'name':'onBehalfOf','type':'STRING'}," 
+                + "          {'name':'description','type':'STRING'}"    
                /* + "          {'name':'operationType','type':'INT'},"
                 + "          {'name':'merchantId','type':'STRING'},"
                 + "          {'name':'category','type':'STRING'},"
@@ -399,7 +440,6 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
         return new Object[]{getConsumerKey(), getContext(), getApi_version(), getApi(), getResourcePath(), getMethod(),
             getVersion(), this.getResponse(), getResponseTime(), getServiceTime(), getUsername(), getTenantDomain(), getHostName(),
             getApiPublisher(), getApplicationName(), getApplicationId(),
-            getRequestId(), getOperatorId(), getResponseCode(), getMsisdn(), getChargeAmount(), getPurchaseCategoryCode(),
-            getOperatorRef(), getExceptionId(), getExceptionMessage(), getJsonBody()/*, getOperationType(), getMerchantId(), getCategory(), getSubCategory()*/};
+            getRequestId(), getOperatorId(), getResponseCode(), getMsisdn(), getChargeAmount(), getPurchaseCategoryCode(), getOperatorRef(), getExceptionId(), getExceptionMessage(), getJsonBody(), getTaxAmount() ,getChannel(), getOnBehalfOf(), getDescription()};
     }
 }

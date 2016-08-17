@@ -25,6 +25,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.apache.synapse.rest.RESTConstants;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.wso2.carbon.apimgt.gateway.APIMgtGatewayConstants;
 import org.wso2.carbon.apimgt.gateway.handlers.security.APISecurityUtils;
 import org.wso2.carbon.apimgt.gateway.handlers.security.AuthenticationContext;
@@ -114,6 +116,23 @@ public class DataPublisherClient {
         String method = (String) ((Axis2MessageContext) mc).getAxis2MessageContext().getProperty(
                 Constants.Configuration.HTTP_METHOD);
         String tenantDomain = MultitenantUtils.getTenantDomain(username);
+        
+        JSONObject amountTransaction = null;
+        String taxAmount = null;
+        String channel= null; 
+        String onBehalfOf = null;
+        String description = null;
+        try {
+        	amountTransaction = new JSONObject(jsonBody).optJSONObject("amountTransaction");
+        	JSONObject chargingMetaData = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingMetaData");
+        	taxAmount = chargingMetaData.optString("taxAmount");
+        	channel = chargingMetaData.optString("channel"); 
+        	onBehalfOf = chargingMetaData.optString("onBehalfOf");
+        	JSONObject chargingInformation = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingInformation");
+        	description = chargingInformation.optString("description");
+        } catch (JSONException e) {
+            log.error("Error in converting request to json. " + e.getMessage(), e);
+        }
 
         SouthboundRequestPublisherDTO requestPublisherDTO = new SouthboundRequestPublisherDTO();
         requestPublisherDTO.setConsumerKey(consumerKey);
@@ -143,6 +162,10 @@ public class DataPublisherClient {
         requestPublisherDTO.setChargeAmount((String) mc.getProperty(DataPublisherConstants.CHARGE_AMOUNT));
         requestPublisherDTO.setPurchaseCategoryCode((String) mc.getProperty(DataPublisherConstants.PAY_CATEGORY));
         requestPublisherDTO.setJsonBody(jsonBody);
+        requestPublisherDTO.setTaxAmount(taxAmount);
+        requestPublisherDTO.setChannel(channel);
+        requestPublisherDTO.setOnBehalfOf(onBehalfOf);
+        requestPublisherDTO.setDescription(description);
 
         //added to get Subscriber in end User request scenario 
         String userIdToPublish = requestPublisherDTO.getUsername();
@@ -182,6 +205,24 @@ public class DataPublisherClient {
         Long currentTime = System.currentTimeMillis();
 
         Long serviceTime = currentTime - (Long) mc.getProperty(DataPublisherConstants.REQUEST_TIME);
+        
+        JSONObject amountTransaction = null;
+        String taxAmount = null;
+        String channel= null; 
+   
+        String onBehalfOf = null;
+        String description = null;
+           try {
+            amountTransaction = new JSONObject(jsonBody).optJSONObject("amountTransaction");
+        	JSONObject chargingMetaData = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingMetaData");
+        	taxAmount = chargingMetaData.optString("taxAmount");
+        	channel = chargingMetaData.optString("channel"); 
+        	onBehalfOf = chargingMetaData.optString("onBehalfOf");
+        	JSONObject chargingInformation = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingInformation");
+        	description = chargingInformation.optString("description");
+        } catch (JSONException e) {
+            log.error("Error in converting request to json. " + e.getMessage(), e);
+        }
 
         SouthboundResponsePublisherDTO responsePublisherDTO = new SouthboundResponsePublisherDTO();
         responsePublisherDTO.setConsumerKey((String) mc.getProperty(APIMgtGatewayConstants.CONSUMER_KEY));
@@ -210,6 +251,11 @@ public class DataPublisherClient {
         responsePublisherDTO.setExceptionId((String) mc.getProperty(DataPublisherConstants.EXCEPTION_ID));
         responsePublisherDTO.setExceptionMessage((String) mc.getProperty(DataPublisherConstants.EXCEPTION_MESSAGE));
         responsePublisherDTO.setJsonBody(jsonBody);
+        responsePublisherDTO.setTaxAmount(taxAmount);
+        responsePublisherDTO.setChannel(channel);
+        responsePublisherDTO.setOnBehalfOf(onBehalfOf);
+        responsePublisherDTO.setDescription(description);
+
         if (mc.getProperty(DataPublisherConstants.RESPONSE) != null) {
             responsePublisherDTO.setResponse(Integer.parseInt((String) mc.getProperty(DataPublisherConstants.RESPONSE)));
         } else {
