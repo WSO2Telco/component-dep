@@ -114,7 +114,8 @@ public class MOUSSDSubscribeHandler implements USSDHandler {
 
 		}
 		JSONObject jObject  = new JSONObject(responseStr);
-		jObject.getJSONObject("subscription").getJSONObject("callbackReference").put("notifyUrl",notifyUrl);
+		jObject.getJSONObject("subscription").getJSONObject("callbackReference").put("notifyURL",notifyUrl);
+		jObject.getJSONObject("subscription").put("resourceURL",mediatorConfMap.get("hubGateway")+executor.getResourceUrl()+"/"+subscriptionId);
 		ussdService.moUssdSubscriptionEntry(operatorsubses, subscriptionId);
 		String responseobj =jObject.toString();
 		executor.setResponse(context, responseobj);
