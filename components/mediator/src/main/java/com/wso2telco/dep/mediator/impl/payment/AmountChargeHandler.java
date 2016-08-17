@@ -190,8 +190,8 @@ public class AmountChargeHandler implements PaymentHandler {
 			executor.handlePluginException(responseStr);
 		}
 
-		responseStr = responseHandler.makePaymentResponse(responseStr, clientCorrelator, requestResourceURL, requestid);
-
+		//responseStr = responseHandler.makePaymentResponse(responseStr, clientCorrelator, requestResourceURL, requestid);
+		responseStr = responseHandler.makePaymentResponseContext(context, responseStr, clientCorrelator, requestResourceURL, requestid);
 		// set response re-applied
 		executor.setResponse(context, responseStr);
 
