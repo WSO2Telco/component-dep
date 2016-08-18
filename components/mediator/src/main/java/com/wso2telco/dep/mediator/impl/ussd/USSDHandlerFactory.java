@@ -17,6 +17,8 @@ package com.wso2telco.dep.mediator.impl.ussd;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.wso2telco.dep.mediator.entity.ussd.NBUSSDSubscriptionHandler;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 
 // TODO: Auto-generated Javadoc
@@ -49,7 +51,16 @@ public class USSDHandlerFactory {
 			if ((!lastWord.equals(subscriptions))) {
 				handler = new StopMOUSSDSubscriptionHandler(executor);
 			} else {
-				handler = new MOUSSDSubscribeHandler(executor);
+				try {
+                    if(!executor.getJsonBody().getJSONObject("subscription").isNull("shortCodes")){
+                        handler = new NBUSSDSubscriptionHandler(executor);
+                    } else {
+                        handler = new MOUSSDSubscribeHandler(executor);
+                    }
+
+                } catch (Exception e) {
+
+                }
 			}
 		} else if (ResourceURL.toLowerCase().contains(sendUSSDKeyString.toLowerCase())) {
             apiType = RequestType.SEND_USSD;
