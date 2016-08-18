@@ -68,7 +68,7 @@ public class ValidateNBDeliveryInfoNotification implements IServiceValidate {
 						.getString("operatorCode"));
 			}
 
-			if (objDeliveryInfo.get("filterCriteria") != null) {
+			 if (!objDeliveryInfo.isNull("filterCriteria")) {
 
 				filterCriteria = nullOrTrimmed(objDeliveryInfo
 						.getString("filterCriteria"));
