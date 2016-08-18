@@ -23,16 +23,17 @@ public class Subscription {
 
 
     private CallbackReference callbackReference;
-    private String destinationAddress;
+    private String shortCode;
+
     private String clientCorrelator;
     private String resourceURL;
 
-    public String getDestinationAddress() {
-        return destinationAddress;
-    }
-
-    public void setDestinationAddress(String destinationAddress) {
-        this.destinationAddress = destinationAddress;
+    public String getShortCode() {
+        return shortCode;
+ 	}
+    
+    public void setShortCode(String shortCode) {
+    	this.shortCode = shortCode;
     }
 
     public CallbackReference getCallbackReference() {

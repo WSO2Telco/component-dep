@@ -131,7 +131,7 @@ public class NBUSSDSubscriptionHandler implements USSDHandler {
 
                                 if(subscription_rsponse.getSubscription() != null){
                                     shortCodeObj.setStatus("Created");
-                                    shortCodeObj.setShortCode(subscription_rsponse.getSubscription().getDestinationAddress());
+                                    shortCodeObj.setShortCode(subscription_rsponse.getSubscription().getShortCode());
                                 } else {
                                     shortCodeObj.setStatus("Not Created");
                                 }
