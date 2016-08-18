@@ -122,8 +122,8 @@ public class DataPublisherClient {
         String channel= null; 
         String onBehalfOf = null;
         String description = null;
-        try {
-        	if (!jsonBody.isEmpty() && jsonBody != null) {
+       	if (!jsonBody.isEmpty() && jsonBody != null) {
+       		try {
         		amountTransaction = new JSONObject(jsonBody).optJSONObject("amountTransaction");
         		if (amountTransaction != null) {
 		        	JSONObject chargingMetaData = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingMetaData");
@@ -133,10 +133,10 @@ public class DataPublisherClient {
 		        	JSONObject chargingInformation = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingInformation");
 		        	description = chargingInformation.optString("description");
         			}		            
-				}
-        } catch (JSONException e) {
-            log.error("Error in converting request to json. " + e.getMessage(), e);
-        }
+				} catch (JSONException e) {
+                log.error("Error in converting request to json. " + e.getMessage(), e);
+            }
+        } 
 
         SouthboundRequestPublisherDTO requestPublisherDTO = new SouthboundRequestPublisherDTO();
         requestPublisherDTO.setConsumerKey(consumerKey);
@@ -215,9 +215,9 @@ public class DataPublisherClient {
         String channel= null; 
    
         String onBehalfOf = null;
-        String description = null;
-           try {
-        	   if (!jsonBody.isEmpty() && jsonBody != null) {
+        String description = null;          
+    	   if (!jsonBody.isEmpty() && jsonBody != null) {
+    		   try {
         		   amountTransaction = new JSONObject(jsonBody).optJSONObject("amountTransaction");
         		   if (amountTransaction != null) {
 			        	JSONObject chargingMetaData = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingMetaData");
@@ -227,10 +227,11 @@ public class DataPublisherClient {
 			        	JSONObject chargingInformation = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingInformation");
 			        	description = chargingInformation.optString("description");
         		   }
-        	   }
-        } catch (JSONException e) {
-            log.error("Error in converting request to json. " + e.getMessage(), e);
-        }
+    		   }catch (JSONException e) {
+        	            log.error("Error in converting request to json. " + e.getMessage(), e);
+        	        }
+        	  
+        } 
 
         SouthboundResponsePublisherDTO responsePublisherDTO = new SouthboundResponsePublisherDTO();
         responsePublisherDTO.setConsumerKey((String) mc.getProperty(APIMgtGatewayConstants.CONSUMER_KEY));
