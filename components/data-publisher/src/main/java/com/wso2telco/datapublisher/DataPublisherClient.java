@@ -122,7 +122,7 @@ public class DataPublisherClient {
         String channel= null; 
         String onBehalfOf = null;
         String description = null;
-       	if (!jsonBody.isEmpty() && jsonBody != null) {
+        if (jsonBody != null && !jsonBody.isEmpty()) {
        		try {
         		amountTransaction = new JSONObject(jsonBody).optJSONObject("amountTransaction");
         		if (amountTransaction != null) {
@@ -216,7 +216,7 @@ public class DataPublisherClient {
    
         String onBehalfOf = null;
         String description = null;          
-    	   if (!jsonBody.isEmpty() && jsonBody != null) {
+        if (jsonBody != null && !jsonBody.isEmpty()) {
     		   try {
         		   amountTransaction = new JSONObject(jsonBody).optJSONObject("amountTransaction");
         		   if (amountTransaction != null) {
