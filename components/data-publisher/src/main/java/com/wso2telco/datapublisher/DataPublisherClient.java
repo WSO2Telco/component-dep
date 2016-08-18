@@ -123,13 +123,17 @@ public class DataPublisherClient {
         String onBehalfOf = null;
         String description = null;
         try {
-        	amountTransaction = new JSONObject(jsonBody).optJSONObject("amountTransaction");
-        	JSONObject chargingMetaData = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingMetaData");
-        	taxAmount = chargingMetaData.optString("taxAmount");
-        	channel = chargingMetaData.optString("channel"); 
-        	onBehalfOf = chargingMetaData.optString("onBehalfOf");
-        	JSONObject chargingInformation = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingInformation");
-        	description = chargingInformation.optString("description");
+        	if (!jsonBody.isEmpty() && jsonBody != null) {
+        		amountTransaction = new JSONObject(jsonBody).optJSONObject("amountTransaction");
+        		if (amountTransaction != null) {
+		        	JSONObject chargingMetaData = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingMetaData");
+		        	taxAmount = chargingMetaData.optString("taxAmount");
+		        	channel = chargingMetaData.optString("channel"); 
+		        	onBehalfOf = chargingMetaData.optString("onBehalfOf");
+		        	JSONObject chargingInformation = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingInformation");
+		        	description = chargingInformation.optString("description");
+        			}		            
+				}
         } catch (JSONException e) {
             log.error("Error in converting request to json. " + e.getMessage(), e);
         }
@@ -168,12 +172,12 @@ public class DataPublisherClient {
         requestPublisherDTO.setDescription(description);
 
         //added to get Subscriber in end User request scenario 
-        String userIdToPublish = requestPublisherDTO.getUsername();
+       /* String userIdToPublish = requestPublisherDTO.getUsername();
         if (userIdToPublish != null && userIdToPublish.contains("@")) {
             String[] userIdArray = userIdToPublish.split("@");
             userIdToPublish = userIdArray[0];
             requestPublisherDTO.setUsername(userIdToPublish);
-        }
+        }*/
 
         publisher.publishEvent(requestPublisherDTO);
 
@@ -213,13 +217,17 @@ public class DataPublisherClient {
         String onBehalfOf = null;
         String description = null;
            try {
-            amountTransaction = new JSONObject(jsonBody).optJSONObject("amountTransaction");
-        	JSONObject chargingMetaData = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingMetaData");
-        	taxAmount = chargingMetaData.optString("taxAmount");
-        	channel = chargingMetaData.optString("channel"); 
-        	onBehalfOf = chargingMetaData.optString("onBehalfOf");
-        	JSONObject chargingInformation = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingInformation");
-        	description = chargingInformation.optString("description");
+        	   if (!jsonBody.isEmpty() && jsonBody != null) {
+        		   amountTransaction = new JSONObject(jsonBody).optJSONObject("amountTransaction");
+        		   if (amountTransaction != null) {
+			        	JSONObject chargingMetaData = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingMetaData");
+			        	taxAmount = chargingMetaData.optString("taxAmount");
+			        	channel = chargingMetaData.optString("channel"); 
+			        	onBehalfOf = chargingMetaData.optString("onBehalfOf");
+			        	JSONObject chargingInformation = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingInformation");
+			        	description = chargingInformation.optString("description");
+        		   }
+        	   }
         } catch (JSONException e) {
             log.error("Error in converting request to json. " + e.getMessage(), e);
         }
@@ -262,18 +270,18 @@ public class DataPublisherClient {
             responsePublisherDTO.setResponse(1);
         }
 
-        responsePublisherDTO.setOperationType((Integer) mc.getProperty(DataPublisherConstants.OPERATION_TYPE));
+       /* responsePublisherDTO.setOperationType((Integer) mc.getProperty(DataPublisherConstants.OPERATION_TYPE));
         responsePublisherDTO.setMerchantId((String) mc.getProperty(DataPublisherConstants.MERCHANT_ID));
         responsePublisherDTO.setCategory((String) mc.getProperty(DataPublisherConstants.CATEGORY));
-        responsePublisherDTO.setSubCategory((String) mc.getProperty(DataPublisherConstants.SUB_CATEGORY));
+        responsePublisherDTO.setSubCategory((String) mc.getProperty(DataPublisherConstants.SUB_CATEGORY));*/
 
         //added to get Subscriber in end User request scenario 
-        String userIdToPublish = responsePublisherDTO.getUsername();
+       /* String userIdToPublish = responsePublisherDTO.getUsername();
         if (userIdToPublish != null && userIdToPublish.contains("@")) {
             String[] userIdArray = userIdToPublish.split("@");
             userIdToPublish = userIdArray[0];
             responsePublisherDTO.setUsername(userIdToPublish);
-        }
+        }*/
 
         publisher.publishEvent(responsePublisherDTO);
     }
