@@ -122,6 +122,8 @@ public class DataPublisherClient {
         String channel= null; 
         String onBehalfOf = null;
         String description = null;
+        String transactionOperationStatus = null;
+        String referenceCode =null;
         if (jsonBody != null && !jsonBody.isEmpty()) {
        		try {
         		amountTransaction = new JSONObject(jsonBody).optJSONObject("amountTransaction");
@@ -132,6 +134,8 @@ public class DataPublisherClient {
 		        	onBehalfOf = chargingMetaData.optString("onBehalfOf");
 		        	JSONObject chargingInformation = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingInformation");
 		        	description = chargingInformation.optString("description");
+		        	transactionOperationStatus = amountTransaction.optString("transactionOperationStatus");
+                    referenceCode = amountTransaction.optString("referenceCode");
         			}		            
 				} catch (JSONException e) {
                 log.error("Error in converting request to json. " + e.getMessage(), e);
@@ -170,6 +174,8 @@ public class DataPublisherClient {
         requestPublisherDTO.setChannel(channel);
         requestPublisherDTO.setOnBehalfOf(onBehalfOf);
         requestPublisherDTO.setDescription(description);
+        requestPublisherDTO.setTransactionOperationStatus(transactionOperationStatus);
+        requestPublisherDTO.setReferenceCode(referenceCode);
 
         //added to get Subscriber in end User request scenario 
        /* String userIdToPublish = requestPublisherDTO.getUsername();
@@ -211,11 +217,15 @@ public class DataPublisherClient {
         Long serviceTime = currentTime - (Long) mc.getProperty(DataPublisherConstants.REQUEST_TIME);
         
         JSONObject amountTransaction = null;
+        JSONObject outboundUSSDMessageRequest = null;
         String taxAmount = null;
         String channel= null; 
-   
         String onBehalfOf = null;
-        String description = null;          
+        String description = null;    
+        String ussdAction = null;
+        String ussdSessionId = null;
+		String transactionOperationStatus = null;
+		String referenceCode = null;
         if (jsonBody != null && !jsonBody.isEmpty()) {
     		   try {
         		   amountTransaction = new JSONObject(jsonBody).optJSONObject("amountTransaction");
@@ -226,7 +236,14 @@ public class DataPublisherClient {
 			        	onBehalfOf = chargingMetaData.optString("onBehalfOf");
 			        	JSONObject chargingInformation = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingInformation");
 			        	description = chargingInformation.optString("description");
+			        	transactionOperationStatus = amountTransaction.optString("transactionOperationStatus");
+	                    referenceCode = amountTransaction.optString("referenceCode");
         		   }
+        		   outboundUSSDMessageRequest = new JSONObject(jsonBody).optJSONObject("outboundUSSDMessageRequest");
+                   if(outboundUSSDMessageRequest != null) {
+                       ussdAction = outboundUSSDMessageRequest.optString("ussdAction");
+                       ussdSessionId = outboundUSSDMessageRequest.optString("sessionID");
+                   }
     		   }catch (JSONException e) {
         	            log.error("Error in converting request to json. " + e.getMessage(), e);
         	        }
@@ -264,6 +281,10 @@ public class DataPublisherClient {
         responsePublisherDTO.setChannel(channel);
         responsePublisherDTO.setOnBehalfOf(onBehalfOf);
         responsePublisherDTO.setDescription(description);
+        responsePublisherDTO.setUssdAction(ussdAction);
+        responsePublisherDTO.setUssdSessionId(ussdSessionId);
+		responsePublisherDTO.setTransactionOperationStatus(transactionOperationStatus);
+        responsePublisherDTO.setReferenceCode(referenceCode);
 
         if (mc.getProperty(DataPublisherConstants.RESPONSE) != null) {
             responsePublisherDTO.setResponse(Integer.parseInt((String) mc.getProperty(DataPublisherConstants.RESPONSE)));

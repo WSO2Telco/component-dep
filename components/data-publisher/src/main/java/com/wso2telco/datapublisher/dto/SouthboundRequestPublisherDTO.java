@@ -47,6 +47,8 @@ public class SouthboundRequestPublisherDTO extends RequestPublisherDTO {
     private String channel;
     private String onBehalfOf;
     private String description;
+    private String transactionOperationStatus;
+    private String referenceCode;
 
     /**
      * Gets the request id.
@@ -187,7 +189,23 @@ public class SouthboundRequestPublisherDTO extends RequestPublisherDTO {
 	public void setDescription(String description) {
 		this.description = description;
 	}
-
+	 public String getTransactionOperationStatus() {
+        return transactionOperationStatus;
+     }
+ 
+     public void setTransactionOperationStatus(String transactionOperationStatus) {
+         this.transactionOperationStatus = transactionOperationStatus;
+     }
+ 
+     public String getReferenceCode() {
+         return referenceCode;
+     }
+ 
+     public void setReferenceCode(String referenceCode) {
+         this.referenceCode = referenceCode;
+     }
+		 
+		    
     /**
      * Gets the stream definition.
      *
@@ -228,7 +246,9 @@ public class SouthboundRequestPublisherDTO extends RequestPublisherDTO {
                 "          {{'name':'taxAmount','type':'STRING'}," +
                 "          {'name':'channel','type':'STRING'}," +
                 "          {'name':'onBehalfOf','type':'STRING'}," +
-                "          {'name':'description','type':'STRING'}" +
+                "          {'name':'description','type':'STRING'}," +
+                "          {'name':'transactionOperationStatus','type':'STRING'}," +
+                "          {'name':'referenceCode','type':'STRING'}" +
                 "  ]" +
                 "}";
 
@@ -244,7 +264,6 @@ public class SouthboundRequestPublisherDTO extends RequestPublisherDTO {
         return new Object[]{getConsumerKey(),getContext(),getApi_version(),getApi(), getResourcePath(),getMethod(),
                             getVersion(), getRequestCount(),getRequestTime(),getUsername(),getTenantDomain(),getHostName(),
                             getApiPublisher(), getApplicationName(), getApplicationId(),
-                            getRequestId(), getOperatorId(), getSbEndpoint(), getChargeAmount(), getPurchaseCategoryCode(), getJsonBody() ,getTaxAmount() ,getChannel(), getOnBehalfOf(), getDescription()};
-
+                            getRequestId(), getOperatorId(), getSbEndpoint(), getChargeAmount(), getPurchaseCategoryCode(), getJsonBody(), getTaxAmount() ,getChannel(), getOnBehalfOf(), getDescription(),getTransactionOperationStatus(),getReferenceCode()};
     }
 }

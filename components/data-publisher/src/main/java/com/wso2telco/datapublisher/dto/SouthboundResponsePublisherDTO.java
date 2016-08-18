@@ -74,6 +74,10 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
     private String channel;
     private String onBehalfOf;
     private String description;
+    private String ussdAction;
+	private String ussdSessionId;
+	private String transactionOperationStatus;
+	private String referenceCode;
 
     /**
      * Gets the request id.
@@ -374,6 +378,38 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
 	public void setDescription(String description) {
 		this.description = description;
 	}
+	public String getUssdAction() {
+        return ussdAction;
+    }
+
+    public void setUssdAction(String ussdAction) {
+        this.ussdAction = ussdAction;
+    }
+
+    public String getUssdSessionId() {
+        return ussdSessionId;
+    }
+
+    public void setUssdSessionId(String ussdSessionId) {
+        this.ussdSessionId = ussdSessionId;
+    }
+
+    public String getTransactionOperationStatus() {
+        return transactionOperationStatus;
+    }
+
+    public void setTransactionOperationStatus(String transactionOperationStatus) {
+        this.transactionOperationStatus = transactionOperationStatus;
+    }
+
+    public String getReferenceCode() {
+        return referenceCode;
+    }
+
+    public void setReferenceCode(String referenceCode) {
+        this.referenceCode = referenceCode;
+    }
+		
 
     /**
      * Gets the stream definition.
@@ -420,11 +456,11 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
                 + "          {'name':'taxAmount','type':'STRING'}," 
                 + "          {'name':'channel','type':'STRING'}," 
                 + "          {'name':'onBehalfOf','type':'STRING'}," 
-                + "          {'name':'description','type':'STRING'}"    
-               /* + "          {'name':'operationType','type':'INT'},"
-                + "          {'name':'merchantId','type':'STRING'},"
-                + "          {'name':'category','type':'STRING'},"
-                + "          {'name':'subCategory','type':'STRING'}"*/
+                + "          {'name':'description','type':'STRING'},"
+                + "          {'name':'ussdAction','type':'STRING'},"
+                + "          {'name':'ussdSessionId','type':'STRING'},"
+                + "          {'name':'transactionOperationStatus','type':'STRING'},"
+                + "          {'name':'referenceCode','type':'STRING'}"
                 + "  ]"
                 + "}";
 
@@ -440,6 +476,7 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
         return new Object[]{getConsumerKey(), getContext(), getApi_version(), getApi(), getResourcePath(), getMethod(),
             getVersion(), this.getResponse(), getResponseTime(), getServiceTime(), getUsername(), getTenantDomain(), getHostName(),
             getApiPublisher(), getApplicationName(), getApplicationId(),
-            getRequestId(), getOperatorId(), getResponseCode(), getMsisdn(), getChargeAmount(), getPurchaseCategoryCode(), getOperatorRef(), getExceptionId(), getExceptionMessage(), getJsonBody(), getTaxAmount() ,getChannel(), getOnBehalfOf(), getDescription()};
-    }
+            getRequestId(), getOperatorId(), getResponseCode(), getMsisdn(), getChargeAmount(), getPurchaseCategoryCode(),
+            getOperatorRef(), getExceptionId(), getExceptionMessage(), getJsonBody(), getTaxAmount() ,getChannel(),
+            getOnBehalfOf(), getDescription(),getUssdAction(), getUssdSessionId(),getTransactionOperationStatus(),getReferenceCode()};    }
 }
