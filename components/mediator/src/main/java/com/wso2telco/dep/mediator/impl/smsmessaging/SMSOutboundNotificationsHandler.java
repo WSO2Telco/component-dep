@@ -83,7 +83,8 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 	public boolean handle(MessageContext context) throws CustomException, AxisFault, Exception {
 
 		String requestid = UID.getUniqueID(Type.ALERTINBOUND.getCode(), context, executor.getApplicationid());
-		log.info("Incoming DN Notification from Gateway : " + executor.getJsonBody().toString());
+		log.info("Incoming DN Notification from Gateway : " + executor.getJsonBody().toString()
+				+ " Request ID: " + UID.getRequestID(context));		
 		String requestPath = executor.getSubResourcePath();
 		String moSubscriptionId = requestPath.substring(requestPath.lastIndexOf("/") + 1);
 

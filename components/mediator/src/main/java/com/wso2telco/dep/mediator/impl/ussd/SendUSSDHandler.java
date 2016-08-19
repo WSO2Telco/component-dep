@@ -110,9 +110,10 @@ public class SendUSSDHandler implements USSDHandler {
         operatorId=ussdService.getOperatorIdByOperator(endpoint.getOperator());
         
         Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl ,consumerKey,operatorId,userId);
+        log.info("created subscriptionId  -  " + subscriptionId + " Request ID: " + UID.getRequestID(context));
 		
 		String subsEndpoint = mediatorConfMap.get("ussdGatewayEndpoint") + subscriptionId;
-		log.info("Subsendpoint - " + subsEndpoint);
+		log.info("Subsendpoint - " +subsEndpoint + " Request ID: " + UID.getRequestID(context));
 
 		jsonBody.getJSONObject("outboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL",
 				subsEndpoint);
@@ -136,7 +137,7 @@ public class SendUSSDHandler implements USSDHandler {
 			
 		}*/
 		String sending_add = endpoint.getEndpointref().getAddress();
-		log.info("sending endpoint found: " + sending_add);
+		log.info("sending endpoint found: " + sending_add + " Request ID: " + UID.getRequestID(context));
 
 		executor.removeHeaders(context);
 

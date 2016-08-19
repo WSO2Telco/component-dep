@@ -59,7 +59,7 @@ public class ResponseHandler {
 	 * @return the string
 	 */
 	public String makeSmsSendResponse(MessageContext mc, String requestBody, Map<String, SendSMSResponse> responseMap, String requestid) {
-		log.info("Building Send SMS Response: " + requestBody);
+		log.info("Building Send SMS Response: " + requestBody+ " Request ID: " + UID.getRequestID(mc));
 		Gson gson = new GsonBuilder().create();
 		SendSMSResponse finalResponse = gson.fromJson(requestBody, SendSMSResponse.class);
 
@@ -225,8 +225,7 @@ public class ResponseHandler {
 	 * @return the string
 	 */
 	public String makeQuerySmsStatusResponse(MessageContext mc, String senderAddress, String requestid, Map<String, QuerySMSStatusResponse> responseMap) {
-		log.info("Building Query SMS Status Response");
-
+		log.info("Building Query SMS Status Response" + " Request ID: " + UID.getRequestID(mc));
 		Gson gson = new GsonBuilder().create();
 		QuerySMSStatusResponse finalResponse = new QuerySMSStatusResponse();
 

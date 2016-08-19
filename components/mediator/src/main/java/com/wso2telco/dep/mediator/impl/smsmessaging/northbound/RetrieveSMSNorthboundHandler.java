@@ -105,8 +105,10 @@ public boolean handle(MessageContext context) throws CustomException,
 	JSONObject jsonBody = executor.getJsonBody();
 	NorthboundRetrieveRequest nbRetrieveRequest = gson.fromJson(
 			jsonBody.toString(), NorthboundRetrieveRequest.class);
-	log.info("-------------------------------------- Retrieve messages sent to your Web application --------------------------------------");
-    log.info("Retrieve northbound request body : " + gson.toJson(nbRetrieveRequest));
+	log.info("-------------------------------------- Retrieve messages sent to your Web application --------------------------------------"
+		 + " Request ID: " + UID.getRequestID(context));
+	log.info("Retrieve northbound request body : " + gson.toJson(nbRetrieveRequest)
+	     + " Request ID: " + UID.getRequestID(context));
 
 
 	List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(API_TYPE,
@@ -216,7 +218,8 @@ public boolean handle(MessageContext context) throws CustomException,
 				retStr = executor.makeRequest(aEndpoint, ac.getUri(),obj.toString(), true, context, false);
 			}
 
-			log.info("Retrieved messages of " + aEndpoint.getOperator() + " operator: " + retStr);
+			log.info("Retrieved messages of " + aEndpoint.getOperator() + " operator: " + retStr
+					+ " Request ID: " + UID.getRequestID(context));
 
 			/* add criteria and operatorCode to the southbound response */
 			NorthboundRetrieveResponse sbRetrieveResponse = gson.fromJson(retStr, NorthboundRetrieveResponse.class);

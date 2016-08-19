@@ -211,7 +211,7 @@ public class SendSMSHandler implements SMSHandler {
 			SendSMSResponse sendSMSResponse = null;
 			address = listaddr.getString(i);
 
-			log.info("id : " + address);
+            log.info("id : " + address + " Request ID: " + UID.getRequestID(smsmc));
 			smsmc.setProperty(MSISDNConstants.USER_MSISDN, address.substring(5));
 			OparatorEndPointSearchDTO searchDTO = new OparatorEndPointSearchDTO();
 			searchDTO.setApiName(apitype);
@@ -231,7 +231,7 @@ public class SendSMSHandler implements SMSHandler {
 			sendreq.getOutboundSMSMessageRequest().setAddress(sendAdr);
 			jsonStr = new Gson().toJson(sendreq);
 			String sending_add = endpoint.getEndpointref().getAddress();
-			log.info("sending endpoint found: " + sending_add);
+			log.info("sending endpoint found: " + sending_add + " Request ID: " + UID.getRequestID(smsmc));
 
 			String responseStr = executor.makeRequest(endpoint, sending_add, jsonStr, true, smsmc,false);
 			sendSMSResponse = parseJsonResponse(responseStr);

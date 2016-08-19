@@ -244,8 +244,8 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 
                         String notifyres = executor.makeRequest(endpoint, endpoint.getEndpointref().getAddress(), sbRequestBody, true, context, false);
 
-                        log.info("Subscription southbound response body of " + endpoint.getOperator() + " operator: " + notifyres);
-
+                        log.info("Subscription southbound response body of " + endpoint.getOperator() + " operator: " + notifyres 
+                        		+ " Request ID: " + UID.getRequestID(context));
                         if (notifyres == null) {
                             destinationAddresses[i].setStatus("Failed");
                             /*throw new CustomException("POL0299", "", new String[]{"Error registering subscription"});*/
@@ -296,7 +296,8 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 
             String nbResponseBody = gson.toJson(nbSubsrequst);
 
-            log.info("Subscription northbound response body : " + nbResponseBody);
+            log.info("Subscription northbound response body : " + nbResponseBody
+                    + " Request ID: " + UID.getRequestID(context));
 
             executor.removeHeaders(context);
             ((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 201);

@@ -45,6 +45,7 @@ import com.wso2telco.datapublisher.DataPublisherConstants;
 import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.InboundSMSMessage;
 import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.InboundSMSMessageList;
 import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.SouthboundRetrieveResponse;
+import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.operatorservice.model.OperatorApplicationDTO;
 import com.wso2telco.dep.operatorservice.service.OparatorService;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
@@ -515,11 +516,13 @@ public abstract class RequestExecutor {
 			connection.setDoInput(true);
 			connection.setDoOutput(true);
 		
-			log.info("Southbound Request URL: " + connection.getRequestMethod() + " " + connection.getURL());
-            if (log.isDebugEnabled()) {
-                log.debug("Southbound Request Headers: " + connection.getRequestProperties());
-            }
-            log.info("Southbound Request Body: " + requestStr);
+			 log.info("Southbound Request URL: " + connection.getRequestMethod() + " " + connection.getURL() 
+	            		+ " Request ID: " + UID.getRequestID(messageContext));
+	            if (log.isDebugEnabled()) {
+	                log.debug("Southbound Request Headers: " + connection.getRequestProperties());
+	            }
+	            log.info("Southbound Request Body: " + requestStr 
+	            		+ " Request ID: " + UID.getRequestID(messageContext));
 			
 			//========================UNICODE PATCH=========================================
 			BufferedOutputStream wr = new BufferedOutputStream(connection.getOutputStream());
@@ -552,11 +555,13 @@ public abstract class RequestExecutor {
 			}
 			br.close();
 		
-			log.info("Southbound Response Status: " + statusCode + " " + connection.getResponseMessage());
+		   log.info("Southbound Response Status: " + statusCode + " " + connection.getResponseMessage()
+            		+ " Request ID: " + UID.getRequestID(messageContext));
             if (log.isDebugEnabled()) {
                 log.debug("Southbound Response Headers: " + connection.getHeaderFields());
             }
-            log.info("Southbound Response Body: " + retStr);
+            log.info("Southbound Response Body: " + retStr
+            		+ " Request ID: " + UID.getRequestID(messageContext));
 			
 			 
 		} catch (Exception e) {
@@ -734,11 +739,13 @@ public abstract class RequestExecutor {
 				 
 			connection.setUseCaches(false);
 
-			log.info("Southbound Request URL: " + connection.getRequestMethod() + " " + connection.getURL());
+			log.info("Southbound Request URL: " + connection.getRequestMethod() + " " + connection.getURL() 
+            		+ " Request ID: " + UID.getRequestID(messageContext));
             if (log.isDebugEnabled()) {
                 log.debug("Southbound Request Headers: " + connection.getRequestProperties());
             }
-            log.info("Southbound Request Body: " + requestStr);
+            log.info("Southbound Request Body: " + requestStr 
+            		+ " Request ID: " + UID.getRequestID(messageContext));
 		
 
 			statusCode = connection.getResponseCode();
@@ -760,12 +767,13 @@ public abstract class RequestExecutor {
 			}
 			br.close();
 		
-			log.info("Southbound Response Status: " + statusCode + " " + connection.getResponseMessage());
+		   log.info("Southbound Response Status: " + statusCode + " " + connection.getResponseMessage()
+            		+ " Request ID: " + UID.getRequestID(messageContext));
             if (log.isDebugEnabled()) {
                 log.debug("Southbound Response Headers: " + connection.getHeaderFields());
             }
-            log.info("Southbound Response Body: " + retStr);
-
+            log.info("Southbound Response Body: " + retStr
+	            		+ " Request ID: " + UID.getRequestID(messageContext));
 		} catch (Exception e) {
 			log.error("[WSRequestService ], makerequest, " + e.getMessage(), e);
 			return null;
@@ -852,11 +860,13 @@ public abstract class RequestExecutor {
 			
 			connection.setUseCaches(false);
 		
-			log.info("Southbound Request URL: " + connection.getRequestMethod() + " " + connection.getURL());
+			log.info("Southbound Request URL: " + connection.getRequestMethod() + " " + connection.getURL() 
+            		+ " Request ID: " + UID.getRequestID(messageContext));
             if (log.isDebugEnabled()) {
                 log.debug("Southbound Request Headers: " + connection.getRequestProperties());
             }
-            log.info("Southbound Request Body: " + requestStr);
+            log.info("Southbound Request Body: " + requestStr 
+            		+ " Request ID: " + UID.getRequestID(messageContext));
             
 			if (requestStr != null) {
 				connection.setDoOutput(true);
@@ -888,12 +898,14 @@ public abstract class RequestExecutor {
 			}
 			br.close();
 		
-			log.info("Southbound Response Status: " + statusCode + " " + connection.getResponseMessage());
+		   log.info("Southbound Response Status: " + statusCode + " " + connection.getResponseMessage()
+            		+ " Request ID: " + UID.getRequestID(messageContext));
             if (log.isDebugEnabled()) {
                 log.debug("Southbound Response Headers: " + connection.getHeaderFields());
             }
-            log.info("Southbound Response Body: " + retStr);
-			
+            log.info("Southbound Response Body: " + retStr
+            		+ " Request ID: " + UID.getRequestID(messageContext));
+		
             
 		} catch (Exception e) {
 			log.error("[WSRequestService ], makerequest, " + e.getMessage(), e);
@@ -982,11 +994,13 @@ public abstract class RequestExecutor {
 			connection.setDoInput(true);
 			connection.setDoOutput(true);
 
-			log.info("Northbound Request URL: " + connection.getRequestMethod() + " " + connection.getURL());
-            if (log.isDebugEnabled()) {
-                log.debug("Northbound Request Headers: " + connection.getRequestProperties());
-            }
-            log.info("Northbound Request Body: " + requestStr);
+			 log.info("Northbound Request URL: " + connection.getRequestMethod() + " " + connection.getURL()
+	            		+ " Request ID: " + UID.getRequestID(messageContext));
+	            if (log.isDebugEnabled()) {
+	                log.debug("Northbound Request Headers: " + connection.getRequestProperties());
+	            }
+	            log.info("Northbound Request Body: " + requestStr
+	            		+ " Request ID: " + UID.getRequestID(messageContext));
 
 			// ========================UNICODE
 			// PATCH=========================================
@@ -999,11 +1013,13 @@ public abstract class RequestExecutor {
 
 			statusCode = connection.getResponseCode();
 			
-			log.info("Northbound Response Status: " + statusCode + " " + connection.getResponseMessage());
+			log.info("Northbound Response Status: " + statusCode + " " + connection.getResponseMessage()
+            		+ " Request ID: " + UID.getRequestID(messageContext));
             if (log.isDebugEnabled()) {
                 log.debug("Northbound Response Headers: " + connection.getHeaderFields());
             }
-            log.info("Northbound Response Body: " + retStr);
+            log.info("Northbound Response Body: " + retStr
+            		+ " Request ID: " + UID.getRequestID(messageContext));
 		
 			if (statusCode != 200) {
 				throw new RuntimeException("Failed : HTTP error code : " + statusCode);
@@ -1083,11 +1099,13 @@ public abstract class RequestExecutor {
 
 			connection.setUseCaches(false);
 
-			log.info("Southbound Request URL: " + connection.getRequestMethod() + " " + connection.getURL());
+			log.info("Southbound Request URL: " + connection.getRequestMethod() + " " + connection.getURL() 
+            		+ " Request ID: " + UID.getRequestID(messageContext));
             if (log.isDebugEnabled()) {
                 log.debug("Southbound Request Headers: " + connection.getRequestProperties());
             }
-            log.info("Southbound Request Body: " + requestStr);
+            log.info("Southbound Request Body: " + requestStr 
+            		+ " Request ID: " + UID.getRequestID(messageContext));
             
 			statusCode = connection.getResponseCode();
 			if ((statusCode != 200) && (statusCode != 201) && (statusCode != 400) && (statusCode != 401)) {
@@ -1108,11 +1126,13 @@ public abstract class RequestExecutor {
 			}
 			br.close();
 
-			log.info("Southbound Response Status: " + statusCode + " " + connection.getResponseMessage());
-            if (log.isDebugEnabled()) {
-                log.debug("Southbound Response Headers: " + connection.getHeaderFields());
-            }
-            log.info("Southbound Response Body: " + retStr);
+			   log.info("Southbound Response Status: " + statusCode + " " + connection.getResponseMessage()
+	            		+ " Request ID: " + UID.getRequestID(messageContext));
+	            if (log.isDebugEnabled()) {
+	                log.debug("Southbound Response Headers: " + connection.getHeaderFields());
+	            }
+	            log.info("Southbound Response Body: " + retStr
+	            		+ " Request ID: " + UID.getRequestID(messageContext));
 			
 			SouthboundRetrieveResponse sbRetrieveResponse = gson.fromJson(retStr,SouthboundRetrieveResponse.class);
             if (sbRetrieveResponse!= null && sbRetrieveResponse.getInboundSMSMessageList() != null) {
@@ -1357,11 +1377,13 @@ public abstract class RequestExecutor {
 		            connection.setDoInput(true);
 		            connection.setDoOutput(true);
 		
-					log.info("Southbound Request URL: " + connection.getRequestMethod() + " " + connection.getURL());
+		            log.info("Southbound Request URL: " + connection.getRequestMethod() + " " + connection.getURL() 
+		            		+ " Request ID: " + UID.getRequestID(messageContext));
 		            if (log.isDebugEnabled()) {
 		                log.debug("Southbound Request Headers: " + connection.getRequestProperties());
 		            }
-		            log.info("Southbound Request Body: " + requestStr);
+		            log.info("Southbound Request Body: " + requestStr 
+		            		+ " Request ID: " + UID.getRequestID(messageContext));
 		            
 		            //========================UNICODE PATCH=========================================
 		            BufferedOutputStream wr = new BufferedOutputStream(connection.getOutputStream());
@@ -1389,11 +1411,13 @@ public abstract class RequestExecutor {
 		                retStr += output;
 		            }
 		            br.close();
-		            log.info("Southbound Response Status: " + statusCode + " " + connection.getResponseMessage());
+		            log.info("Southbound Response Status: " + statusCode + " " + connection.getResponseMessage()
+		            		+ " Request ID: " + UID.getRequestID(messageContext));
 		            if (log.isDebugEnabled()) {
 		                log.debug("Southbound Response Headers: " + connection.getHeaderFields());
 		            }
-		            log.info("Southbound Response Body: " + retStr);
+		            log.info("Southbound Response Body: " + retStr
+		            		+ " Request ID: " + UID.getRequestID(messageContext));
 		        } catch (Exception e) {
 		            log.error("[WSRequestService ], makerequest, " + e.getMessage(), e);
 		            return null;

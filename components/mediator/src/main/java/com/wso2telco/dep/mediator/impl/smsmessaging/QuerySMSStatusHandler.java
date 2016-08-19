@@ -24,6 +24,7 @@ import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.ResponseHandler;
 import com.wso2telco.dep.mediator.entity.OparatorEndPointSearchDTO;
 import com.wso2telco.dep.mediator.entity.smsmessaging.QuerySMSStatusResponse;
+import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.internal.Util;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.dep.mediator.service.SMSMessagingService;
@@ -182,7 +183,7 @@ public class QuerySMSStatusHandler implements SMSHandler {
 					 */
 				}
 				String sending_add = endpoint.getEndpointref().getAddress();
-				log.info("sending endpoint found: " + sending_add);
+				log.info("sending endpoint found: " + sending_add + " Request ID: " + UID.getRequestID(context));
 
 				String responseStr = executor.makeGetRequest(endpoint, sending_add, resourcePath, true, context,false);
 				QuerySMSStatusResponse statusResponse = parseJsonResponse(responseStr);

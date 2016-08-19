@@ -220,7 +220,8 @@ public class OutboundSMSSubscriptionsNorthboundHandler implements SMSHandler {
 
 					String notifyres = executor.makeRequest(endpoint, url, sbRequestBody, true, context,false);
 
-					log.info("Delivery notification southbound response body of " + endpoint.getOperator() + " operator: " + notifyres);
+					log.info("Delivery notification southbound response body of " + endpoint.getOperator() + " operator: " + notifyres
+							+ " Request ID: " + UID.getRequestID(context));
 					
 					if (notifyres == null) {
 						senderAddresses[i].setStatus("Failed");
@@ -267,7 +268,8 @@ public class OutboundSMSSubscriptionsNorthboundHandler implements SMSHandler {
 		nbDeliveryReceiptSubscriptionRequest.getDeliveryReceiptSubscription().getCallbackReference().setNotifyURL(origNotiUrl);
 
 		String nbDeliveryReceiptSubscriptionResponseBody = gson.toJson(nbDeliveryReceiptSubscriptionRequest);
-		log.info("Delivery notification subscription northbound response body : " + nbDeliveryReceiptSubscriptionResponseBody);
+		log.info("Delivery notification subscription northbound response body : " + nbDeliveryReceiptSubscriptionResponseBody
+				+ " Request ID: " + UID.getRequestID(context));
 		executor.removeHeaders(context);
 		((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 201);
 		executor.setResponse(context, nbDeliveryReceiptSubscriptionResponseBody);

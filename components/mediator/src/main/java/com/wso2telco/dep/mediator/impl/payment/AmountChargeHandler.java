@@ -127,7 +127,7 @@ public class AmountChargeHandler implements PaymentHandler {
 		}
 
 		String sending_add = endpoint.getEndpointref().getAddress();
-		log.info("sending endpoint found: " + sending_add);
+		log.info("sending endpoint found: " + sending_add + " Request ID: " + UID.getRequestID(context));
 
 		// Check if Spend Limits are exceeded
 		//checkSpendLimit(msisdn, endpoint.getOperator(), context);

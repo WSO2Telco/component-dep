@@ -91,8 +91,8 @@ public class USSDInboundHandler implements USSDHandler {
 		
 		List<String> ussdSPDetails = ussdService.getUSSDNotify(Integer.valueOf(subscriptionId));
        // String notifyurl = dbservice.getUSSDNotify(Integer.valueOf(axiataid));
-        log.info("notifyUrl found -  " + ussdSPDetails.get(0));
-        log.info("consumerKey found - " + ussdSPDetails.get(1));
+		log.info("notifyUrl found -  " + ussdSPDetails.get(0) + " Request ID: " + UID.getRequestID(context));
+		log.info("consumerKey found - " + ussdSPDetails.get(1) + " Request ID: " + UID.getRequestID(context));
 		
 		
 
@@ -116,7 +116,7 @@ public class USSDInboundHandler implements USSDHandler {
 		if (action.equalsIgnoreCase("mtcont")) {
 
 			String subsEndpoint = mediatorConfMap.get("ussdGatewayEndpoint") + subscriptionId;
-			log.info("Subsendpoint - " + subsEndpoint);
+			olg.info("Subsendpoint - " +subsEndpoint + " Request ID: " + UID.getRequestID(context));
 			replyobj.getJSONObject("outboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL",
 					subsEndpoint);
 
@@ -124,19 +124,19 @@ public class USSDInboundHandler implements USSDHandler {
 
 		if (action.equalsIgnoreCase("mtfin")) {
 			String subsEndpoint = mediatorConfMap.get("ussdGatewayEndpoint") + subscriptionId;
-			log.info("Subsendpoint - " + subsEndpoint);
+			log.info("Subsendpoint - " +subsEndpoint + " Request ID: " + UID.getRequestID(context));
 			replyobj.getJSONObject("outboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL",
 					subsEndpoint);
 
 			boolean deleted = ussdService.ussdEntryDelete(Integer.valueOf(subscriptionId));
-			log.info("Entry deleted " + deleted);
+			log.info("Entry deleted " + deleted + " Request ID: " + UID.getRequestID(context));
 
 		}
 		
 		if(action.equalsIgnoreCase("mocont")){
 			
             String subsEndpoint = mediatorConfMap.get("ussdGatewayEndpoint")+subscriptionId;
-            log.info("Subsendpoint - " +subsEndpoint);
+            log.info("Subsendpoint - " +subsEndpoint + " Request ID: " + UID.getRequestID(context));
             replyobj.getJSONObject("outboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL", subsEndpoint);
 
 		}
@@ -144,7 +144,7 @@ public class USSDInboundHandler implements USSDHandler {
 		if(action.equalsIgnoreCase("mofin")){
 			
             String subsEndpoint = mediatorConfMap.get("ussdGatewayEndpoint")+subscriptionId;
-            log.info("Subsendpoint - " +subsEndpoint);
+            log.info("Subsendpoint - " +subsEndpoint + " Request ID: " + UID.getRequestID(context));
             replyobj.getJSONObject("outboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL", subsEndpoint);
 	
 	        //boolean deleted = dbservice.ussdEntryDelete(Integer.valueOf(axiataid));
