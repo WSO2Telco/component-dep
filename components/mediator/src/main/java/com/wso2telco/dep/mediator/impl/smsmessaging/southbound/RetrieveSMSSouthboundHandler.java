@@ -127,6 +127,7 @@ public class RetrieveSMSSouthboundHandler implements SMSHandler {
 		JSONArray results = new JSONArray();
 
 		int execCount = 0;
+	 	int forLoopCount=0;
         boolean retryFlag=true;
         
         FileReader fileReader = new FileReader();
@@ -139,10 +140,12 @@ public class RetrieveSMSSouthboundHandler implements SMSHandler {
 		ArrayList<String> responses = new ArrayList<String>();
 		while ((results.length() < batchSize) &&  (retryFlag==true)) {
 	        execCount++;
-	        	
+	        log.debug("SB aEndpoint : "+endpoints.size());	
         	for (int i = 0; i < endpoints.size(); i++) {
-
+        		forLoopCount++;
+				log.debug("Default forLoopCount : "+forLoopCount);
                 OperatorEndpoint aEndpoint = endpoints.remove(0);
+                log.debug("SB aEndpoint : "+aEndpoint.getEndpointref().getAddress()); 
                 endpoints.add(aEndpoint);
                 String url = aEndpoint.getEndpointref().getAddress();
                 APICall ac = apiUtil.setBatchSize(url, body.toString(), reqType, perOpCoLimit);

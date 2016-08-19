@@ -148,6 +148,7 @@ public boolean handle(MessageContext context) throws CustomException,
 	List<InboundSMSMessage> inboundSMSMessageList = new ArrayList<InboundSMSMessage>();
 
 	int execCount = 0;
+	int forLoopCount=0;	
 	boolean retryFlag = true;
 	FileReader fileReader = new FileReader();
     Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
@@ -161,8 +162,13 @@ public boolean handle(MessageContext context) throws CustomException,
 	while ((inboundSMSMessageList.size() < batchSize)
 			&& (retryFlag == true)) {
 		execCount++;
-		for (int i = 0; i < endpoints.size(); i++) {
+		log.debug("NB aEndpoint : "+endpoints.size());
+		
+		for (int i = 0; i < validEndpoints.size(); i++) {
+			forLoopCount++;
+			log.debug("NB forLoopCount : "+forLoopCount);
 			OperatorEndpoint aEndpoint = validEndpoints.remove(0);
+			log.debug("NB aEndpoint : "+aEndpoint.getEndpointref().getAddress()); 
 			validEndpoints.add(aEndpoint);
 			String url = aEndpoint.getEndpointref().getAddress();
 			String getRequestURL = null;
@@ -179,11 +185,13 @@ public boolean handle(MessageContext context) throws CustomException,
 
 					if (criteria == null || criteria.equals("")) {
 						operatorCode = registrations[r].getOperatorCode();
+						log.debug("Operator RetrieveSMSHandler"+operatorCode);
 						getRequestURL = "/"+ registrations[r].getRegistrationID()+ "/messages?maxBatchSize=" + batchSize;
 						url = url.replace("/messages", getRequestURL);
 						log.debug("Invoke RetrieveSMSHandler of plugin");
 					} else {
 						operatorCode = registrations[r].getOperatorCode();
+						log.debug("Operator RetrieveSMSHandler"+operatorCode);
 						getRequestURL = "/"+ registrations[r].getRegistrationID()+ "/" + criteria+ "/messages?maxBatchSize=" + batchSize;
 						url = url.replace("/messages", getRequestURL);
 						log.debug("Invoke SBRetrieveSMSHandler of plugin");
@@ -194,8 +202,7 @@ public boolean handle(MessageContext context) throws CustomException,
 
 			}
 
-			APICall ac = apiUtil.setBatchSize(url, body.toString(),
-					reqType, perOpCoLimit);
+			APICall ac = apiUtil.setBatchSize(url, body.toString(), reqType, perOpCoLimit);//check if request json body incorrect
 			JSONObject obj = ac.getBody();
 			String retStr = null;
 			log.debug("Retrieving messages of operator: "+ aEndpoint.getOperator());
