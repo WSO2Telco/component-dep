@@ -78,7 +78,63 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
 	private String ussdSessionId;
 	private String transactionOperationStatus;
 	private String referenceCode;
-
+	private String destinationAddress;
+    private String senderAddress;
+    private String message;
+    private String dateTime;
+    private String resourceURL;
+    private String messageId;
+	    
+	    
+	
+	    public String getDestinationAddress() {
+			return destinationAddress;
+		}
+	
+		public void setDestinationAddress(String destinationAddress) {
+			this.destinationAddress = destinationAddress;
+		}
+	
+		public String getSenderAddress() {
+			return senderAddress;
+		}
+	
+		public void setSenderAddress(String senderAddress) {
+			this.senderAddress = senderAddress;
+		}
+	
+		public String getMessage() {
+			return message;
+		}
+	
+		public void setMessage(String message) {
+		this.message = message;
+		}
+	
+		public String getDateTime() {
+			return dateTime;
+		}
+	
+		public void setDateTime(String dateTime) {
+			this.dateTime = dateTime;
+		}
+	
+		public String getResourceURL() {
+			return resourceURL;
+		}
+	
+		public void setResourceURL(String resourceURL) {
+			this.resourceURL = resourceURL;
+		}
+	
+		public String getMessageId() {
+			return messageId;
+		}
+	
+		public void setMessageId(String messageId) {
+			this.messageId = messageId;
+		}
+	
     /**
      * Gets the request id.
      *
@@ -460,7 +516,13 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
                 + "          {'name':'ussdAction','type':'STRING'},"
                 + "          {'name':'ussdSessionId','type':'STRING'},"
                 + "          {'name':'transactionOperationStatus','type':'STRING'},"
-                + "          {'name':'referenceCode','type':'STRING'}"
+                + "          {'name':'referenceCode','type':'STRING'},"
+                + "          {'name':'destinationAddress','type':'STRING'},"
+                + "          {'name':'senderAddress','type':'STRING'},"
+                + "          {'name':'message','type':'STRING'},"
+                + "          {'name':'date_Time','type':'STRING'},"
+                + "          {'name':'resourceURL','type':'STRING'},"
+                + "          {'name':'message_Id','type':'STRING'}"
                 + "  ]"
                 + "}";
 
@@ -478,5 +540,7 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
             getApiPublisher(), getApplicationName(), getApplicationId(),
             getRequestId(), getOperatorId(), getResponseCode(), getMsisdn(), getChargeAmount(), getPurchaseCategoryCode(),
             getOperatorRef(), getExceptionId(), getExceptionMessage(), getJsonBody(), getTaxAmount() ,getChannel(),
-            getOnBehalfOf(), getDescription(),getUssdAction(), getUssdSessionId(),getTransactionOperationStatus(),getReferenceCode()};    }
+            getOnBehalfOf(), getDescription(),getUssdAction(), getUssdSessionId(),getTransactionOperationStatus(),getReferenceCode(),
+            getDestinationAddress(),getSenderAddress(),getMessage(),getDateTime(),getResourceURL(),getMessageId()};
+        }
 }
