@@ -17,10 +17,15 @@ package com.wso2telco.dep.publisheventsdata.internal;
 
 import com.hazelcast.core.HazelcastInstance;
 import com.wso2telco.dbutils.fileutils.FileReader;
+import com.wso2telco.dep.publisheventsdata.util.FileNames;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.databridge.agent.thrift.lb.LoadBalancingDataPublisher;
+import org.wso2.carbon.utils.CarbonUtils;
+
+import java.io.File;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
@@ -52,12 +57,15 @@ public class EventsComponent {
 			dataPublisherMap = new ConcurrentHashMap<String, LoadBalancingDataPublisher>();
 
 			FileReader fileReader = new FileReader();
-			Map<String, String> publisherEventConfMap = fileReader.readPublishEventsDataConfFile();
+			String filePath = CarbonUtils.getCarbonConfigDirPath() + File.separator;
+			
+			Map<String, String> publisherEventConfMap = fileReader
+					.readPropertyFile(filePath, FileNames.PUBLISH_EVENTS_DATA_CONF_FILE.getFileName());
 			EventsDataHolder.setPublisherEventConfMap(publisherEventConfMap);
 
 			log.debug("events bundle is activated ");
 		} catch (Throwable e) {
-			
+
 			log.error("events bundle activation failed ", e);
 		}
 	}
@@ -80,12 +88,12 @@ public class EventsComponent {
 	 * @return the data publisher
 	 */
 	public static LoadBalancingDataPublisher getDataPublisher(String tenantDomain) {
-		
+
 		if (dataPublisherMap.containsKey(tenantDomain)) {
-			
+
 			return dataPublisherMap.get(tenantDomain);
 		}
-		
+
 		return null;
 	}
 
@@ -101,13 +109,13 @@ public class EventsComponent {
 	 */
 	public static void addDataPublisher(String tenantDomain, LoadBalancingDataPublisher dataPublisher)
 			throws DataPublisherAlreadyExistsException {
-		
+
 		if (dataPublisherMap.containsKey(tenantDomain)) {
-			
+
 			throw new DataPublisherAlreadyExistsException(
 					"A DataPublisher has already been created for the tenant " + tenantDomain);
 		}
-		
+
 		dataPublisherMap.put(tenantDomain, dataPublisher);
 	}
 
@@ -118,7 +126,7 @@ public class EventsComponent {
 	 *            the new hazelcast instance
 	 */
 	protected void setHazelcastInstance(HazelcastInstance hazelcastInstance) {
-		
+
 		EventsDataHolder.registerHazelcastInstance(hazelcastInstance);
 	}
 
@@ -129,7 +137,7 @@ public class EventsComponent {
 	 *            the hazelcast instance
 	 */
 	protected void unsetHazelcastInstance(HazelcastInstance hazelcastInstance) {
-		
+
 		EventsDataHolder.registerHazelcastInstance(null);
 	}
 }
