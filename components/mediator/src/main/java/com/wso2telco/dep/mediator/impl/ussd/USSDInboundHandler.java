@@ -116,7 +116,7 @@ public class USSDInboundHandler implements USSDHandler {
 		if (action.equalsIgnoreCase("mtcont")) {
 
 			String subsEndpoint = mediatorConfMap.get("ussdGatewayEndpoint") + subscriptionId;
-			olg.info("Subsendpoint - " +subsEndpoint + " Request ID: " + UID.getRequestID(context));
+			log.info("Subsendpoint - " +subsEndpoint + " Request ID: " + UID.getRequestID(context));
 			replyobj.getJSONObject("outboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL",
 					subsEndpoint);
 

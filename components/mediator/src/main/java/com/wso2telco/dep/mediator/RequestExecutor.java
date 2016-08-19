@@ -112,7 +112,7 @@ public abstract class RequestExecutor {
 	 * @throws Exception
 	 *             the exception
 	 */
-	protected String getAccessToken(String operator) throws Exception {
+	protected String getAccessToken(String operator, MessageContext messageContext) throws Exception {
 		OperatorApplicationDTO op = null;
 		String token = null;
 
@@ -137,18 +137,19 @@ public abstract class RequestExecutor {
 		}
 		//
 		
-		log.info("Token time : " + op.getTokentime());
-		log.info("Token validity : " + op.getTokenvalidity());
+		log.info("Token time : " + op.getTokentime() + " Request ID: " + UID.getRequestID(messageContext));
+		log.info("Token validity : " + op.getTokenvalidity() + " Request ID: " + UID.getRequestID(messageContext));
 		
 		long timeexpires = (long) (op.getTokentime() + (op.getTokenvalidity() * 1000));
-		log.info("Expire time : " + timeexpires);
+		 log.info("Expire time : " + timeexpires + " Request ID: " + UID.getRequestID(messageContext));
 		
 		long currtime = new Date().getTime();
-		log.info("Current time : " + currtime);
+		log.info("Current time : " + currtime + " Request ID: " + UID.getRequestID(messageContext));
 		
 		if (timeexpires > currtime) {
 			token = op.getToken();
-			log.info("Token of " + op.getOperatorname() + " operator is active");
+			 log.info("Token of " + op.getOperatorname() + " operator is active"
+					 + " Request ID: " + UID.getRequestID(messageContext));
 		} else {
 			log.info("Regenerating the token of " + op.getOperatorname() + " operator");
 			String Strtoken = makeTokenrequest(op.getTokenurl(), "grant_type=refresh_token&refresh_token=" + op.getRefreshtoken(), ("" + op.getTokenauth()));
@@ -476,8 +477,7 @@ public abstract class RequestExecutor {
 			connection.setRequestProperty("Accept", "application/json");
 			//connection.setRequestProperty("charset", "utf-8");
 			if (auth) {
-				connection.setRequestProperty("Authorization",
-						"Bearer " + getAccessToken(operatorendpoint.getOperator()));
+				connection.setRequestProperty("Authorization", "Bearer " + getAccessToken(operatorendpoint.getOperator(), messageContext));
 
 				// Add JWT token header
 				org.apache.axis2.context.MessageContext axis2MessageContext = ((Axis2MessageContext) messageContext)
@@ -702,8 +702,7 @@ public abstract class RequestExecutor {
 			connection.setRequestProperty("Accept", "application/json");
 
 			if (auth) {
-				connection.setRequestProperty("Authorization",
-						"Bearer " + getAccessToken(operatorendpoint.getOperator()));
+				connection.setRequestProperty("Authorization", "Bearer " + getAccessToken(operatorendpoint.getOperator(), messageContext));
 
 				// Add JWT token header
 				org.apache.axis2.context.MessageContext axis2MessageContext = ((Axis2MessageContext) messageContext)
@@ -823,9 +822,7 @@ public abstract class RequestExecutor {
 			connection.setRequestProperty("Content-Type", "application/json");
 
 			if (auth) {
-				connection.setRequestProperty("Authorization",
-						"Bearer " + getAccessToken(operatorendpoint.getOperator()));
-
+				connection.setRequestProperty("Authorization", "Bearer " + getAccessToken(operatorendpoint.getOperator(), messageContext));
 				// Add JWT token header
 				org.apache.axis2.context.MessageContext axis2MessageContext = ((Axis2MessageContext) messageContext)
 						.getAxis2MessageContext();
@@ -957,8 +954,7 @@ public abstract class RequestExecutor {
 			connection.setRequestProperty("Accept", "application/json");
 			connection.setRequestProperty("Accept-Charset", "UTF-8");// ADDED
 			if (auth) {
-				connection.setRequestProperty("Authorization",
-						"Bearer " + getAccessToken(operatorendpoint.getOperator()));
+				connection.setRequestProperty("Authorization", "Bearer " + getAccessToken(operatorendpoint.getOperator(), messageContext));
 
 				// Add JWT token header
 				org.apache.axis2.context.MessageContext axis2MessageContext = ((Axis2MessageContext) messageContext)
@@ -1061,8 +1057,7 @@ public abstract class RequestExecutor {
 			connection.setRequestProperty("Accept", "application/json");
 
 			if (auth) {
-				connection.setRequestProperty("Authorization", "Bearer "
-						+ getAccessToken(operatorendpoint.getOperator()));
+				connection.setRequestProperty("Authorization", "Bearer " + getAccessToken(operatorendpoint.getOperator(), messageContext));
 
 				// Add JWT token header
 				org.apache.axis2.context.MessageContext axis2MessageContext = ((Axis2MessageContext) messageContext)
@@ -1345,7 +1340,7 @@ public abstract class RequestExecutor {
 		            connection.setRequestProperty("Accept", "application/json");
 		            connection.setRequestProperty("Accept-Charset", "UTF-8");//ADDED
 		            if (auth) {
-		                connection.setRequestProperty("Authorization", "Bearer " + getAccessToken(operatorendpoint.getOperator()));
+		            	connection.setRequestProperty("Authorization", "Bearer " + getAccessToken(operatorendpoint.getOperator(), messageContext));
 		
 		                //Add JWT token header
 		                org.apache.axis2.context.MessageContext axis2MessageContext = ((Axis2MessageContext) messageContext)
