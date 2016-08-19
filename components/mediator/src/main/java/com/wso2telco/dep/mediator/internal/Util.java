@@ -126,6 +126,8 @@ public class Util {
 		try {
 			props.load(in);
 			propMap.put("ussdGatewayEndpoint", props.getProperty("ussdGatewayEndpoint"));
+			propMap.put("retry_on_fail", props.getProperty("retry_on_fail"));
+            propMap.put("retry_count", props.getProperty("retry_count"));
 		} catch (FileNotFoundException e) {
 			log.debug("file not found !!! ");
 		} catch (IOException e) {

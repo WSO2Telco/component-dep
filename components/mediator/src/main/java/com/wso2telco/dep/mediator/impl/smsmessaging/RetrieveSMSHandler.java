@@ -17,6 +17,7 @@ package com.wso2telco.dep.mediator.impl.smsmessaging;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.InboundSMSMessage;
 import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.SouthboundRetrieveResponse;
@@ -33,6 +34,7 @@ import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 
 import org.apache.axiom.soap.SOAPBody;
 import org.apache.axis2.AxisFault;
@@ -121,60 +123,67 @@ public class RetrieveSMSHandler implements SMSHandler {
 
 			JSONArray results = new JSONArray();
 
-			int count = 0;
+			int execCount = 0;
+	        boolean retryFlag=true;
+	        FileReader fileReader = new FileReader();
+	        Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
+	        Boolean retry = Boolean.valueOf(mediatorConfMap.get("retry_on_fail"));
+	        Integer retryCount = Integer.valueOf(mediatorConfMap.get("retry_count"));
+	        //retry_on_fail=false
+	        //retry_times=3
 
 			ArrayList<String> responses = new ArrayList<String>();
-			while (results.length() < batchSize) {
-				OperatorEndpoint aEndpoint = endpoints.remove(0);
-				endpoints.add(aEndpoint);
-				String url = aEndpoint.getEndpointref().getAddress();
-				APICall ac = apiUtil.setBatchSize(url, body.toString(),
-						reqType, perOpCoLimit);
-				// String url =
-				// aEndpoint.getAddress()+getResourceUrl().replace("test_api1/1.0.0/","");//aEndpoint
-				// .getAddress() + ac.getUri();
-				JSONObject obj = ac.getBody();
-				String retStr = null;
-				log.debug("Retrieving messages of operator: "
-						+ aEndpoint.getOperator());
-
-				if (context.isDoingGET()) {
-					log.debug("Doing makeRetrieveSMSGetRequest");
-					retStr = executor.makeRetrieveSMSGetRequest(aEndpoint, ac.getUri(), null, true, context,false);
-				} else {
-					log.debug("Doing makeRequest");
-					retStr = executor.makeRequest(aEndpoint, ac.getUri(),obj.toString(), true, context,false);
-				}
-
-				log.debug("Retrieved messages of " + aEndpoint.getOperator() + " operator: " + retStr);
-
-				if (retStr == null) {
-					count++;
-					if (count == endpoints.size()) {
-						log.debug("Break because count == endpoints.size() ------> count :"+ count+ " endpoints.size() :"+ endpoints.size());
-						break;
-					} else {
-						continue;
-					}
-				}
-
-				JSONArray resList = apiUtil.getResults(reqType, retStr);
-				if (resList != null) {
-					for (int i = 0; i < resList.length(); i++) {
-						results.put(resList.get(i));
-					}
-					responses.add(retStr);
-				}
-
-				count++;
-				if (count == (endpoints.size() * 2)) {
-					log.debug("Break because count == (endpoints.size() * 2) ------> count :"+ count + " (endpoints.size() * 2) :"+ endpoints.size() * 2);
-					break;
-				}
+			while ((results.length() < batchSize) &&  (retryFlag==true)) {
+	        	execCount++;
+	        	for (int i = 0; i < endpoints.size(); i++) {
+					
+	        		 OperatorEndpoint aEndpoint = endpoints.remove(0);
+	                 endpoints.add(aEndpoint);
+	                 String url = aEndpoint.getEndpointref().getAddress();
+	                 APICall ac = apiUtil.setBatchSize(url, body.toString(), reqType, perOpCoLimit);
+	
+	                 JSONObject obj = ac.getBody();
+	                 String retStr = null;
+	                 log.debug("Retrieving messages of operator: " + aEndpoint.getOperator());
+	
+	                 if (context.isDoingGET()) {
+	                     log.debug("Doing makeGetRequest");
+	                     retStr = executor.makeRetrieveSMSGetRequest(aEndpoint, ac.getUri(), null, true, context,false);
+	                 } else {
+	                     log.debug("Doing makeRequest");
+	                     retStr = executor.makeRequest(aEndpoint, ac.getUri(), obj.toString(), true, context, false);
+	                 }
+	                 log.debug("Retrieved messages of " + aEndpoint.getOperator() + " operator: " + retStr);
+	                 
+	                 if (retStr != null) {
+	                 
+		                 JSONArray resList = apiUtil.getResults(reqType, retStr);
+		                 if (resList != null) {
+		                     for (int tmp = 0; tmp < resList.length(); tmp++) {
+		                         results.put(resList.get(tmp));
+		                     }
+		                     responses.add(retStr);
+		                 }
+		
+	                 }
+	
+	               if (results.length() >= batchSize) {
+	    				break;
+	    			}                 
 			}
-
-			log.debug("Final value of count :" + count);
-			log.debug("Results length of retrieve messages: "+ results.length());
+		        	
+		        	if (retry==false) {
+						retryFlag=false;
+			}
+		        	
+		        	if (execCount>=retryCount) {
+						retryFlag=false;
+					}
+		        	
+		            log.debug("Final value of count :" + execCount);
+		            log.debug("Results length of retrieve messages: " + results.length());
+				 
+			}
 
 			JSONObject paylodObject = apiUtil.generateResponse(context,reqType, results, responses, requestid);
 			String strjsonBody = paylodObject.toString();
