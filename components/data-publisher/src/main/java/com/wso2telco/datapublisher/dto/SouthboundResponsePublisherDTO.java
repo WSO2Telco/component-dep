@@ -550,6 +550,6 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
             getRequestId(), getOperatorId(), getResponseCode(), getMsisdn(), getChargeAmount(), getPurchaseCategoryCode(),
             getOperatorRef(), getExceptionId(), getExceptionMessage(), getJsonBody(), getTaxAmount() ,getChannel(),
             getOnBehalfOf(), getDescription(),getUssdAction(), getUssdSessionId(),getTransactionOperationStatus(),getReferenceCode(),
-            getSpConsumerKey(),getDestinationAddress(),getSenderAddress(),getMessage(),getDateTime(),getResourceURL(),getMessageId()};
+            getDestinationAddress(),getSenderAddress(),getMessage(),getDateTime(),getResourceURL(),getMessageId(),getSpConsumerKey()};
         }
 }

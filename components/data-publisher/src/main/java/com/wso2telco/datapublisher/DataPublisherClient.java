@@ -347,35 +347,50 @@ public class DataPublisherClient {
         responsePublisherDTO.setUssdSessionId(ussdSessionId);
 		responsePublisherDTO.setTransactionOperationStatus(transactionOperationStatus);
         responsePublisherDTO.setReferenceCode(referenceCode);
+        //log.info("HHHHHHHHHHHHHHHHHHHHHHHHHHHH			responsePublisherDTO.getApi() : " + responsePublisherDTO.getApi());
+        //log.info("HHHHHHHHHHHHHHHHHHHHHHHHHHHH			responsePublisherDTO.getResourcePath() : " + responsePublisherDTO.getResourcePath()
         
        
         if (responsePublisherDTO.getApi().equals("smsmessaging") && responsePublisherDTO.getResourcePath().contains("/inbound/registrations")) {
 			Gson gson = new Gson();
 			if (isJSONValid(jsonBody)) {
+				//log.info("HHHHHHHHHHHHHHHHHHHHHHHHHHHH			jsonBody : " + jsonBody);
 				JsonPOJO jsonPOJO = gson.fromJson(jsonBody, JsonPOJO.class);
 				InboundSMSMessage[] inboundSMSMessageList=jsonPOJO.getInboundSMSMessageList().getInboundSMSMessage();
+				//log.info("HHHHHHHHHHHHHHHHHHHHHHHHHHHH			inboundSMSMessageList.length : " + inboundSMSMessageList.length);
 				if (inboundSMSMessageList.length > 0) {
 					for (InboundSMSMessage inboundSMSMessage : inboundSMSMessageList) {
+						//log.info("XXXXXXXXXXXXXXXXXXXXXXXX inboundSMSMessageList : " + inboundSMSMessageList);
 						responsePublisherDTO.setDateTime(inboundSMSMessage.getDateTime());
+						//log.info("XXXXXXXXXXXXXXXXXXXXXXXX			inboundSMSMessageList : " + inboundSMSMessage.getDateTime());
 						responsePublisherDTO.setDestinationAddress(inboundSMSMessage.getDestinationAddress());
+						//log.info("XXXXXXXXXXXXXXXXXXXXXXXX			inboundSMSMessageList : " + inboundSMSMessage.getDestinationAddress());
 						responsePublisherDTO.setMessage(inboundSMSMessage.getMessage());
+						//log.info("XXXXXXXXXXXXXXXXXXXXXXXX			inboundSMSMessageList : " + inboundSMSMessage.getMessage());
 						responsePublisherDTO.setMessageId(inboundSMSMessage.getMessageId());
+						//log.info("XXXXXXXXXXXXXXXXXXXXXXXX			inboundSMSMessageList : " + inboundSMSMessage.getMessageId());
 						responsePublisherDTO.setResourceURL(inboundSMSMessage.getResourceURL());
+						//log.info("XXXXXXXXXXXXXXXXXXXXXXXX			inboundSMSMessageList : " + inboundSMSMessage.getResourceURL());
 						responsePublisherDTO.setSenderAddress(inboundSMSMessage.getSenderAddress());
-	
+						//log.info("XXXXXXXXXXXXXXXXXXXXXXXX			inboundSMSMessageList : " + inboundSMSMessage.getSenderAddress());
+
+						//log.info("XXXXXXXXXXXXXXXXXXXXXXXX PUBLISHED");
 				        publisher.publishEvent(responsePublisherDTO);
 					}
 				}else {
+					//log.info("YYYYYYYYYYYYYYYYYYYYYYYYY PUBLISHED");
 					publisher.publishEvent(responsePublisherDTO);
 				}
 			}else{
+				//log.info("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ PUBLISHED");
 			publisher.publishEvent(responsePublisherDTO);
 			}
 
 		}else {
+			//log.info("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU PUBLISHED");
 			publisher.publishEvent(responsePublisherDTO);			
 		}
-        publisher.publishEvent(responsePublisherDTO);
+       
     }
     public boolean isJSONValid(String jsonString) {
 		try {
