@@ -130,7 +130,6 @@ public abstract class RequestExecutor {
 		}
 		for (OperatorApplicationDTO d : validoperators) {
 			if (d.getOperatorname() != null && d.getOperatorname().contains(operator)) {
-				log.debug("DEBUG LOGS FOR LBS 01 : d.getOperatorname() = " + d.getOperatorname());
 				op = d;
 				break;
 			}
@@ -458,7 +457,7 @@ public abstract class RequestExecutor {
 		Iterator<String> keys = jsonObject.keys();
 		if( keys.hasNext() ){
 		   String key = (String)keys.next();
-		   if (key.equals("deliveryInfoNotification")) {
+		   if (key.equals("inboundSMSMessageNotification")||key.equals("deliveryInfoNotification")) {
 		   isMoCallBack=true;
 	   }		   
 		}
@@ -571,6 +570,11 @@ public abstract class RequestExecutor {
 			if (connection != null) {
 				connection.disconnect();
 			}
+			 
+			log.debug("HHHHHHHHHHHHHHHHHHHHHHHH            Mo OR DN CallBack : " + isMoCallBack);
+			log.debug("HHHHHHHHHHHHHHHHHHHHHHHH            requestStr : " + requestStr);
+			log.debug("HHHHHHHHHHHHHHHHHHHHHHHH            retStr : " + retStr);
+			 
 			  if (isMoCallBack) {
               	publishResponseData(statusCode, requestStr, messageContext);
   			}else {
