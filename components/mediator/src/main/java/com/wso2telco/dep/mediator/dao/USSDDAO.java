@@ -428,8 +428,7 @@ public class USSDDAO {
 			        }
 			
 			        st = con.createStatement();
-			        String sql = "'update ussd_request_entry set operatorId='"+operatorId+"' where axiataid = '"+subscriptionId+"'";
-			
+			        String sql = "update ussd_request_entry set operatorId='"+operatorId+"' where axiataid = '"+subscriptionId+"'";			
 			        st.executeUpdate(sql);
 			
 			    } catch (Exception e) {
