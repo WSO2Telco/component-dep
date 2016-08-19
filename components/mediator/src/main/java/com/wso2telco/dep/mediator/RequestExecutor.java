@@ -1193,6 +1193,7 @@ public abstract class RequestExecutor {
 				messageContext.getProperty(MSISDNConstants.USER_MSISDN));
 
 		boolean isPaymentReq = false;
+		boolean paymentType = false;
 
 
 		if (retStr != null && !retStr.isEmpty()) {
@@ -1200,9 +1201,15 @@ public abstract class RequestExecutor {
 			JSONObject paymentRes = null;
 			// get exception property for exception response
 			JSONObject exception = null;
+			JSONObject response = null;
 			try {
-				JSONObject response = new JSONObject(retStr);
+				//JSONObject response = new JSONObject(retStr);
+				response  = new JSONObject(retStr);
 				paymentRes = response.optJSONObject("amountTransaction");
+				if(paymentRes != null && response.optJSONObject("amountTransaction").getString("transactionOperationStatus").equalsIgnoreCase("Charged") ){
+                    paymentType =true;
+                }
+					
 				if (paymentRes != null) {
 					if (paymentRes.has("serverReferenceCode")) {
 						messageContext.setProperty(DataPublisherConstants.OPERATOR_REF,
@@ -1240,7 +1247,8 @@ public abstract class RequestExecutor {
 		publisherClient.publishResponse(messageContext, retStr);
 
 		// publish to CEP only the successful payment requests
-		if (isPaymentReq && statusCode >= 200 && statusCode < 300) {
+	//	if (isPaymentReq && statusCode >= 200 && statusCode < 300) {
+		if (isPaymentReq && statusCode >= 200 && statusCode < 300 && paymentType ) {
 			publishToCEP(messageContext);
 		}
 	}

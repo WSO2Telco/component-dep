@@ -94,15 +94,16 @@ public class PaymentUtil {
 
 		SpendLimitHandler spendLimitHandler = new SpendLimitHandler();
 				
-		Double day_Msisdn_Limit = 0.0;
-		Double month_Msisdn_Limit =0.0;
+		/*Double day_Msisdn_Limit = 0.0;
+		Double month_Msisdn_Limit =0.0;*/
 		Double totalDayCalculatedAmount = 0.0;
 		Double totalMonthCalculateAmount = 0.0;
 		
-		day_Msisdn_Limit = Double.parseDouble(mediatorConfMap.get("msisdn_day_amount"));
-		month_Msisdn_Limit = Double.parseDouble(mediatorConfMap.get("msisdn_month_amount"));
+		/*day_Msisdn_Limit = Double.parseDouble(mediatorConfMap.get("msisdn_day_amount"));
+		month_Msisdn_Limit = Double.parseDouble(mediatorConfMap.get("msisdn_month_amount"));*/
 		
-		String configPath = CarbonUtils.getCarbonConfigDirPath() + File.separator + "mifeEventDayLimit.xml";
+		//String configPath = CarbonUtils.getCarbonConfigDirPath() + File.separator + "mifeEventDayLimit.xml";
+		 String configPath = CarbonUtils.getCarbonConfigDirPath() + File.separator + "mifeEventSpendLimit.xml";
         File file = new File(configPath);
 				
 		JAXBContext jaxbContext = JAXBContext.newInstance(DailyLimitList.class);
@@ -113,132 +114,36 @@ public class PaymentUtil {
 		    DailyLimit dailyLimit = (DailyLimit) iterator.next();
 		
 		    String dayConsumerKey = String.valueOf(dailyLimit.getConsumerKey());
-		    String dayOperator = dailyLimit.getOperator();
+		    /*String dayOperator = dailyLimit.getOperator();
 		    System.out.println(dayOperator);
 		
-		    if ( dayConsumerKey.equalsIgnoreCase(consumerKey) && dayOperator.equalsIgnoreCase(operator) &&dailyLimit.getAmount() > 0.0 ) {
+		    if ( dayConsumerKey.equalsIgnoreCase(consumerKey) && dayOperator.equalsIgnoreCase(operator) &&dailyLimit.getAmount() > 0.0 ) {*/
 		
-		
+		    log.debug("ConsumerKey from conf file " + dayConsumerKey);
+		    if ( dayConsumerKey.equalsIgnoreCase(consumerKey) && dailyLimit.getAmount() > 0.0  ) {
 		        totalDayCalculatedAmount = spendLimitHandler.getDayTotalCalculatedAmount(consumerKey,msisdn);
-		        totalMonthCalculateAmount = spendLimitHandler.getMonthTotalCalculatedAmount(consumerKey,msisdn);
+		        //totalMonthCalculateAmount = spendLimitHandler.getMonthTotalCalculatedAmount(consumerKey,msisdn);
 		
 		        if ((totalDayCalculatedAmount >= dailyLimit.getAmount()) || ((chargeAmount + totalDayCalculatedAmount)> dailyLimit.getAmount())
-				                || (dailyLimit.getAmount() <= chargeAmount)) {
+				              //  || (dailyLimit.getAmount() <= chargeAmount)) {
+		        		|| (dailyLimit.getAmount() < chargeAmount)) {
 		
 		            throw new CustomException("POL1001", "The %1 charging limit for this user has been exceeded", new String[]{"daily"});
 		
-		        } else if (  (totalMonthCalculateAmount >= dailyLimit.getMonthAmount()) || ((totalMonthCalculateAmount + chargeAmount) > dailyLimit.getMonthAmount())
+		        /*} else if (  (totalMonthCalculateAmount >= dailyLimit.getMonthAmount()) || ((totalMonthCalculateAmount + chargeAmount) > dailyLimit.getMonthAmount())
 		                || (dailyLimit.getMonthAmount() < chargeAmount) ) {
 		
-		            throw new CustomException("POL1001", "The %1 charging limit for this user has been exceeded", new String[]{"monthly"});
+		            throw new CustomException("POL1001", "The %1 charging limit for this user has been exceeded", new String[]{"monthly"});*/
 		
-		                }
+		                
 		
 		            }	
 		}
- /*
-    Double day_Application_Limit = 0.0;
-    Double day_Oprator_Limit = 0.0;
-    Double month_Application_Limit =0.0;
-    Double month_Oprator_Limit = 0.0;
-    Double calculated_day_Msisdn_Amount = 0.0;
-   Double calculated_day_Application_Amount =0.0;
-    Double calculated_day_Operator_Amount = 0.0;
-    Double calculated_month_msisdn = 0.0;
-    Double calculated_month_application=0.0;
-    Double calculated_month_operator =0.0;
-    day_Application_Limit = Double.parseDouble(Util.propMap.get("application_day_amount"));
-    day_Oprator_Limit = Double.parseDouble( Util.propMap.get("operator_day_amount"));
-    month_Application_Limit = Double.parseDouble(Util.propMap.get("application_month_amount"));
-    month_Oprator_Limit = Double.parseDouble( Util.propMap.get("operator_month_amount"));
-
-      for (DayLimit limit : lstMcc) {
-
-            String pConsumerKey = String.valueOf(limit.getConsumerKey());
-            if ( pConsumerKey.equalsIgnoreCase(consumerKey) && Double.parseDouble(limit.getAmount) > 0.0 ) {
-
-                totalDayCalculatedAmount = spendLimitHandler.getDayTotalCalculatedAmount(consumerKey,msisdn);
-                totalMonthCalculateAmount = spendLimitHandler.getMonthTotalCalculatedAmount(consumerKey,msisdn);
-
-                if ((totalDayCalculatedAmount >= day_Msisdn_Limit) || ((chargeAmount + totalDayCalculatedAmount)> day_Msisdn_Limit)
-                        || (day_Msisdn_Limit <= totalDayCalculatedAmount)) {
-
-                    throw new CustomException("POL1001", "The %1 charging limit for this user has been exceeded", new String[]{"daily"});
-
-                } else if (  (totalMonthCalculateAmount >= month_Msisdn_Limit) || ((totalMonthCalculateAmount + chargeAmount) > month_Msisdn_Limit)
-                        || (month_Msisdn_Limit < chargeAmount) ) {
-
-                    throw new CustomException("POL1001", "The %1 charging limit for this user has been exceeded", new String[]{"monthly"});
-
-                }
-
-                break;
-            }
-       } */
-
-
-
-/*
-                if (spendLimitHandler.isMSISDNSpendLimitExceeded(msisdn)> 0.0) {
-                    calculated_day_Msisdn_Amount= spendLimitHandler.isMSISDNSpendLimitExceeded(msisdn);
-                }
-                if (spendLimitHandler.isApplicationSpendLimitExceeded(consumerKey) > 0.0) {
-                    calculated_day_Application_Amount = spendLimitHandler.isApplicationSpendLimitExceeded(consumerKey) ;
-                }
-                if(spendLimitHandler.isOperatorSpendLimitExceeded(operator) >0.0) {
-                    calculated_day_Operator_Amount = spendLimitHandler.isOperatorSpendLimitExceeded(operator);
-                }
-                if(spendLimitHandler.isMonthMSISDNSpendLimitExceeded(msisdn) >0.0) {
-                    calculated_month_msisdn= spendLimitHandler.isMonthMSISDNSpendLimitExceeded(msisdn);
-                }
-                if(spendLimitHandler.isMonthOperatorSpendLimitExceeded(operator) >0.0) {
-                    calculated_month_application = spendLimitHandler.isMonthOperatorSpendLimitExceeded(operator) ;
-                }
-                if(spendLimitHandler.isApplicationSpendLimitExceeded(consumerKey) >0.0) {
-                    calculated_month_operator =spendLimitHandler.isApplicationSpendLimitExceeded(consumerKey);
-                }
-
-
-
-            if ((calculated_day_Msisdn_Amount >= day_Msisdn_Limit) || ((chargeAmount + calculated_day_Msisdn_Amount)> day_Msisdn_Limit)
-                    || (day_Msisdn_Limit <= (chargeAmount))) {
-
-               throw new CustomException("POL1001", "The %1 charging limit for this user has been exceeded", new String[]{"daily"});
-
-            } else if (  (calculated_month_msisdn >= month_Msisdn_Limit) || ((calculated_month_msisdn + chargeAmount) > month_Msisdn_Limit)
-                   || (month_Msisdn_Limit < chargeAmount) ) {
-
-                throw new CustomException("POL1001", "The %1 charging limit for this user has been exceeded", new String[]{"monthly"});
-
-            }
-
-
-           else if ((calculated_day_Application_Amount >= day_Application_Limit) ||
-                    ((calculated_day_Application_Amount + chargeAmount)> day_Application_Limit)
-                    ||(day_Application_Limit <= chargeAmount)) {
-		                throw new CustomException("POL1001", "The %1 charging limit for this application has been exceeded", new String[]{"daily"});
-
-            } else if ((calculated_day_Operator_Amount >= day_Oprator_Limit)||(calculated_day_Operator_Amount+ chargeAmount > day_Oprator_Limit)
-                    || (day_Oprator_Limit <= chargeAmount)) {
-
-                throw new CustomException("POL1001", "The %1 charging limit for this operator has been exceeded", new String[]{"daily"});
-
-            } else if (  (calculated_month_msisdn >= month_Msisdn_Limit) || ((calculated_month_msisdn + chargeAmount) > month_Msisdn_Limit)
-                    || (month_Msisdn_Limit < chargeAmount) ) {
-
-                throw new CustomException("POL1001", "The %1 charging limit for this user has been exceeded", new String[]{"monthly"});
-
-            } else if ((calculated_month_application >= month_Oprator_Limit) ||((calculated_month_application+chargeAmount) > month_Oprator_Limit)
-                    || (month_Msisdn_Limit < chargeAmount)) {
-
-                throw new CustomException("POL1001", "The %1 charging limit for this operator has been exceeded", new String[]{"monthly"});
-
-            } else if ((calculated_month_operator >= month_Application_Limit) || ((calculated_month_operator + chargeAmount )> month_Application_Limit)
-                    || (month_Application_Limit < chargeAmount)) {
-		                throw new CustomException("POL1001", "The %1 charging limit for this application has been exceeded", new String[]{"monthly"});
-            }*/
-
-		return true;
+		 if ( dayConsumerKey.equalsIgnoreCase(consumerKey) &&  dailyLimit.getMonthAmount() > 0.0 ) {
+			 totalMonthCalculateAmount = spendLimitHandler.getMonthTotalCalculatedAmount(consumerKey,msisdn);
+		 }
+		}
+			 return true;
 		
 	}
 
