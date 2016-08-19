@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.impl.smsmessaging;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -24,9 +25,11 @@ import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.wso2.carbon.utils.CarbonUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wso2telco.dbutils.fileutils.FileReader;
+import com.wso2telco.dep.mediator.util.FileNames;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.entity.smsmessaging.DeliveryReceiptSubscriptionRequest;
 import com.wso2telco.dep.mediator.internal.ApiUtils;
@@ -38,7 +41,6 @@ import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.dep.oneapivalidation.service.impl.smsmessaging.ValidateCancelSubscription;
 import com.wso2telco.dep.oneapivalidation.service.impl.smsmessaging.ValidateOutboundSubscription;
-
 import java.util.HashMap;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -141,6 +143,7 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
 		Gson gson = new GsonBuilder().serializeNulls().create();
 
 		FileReader fileReader = new FileReader();
+		String filePath = CarbonUtils.getCarbonConfigDirPath() + File.separator;
 
 		HashMap<String, String> jwtDetails = apiUtils.getJwtTokenDetails(context);
 		JSONObject jsonBody = executor.getJsonBody();
@@ -155,7 +158,8 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
 
 		if (!jsondstaddr.isNull("filterCriteria")) {
 
-			Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
+			HashMap<String, String> mediatorConfMap = fileReader.readPropertyFile(filePath,
+					FileNames.MEDIATOR_CONF_FILE.getFileName());
 
 			DeliveryReceiptSubscriptionRequest subsrequst = gson.fromJson(jsonBody.toString(),
 					DeliveryReceiptSubscriptionRequest.class);

@@ -18,6 +18,7 @@ package com.wso2telco.dep.mediator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wso2telco.dbutils.fileutils.FileReader;
+import com.wso2telco.dep.mediator.util.FileNames;
 import com.wso2telco.dep.mediator.entity.smsmessaging.DeliveryInfo;
 import com.wso2telco.dep.mediator.entity.smsmessaging.DeliveryInfoList;
 import com.wso2telco.dep.mediator.entity.smsmessaging.QuerySMSStatusResponse;
@@ -29,6 +30,8 @@ import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.wso2.carbon.utils.CarbonUtils;
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.*;
@@ -117,7 +120,11 @@ public class ResponseHandler {
 	private String getResourceURL(MessageContext mc, String senderAddress) {
 
 		FileReader fileReader = new FileReader();
-		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
+		String filePath = CarbonUtils.getCarbonConfigDirPath() + File.separator;
+		
+		
+		HashMap<String, String> mediatorConfMap = fileReader
+				.readPropertyFile(filePath, FileNames.MEDIATOR_CONF_FILE.getFileName());
 
 		String resourceURL = mediatorConfMap.get("sendSMSResourceURL");
 		if (resourceURL != null && !resourceURL.isEmpty()) {
@@ -143,9 +150,11 @@ public class ResponseHandler {
 	public String makePaymentResponse(String jsonBody, String requestid) throws JSONException {
 
 		String jsonPayload = null;
-
 		FileReader fileReader = new FileReader();
-		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
+		String filePath = CarbonUtils.getCarbonConfigDirPath() + File.separator;
+		
+		HashMap<String, String> mediatorConfMap = fileReader
+				.readPropertyFile(filePath, FileNames.MEDIATOR_CONF_FILE.getFileName());
 
 		Gson gson = new GsonBuilder().serializeNulls().create();
 		org.json.JSONObject jsonObj = new org.json.JSONObject(jsonBody);

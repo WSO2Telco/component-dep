@@ -14,8 +14,8 @@
  * limitations under the License.
  ******************************************************************************/
 package com.wso2telco.dep.mediator.impl.ussd;
-
 import com.wso2telco.dbutils.fileutils.FileReader;
+import com.wso2telco.dep.mediator.util.FileNames;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.dep.mediator.service.USSDService;
@@ -24,8 +24,10 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONObject;
+import org.wso2.carbon.utils.CarbonUtils;
+import java.io.File;
+import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -73,13 +75,16 @@ public class MOUSSDSubscribeHandler implements USSDHandler {
 	public boolean handle(MessageContext context) throws Exception {
 
 		FileReader fileReader = new FileReader();
+		String filePath = CarbonUtils.getCarbonConfigDirPath() + File.separator;
+		
 		JSONObject jsonBody = executor.getJsonBody();
 		String notifyUrl = jsonBody.getJSONObject("subscription").getJSONObject("callbackReference")
 				.getString("notifyURL");
 
 		Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl);
 
-		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
+		HashMap<String, String> mediatorConfMap = fileReader
+				.readPropertyFile(filePath, FileNames.MEDIATOR_CONF_FILE.getFileName());
 
 		String subsEndpoint = mediatorConfMap.get("ussdGatewayEndpoint") + subscriptionId;
 
