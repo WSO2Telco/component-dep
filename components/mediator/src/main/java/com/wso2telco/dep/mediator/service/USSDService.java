@@ -41,19 +41,30 @@ public class USSDService {
 		ussdDAO = new USSDDAO();
 	}
 
-	//public Integer ussdRequestEntry(String notifyURL) throws BusinessException {
-	public Integer ussdRequestEntry(String notifyURL, String consumerKey) throws Exception {
+	public Integer ussdRequestEntry(String notifyURL, String consumerKey, String operatorId, String userId) throws Exception {
 		
 		if (notifyURL == null || notifyURL.trim().length() <= 0) {
 
 			throw new BusinessException(ErrorType.INVALID_NOTIFY_URL);
+		}
+		if (consumerKey == null || consumerKey.trim().length() <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_CONSUMER_KEY);
+		}
+		if (operatorId == null || operatorId.trim().length() <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_OPERATOR_ID);
+		}
+		if (userId == null || userId.trim().length() <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_USER_ID);
 		}
 
 		Integer newId = 0;
 
 		try {
 
-			newId = ussdDAO.ussdRequestEntry(notifyURL);
+			newId = ussdDAO.ussdRequestEntry(notifyURL,consumerKey, operatorId, userId);
 		} catch (Exception e) {
 
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
@@ -151,20 +162,66 @@ public class USSDService {
 		
 	}
 		
-	public void moUssdSubscriptionDelete(Integer dnSubscriptionId) throws BusinessException {		
+	public void moUssdSubscriptionDelete(Integer moSubscriptionId) throws BusinessException {		
 
-			if (dnSubscriptionId == null || dnSubscriptionId <= 0) {
+			if (moSubscriptionId == null || moSubscriptionId <= 0) {
 
-				throw new BusinessException(ErrorType.INVALID_DN_SUBSCRIPTION_ID);
+				throw new BusinessException(ErrorType.INVALID_MO_SUBSCRIPTION_ID);
 			}
 
 			try {
 
-				ussdDAO.moUssdSubscriptionDelete(dnSubscriptionId);
+				ussdDAO.moUssdSubscriptionDelete(moSubscriptionId);
 			} catch (Exception e) {
 
 				throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
 			}
 		}
+	
+	public String getOperatorIdByOperator(String operator) throws BusinessException {
+		
+		
+		
+		if (operator == null || operator.trim().length() <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_OPERATOR);
+		}
+
+		String operatorId="";
+		
+		try {
+
+			operatorId = ussdDAO.getOperatorIdByOperator(operator);
+			
+		} catch (Exception e) {
+
+			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
+		}
+		return operatorId;
+		
+		
+	}    
+		
+	public void updateOperatorIdBySubscriptionId(Integer subscriptionId, String operatorId) throws BusinessException {
+		
+		if (subscriptionId == null || subscriptionId <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_USSD_REQUEST_DID);
+		}
+		if (operatorId == null || operatorId.trim().length() <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_OPERATOR_ID);
+		}
+		try {
+
+			ussdDAO.updateOperatorIdBySubscriptionId(subscriptionId, operatorId);
+
+		} catch (Exception e) {
+
+			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
+		}
+
+	}
+		
 		
 }

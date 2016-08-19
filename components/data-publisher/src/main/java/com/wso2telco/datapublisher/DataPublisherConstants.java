@@ -105,5 +105,9 @@ public final class DataPublisherConstants {
     
     public static final String SP_CONSUMER_KEY = "com.wso2telco.prop.spConsumerKey";
     
+    public static final String SP_OPERATOR_ID = "com.wso2telco.prop.spOperatorId";
+    
+    public static final String SP_USER_ID = "com.wso2telco.prop.spUserId";
+    
     //public static final String MIFE_DEFAULT_OPERATOR = "";
 }

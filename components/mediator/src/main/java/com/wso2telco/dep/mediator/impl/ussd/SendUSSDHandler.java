@@ -95,11 +95,22 @@ public class SendUSSDHandler implements USSDHandler {
 
 		AuthenticationContext authContext = APISecurityUtils.getAuthenticationContext(context);
         String consumerKey = "";
+        String userId="";
+        String operatorId="";
         if (authContext != null) {
             consumerKey = authContext.getConsumerKey();
+            userId=authContext.getUsername();
         }
-		Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl ,consumerKey);
+		//Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl ,consumerKey);
 
+		OperatorEndpoint endpoint = null;
+        if (ValidatorUtils.getValidatorForSubscription(context).validate(context)) {
+            endpoint = occi.getAPIEndpointsByMSISDN(address.replace("tel:", ""), API_TYPE, executor.getSubResourcePath(), false,executor.getValidoperators());
+        }
+        operatorId=ussdService.getOperatorIdByOperator(endpoint.getOperator());
+        
+        Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl ,consumerKey,operatorId,userId);
+		
 		String subsEndpoint = mediatorConfMap.get("ussdGatewayEndpoint") + subscriptionId;
 		log.info("Subsendpoint - " + subsEndpoint);
 
@@ -107,10 +118,10 @@ public class SendUSSDHandler implements USSDHandler {
 				subsEndpoint);
 
 		context.setProperty(MSISDNConstants.USER_MSISDN, msisdn);
-		OperatorEndpoint endpoint = null;
+		/*OperatorEndpoint endpoint = null;
 		if (ValidatorUtils.getValidatorForSubscription(context).validate(context)) {
-			/*endpoint = occi.getAPIEndpointsByMSISDN(address.replace("tel:", ""), API_TYPE,
-					executor.getSubResourcePath(), false, executor.getValidoperators());*/
+			endpoint = occi.getAPIEndpointsByMSISDN(address.replace("tel:", ""), API_TYPE,
+					executor.getSubResourcePath(), false, executor.getValidoperators());
 			
 			
 			OparatorEndPointSearchDTO searchDTO = new OparatorEndPointSearchDTO();
@@ -123,7 +134,7 @@ public class SendUSSDHandler implements USSDHandler {
 
 			endpoint = occi.getOperatorEndpoint(searchDTO);
 			
-		}
+		}*/
 		String sending_add = endpoint.getEndpointref().getAddress();
 		log.info("sending endpoint found: " + sending_add);
 

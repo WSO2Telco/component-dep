@@ -98,12 +98,16 @@ public class MOUSSDSubscribeHandler implements USSDHandler {
 		
 		AuthenticationContext authContext = APISecurityUtils.getAuthenticationContext(context);
         String consumerKey = "";
+        String userId="";
         if (authContext != null) {
             consumerKey = authContext.getConsumerKey();
+            userId=authContext.getUsername();
 
         }
 		
-		Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl,consumerKey);
+		//Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl,consumerKey);
+		String operatorId="";
+        Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl,consumerKey,operatorId,userId);
 		log.info("created subscriptionId  -  " + subscriptionId);	
 
 		String subsEndpoint = mediatorConfMap.get("ussdGatewayEndpoint") + subscriptionId;
@@ -120,7 +124,8 @@ public class MOUSSDSubscribeHandler implements USSDHandler {
 		List<OperatorSubscriptionDTO> operatorsubses = new ArrayList<OperatorSubscriptionDTO>();
 		
 		for (OperatorEndpoint endpoint : endpoints) {
-
+			operatorId=ussdService.getOperatorIdByOperator(endpoint.getOperator());
+			ussdService.updateOperatorIdBySubscriptionId(subscriptionId,operatorId);
 			responseStr = executor.makeRequest(endpoint, endpoint.getEndpointref().getAddress(), jsonBody.toString(),true, context,false);
 			subscription_request = gson.fromJson(responseStr, SubscriptionRequest.class);
 			operatorsubses.add(new OperatorSubscriptionDTO(endpoint.getOperator(), subscription_request.getSubscription().getResourceURL()));		

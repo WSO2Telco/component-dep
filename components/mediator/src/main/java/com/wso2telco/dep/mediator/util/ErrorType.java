@@ -27,7 +27,11 @@ public enum ErrorType implements ThrowableError {
 	INVALID_REQUEST_ID("MED0006","Invalid request id"),
 	INVALID_MO_SUBSCRIPTION_ID("MED0007","Invalid mobile originated notification subscription id"),
 	INVALID_REQUEST_ID_LIST("MED0008","Invalid request id list"),
-	INVALID_MERCHANT_NAME("MED0008","Invalid merchant name");
+	INVALID_MERCHANT_NAME("MED0008","Invalid merchant name"),
+	INVALID_CONSUMER_KEY("MED0008","Invalid consumer key"),
+	INVALID_OPERATOR_ID("MED0008","Invalid operator id"),
+	INVALID_OPERATOR("MED0008","Invalid operator"),
+	INVALID_USER_ID("MED0008","Invalid user id");
 
 	private String code;
 	private String desc;

@@ -48,13 +48,13 @@ public class NBUSSDSubscriptionHandler implements USSDHandler {
     private static final String API_TYPE ="ussd";
     private OriginatingCountryCalculatorIDD occi;
     private USSDExecutor executor;
-    private USSDService dbservice;
+    private USSDService ussdService;
 
     public NBUSSDSubscriptionHandler(USSDExecutor ussdExecutor){
 
         occi = new OriginatingCountryCalculatorIDD();
         this.executor = ussdExecutor;
-        dbservice = new USSDService();
+        ussdService = new USSDService();
     }
 
 
@@ -74,14 +74,18 @@ public class NBUSSDSubscriptionHandler implements USSDHandler {
         FileReader fileReader = new FileReader();
 		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
 
-        //Integer subscriptionId = dbservice.ussdRequestEntry(notifyUrl);
+        //Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl);
         AuthenticationContext authContext = APISecurityUtils.getAuthenticationContext(context);
         String consumerKey = "";
+        String userId="";
         if (authContext != null) {
             consumerKey = authContext.getConsumerKey();
+            userId=authContext.getUsername();
         }
 
-        Integer subscriptionId = dbservice.ussdRequestEntry(notifyUrl,consumerKey);
+        //Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl,consumerKey);
+        String operatorId="";
+        Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl,consumerKey,operatorId,userId);
         log.info("created axiataId  -  " + subscriptionId);
 
         String subsEndpoint = mediatorConfMap.get("ussdGatewayEndpoint")+subscriptionId;
@@ -126,6 +130,9 @@ public class NBUSSDSubscriptionHandler implements USSDHandler {
                             subscriptionGatewayRequest.setSubscription(subscriptionGatewayRequestDTO);
                             String jsonb = gson.toJson(subscriptionGatewayRequest);
 
+                            operatorId=ussdService.getOperatorIdByOperator(endpoint.getOperator());
+                            ussdService.updateOperatorIdBySubscriptionId(subscriptionId,operatorId);
+                            
                             responseStr = executor.makeRequest(endpoint, endpoint.getEndpointref().getAddress(), jsonb, true, context, false);
                             executor.handlePluginException(responseStr);
 
@@ -164,7 +171,7 @@ public class NBUSSDSubscriptionHandler implements USSDHandler {
         subscriptionHubResponse.setSubscription(subscription);
         jObject  = new JSONObject(subscriptionHubResponse);
 
-        dbservice.moUssdSubscriptionEntry(operatorsubses, subscriptionId);
+        ussdService.moUssdSubscriptionEntry(operatorsubses, subscriptionId);
 
         String responseobj =jObject.toString();
         executor.setResponse(context, responseobj);

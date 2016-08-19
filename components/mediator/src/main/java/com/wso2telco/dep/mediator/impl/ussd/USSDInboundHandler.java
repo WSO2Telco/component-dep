@@ -100,8 +100,9 @@ public class USSDInboundHandler implements USSDHandler {
 
 		JSONObject jsonBody = executor.getJsonBody();
 		jsonBody.getJSONObject("inboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL", ussdSPDetails.get(0));
-		// context.setProperty(APIMgtUsagePublisherConstants.CONSUMER_KEY ,ussdSPDetails.get(1) );
         context.setProperty(DataPublisherConstants.SP_CONSUMER_KEY, ussdSPDetails.get(1));
+        context.setProperty(DataPublisherConstants.SP_OPERATOR_ID, ussdSPDetails.get(2));
+        context.setProperty(DataPublisherConstants.SP_USER_ID, ussdSPDetails.get(3));
         String notifyret = executor.makeRequest(new OperatorEndpoint(new EndpointReference(ussdSPDetails.get(0)), null), ussdSPDetails.get(0),jsonBody.toString(), true, context,false);
 
 		log.debug(notifyret);

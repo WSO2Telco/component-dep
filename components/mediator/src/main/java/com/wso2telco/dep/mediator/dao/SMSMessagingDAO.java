@@ -188,7 +188,7 @@ public class SMSMessagingDAO {
 	
 	
 	
-	public boolean operatorsubsEntry(List<Operatorsubs> domainsubs, Integer dnSubscriptionId) throws SQLException, Exception {
+	public boolean operatorsubsEntry(List<OperatorSubscriptionDTO> domainsubs, Integer dnSubscriptionId) throws SQLException, Exception {
 
 		Connection con = null;
 		PreparedStatement insertStatement = null;
@@ -215,7 +215,7 @@ public class SMSMessagingDAO {
 
 			insertStatement = con.prepareStatement(queryString.toString());
 
-			for (Operatorsubs d : domainsubs) {
+			for (OperatorSubscriptionDTO d : domainsubs) {
 
 				insertStatement.setInt(1, dnSubscriptionId);
 				insertStatement.setString(2, d.getDomain());

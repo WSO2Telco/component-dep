@@ -85,57 +85,75 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
     private String resourceURL;
     private String messageId;
     private String spConsumerKey;
-	    
-	    
+    private String spOperatorId;
+	private String spUserId;
 	
-	    public String getDestinationAddress() {
-			return destinationAddress;
-		}
 	
-		public void setDestinationAddress(String destinationAddress) {
-			this.destinationAddress = destinationAddress;
-		}
-	
-		public String getSenderAddress() {
-			return senderAddress;
-		}
-	
-		public void setSenderAddress(String senderAddress) {
-			this.senderAddress = senderAddress;
-		}
-	
-		public String getMessage() {
-			return message;
-		}
-	
-		public void setMessage(String message) {
-		this.message = message;
-		}
-	
-		public String getDateTime() {
-			return dateTime;
-		}
-	
-		public void setDateTime(String dateTime) {
-			this.dateTime = dateTime;
-		}
-	
-		public String getResourceURL() {
-			return resourceURL;
-		}
-	
-		public void setResourceURL(String resourceURL) {
-			this.resourceURL = resourceURL;
-		}
-	
-		public String getMessageId() {
-			return messageId;
-		}
-	
-		public void setMessageId(String messageId) {
-			this.messageId = messageId;
-		}
-	
+	public String getSpOperatorId() {
+		return spOperatorId;
+	}
+
+	public void setSpOperatorId(String spOperatorId) {
+		this.spOperatorId = spOperatorId;
+	}
+
+	public String getSpUserId() {
+		return spUserId;
+	}
+
+	public void setSpUserId(String spUserId) {
+		this.spUserId = spUserId;
+	}  
+
+
+    public String getDestinationAddress() {
+		return destinationAddress;
+	}
+
+	public void setDestinationAddress(String destinationAddress) {
+		this.destinationAddress = destinationAddress;
+	}
+
+	public String getSenderAddress() {
+		return senderAddress;
+	}
+
+	public void setSenderAddress(String senderAddress) {
+		this.senderAddress = senderAddress;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+	this.message = message;
+	}
+
+	public String getDateTime() {
+		return dateTime;
+	}
+
+	public void setDateTime(String dateTime) {
+		this.dateTime = dateTime;
+	}
+
+	public String getResourceURL() {
+		return resourceURL;
+	}
+
+	public void setResourceURL(String resourceURL) {
+		this.resourceURL = resourceURL;
+	}
+
+	public String getMessageId() {
+		return messageId;
+	}
+
+	public void setMessageId(String messageId) {
+		this.messageId = messageId;
+	}
+
     /**
      * Gets the request id.
      *
@@ -531,7 +549,9 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
                 + "          {'name':'date_Time','type':'STRING'},"
                 + "          {'name':'resourceURL','type':'STRING'},"
                 + "          {'name':'message_Id','type':'STRING'},"
-				+ "			 {'name':'spConsumerKey','type':'STRING'}"            
+                + "			 {'name':'spConsumerKey','type':'STRING'},"
+                + "          {'name':'spOperatorId','type':'STRING'},"
+                + "			 {'name':'spUserId','type':'STRING'}"       
                 + "  ]"
                 + "}";
 
@@ -550,6 +570,8 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
             getRequestId(), getOperatorId(), getResponseCode(), getMsisdn(), getChargeAmount(), getPurchaseCategoryCode(),
             getOperatorRef(), getExceptionId(), getExceptionMessage(), getJsonBody(), getTaxAmount() ,getChannel(),
             getOnBehalfOf(), getDescription(),getUssdAction(), getUssdSessionId(),getTransactionOperationStatus(),getReferenceCode(),
-            getDestinationAddress(),getSenderAddress(),getMessage(),getDateTime(),getResourceURL(),getMessageId(),getSpConsumerKey()};
+            getDestinationAddress(),getSenderAddress(),getMessage(),getDateTime(),getResourceURL(),getMessageId(),getSpConsumerKey(),
+            getSpOperatorId(),getSpUserId()
+          };
         }
 }

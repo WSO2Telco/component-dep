@@ -45,11 +45,14 @@ public class USSDDAO {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public Integer ussdRequestEntry(String notifyURL) throws SQLException, Exception {
+	public Integer ussdRequestEntry(String notifyURL , String consumerKey, String operatorId, String userId) throws SQLException, Exception {
 
 		Connection con = null;
 		PreparedStatement ps = null;
-		ResultSet rs = null;
+		ResultSet insert_result = null;
+		ResultSet select_result = null;
+		Statement st = null;
+		Integer selectId = 0;
 		Integer newId = 0;
 
 		try {
@@ -60,24 +63,37 @@ public class USSDDAO {
 				throw new Exception("Connection not found");
 			}
 
+			st = con.createStatement();
+            String sql = "SELECT MAX(axiataid) maxid FROM ussd_request_entry";
+
+            select_result = st.executeQuery(sql);
+            if (select_result.next()) {
+            	selectId = select_result.getInt("maxid") + 1;
+            }
+            
+			
 			StringBuilder insertQueryString = new StringBuilder("INSERT INTO ");
 			insertQueryString.append(DatabaseTables.USSD_REQUEST_ENTRY.getTableName());
-			insertQueryString.append(" (notifyurl) ");
-			insertQueryString.append("VALUES (?)");
+			insertQueryString.append(" (ussd_request_did,notifyurl,sp_consumerKey,operatorId,userId) ");
+			insertQueryString.append("VALUES (?,?,?,?)");
 
 			ps = con.prepareStatement(insertQueryString.toString(), Statement.RETURN_GENERATED_KEYS);
 
-			ps.setString(1, notifyURL);
+			ps.setInt(1, selectId);
+			ps.setString(2, notifyURL);
+			ps.setString(3, consumerKey);
+			ps.setString(4, operatorId);
+			ps.setString(5, userId);
 			
 			log.debug("sql query in ussdRequestEntry : " + ps);
 
 			ps.executeUpdate();
 
-			rs = ps.getGeneratedKeys();
+			insert_result = ps.getGeneratedKeys();
 
-			while (rs.next()) {
+			while (insert_result.next()) {
 
-				newId = rs.getInt(1);
+				newId = insert_result.getInt(1);
 			}
 		} catch (SQLException e) {
 
@@ -89,7 +105,9 @@ public class USSDDAO {
 			throw e;
 		} finally {
 
-			DbUtils.closeAllConnections(ps, con, rs);
+			DbUtils.closeAllConnections(ps, con, insert_result);
+			DbUtils.closeAllConnections(st, con, select_result);
+			
 		}
 
 		return newId;
@@ -235,19 +253,9 @@ public class USSDDAO {
 
 		} catch (SQLException e) {
 
-			/**
-			 * rollback if Exception occurs
-			 */
-			con.rollback();
-
 			log.error("database operation error in operatorSubsEntry : ", e);
 			throw e;
 		} catch (Exception e) {
-
-			/**
-			 * rollback if Exception occurs
-			 */
-			con.rollback();
 
 			log.error("error in operatorSubsEntry : ", e);
 			throw e;
@@ -299,11 +307,11 @@ public class USSDDAO {
 			}
 		} catch (SQLException e) {
 
-			log.error("database operation error in subscriptionQuery : ", e);
+			log.error("database operation error in moUssdSubscriptionQuery : ", e);
 			throw e;
 		} catch (Exception e) {
 
-			log.error("error in subscriptionQuery : ", e);
+			log.error("error in moUssdSubscriptionQuery : ", e);
 			throw e;
 		} finally {
 
@@ -385,4 +393,51 @@ public class USSDDAO {
 			DbUtils.closeAllConnections(deleteOperatorSubscriptionsStatement, null, null);
 		}
 	}
+
+	public String getOperatorIdByOperator(String operator)  throws SQLException, Exception {
+		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+	       PreparedStatement ps = null;
+	        ResultSet rs = null;
+	        String operatorId="";
+	
+	        try {
+	            String sql = "SELECT id FROM operators o where operatorname=?";
+	            ps = con.prepareStatement(sql);
+	            ps.setString(1, operator);
+	            rs = ps.executeQuery();
+	
+	            if (rs.next() && rs.getString("id")!= null ) {
+	                operatorId=  rs.getString("id") ;
+	            }
+	        } catch (Exception e) {
+	            DbUtils.handleException("Error while checking OperatorId. ", e);
+	        } finally {
+	            DbUtils.closeAllConnections(ps, con, rs);
+	        }
+	        return operatorId;
+		
+		
+	}	
+
+		public void updateOperatorIdBySubscriptionId(Integer subscriptionId, String operatorId)  throws SQLException, Exception {
+    		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+			    Statement st = null;
+			    try {
+			        if (con == null) {
+			            throw new Exception("Connection not found");
+			        }
+			
+			        st = con.createStatement();
+			        String sql = "'update ussd_request_entry set operatorId='"+operatorId+"' where axiataid = '"+subscriptionId+"'";
+			
+			        st.executeUpdate(sql);
+			
+			    } catch (Exception e) {
+			    	throw e;
+			    } finally {
+			        DbUtils.closeAllConnections(st, con, null);
+			    }
+				
+			
+		}
 }
