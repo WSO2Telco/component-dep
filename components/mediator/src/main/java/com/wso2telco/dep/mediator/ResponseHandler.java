@@ -261,5 +261,37 @@ public class ResponseHandler {
 		((Axis2MessageContext) mc).getAxis2MessageContext().setProperty("messageType", "application/json");
 		return gson.toJson(finalResponse);
 	}
+	
+	public String walletPaymentResponseContext(MessageContext context, String jsonBody, String clientCorrelator, String requestResourceURL, String requestid) throws JSONException {
+		
+        org.json.JSONObject jsonObj = new org.json.JSONObject(jsonBody);
+        JSONObject objPay = jsonObj.getJSONObject("makePayment");
+        FileReader fileReader = new FileReader();
+		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
+		
+        String endUserId = objPay.get("endUserId").toString();
+        log.debug("Creating wallet payment charge response -> endUserId : " + endUserId);
+        String pluginResourceUrl = objPay.getString("notifyURL");
+        log.debug("Creating wallet payment charge response -> notifyURL : " + pluginResourceUrl);
+        String pluginResourceUrlParts[] = pluginResourceUrl.split("/");
+        String hubResourceURL = mediatorConfMap.get("hubGateway") + requestResourceURL + "/" + pluginResourceUrlParts[pluginResourceUrlParts.length - 1];
+        log.debug("Creating wallet payment charge response -> hubResourceURL : " + hubResourceURL);
+       log.debug("Creating wallet payment charge response -> requestid : " + requestid);
+
+        return jsonObj.toString();
+    }
+
+
+    public String walletRefundResponseContext(MessageContext context, String jsonBody, String clientCorrelator, String requestResourceURL, String requestid) throws JSONException {
+
+        org.json.JSONObject jsonObj = new org.json.JSONObject(jsonBody);
+        JSONObject objPay = jsonObj.getJSONObject("refundTransaction");
+
+        String endUserId = objPay.get("endUserId").toString();
+        log.debug("Creating refund response -> endUserId : " + endUserId);
+
+        return jsonObj.toString();
+    }
+		
 
 }

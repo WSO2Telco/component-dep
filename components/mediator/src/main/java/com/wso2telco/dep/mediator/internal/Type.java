@@ -38,7 +38,8 @@ public enum Type {
 	LOCREQ("LR"), 
 	SEND_USSD("SU"), 
 	RETRIEVE_USSD("RU"), 
-	MO_USSD("RU");
+	MO_USSD("RU"),
+	WALLET("WA");
         
         /** The code. */
         private String code;

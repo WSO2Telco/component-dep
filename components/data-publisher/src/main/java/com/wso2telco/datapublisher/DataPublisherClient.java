@@ -249,6 +249,52 @@ public class DataPublisherClient {
     		   }catch (JSONException e) {
         	            log.error("Error in converting request to json. " + e.getMessage(), e);
         	        }
+    		   try {
+                   amountTransaction = new JSONObject(jsonBody).optJSONObject("makePayment");
+                   if (amountTransaction != null) {
+                       JSONObject chargingMetaData = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingMetaData");
+                       taxAmount = chargingMetaData.optString("taxAmount");
+                      channel = chargingMetaData.optString("channel");
+                       onBehalfOf = chargingMetaData.optString("onBehalfOf");
+                       JSONObject chargingInformation = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingInformation");
+                       description = chargingInformation.optString("description");
+                       transactionOperationStatus = amountTransaction.optString("transactionOperationStatus");
+                       referenceCode = amountTransaction.optString("referenceCode");
+                   }
+   
+                   outboundUSSDMessageRequest = new JSONObject(jsonBody).optJSONObject("outboundUSSDMessageRequest");
+                   if(outboundUSSDMessageRequest != null) {
+                       ussdAction = outboundUSSDMessageRequest.optString("ussdAction");
+                       ussdSessionId = outboundUSSDMessageRequest.optString("sessionID");
+                   }
+   
+	               } catch (JSONException e) {
+	                   log.error("Error in converting request to json. " + e.getMessage(), e);
+	               }
+   
+               try {
+                   amountTransaction = new JSONObject(jsonBody).optJSONObject("refundTransaction");
+   
+                   if (amountTransaction != null) {
+                       JSONObject chargingMetaData = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingMetaData");
+                       taxAmount = chargingMetaData.optString("taxAmount");
+                       channel = chargingMetaData.optString("channel");
+                       onBehalfOf = chargingMetaData.optString("onBehalfOf");
+                       JSONObject chargingInformation = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingInformation");
+                       description = chargingInformation.optString("description");
+                       transactionOperationStatus = amountTransaction.optString("transactionOperationStatus");
+                       referenceCode = amountTransaction.optString("referenceCode");
+                  }
+   
+                   outboundUSSDMessageRequest = new JSONObject(jsonBody).optJSONObject("outboundUSSDMessageRequest");
+                   if(outboundUSSDMessageRequest != null) {
+                       ussdAction = outboundUSSDMessageRequest.optString("ussdAction");
+                       ussdSessionId = outboundUSSDMessageRequest.optString("sessionID");
+                   }
+   
+               } catch (JSONException e) {
+                   log.error("Error in converting request to json. " + e.getMessage(), e);
+               }
         	  
         } 
 
@@ -300,7 +346,8 @@ public class DataPublisherClient {
         responsePublisherDTO.setUssdSessionId(ussdSessionId);
 		responsePublisherDTO.setTransactionOperationStatus(transactionOperationStatus);
         responsePublisherDTO.setReferenceCode(referenceCode);
-
+        
+        /*
         if (responsePublisherDTO.getApi().equals("smsmessaging") && responsePublisherDTO.getResourcePath().contains("/inbound/registrations")) {
 			Gson gson = new Gson();
 			if (isJSONValid(jsonBody)) {
@@ -326,7 +373,8 @@ public class DataPublisherClient {
 
 		}else {
 			publisher.publishEvent(responsePublisherDTO);			
-		}
+		}*/
+        publisher.publishEvent(responsePublisherDTO);
     }
     public boolean isJSONValid(String jsonString) {
 		try {
