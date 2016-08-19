@@ -161,6 +161,46 @@
             <EnableScoreParam>false</EnableScoreParam>  
             <Type>STRING</Type> 
         </ColumnDefinition>
-              
+		<ColumnDefinition>  
+            <Name>taxAmount</Name>    
+            <EnableIndexing>false</EnableIndexing>   
+            <IsPrimaryKey>false</IsPrimaryKey>  
+            <EnableScoreParam>false</EnableScoreParam>  
+            <Type>STRING</Type> 
+        </ColumnDefinition><ColumnDefinition>  
+            <Name>channel</Name>    
+            <EnableIndexing>false</EnableIndexing>   
+            <IsPrimaryKey>false</IsPrimaryKey>  
+            <EnableScoreParam>false</EnableScoreParam>  
+            <Type>STRING</Type> 
+        </ColumnDefinition>
+		<ColumnDefinition>  
+            <Name>onBehalfOf</Name>    
+            <EnableIndexing>false</EnableIndexing>   
+            <IsPrimaryKey>false</IsPrimaryKey>  
+            <EnableScoreParam>false</EnableScoreParam>  
+            <Type>STRING</Type> 
+        </ColumnDefinition>
+		<ColumnDefinition>  
+            <Name>description</Name>    
+            <EnableIndexing>false</EnableIndexing>   
+            <IsPrimaryKey>false</IsPrimaryKey>  
+            <EnableScoreParam>false</EnableScoreParam>  
+            <Type>STRING</Type> 
+        </ColumnDefinition>
+		<ColumnDefinition>  
+            <Name>transactionOperationStatus</Name>    
+            <EnableIndexing>false</EnableIndexing>   
+            <IsPrimaryKey>false</IsPrimaryKey>  
+            <EnableScoreParam>false</EnableScoreParam>  
+            <Type>STRING</Type> 
+        </ColumnDefinition>
+		<ColumnDefinition>  
+            <Name>referenceCode</Name>    
+            <EnableIndexing>false</EnableIndexing>   
+            <IsPrimaryKey>false</IsPrimaryKey>  
+            <EnableScoreParam>false</EnableScoreParam>  
+            <Type>STRING</Type> 
+        </ColumnDefinition>              
     </TableSchema>    
 </EventStoreConfiguration>

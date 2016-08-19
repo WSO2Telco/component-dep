@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.wso2telco.datapublisher;
 
+import com.google.gson.Gson;
 import com.wso2telco.datapublisher.dto.SouthboundRequestPublisherDTO;
 import com.wso2telco.datapublisher.dto.SouthboundResponsePublisherDTO;
 import com.wso2telco.datapublisher.internal.SouthboundDataComponent;
@@ -25,6 +26,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.apache.synapse.rest.RESTConstants;
+import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.wso2.carbon.apimgt.gateway.APIMgtGatewayConstants;
@@ -128,7 +130,7 @@ public class DataPublisherClient {
        		try {
         		amountTransaction = new JSONObject(jsonBody).optJSONObject("amountTransaction");
         		if (amountTransaction != null) {
-		        	JSONObject chargingMetaData = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingMetaData");
+        			JSONObject chargingMetaData = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingMetaData");
 		        	taxAmount = chargingMetaData.optString("taxAmount");
 		        	channel = chargingMetaData.optString("channel"); 
 		        	onBehalfOf = chargingMetaData.optString("onBehalfOf");
@@ -251,31 +253,44 @@ public class DataPublisherClient {
         } 
 
         SouthboundResponsePublisherDTO responsePublisherDTO = new SouthboundResponsePublisherDTO();
+        
+        responsePublisherDTO.setRequestId((String) mc.getProperty(DataPublisherConstants.REQUEST_ID));
+		responsePublisherDTO.setOperatorId((String) mc.getProperty(DataPublisherConstants.OPERATOR_ID));
+		responsePublisherDTO.setResponseCode((String) mc.getProperty(DataPublisherConstants.RESPONSE_CODE));
+		responsePublisherDTO.setMsisdn((String) mc.getProperty(DataPublisherConstants.MSISDN));
+		responsePublisherDTO.setChargeAmount((String) mc.getProperty(DataPublisherConstants.CHARGE_AMOUNT));
+		responsePublisherDTO.setPurchaseCategoryCode((String) mc.getProperty(DataPublisherConstants.PAY_CATEGORY));
+		responsePublisherDTO.setOperatorRef((String) mc.getProperty(DataPublisherConstants.OPERATOR_REF));
+		responsePublisherDTO.setExceptionId((String) mc.getProperty(DataPublisherConstants.EXCEPTION_ID));
+		responsePublisherDTO.setExceptionMessage((String) mc.getProperty(DataPublisherConstants.EXCEPTION_MESSAGE));
+        
+        
         responsePublisherDTO.setConsumerKey((String) mc.getProperty(APIMgtGatewayConstants.CONSUMER_KEY));
         responsePublisherDTO.setUsername((String) mc.getProperty(APIMgtGatewayConstants.USER_ID));
-        responsePublisherDTO.setTenantDomain(MultitenantUtils.getTenantDomain(responsePublisherDTO.getUsername()));
+        
         responsePublisherDTO.setContext((String) mc.getProperty(APIMgtGatewayConstants.CONTEXT));
         responsePublisherDTO.setApi_version((String) mc.getProperty(APIMgtGatewayConstants.API_VERSION));
         responsePublisherDTO.setApi((String) mc.getProperty(APIMgtGatewayConstants.API));
         responsePublisherDTO.setVersion((String) mc.getProperty(APIMgtGatewayConstants.VERSION));
         responsePublisherDTO.setResourcePath((String) mc.getProperty(APIMgtGatewayConstants.RESOURCE));
         responsePublisherDTO.setMethod((String) mc.getProperty(APIMgtGatewayConstants.HTTP_METHOD));
-        responsePublisherDTO.setResponseTime(currentTime);
-        responsePublisherDTO.setServiceTime(serviceTime);
+        
         responsePublisherDTO.setHostName((String) mc.getProperty(APIMgtGatewayConstants.HOST_NAME));
         responsePublisherDTO.setApiPublisher((String) mc.getProperty(APIMgtGatewayConstants.API_PUBLISHER));
+        
         responsePublisherDTO.setApplicationName((String) mc.getProperty(APIMgtGatewayConstants.APPLICATION_NAME));
         responsePublisherDTO.setApplicationId((String) mc.getProperty(APIMgtGatewayConstants.APPLICATION_ID));
 
-        responsePublisherDTO.setRequestId((String) mc.getProperty(DataPublisherConstants.REQUEST_ID));
-        responsePublisherDTO.setOperatorId((String) mc.getProperty(DataPublisherConstants.OPERATOR_ID));
-        responsePublisherDTO.setResponseCode((String) mc.getProperty(DataPublisherConstants.RESPONSE_CODE));
-        responsePublisherDTO.setMsisdn((String) mc.getProperty(DataPublisherConstants.MSISDN));
-        responsePublisherDTO.setChargeAmount((String) mc.getProperty(DataPublisherConstants.CHARGE_AMOUNT));
-        responsePublisherDTO.setPurchaseCategoryCode((String) mc.getProperty(DataPublisherConstants.PAY_CATEGORY));
-        responsePublisherDTO.setOperatorRef((String) mc.getProperty(DataPublisherConstants.OPERATOR_REF));
-        responsePublisherDTO.setExceptionId((String) mc.getProperty(DataPublisherConstants.EXCEPTION_ID));
-        responsePublisherDTO.setExceptionMessage((String) mc.getProperty(DataPublisherConstants.EXCEPTION_MESSAGE));
+        if (mc.getProperty(DataPublisherConstants.RESPONSE) != null) {
+				responsePublisherDTO.setResponse(Integer.parseInt((String) mc.getProperty(DataPublisherConstants.RESPONSE)));
+			} else {
+				responsePublisherDTO.setResponse(1);
+		}
+			
+		responsePublisherDTO.setTenantDomain(MultitenantUtils.getTenantDomain(responsePublisherDTO.getUsername()));
+		responsePublisherDTO.setResponseTime(currentTime);
+		responsePublisherDTO.setServiceTime(serviceTime);
+        	
         responsePublisherDTO.setJsonBody(jsonBody);
         responsePublisherDTO.setTaxAmount(taxAmount);
         responsePublisherDTO.setChannel(channel);
@@ -286,28 +301,46 @@ public class DataPublisherClient {
 		responsePublisherDTO.setTransactionOperationStatus(transactionOperationStatus);
         responsePublisherDTO.setReferenceCode(referenceCode);
 
-        if (mc.getProperty(DataPublisherConstants.RESPONSE) != null) {
-            responsePublisherDTO.setResponse(Integer.parseInt((String) mc.getProperty(DataPublisherConstants.RESPONSE)));
-        } else {
-            responsePublisherDTO.setResponse(1);
-        }
+        if (responsePublisherDTO.getApi().equals("smsmessaging") && responsePublisherDTO.getResourcePath().contains("/inbound/registrations")) {
+			Gson gson = new Gson();
+			if (isJSONValid(jsonBody)) {
+				JsonPOJO jsonPOJO = gson.fromJson(jsonBody, JsonPOJO.class);
+				InboundSMSMessage[] inboundSMSMessageList=jsonPOJO.getInboundSMSMessageList().getInboundSMSMessage();
+				if (inboundSMSMessageList.length > 0) {
+					for (InboundSMSMessage inboundSMSMessage : inboundSMSMessageList) {
+						responsePublisherDTO.setDateTime(inboundSMSMessage.getDateTime());
+						responsePublisherDTO.setDestinationAddress(inboundSMSMessage.getDestinationAddress());
+						responsePublisherDTO.setMessage(inboundSMSMessage.getMessage());
+						responsePublisherDTO.setMessageId(inboundSMSMessage.getMessageId());
+						responsePublisherDTO.setResourceURL(inboundSMSMessage.getResourceURL());
+						responsePublisherDTO.setSenderAddress(inboundSMSMessage.getSenderAddress());
+	
+				        publisher.publishEvent(responsePublisherDTO);
+					}
+				}else {
+					publisher.publishEvent(responsePublisherDTO);
+				}
+			}else{
+			publisher.publishEvent(responsePublisherDTO);
+			}
 
-       /* responsePublisherDTO.setOperationType((Integer) mc.getProperty(DataPublisherConstants.OPERATION_TYPE));
-        responsePublisherDTO.setMerchantId((String) mc.getProperty(DataPublisherConstants.MERCHANT_ID));
-        responsePublisherDTO.setCategory((String) mc.getProperty(DataPublisherConstants.CATEGORY));
-        responsePublisherDTO.setSubCategory((String) mc.getProperty(DataPublisherConstants.SUB_CATEGORY));*/
-
-        //added to get Subscriber in end User request scenario 
-       /* String userIdToPublish = responsePublisherDTO.getUsername();
-        if (userIdToPublish != null && userIdToPublish.contains("@")) {
-            String[] userIdArray = userIdToPublish.split("@");
-            userIdToPublish = userIdArray[0];
-            responsePublisherDTO.setUsername(userIdToPublish);
-        }*/
-
-        publisher.publishEvent(responsePublisherDTO);
+		}else {
+			publisher.publishEvent(responsePublisherDTO);			
+		}
     }
+    public boolean isJSONValid(String jsonString) {
+		try {
+			new JSONObject(jsonString);
+		} catch (JSONException ex) {
 
+			try {
+				new JSONArray(jsonString);
+			} catch (JSONException exN) {
+				return false;
+			}
+		}
+		return true;
+	}
     /**
      * Extract resource.
      *
