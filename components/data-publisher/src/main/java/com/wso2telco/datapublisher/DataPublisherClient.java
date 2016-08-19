@@ -348,7 +348,7 @@ public class DataPublisherClient {
 		responsePublisherDTO.setTransactionOperationStatus(transactionOperationStatus);
         responsePublisherDTO.setReferenceCode(referenceCode);
         
-        /*
+       
         if (responsePublisherDTO.getApi().equals("smsmessaging") && responsePublisherDTO.getResourcePath().contains("/inbound/registrations")) {
 			Gson gson = new Gson();
 			if (isJSONValid(jsonBody)) {
@@ -374,7 +374,7 @@ public class DataPublisherClient {
 
 		}else {
 			publisher.publishEvent(responsePublisherDTO);			
-		}*/
+		}
         publisher.publishEvent(responsePublisherDTO);
     }
     public boolean isJSONValid(String jsonString) {
