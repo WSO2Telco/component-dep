@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.service;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -40,8 +41,9 @@ public class USSDService {
 		ussdDAO = new USSDDAO();
 	}
 
-	public Integer ussdRequestEntry(String notifyURL) throws BusinessException {
-
+	//public Integer ussdRequestEntry(String notifyURL) throws BusinessException {
+	public Integer ussdRequestEntry(String notifyURL, String consumerKey) throws Exception {
+		
 		if (notifyURL == null || notifyURL.trim().length() <= 0) {
 
 			throw new BusinessException(ErrorType.INVALID_NOTIFY_URL);
@@ -60,18 +62,20 @@ public class USSDService {
 		return newId;
 	}
 
-	public String getUSSDNotifyURL(Integer subscriptionId) throws BusinessException {
-
+	//public String getUSSDNotifyURL(Integer subscriptionId) throws BusinessException {
+	public List<String> getUSSDNotify(Integer subscriptionId) throws Exception {
+		
 		if (subscriptionId == null || subscriptionId <= 0) {
 
 			throw new BusinessException(ErrorType.INVALID_USSD_REQUEST_DID);
 		}
 
-		String notifyurls = "";
+		//String notifyurls = "";
+		List<String> notifyurls = new ArrayList<String>();
 
 		try {
 
-			notifyurls = ussdDAO.getUSSDNotifyURL(subscriptionId);
+			//notifyurls = ussdDAO.getUSSDNotifyURL(subscriptionId);
 		} catch (Exception e) {
 
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);

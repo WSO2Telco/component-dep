@@ -23,6 +23,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONObject;
+import org.wso2.carbon.apimgt.gateway.handlers.security.APISecurityUtils;
+import org.wso2.carbon.apimgt.gateway.handlers.security.AuthenticationContext;
 
 import com.wso2telco.datapublisher.DataPublisherConstants;
 import com.wso2telco.dbutils.fileutils.FileReader;
@@ -91,7 +93,12 @@ public class SendUSSDHandler implements USSDHandler {
 
 		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
 
-		Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl);
+		AuthenticationContext authContext = APISecurityUtils.getAuthenticationContext(context);
+        String consumerKey = "";
+        if (authContext != null) {
+            consumerKey = authContext.getConsumerKey();
+        }
+		Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl ,consumerKey);
 
 		String subsEndpoint = mediatorConfMap.get("ussdGatewayEndpoint") + subscriptionId;
 		log.info("Subsendpoint - " + subsEndpoint);

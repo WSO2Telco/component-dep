@@ -18,7 +18,6 @@ package com.wso2telco.dep.mediator.impl.ussd;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.wso2telco.dep.mediator.entity.ussd.NBUSSDSubscriptionHandler;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 
 // TODO: Auto-generated Javadoc

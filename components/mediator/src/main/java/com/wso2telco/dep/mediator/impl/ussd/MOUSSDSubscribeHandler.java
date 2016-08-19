@@ -20,6 +20,7 @@ import com.google.gson.GsonBuilder;
 import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.entity.SubscriptionRequest;
+import com.wso2telco.dep.mediator.internal.ApiUtils;
 import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
@@ -31,6 +32,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONObject;
+import org.wso2.carbon.apimgt.gateway.handlers.security.APISecurityUtils;
+import org.wso2.carbon.apimgt.gateway.handlers.security.AuthenticationContext;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +60,8 @@ public class MOUSSDSubscribeHandler implements USSDHandler {
 
 	/** The ussdDAO. */
 	private USSDService ussdService;
+	
+	private ApiUtils apiUtils;
 
 	/**
 	 * Instantiates a new MOUSSD subscribe handler.
@@ -69,6 +74,7 @@ public class MOUSSDSubscribeHandler implements USSDHandler {
 		occi = new OriginatingCountryCalculatorIDD();
 		this.executor = ussdExecutor;
 		ussdService = new USSDService();
+		apiUtils = new ApiUtils();
 	}
 
 	/*
@@ -89,7 +95,15 @@ public class MOUSSDSubscribeHandler implements USSDHandler {
 		JSONObject jsonBody = executor.getJsonBody();
 		String notifyUrl = jsonBody.getJSONObject("subscription").getJSONObject("callbackReference").getString("notifyURL");
 		Gson gson = new GsonBuilder().serializeNulls().create();
-		Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl);
+		
+		AuthenticationContext authContext = APISecurityUtils.getAuthenticationContext(context);
+        String consumerKey = "";
+        if (authContext != null) {
+            consumerKey = authContext.getConsumerKey();
+
+        }
+		
+		Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl,consumerKey);
 		log.info("created subscriptionId  -  " + subscriptionId);	
 
 		String subsEndpoint = mediatorConfMap.get("ussdGatewayEndpoint") + subscriptionId;

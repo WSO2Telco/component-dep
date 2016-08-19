@@ -132,7 +132,7 @@ public class PaymentExecutorV2 extends RequestExecutor {
         log.info("sending endpoint found: " + sending_add);
 
         // Check if Spend Limits are exceeded
-        checkSpendLimit(msisdn, endpoint.getOperator(), mc ,amount);
+     // checkSpendLimit(msisdn, endpoint.getOperator(), mc ,amount);
 
         //routeToEndpoint(endpoint, mc, sending_add);
         //apend request id to client co-relator
@@ -200,34 +200,39 @@ public class PaymentExecutorV2 extends RequestExecutor {
         }
 
         SpendLimitHandler spendLimitHandler = new SpendLimitHandler();
-        
-      /*  Double msisdn_day_amount = null;
+        FileReader fileReader = new FileReader();
+		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
+        Double msisdn_day_amount = null;
         Double application_day_amount = null;
         Double oprator_day_amount = null;
-        try {
-        	
-        	FileReader fileReader = new FileReader();
-    		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
-        	
-            msisdn_day_amount = Double.parseDouble(mediatorConfMap.get("msisdn_day_amount"));
-            application_day_amount = Double.parseDouble(mediatorConfMap.get("application_day_amount"));
-            oprator_day_amount = Double.parseDouble( mediatorConfMap.get("operator_day_amount"));
+        
+            
+        msisdn_day_amount = Double.parseDouble(mediatorConfMap.get("msisdn_day_amount"));
+        application_day_amount = Double.parseDouble(mediatorConfMap.get("application_day_amount"));
+        oprator_day_amount = Double.parseDouble( mediatorConfMap.get("operator_day_amount"));
 
-        } catch (IOException e) {
+       
 
-        }*/
+        if (((spendLimitHandler.isMSISDNSpendLimitExceeded(msisdn)) != null && (spendLimitHandler.isMSISDNSpendLimitExceeded(msisdn) >= msisdn_day_amount))
+        		                || (msisdn_day_amount <= (Double.parseDouble(chargeAmount))) ||
+        		                ( spendLimitHandler.isMSISDNSpendLimitExceeded(msisdn) != null &&
+        		                        (Double.parseDouble(chargeAmount)+spendLimitHandler.isMSISDNSpendLimitExceeded(msisdn))> msisdn_day_amount )) {
+	
+        	throw new CustomException("POL1001", "The %1 charging limit for this user has been exceeded", new String[]{"daily"});
 
-        if (spendLimitHandler.isMSISDNSpendLimitExceeded(msisdn)) {
+        } else if ((spendLimitHandler.isApplicationSpendLimitExceeded(consumerKey)!= null  && spendLimitHandler.isApplicationSpendLimitExceeded(consumerKey) >= application_day_amount)
+		                ||(application_day_amount <= Double.parseDouble(chargeAmount)) ||
+		                (spendLimitHandler.isApplicationSpendLimitExceeded(consumerKey)!= null  &&
+		                        (spendLimitHandler.isApplicationSpendLimitExceeded(consumerKey)+Double.parseDouble(chargeAmount))> application_day_amount)) {
 
-            throw new CustomException("POL1001", "The %1 charging limit for this user has been exceeded", new String[]{"daily"});
+	
+        	throw new CustomException("POL1001", "The %1 charging limit for this application has been exceeded", new String[]{"daily"});
 
-        } else if (spendLimitHandler.isApplicationSpendLimitExceeded(consumerKey)) {
-
-            throw new CustomException("POL1001", "The %1 charging limit for this application has been exceeded", new String[]{"daily"});
-
-        } else if (spendLimitHandler.isOperatorSpendLimitExceeded(operator)) {
-
-            throw new CustomException("POL1001", "The %1 charging limit for this operator has been exceeded", new String[]{"daily"});
+        } else if ((spendLimitHandler.isOperatorSpendLimitExceeded(operator) != null && spendLimitHandler.isOperatorSpendLimitExceeded(operator) >= oprator_day_amount)
+		                || (oprator_day_amount <= Double.parseDouble(chargeAmount)) ||
+		                (spendLimitHandler.isOperatorSpendLimitExceeded(operator) != null &&
+		                        (spendLimitHandler.isOperatorSpendLimitExceeded(operator)+ Double.parseDouble(chargeAmount) > oprator_day_amount))) {
+        	throw new CustomException("POL1001", "The %1 charging limit for this operator has been exceeded", new String[]{"daily"});
 
         }
 

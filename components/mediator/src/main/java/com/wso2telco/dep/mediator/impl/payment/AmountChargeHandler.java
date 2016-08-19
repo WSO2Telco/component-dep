@@ -96,6 +96,8 @@ public class AmountChargeHandler implements PaymentHandler {
 				
 		String endUserId = jsonBody.getJSONObject("amountTransaction").getString("endUserId");
 		String msisdn = endUserId.substring(5);
+        Double chargeamount = Double.parseDouble(jsonBody.getJSONObject("amountTransaction").getJSONObject("paymentAmount").getJSONObject("chargingInformation").getString("amount"));
+
 		context.setProperty(MSISDNConstants.USER_MSISDN, msisdn);
 		//OperatorEndpoint endpoint = null;
 
@@ -129,7 +131,7 @@ public class AmountChargeHandler implements PaymentHandler {
 
 		// Check if Spend Limits are exceeded
 		//checkSpendLimit(msisdn, endpoint.getOperator(), context);
-		paymentUtil.checkSpendLimit(msisdn, endpoint.getOperator(), context);
+		paymentUtil.checkSpendLimit(msisdn, endpoint.getOperator(), context, chargeamount);
 		// routeToEndpoint(endpoint, mc, sending_add);
 		// apend request id to client co-relator
 

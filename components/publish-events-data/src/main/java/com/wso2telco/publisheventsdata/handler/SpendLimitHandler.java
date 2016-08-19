@@ -52,11 +52,11 @@ public class SpendLimitHandler {
      * @return true, if is spend limit exceeded
      * @throws AxataDBUtilException the axata db util exception
      */
-    public boolean isSpendLimitExceeded(String msisdn, String consumerKey, String operatorId) throws
+   /* public boolean isSpendLimitExceeded(String msisdn, String consumerKey, String operatorId) throws
             AxataDBUtilException {
         return isEventsEnabled && (isMSISDNSpendLimitExceeded(msisdn) || isApplicationSpendLimitExceeded(consumerKey)
                 || isOperatorSpendLimitExceeded(operatorId));
-    }
+    }*/
 
     /**
      * Checks if is MSISDN spend limit exceeded.
@@ -65,14 +65,15 @@ public class SpendLimitHandler {
      * @return true, if is MSISDN spend limit exceeded
      * @throws AxataDBUtilException the axata db util exception
      */
-    public boolean isMSISDNSpendLimitExceeded(String msisdn) throws AxataDBUtilException {
-        if (isEventsEnabled) {
+    //public boolean isMSISDNSpendLimitExceeded(String msisdn) throws AxataDBUtilException {
+    public Double isMSISDNSpendLimitExceeded(String msisdn) throws AxataDBUtilException {
+    	if (isEventsEnabled) {
 //            HazelcastInstance hazelcastInstance = MifeEventsDataHolder.getHazelcastInstance();
 //            IMap<String, Object> cacheMap = hazelcastInstance.getMap(MifeEventsConstants.MSISDN_HAZELCAST_MAP_NAME);
 //            return cacheMap.containsKey(msisdn);
             return dbservice.checkMSISDNSpendLimit(msisdn);
         }
-        return false;
+        return null;
     }
 
     /**
@@ -82,14 +83,14 @@ public class SpendLimitHandler {
      * @return true, if is application spend limit exceeded
      * @throws AxataDBUtilException the axata db util exception
      */
-    public boolean isApplicationSpendLimitExceeded(String consumerKey) throws AxataDBUtilException {
+    public Double isApplicationSpendLimitExceeded(String consumerKey) throws AxataDBUtilException {
         if (isEventsEnabled) {
 //            HazelcastInstance hazelcastInstance = MifeEventsDataHolder.getHazelcastInstance();
 //            IMap<String, Object> cacheMap = hazelcastInstance.getMap(MifeEventsConstants.APPLICATION_HAZELCAST_MAP_NAME);
 //            return cacheMap.containsKey(consumerKey);
             return dbservice.checkApplicationSpendLimit(consumerKey);
         }
-        return false;
+        return null;
     }
 
     /**
@@ -99,13 +100,57 @@ public class SpendLimitHandler {
      * @return true, if is operator spend limit exceeded
      * @throws AxataDBUtilException the axata db util exception
      */
-    public boolean isOperatorSpendLimitExceeded(String operatorId) throws AxataDBUtilException {
+    public Double isOperatorSpendLimitExceeded(String operatorId) throws AxataDBUtilException {
         if (isEventsEnabled) {
 //            HazelcastInstance hazelcastInstance = MifeEventsDataHolder.getHazelcastInstance();
 //            IMap<String, Object> cacheMap = hazelcastInstance.getMap(MifeEventsConstants.OPERATOR_HAZELCAST_MAP_NAME);
 //            return cacheMap.containsKey(operatorId);
             return dbservice.checkOperatorSpendLimit(operatorId);
         }
-        return false;
+        return null;
     }
+    
+
+    public Double isMonthMSISDNSpendLimitExceeded(String msisdn) throws AxataDBUtilException {
+        if (isEventsEnabled) {
+            return dbservice.checkMonthMSISDNSpendLimit(msisdn);
+        }
+        return null;
+    }
+
+    public Double isMonthOperatorSpendLimitExceeded(String operatorId) throws AxataDBUtilException {
+        if (isEventsEnabled) {
+            return dbservice.checkMonthOperatorSpendLimit(operatorId);
+        }
+        return null;
+    }
+
+    public Double isMonthApplicationSpendLimitExceeded(String consumerKey) throws AxataDBUtilException {
+        if (isEventsEnabled) {
+
+            return dbservice.checkMonthApplicationSpendLimit(consumerKey);
+        }
+        return null;
+     }
+
+    public Double getDayTotalCalculatedAmount(String consumerKey, String msisdn) throws AxataDBUtilException {
+
+        if (isEventsEnabled) {
+
+            return dbservice.getDayTotalCalculatedAmount(consumerKey, msisdn);
+        }
+        return null;
+    }
+
+    public Double getMonthTotalCalculatedAmount(String consumerKey, String msisdn) throws AxataDBUtilException {
+
+        if (isEventsEnabled) {
+
+            return dbservice.getMonthTotalCalculatedAmount(consumerKey, msisdn);
+        }
+        return null;
+    }
+
+
+
 }

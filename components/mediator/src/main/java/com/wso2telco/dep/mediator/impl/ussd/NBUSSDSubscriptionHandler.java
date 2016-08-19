@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.wso2telco.dep.mediator.entity.ussd;
+package com.wso2telco.dep.mediator.impl.ussd;
 
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -26,6 +26,8 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONObject;
+import org.wso2.carbon.apimgt.gateway.handlers.security.APISecurityUtils;
+import org.wso2.carbon.apimgt.gateway.handlers.security.AuthenticationContext;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -33,8 +35,7 @@ import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.entity.SubscriptionResponse;
 import com.wso2telco.dep.mediator.entity.smsmessaging.CallbackReference;
-import com.wso2telco.dep.mediator.impl.ussd.USSDExecutor;
-import com.wso2telco.dep.mediator.impl.ussd.USSDHandler;
+import com.wso2telco.dep.mediator.entity.ussd.*;
 import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
@@ -73,7 +74,14 @@ public class NBUSSDSubscriptionHandler implements USSDHandler {
         FileReader fileReader = new FileReader();
 		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
 
-        Integer subscriptionId = dbservice.ussdRequestEntry(notifyUrl);
+        //Integer subscriptionId = dbservice.ussdRequestEntry(notifyUrl);
+        AuthenticationContext authContext = APISecurityUtils.getAuthenticationContext(context);
+        String consumerKey = "";
+        if (authContext != null) {
+            consumerKey = authContext.getConsumerKey();
+        }
+
+        Integer subscriptionId = dbservice.ussdRequestEntry(notifyUrl,consumerKey);
         log.info("created axiataId  -  " + subscriptionId);
 
         String subsEndpoint = mediatorConfMap.get("ussdGatewayEndpoint")+subscriptionId;

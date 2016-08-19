@@ -133,7 +133,13 @@ public class Util {
 			propMap.put("ussdGatewayEndpoint", props.getProperty("ussdGatewayEndpoint"));
 			propMap.put("retry_on_fail", props.getProperty("retry_on_fail"));
             propMap.put("retry_count", props.getProperty("retry_count"));
-		} catch (FileNotFoundException e) {
+            propMap.put("msisdn_day_amount", props.getProperty("msisdn_day_amount"));
+            propMap.put("application_day_amount", props.getProperty("application_day_amount"));
+            propMap.put("operator_day_amount", props.getProperty("operator_day_amount"));
+            propMap.put("msisdn_month_amount", props.getProperty("msisdn_month_amount"));
+            propMap.put("application_month_amount", props.getProperty("application_month_amount"));
+            propMap.put("operator_month_amount", props.getProperty("operator_month_amount"));
+	} catch (FileNotFoundException e) {
 			log.debug("file not found !!! ");
 		} catch (IOException e) {
 			log.debug("file not found !!! ");

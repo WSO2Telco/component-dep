@@ -58,7 +58,8 @@
         </dependency>
         <dependency>
             <groupId>com.wso2telco.core</groupId>
-            <artifactId>dbutils</artifactId>       
+            <artifactId>dbutils</artifactId>   
+			<version>2.0.1-SNAPSHOT</version>
         </dependency>
     </dependencies>
 

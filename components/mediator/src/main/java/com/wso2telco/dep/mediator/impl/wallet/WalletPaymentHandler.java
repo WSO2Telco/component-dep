@@ -80,8 +80,10 @@ public class WalletPaymentHandler implements WalletHandler {
         String subscriber = jwtDetails.get("subscriber");
         log.debug("Subscriber Name : " + subscriber);
 
-       JSONObject jsonBody = executor.getJsonBody();
+        JSONObject jsonBody = executor.getJsonBody();
         String endUserId = jsonBody.getJSONObject("makePayment").getString("endUserId");
+        String amount = jsonBody.getJSONObject("makePayment").getJSONObject("paymentAmount").getJSONObject("paymentAmount").getJSONObject("chargingInformation").getString("amount");
+
         String msisdn = endUserId.substring(5);
         context.setProperty(MSISDNConstants.USER_MSISDN, msisdn);
 
@@ -95,7 +97,7 @@ public class WalletPaymentHandler implements WalletHandler {
         log.info("sending endpoint found: " + sending_add);
 
         // Check if Spend Limits are exceeded
-        paymentUtil.checkSpendLimit(msisdn, endpoint.getOperator(), context);
+      //paymentUtil.checkSpendLimit(msisdn, endpoint.getOperator(), context ,amount);
 
         //routeToEndpoint(endpoint, mc, sending_add);
         //apend request id to client co-relator

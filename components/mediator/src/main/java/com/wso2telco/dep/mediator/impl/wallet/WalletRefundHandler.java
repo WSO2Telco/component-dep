@@ -82,6 +82,7 @@ public class WalletRefundHandler implements WalletHandler {
         log.debug("Subscriber Name : " + subscriber);
         JSONObject jsonBody = executor.getJsonBody();
         String endUserId = jsonBody.getJSONObject("refundTransaction").getString("endUserId");
+        String amount = jsonBody.getJSONObject("makePayment").getJSONObject("paymentAmount").getJSONObject("chargingInformation").getString("amount");
         String msisdn = endUserId.substring(5);
         context.setProperty(MSISDNConstants.USER_MSISDN, msisdn);
 
@@ -95,7 +96,7 @@ public class WalletRefundHandler implements WalletHandler {
         log.info("sending endpoint found: " + sending_add);
 
         // Check if Spend Limits are exceeded
-        paymentUtil.checkSpendLimit(msisdn, endpoint.getOperator(), context);
+        // paymentUtil.checkSpendLimit(msisdn, endpoint.getOperator(), context,amount );
 
         JSONObject objAmountTransaction = jsonBody.getJSONObject("refundTransaction");
 

@@ -24,6 +24,7 @@ import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.dep.mediator.service.USSDService;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 
+import java.util.List;
 import java.util.Map;
 
 import org.apache.axis2.AxisFault;
@@ -86,16 +87,22 @@ public class USSDInboundHandler implements USSDHandler {
 		// remove non numeric chars
 		subscriptionId = subscriptionId.replaceAll("[^\\d.]", "");
 		log.debug("subscriptionId - " + subscriptionId);
-		String notifyurl = ussdService.getUSSDNotifyURL(Integer.valueOf(subscriptionId));
+		
+		
+		List<String> ussdSPDetails = ussdService.getUSSDNotify(Integer.valueOf(subscriptionId));
+       // String notifyurl = dbservice.getUSSDNotify(Integer.valueOf(axiataid));
+        log.info("notifyUrl found -  " + ussdSPDetails.get(0));
+        log.info("consumerKey found - " + ussdSPDetails.get(1));
+		
+		
 
 		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
 
 		JSONObject jsonBody = executor.getJsonBody();
-		jsonBody.getJSONObject("inboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL",
-				notifyurl);
-
-		String notifyret = executor.makeRequest(new OperatorEndpoint(new EndpointReference(notifyurl), null), notifyurl,
-				jsonBody.toString(), true, context,false);
+		jsonBody.getJSONObject("inboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL", ussdSPDetails.get(0));
+		// context.setProperty(APIMgtUsagePublisherConstants.CONSUMER_KEY ,ussdSPDetails.get(1) );
+        context.setProperty(DataPublisherConstants.SP_CONSUMER_KEY, ussdSPDetails.get(1));
+        String notifyret = executor.makeRequest(new OperatorEndpoint(new EndpointReference(ussdSPDetails.get(0)), null), ussdSPDetails.get(0),jsonBody.toString(), true, context,false);
 
 		log.debug(notifyret);
 		if (notifyret == null) {
