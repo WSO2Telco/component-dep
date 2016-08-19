@@ -151,11 +151,13 @@ public abstract class RequestExecutor {
 			 log.info("Token of " + op.getOperatorname() + " operator is active"
 					 + " Request ID: " + UID.getRequestID(messageContext));
 		} else {
-			log.info("Regenerating the token of " + op.getOperatorname() + " operator");
-			String Strtoken = makeTokenrequest(op.getTokenurl(), "grant_type=refresh_token&refresh_token=" + op.getRefreshtoken(), ("" + op.getTokenauth()));
+			log.info("Regenerating the token of " + op.getOperatorname() + " operator"
+					+ " Request ID: " + UID.getRequestID(messageContext));
+			String Strtoken = makeTokenrequest(op.getTokenurl(), "grant_type=refresh_token&refresh_token=" + op.getRefreshtoken(), ("" + op.getTokenauth()), messageContext);			
 			
 			if (Strtoken != null && Strtoken.length() > 0) {
-				log.info("Token regeneration response of " + op.getOperatorname() + " operator : " + Strtoken);
+				log.info("Token regeneration response of " + op.getOperatorname() + " operator : " + Strtoken
+						+ " Request ID: " + UID.getRequestID(messageContext));
 				JSONObject jsontoken = new JSONObject(Strtoken);
 				token = jsontoken.getString("access_token");
 				new OparatorService().updateOperatorToken(op.getOperatorid(), jsontoken.getString("refresh_token"),
@@ -599,14 +601,16 @@ public abstract class RequestExecutor {
 	 *            the authheader
 	 * @return the string
 	 */
-	protected String makeTokenrequest(String tokenurl, String urlParameters, String authheader) {
+	protected String makeTokenrequest(String tokenurl, String urlParameters, String authheader, MessageContext messageContext) {
+		
 		ICallresponse icallresponse = null;
 		String retStr = "";
 
 		URL neturl;
 		HttpURLConnection connection = null;
 
-		log.info("url : " + tokenurl + " | urlParameters : " + urlParameters + " | authheader : " + authheader);
+		log.info("url : " + tokenurl + " | urlParameters : " + urlParameters + " | authheader : " + authheader 
+			 + " Request ID: " + UID.getRequestID(messageContext));
 		
 		if ((tokenurl != null && tokenurl.length() > 0) && (urlParameters != null && urlParameters.length() > 0)
 				&& (authheader != null && authheader.length() > 0)) {
