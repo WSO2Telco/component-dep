@@ -127,8 +127,9 @@ public class RetrieveSMSHandler implements SMSHandler {
 	        boolean retryFlag=true;
 	        FileReader fileReader = new FileReader();
 	        Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
-	        Boolean retry = Boolean.valueOf(mediatorConfMap.get("retry_on_fail"));
-	        Integer retryCount = Integer.valueOf(mediatorConfMap.get("retry_count"));
+	        Boolean retry = false;
+            retry =Boolean.valueOf(mediatorConfMap.get("retry_on_fail"));	       
+            Integer retryCount = Integer.valueOf(mediatorConfMap.get("retry_count"));
 	     
 			ArrayList<String> responses = new ArrayList<String>();
 			while ((results.length() < batchSize) &&  (retryFlag==true)) {
@@ -172,12 +173,11 @@ public class RetrieveSMSHandler implements SMSHandler {
 		        	
 	        	if (retry==false) {
 					retryFlag=false;
-					log.debug("Final value of retryFlag :" + retryFlag);
-	        	}
+					log.debug("11 Final value of retryFlag :" + retryFlag);	        	}
 		        	
 	        	if (execCount>=retryCount) {
 					retryFlag=false;
-					log.debug("Final value of retryFlag :" + retryFlag);
+					log.debug("22 Final value of retryFlag :" + retryFlag);
 				}
 		        	
 	            log.debug("Final value of count :" + execCount);
@@ -191,7 +191,7 @@ public class RetrieveSMSHandler implements SMSHandler {
 			
 			/*add resourceURL to the southbound response*/
 			SouthboundRetrieveResponse sbRetrieveResponse = gson.fromJson(strjsonBody, SouthboundRetrieveResponse.class);
-	        if (sbRetrieveResponse != null) {
+			 if (sbRetrieveResponse!= null && sbRetrieveResponse.getInboundSMSMessageList() != null) {
 	            String resourceURL = sbRetrieveResponse.getInboundSMSMessageList().getResourceURL();            
 	            InboundSMSMessage[] inboundSMSMessageResponses = sbRetrieveResponse.getInboundSMSMessageList().getInboundSMSMessage();
 	 

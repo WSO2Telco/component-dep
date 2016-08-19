@@ -151,7 +151,8 @@ public boolean handle(MessageContext context) throws CustomException,
 	boolean retryFlag = true;
 	FileReader fileReader = new FileReader();
     Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
-    Boolean retry = Boolean.valueOf(mediatorConfMap.get("retry_on_fail"));
+    Boolean retry = false;
+    retry =Boolean.valueOf(mediatorConfMap.get("retry_on_fail"));
     Integer retryCount = Integer.valueOf(mediatorConfMap.get("retry_count"));
  
 	
@@ -214,8 +215,7 @@ public boolean handle(MessageContext context) throws CustomException,
 			/* add criteria and operatorCode to the southbound response */
 			NorthboundRetrieveResponse sbRetrieveResponse = gson.fromJson(retStr, NorthboundRetrieveResponse.class);
 
-			if (sbRetrieveResponse != null) {
-
+			if (sbRetrieveResponse!= null && sbRetrieveResponse.getInboundSMSMessageList() != null) {
 				if (sbRetrieveResponse.getInboundSMSMessageList().getInboundSMSMessage() != null
 						&& sbRetrieveResponse.getInboundSMSMessageList().getInboundSMSMessage().length != 0) {
 					InboundSMSMessage[] inboundSMSMessageResponses = sbRetrieveResponse.getInboundSMSMessageList().getInboundSMSMessage();
@@ -259,12 +259,12 @@ public boolean handle(MessageContext context) throws CustomException,
 
 		if (retry == false) {
 			retryFlag = false;
-			log.debug("Final value of retryFlag :" + retryFlag);
+			log.debug("11 Final value of retryFlag :" + retryFlag);
 		}
 
 		if (execCount >= retryCount) {
 			retryFlag = false;
-			log.debug("Final value of retryFlag :" + retryFlag);
+			log.debug("22 Final value of retryFlag :" + retryFlag);
 		}
 	}
 
