@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.internal;
 
+import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.IOException;
@@ -25,6 +26,7 @@ import java.util.Properties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.user.core.service.RealmService;
+import org.wso2.carbon.utils.CarbonUtils;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -87,7 +89,10 @@ public class Util {
 	@Deprecated
 	public static void getPropertyFile() {
 		try {
-			props.load(Util.class.getResourceAsStream("/application.properties"));
+			//props.load(Util.class.getResourceAsStream("/application.properties"));
+			String configPath = CarbonUtils.getCarbonConfigDirPath() + File.separator + "axiataMediator_conf.properties";
+            FileInputStream in = new FileInputStream(configPath);
+            props.load(in);
            // String carbonHome = System.getProperty("user.dir");
            // log.debug("Carbon home : " + carbonHome);
 

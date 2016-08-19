@@ -129,9 +129,7 @@ public class RetrieveSMSHandler implements SMSHandler {
 	        Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
 	        Boolean retry = Boolean.valueOf(mediatorConfMap.get("retry_on_fail"));
 	        Integer retryCount = Integer.valueOf(mediatorConfMap.get("retry_count"));
-	        //retry_on_fail=false
-	        //retry_times=3
-
+	     
 			ArrayList<String> responses = new ArrayList<String>();
 			while ((results.length() < batchSize) &&  (retryFlag==true)) {
 	        	execCount++;
@@ -159,8 +157,8 @@ public class RetrieveSMSHandler implements SMSHandler {
 	                 
 		                 JSONArray resList = apiUtil.getResults(reqType, retStr);
 		                 if (resList != null) {
-		                     for (int tmp = 0; tmp < resList.length(); tmp++) {
-		                         results.put(resList.get(tmp));
+		                	 for (int t = 0; t < resList.length(); t++) {
+	 	                         results.put(resList.get(t));
 		                     }
 		                     responses.add(retStr);
 		                 }
@@ -172,16 +170,18 @@ public class RetrieveSMSHandler implements SMSHandler {
 	    			}                 
 			}
 		        	
-		        	if (retry==false) {
-						retryFlag=false;
-			}
+	        	if (retry==false) {
+					retryFlag=false;
+					log.debug("Final value of retryFlag :" + retryFlag);
+	        	}
 		        	
-		        	if (execCount>=retryCount) {
-						retryFlag=false;
-					}
+	        	if (execCount>=retryCount) {
+					retryFlag=false;
+					log.debug("Final value of retryFlag :" + retryFlag);
+				}
 		        	
-		            log.debug("Final value of count :" + execCount);
-		            log.debug("Results length of retrieve messages: " + results.length());
+	            log.debug("Final value of count :" + execCount);
+	            log.debug("Results length of retrieve messages: " + results.length());
 				 
 			}
 
