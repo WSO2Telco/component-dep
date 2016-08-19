@@ -84,6 +84,7 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
     private String dateTime;
     private String resourceURL;
     private String messageId;
+    private String spConsumerKey;
 	    
 	    
 	
@@ -465,8 +466,15 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
     public void setReferenceCode(String referenceCode) {
         this.referenceCode = referenceCode;
     }
-		
+    
+    public String getSpConsumerKey() {
+        return spConsumerKey;
+    }
 
+    public void setSpConsumerKey(String spConsumerKey) {
+        this.spConsumerKey = spConsumerKey;
+    }
+		
     /**
      * Gets the stream definition.
      *
@@ -516,7 +524,8 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
                 + "          {'name':'ussdAction','type':'STRING'},"
                 + "          {'name':'ussdSessionId','type':'STRING'},"
                 + "          {'name':'transactionOperationStatus','type':'STRING'},"
-                + "          {'name':'referenceCode','type':'STRING'}"
+                + "          {'name':'referenceCode','type':'STRING'},"
+                + "          {'name':'spConsumerKey','type':'STRING'}"
                 
           	/*  + "          {'name':'destinationAddress','type':'STRING'},"
                 + "          {'name':'senderAddress','type':'STRING'},"
@@ -542,6 +551,6 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
             getRequestId(), getOperatorId(), getResponseCode(), getMsisdn(), getChargeAmount(), getPurchaseCategoryCode(),
             getOperatorRef(), getExceptionId(), getExceptionMessage(), getJsonBody(), getTaxAmount() ,getChannel(),
             getOnBehalfOf(), getDescription(),getUssdAction(), getUssdSessionId(),getTransactionOperationStatus(),getReferenceCode(),
-            getDestinationAddress(),getSenderAddress(),getMessage(),getDateTime(),getResourceURL(),getMessageId()};
+            getSpConsumerKey(),getDestinationAddress(),getSenderAddress(),getMessage(),getDateTime(),getResourceURL(),getMessageId()};
         }
 }

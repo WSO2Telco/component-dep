@@ -165,7 +165,7 @@ public class DataPublisherClient {
         requestPublisherDTO.setApiPublisher(apiPublisher);
         requestPublisherDTO.setApplicationName(applicationName);
         requestPublisherDTO.setApplicationId(applicationId);
-
+        
         requestPublisherDTO.setRequestId((String) mc.getProperty(DataPublisherConstants.REQUEST_ID));
         requestPublisherDTO.setOperatorId((String) mc.getProperty(DataPublisherConstants.OPERATOR_ID));
         requestPublisherDTO.setSbEndpoint((String) mc.getProperty(DataPublisherConstants.SB_ENDPOINT));
@@ -326,6 +326,7 @@ public class DataPublisherClient {
         
         responsePublisherDTO.setApplicationName((String) mc.getProperty(APIMgtGatewayConstants.APPLICATION_NAME));
         responsePublisherDTO.setApplicationId((String) mc.getProperty(APIMgtGatewayConstants.APPLICATION_ID));
+        responsePublisherDTO.setSpConsumerKey((String) mc.getProperty(DataPublisherConstants.SP_CONSUMER_KEY));
 
         if (mc.getProperty(DataPublisherConstants.RESPONSE) != null) {
 				responsePublisherDTO.setResponse(Integer.parseInt((String) mc.getProperty(DataPublisherConstants.RESPONSE)));
