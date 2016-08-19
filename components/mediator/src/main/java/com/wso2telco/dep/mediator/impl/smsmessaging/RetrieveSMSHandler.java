@@ -113,13 +113,13 @@ public class RetrieveSMSHandler implements SMSHandler {
 				
 			List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp( API_TYPE, executor.getSubResourcePath(), executor.getValidoperators());
 
-			log.debug("Endpoints size: " + endpoints.size());
+			log.info("Endpoints size: " + endpoints.size());
 
 			Collections.shuffle(endpoints);
 
 			int perOpCoLimit = batchSize / (endpoints.size());
 
-			log.debug("Per OpCo limit :" + perOpCoLimit);
+			log.info("Per OpCo limit :" + perOpCoLimit);
 
 			JSONArray results = new JSONArray();
 
@@ -135,28 +135,28 @@ public class RetrieveSMSHandler implements SMSHandler {
 			ArrayList<String> responses = new ArrayList<String>();
 			while ((results.length() < batchSize) &&  (retryFlag==true)) {
 	        	execCount++;
-	        	log.debug("Default aEndpoint : "+endpoints.size());
+	        	log.info("Default aEndpoint : "+endpoints.size());
 	        	for (int i = 0; i < endpoints.size(); i++) {
 	        		forLoopCount++;
-	        		log.debug("Default forLoopCount : "+forLoopCount);
+	        		log.info("Default forLoopCount : "+forLoopCount);
 	        		OperatorEndpoint aEndpoint = endpoints.remove(0);
-	        		log.debug("Default aEndpoint : "+aEndpoint.getEndpointref().getAddress()); 
+	        		log.info("Default aEndpoint : "+aEndpoint.getEndpointref().getAddress()); 
 	        		endpoints.add(aEndpoint);
 	        		String url = aEndpoint.getEndpointref().getAddress();
 	        		APICall ac = apiUtil.setBatchSize(url, body.toString(), reqType, perOpCoLimit);
 	
 	                 JSONObject obj = ac.getBody();
 	                 String retStr = null;
-	                 log.debug("Retrieving messages of operator: " + aEndpoint.getOperator());
+	                 log.info("Retrieving messages of operator: " + aEndpoint.getOperator());
 	
 	                 if (context.isDoingGET()) {
-	                     log.debug("Doing makeGetRequest");
+	                     log.info("Doing makeGetRequest");
 	                     retStr = executor.makeRetrieveSMSGetRequest(aEndpoint, ac.getUri(), null, true, context,false);
 	                 } else {
-	                     log.debug("Doing makeRequest");
+	                     log.info("Doing makeRequest");
 	                     retStr = executor.makeRequest(aEndpoint, ac.getUri(), obj.toString(), true, context, false);
 	                 }
-	                 log.debug("Retrieved messages of " + aEndpoint.getOperator() + " operator: " + retStr);
+	                 log.info("Retrieved messages of " + aEndpoint.getOperator() + " operator: " + retStr);
 	                 
 	                 if (retStr != null) {
 	                 
@@ -177,15 +177,15 @@ public class RetrieveSMSHandler implements SMSHandler {
 		        	
 	        	if (retry==false) {
 					retryFlag=false;
-					log.debug("11 Final value of retryFlag :" + retryFlag);	        	}
+					log.info("11 Final value of retryFlag :" + retryFlag);	        	}
 		        	
 	        	if (execCount>=retryCount) {
 					retryFlag=false;
-					log.debug("22 Final value of retryFlag :" + retryFlag);
+					log.info("22 Final value of retryFlag :" + retryFlag);
 				}
 		        	
-	            log.debug("Final value of count :" + execCount);
-	            log.debug("Results length of retrieve messages: " + results.length());
+	            log.info("Final value of count :" + execCount);
+	            log.info("Results length of retrieve messages: " + results.length());
 				 
 			}
 

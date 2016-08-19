@@ -138,12 +138,12 @@ public boolean handle(MessageContext context) throws CustomException,
 		}
 	}
 
-	log.debug("Endpoints size: " + validEndpoints.size());
+	log.info("Endpoints size: " + validEndpoints.size());
 
 	Collections.shuffle(validEndpoints);
 	int perOpCoLimit = batchSize / (validEndpoints.size());
 
-	log.debug("Per OpCo limit :" + perOpCoLimit);
+	log.info("Per OpCo limit :" + perOpCoLimit);
 
 	List<InboundSMSMessage> inboundSMSMessageList = new ArrayList<InboundSMSMessage>();
 
@@ -162,13 +162,13 @@ public boolean handle(MessageContext context) throws CustomException,
 	while ((inboundSMSMessageList.size() < batchSize)
 			&& (retryFlag == true)) {
 		execCount++;
-		log.debug("NB aEndpoint : "+endpoints.size());
+		log.info("NB aEndpoint : "+endpoints.size());
 		
 		for (int i = 0; i < validEndpoints.size(); i++) {
 			forLoopCount++;
-			log.debug("NB forLoopCount : "+forLoopCount);
+			log.info("NB forLoopCount : "+forLoopCount);
 			OperatorEndpoint aEndpoint = validEndpoints.remove(0);
-			log.debug("NB aEndpoint : "+aEndpoint.getEndpointref().getAddress()); 
+			log.info("NB aEndpoint : "+aEndpoint.getEndpointref().getAddress()); 
 			validEndpoints.add(aEndpoint);
 			String url = aEndpoint.getEndpointref().getAddress();
 			String getRequestURL = null;
@@ -185,16 +185,16 @@ public boolean handle(MessageContext context) throws CustomException,
 
 					if (criteria == null || criteria.equals("")) {
 						operatorCode = registrations[r].getOperatorCode();
-						log.debug("Operator RetrieveSMSHandler"+operatorCode);
+						log.info("Operator RetrieveSMSHandler"+operatorCode);
 						getRequestURL = "/"+ registrations[r].getRegistrationID()+ "/messages?maxBatchSize=" + batchSize;
 						url = url.replace("/messages", getRequestURL);
-						log.debug("Invoke RetrieveSMSHandler of plugin");
+						log.info("Invoke RetrieveSMSHandler of plugin");
 					} else {
 						operatorCode = registrations[r].getOperatorCode();
-						log.debug("Operator RetrieveSMSHandler"+operatorCode);
+						log.info("Operator RetrieveSMSHandler"+operatorCode);
 						getRequestURL = "/"+ registrations[r].getRegistrationID()+ "/" + criteria+ "/messages?maxBatchSize=" + batchSize;
 						url = url.replace("/messages", getRequestURL);
-						log.debug("Invoke SBRetrieveSMSHandler of plugin");
+						log.info("Invoke SBRetrieveSMSHandler of plugin");
 					}
 
 					break;
@@ -205,14 +205,14 @@ public boolean handle(MessageContext context) throws CustomException,
 			APICall ac = apiUtil.setBatchSize(url, body.toString(), reqType, perOpCoLimit);//check if request json body incorrect
 			JSONObject obj = ac.getBody();
 			String retStr = null;
-			log.debug("Retrieving messages of operator: "+ aEndpoint.getOperator());
+			log.info("Retrieving messages of operator: "+ aEndpoint.getOperator());
 
 			context.setDoingGET(true);
 			if (context.isDoingGET()) {
-				log.debug("Doing makeGetRequest");
+				log.info("Doing makeGetRequest");
 				retStr = executor.makeRetrieveSMSGetRequest(aEndpoint,ac.getUri(), null, true, context, false);
 			} else {
-				log.debug("Doing makeRequest");
+				log.info("Doing makeRequest");
 				retStr = executor.makeRequest(aEndpoint, ac.getUri(),obj.toString(), true, context, false);
 			}
 
@@ -225,7 +225,7 @@ public boolean handle(MessageContext context) throws CustomException,
 				if (sbRetrieveResponse.getInboundSMSMessageList().getInboundSMSMessage() != null
 						&& sbRetrieveResponse.getInboundSMSMessageList().getInboundSMSMessage().length != 0) {
 					InboundSMSMessage[] inboundSMSMessageResponses = sbRetrieveResponse.getInboundSMSMessageList().getInboundSMSMessage();
-					log.debug("001 SECTION");
+					log.info("001 SECTION");
 					for (int t = 0; t < inboundSMSMessageResponses.length; t++) {
 						inboundSMSMessageResponses[t].setCriteria(criteria);
 						inboundSMSMessageResponses[t].setOperatorCode(operatorCode);
@@ -235,7 +235,7 @@ public boolean handle(MessageContext context) throws CustomException,
 					responses.add(gson.toJson(sbRetrieveResponse));
 
 				} else {
-					log.debug("002 SECTION");
+					log.info("002 SECTION");
 					InboundSMSMessage[] inboundSMSMessageResponses = new InboundSMSMessage[0];
 					InboundSMSMessageList inboundSMSMessageListN = new InboundSMSMessageList();
 					inboundSMSMessageListN.setInboundSMSMessage(inboundSMSMessageResponses);
@@ -259,18 +259,18 @@ public boolean handle(MessageContext context) throws CustomException,
 			}
 		}
 
-		log.debug("Final value of count :" + execCount);
-		log.debug("Results length of retrieve messages: "
+		log.info("Final value of count :" + execCount);
+		log.info("Results length of retrieve messages: "
 				+ inboundSMSMessageList.size());
 
 		if (retry == false) {
 			retryFlag = false;
-			log.debug("11 Final value of retryFlag :" + retryFlag);
+			log.info("11 Final value of retryFlag :" + retryFlag);
 		}
 
 		if (execCount >= retryCount) {
 			retryFlag = false;
-			log.debug("22 Final value of retryFlag :" + retryFlag);
+			log.info("22 Final value of retryFlag :" + retryFlag);
 		}
 	}
 

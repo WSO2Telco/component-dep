@@ -567,9 +567,9 @@ public abstract class RequestExecutor {
 				connection.disconnect();
 			}
 			 
-			log.debug("HHHHHHHHHHHHHHHHHHHHHHHH            Mo OR DN CallBack : " + isMoCallBack);
-			log.debug("HHHHHHHHHHHHHHHHHHHHHHHH            requestStr : " + requestStr);
-			log.debug("HHHHHHHHHHHHHHHHHHHHHHHH            retStr : " + retStr);
+			log.info("HHHHHHHHHHHHHHHHHHHHHHHH            Mo OR DN CallBack : " + isMoCallBack);
+			log.info("HHHHHHHHHHHHHHHHHHHHHHHH            requestStr : " + requestStr);
+			log.info("HHHHHHHHHHHHHHHHHHHHHHHH            retStr : " + retStr);
 			 
 			messageContext.setProperty(DataPublisherConstants.RESPONSE_CODE, Integer.toString(statusCode));
             messageContext.setProperty(DataPublisherConstants.MSISDN, messageContext.getProperty(MSISDNConstants.USER_MSISDN));
@@ -628,7 +628,7 @@ public abstract class RequestExecutor {
 
 				if ((connection.getResponseCode() != 200) && (connection.getResponseCode() != 201)
 						&& (connection.getResponseCode() != 400) && (connection.getResponseCode() != 401)) {
-					log.debug("connection.getResponseMessage() : " + connection.getResponseMessage());
+					log.info("connection.getResponseMessage() : " + connection.getResponseMessage());
 					throw new RuntimeException("Failed : HTTP error code : " + connection.getResponseCode());
 				}
 
@@ -867,7 +867,7 @@ public abstract class RequestExecutor {
 			}
 
 			statusCode = connection.getResponseCode();
-			log.debug("response code: " + statusCode);
+			log.info("response code: " + statusCode);
 
 			if ((statusCode != 200) && (statusCode != 201) && (statusCode != 400) && (statusCode != 401)
 					&& (statusCode != 204)) {
