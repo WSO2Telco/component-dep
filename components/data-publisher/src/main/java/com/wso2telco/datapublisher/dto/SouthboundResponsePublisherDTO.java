@@ -525,14 +525,15 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
                 + "          {'name':'ussdSessionId','type':'STRING'},"
                 + "          {'name':'transactionOperationStatus','type':'STRING'},"
                 + "          {'name':'referenceCode','type':'STRING'},"
-                + "          {'name':'spConsumerKey','type':'STRING'}"
+                + "          {'name':'spConsumerKey','type':'STRING'},"
                 
-          	/*  + "          {'name':'destinationAddress','type':'STRING'},"
+          	  	+ "          {'name':'destinationAddress','type':'STRING'},"
                 + "          {'name':'senderAddress','type':'STRING'},"
                 + "          {'name':'message','type':'STRING'},"
                 + "          {'name':'date_Time','type':'STRING'},"
                 + "          {'name':'resourceURL','type':'STRING'},"
-               	+ "          {'name':'messageId','type':'STRING'}"*/
+              //+ "          {'name':'messageId','type':'STRING'},"
+              	+ "          {'name':'message_Id','type':'STRING'}"
                 + "  ]"
                 + "}";
 
