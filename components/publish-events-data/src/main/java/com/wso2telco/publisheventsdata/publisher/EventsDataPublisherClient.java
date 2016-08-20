@@ -120,6 +120,7 @@ public class EventsDataPublisherClient {
         dataPublisherDTO.setChargeAmount(Double.parseDouble(chargeAmountStr));
         dataPublisherDTO.setGroupName((String) mc.getProperty(MifeEventsConstants.GROUP_NAME));
         dataPublisherDTO.setPaymentType((String) mc.getProperty(MifeEventsConstants.PAYMENT_TYPE));
+        dataPublisherDTO.setCurrentDateTime((String)mc.getProperty(MifeEventsConstants.CURRENT_DATE_TIME));
         
 
         publisher.publishEvent(dataPublisherDTO);

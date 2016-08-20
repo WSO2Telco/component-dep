@@ -68,4 +68,6 @@ public class MifeEventsConstants {
     
     public static final String GROUP_NAME ="mife.prop.groupName";
     
+    public static final String CURRENT_DATE_TIME="mife.prop.curretntime";
+    
 }

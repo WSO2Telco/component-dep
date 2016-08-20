@@ -67,7 +67,7 @@ public class GroupEventUnmarshaller {
     }
 
 private  void init() throws JAXBException {
-   configPath =  CarbonUtils.getCarbonConfigDirPath() + File.separator + "mifeGroupEventSpendLimit.xml";
+	configPath =  CarbonUtils.getCarbonConfigDirPath() + File.separator + "mifeEventSpendLimit.xml";
     file = new File(configPath);
     jaxbContext = JAXBContext.newInstance(GroupList.class);
   jaxbUnmarshaller = jaxbContext.createUnmarshaller();

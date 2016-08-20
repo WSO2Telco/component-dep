@@ -23,6 +23,8 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
@@ -1321,6 +1323,11 @@ public abstract class RequestExecutor {
 	
 	        if (groupDTOList.size() > 0) {
 	            for (GroupDTO groupDTO : groupDTOList) {
+	            	
+	            	DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
+                    Date date = new Date();
+                    String currentDate =  dateFormat.format(date);
+                    messageContext.setProperty(MifeEventsConstants.CURRENT_DATE_TIME,currentDate);
 	                messageContext.setProperty(MifeEventsConstants.GROUP_NAME, groupDTO.getGroupName());
 	                eventsPublisherClient.publishEvent(messageContext);
 	            }

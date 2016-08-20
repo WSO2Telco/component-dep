@@ -42,6 +42,18 @@ public class SpendLimitDataPublisherDTO extends ResponsePublisherDTO {
     
     private String paymentType;
     
+    private String currentDateTime;
+    
+    
+    
+    public String getCurrentDateTime() {
+        return currentDateTime;
+    }
+
+    public void setCurrentDateTime(String date) {
+        this.currentDateTime = date;
+    }
+    	
 
     /**
      * Gets the operator id.
@@ -159,7 +171,8 @@ public class SpendLimitDataPublisherDTO extends ResponsePublisherDTO {
                 "          {'name':'msisdn','type':'STRING'}," +
                 "          {'name':'chargeAmount','type':'DOUBLE'}," +
                 "          {'name':'groupName','type':'STRING'},"+
-                "          {'name':'paymentType','type':'STRING'} "+
+                "          {'name':'paymentType','type':'STRING'}, "+
+                "          {'name':'currentDateTime','type':'STRING'} "+
                 "  ]" +
                 "}";
 
@@ -175,6 +188,6 @@ public class SpendLimitDataPublisherDTO extends ResponsePublisherDTO {
         return new Object[]{getConsumerKey(),getContext(),getApi(),getVersion(),getResponseTime(),getUsername(),
                             getTenantDomain(),getApplicationName(), getApplicationId(),
 
-                            getOperatorId(), getResponseCode(), getMsisdn(), getChargeAmount(),getGroupName(), getPaymentType()};
+                            getOperatorId(), getResponseCode(), getMsisdn(), getChargeAmount(),getGroupName(), getPaymentType(),getCurrentDateTime()};
     }
 }
