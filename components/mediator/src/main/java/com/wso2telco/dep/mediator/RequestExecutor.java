@@ -1459,8 +1459,7 @@ public abstract class RequestExecutor {
                 connection.setRequestProperty("Accept", "application/json");
                 connection.setRequestProperty("Accept-Charset", "UTF-8");//ADDED
                 if (auth) {
-                    connection.setRequestProperty("Authorization", "Bearer " + getAccessToken(operatorendpoint.getOperator()));
-    
+                	connection.setRequestProperty("Authorization", "Bearer " + getAccessToken(operatorendpoint.getOperator(),messageContext));    
                     //Add JWT token header
                     org.apache.axis2.context.MessageContext axis2MessageContext = ((Axis2MessageContext) messageContext)
                             .getAxis2MessageContext();
