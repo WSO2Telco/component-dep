@@ -103,6 +103,13 @@ public class USSDInboundHandler implements USSDHandler {
         context.setProperty(DataPublisherConstants.SP_CONSUMER_KEY, ussdSPDetails.get(1));
         context.setProperty(DataPublisherConstants.SP_OPERATOR_ID, ussdSPDetails.get(2));
         context.setProperty(DataPublisherConstants.SP_USER_ID, ussdSPDetails.get(3));
+        
+        
+        log.info("01 SP_CONSUMER_KEY found - " + ussdSPDetails.get(1) + " Request ID: " + UID.getRequestID(context));
+        log.info("01 SP_OPERATOR_ID found - " + ussdSPDetails.get(2) + " Request ID: " + UID.getRequestID(context));
+        log.info("01 SP_USER_ID found - " + ussdSPDetails.get(3) + " Request ID: " + UID.getRequestID(context));
+
+        
         String notifyret = executor.makeRequest(new OperatorEndpoint(new EndpointReference(ussdSPDetails.get(0)), null), ussdSPDetails.get(0),jsonBody.toString(), true, context,false);
 
 		log.debug(notifyret);

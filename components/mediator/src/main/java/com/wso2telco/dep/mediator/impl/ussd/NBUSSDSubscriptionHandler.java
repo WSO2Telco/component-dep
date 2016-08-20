@@ -128,8 +128,8 @@ public class NBUSSDSubscriptionHandler implements USSDHandler {
                             subscriptionGatewayRequest.setSubscription(subscriptionGatewayRequestDTO);
                             String jsonb = gson.toJson(subscriptionGatewayRequest);
 
-                            operatorId=ussdService.getOperatorIdByOperator(endpoint.getOperator());
-                            ussdService.updateOperatorIdBySubscriptionId(subscriptionId,operatorId);
+                            //operatorId=ussdService.getOperatorIdByOperator(endpoint.getOperator());
+                            ussdService.updateOperatorIdBySubscriptionId(subscriptionId,endpoint.getOperator());
                             
                             responseStr = executor.makeRequest(endpoint, endpoint.getEndpointref().getAddress(), jsonb, true, context, false);
                             executor.handlePluginException(responseStr);

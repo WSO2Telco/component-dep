@@ -96,7 +96,7 @@ public class SendUSSDHandler implements USSDHandler {
 		AuthenticationContext authContext = APISecurityUtils.getAuthenticationContext(context);
         String consumerKey = "";
         String userId="";
-        String operatorId="";
+        //String operatorId="";
         if (authContext != null) {
             consumerKey = authContext.getConsumerKey();
             userId=authContext.getUsername();
@@ -107,9 +107,9 @@ public class SendUSSDHandler implements USSDHandler {
         if (ValidatorUtils.getValidatorForSubscription(context).validate(context)) {
             endpoint = occi.getAPIEndpointsByMSISDN(address.replace("tel:", ""), API_TYPE, executor.getSubResourcePath(), false,executor.getValidoperators());
         }
-        operatorId=ussdService.getOperatorIdByOperator(endpoint.getOperator());
+        //operatorId=ussdService.getOperatorIdByOperator(endpoint.getOperator());
         
-        Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl ,consumerKey,operatorId,userId);
+        Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl ,consumerKey,endpoint.getOperator(),userId);
         log.info("created subscriptionId  -  " + subscriptionId + " Request ID: " + UID.getRequestID(context));
 		
 		String subsEndpoint = mediatorConfMap.get("ussdGatewayEndpoint") + subscriptionId;

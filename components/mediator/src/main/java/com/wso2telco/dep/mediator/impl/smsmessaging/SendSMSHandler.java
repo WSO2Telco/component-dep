@@ -232,7 +232,13 @@ public class SendSMSHandler implements SMSHandler {
 			jsonStr = new Gson().toJson(sendreq);
 			String sending_add = endpoint.getEndpointref().getAddress();
 			log.info("sending endpoint found: " + sending_add + " Request ID: " + UID.getRequestID(smsmc));
-
+			  //-----URL DECODE
+            if (sending_add.contains("outbound") && sending_add.contains("requests") && sending_add.contains("tel:+")) {
+            	sending_add.replace("tel:+", "tel:+");
+			}else{
+				sending_add = java.net.URLDecoder.decode(sending_add, "UTF-8");
+			}                
+            //-----URL DECODE
 			String responseStr = executor.makeRequest(endpoint, sending_add, jsonStr, true, smsmc,false);
 			sendSMSResponse = parseJsonResponse(responseStr);
 

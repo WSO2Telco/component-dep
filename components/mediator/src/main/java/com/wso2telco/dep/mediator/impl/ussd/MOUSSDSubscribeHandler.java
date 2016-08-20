@@ -122,8 +122,8 @@ public class MOUSSDSubscribeHandler implements USSDHandler {
 		List<OperatorSubscriptionDTO> operatorsubses = new ArrayList<OperatorSubscriptionDTO>();
 		
 		for (OperatorEndpoint endpoint : endpoints) {
-			operatorId=ussdService.getOperatorIdByOperator(endpoint.getOperator());
-			ussdService.updateOperatorIdBySubscriptionId(subscriptionId,operatorId);
+			//operatorId=ussdService.getOperatorIdByOperator(endpoint.getOperator());
+			ussdService.updateOperatorIdBySubscriptionId(subscriptionId,endpoint.getOperator());
 			responseStr = executor.makeRequest(endpoint, endpoint.getEndpointref().getAddress(), jsonBody.toString(),true, context,false);
 			subscription_request = gson.fromJson(responseStr, SubscriptionRequest.class);
 			operatorsubses.add(new OperatorSubscriptionDTO(endpoint.getOperator(), subscription_request.getSubscription().getResourceURL()));		
