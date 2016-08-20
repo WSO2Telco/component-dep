@@ -105,42 +105,21 @@ public class ValidateCreditRefund implements IServiceValidate {
 		ValidationRule[] rules = null;
 
 		rules = new ValidationRule[] {
-				new ValidationRule(
-						ValidationRule.VALIDATION_TYPE_MANDATORY_TEL_END_USER_ID,
-						"msisdn", msisdn),
-				new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY,
-						"originalServerReferenceCode",
-						originalServerReferenceCode),
-				new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY,
-						"referenceCode", referenceCode),
-				new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY,
-						"description", description),
-				new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY,
-						"reasonForRefund", reasonForRefund),
-				new ValidationRule(
-						ValidationRule.VALIDATION_TYPE_MANDATORY_CURRENCY,
-						"currency", currency),
-				new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL,
-						"amount", amount),
-				new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL,
-						"taxAmount", taxAmount),
-				new ValidationRule(
-						ValidationRule.VALIDATION_TYPE_MANDATORY_DOUBLE_GT_ZERO,
-						"refundAmount", refundAmount),
-				new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL,
-						"clientCorrelator", clientCorrelator),
-				new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL,
-						"onBehalfOf", onBehalfOf),
-				new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL,
-						"purchaseCategoryCode", purchaseCategoryCode),
-				new ValidationRule(
-						ValidationRule.VALIDATION_TYPE_OPTIONAL_PAYMENT_CHANNEL,
-						"channel", channel),
-				new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY,
-						"originalServerReferenceCode",
-						originalServerReferenceCode),
-				new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL,
-						"clientCorrelator", clientCorrelator), };
+				new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_TEL_END_USER_ID,"msisdn", msisdn),
+				new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "originalServerReferenceCode", originalServerReferenceCode),
+				new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY,"referenceCode", referenceCode),
+				new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "description", description),
+                new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "reasonForRefund", reasonForRefund),
+                new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "currency", currency),
+                new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_NUMBER, "amount", amount),
+                new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL_DOUBLE_GE_ZERO, "taxAmount", taxAmount),
+                new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_NUMBER, "refundAmount", refundAmount),
+                new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "clientCorrelator", clientCorrelator),
+				new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL,"onBehalfOf", onBehalfOf),
+				new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL,"purchaseCategoryCode", purchaseCategoryCode),
+				new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL_PAYMENT_CHANNEL,"channel", channel)
+		};
+				
 
 		Validation.checkRequestParams(rules);
 

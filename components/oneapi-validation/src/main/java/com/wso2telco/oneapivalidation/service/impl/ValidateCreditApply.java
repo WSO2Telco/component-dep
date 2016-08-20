@@ -60,13 +60,13 @@ public class ValidateCreditApply implements IServiceValidate {
             ValidationRule[] rules = null;
 
             rules = new ValidationRule[]{
-               new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "type", type),
-                new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "amount", amount),
-                new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "clientCorrelator", clientCorrelator),
-                new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "reasonForCredit", reasonForCredit),
-                new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "merchantIdentification", merchantIdentification),
-                new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "notifyURL", notifyURL),
-                new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "callbackData", callbackData),
+                new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "type", type),
+                new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_NUMBER, "amount", amount),
+		        new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "clientCorrelator", clientCorrelator),
+		        new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "reasonForCredit", reasonForCredit),
+		        new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "merchantIdentification", merchantIdentification),
+		        new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL_URL, "notifyURL", notifyURL),
+		        new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "callbackData", callbackData),
 
                 };
             
