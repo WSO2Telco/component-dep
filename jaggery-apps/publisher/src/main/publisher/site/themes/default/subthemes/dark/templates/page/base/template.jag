@@ -26,7 +26,7 @@ i18n.init(request,localeResourcesBasePath);
     <meta charset="UTF-8">
     <meta name="description" content=""/>
     <meta http-equiv="X-UA-Compatible" content="IE=edge,chrome=1">
-
+	<meta http-equiv="cache-control" content="no-cache"/>
     <link href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("lib/bootstrap/css/bootstrap.css"))%>" rel="stylesheet">
     <link href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("lib/bootstrap/css/bootstrap-responsive.css"))%>" rel="stylesheet">
 
