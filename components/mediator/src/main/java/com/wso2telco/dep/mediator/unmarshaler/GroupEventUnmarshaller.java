@@ -121,8 +121,12 @@ public ConsumerSecretWrapperDTO getGroupEventDetailDTO(final String consumerKey)
     ConsumerSecretWrapperDTO dto = new ConsumerSecretWrapperDTO();
 
     dto.setConsumerKey(consumerKey.trim());
-    dto.setConsumerKeyVsGroup(new ArrayList<GroupDTO>(consumerKeyVsGroup.get(consumerKey.trim())));
-    dto.setConsumerKeyVsSp(new ArrayList<ServiceProviderDTO>(consumerKeyVsSp.get(consumerKey.trim() )));
+    if(consumerKeyVsGroup.get(consumerKey.trim()) != null){
+        dto.setConsumerKeyVsSp(new ArrayList<ServiceProviderDTO>(consumerKeyVsSp.get(consumerKey.trim() )));
+    }
+    if( consumerKeyVsGroup.get(consumerKey.trim())!=null){
+        dto.setConsumerKeyVsGroup(new ArrayList<GroupDTO>( consumerKeyVsGroup.get(consumerKey.trim()) ));
+    }
     return  dto;
 }
 
