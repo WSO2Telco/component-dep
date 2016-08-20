@@ -1,4 +1,4 @@
 <%
     session.put("showLogin", "true");
-    response.sendRedirect(request.getParameter("redirectToHome"));
+    response.sendRedirect("/store");
 %>
