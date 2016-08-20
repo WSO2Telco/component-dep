@@ -20,12 +20,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
-
 import java.io.File;
-import java.util.HashMap;
 import org.json.JSONObject;
 import org.wso2.carbon.utils.CarbonUtils;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wso2telco.dbutils.fileutils.FileReader;
@@ -119,10 +116,10 @@ public class QueryApplicableServiceHandler implements ProvisionHandler {
 		String requestResourceURL = executor.getResourceUrl();
 
 		FileReader fileReader = new FileReader();
-		String filePath = CarbonUtils.getCarbonConfigDirPath() + File.separator;
+		String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
+				+ FileNames.MEDIATOR_CONF_FILE.getFileName();
 
-		HashMap<String, String> mediatorConfMap = fileReader.readPropertyFile(filePath,
-				FileNames.MEDIATOR_CONF_FILE.getFileName());
+		Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
 
 		try {
 

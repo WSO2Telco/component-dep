@@ -34,7 +34,10 @@ import org.wso2.carbon.utils.CarbonUtils;
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -120,11 +123,10 @@ public class ResponseHandler {
 	private String getResourceURL(MessageContext mc, String senderAddress) {
 
 		FileReader fileReader = new FileReader();
-		String filePath = CarbonUtils.getCarbonConfigDirPath() + File.separator;
-		
-		
-		HashMap<String, String> mediatorConfMap = fileReader
-				.readPropertyFile(filePath, FileNames.MEDIATOR_CONF_FILE.getFileName());
+		String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
+				+ FileNames.MEDIATOR_CONF_FILE.getFileName();
+
+		Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
 
 		String resourceURL = mediatorConfMap.get("sendSMSResourceURL");
 		if (resourceURL != null && !resourceURL.isEmpty()) {
@@ -151,10 +153,10 @@ public class ResponseHandler {
 
 		String jsonPayload = null;
 		FileReader fileReader = new FileReader();
-		String filePath = CarbonUtils.getCarbonConfigDirPath() + File.separator;
-		
-		HashMap<String, String> mediatorConfMap = fileReader
-				.readPropertyFile(filePath, FileNames.MEDIATOR_CONF_FILE.getFileName());
+		String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
+				+ FileNames.MEDIATOR_CONF_FILE.getFileName();
+
+		Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
 
 		Gson gson = new GsonBuilder().serializeNulls().create();
 		org.json.JSONObject jsonObj = new org.json.JSONObject(jsonBody);

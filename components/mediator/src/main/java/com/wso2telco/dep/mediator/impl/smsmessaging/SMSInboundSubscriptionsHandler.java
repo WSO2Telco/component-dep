@@ -96,10 +96,10 @@ public class SMSInboundSubscriptionsHandler implements SMSHandler {
 		Gson gson = new GsonBuilder().serializeNulls().create();
 
 		FileReader fileReader = new FileReader();
-		String filePath = CarbonUtils.getCarbonConfigDirPath() + File.separator;
-		
-		HashMap<String, String> mediatorConfMap = fileReader
-				.readPropertyFile(filePath, FileNames.MEDIATOR_CONF_FILE.getFileName());
+		String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
+				+ FileNames.MEDIATOR_CONF_FILE.getFileName();
+
+		Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
 
 		HashMap<String, String> jwtDetails = apiUtils.getJwtTokenDetails(context);
 		JSONObject jsonBody = executor.getJsonBody();

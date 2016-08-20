@@ -84,10 +84,10 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 		String moSubscriptionId = requestPath.substring(requestPath.lastIndexOf("/") + 1);
 
 		FileReader fileReader = new FileReader();
-		String filePath = CarbonUtils.getCarbonConfigDirPath() + File.separator;
-		
-		HashMap<String, String> mediatorConfMap = fileReader
-				.readPropertyFile(filePath, FileNames.MEDIATOR_CONF_FILE.getFileName());
+		String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
+				+ FileNames.MEDIATOR_CONF_FILE.getFileName();
+
+		Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
 
 		HashMap<String, String> dnSubscriptionDetails = (HashMap<String, String>) smsMessagingService
 				.subscriptionDNNotifiMap(Integer.valueOf(moSubscriptionId));

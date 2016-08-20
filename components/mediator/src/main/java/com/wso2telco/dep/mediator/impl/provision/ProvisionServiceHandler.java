@@ -17,6 +17,7 @@ package com.wso2telco.dep.mediator.impl.provision;
 
 import java.io.File;
 import java.util.HashMap;
+import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
@@ -95,9 +96,9 @@ public class ProvisionServiceHandler implements ProvisionHandler {
 		String responseResourcrUrl = null;
 		
 		FileReader fileReader = new FileReader();
-		String filePath = CarbonUtils.getCarbonConfigDirPath() + File.separator;
+		String file = CarbonUtils.getCarbonConfigDirPath() + File.separator + FileNames.MEDIATOR_CONF_FILE.getFileName();
 		
-		HashMap<String, String> mediatorConfMap = fileReader.readPropertyFile(filePath, FileNames.MEDIATOR_CONF_FILE.getFileName());
+		Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
 
 		ProvisionServiceResponse provisionServiceResponse;
 

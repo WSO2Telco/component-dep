@@ -25,7 +25,6 @@ import com.wso2telco.dep.mediator.service.USSDService;
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.subscriptionvalidator.util.ValidatorUtils;
 import java.io.File;
-import java.util.HashMap;
 import java.util.Map;
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
@@ -80,15 +79,15 @@ public class SendUSSDHandler implements USSDHandler {
 
 		JSONObject jsonBody = executor.getJsonBody();
 		FileReader fileReader = new FileReader();
-		String filePath = CarbonUtils.getCarbonConfigDirPath() + File.separator;
+		String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
+				+ FileNames.MEDIATOR_CONF_FILE.getFileName();
 
 		String address = jsonBody.getJSONObject("outboundUSSDMessageRequest").getString("address");
 		String notifyUrl = jsonBody.getJSONObject("outboundUSSDMessageRequest").getJSONObject("responseRequest")
 				.getString("notifyURL");
 		String msisdn = address.substring(5);
 
-		HashMap<String, String> mediatorConfMap = fileReader
-				.readPropertyFile(filePath, FileNames.MEDIATOR_CONF_FILE.getFileName());
+		Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
 
 		Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl);
 
