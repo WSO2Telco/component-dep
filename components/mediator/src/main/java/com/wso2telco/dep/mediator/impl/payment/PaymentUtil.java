@@ -63,8 +63,8 @@ public class PaymentUtil {
 
 		Double groupTotalDayAmount = 0.0;
 		Double groupTotalMonthAmount = 0.0;
-		String consumerKey = "";
-
+		String consumerKey = null;
+		
 		AuthenticationContext authContext = APISecurityUtils
 				.getAuthenticationContext(context);
 		FileReader fileReader = new FileReader();

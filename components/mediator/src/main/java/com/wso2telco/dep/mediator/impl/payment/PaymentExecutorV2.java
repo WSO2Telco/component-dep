@@ -213,7 +213,7 @@ public class PaymentExecutorV2 extends RequestExecutor {
 
        
 
-        if (((spendLimitHandler.isMSISDNSpendLimitExceeded(msisdn)) != null && (spendLimitHandler.isMSISDNSpendLimitExceeded(msisdn) >= msisdn_day_amount))
+        /*if (((spendLimitHandler.isMSISDNSpendLimitExceeded(msisdn)) != null && (spendLimitHandler.isMSISDNSpendLimitExceeded(msisdn) >= msisdn_day_amount))
         		                || (msisdn_day_amount <= (Double.parseDouble(chargeAmount))) ||
         		                ( spendLimitHandler.isMSISDNSpendLimitExceeded(msisdn) != null &&
         		                        (Double.parseDouble(chargeAmount)+spendLimitHandler.isMSISDNSpendLimitExceeded(msisdn))> msisdn_day_amount )) {
@@ -234,7 +234,7 @@ public class PaymentExecutorV2 extends RequestExecutor {
 		                        (spendLimitHandler.isOperatorSpendLimitExceeded(operator)+ Double.parseDouble(chargeAmount) > oprator_day_amount))) {
         	throw new CustomException("POL1001", "The %1 charging limit for this operator has been exceeded", new String[]{"daily"});
 
-        }
+        }*/
 
         return true;
 

@@ -34,6 +34,8 @@ import java.util.Map;
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpStatus;
+import org.apache.http.client.HttpResponseException;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.commons.json.JsonUtil;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
@@ -1236,7 +1238,7 @@ public abstract class RequestExecutor {
 				messageContext.getProperty(MSISDNConstants.USER_MSISDN));
 
 		boolean isPaymentReq = false;
-		String paymentType="" ;
+		String paymentType=null;
 
 
 		if (retStr != null && !retStr.isEmpty()) {
@@ -1250,9 +1252,9 @@ public abstract class RequestExecutor {
 				response  = new JSONObject(retStr);
 				paymentRes = response.optJSONObject("amountTransaction");
 				if (paymentRes != null && !response.optJSONObject("amountTransaction").isNull("originalServerReferenceCode")) {
-					paymentType = "Refund";
+					 paymentType = PaymentType.REFUND.getType();
 				} else {
-					paymentType = "Charged";
+					 paymentType =PaymentType.CHARGED.getType();
                 }
 				messageContext.setProperty(MifeEventsConstants.PAYMENT_TYPE,paymentType);
 				if (paymentRes != null) {
@@ -1290,10 +1292,10 @@ public abstract class RequestExecutor {
 
 		// publish data to BAM
 		publisherClient.publishResponse(messageContext, retStr);
-
+		//Response.Status.BAD_REQUEST.getStatusCode();
 		// publish to CEP only the successful payment requests
-	//	if (isPaymentReq && statusCode >= 200 && statusCode < 300) {
-		if (isPaymentReq && statusCode >= 200 && statusCode < 300 ) {
+	
+		 if (isPaymentReq && statusCode >= HttpStatus.SC_OK && statusCode < HttpStatus.SC_MULTIPLE_CHOICES ) {
             log.debug("Publish to CEP");
 			publishToCEP(messageContext);
 		}

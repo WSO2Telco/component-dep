@@ -47,10 +47,17 @@ public class SpendLimitHandler {
     public Double getGroupTotalDayAmount(String groupName,String operator,String msisdn) throws AxataDBUtilException {
         if (isEventsEnabled) {
 
-			return dbservice.getGroupTotalMonthAmount(groupName, operator,msisdn);
+			return dbservice.getGroupTotalDayAmount(groupName, operator,msisdn);
 		}
 		return 0.0;
 	}
 
+    public Double getGroupTotalMonthAmount(String groupName,String operator,String msisdn) throws AxataDBUtilException {
 
+        if (isEventsEnabled) {
+
+            return dbservice.getGroupTotalMonthAmount(groupName,operator,msisdn);
+        }
+        return 0.0;
+    }
 }
