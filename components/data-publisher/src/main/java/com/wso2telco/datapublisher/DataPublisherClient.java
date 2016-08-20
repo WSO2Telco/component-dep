@@ -46,7 +46,7 @@ import java.util.regex.Pattern;
 public class DataPublisherClient {
 
     /** The Constant log. */
-    private static final Log log = LogFactory.getLog(DataPublisherClient.class);
+	private static final Log log = LogFactory.getLog(DataPublisherClient.class);
 
     /** The enabled. */
     private boolean enabled = SouthboundDataComponent.getApiMgtConfigReaderService().isEnabled();
@@ -120,16 +120,24 @@ public class DataPublisherClient {
         String tenantDomain = MultitenantUtils.getTenantDomain(username);
         
         JSONObject amountTransaction = null;
+        JSONObject creditApplyRequest = null;
         String taxAmount = null;
         String channel= null; 
         String onBehalfOf = null;
         String description = null;
         String transactionOperationStatus = null;
         String referenceCode =null;
+        String callbackData = null;
+        String notifiyURL = null;
+        String amount = null;
+        String clientCorrelator = null;
+       
         if (jsonBody != null && !jsonBody.isEmpty()) {
        		try {
         		amountTransaction = new JSONObject(jsonBody).optJSONObject("amountTransaction");
+        		
         		if (amountTransaction != null) {
+        			
         			JSONObject chargingMetaData = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingMetaData");
 		        	taxAmount = chargingMetaData.optString("taxAmount");
 		        	channel = chargingMetaData.optString("channel"); 
@@ -138,11 +146,55 @@ public class DataPublisherClient {
 		        	description = chargingInformation.optString("description");
 		        	transactionOperationStatus = amountTransaction.optString("transactionOperationStatus");
                     referenceCode = amountTransaction.optString("referenceCode");
-        			}		            
-				} catch (JSONException e) {
-                log.error("Error in converting request to json. " + e.getMessage(), e);
-            }
-        } 
+                    
+        			}
+        		
+        		creditApplyRequest = new JSONObject(jsonBody).optJSONObject("creditApplyRequest");
+	                
+        		if (creditApplyRequest != null) {
+	
+	                    amount = creditApplyRequest.optString("amount");
+	                    channel = creditApplyRequest.optString("type");
+	                    clientCorrelator = creditApplyRequest.optString("clientCorrelator");
+	                    description = creditApplyRequest.optString("reasonForCredit");
+	                    referenceCode = creditApplyRequest.optString("merchantIdentification");
+	
+	                    JSONObject receiptRequest = creditApplyRequest.getJSONObject("receiptRequest");
+	                    callbackData = receiptRequest.optString("callbackData");
+	                    notifiyURL = receiptRequest.optString("notifiyURL");
+	
+	                }
+        		
+        		JSONObject refundRequest = new JSONObject(jsonBody).optJSONObject("refundRequest");
+                
+        		if (refundRequest != null) {
+
+
+
+                    description = refundRequest.optString("reasonForCredit");
+                    referenceCode = refundRequest.optString("merchantIdentification");
+                    clientCorrelator= refundRequest.optString("clientCorrelator");
+                    JSONObject paymentAmount=refundRequest.getJSONObject("paymentAmount");
+                   JSONObject chargingInformation=paymentAmount.getJSONObject("chargingInformation");
+                    description = chargingInformation.optString("description");
+                    //transactionOperationStatus = chargingInformation.optString("transactionOperationStatus");
+                    referenceCode = chargingInformation.optString("originalReferenceCode");
+                    amount = chargingInformation.optString("amount");
+
+                    JSONObject chargingMetaData = paymentAmount.getJSONObject("chargingMetaData");
+        		
+                    channel = chargingMetaData.optString("channel");
+                    onBehalfOf = chargingMetaData.optString("onBehalfOf");
+                    notifiyURL = chargingMetaData.optString("notifiyURL");
+                    transactionOperationStatus = chargingMetaData.optString("status");
+                    
+				}
+
+			} catch (JSONException e) {
+				log.error(
+						"Error in converting request to json. "+ e.getMessage(), e);
+			}
+		}
 
         SouthboundRequestPublisherDTO requestPublisherDTO = new SouthboundRequestPublisherDTO();
         requestPublisherDTO.setConsumerKey(consumerKey);
@@ -178,7 +230,10 @@ public class DataPublisherClient {
         requestPublisherDTO.setDescription(description);
         requestPublisherDTO.setTransactionOperationStatus(transactionOperationStatus);
         requestPublisherDTO.setReferenceCode(referenceCode);
-
+        requestPublisherDTO.setChargeAmount(amount);
+        requestPublisherDTO.setPurchaseCategoryCode(clientCorrelator);
+        
+        
         //added to get Subscriber in end User request scenario 
        /* String userIdToPublish = requestPublisherDTO.getUsername();
         if (userIdToPublish != null && userIdToPublish.contains("@")) {
@@ -220,6 +275,9 @@ public class DataPublisherClient {
         
         JSONObject amountTransaction = null;
         JSONObject outboundUSSDMessageRequest = null;
+        JSONObject creditApplyResponse = null;
+        JSONObject refundResponse = null;
+
         String taxAmount = null;
         String channel= null; 
         String onBehalfOf = null;
@@ -228,6 +286,12 @@ public class DataPublisherClient {
         String ussdSessionId = null;
 		String transactionOperationStatus = null;
 		String referenceCode = null;
+		String callbackData = null;
+        String notifiyURL = null;
+        String status = null;
+        String amount = null;
+        String clientCorrelator = null;
+		
         if (jsonBody != null && !jsonBody.isEmpty()) {
     		   try {
         		   amountTransaction = new JSONObject(jsonBody).optJSONObject("amountTransaction");
@@ -254,7 +318,7 @@ public class DataPublisherClient {
                    if (amountTransaction != null) {
                        JSONObject chargingMetaData = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingMetaData");
                        taxAmount = chargingMetaData.optString("taxAmount");
-                      channel = chargingMetaData.optString("channel");
+                       channel = chargingMetaData.optString("channel");
                        onBehalfOf = chargingMetaData.optString("onBehalfOf");
                        JSONObject chargingInformation = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingInformation");
                        description = chargingInformation.optString("description");
@@ -263,10 +327,10 @@ public class DataPublisherClient {
                    }
    
                    outboundUSSDMessageRequest = new JSONObject(jsonBody).optJSONObject("outboundUSSDMessageRequest");
-                   if(outboundUSSDMessageRequest != null) {
+                  /* if(outboundUSSDMessageRequest != null) {
                        ussdAction = outboundUSSDMessageRequest.optString("ussdAction");
                        ussdSessionId = outboundUSSDMessageRequest.optString("sessionID");
-                   }
+                   }*/
    
 	               } catch (JSONException e) {
 	                   log.error("Error in converting request to json. " + e.getMessage(), e);
@@ -286,12 +350,48 @@ public class DataPublisherClient {
                        referenceCode = amountTransaction.optString("referenceCode");
                   }
    
-                   outboundUSSDMessageRequest = new JSONObject(jsonBody).optJSONObject("outboundUSSDMessageRequest");
+                  /* outboundUSSDMessageRequest = new JSONObject(jsonBody).optJSONObject("outboundUSSDMessageRequest");
                    if(outboundUSSDMessageRequest != null) {
                        ussdAction = outboundUSSDMessageRequest.optString("ussdAction");
                        ussdSessionId = outboundUSSDMessageRequest.optString("sessionID");
-                   }
+                   }*/
    
+               } catch (JSONException e) {
+                   log.error("Error in converting request to json. " + e.getMessage(), e);
+               }
+               
+               try {
+                   creditApplyResponse = new JSONObject(jsonBody).optJSONObject("creditApplyResponse");
+   
+                   if (creditApplyResponse != null) {
+                       amount = creditApplyResponse.optString("amount");
+                       channel = creditApplyResponse.optString("type");
+               	                       clientCorrelator= creditApplyResponse.optString("clientCorrelator");
+                       description = creditApplyResponse.optString("reasonForCredit");
+                       referenceCode = creditApplyResponse.optString("merchantIdentification");
+                       transactionOperationStatus = creditApplyResponse.optString("status");
+                       clientCorrelator=creditApplyResponse.optString("clientCorrelator");
+   
+                       JSONObject receiptResponse = creditApplyResponse.getJSONObject("receiptResponse");
+                   }
+                   refundResponse = new JSONObject(jsonBody).optJSONObject("refundResponse");
+               	                   if (refundResponse != null) {
+                       description = refundResponse.optString("reasonForCredit");
+                       referenceCode = refundResponse.optString("merchantIdentification");
+                       clientCorrelator=refundResponse.optString("clientCorrelator");
+   
+                       JSONObject paymentAmount=refundResponse.getJSONObject("paymentAmount");
+               	                       JSONObject chargingMetaData=paymentAmount.getJSONObject("chargingMetaData");
+                       JSONObject chargingInformation=paymentAmount.getJSONObject("chargingInformation");
+   
+                       description = chargingInformation.optString("description");
+                       amount = chargingInformation.optString("amount");
+                       referenceCode = chargingInformation.optString("originalReferenceCode");
+                       channel = chargingMetaData.optString("channel");
+                       onBehalfOf = chargingMetaData.optString("onBehalfOf");
+                       notifiyURL = chargingMetaData.optString("notifiyURL");
+                       transactionOperationStatus = chargingMetaData.optString("status");  
+               	                   }
                } catch (JSONException e) {
                    log.error("Error in converting request to json. " + e.getMessage(), e);
                }
@@ -347,9 +447,11 @@ public class DataPublisherClient {
         responsePublisherDTO.setOnBehalfOf(onBehalfOf);
         responsePublisherDTO.setDescription(description);
         responsePublisherDTO.setUssdAction(ussdAction);
+        responsePublisherDTO.setChargeAmount(amount);
         responsePublisherDTO.setUssdSessionId(ussdSessionId);
 		responsePublisherDTO.setTransactionOperationStatus(transactionOperationStatus);
         responsePublisherDTO.setReferenceCode(referenceCode);
+        responsePublisherDTO.setOperatorRef(clientCorrelator);
         //log.info("HHHHHHHHHHHHHHHHHHHHHHHHHHHH			responsePublisherDTO.getApi() : " + responsePublisherDTO.getApi());
         //log.info("HHHHHHHHHHHHHHHHHHHHHHHHHHHH			responsePublisherDTO.getResourcePath() : " + responsePublisherDTO.getResourcePath()
         

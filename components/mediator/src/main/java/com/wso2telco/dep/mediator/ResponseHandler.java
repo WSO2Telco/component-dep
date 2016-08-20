@@ -290,6 +290,27 @@ public class ResponseHandler {
 
         return jsonObj.toString();
     }
+    
+    public String creditApplyResponseContext(MessageContext context, String jsonBody, String clientCorrelator, String requestResourceURL, String requestid) throws JSONException {
+
+        org.json.JSONObject jsonObj = new org.json.JSONObject(jsonBody);
+        JSONObject objPay = jsonObj.getJSONObject("creditApplyResponse");
+
+        log.debug("JSONObject credit apply response : " + objPay);
+
+        return jsonObj.toString();
+    	    }
+    	
+    public String creditRefundResponseContext(MessageContext context, String jsonBody, String clientCorrelator, String requestResourceURL, String requestid) throws JSONException {
+
+        org.json.JSONObject jsonObj = new org.json.JSONObject(jsonBody);
+        JSONObject objPay = jsonObj.getJSONObject("refundResponse");
+
+        log.debug("JSONObject credit refund response  : " + objPay);
+
+        return jsonObj.toString();
+    }
+    	
 		
 
 }

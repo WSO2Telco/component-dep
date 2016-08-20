@@ -82,7 +82,6 @@ public class WalletRefundHandler implements WalletHandler {
         log.debug("Subscriber Name : " + subscriber);
         JSONObject jsonBody = executor.getJsonBody();
         String endUserId = jsonBody.getJSONObject("refundTransaction").getString("endUserId");
-        String amount = jsonBody.getJSONObject("makePayment").getJSONObject("paymentAmount").getJSONObject("chargingInformation").getString("amount");
         String msisdn = endUserId.substring(5);
         context.setProperty(MSISDNConstants.USER_MSISDN, msisdn);
 

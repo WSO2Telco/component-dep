@@ -1432,5 +1432,116 @@ public abstract class RequestExecutor {
 		        return retStr;
 		    }
 		
+		    /**
+		         *
+		         * @param url
+		         * @param requestStr
+		         * @param messageContext
+		         * @return
+		        */
+        public String makeCreditRequest(OperatorEndpoint operatorendpoint, String url, String requestStr, boolean auth,
+                                        MessageContext messageContext, boolean inclueHeaders) {
+    
+            publishRequestData(operatorendpoint, url, requestStr, messageContext);
+    
+            String retStr = "";
+            int statusCode = 0;
+    
+            URL neturl;
+            HttpURLConnection connection = null;
+    
+            try {
+    
+                neturl = new URL(url);
+                connection = (HttpURLConnection) neturl.openConnection();
+                connection.setRequestMethod("POST");
+                connection.setRequestProperty("Content-Type", "application/json");
+                connection.setRequestProperty("Accept", "application/json");
+                connection.setRequestProperty("Accept-Charset", "UTF-8");//ADDED
+                if (auth) {
+                    connection.setRequestProperty("Authorization", "Bearer " + getAccessToken(operatorendpoint.getOperator()));
+    
+                    //Add JWT token header
+                    org.apache.axis2.context.MessageContext axis2MessageContext = ((Axis2MessageContext) messageContext)
+                            .getAxis2MessageContext();
+                    Object headers = axis2MessageContext.getProperty(org.apache.axis2.context.MessageContext.TRANSPORT_HEADERS);
+                    if (headers != null && headers instanceof Map) {
+                        Map headersMap = (Map) headers;
+                        String jwtparam = (String) headersMap.get("x-jwt-assertion");
+                        if (jwtparam != null) {
+                            connection.setRequestProperty("x-jwt-assertion", jwtparam);
+                        }
+                    }
+                }
+    
+                if (inclueHeaders) {
+                    org.apache.axis2.context.MessageContext axis2MessageContext = ((Axis2MessageContext) messageContext)
+                            .getAxis2MessageContext();
+                    Object headers = axis2MessageContext.getProperty(org.apache.axis2.context.MessageContext.TRANSPORT_HEADERS);
+                    if (headers != null && headers instanceof Map) {
+                        Map headersMap = (Map) headers;
+                        Iterator it = headersMap.entrySet().iterator();
+                       while (it.hasNext()) {
+                            Map.Entry entry = (Map.Entry) it.next();
+                            connection.setRequestProperty((String) entry.getKey(), (String) entry.getValue()); // avoids a ConcurrentModificationException
+                        }
+                    }
+                }
+                connection.setUseCaches(false);
+                connection.setDoInput(true);
+                connection.setDoOutput(true);
+    
+    
+                log.debug("Southbound Request URL: " + connection.getRequestMethod() + " " + connection.getURL());
+                log.debug("Southbound Request Headers: " + connection.getRequestProperties());
+                log.debug("Southbound Request Body: " + requestStr);
+    
+    
+               //UNICODE
+                BufferedOutputStream wr = new BufferedOutputStream(connection.getOutputStream());
+                wr.write(requestStr.getBytes("UTF-8"));
+                wr.flush();
+                wr.close();
+    
+    
+                statusCode = connection.getResponseCode();
+                if ((statusCode != 200) && (statusCode != 201) && (statusCode != 400) && (statusCode != 401)) {
+                    throw new RuntimeException("Failed : HTTP error code : " + statusCode);
+                }
+    
+                InputStream is = null;
+                if ((statusCode == 200) || (statusCode == 201)) {
+                    is = connection.getInputStream();
+                } else {
+                   is = connection.getErrorStream();
+                }
+    
+                BufferedReader br = new BufferedReader(new InputStreamReader(is));
+                String output;
+                while ((output = br.readLine()) != null) {
+                    retStr += output;
+                }
+                br.close();
+    
+    
+                log.debug("Southbound Response Status: " + statusCode + " " + connection.getResponseMessage());
+                log.debug("Southbound Response Headers: " + connection.getHeaderFields());
+                log.debug("Southbound Response Body: " + retStr);
+    
+            } catch (Exception e) {
+                log.error("[CreditRequestService ], makerequest, " + e.getMessage(), e);
+                return null;
+            } finally {
+                if (connection != null) {
+                    connection.disconnect();
+                }
+                messageContext.setProperty(DataPublisherConstants.RESPONSE_CODE, Integer.toString(statusCode));
+                messageContext.setProperty(DataPublisherConstants.MSISDN, messageContext.getProperty(MSISDNConstants.USER_MSISDN));
+                publishWalletPaymentData(statusCode, retStr, messageContext);
+            }
+    
+            return retStr;
+        }
+    
 
 }

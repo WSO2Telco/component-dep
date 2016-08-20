@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package com.wso2telco.dep.mediator.impl.wallet;
+package com.wso2telco.dep.mediator.impl.credit;
 
 import java.util.HashMap;
 import java.util.List;
@@ -23,6 +23,7 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
+import org.apache.synapse.config.xml.AbstractMediatorSerializer;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONObject;
 
@@ -38,37 +39,36 @@ import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.dep.mediator.service.PaymentService;
 import com.wso2telco.oneapivalidation.service.IServiceValidate;
-import com.wso2telco.oneapivalidation.service.impl.ValidateWalletPayment;
+import com.wso2telco.oneapivalidation.service.impl.ValidateCreditApply;
+import com.wso2telco.oneapivalidation.service.impl.ValidateWalletRefund;
 import com.wso2telco.subscriptionvalidator.util.ValidatorUtils;
 
-public class WalletPaymentHandler implements WalletHandler {
+public class CreditApplyHandler implements CreditHandler {
 
-    private Log log = LogFactory.getLog(WalletPaymentHandler.class);
-    private static final String API_TYPE = "wallet";
+    private Log log = LogFactory.getLog(CreditApplyHandler.class);
+    private static final String API_TYPE = "credit";
     private OriginatingCountryCalculatorIDD occi;
     private ResponseHandler responseHandler;
-    private WalletExecutor executor;
-    private PaymentService dbservice;
+    private CreditExecutor executor;
     private ApiUtils apiUtils;
-   private PaymentUtil paymentUtil;
 
-    public WalletPaymentHandler(WalletExecutor executor) {
+    public CreditApplyHandler(CreditExecutor executor) {
         this.executor = executor;
         occi = new OriginatingCountryCalculatorIDD();
         responseHandler = new ResponseHandler();
-        dbservice = new PaymentService();
         apiUtils = new ApiUtils();
-        paymentUtil = new PaymentUtil();
+        
     }
 
     @Override
     public boolean handle(MessageContext context) throws Exception {
 
-        String requestid =UID.getUniqueID(Type.WALLET.getCode(), context, executor.getApplicationid());
+    	String requestid = UID.getUniqueID(Type.CREDIT.getCode(), context, executor.getApplicationid());
         HashMap<String, String> jwtDetails = apiUtils.getJwtTokenDetails(context);
         OperatorEndpoint endpoint = null;
         String clientCorrelator = null;
         String requestResourceURL = executor.getResourceUrl();
+
         FileReader fileReader = new FileReader();
         Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
         
@@ -79,13 +79,11 @@ public class WalletPaymentHandler implements WalletHandler {
         log.debug("Application Id : " + appId);
         String subscriber = jwtDetails.get("subscriber");
         log.debug("Subscriber Name : " + subscriber);
-
         JSONObject jsonBody = executor.getJsonBody();
-        String endUserId = jsonBody.getJSONObject("makePayment").getString("endUserId");
-
-        String msisdn = endUserId.substring(5);
-        context.setProperty(MSISDNConstants.USER_MSISDN, msisdn);
-
+        String[] params = executor.getSubResourcePath().split("/");
+        String endUserId = params[2];
+        context.setProperty(MSISDNConstants.USER_MSISDN, endUserId);
+        
         if (ValidatorUtils.getValidatorForSubscription(context).validate(context)) {
 
             endpoint = occi.getAPIEndpointsByMSISDN(endUserId.replace("tel:", ""), API_TYPE, executor.getSubResourcePath(), false,
@@ -95,67 +93,25 @@ public class WalletPaymentHandler implements WalletHandler {
         String sending_add = endpoint.getEndpointref().getAddress();
         log.info("sending endpoint found: " + sending_add);
 
-        // Check if Spend Limits are exceeded
-      //paymentUtil.checkSpendLimit(msisdn, endpoint.getOperator(), context ,amount);
-
-        //routeToEndpoint(endpoint, mc, sending_add);
-        //apend request id to client co-relator
-        JSONObject objAmountTransaction = jsonBody.getJSONObject("makePayment");
-        if (!objAmountTransaction.isNull("clientCorrelator")) {
-
-            clientCorrelator = nullOrTrimmed(objAmountTransaction.get("clientCorrelator").toString());
-       }
-
-        if (clientCorrelator == null || clientCorrelator.equals("")) {
-
-            log.debug("clientCorrelator not provided by application and hub/plugin generating clientCorrelator on behalf of application");
-            String hashString = apiUtils.getHashString(jsonBody.toString());
-           log.debug("hashString : " + hashString);
-            objAmountTransaction.put("clientCorrelator", hashString + "-" + requestid + ":" + hub_gateway_id + ":" + appId);
-        } else {
-
-            log.debug("clientCorrelator provided by application");
-            objAmountTransaction.put("clientCorrelator", clientCorrelator + ":" + hub_gateway_id + ":" + appId);
-        }
-        //objAmountTransaction.put("clientCorrelator", objAmountTransaction.getString("clientCorrelator") + ":" + requestid);
-
-        JSONObject chargingdmeta = objAmountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingMetaData");
-
-        /*String subscriber = storeSubscription(context);*/
-        boolean isaggrigator = paymentUtil.isAggregator(context);
-
-        if (isaggrigator) {
-
-            //JSONObject chargingdmeta = objAmountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingMetaData");
-            if (!chargingdmeta.isNull("onBehalfOf")) {
-
-                new AggregatorValidator().validateMerchant(Integer.valueOf(executor.getApplicationid()), endpoint.getOperator(), subscriber, chargingdmeta.getString("onBehalfOf"));
-            }
-       }
-
-        //validate payment categoreis
-        List<String> validCategoris = dbservice.getValidPayCategories();
-        paymentUtil.validatePaymentCategory(chargingdmeta, validCategoris);
-
-       String responseStr = executor.makeWalletRequest(endpoint, sending_add, jsonBody.toString(), true, context, false);
+        String responseStr = executor.makeCreditRequest(endpoint, sending_add, jsonBody.toString(), true, context, false);
 
         // Payment Error Exception Correction
        String base = str_piece(str_piece(responseStr, '{', 2), ':', 1);
 
         String errorReturn = "\"" + "requestError" + "\"";
 
-       executor.removeHeaders(context);
+        executor.removeHeaders(context);
 
         if (base.equals(errorReturn)) {
-
             executor.handlePluginException(responseStr);
-        }
-        responseStr = responseHandler.walletPaymentResponseContext(context, responseStr, clientCorrelator, requestResourceURL, requestid);
+       }
+
+        responseStr = responseHandler.creditApplyResponseContext(context, responseStr, clientCorrelator, requestResourceURL, requestid);
         
         //set response re-applied
         executor.setResponse(context, responseStr);
 
-       return true;
+        return true;
     }
 
     @Override
@@ -165,7 +121,7 @@ public class WalletPaymentHandler implements WalletHandler {
             throw new Exception("Method not allowed");
         }
 
-        IServiceValidate validator = new ValidateWalletPayment();
+        IServiceValidate validator = new ValidateCreditApply();
         validator.validateUrl(requestPath);
         validator.validate(jsonBody.toString());
         return true;
