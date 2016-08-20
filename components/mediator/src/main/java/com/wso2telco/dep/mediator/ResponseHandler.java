@@ -295,7 +295,7 @@ public class ResponseHandler {
 
         org.json.JSONObject jsonObj = new org.json.JSONObject(jsonBody);
         JSONObject objPay = jsonObj.getJSONObject("creditApplyResponse");
-
+        objPay.put("clientCorrelator", clientCorrelator);
         log.debug("JSONObject credit apply response : " + objPay);
 
         return jsonObj.toString();
@@ -305,7 +305,7 @@ public class ResponseHandler {
 
         org.json.JSONObject jsonObj = new org.json.JSONObject(jsonBody);
         JSONObject objPay = jsonObj.getJSONObject("refundResponse");
-
+        objPay.put("clientCorrelator", clientCorrelator);
         log.debug("JSONObject credit refund response  : " + objPay);
 
         return jsonObj.toString();

@@ -80,6 +80,26 @@ public class CreditApplyHandler implements CreditHandler {
         String subscriber = jwtDetails.get("subscriber");
         log.debug("Subscriber Name : " + subscriber);
         JSONObject jsonBody = executor.getJsonBody();
+        
+        JSONObject objAmountTransaction = jsonBody.getJSONObject("creditApplyRequest");
+        
+        if (!objAmountTransaction.isNull("clientCorrelator")) {
+
+            clientCorrelator = nullOrTrimmed(objAmountTransaction.get("clientCorrelator").toString());
+        }
+
+        if (clientCorrelator == null || clientCorrelator.equals("")) {
+
+            log.debug("clientCorrelator not provided by application and hub/plugin generating clientCorrelator on behalf of application");
+            String hashString = apiUtils.getHashString(jsonBody.toString());
+            log.debug("hashString : " + hashString);
+            objAmountTransaction.put("clientCorrelator", hashString + "-" + requestid + ":" + hub_gateway_id + ":" + appId);
+        } else {
+
+            log.debug("clientCorrelator provided by application");
+            objAmountTransaction.put("clientCorrelator", clientCorrelator + ":" + hub_gateway_id + ":" + appId);
+        }
+                
         String[] params = executor.getSubResourcePath().split("/");
         String endUserId = params[2];
         context.setProperty(MSISDNConstants.USER_MSISDN, endUserId);
