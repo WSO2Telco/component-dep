@@ -16,7 +16,7 @@
 package com.wso2telco.dep.mediator.impl;
 
 
-import com.wso2telco.datapublisher.DataPublisherConstants;
+import com.wso2telco.dep.datapublisher.DataPublisherConstants;
 import com.wso2telco.dep.mediator.MSISDNConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.RequestExecutor;

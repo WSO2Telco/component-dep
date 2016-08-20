@@ -13,15 +13,13 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.datapublisher;
+package com.wso2telco.dep.datapublisher;
 
-
-import com.wso2telco.datapublisher.dto.NorthboundResponsePublisherDTO;
-import com.wso2telco.datapublisher.dto.SouthboundRequestPublisherDTO;
-import com.wso2telco.datapublisher.dto.SouthboundResponsePublisherDTO;
-import com.wso2telco.datapublisher.internal.APIMgtConfigReader;
-import com.wso2telco.datapublisher.internal.DataPublisherAlreadyExistsException;
-import com.wso2telco.datapublisher.internal.SouthboundDataComponent;
+import com.wso2telco.dep.datapublisher.dto.NorthboundRequestPublisherDTO;
+import com.wso2telco.dep.datapublisher.dto.NorthboundResponsePublisherDTO;
+import com.wso2telco.dep.datapublisher.internal.APIMgtConfigReader;
+import com.wso2telco.dep.datapublisher.internal.DataPublisherAlreadyExistsException;
+import com.wso2telco.dep.datapublisher.internal.SouthboundDataComponent;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -38,15 +36,14 @@ import java.net.MalformedURLException;
 import java.util.ArrayList;
 import java.util.List;
 
-
 // TODO: Auto-generated Javadoc
 /**
- * The Class SouthboundDataPublisher.
+ * The Class NorthboundDataPublisher.
  */
-public class SouthboundDataPublisher {
+public class NorthboundDataPublisher {
 
     /** The log. */
-    private static Log log = LogFactory.getLog(SouthboundDataPublisher.class);
+    private static Log log = LogFactory.getLog(NorthboundDataPublisher.class);
 
     /** The data publisher. */
     private LoadBalancingDataPublisher dataPublisher;
@@ -57,78 +54,60 @@ public class SouthboundDataPublisher {
     public void init() {
         try {
             if (log.isDebugEnabled()) {
-                log.debug("Initializing SouthboundDataPublisher");
+                log.debug("Initializing NorthboundDataPublisher");
             }
 
             this.dataPublisher = getDataPublisher();
 
             //If Request Stream Definition does not exist.
-            if (!dataPublisher.isStreamDefinitionAdded(DataPublisherConstants.SOUTHBOUND_REQUEST_STREAM_NAME,
-                    DataPublisherConstants.SOUTHBOUND_REQUEST_STREAM_VERSION)) {
+            if (!dataPublisher.isStreamDefinitionAdded(DataPublisherConstants.NORTHBOUND_REQUEST_STREAM_NAME,
+                    DataPublisherConstants.NORTHBOUND_REQUEST_STREAM_VERSION)) {
 
                 //Get Request Stream Definition
-                String requestStreamDefinition = SouthboundRequestPublisherDTO.getStreamDefinition();
+                String requestStreamDefinition = NorthboundRequestPublisherDTO.getStreamDefinition();
 
                 //Add Request Stream Definition.
                 dataPublisher.addStreamDefinition(requestStreamDefinition,
-                        DataPublisherConstants.SOUTHBOUND_REQUEST_STREAM_NAME,
-                        DataPublisherConstants.SOUTHBOUND_REQUEST_STREAM_VERSION);
+                        DataPublisherConstants.NORTHBOUND_REQUEST_STREAM_NAME,
+                        DataPublisherConstants.NORTHBOUND_REQUEST_STREAM_VERSION);
             }
 
             //If Response Stream Definition does not exist.
-            if(!dataPublisher.isStreamDefinitionAdded(DataPublisherConstants.SOUTHBOUND_RESPONSE_STREAM_NAME,
-                     DataPublisherConstants.SOUTHBOUND_RESPONSE_STREAM_VERSION)){
+            if(!dataPublisher.isStreamDefinitionAdded(DataPublisherConstants.NORTHBOUND_RESPONSE_STREAM_NAME,
+                    DataPublisherConstants.NORTHBOUND_RESPONSE_STREAM_VERSION)){
 
                 //Get Response Stream Definition.
-                String responseStreamDefinition = SouthboundResponsePublisherDTO.getStreamDefinition();
+                String responseStreamDefinition = NorthboundResponsePublisherDTO.getStreamDefinition();
 
                 //Add Response Stream Definition.
                 dataPublisher.addStreamDefinition(responseStreamDefinition,
-                        DataPublisherConstants.SOUTHBOUND_RESPONSE_STREAM_NAME,
-                        DataPublisherConstants.SOUTHBOUND_RESPONSE_STREAM_VERSION);
+                        DataPublisherConstants.NORTHBOUND_RESPONSE_STREAM_NAME,
+                        DataPublisherConstants.NORTHBOUND_RESPONSE_STREAM_VERSION);
 
             }
 
         } catch (Exception e) {
-            log.error("Error initializing SouthboundDataPublisher", e);
+            log.error("Error initializing NorthboundDataPublisher", e);
         }
     }
 
     /**
      * Publish event.
      *
-     * @param southboundRequestPublisherDTO the southbound request publisher dto
+     * @param northboundRequestPublisherDTO the northbound request publisher dto
      */
-    public void publishEvent(SouthboundRequestPublisherDTO southboundRequestPublisherDTO) {
+    public void publishEvent(NorthboundRequestPublisherDTO northboundRequestPublisherDTO) {
         try {
             //Publish Request Data
-            dataPublisher.publish(DataPublisherConstants.SOUTHBOUND_REQUEST_STREAM_NAME,
-                    DataPublisherConstants.SOUTHBOUND_REQUEST_STREAM_VERSION,
+            dataPublisher.publish(DataPublisherConstants.NORTHBOUND_REQUEST_STREAM_NAME,
+                    DataPublisherConstants.NORTHBOUND_REQUEST_STREAM_VERSION,
                     System.currentTimeMillis(), new Object[]{"external"}, null,
-                    (Object[]) southboundRequestPublisherDTO.createPayload());
+                    (Object[]) northboundRequestPublisherDTO.createPayload());
         } catch (AgentException e) {
             log.error("Error while publishing Request event", e);
         }
     }
 
-    /**
-     * Publish event.
-     *
-     * @param southboundResponsePublisherDTO the southbound response publisher dto
-     */
-    public void publishEvent(SouthboundResponsePublisherDTO southboundResponsePublisherDTO) {
-        try {
-            //Publish Response Data
-            dataPublisher.publish(DataPublisherConstants.SOUTHBOUND_RESPONSE_STREAM_NAME,
-                    DataPublisherConstants.SOUTHBOUND_RESPONSE_STREAM_VERSION,
-                    System.currentTimeMillis(), new Object[]{"external"}, null,
-                    (Object[]) southboundResponsePublisherDTO.createPayload());
-
-        } catch (AgentException e) {
-            log.error("Error while publishing Response event", e);
-        }
-    }
-    
     /**
      * Publish event.
      *
@@ -138,12 +117,12 @@ public class SouthboundDataPublisher {
         try {
             //Publish Response Data
             dataPublisher.publish(DataPublisherConstants.NORTHBOUND_RESPONSE_STREAM_NAME,
-                    DataPublisherConstants.NORTHBOUND_REQUEST_STREAM_VERSION,
+                    DataPublisherConstants.NORTHBOUND_RESPONSE_STREAM_VERSION,
                     System.currentTimeMillis(), new Object[]{"external"}, null,
                     (Object[]) northboundResponsePublisherDTO.createPayload());
 
         } catch (AgentException e) {
-            log.error("Error while NB publishing Response event", e);
+            log.error("Error while publishing Response event", e);
         }
     }
 

@@ -35,10 +35,8 @@ import org.json.JSONObject;
 import org.json.XML;
 import org.wso2.carbon.apimgt.gateway.handlers.Utils;
 import org.wso2.carbon.apimgt.gateway.handlers.security.APISecurityConstants;
-
-import com.wso2telco.datapublisher.DataPublisherConstants;
-import com.wso2telco.datapublisher.NorthboundDataPublisherClient;
-
+import com.wso2telco.dep.datapublisher.DataPublisherConstants;
+import com.wso2telco.dep.datapublisher.NorthboundDataPublisherClient;
 import javax.naming.NamingException;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
