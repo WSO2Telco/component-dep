@@ -390,9 +390,13 @@ public class DataPublisherClient {
         responsePublisherDTO.setApplicationName((String) mc.getProperty(APIMgtGatewayConstants.APPLICATION_NAME));
         responsePublisherDTO.setApplicationId((String) mc.getProperty(APIMgtGatewayConstants.APPLICATION_ID));
         responsePublisherDTO.setSpConsumerKey((String) mc.getProperty(DataPublisherConstants.SP_CONSUMER_KEY));
+        
+        //================
         responsePublisherDTO.setSpOperatorId((String) mc.getProperty(DataPublisherConstants.SP_OPERATOR_ID));
         responsePublisherDTO.setSpUserId((String) mc.getProperty(DataPublisherConstants.SP_USER_ID));
+        //================
         
+      
 
         if (mc.getProperty(DataPublisherConstants.RESPONSE) != null) {
 				responsePublisherDTO.setResponse(Integer.parseInt((String) mc.getProperty(DataPublisherConstants.RESPONSE)));
