@@ -16,6 +16,7 @@
 package com.wso2telco.datapublisher;
 
 import com.google.gson.Gson;
+import com.wso2telco.datapublisher.JsonPOJOforMO.InboundSMSMessageNotification;
 import com.wso2telco.datapublisher.dto.SouthboundRequestPublisherDTO;
 import com.wso2telco.datapublisher.dto.SouthboundResponsePublisherDTO;
 import com.wso2telco.datapublisher.internal.SouthboundDataComponent;
@@ -409,17 +410,17 @@ public class DataPublisherClient {
         responsePublisherDTO.setOnBehalfOf(onBehalfOf);
         responsePublisherDTO.setDescription(description);
         responsePublisherDTO.setUssdAction(ussdAction);
-        responsePublisherDTO.setChargeAmount(amount);
+       // responsePublisherDTO.setChargeAmount(amount);
         responsePublisherDTO.setUssdSessionId(ussdSessionId);
 		responsePublisherDTO.setTransactionOperationStatus(transactionOperationStatus);
         responsePublisherDTO.setReferenceCode(referenceCode);
-        responsePublisherDTO.setPurchaseCategoryCode(clientCorrelator);
+       // responsePublisherDTO.setPurchaseCategoryCode(clientCorrelator);
         
         //log.info("HHHHHHHHHHHHHHHHHHHHHHHHHHHH			responsePublisherDTO.getApi() : " + responsePublisherDTO.getApi());
         //log.info("HHHHHHHHHHHHHHHHHHHHHHHHHHHH			responsePublisherDTO.getResourcePath() : " + responsePublisherDTO.getResourcePath()
         
        
-        if (responsePublisherDTO.getApi().equals("smsmessaging") && responsePublisherDTO.getResourcePath().contains("/inbound/registrations")) {
+        /*if (responsePublisherDTO.getApi().equals("smsmessaging") && responsePublisherDTO.getResourcePath().contains("/inbound/registrations")) {
 			Gson gson = new Gson();
 			if (isJSONValid(jsonBody)) {
 				//log.info("HHHHHHHHHHHHHHHHHHHHHHHHHHHH			jsonBody : " + jsonBody);
@@ -457,6 +458,59 @@ public class DataPublisherClient {
 		}else {
 			//log.info("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU PUBLISHED");
 			publisher.publishEvent(responsePublisherDTO);			
+		}*/
+        
+        
+        if (responsePublisherDTO.getApi().equals("smsmessaging") && responsePublisherDTO.getResourcePath().contains("/inbound/registrations")) {
+			Gson gson = new Gson();
+			if (isJSONValid(jsonBody)) {
+			JsonPOJO jsonPOJO = gson.fromJson(jsonBody, JsonPOJO.class);
+				InboundSMSMessage[] inboundSMSMessageList=jsonPOJO.getInboundSMSMessageList().getInboundSMSMessage();
+				if (inboundSMSMessageList.length > 0) {
+					for (InboundSMSMessage inboundSMSMessage : inboundSMSMessageList) {
+						responsePublisherDTO.setDateTime(inboundSMSMessage.getDateTime());
+						responsePublisherDTO.setDestinationAddress(inboundSMSMessage.getDestinationAddress());
+						responsePublisherDTO.setMessage(inboundSMSMessage.getMessage());
+						responsePublisherDTO.setMessageId(inboundSMSMessage.getMessageId());
+						responsePublisherDTO.setResourceURL(inboundSMSMessage.getResourceURL());
+						responsePublisherDTO.setSenderAddress(inboundSMSMessage.getSenderAddress());
+						responsePublisherDTO.setResponse(1);
+						
+						publisher.publishEvent(responsePublisherDTO);
+					}
+			}else {
+					publisher.publishEvent(responsePublisherDTO);
+				}
+			}else{
+				publisher.publishEvent(responsePublisherDTO);
+			}
+	
+		}else if (responsePublisherDTO.getApi().equals("smsmessaging") && responsePublisherDTO.getResourcePath().contains("ReceivedInfoNotification")) {
+		Gson gson = new Gson();
+			if (isJSONValid(jsonBody)) {
+				JsonPOJOforMO jsonPOJOforMO = gson.fromJson(jsonBody, JsonPOJOforMO.class);
+				InboundSMSMessageNotification inboundSMSNotification=jsonPOJOforMO.getInboundSMSMessageNotification();
+				if (inboundSMSNotification!=null) {
+					System.out.print(inboundSMSNotification.getcallbackData());
+					responsePublisherDTO.setDateTime(inboundSMSNotification.getInboundSMSMessage().getDateTime());
+					responsePublisherDTO.setDestinationAddress(inboundSMSNotification.getInboundSMSMessage().getDestinationAddress());
+					responsePublisherDTO.setMessage(inboundSMSNotification.getInboundSMSMessage().getMessage());
+					responsePublisherDTO.setMessageId(inboundSMSNotification.getInboundSMSMessage().getMessageId());
+					responsePublisherDTO.setResourceURL(inboundSMSNotification.getInboundSMSMessage().getResourceURL());
+				responsePublisherDTO.setSenderAddress(inboundSMSNotification.getInboundSMSMessage().getSenderAddress());
+					publisher.publishEvent(responsePublisherDTO);
+				}else {
+					publisher.publishEvent(responsePublisherDTO);
+				}
+			}else{
+				publisher.publishEvent(responsePublisherDTO);
+			}
+	
+		}else{
+			responsePublisherDTO.setChargeAmount(amount);
+	        responsePublisherDTO.setPurchaseCategoryCode(clientCorrelator);
+	        
+			publisher.publishEvent(responsePublisherDTO);
 		}
        
     }
