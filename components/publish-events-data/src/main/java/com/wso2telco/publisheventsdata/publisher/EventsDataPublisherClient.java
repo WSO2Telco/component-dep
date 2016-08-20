@@ -118,6 +118,9 @@ public class EventsDataPublisherClient {
         dataPublisherDTO.setMsisdn((String) mc.getProperty(MifeEventsConstants.MSISDN));
         String chargeAmountStr = (String) mc.getProperty(MifeEventsConstants.CHARGE_AMOUNT);
         dataPublisherDTO.setChargeAmount(Double.parseDouble(chargeAmountStr));
+        dataPublisherDTO.setGroupName((String) mc.getProperty(MifeEventsConstants.GROUP_NAME));
+        dataPublisherDTO.setPaymentType((String) mc.getProperty(MifeEventsConstants.PAYMENT_TYPE));
+        
 
         publisher.publishEvent(dataPublisherDTO);
     }

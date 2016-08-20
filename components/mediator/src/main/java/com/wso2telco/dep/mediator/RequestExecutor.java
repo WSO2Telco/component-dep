@@ -37,20 +37,26 @@ import org.apache.synapse.commons.json.JsonUtil;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.wso2.carbon.apimgt.gateway.handlers.security.APISecurityUtils;
+import org.wso2.carbon.apimgt.gateway.handlers.security.AuthenticationContext;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wso2telco.datapublisher.DataPublisherClient;
 import com.wso2telco.datapublisher.DataPublisherConstants;
+import com.wso2telco.dep.mediator.entity.cep.ConsumerSecretWrapperDTO;
 import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.InboundSMSMessage;
 import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.InboundSMSMessageList;
 import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.SouthboundRetrieveResponse;
 import com.wso2telco.dep.mediator.internal.UID;
+import com.wso2telco.dep.mediator.unmarshaler.GroupDTO;
+import com.wso2telco.dep.mediator.unmarshaler.GroupEventUnmarshaller;
 import com.wso2telco.dep.operatorservice.model.OperatorApplicationDTO;
 import com.wso2telco.dep.operatorservice.service.OparatorService;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.exceptions.RequestError;
 import com.wso2telco.oneapivalidation.exceptions.ResponseError;
+import com.wso2telco.publisheventsdata.MifeEventsConstants;
 import com.wso2telco.publisheventsdata.publisher.EventsDataPublisherClient;
 
 // TODO: Auto-generated Javadoc
@@ -1228,7 +1234,7 @@ public abstract class RequestExecutor {
 				messageContext.getProperty(MSISDNConstants.USER_MSISDN));
 
 		boolean isPaymentReq = false;
-		boolean paymentType = false;
+		String paymentType="" ;
 
 
 		if (retStr != null && !retStr.isEmpty()) {
@@ -1241,10 +1247,12 @@ public abstract class RequestExecutor {
 				//JSONObject response = new JSONObject(retStr);
 				response  = new JSONObject(retStr);
 				paymentRes = response.optJSONObject("amountTransaction");
-				if(paymentRes != null && response.optJSONObject("amountTransaction").getString("transactionOperationStatus").equalsIgnoreCase("Charged") ){
-                    paymentType =true;
+				if (paymentRes != null && !response.optJSONObject("amountTransaction").isNull("originalServerReferenceCode")) {
+					paymentType = "Refund";
+				} else {
+					paymentType = "Charged";
                 }
-					
+				messageContext.setProperty(MifeEventsConstants.PAYMENT_TYPE,paymentType);
 				if (paymentRes != null) {
 					if (paymentRes.has("serverReferenceCode")) {
 						messageContext.setProperty(DataPublisherConstants.OPERATOR_REF,
@@ -1283,7 +1291,8 @@ public abstract class RequestExecutor {
 
 		// publish to CEP only the successful payment requests
 	//	if (isPaymentReq && statusCode >= 200 && statusCode < 300) {
-		if (isPaymentReq && statusCode >= 200 && statusCode < 300 && paymentType ) {
+		if (isPaymentReq && statusCode >= 200 && statusCode < 300 ) {
+            log.debug("Publish to CEP");
 			publishToCEP(messageContext);
 		}
 	}
@@ -1298,7 +1307,27 @@ public abstract class RequestExecutor {
 		if (eventsPublisherClient == null) {
 			eventsPublisherClient = new EventsDataPublisherClient();
 		}
-		eventsPublisherClient.publishEvent(messageContext);
+		try {
+	        AuthenticationContext authContext = APISecurityUtils.getAuthenticationContext(messageContext);
+	        String consumerKey = "";
+	        if (authContext != null) {
+	            consumerKey = authContext.getConsumerKey();
+	
+	        }
+	        log.debug("Publish Group data into CEP ");
+	        GroupEventUnmarshaller unmarshaller = GroupEventUnmarshaller.getInstance();
+	        ConsumerSecretWrapperDTO consumerSecretWrapperDTO = unmarshaller.getGroupEventDetailDTO(consumerKey);
+	        List<GroupDTO> groupDTOList = consumerSecretWrapperDTO.getConsumerKeyVsGroup();
+	
+	        if (groupDTOList.size() > 0) {
+	            for (GroupDTO groupDTO : groupDTOList) {
+	                messageContext.setProperty(MifeEventsConstants.GROUP_NAME, groupDTO.getGroupName());
+	                eventsPublisherClient.publishEvent(messageContext);
+	            }
+        }
+    } catch (Exception e) {
+        log.error("error occurred when Unmarshaling ");
+    }
 	}
 	
 	private void publishWalletPaymentData(int statusCode, String retStr, MessageContext messageContext) {

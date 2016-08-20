@@ -42,7 +42,10 @@ import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.MSISDNConstants;
 import com.wso2telco.dep.mediator.entity.DailyLimit;
 import com.wso2telco.dep.mediator.entity.DailyLimitList;
+import com.wso2telco.dep.mediator.entity.cep.ConsumerSecretWrapperDTO;
 import com.wso2telco.dep.mediator.internal.Base64Coder;
+import com.wso2telco.dep.mediator.unmarshaler.GroupDTO;
+import com.wso2telco.dep.mediator.unmarshaler.GroupEventUnmarshaller;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.publisheventsdata.handler.SpendLimitHandler;
 
@@ -54,6 +57,77 @@ import com.wso2telco.publisheventsdata.handler.SpendLimitHandler;
 public class PaymentUtil {
 	private static Log log = LogFactory.getLog(PaymentUtil.class);
 
+	public boolean checkSpendLimit(String msisdn, String operator,
+			MessageContext context, Double chargeAmount)
+			throws AxataDBUtilException, IOException, JAXBException, Exception {
+
+		Double groupTotalDayAmount = 0.0;
+		Double groupTotalMonthAmount = 0.0;
+		String consumerKey = "";
+
+		AuthenticationContext authContext = APISecurityUtils
+				.getAuthenticationContext(context);
+		FileReader fileReader = new FileReader();
+		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
+
+		if (authContext != null) {
+			consumerKey = authContext.getConsumerKey();
+		}
+
+		GroupEventUnmarshaller groupEventUnmarshaller = GroupEventUnmarshaller
+				.getInstance();
+		ConsumerSecretWrapperDTO consumerSecretWrapperDTO = groupEventUnmarshaller
+				.getGroupEventDetailDTO(consumerKey);
+		List<GroupDTO> groupDTOList = consumerSecretWrapperDTO
+				.getConsumerKeyVsGroup();
+
+		if (groupDTOList != null) {
+			for (GroupDTO groupDTO : groupDTOList) {
+
+				Double groupdailyLimit = Double.parseDouble(groupDTO
+						.getDayAmount());
+				Double groupMonlthlyLimit = Double.parseDouble(groupDTO
+						.getMonthAmount());
+				SpendLimitHandler spendLimitHandler = new SpendLimitHandler();
+				groupTotalDayAmount = spendLimitHandler
+						.getGroupTotalDayAmount(groupDTO.getGroupName(),
+								groupDTO.getOperator(), msisdn);
+				groupTotalMonthAmount = spendLimitHandler
+						.getGroupTotalMonthAmount(groupDTO.getGroupName(),
+								groupDTO.getOperator(), msisdn);
+
+				if ((groupdailyLimit > 0.0)
+						&& ((groupTotalDayAmount >= groupdailyLimit)
+								|| (groupTotalDayAmount + chargeAmount) > groupdailyLimit || chargeAmount > groupdailyLimit)) {
+					log.debug("group daily limit exceeded");
+					throw new CustomException(
+							"POL1001",
+							"The %1 charging limit for this user has been exceeded",
+							new String[] { "daily" });
+
+				}
+
+				if ((groupMonlthlyLimit) > 0.0
+						&& ((groupTotalMonthAmount >= groupMonlthlyLimit)
+								|| (groupTotalMonthAmount + chargeAmount) > groupMonlthlyLimit || chargeAmount > groupMonlthlyLimit)) {
+					log.debug("group monthly limit exceeded");
+					throw new CustomException(
+							"POL1001",
+							"The %1 charging limit for this user has been exceeded",
+							new String[] { "monthly" });
+
+				}
+			}
+
+		}
+
+		return true;
+
+	}
+
+	
+	
+	
 	public static String storeSubscription(MessageContext context)
 			throws AxisFault {
 		String subscription = null;
@@ -81,72 +155,7 @@ public class PaymentUtil {
 	}
 
 	
-    public boolean checkSpendLimit(String msisdn, String operator, MessageContext context, Double chargeAmount) throws AxataDBUtilException,IOException,JAXBException {
-        
-    	AuthenticationContext authContext = APISecurityUtils.getAuthenticationContext(context);
-		String consumerKey = "";
-		FileReader fileReader = new FileReader();
-		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
-		
-		if (authContext != null) {
-			consumerKey = authContext.getConsumerKey();
-		}
-
-		SpendLimitHandler spendLimitHandler = new SpendLimitHandler();
-				
-		/*Double day_Msisdn_Limit = 0.0;
-		Double month_Msisdn_Limit =0.0;*/
-		Double totalDayCalculatedAmount = 0.0;
-		Double totalMonthCalculateAmount = 0.0;
-		
-		/*day_Msisdn_Limit = Double.parseDouble(mediatorConfMap.get("msisdn_day_amount"));
-		month_Msisdn_Limit = Double.parseDouble(mediatorConfMap.get("msisdn_month_amount"));*/
-		
-		//String configPath = CarbonUtils.getCarbonConfigDirPath() + File.separator + "mifeEventDayLimit.xml";
-		 String configPath = CarbonUtils.getCarbonConfigDirPath() + File.separator + "mifeEventSpendLimit.xml";
-        File file = new File(configPath);
-				
-		JAXBContext jaxbContext = JAXBContext.newInstance(DailyLimitList.class);
-		Unmarshaller jaxbUnmarshaller = jaxbContext.createUnmarshaller();
-		DailyLimitList dailyLimits = (DailyLimitList) jaxbUnmarshaller.unmarshal(file);
-		
-		for (Iterator iterator = dailyLimits.getDailyLimits().iterator(); iterator.hasNext();) {
-		    DailyLimit dailyLimit = (DailyLimit) iterator.next();
-		
-		    String dayConsumerKey = String.valueOf(dailyLimit.getConsumerKey());
-		    /*String dayOperator = dailyLimit.getOperator();
-		    System.out.println(dayOperator);
-		
-		    if ( dayConsumerKey.equalsIgnoreCase(consumerKey) && dayOperator.equalsIgnoreCase(operator) &&dailyLimit.getAmount() > 0.0 ) {*/
-		
-		    log.debug("ConsumerKey from conf file " + dayConsumerKey);
-		    if ( dayConsumerKey.equalsIgnoreCase(consumerKey) && dailyLimit.getAmount() > 0.0  ) {
-		        totalDayCalculatedAmount = spendLimitHandler.getDayTotalCalculatedAmount(consumerKey,msisdn);
-		        //totalMonthCalculateAmount = spendLimitHandler.getMonthTotalCalculatedAmount(consumerKey,msisdn);
-		
-		        if ((totalDayCalculatedAmount >= dailyLimit.getAmount()) || ((chargeAmount + totalDayCalculatedAmount)> dailyLimit.getAmount())
-				              //  || (dailyLimit.getAmount() <= chargeAmount)) {
-		        		|| (dailyLimit.getAmount() < chargeAmount)) {
-		
-		            throw new CustomException("POL1001", "The %1 charging limit for this user has been exceeded", new String[]{"daily"});
-		
-		        /*} else if (  (totalMonthCalculateAmount >= dailyLimit.getMonthAmount()) || ((totalMonthCalculateAmount + chargeAmount) > dailyLimit.getMonthAmount())
-		                || (dailyLimit.getMonthAmount() < chargeAmount) ) {
-		
-		            throw new CustomException("POL1001", "The %1 charging limit for this user has been exceeded", new String[]{"monthly"});*/
-		
-		                
-		
-		            }	
-		}
-		 if ( dayConsumerKey.equalsIgnoreCase(consumerKey) &&  dailyLimit.getMonthAmount() > 0.0 ) {
-			 totalMonthCalculateAmount = spendLimitHandler.getMonthTotalCalculatedAmount(consumerKey,msisdn);
-		 }
-		}
-			 return true;
-		
-	}
-
+   
 	public static boolean isAggregator(MessageContext context) throws AxisFault {
 		boolean aggregator = false;
 

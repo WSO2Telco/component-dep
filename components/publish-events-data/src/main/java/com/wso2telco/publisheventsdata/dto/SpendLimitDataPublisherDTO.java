@@ -37,6 +37,11 @@ public class SpendLimitDataPublisherDTO extends ResponsePublisherDTO {
     
     /** The charge amount. */
     private double chargeAmount;
+    
+    private String groupName;
+    
+    private String paymentType;
+    
 
     /**
      * Gets the operator id.
@@ -106,6 +111,24 @@ public class SpendLimitDataPublisherDTO extends ResponsePublisherDTO {
      */
     public void setChargeAmount(double chargeAmount) { this.chargeAmount = chargeAmount; }
 
+    
+    public String getPaymentType() {
+		return paymentType;
+	}
+
+	public void setPaymentType(String paymentType) {
+		this.paymentType = paymentType;
+	}
+
+	public String getGroupName() {
+		return groupName;
+	}
+
+	public void setGroupName(String groupName) {
+		this.groupName = groupName;
+	}
+    	
+    	
     /**
      * Gets the stream definition.
      *
@@ -134,7 +157,9 @@ public class SpendLimitDataPublisherDTO extends ResponsePublisherDTO {
                 "          {'name':'operatorId','type':'STRING'}," +
                 "          {'name':'responseCode','type':'STRING'}," +
                 "          {'name':'msisdn','type':'STRING'}," +
-                "          {'name':'chargeAmount','type':'DOUBLE'}" +
+                "          {'name':'chargeAmount','type':'DOUBLE'}," +
+                "          {'name':'groupName','type':'STRING'},"+
+                "          {'name':'paymentType','type':'STRING'} "+
                 "  ]" +
                 "}";
 
@@ -150,6 +175,6 @@ public class SpendLimitDataPublisherDTO extends ResponsePublisherDTO {
         return new Object[]{getConsumerKey(),getContext(),getApi(),getVersion(),getResponseTime(),getUsername(),
                             getTenantDomain(),getApplicationName(), getApplicationId(),
 
-                            getOperatorId(), getResponseCode(), getMsisdn(), getChargeAmount()};
+                            getOperatorId(), getResponseCode(), getMsisdn(), getChargeAmount(),getGroupName(), getPaymentType()};
     }
 }

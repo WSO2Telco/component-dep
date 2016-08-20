@@ -63,4 +63,9 @@ public class MifeEventsConstants {
     
     /** The Constant RESPONSE_CODE. */
     public static final String RESPONSE_CODE = "mife.prop.responseCode";
+    
+    public static final String PAYMENT_TYPE = "mife.prop.paymentType";
+    
+    public static final String GROUP_NAME ="mife.prop.groupName";
+    
 }

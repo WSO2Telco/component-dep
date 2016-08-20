@@ -122,7 +122,7 @@ public class SpendLimitHandler {
         if (isEventsEnabled) {
             return dbservice.checkMonthOperatorSpendLimit(operatorId);
         }
-        return null;
+        return 0.0;
     }
 
     public Double isMonthApplicationSpendLimitExceeded(String consumerKey) throws AxataDBUtilException {
@@ -130,7 +130,7 @@ public class SpendLimitHandler {
 
             return dbservice.checkMonthApplicationSpendLimit(consumerKey);
         }
-        return null;
+        return 0.0;
      }
 
     public Double getDayTotalCalculatedAmount(String consumerKey, String msisdn) throws AxataDBUtilException {
@@ -139,7 +139,7 @@ public class SpendLimitHandler {
 
             return dbservice.getDayTotalCalculatedAmount(consumerKey, msisdn);
         }
-        return null;
+        return 0.0;
     }
 
     public Double getMonthTotalCalculatedAmount(String consumerKey, String msisdn) throws AxataDBUtilException {
@@ -148,9 +148,24 @@ public class SpendLimitHandler {
 
             return dbservice.getMonthTotalCalculatedAmount(consumerKey, msisdn);
         }
-        return null;
+        return 0.0;
     }
 
+	public Double getGroupTotalDayAmount(String groupName, String operator,String msisdn) throws AxataDBUtilException {
+
+		if (isEventsEnabled) {
+			return dbservice.getGroupTotalDayAmount(groupName, operator, msisdn);
+		}
+		return 0.0;
+	}
+
+	public Double getGroupTotalMonthAmount(String groupName, String operator,String msisdn) throws AxataDBUtilException {
+
+		if (isEventsEnabled) {
+			return dbservice.getGroupTotalMonthAmount(groupName, operator,msisdn);
+		}
+		return 0.0;
+	}
 
 
 }
