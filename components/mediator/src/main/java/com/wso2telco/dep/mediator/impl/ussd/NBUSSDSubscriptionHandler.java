@@ -96,8 +96,6 @@ public class NBUSSDSubscriptionHandler implements USSDHandler {
         List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(API_TYPE, executor.getSubResourcePath(),
                 executor.getValidoperators());
 
-        executor.removeHeaders(context);
-
         String responseStr ="";
 
         List<OperatorSubscriptionDTO> operatorsubses = new ArrayList<OperatorSubscriptionDTO>();
@@ -172,7 +170,7 @@ public class NBUSSDSubscriptionHandler implements USSDHandler {
         jObject  = new JSONObject(subscriptionHubResponse);
 
         ussdService.moUssdSubscriptionEntry(operatorsubses, subscriptionId);
-
+        executor.removeHeaders(context);
         String responseobj =jObject.toString();
         executor.setResponse(context, responseobj);
         ((Axis2MessageContext) context).getAxis2MessageContext().setProperty("messageType", "application/json");

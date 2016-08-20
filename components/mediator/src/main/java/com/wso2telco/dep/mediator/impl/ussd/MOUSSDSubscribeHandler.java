@@ -117,8 +117,6 @@ public class MOUSSDSubscribeHandler implements USSDHandler {
 
 		List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(API_TYPE, executor.getSubResourcePath(),executor.getValidoperators());
 
-		executor.removeHeaders(context);
-
 		String responseStr = "";
 		SubscriptionRequest subscription_request;
 		List<OperatorSubscriptionDTO> operatorsubses = new ArrayList<OperatorSubscriptionDTO>();
@@ -136,6 +134,7 @@ public class MOUSSDSubscribeHandler implements USSDHandler {
 		jObject.getJSONObject("subscription").getJSONObject("callbackReference").put("notifyURL",notifyUrl);
 		jObject.getJSONObject("subscription").put("resourceURL",mediatorConfMap.get("hubGateway")+executor.getResourceUrl()+"/"+subscriptionId);
 		ussdService.moUssdSubscriptionEntry(operatorsubses, subscriptionId);
+		executor.removeHeaders(context);
 		String responseobj =jObject.toString();
 		executor.setResponse(context, responseobj);
 		((Axis2MessageContext) context).getAxis2MessageContext().setProperty("messageType", "application/json");

@@ -139,12 +139,11 @@ public class SendUSSDHandler implements USSDHandler {
 		String sending_add = endpoint.getEndpointref().getAddress();
 		log.info("sending endpoint found: " + sending_add + " Request ID: " + UID.getRequestID(context));
 
-		executor.removeHeaders(context);
-
 		String responseStr = executor.makeRequest(endpoint, sending_add, jsonBody.toString(), true, context,false);
 		executor.handlePluginException(responseStr);
-
+		executor.removeHeaders(context);
 		executor.setResponse(context, responseStr);
+		
 		((Axis2MessageContext) context).getAxis2MessageContext().setProperty("messageType", "application/json");
 
 		return true;
