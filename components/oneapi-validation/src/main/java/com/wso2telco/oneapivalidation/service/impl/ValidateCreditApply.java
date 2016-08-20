@@ -61,7 +61,7 @@ public class ValidateCreditApply implements IServiceValidate {
 
             rules = new ValidationRule[]{
                 new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "type", type),
-                new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_NUMBER, "amount", amount),
+                new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_DOUBLE_GE_ZERO, "amount", amount),
 		        new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "clientCorrelator", clientCorrelator),
 		        new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "reasonForCredit", reasonForCredit),
 		        new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "merchantIdentification", merchantIdentification),

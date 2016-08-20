@@ -304,13 +304,20 @@ public class Validation {
                             break;
                         case ValidationRule.VALIDATION_TYPE_MANDATORY_DOUBLE_GE_ZERO:
                         case ValidationRule.VALIDATION_TYPE_OPTIONAL_DOUBLE_GE_ZERO:
-                            if (current.parameterValue instanceof Double) {
-                                if (((Double) current.parameterValue) < 0.0) {
-                                    valid = false;
-                                    logger.debug("Rejecting double value " + current.parameterName + " : " + ((Double) parameterValue) + " should be >= 0");
-                                    //sendError(response, BAD_REQUEST, RequestError.SERVICEEXCEPTION, "SVC0002", "Invalid input value for message part %1", "Parameter " + current.parameterName + " value " + ((Double) current.parameterValue));
-                                    throw new CustomException("SVC0002", "Invalid input value for message part %1", new String[]{"Parameter " + current.parameterName + " value " + ((Double) current.parameterValue)});
-                                }
+                            if (current.parameterValue != null) {
+                                try {
+                                   Double parameter= Double.parseDouble(current.parameterValue.toString());
+                                   if(!(parameter >= 0.0)){
+                                  throw new CustomException("SVC0002", "Invalid input value for message part %1", new String[]{"Parameter " + current.parameterName});
+
+                                   }
+
+                                } catch (NumberFormatException e) {
+                                    logger.debug("Rejecting int value " + current.parameterName);
+                                    throw new CustomException("SVC0002", "Invalid input value for message part %1", new String[]{"Parameter " + current.parameterName});
+
+                            }
+	                                
                             }
                             break;
                         case ValidationRule.VALIDATION_TYPE_MANDATORY_TEL:
