@@ -57,10 +57,10 @@ public class EventsComponent {
 			dataPublisherMap = new ConcurrentHashMap<String, LoadBalancingDataPublisher>();
 
 			FileReader fileReader = new FileReader();
-			String filePath = CarbonUtils.getCarbonConfigDirPath() + File.separator;
-			
-			Map<String, String> publisherEventConfMap = fileReader
-					.readPropertyFile(filePath, FileNames.PUBLISH_EVENTS_DATA_CONF_FILE.getFileName());
+			String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
+					+ FileNames.PUBLISH_EVENTS_DATA_CONF_FILE.getFileName();
+
+			Map<String, String> publisherEventConfMap = fileReader.readPropertyFile(file);
 			EventsDataHolder.setPublisherEventConfMap(publisherEventConfMap);
 
 			log.debug("events bundle is activated ");
