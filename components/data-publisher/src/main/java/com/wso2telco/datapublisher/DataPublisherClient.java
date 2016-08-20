@@ -127,8 +127,6 @@ public class DataPublisherClient {
         String description = null;
         String transactionOperationStatus = null;
         String referenceCode =null;
-        String callbackData = null;
-        String notifiyURL = null;
         String amount = null;
         String clientCorrelator = null;
        
@@ -159,11 +157,7 @@ public class DataPublisherClient {
 	                    description = creditApplyRequest.optString("reasonForCredit");
 	                    referenceCode = creditApplyRequest.optString("merchantIdentification");
 	
-	                    JSONObject receiptRequest = creditApplyRequest.getJSONObject("receiptRequest");
-	                    callbackData = receiptRequest.optString("callbackData");
-	                    notifiyURL = receiptRequest.optString("notifiyURL");
-	
-	                }
+        		}
         		
         		JSONObject refundRequest = new JSONObject(jsonBody).optJSONObject("refundRequest");
                 
@@ -175,9 +169,8 @@ public class DataPublisherClient {
                     referenceCode = refundRequest.optString("merchantIdentification");
                     clientCorrelator= refundRequest.optString("clientCorrelator");
                     JSONObject paymentAmount=refundRequest.getJSONObject("paymentAmount");
-                   JSONObject chargingInformation=paymentAmount.getJSONObject("chargingInformation");
+                    JSONObject chargingInformation=paymentAmount.getJSONObject("chargingInformation");
                     description = chargingInformation.optString("description");
-                    //transactionOperationStatus = chargingInformation.optString("transactionOperationStatus");
                     referenceCode = chargingInformation.optString("originalReferenceCode");
                     amount = chargingInformation.optString("amount");
 
@@ -185,7 +178,6 @@ public class DataPublisherClient {
         		
                     channel = chargingMetaData.optString("channel");
                     onBehalfOf = chargingMetaData.optString("onBehalfOf");
-                    notifiyURL = chargingMetaData.optString("notifiyURL");
                     transactionOperationStatus = chargingMetaData.optString("status");
                     
 				}
@@ -273,7 +265,7 @@ public class DataPublisherClient {
 
         Long serviceTime = currentTime - (Long) mc.getProperty(DataPublisherConstants.REQUEST_TIME);
         
-        JSONObject amountTransaction = null;
+        JSONObject amountTransaction,makePayment,refundTransaction = null;
         JSONObject outboundUSSDMessageRequest = null;
         JSONObject creditApplyResponse = null;
         JSONObject refundResponse = null;
@@ -286,9 +278,6 @@ public class DataPublisherClient {
         String ussdSessionId = null;
 		String transactionOperationStatus = null;
 		String referenceCode = null;
-		String callbackData = null;
-        String notifiyURL = null;
-        String status = null;
         String amount = null;
         String clientCorrelator = null;
 		
@@ -310,57 +299,32 @@ public class DataPublisherClient {
                        ussdAction = outboundUSSDMessageRequest.optString("ussdAction");
                        ussdSessionId = outboundUSSDMessageRequest.optString("sessionID");
                    }
-    		   }catch (JSONException e) {
-        	            log.error("Error in converting request to json. " + e.getMessage(), e);
-        	        }
-    		   try {
-                   amountTransaction = new JSONObject(jsonBody).optJSONObject("makePayment");
-                   if (amountTransaction != null) {
-                       JSONObject chargingMetaData = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingMetaData");
+                   makePayment = new JSONObject(jsonBody).optJSONObject("makePayment");
+                   if (makePayment != null) {
+                       JSONObject chargingMetaData = makePayment.getJSONObject("paymentAmount").getJSONObject("chargingMetaData");
                        taxAmount = chargingMetaData.optString("taxAmount");
                        channel = chargingMetaData.optString("channel");
                        onBehalfOf = chargingMetaData.optString("onBehalfOf");
-                       JSONObject chargingInformation = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingInformation");
+                       JSONObject chargingInformation = makePayment.getJSONObject("paymentAmount").getJSONObject("chargingInformation");
                        description = chargingInformation.optString("description");
-                       transactionOperationStatus = amountTransaction.optString("transactionOperationStatus");
-                       referenceCode = amountTransaction.optString("referenceCode");
+                       transactionOperationStatus = makePayment.optString("transactionOperationStatus");
+                       referenceCode = makePayment.optString("referenceCode");
                    }
    
-                   outboundUSSDMessageRequest = new JSONObject(jsonBody).optJSONObject("outboundUSSDMessageRequest");
-                  /* if(outboundUSSDMessageRequest != null) {
-                       ussdAction = outboundUSSDMessageRequest.optString("ussdAction");
-                       ussdSessionId = outboundUSSDMessageRequest.optString("sessionID");
-                   }*/
+               
+            	   refundTransaction = new JSONObject(jsonBody).optJSONObject("refundTransaction");
    
-	               } catch (JSONException e) {
-	                   log.error("Error in converting request to json. " + e.getMessage(), e);
-	               }
-   
-               try {
-                   amountTransaction = new JSONObject(jsonBody).optJSONObject("refundTransaction");
-   
-                   if (amountTransaction != null) {
-                       JSONObject chargingMetaData = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingMetaData");
+            	   if (refundTransaction != null) {
+                       JSONObject chargingMetaData = refundTransaction.getJSONObject("paymentAmount").getJSONObject("chargingMetaData");
                        taxAmount = chargingMetaData.optString("taxAmount");
                        channel = chargingMetaData.optString("channel");
                        onBehalfOf = chargingMetaData.optString("onBehalfOf");
-                       JSONObject chargingInformation = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingInformation");
-                       description = chargingInformation.optString("description");
-                       transactionOperationStatus = amountTransaction.optString("transactionOperationStatus");
-                       referenceCode = amountTransaction.optString("referenceCode");
+                       JSONObject chargingInformation = refundTransaction.getJSONObject("paymentAmount").getJSONObject("chargingInformation");                       description = chargingInformation.optString("description");
+                       transactionOperationStatus = refundTransaction.optString("transactionOperationStatus");
+                       referenceCode = refundTransaction.optString("referenceCode");
                   }
    
-                  /* outboundUSSDMessageRequest = new JSONObject(jsonBody).optJSONObject("outboundUSSDMessageRequest");
-                   if(outboundUSSDMessageRequest != null) {
-                       ussdAction = outboundUSSDMessageRequest.optString("ussdAction");
-                       ussdSessionId = outboundUSSDMessageRequest.optString("sessionID");
-                   }*/
-   
-               } catch (JSONException e) {
-                   log.error("Error in converting request to json. " + e.getMessage(), e);
-               }
-               
-               try {
+                
                    creditApplyResponse = new JSONObject(jsonBody).optJSONObject("creditApplyResponse");
    
                    if (creditApplyResponse != null) {
@@ -372,7 +336,6 @@ public class DataPublisherClient {
                        transactionOperationStatus = creditApplyResponse.optString("status");
                        clientCorrelator=creditApplyResponse.optString("clientCorrelator");
    
-                       JSONObject receiptResponse = creditApplyResponse.getJSONObject("receiptResponse");
                    }
                    refundResponse = new JSONObject(jsonBody).optJSONObject("refundResponse");
                	                   if (refundResponse != null) {
@@ -389,7 +352,6 @@ public class DataPublisherClient {
                        referenceCode = chargingInformation.optString("originalReferenceCode");
                        channel = chargingMetaData.optString("channel");
                        onBehalfOf = chargingMetaData.optString("onBehalfOf");
-                       notifiyURL = chargingMetaData.optString("notifiyURL");
                        transactionOperationStatus = chargingMetaData.optString("status");  
                	                   }
                } catch (JSONException e) {
