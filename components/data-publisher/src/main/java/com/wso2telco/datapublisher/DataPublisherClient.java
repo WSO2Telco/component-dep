@@ -413,7 +413,8 @@ public class DataPublisherClient {
         responsePublisherDTO.setUssdSessionId(ussdSessionId);
 		responsePublisherDTO.setTransactionOperationStatus(transactionOperationStatus);
         responsePublisherDTO.setReferenceCode(referenceCode);
-        responsePublisherDTO.setOperatorRef(clientCorrelator);
+        responsePublisherDTO.setPurchaseCategoryCode(clientCorrelator);
+        
         //log.info("HHHHHHHHHHHHHHHHHHHHHHHHHHHH			responsePublisherDTO.getApi() : " + responsePublisherDTO.getApi());
         //log.info("HHHHHHHHHHHHHHHHHHHHHHHHHHHH			responsePublisherDTO.getResourcePath() : " + responsePublisherDTO.getResourcePath()
         
