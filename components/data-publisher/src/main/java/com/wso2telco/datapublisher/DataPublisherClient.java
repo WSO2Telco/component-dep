@@ -470,7 +470,7 @@ public class DataPublisherClient {
 			if (isJSONValid(jsonBody)) {
 			JsonPOJO jsonPOJO = gson.fromJson(jsonBody, JsonPOJO.class);
 				InboundSMSMessage[] inboundSMSMessageList=jsonPOJO.getInboundSMSMessageList().getInboundSMSMessage();
-				if (inboundSMSMessageList.length > 0) {
+				if (inboundSMSMessageList!=null && inboundSMSMessageList.length > 0) {
 					for (InboundSMSMessage inboundSMSMessage : inboundSMSMessageList) {
 						responsePublisherDTO.setDateTime(inboundSMSMessage.getDateTime());
 						responsePublisherDTO.setDestinationAddress(inboundSMSMessage.getDestinationAddress());
