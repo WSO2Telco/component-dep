@@ -6,7 +6,7 @@
      version-type="context">
    <resource methods="POST PATCH GET DELETE PUT"
              url-mapping="/*"
-             faultSequence="fault">
+             faultSequence="true">
       <inSequence>
          <class name="org.wso2.carbon.apimgt.gateway.mediators.TokenPasser"/>
          <filter source="$ctx:AM_KEY_TYPE" regex="PRODUCTION">
@@ -21,10 +21,16 @@
             </else>
          </filter>
       </inSequence>
-      <outSequence>
+      <!--<outSequence>
          <class name="org.wso2.carbon.apimgt.usage.publisher.APIMgtResponseHandler"/>
          <send/>
-      </outSequence>
+      </outSequence>-->
+ <outSequence>
+          <header action="remove" name="To"/>
+          <property action="remove" name="NO_ENTITY_BODY" scope="axis2"/>
+          <property name="RESPONSE" value="true"/>
+          <send/>
+        </outSequence>
       <faultSequence>
           <property expression="$ctx:ERROR_CODE" name="ERROR_CODE" scope="default" type="STRING"/>
           <sequence key="custom_fault"/>

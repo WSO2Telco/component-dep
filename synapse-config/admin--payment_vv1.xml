@@ -6,7 +6,7 @@
      version-type="context">
    <resource methods="POST PATCH GET DELETE PUT"
              url-mapping="/*"
-             faultSequence="fault">
+             faultSequence="true">
       <inSequence>
          <class name="org.wso2.carbon.apimgt.gateway.mediators.TokenPasser"/>
          <filter source="$ctx:AM_KEY_TYPE" regex="PRODUCTION">
