@@ -10,9 +10,9 @@
 
     <artifactId>com.wso2telco.dep.manage.ui.feature</artifactId>
     <packaging>pom</packaging>
-    <name>WSO2.Telco Manage Jaggery Feature</name>
+    <name>WSO2.Telco Manage</name>
     <url>http://wso2.org</url>
-    <description>This feature contains the server bundles required for jaggeryapp manage</description>
+    <description>This feature contains the server bundles required for manage jaggery application</description>
 
 
     <build>

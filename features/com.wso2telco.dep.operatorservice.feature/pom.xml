@@ -10,8 +10,8 @@
 
     <artifactId>com.wso2telco.dep.operatorservice.feature</artifactId>
     <packaging>pom</packaging>
-    <name>WSO2.Telco Operator Service Feature</name>
-    <description>This feature contains the server bundles required for Operator Service</description>
+    <name>WSO2.Telco Operator Service</name>
+    <description>This feature contains the server bundles required for operator service</description>
     
     <build>
         <plugins>

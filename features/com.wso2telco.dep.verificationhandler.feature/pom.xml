@@ -10,9 +10,9 @@
 
     <artifactId>com.wso2telco.dep.verificationhandler.feature</artifactId>
     <packaging>pom</packaging>
-    <name>Verification Handler Feature</name>
+    <name>WSO2.Telco Verification Handler</name>
     <url>http://wso2.org</url>
-    <description>This feature contains the server bundles required for Verification Handler</description>
+    <description>This feature contains the server bundles required for verification handler</description>
 
     <dependencies>
         <!--dependency>

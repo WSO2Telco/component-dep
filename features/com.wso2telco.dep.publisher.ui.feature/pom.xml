@@ -10,9 +10,9 @@
 
     <artifactId>com.wso2telco.dep.publisher.ui.feature</artifactId>
     <packaging>pom</packaging>
-    <name>WSO2.Telco Publisher Jaggery Feature</name>
+    <name>WSO2.Telco Publisher</name>
     <url>http://wso2.org</url>
-    <description>This feature contains the server bundles required for jaggeryapp publisher</description>
+    <description>This feature contains the server bundles required for publisher jaggery application</description>
 
 
     <build>

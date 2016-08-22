@@ -10,8 +10,8 @@
 
     <artifactId>com.wso2telco.dep.reportingservice.feature</artifactId>
     <packaging>pom</packaging>
-    <name>WSO2.Telco Reporting Service Feature</name>
-    <description>This feature contains the server bundles required for Billing and Reporting Service</description>
+    <name>WSO2.Telco Reporting Service</name>
+    <description>This feature contains the server bundles required for billing and reporting service</description>
     
     <build>
         <plugins>
