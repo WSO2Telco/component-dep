@@ -539,13 +539,13 @@ public class BillingHostObject extends ScriptableObject {
         try {
             if (isNorthbound) {
                 try {
-					ret = NbHostObjectUtils.generateCustomTrafficReport(true, fromDate, toDate, subscriberName, operator, api, isError, int applicationId, timeOffset, resType);
+					ret = NbHostObjectUtils.generateCustomTrafficReport(true, fromDate, toDate, subscriberName, operator, api, isError, applicationId, timeOffset, resType);
 				} catch (Exception e) {
 					
 					e.printStackTrace();
 				}
             } else {
-                ret = SbHostObjectUtils.generateCustomTrafficReport(true, fromDate, toDate, subscriberName, operator, api, isError, int applicationId, timeOffset, resType);
+                ret = SbHostObjectUtils.generateCustomTrafficReport(true, fromDate, toDate, subscriberName, operator, api, isError, applicationId, timeOffset, resType);
             }
         } catch (Exception e) {
             log.error("generateCustomApiTrafficReport",e);        	

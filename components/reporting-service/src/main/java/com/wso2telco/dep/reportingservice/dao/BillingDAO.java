@@ -1813,7 +1813,7 @@ public class BillingDAO {
                 }
 
                 if (!requestUrl.isEmpty() && !requestapi.isEmpty()) {
-                    String apitype = findAPIType(requestUrl , requestapi);
+                	String apitype = findAPIType(requestUrl, requestapi , requestMethod);
                     if (apitype.equalsIgnoreCase("send_sms")) {
                         event_type = "Outbound";
                     } else if (apitype.equalsIgnoreCase("retrive_sms_subscriptions")) {
@@ -2082,7 +2082,7 @@ public class BillingDAO {
                 }
 
                 if (!requestUrl.isEmpty()) {
-                	String apitype = findAPIType(requestUrl, requestapi);
+                	String apitype = findAPIType(requestUrl, requestapi, requestMethod);
                     if (apitype.equalsIgnoreCase("send_sms")) {
                         event_type = "Outbound";
                     } else if (apitype.equalsIgnoreCase("retrive_sms_subscriptions")) {
@@ -2103,6 +2103,10 @@ public class BillingDAO {
 						event_type = "MOCallback";
 					} else if (apitype.equalsIgnoreCase("query_sms")) {
 						event_type = "DNQuery";
+					} else if (apitype.equalsIgnoreCase("start_outbound_subscription")){
+						event_type = "DNSubscription";
+					} else if (apitype.equalsIgnoreCase("stop_outbound_subscription")) {
+						event_type = "DNStopSubscription";
                     }
                 }
 
@@ -2266,7 +2270,7 @@ public class BillingDAO {
      * @param requested_api the requested_api
      * @return the string
      */
-    private String findAPIType(String ResourceURL, String requested_api) {
+    private static String findAPIType(String ResourceURL, String requested_api , String serviceMethod) {
 
         String apiType = null;
 
@@ -2281,49 +2285,58 @@ public class BillingDAO {
         String receivedInfoNotification = "ReceivedInfoNotification";
         String locationString = "location";
         String ussdKeyString = "ussd";
+        String smsKeyString = "smsmessaging";
+        String paymentapiKeyString = "payment";
 
         String lastWord = ResourceURL.substring(ResourceURL.lastIndexOf("/") + 1);
 
-        if (ResourceURL.toLowerCase().contains(outboundkeyString.toLowerCase())
-                && ResourceURL.toLowerCase().contains(sendSMSkeyStringRequest.toLowerCase())
-                && (!lastWord.equals(delivaryInfoKeyString))) {
-            apiType = "send_sms";
-        } else if (ResourceURL.toLowerCase().contains(outboundkeyString.toLowerCase())
-                && lastWord.equals(subscriptionKeyString)) {
-            apiType = "start_outbound_subscription";
-        } else if (ResourceURL.toLowerCase().contains(outboundkeyString.toLowerCase())
-                && ResourceURL.toLowerCase().contains(subscriptionKeyString.toLowerCase())
-                && (!lastWord.equals(subscriptionKeyString))) {
-            apiType = "stop_outbound_subscription";
-        } else if (lastWord.equals(delivaryInfoKeyString)) {
-            apiType = "query_sms";
-        } else if (ResourceURL.toLowerCase().contains(retriveSMSString.toLowerCase())
-                && ResourceURL.toLowerCase().contains(regKeyString.toLowerCase())) {
-            apiType = "retrive_sms";
-        } else if (!requested_api.isEmpty() && !requested_api.toLowerCase().contains(ussdKeyString.toLowerCase())
-                && ResourceURL.toLowerCase().contains(retriveSMSString.toLowerCase())
-                && ResourceURL.toLowerCase().contains(subscriptionKeyString.toLowerCase())) {
-            apiType = "retrive_sms_subscriptions";
-        } else if (ResourceURL.toLowerCase().contains(paymentKeyString.toLowerCase())) {
-            apiType = "payment";
-        } else if (ResourceURL.toLowerCase().contains(delivaryNotifyString.toLowerCase())) {
-        	apiType = "sms_dn_inbound_notifications";
-        } else if (!requested_api.isEmpty() && requested_api.toLowerCase().contains(ussdKeyString.toLowerCase())){
-            if(ResourceURL.toLowerCase().contains("outbound")){
-                apiType = "ussd_send";
-            } else if (!ResourceURL.toLowerCase().contains(subscriptionKeyString.toLowerCase())){
-                apiType = "ussd_receive";
-            } else {
-                if (lastWord.equals(subscriptionKeyString.toLowerCase())) {
-                    apiType = "ussd_subscription";
-                } else {
-                    apiType = "stop_ussd_subscription";
-                }
+        if (!requested_api.isEmpty() && requested_api.toLowerCase().contains(smsKeyString.toLowerCase())){
+        	
+            if (ResourceURL.toLowerCase().contains(outboundkeyString.toLowerCase())
+                    && ResourceURL.toLowerCase().contains(sendSMSkeyStringRequest.toLowerCase())
+                    && (!lastWord.equals(delivaryInfoKeyString))) {
+               apiType = "send_sms";
+            } else if (ResourceURL.toLowerCase().contains(outboundkeyString.toLowerCase())
+                    && lastWord.equals(subscriptionKeyString) &&
+                    !requested_api.toLowerCase().contains(ussdKeyString.toLowerCase())) {
+                apiType = "start_outbound_subscription";
+            } else if (ResourceURL.toLowerCase().contains(outboundkeyString.toLowerCase())
+                    && ResourceURL.toLowerCase().contains(subscriptionKeyString.toLowerCase())
+                    && (!lastWord.equals(subscriptionKeyString)) && serviceMethod.equalsIgnoreCase("DELETE")) {
+                apiType = "stop_outbound_subscription";
+            } else if (lastWord.equals(delivaryInfoKeyString)) {
+                apiType = "query_sms";
+            } else if (ResourceURL.toLowerCase().contains(retriveSMSString.toLowerCase())
+                    && ResourceURL.toLowerCase().contains(regKeyString.toLowerCase())) {
+                apiType = "retrive_sms";
+            } else if (!requested_api.isEmpty() && !requested_api.toLowerCase().contains(ussdKeyString.toLowerCase())
+                    && ResourceURL.toLowerCase().contains(retriveSMSString.toLowerCase())
+                    && ResourceURL.toLowerCase().contains(subscriptionKeyString.toLowerCase())) {
+                apiType = "retrive_sms_subscriptions";
+            } else if (ResourceURL.toLowerCase().contains(delivaryNotifyString.toLowerCase())) {
+                apiType = "sms_dn_inbound_notifications";
+            } else if (ResourceURL.toLowerCase().contains(receivedInfoNotification.toLowerCase())) {
+                apiType = "sms_mo_inbound_notifications";
             }
-        } else if (ResourceURL.toLowerCase().contains(locationString.toLowerCase())) {
-            apiType = "location";
-        }else if (ResourceURL.toLowerCase().contains(receivedInfoNotification.toLowerCase())) {
-            apiType = "sms_mo_inbound_notifications";
+        	
+		} else if (!requested_api.isEmpty() && requested_api.toLowerCase().contains(ussdKeyString.toLowerCase())) {
+			if (ResourceURL.toLowerCase().contains("outbound")) {
+				apiType = "ussd_send";
+			} else if (!ResourceURL.toLowerCase().contains(
+					subscriptionKeyString.toLowerCase())) {
+				apiType = "ussd_receive";
+			} else {
+				if (lastWord.equals(subscriptionKeyString.toLowerCase())) {
+					apiType = "ussd_subscription";
+				} else {
+					apiType = "stop_ussd_subscription";
+				}
+			}
+		} else if (!requested_api.isEmpty() && requested_api.toLowerCase().contains(locationString.toLowerCase()) &&
+            	ResourceURL.toLowerCase().contains(locationString.toLowerCase())) {
+        }  else if ( !requested_api.isEmpty() && requested_api.toLowerCase().contains(paymentapiKeyString.toLowerCase()) &&
+                ResourceURL.toLowerCase().contains(paymentKeyString.toLowerCase())) {
+	            apiType = "payment";
         } else {
             return null;
         }
