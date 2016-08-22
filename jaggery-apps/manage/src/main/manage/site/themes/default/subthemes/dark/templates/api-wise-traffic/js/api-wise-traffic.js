@@ -211,7 +211,9 @@ var downloadTrafficReports = function(){
     var operator = $("#operator");
     var subscriber = $("#subscriber");
     var api = $("#api");
+    var isError = $("#isError");
     var resType = $("#ResType");
+   
  
 	selectedFromDate = fromDate.val();
     selectedToDate = toDate.val();
@@ -219,6 +221,7 @@ var downloadTrafficReports = function(){
     selectedSubscriber = subscriber.val();
     selectedResType = resType.val();
     selectedApi = api.val();
+    selectedisError = isError.val();
     
     var d = new Date()
 	var timeOffset = d.getTimezoneOffset()+"";
@@ -229,6 +232,7 @@ var downloadTrafficReports = function(){
 	document.getElementById("selected_operator").value = selectedOperator ;
 	document.getElementById("selected_subscriber").value = selectedSubscriber ;
 	document.getElementById("selected_api").value = selectedApi ;
+	document.getElementById("selected_iserror").value = selectedisError ;
 	document.getElementById("selected_res_type").value = selectedResType ;
 	document.getElementById("timeOffset").value = timeOffset ;
     document.getElementById("trafficDownloadForm").submit();

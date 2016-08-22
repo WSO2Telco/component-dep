@@ -155,8 +155,7 @@ public class BillingDAO {
             ps = connection.prepareStatement(sql.toString());
             log.debug("getResponseTimeForAPI for apiVersion---> " + apiVersion);
             ps.setString(1, apiVersion);
-            log.debug("SQL (PS) ---> " + ps.toString());
-            log.debug("SQL (PS) ---> " + ps.toString());
+            log.debug("SQL (PS) ---> " + ps.toString()); 
             results = ps.executeQuery();
             while (results.next()) {
                 return results.getString("serviceTime");
@@ -498,7 +497,7 @@ public class BillingDAO {
         } finally {
             DbUtils.closeAllConnections(ps, connection, results);
         }
-
+        log.debug("apiCount :"+apiName+" :"+apiVersion+": "+consumerKey);
         return apiCount;
     }
     
@@ -780,31 +779,33 @@ public class BillingDAO {
         
         sql.append("SELECT api,userId,consumerKey,chargeAmount,category,subcategory,merchantId,time FROM ")
         .append(HostObjectConstants.SB_RESPONSE_SUMMARY_TABLE)
-        .append(" WHERE year=? and month=? and api_version =? and consumerKey=? and operatorId =? and operationType=? and category=? and subcategory=? and responseCode like '2%' AND operatorRef NOT IN ")
+        .append(" WHERE api_version =? and consumerKey=? and operatorId =? and responseCode like '2%' and month=? and year=? and operationType=? and category=? and subcategory=? AND operatorRef NOT IN ")
         .append(" (SELECT distinct operatorRef FROM ")
         .append(HostObjectConstants.SB_RESPONSE_SUMMARY_TABLE)
-        .append(" WHERE year=? and month=? and consumerKey=? and operatorId =? and operationType=101 and responseCode like '2%')");
+        .append(" WHERE consumerKey=? and operatorId =? and operationType=101 and responseCode like '2%' and year=? and month=? )");
 
         Set<PaymentRequestDTO> requestSet = new HashSet<PaymentRequestDTO>();
         try {
             connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
             ps = connection.prepareStatement(sql.toString());
-            ps.setShort(1, year);
-            ps.setShort(2, month);
-            ps.setString(3, api_version);
-            ps.setString(4, consumerKey);
-            ps.setString(5, operatorId);
+            ps.setString(1, api_version);
+            ps.setString(2, consumerKey);
+            ps.setString(3, operatorId);
+            ps.setShort(4, month);
+            ps.setShort(5, year);
             ps.setInt(6, operation);
             ps.setString(7, category);
             ps.setString(8, subcategory);
-            ps.setShort(9, year);
-            ps.setShort(10, month);
-            ps.setString(11, consumerKey);
-            ps.setString(12, operatorId);
-
-
+            
+            ps.setString(9, consumerKey);
+            ps.setString(10, operatorId);
+            ps.setShort(11, year);
+            ps.setShort(12, month);
+            
+            log.debug("SQL (PS) st ---> " + ps.toString());
             results = ps.executeQuery();
-
+            log.debug("SQL (PS) ed ---> ");
+            
             while (results.next()) {
                 PaymentRequestDTO paymentRequest = new PaymentRequestDTO();
                 paymentRequest.setUserId(results.getString("userId"));
@@ -823,7 +824,7 @@ public class BillingDAO {
         } finally {
             DbUtils.closeAllConnections(ps, connection, results);
         }
-
+        log.debug("done getPaymentAmounts :"+consumerKey+" :"+api_version+ " :" +operatorId);
         return requestSet;
     }
     
@@ -1464,6 +1465,7 @@ public class BillingDAO {
         } finally {
             DbUtils.closeAllConnections(ps, conn, results);
         }
+        log.debug("getAllErrorResponseCodes :");
         return resCodes;
     }
 
@@ -1502,52 +1504,102 @@ public class BillingDAO {
             api = "%";
         }
 
+        
+		String[] fromDateArray = fromDate.split("-");
+		String[] toDateArray = toDate.split("-");
+
+		boolean isSameYear = fromDateArray[0].equalsIgnoreCase(toDateArray[0]) ? true: false;
+		boolean isSameMonth = fromDateArray[1].equalsIgnoreCase(toDateArray[1]) ? true: false;
+
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet results = null;
 		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT x.time, x.jsonBody, x.api FROM ")
+		sql.append("SELECT time, jsonBody, api  FROM ")
 		.append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject())
-		.append(" x WHERE STR_TO_DATE(x.time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') AND operatorId LIKE ? AND userid LIKE ? AND api LIKE ? AND consumerKey LIKE ? ");
+		.append(" WHERE operatorId LIKE ? AND replace(userid,'@carbon.super','') LIKE ? AND api LIKE ? AND consumerKey LIKE ? AND (day between ? and ? ) ");
 		if (!msisdn.isEmpty()) {
-			sql.append(" AND msisdn LIKE ? LIMIT ");
-		} else {
-			sql.append(" LIMIT ");
-		}
+			sql.append("AND msisdn LIKE ? ");
+		}	
+		if (!isSameYear) {
+			sql.append("AND (month between ? and ?) AND (year between ? and ?) ");
 
-		sql.append(startLimit)
+		} else if (!isSameMonth) {
+			sql.append("AND (month between ? and ?) AND (year = ?) ");
+			       
+		} else {
+			sql.append("AND (month = ?) AND (year = ?)  ");
+		}
+		
+		sql.append("LIMIT ")
+		.append(startLimit)
 		.append(" ,")
 		.append(endLimit);
         
         List<String[]> api_request_data = new ArrayList<String[]>();
 
-        try {
-            conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
-            ps = conn.prepareStatement(sql.toString());
-            ps.setString(1, fromDate);
-            ps.setString(2, toDate);
-            ps.setString(3, operator);
-            ps.setString(4, subscriber);
-            ps.setString(5, api);
-            ps.setString(6, consumerKey);
-            //ps.setString(7, "%" + msisdn);
-            
+		try {
+			conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
+			ps = conn.prepareStatement(sql.toString());
+			ps.setString(1, operator);
+			ps.setString(2, subscriber);
+			ps.setString(3, api);
+
 			if (!msisdn.isEmpty()) {
-				ps.setString(7, "%" + msisdn);
+				ps.setString(4, "%" + msisdn);
+				ps.setString(5, consumerKey);
+				ps.setInt(6, Integer.parseInt(fromDateArray[2]));
+				ps.setInt(7, Integer.parseInt(toDateArray[2]));
+
+				if (!isSameYear) {
+					ps.setInt(8, Integer.parseInt(fromDateArray[1]));
+					ps.setInt(9, Integer.parseInt(toDateArray[1]));
+					ps.setInt(10, Integer.parseInt(fromDateArray[0]));
+					ps.setInt(11, Integer.parseInt(toDateArray[0]));
+
+				} else if (!isSameMonth) {
+					ps.setInt(8, Integer.parseInt(fromDateArray[1]));
+					ps.setInt(9, Integer.parseInt(toDateArray[1]));
+					ps.setInt(10, Integer.parseInt(fromDateArray[0]));
+				} else {
+					ps.setInt(8, Integer.parseInt(fromDateArray[1]));
+					ps.setInt(9, Integer.parseInt(fromDateArray[0]));
+				}
+			} else {
+				ps.setString(4, consumerKey);
+				ps.setInt(5, Integer.parseInt(fromDateArray[2]));
+				ps.setInt(6, Integer.parseInt(toDateArray[2]));
+
+				if (!isSameYear) {
+					ps.setInt(7, Integer.parseInt(fromDateArray[1]));
+					ps.setInt(8, Integer.parseInt(toDateArray[1]));
+					ps.setInt(9, Integer.parseInt(fromDateArray[0]));
+					ps.setInt(10, Integer.parseInt(toDateArray[0]));
+
+				} else if (!isSameMonth) {
+					ps.setInt(7, Integer.parseInt(fromDateArray[1]));
+					ps.setInt(8, Integer.parseInt(toDateArray[1]));
+					ps.setInt(9, Integer.parseInt(fromDateArray[0]));
+				} else {
+					ps.setInt(7, Integer.parseInt(fromDateArray[1]));
+					ps.setInt(8, Integer.parseInt(fromDateArray[0]));
+				}
 			}
 
-            log.debug("getCustomerCareReportData");
-            results = ps.executeQuery();
-            while (results.next()) {
-                String localTime = convertToLocalTime(timeOffset, results.getString(1));
-                String[] temp = {localTime, results.getString(2), results.getString(3)};
-                api_request_data.add(temp);
-            }
-        } catch (Exception e) {
+			log.debug("getCustomerCareReportData");
+			log.debug("SQL (PS) ---> " + ps.toString());
+			results = ps.executeQuery();
+			while (results.next()) {
+				String localTime = convertToLocalTime(timeOffset,results.getString(1));
+				String[] temp = { localTime, results.getString(2),results.getString(3) };
+				api_request_data.add(temp);
+			}
+		} catch (Exception e) {
             handleException("getCustomerCareReportData", e);
         } finally {
             DbUtils.closeAllConnections(ps, conn, results);
         }
+		log.debug("end getCustomerCareReportData: "+api_request_data.size());
         return api_request_data;
     }
     
@@ -1583,6 +1635,12 @@ public class BillingDAO {
         if (api.equalsIgnoreCase("__ALL__")) {
             api = "%";
         }
+        String[] fromDateArray = fromDate.split("-");
+		String[] toDateArray = toDate.split("-");
+
+		boolean isSameYear = fromDateArray[0].equalsIgnoreCase(toDateArray[0]) ? true: false;
+		boolean isSameMonth = fromDateArray[1].equalsIgnoreCase(toDateArray[1]) ? true: false;
+		
 
         Connection conn = null;
         PreparedStatement ps = null;
@@ -1590,35 +1648,82 @@ public class BillingDAO {
         StringBuilder sql = new StringBuilder(); 
         sql.append("SELECT COUNT(*) FROM ")
         .append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject())
-        .append(" x WHERE STR_TO_DATE(x.time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') AND operatorId LIKE ? AND userid LIKE ? AND api LIKE ? AND consumerKey LIKE ? ");
+        .append(" WHERE operatorId LIKE ? AND replace(userid,'@carbon.super','') LIKE ? AND api LIKE ? AND consumerKey LIKE ? AND (day between ? and ? ) ");
         if(!msisdn.isEmpty()) {
-        	sql.append(" AND msisdn LIKE ? ");
+        	sql.append("AND msisdn LIKE ? ");
         }
+        if (!isSameYear) {
+			sql.append("AND (month between ? and ?) AND (year between ? and ?) ");
+
+		} else if (!isSameMonth) {
+			sql.append("AND (month between ? and ?) AND (year = ?) ");
+			       
+		} else {
+			sql.append("AND (month = ?) AND (year = ?)  ");
+		}
+        
         List<String[]> api_request_data = new ArrayList<String[]>();
 
-        try {
-            conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
-            ps = conn.prepareStatement(sql.toString());
-            ps.setString(1, fromDate);
-            ps.setString(2, toDate);
-            ps.setString(3, operator);
-            ps.setString(4, subscriber);
-            ps.setString(5, api);
-            ps.setString(6, consumerKey);
-           // ps.setString(7, "%" + msisdn);
-            if (!msisdn.isEmpty()) {
-				ps.setString(7, "%" + msisdn);
+		try {
+			conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
+			ps = conn.prepareStatement(sql.toString());
+			ps.setString(1, operator);
+			ps.setString(2, subscriber);
+			ps.setString(3, api);
+
+			if (!msisdn.isEmpty()) {
+				ps.setString(4, "%" + msisdn);
+				ps.setString(5, consumerKey);
+				ps.setInt(6, Integer.parseInt(fromDateArray[2]));
+				ps.setInt(7, Integer.parseInt(toDateArray[2]));
+
+				if (!isSameYear) {
+					ps.setInt(8, Integer.parseInt(fromDateArray[1]));
+					ps.setInt(9, Integer.parseInt(toDateArray[1]));
+					ps.setInt(10, Integer.parseInt(fromDateArray[0]));
+					ps.setInt(11, Integer.parseInt(toDateArray[0]));
+
+				} else if (!isSameMonth) {
+					ps.setInt(8, Integer.parseInt(fromDateArray[1]));
+					ps.setInt(9, Integer.parseInt(toDateArray[1]));
+					ps.setInt(10, Integer.parseInt(fromDateArray[0]));
+				} else {
+					ps.setInt(8, Integer.parseInt(fromDateArray[1]));
+					ps.setInt(9, Integer.parseInt(fromDateArray[0]));
+				}
+			} else {
+
+				ps.setString(4, consumerKey);
+				ps.setInt(5, Integer.parseInt(fromDateArray[2]));
+				ps.setInt(6, Integer.parseInt(toDateArray[2]));
+				if (!isSameYear) {
+					ps.setInt(7, Integer.parseInt(fromDateArray[1]));
+					ps.setInt(8, Integer.parseInt(toDateArray[1]));
+					ps.setInt(9, Integer.parseInt(fromDateArray[0]));
+					ps.setInt(10, Integer.parseInt(toDateArray[0]));
+
+				} else if (!isSameMonth) {
+					ps.setInt(7, Integer.parseInt(fromDateArray[1]));
+					ps.setInt(8, Integer.parseInt(toDateArray[1]));
+					ps.setInt(9, Integer.parseInt(fromDateArray[0]));
+				} else {
+					ps.setInt(7, Integer.parseInt(fromDateArray[1]));
+					ps.setInt(8, Integer.parseInt(fromDateArray[0]));
+				}
+
 			}
-            
-            log.debug("getCustomerCareReportData");
-            results = ps.executeQuery();
-            results.next();
-            count = results.getString(1);
-        } catch (Exception e) {        	
+
+			log.debug("getCustomerCareReportData count");
+			log.debug("SQL (PS) ---> " + ps.toString());
+			results = ps.executeQuery();
+			results.next();
+			count = results.getString(1);
+		} catch (Exception e) {        	
             handleException("getCustomerCareReportDataCount", e);
         } finally {
             DbUtils.closeAllConnections(ps, conn, results);
         }
+        log.debug("getCustomerCareReportDataCount :"+count);
         return count;
     }
 
@@ -1633,7 +1738,7 @@ public class BillingDAO {
      * @return the API wise traffic for report
      * @throws Exception the exception
      */
-    public List<String[]> getAPIWiseTrafficForReport(String fromDate, String toDate, String subscriber, String operator, String api) throws Exception {
+    public List<String[]> getAPIWiseTrafficForReport(String fromDate, String toDate, String subscriber, String operator, String api, boolean isError) throws Exception {
         if (subscriber.equals("__ALL__")) {
             subscriber = "%";
         }
@@ -1643,7 +1748,17 @@ public class BillingDAO {
         if (api.equals("__ALL__")) {
             api = "%";
         }
-
+        String responseStr = "responseCode LIKE '20_' ";
+		if (isError) {
+			responseStr = "responseCode NOT LIKE '20_' ";
+		}
+		String[] fromDateArray = fromDate.split("-");
+		String[] toDateArray = toDate.split("-");
+               
+                
+    	boolean isSameYear = fromDateArray[0].equalsIgnoreCase(toDateArray[0]) ? true : false;
+        boolean isSameMonth = fromDateArray[1].equalsIgnoreCase(toDateArray[1]) ? true : false;
+        
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet results = null;
@@ -1652,20 +1767,51 @@ public class BillingDAO {
         
         sql.append("SELECT time, userId, operatorId, requestId, msisdn, response_count, responseCode, jsonBody, resourcePath, method,api FROM ")
         .append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject()) 
-        .append(" WHERE STR_TO_DATE(time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') AND operatorId LIKE ? AND userid LIKE ? AND api LIKE ?");
+        .append(" WHERE ")
+        .append(responseStr)        
+        .append(" AND operatorId LIKE ? AND replace(userid,'@carbon.super','') LIKE ? AND api LIKE ? AND (day between ? and ? ) ");
 
+        if (!isSameYear) {
+			sql.append("AND (month between ? and ?) AND (year between ? and ?) ");
+
+		} else if (!isSameMonth) {
+			sql.append("AND (month between ? and ?) AND (year = ?) ");
+			       
+		} else {
+			sql.append("AND (month = ?) AND (year = ?)  ");
+		}
+        
+        
         List<String[]> api_request = new ArrayList<String[]>();
 
         try {
             conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
             ps = conn.prepareStatement(sql.toString());
-            ps.setString(1, fromDate);
-            ps.setString(2, toDate);
-            ps.setString(3, operator);
-            ps.setString(4, subscriber);
-            ps.setString(5, api);
+            ps.setString(1, operator);
+			ps.setString(2, subscriber);
+			ps.setString(3, api);
+			ps.setInt(4, Integer.parseInt(fromDateArray[2]));
+			ps.setInt(5, Integer.parseInt(toDateArray[2]));
+
+			if (!isSameYear) {
+				ps.setInt(6, Integer.parseInt(fromDateArray[1]));
+				ps.setInt(7, Integer.parseInt(toDateArray[1]));
+				ps.setInt(8, Integer.parseInt(fromDateArray[0]));
+				ps.setInt(9, Integer.parseInt(toDateArray[0]));
+
+			} else if (!isSameMonth) {
+				ps.setInt(6, Integer.parseInt(fromDateArray[1]));
+				ps.setInt(7, Integer.parseInt(toDateArray[1]));
+				ps.setInt(8, Integer.parseInt(fromDateArray[0]));
+			} else {
+				ps.setInt(6, Integer.parseInt(fromDateArray[1]));
+				ps.setInt(7, Integer.parseInt(fromDateArray[0]));
+			}
+            
             log.debug("getAPIWiseTrafficForReport");
+            log.debug("SQL (PS) ---> " + ps.toString());  
             results = ps.executeQuery();
+            
             while (results.next()) {
                 
                 String dateTime = results.getString(1);
@@ -1729,10 +1875,11 @@ public class BillingDAO {
                 api_request.add(temp);
             }
         } catch (Exception e) {
-            handleException("getAPIWiseTrafficForReport", e);
+            handleException("Error occured while getting API wise traffic for report from the database", e);
         } finally {
             DbUtils.closeAllConnections(ps, conn, results);
         }
+        log.debug("end getAPIWiseTrafficForReport");
         return api_request;
     }
 
@@ -1854,7 +2001,7 @@ public class BillingDAO {
      * @return the API wise traffic for report charging
      * @throws Exception the exception
      */
-    public List<String[]> getAPIWiseTrafficForReportCharging(String fromDate, String toDate, String subscriber, String operator, String api) throws Exception {
+    public List<String[]> getAPIWiseTrafficForReportCharging(String fromDate, String toDate, String subscriber, String operator, String api,boolean isError) throws Exception {
         if (subscriber.equals("__ALL__")) {
             subscriber = "%";
         }
@@ -1864,7 +2011,17 @@ public class BillingDAO {
         if (api.equals("__ALL__")) {
             api = "%";
         }
-
+        String responseStr = "responseCode LIKE '20_' ";
+		if (isError) {
+			responseStr = "responseCode NOT LIKE '20_' ";
+		}
+		String[] fromDateArray = fromDate.split("-");
+		String[] toDateArray = toDate.split("-");
+               
+                
+    	boolean isSameYear = fromDateArray[0].equalsIgnoreCase(toDateArray[0]) ? true : false;
+        boolean isSameMonth = fromDateArray[1].equalsIgnoreCase(toDateArray[1]) ? true : false;
+        
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet results = null;
@@ -1873,20 +2030,48 @@ public class BillingDAO {
         
         sql.append("SELECT time, userId, operatorId, requestId, msisdn, chargeAmount, responseCode, jsonBody, resourcePath, method, purchaseCategoryCode,api FROM ")
         .append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject())
-        .append(" WHERE STR_TO_DATE(time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') AND operatorId LIKE ? AND userid LIKE ? AND api LIKE ?;");
+        .append(" WHERE ")
+        .append(responseStr)
+        .append("  AND operatorId LIKE ? AND replace(userid,'@carbon.super','') LIKE ? AND api LIKE ? AND (day between ? and ? ) ");
 
+        if (!isSameYear) {
+			sql.append("AND (month between ? and ?) AND (year between ? and ?) ");
+
+		} else if (!isSameMonth) {
+			sql.append("AND (month between ? and ?) AND (year = ?) ");
+			       
+		} else {
+			sql.append("AND (month = ?) AND (year = ?)  ");
+		}
+        
         List<String[]> api_request = new ArrayList<String[]>();
 
         try {
             conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
             ps = conn.prepareStatement(sql.toString());
-            ps.setString(1, fromDate);
-            ps.setString(2, toDate);
-            ps.setString(3, operator);
-            ps.setString(4, subscriber);
-            ps.setString(5, api);
+            ps.setString(2, subscriber);
+			ps.setString(3, api);
+			ps.setInt(4, Integer.parseInt(fromDateArray[2]));
+			ps.setInt(5, Integer.parseInt(toDateArray[2]));
 
+			if (!isSameYear) {
+				ps.setInt(6, Integer.parseInt(fromDateArray[1]));
+				ps.setInt(7, Integer.parseInt(toDateArray[1]));
+				ps.setInt(8, Integer.parseInt(fromDateArray[0]));
+				ps.setInt(9, Integer.parseInt(toDateArray[0]));
+
+			} else if (!isSameMonth) {
+				ps.setInt(6, Integer.parseInt(fromDateArray[1]));
+				ps.setInt(7, Integer.parseInt(toDateArray[1]));
+				ps.setInt(8, Integer.parseInt(fromDateArray[0]));
+			} else {
+				ps.setInt(6, Integer.parseInt(fromDateArray[1]));
+				ps.setInt(7, Integer.parseInt(fromDateArray[0]));
+			}
+			
             log.debug("getAPIWiseTrafficForReportCharging");
+            log.debug("SQL (PS) ---> " + ps.toString());   
+ 
             results = ps.executeQuery();
             while (results.next()) {
                 String jsonBody = results.getString(8);
@@ -1935,7 +2120,7 @@ public class BillingDAO {
                 }
 
                 if (!requestUrl.isEmpty()) {
-                    String apitype = findAPIType(requestUrl ,requestapi);
+                	String apitype = findAPIType(requestUrl,requestapi);
                     if (apitype.equalsIgnoreCase("send_sms")) {
                         event_type = "Outbound";
                     } else if (apitype.equalsIgnoreCase("retrive_sms_subscriptions")) {
@@ -1961,6 +2146,7 @@ public class BillingDAO {
         } finally {
             DbUtils.closeAllConnections(ps, conn, results);
         }
+        log.debug("end getAPIWiseTrafficForReportCharging");
         return api_request;
     }
 
