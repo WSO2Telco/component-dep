@@ -23,7 +23,8 @@ import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.dep.mediator.service.USSDService;
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
-import com.wso2telco.subscriptionvalidator.util.ValidatorUtils;
+import com.wso2telco.dep.subscriptionvalidator.util.ValidatorUtils;
+
 import java.io.File;
 import java.util.Map;
 import org.apache.axis2.AxisFault;

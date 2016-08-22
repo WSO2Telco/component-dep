@@ -13,26 +13,21 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.subscriptionvalidator.services.impl;
+package com.wso2telco.dep.subscriptionvalidator.services;
 
 import org.apache.synapse.MessageContext;
 
-import com.wso2telco.subscriptionvalidator.services.MifeValidator;
-
-
 // TODO: Auto-generated Javadoc
 /**
- * The Class PassThroughValidator.
+ * The Interface MifeValidator.
  */
-public class PassThroughValidator implements MifeValidator {
+public interface MifeValidator {
 
-	/* (non-Javadoc)
-	 * @see com.wso2telco.subscriptionvalidator.services.MifeValidator#validate(org.apache.synapse.MessageContext)
-	 */
-	public boolean validate(MessageContext messageContext) {
-		// TODO Auto-generated method stub
-		return true;
-	}
-
-  
+    /**
+     * Validate.
+     *
+     * @param messageContext the message context
+     * @return true, if successful
+     */
+    public boolean validate(MessageContext messageContext);
 }

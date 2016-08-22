@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.subscriptionvalidator.services.impl;
+package com.wso2telco.dep.subscriptionvalidator.services.impl;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,7 +22,7 @@ import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.user.api.UserRealm;
 import org.wso2.carbon.user.api.UserStoreException;
 
-import com.wso2telco.subscriptionvalidator.services.MifeValidator;
+import com.wso2telco.dep.subscriptionvalidator.services.MifeValidator;
 
 
 // TODO: Auto-generated Javadoc

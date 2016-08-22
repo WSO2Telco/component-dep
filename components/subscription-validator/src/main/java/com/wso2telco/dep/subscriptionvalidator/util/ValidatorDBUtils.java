@@ -13,7 +13,7 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.subscriptionvalidator.util;
+package com.wso2telco.dep.subscriptionvalidator.util;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -24,7 +24,8 @@ import org.wso2.carbon.apimgt.impl.utils.APIMgtDBUtil;
 
 import com.wso2telco.dbutils.DbUtils;
 import com.wso2telco.dbutils.util.DataSourceNames;
-import com.wso2telco.subscriptionvalidator.exceptions.ValidatorException;
+import com.wso2telco.dep.subscriptionvalidator.exceptions.ValidatorException;
+
 import javax.naming.Context;
 import javax.naming.InitialContext;
 import javax.naming.NamingException;
