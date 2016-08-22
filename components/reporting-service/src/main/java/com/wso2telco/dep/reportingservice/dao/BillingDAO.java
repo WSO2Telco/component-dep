@@ -1515,20 +1515,18 @@ public class BillingDAO {
 		PreparedStatement ps = null;
 		ResultSet results = null;
 		StringBuilder sql = new StringBuilder();
+		
 		sql.append("SELECT time, jsonBody, api  FROM ")
 		.append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject())
-		.append(" WHERE operatorId LIKE ? AND replace(userid,'@carbon.super','') LIKE ? AND api LIKE ? AND consumerKey LIKE ? AND (day between ? and ? ) ");
+		.append(" WHERE operatorId LIKE ? AND replace(userid,'@carbon.super','') LIKE ? AND api LIKE ? AND consumerKey LIKE ? ");
+		
+		if (isSameYear && isSameMonth) {
+			sql.append("AND (day between ? and ? ) AND (month = ?) AND (year = ?) ");
+		} else {
+			sql.append("AND STR_TO_DATE(x.time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') ");
+		}
 		if (!msisdn.isEmpty()) {
 			sql.append("AND msisdn LIKE ? ");
-		}	
-		if (!isSameYear) {
-			sql.append("AND (month between ? and ?) AND (year between ? and ?) ");
-
-		} else if (!isSameMonth) {
-			sql.append("AND (month between ? and ?) AND (year = ?) ");
-			       
-		} else {
-			sql.append("AND (month = ?) AND (year = ?)  ");
 		}
 		
 		sql.append("LIMIT ")
@@ -1544,45 +1542,26 @@ public class BillingDAO {
 			ps.setString(1, operator);
 			ps.setString(2, subscriber);
 			ps.setString(3, api);
+			ps.setString(4, consumerKey);	
 
-			if (!msisdn.isEmpty()) {
-				ps.setString(4, "%" + msisdn);
-				ps.setString(5, consumerKey);
-				ps.setInt(6, Integer.parseInt(fromDateArray[2]));
-				ps.setInt(7, Integer.parseInt(toDateArray[2]));
-
-				if (!isSameYear) {
-					ps.setInt(8, Integer.parseInt(fromDateArray[1]));
-					ps.setInt(9, Integer.parseInt(toDateArray[1]));
-					ps.setInt(10, Integer.parseInt(fromDateArray[0]));
-					ps.setInt(11, Integer.parseInt(toDateArray[0]));
-
-				} else if (!isSameMonth) {
-					ps.setInt(8, Integer.parseInt(fromDateArray[1]));
-					ps.setInt(9, Integer.parseInt(toDateArray[1]));
-					ps.setInt(10, Integer.parseInt(fromDateArray[0]));
-				} else {
-					ps.setInt(8, Integer.parseInt(fromDateArray[1]));
-					ps.setInt(9, Integer.parseInt(fromDateArray[0]));
-				}
-			} else {
-				ps.setString(4, consumerKey);
+			if (isSameYear && isSameMonth) {
 				ps.setInt(5, Integer.parseInt(fromDateArray[2]));
 				ps.setInt(6, Integer.parseInt(toDateArray[2]));
+				ps.setInt(7, Integer.parseInt(fromDateArray[1]));
+				ps.setInt(8, Integer.parseInt(fromDateArray[0]));
 
-				if (!isSameYear) {
-					ps.setInt(7, Integer.parseInt(fromDateArray[1]));
-					ps.setInt(8, Integer.parseInt(toDateArray[1]));
-					ps.setInt(9, Integer.parseInt(fromDateArray[0]));
-					ps.setInt(10, Integer.parseInt(toDateArray[0]));
+				if (!msisdn.isEmpty()) {
+					// ps.setInt(9,Integer.parseInt(msisdn));
+					ps.setString(9, "%" + msisdn);
 
-				} else if (!isSameMonth) {
-					ps.setInt(7, Integer.parseInt(fromDateArray[1]));
-					ps.setInt(8, Integer.parseInt(toDateArray[1]));
-					ps.setInt(9, Integer.parseInt(fromDateArray[0]));
-				} else {
-					ps.setInt(7, Integer.parseInt(fromDateArray[1]));
-					ps.setInt(8, Integer.parseInt(fromDateArray[0]));
+				}
+			} else {
+				ps.setString(5, fromDate);
+				ps.setString(6, toDate);
+
+				if (!msisdn.isEmpty()) {
+					// ps.setInt(7,Integer.parseInt(msisdn));
+					ps.setString(7, "%" + msisdn);
 				}
 			}
 
@@ -1648,19 +1627,19 @@ public class BillingDAO {
         StringBuilder sql = new StringBuilder(); 
         sql.append("SELECT COUNT(*) FROM ")
         .append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject())
-        .append(" WHERE operatorId LIKE ? AND replace(userid,'@carbon.super','') LIKE ? AND api LIKE ? AND consumerKey LIKE ? AND (day between ? and ? ) ");
+        .append(" WHERE operatorId LIKE ? AND replace(userid,'@carbon.super','') LIKE ? AND api LIKE ? AND consumerKey LIKE ? ");
+        
+        if(isSameYear && isSameMonth ){
+        	
+        	sql.append("AND (day between ? and ? ) AND (month = ?) AND (year = ?) ");
+        }else{
+        	sql.append("AND STR_TO_DATE(x.time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') ");
+        }
+        
         if(!msisdn.isEmpty()) {
         	sql.append("AND msisdn LIKE ? ");
         }
-        if (!isSameYear) {
-			sql.append("AND (month between ? and ?) AND (year between ? and ?) ");
-
-		} else if (!isSameMonth) {
-			sql.append("AND (month between ? and ?) AND (year = ?) ");
-			       
-		} else {
-			sql.append("AND (month = ?) AND (year = ?)  ");
-		}
+        
         
         List<String[]> api_request_data = new ArrayList<String[]>();
 
@@ -1670,48 +1649,27 @@ public class BillingDAO {
 			ps.setString(1, operator);
 			ps.setString(2, subscriber);
 			ps.setString(3, api);
+			ps.setString(4, consumerKey);
 
-			if (!msisdn.isEmpty()) {
-				ps.setString(4, "%" + msisdn);
-				ps.setString(5, consumerKey);
-				ps.setInt(6, Integer.parseInt(fromDateArray[2]));
-				ps.setInt(7, Integer.parseInt(toDateArray[2]));
-
-				if (!isSameYear) {
-					ps.setInt(8, Integer.parseInt(fromDateArray[1]));
-					ps.setInt(9, Integer.parseInt(toDateArray[1]));
-					ps.setInt(10, Integer.parseInt(fromDateArray[0]));
-					ps.setInt(11, Integer.parseInt(toDateArray[0]));
-
-				} else if (!isSameMonth) {
-					ps.setInt(8, Integer.parseInt(fromDateArray[1]));
-					ps.setInt(9, Integer.parseInt(toDateArray[1]));
-					ps.setInt(10, Integer.parseInt(fromDateArray[0]));
-				} else {
-					ps.setInt(8, Integer.parseInt(fromDateArray[1]));
-					ps.setInt(9, Integer.parseInt(fromDateArray[0]));
-				}
-			} else {
-
-				ps.setString(4, consumerKey);
+			if (isSameYear && isSameMonth) {
 				ps.setInt(5, Integer.parseInt(fromDateArray[2]));
 				ps.setInt(6, Integer.parseInt(toDateArray[2]));
-				if (!isSameYear) {
-					ps.setInt(7, Integer.parseInt(fromDateArray[1]));
-					ps.setInt(8, Integer.parseInt(toDateArray[1]));
-					ps.setInt(9, Integer.parseInt(fromDateArray[0]));
-					ps.setInt(10, Integer.parseInt(toDateArray[0]));
-
-				} else if (!isSameMonth) {
-					ps.setInt(7, Integer.parseInt(fromDateArray[1]));
-					ps.setInt(8, Integer.parseInt(toDateArray[1]));
-					ps.setInt(9, Integer.parseInt(fromDateArray[0]));
-				} else {
-					ps.setInt(7, Integer.parseInt(fromDateArray[1]));
-					ps.setInt(8, Integer.parseInt(fromDateArray[0]));
+				ps.setInt(7, Integer.parseInt(fromDateArray[1]));
+				ps.setInt(8, Integer.parseInt(fromDateArray[0]));
+				if (!msisdn.isEmpty()) {
+					// ps.setInt(9,Integer.parseInt(msisdn));
+					ps.setString(9, "%" + msisdn);
 				}
+			} else {
+				ps.setString(5, fromDate);
+				ps.setString(6, toDate);
 
+				if (!msisdn.isEmpty()) {
+					// ps.setInt(7,Integer.parseInt(msisdn));
+					ps.setString(7, "%" + msisdn);
+				}
 			}
+		
 
 			log.debug("getCustomerCareReportData count");
 			log.debug("SQL (PS) ---> " + ps.toString());
@@ -1752,9 +1710,10 @@ public class BillingDAO {
 		if (isError) {
 			responseStr = "responseCode NOT LIKE '20_' ";
 		}
+		
 		String[] fromDateArray = fromDate.split("-");
 		String[] toDateArray = toDate.split("-");
-               
+		String userId;    
                 
     	boolean isSameYear = fromDateArray[0].equalsIgnoreCase(toDateArray[0]) ? true : false;
         boolean isSameMonth = fromDateArray[1].equalsIgnoreCase(toDateArray[1]) ? true : false;
@@ -1769,17 +1728,14 @@ public class BillingDAO {
         .append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject()) 
         .append(" WHERE ")
         .append(responseStr)        
-        .append(" AND operatorId LIKE ? AND replace(userid,'@carbon.super','') LIKE ? AND api LIKE ? AND (day between ? and ? ) ");
+        .append(" AND operatorId LIKE ? AND replace(userid,'@carbon.super','') LIKE ? AND api LIKE ? ");
+        if(isSameYear && isSameMonth){
+			sql.append("AND (day between ? and ? ) AND (month = ?) AND (year = ?) ");
 
-        if (!isSameYear) {
-			sql.append("AND (month between ? and ?) AND (year between ? and ?) ");
-
-		} else if (!isSameMonth) {
-			sql.append("AND (month between ? and ?) AND (year = ?) ");
-			       
 		} else {
-			sql.append("AND (month = ?) AND (year = ?)  ");
-		}
+			sql.append("AND STR_TO_DATE(time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') ");
+			       
+		} 
         
         
         List<String[]> api_request = new ArrayList<String[]>();
@@ -1790,22 +1746,15 @@ public class BillingDAO {
             ps.setString(1, operator);
 			ps.setString(2, subscriber);
 			ps.setString(3, api);
-			ps.setInt(4, Integer.parseInt(fromDateArray[2]));
-			ps.setInt(5, Integer.parseInt(toDateArray[2]));
-
-			if (!isSameYear) {
-				ps.setInt(6, Integer.parseInt(fromDateArray[1]));
-				ps.setInt(7, Integer.parseInt(toDateArray[1]));
-				ps.setInt(8, Integer.parseInt(fromDateArray[0]));
-				ps.setInt(9, Integer.parseInt(toDateArray[0]));
-
-			} else if (!isSameMonth) {
-				ps.setInt(6, Integer.parseInt(fromDateArray[1]));
-				ps.setInt(7, Integer.parseInt(toDateArray[1]));
-				ps.setInt(8, Integer.parseInt(fromDateArray[0]));
-			} else {
+		
+			 if (isSameYear && isSameMonth) {
+                ps.setInt(4,Integer.parseInt(fromDateArray[2]) );
+                ps.setInt(5,Integer.parseInt(toDateArray[2]) );
 				ps.setInt(6, Integer.parseInt(fromDateArray[1]));
 				ps.setInt(7, Integer.parseInt(fromDateArray[0]));
+			} else {
+				ps.setString(4, fromDate);
+				ps.setString(5, toDate);
 			}
             
             log.debug("getAPIWiseTrafficForReport");
@@ -1823,7 +1772,13 @@ public class BillingDAO {
                 String requestUrl = results.getString(9);
                 String requestMethod = results.getString(10);
                 String requestapi = results.getString(11);
-
+                
+                if(results.getString(2)!=null && results.getString(2).contains("@")){
+					userId = results.getString(2).split("@")[0];
+				} else {
+					userId = results.getString(2);
+				}
+                
                 String event_type = "";
                 String clientCorelator = "";
 
@@ -1871,8 +1826,7 @@ public class BillingDAO {
                     }
                 }
 
-                String[] temp = {dateTime, results.getString(2), results.getString(3), event_type, results.getString(4), clientCorelator, results.getString(5), results.getString(6), results.getString(7)};
-                api_request.add(temp);
+                String[] temp = {dateTime, userId, results.getString(3), event_type, results.getString(4), clientCorelator, results.getString(5), results.getString(6), results.getString(7)};                api_request.add(temp);
             }
         } catch (Exception e) {
             handleException("Error occured while getting API wise traffic for report from the database", e);
@@ -2017,7 +1971,7 @@ public class BillingDAO {
 		}
 		String[] fromDateArray = fromDate.split("-");
 		String[] toDateArray = toDate.split("-");
-               
+		String userId;      
                 
     	boolean isSameYear = fromDateArray[0].equalsIgnoreCase(toDateArray[0]) ? true : false;
         boolean isSameMonth = fromDateArray[1].equalsIgnoreCase(toDateArray[1]) ? true : false;
@@ -2032,16 +1986,13 @@ public class BillingDAO {
         .append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject())
         .append(" WHERE ")
         .append(responseStr)
-        .append("  AND operatorId LIKE ? AND replace(userid,'@carbon.super','') LIKE ? AND api LIKE ? AND (day between ? and ? ) ");
+        .append("  AND operatorId LIKE ? AND replace(userid,'@carbon.super','') LIKE ? AND api LIKE ? ");
 
-        if (!isSameYear) {
-			sql.append("AND (month between ? and ?) AND (year between ? and ?) ");
+        if (isSameYear && isSameMonth){
+			sql.append("AND (day between ? and ? ) AND (month = ?) AND (year = ?) ");
 
-		} else if (!isSameMonth) {
-			sql.append("AND (month between ? and ?) AND (year = ?) ");
-			       
 		} else {
-			sql.append("AND (month = ?) AND (year = ?)  ");
+			sql.append("AND STR_TO_DATE(time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') ");
 		}
         
         List<String[]> api_request = new ArrayList<String[]>();
@@ -2051,26 +2002,19 @@ public class BillingDAO {
             ps = conn.prepareStatement(sql.toString());
             ps.setString(2, subscriber);
 			ps.setString(3, api);
-			ps.setInt(4, Integer.parseInt(fromDateArray[2]));
-			ps.setInt(5, Integer.parseInt(toDateArray[2]));
-
-			if (!isSameYear) {
-				ps.setInt(6, Integer.parseInt(fromDateArray[1]));
-				ps.setInt(7, Integer.parseInt(toDateArray[1]));
-				ps.setInt(8, Integer.parseInt(fromDateArray[0]));
-				ps.setInt(9, Integer.parseInt(toDateArray[0]));
-
-			} else if (!isSameMonth) {
-				ps.setInt(6, Integer.parseInt(fromDateArray[1]));
-				ps.setInt(7, Integer.parseInt(toDateArray[1]));
-				ps.setInt(8, Integer.parseInt(fromDateArray[0]));
-			} else {
+			if (isSameYear && isSameMonth) {
+				ps.setInt(4, Integer.parseInt(fromDateArray[2]));
+				ps.setInt(5, Integer.parseInt(toDateArray[2]));
 				ps.setInt(6, Integer.parseInt(fromDateArray[1]));
 				ps.setInt(7, Integer.parseInt(fromDateArray[0]));
+			} else {
+				ps.setString(4, fromDate);
+				ps.setString(5, toDate);
 			}
-			
+
             log.debug("getAPIWiseTrafficForReportCharging");
-            log.debug("SQL (PS) ---> " + ps.toString());   
+           
+            log.debug("SQL (PS) ---> " + ps.toString());
  
             results = ps.executeQuery();
             while (results.next()) {
@@ -2078,6 +2022,11 @@ public class BillingDAO {
                 String requestUrl = results.getString(9);
                 String requestMethod = results.getString(10);
                 String requestapi = results.getString(12);
+                if(results.getString(2)!=null && results.getString(2).contains("@")){
+					userId = results.getString(2).split("@")[0];
+				} else {
+					userId = results.getString(2);
+				}
                 
                 String dateTime = results.getString(1);
                 if(dateTime == null){
@@ -2138,8 +2087,7 @@ public class BillingDAO {
                     }
                 }
 
-                String[] temp = {dateTime, results.getString(2), results.getString(3), event_type, results.getString(4), clientCorelator, results.getString(5), results.getString(6), currency, results.getString(7), results.getString(11)};
-                api_request.add(temp);
+                String[] temp = {dateTime, userId, results.getString(3), event_type, results.getString(4), clientCorelator, results.getString(5), results.getString(6), currency, results.getString(7), results.getString(11)};                api_request.add(temp);
             }
         } catch (Exception e) {
             handleException("getAPIWiseTrafficForReportCharging", e);
