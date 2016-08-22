@@ -782,7 +782,7 @@ public class BillingDAO {
         .append(" WHERE api_version =? and consumerKey=? and operatorId =? and responseCode like '2%' and month=? and year=? and operationType=? and category=? and subcategory=? AND operatorRef NOT IN ")
         .append(" (SELECT distinct operatorRef FROM ")
         .append(HostObjectConstants.SB_RESPONSE_SUMMARY_TABLE)
-        .append(" WHERE consumerKey=? and operatorId =? and operationType=101 and responseCode like '2%' and year=? and month=? )");
+        .append(" WHERE api=refund) ");
 
         Set<PaymentRequestDTO> requestSet = new HashSet<PaymentRequestDTO>();
         try {
@@ -2013,8 +2013,11 @@ public class BillingDAO {
         try {
             conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
             ps = conn.prepareStatement(sql.toString());
+            ps.setString(1, operator);
             ps.setString(2, subscriber);
 			ps.setString(3, api);
+			log.debug(api);
+			
 			if (isSameYear && isSameMonth) {
 				ps.setInt(4, Integer.parseInt(fromDateArray[2]));
 				ps.setInt(5, Integer.parseInt(toDateArray[2]));
@@ -2107,6 +2110,8 @@ public class BillingDAO {
 						event_type = "DNSubscription";
 					} else if (apitype.equalsIgnoreCase("stop_outbound_subscription")) {
 						event_type = "DNStopSubscription";
+					} else if (apitype.equalsIgnoreCase("refund")){
+                        event_type = "Refund";
                     }
                 }
 
@@ -2287,6 +2292,7 @@ public class BillingDAO {
         String ussdKeyString = "ussd";
         String smsKeyString = "smsmessaging";
         String paymentapiKeyString = "payment";
+        String refundapiKeyString = "refund";
 
         String lastWord = ResourceURL.substring(ResourceURL.lastIndexOf("/") + 1);
 
@@ -2337,6 +2343,9 @@ public class BillingDAO {
         }  else if ( !requested_api.isEmpty() && requested_api.toLowerCase().contains(paymentapiKeyString.toLowerCase()) &&
                 ResourceURL.toLowerCase().contains(paymentKeyString.toLowerCase())) {
 	            apiType = "payment";
+        } else if (!requested_api.isEmpty() && requested_api.toLowerCase().contains(refundapiKeyString.toLowerCase()) &&
+                ResourceURL.toLowerCase().contains(paymentapiKeyString.toLowerCase())){
+	        	apiType = "refund";
         } else {
             return null;
         }
