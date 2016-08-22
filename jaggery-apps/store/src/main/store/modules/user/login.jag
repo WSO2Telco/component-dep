@@ -55,7 +55,6 @@ var login = function (username, password,tenantMode) {
     cookie = cookie.split(';')[0];
     isSuperTenant = result.isSuperTenant;
     getApplicationCookie(username,password);  
-    session.put("subscriber_username", username);
     
     return {
 	username:result.user,
