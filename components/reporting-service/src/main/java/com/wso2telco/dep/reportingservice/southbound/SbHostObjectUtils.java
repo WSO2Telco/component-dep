@@ -2485,12 +2485,12 @@ public class SbHostObjectUtils {
 	 * @throws Exception 
 	 */
 	public static List<String[]> getAPIWiseTrafficForReport(String fromDate,
-			String toDate, String subscriber, String operator, String api,boolean isError)
+			String toDate, String subscriber, String operator, String api,boolean isError, int applicationId)
 			throws Exception {
 		BillingDAO billingDAO = new BillingDAO();
 		List<String[]> api_request_data = billingDAO
 				.getAPIWiseTrafficForReport(fromDate, toDate, subscriber,
-						operator, api,isError);
+						operator, api, isError, applicationId);
 		return api_request_data;
 	}
 
