@@ -1995,7 +1995,7 @@ public class BillingDAO {
 
         StringBuilder sql = new StringBuilder(); 
         
-        sql.append("SELECT time, userId, operatorId, requestId, msisdn, chargeAmount, responseCode, jsonBody, resourcePath, method, purchaseCategoryCode,api FROM ")
+        sql.append("SELECT time, userId, operatorId, requestId, msisdn, chargeAmount, responseCode, jsonBody, resourcePath, method, purchaseCategoryCode, api, taxAmount , channel , onBehalfOf ,description FROM ")
         .append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject())
         .append(" WHERE ")
         .append(responseStr)
