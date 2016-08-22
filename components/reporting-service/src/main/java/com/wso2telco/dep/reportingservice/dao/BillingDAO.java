@@ -497,7 +497,7 @@ public class BillingDAO {
         } finally {
             DbUtils.closeAllConnections(ps, connection, results);
         }
-        log.debug("apiCount :"+apiName+" :"+apiVersion+": "+consumerKey);
+        log.debug("apiCount :" + apiName + " :" + apiVersion + ": " + consumerKey);
         return apiCount;
     }
     
@@ -824,7 +824,7 @@ public class BillingDAO {
         } finally {
             DbUtils.closeAllConnections(ps, connection, results);
         }
-        log.debug("done getPaymentAmounts :"+consumerKey+" :"+api_version+ " :" +operatorId);
+        log.debug("done getPaymentAmounts :" + consumerKey + " :" + api_version + " :" + operatorId);
         return requestSet;
     }
     
@@ -1516,14 +1516,16 @@ public class BillingDAO {
 		ResultSet results = null;
 		StringBuilder sql = new StringBuilder();
 		
-		sql.append("SELECT time, jsonBody, api  FROM ")
-		.append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject())
-		.append(" WHERE operatorId LIKE ? AND replace(userid,'@carbon.super','') LIKE ? AND api LIKE ? AND consumerKey LIKE ? ");
+		
 		
 		if (isSameYear && isSameMonth) {
-			sql.append("AND (day between ? and ? ) AND (month = ?) AND (year = ?) ");
+			sql.append("SELECT time, jsonBody, api  FROM ")
+			.append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject())
+			.append(" WHERE operatorId LIKE ? AND replace(userid,'@carbon.super','') LIKE ? AND api LIKE ? AND consumerKey LIKE ? AND (day between ? and ? ) AND (month = ?) AND (year = ?) ");
 		} else {
-			sql.append("AND STR_TO_DATE(x.time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') ");
+			sql.append("SELECT x.time, x.jsonBody, x.api FROM ")
+			.append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject())
+			.append( " x WHERE operatorId LIKE ? AND replace(userid,'@carbon.super','') LIKE ? AND api LIKE ? AND consumerKey LIKE ? AND STR_TO_DATE(x.time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') ");			 
 		}
 		if (!msisdn.isEmpty()) {
 			sql.append("AND msisdn LIKE ? ");
@@ -1578,7 +1580,7 @@ public class BillingDAO {
         } finally {
             DbUtils.closeAllConnections(ps, conn, results);
         }
-		log.debug("end getCustomerCareReportData: "+api_request_data.size());
+		log.debug("end getCustomerCareReportData: " + api_request_data.size());
         return api_request_data;
     }
     
@@ -1681,7 +1683,7 @@ public class BillingDAO {
         } finally {
             DbUtils.closeAllConnections(ps, conn, results);
         }
-        log.debug("getCustomerCareReportDataCount :"+count);
+		log.debug("getCustomerCareReportDataCount :" + count);
         return count;
     }
 
@@ -1800,7 +1802,7 @@ public class BillingDAO {
                 }
 
                 if (!requestUrl.isEmpty() && !requestapi.isEmpty()) {
-                    String apitype = findAPIType(requestUrl ,requestapi);
+                    String apitype = findAPIType(requestUrl , requestapi);
                     if (apitype.equalsIgnoreCase("send_sms")) {
                         event_type = "Outbound";
                     } else if (apitype.equalsIgnoreCase("retrive_sms_subscriptions")) {
@@ -1815,13 +1817,13 @@ public class BillingDAO {
                         event_type = "Charge";
                     } else if (apitype.equalsIgnoreCase("ussd_send")) {
                         event_type = "USSD Outbound";
-                    }else if (apitype.equalsIgnoreCase("ussd_subscription")) {
+                    } else if (apitype.equalsIgnoreCase("ussd_subscription")) {
                         event_type = "USSD Subscription";
-                    }else if (apitype.equalsIgnoreCase("stop_ussd_subscription")) {
+                    } else if (apitype.equalsIgnoreCase("stop_ussd_subscription")) {
                         if (requestMethod.equalsIgnoreCase("DELETE")) {
                             event_type = "Stop ussd subscription";
                         };
-                    }else if (apitype.equalsIgnoreCase("location")) {
+                    } else if (apitype.equalsIgnoreCase("location")) {
                         event_type = "Location";
                     }
                 }
@@ -1955,7 +1957,7 @@ public class BillingDAO {
      * @return the API wise traffic for report charging
      * @throws Exception the exception
      */
-    public List<String[]> getAPIWiseTrafficForReportCharging(String fromDate, String toDate, String subscriber, String operator, String api,boolean isError) throws Exception {
+    public List<String[]> getAPIWiseTrafficForReportCharging(String fromDate, String toDate, String subscriber, String operator, String api, boolean isError) throws Exception {
         if (subscriber.equals("__ALL__")) {
             subscriber = "%";
         }
@@ -2069,7 +2071,7 @@ public class BillingDAO {
                 }
 
                 if (!requestUrl.isEmpty()) {
-                	String apitype = findAPIType(requestUrl,requestapi);
+                	String apitype = findAPIType(requestUrl, requestapi);
                     if (apitype.equalsIgnoreCase("send_sms")) {
                         event_type = "Outbound";
                     } else if (apitype.equalsIgnoreCase("retrive_sms_subscriptions")) {
@@ -2247,7 +2249,7 @@ public class BillingDAO {
      * @param requested_api the requested_api
      * @return the string
      */
-    private String findAPIType(String ResourceURL , String requested_api) {
+    private String findAPIType(String ResourceURL, String requested_api) {
 
         String apiType = null;
 
@@ -2280,7 +2282,7 @@ public class BillingDAO {
         } else if (ResourceURL.toLowerCase().contains(retriveSMSString.toLowerCase())
                 && ResourceURL.toLowerCase().contains(regKeyString.toLowerCase())) {
             apiType = "retrive_sms";
-        } else if ( !requested_api.isEmpty() && !requested_api.toLowerCase().contains(ussdKeyString.toLowerCase())
+        } else if (!requested_api.isEmpty() && !requested_api.toLowerCase().contains(ussdKeyString.toLowerCase())
                 && ResourceURL.toLowerCase().contains(retriveSMSString.toLowerCase())
                 && ResourceURL.toLowerCase().contains(subscriptionKeyString.toLowerCase())) {
             apiType = "retrive_sms_subscriptions";
@@ -2288,13 +2290,13 @@ public class BillingDAO {
             apiType = "payment";
         } else if (ResourceURL.toLowerCase().contains(delivaryNotifyString.toLowerCase())) {
             apiType = "sms_inbound_notifications";
-        }else if (!requested_api.isEmpty() && requested_api.toLowerCase().contains(ussdKeyString.toLowerCase())){
+        } else if (!requested_api.isEmpty() && requested_api.toLowerCase().contains(ussdKeyString.toLowerCase())){
             if(ResourceURL.toLowerCase().contains("outbound")){
                 apiType = "ussd_send";
             } else if (!ResourceURL.toLowerCase().contains(subscriptionKeyString.toLowerCase())){
                 apiType = "ussd_receive";
             } else {
-                if (lastWord.equals(subscriptionKeyString.toLowerCase())){
+                if (lastWord.equals(subscriptionKeyString.toLowerCase())) {
                     apiType = "ussd_subscription";
                 } else {
                     apiType = "stop_ussd_subscription";
@@ -2532,7 +2534,7 @@ public class BillingDAO {
             ps.setString(5, api);
             ps.setString(6, consumerKey);
             if (log.isDebugEnabled()) {
-        	log.debug("getTotalTrafficForLineChart : SQL " + ps.toString() );
+        	log.debug("getTotalTrafficForLineChart : SQL " + ps.toString());
             }
             
             results = ps.executeQuery();
@@ -2563,11 +2565,11 @@ public class BillingDAO {
     public List<APIResponseDTO> getAllResponseTimesForAllAPIs(String operator, String userId, String fromDate,
             String toDate, String timeRange) throws Exception {
 
-	if (log.isDebugEnabled()) {
-	    log.debug("getAllResponseTimesForAllAPIs() for  Operator "
-		    + operator + " Subscriber " + userId + " betweeen "
-		    + fromDate + " to " + toDate);
-	}
+		if (log.isDebugEnabled()) {
+		    log.debug("getAllResponseTimesForAllAPIs() for  Operator "
+			    + operator + " Subscriber " + userId + " betweeen "
+			    + fromDate + " to " + toDate);
+		}
         
         if (operator.contains("__ALL__")) {
             operator = "%";
