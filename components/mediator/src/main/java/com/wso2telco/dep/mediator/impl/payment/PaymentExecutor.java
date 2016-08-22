@@ -16,7 +16,7 @@
 package com.wso2telco.dep.mediator.impl.payment;
 
 import com.wso2telco.datapublisher.DataPublisherConstants;
-import com.wso2telco.dbutils.DBUtilException;
+import com.wso2telco.dbutils.AxataDBUtilException;
 import com.wso2telco.dep.mediator.MSISDNConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.RequestExecutor;
@@ -278,10 +278,10 @@ public class PaymentExecutor extends RequestExecutor {
 	 * @param mc
 	 *            the mc
 	 * @return true, if successful
-	 * @throws DBUtilException
-	 *             the db util exception
+	 * @throws AxataDBUtilException
+	 *             the axata db util exception
 	 */
-	private boolean checkSpendLimit(String msisdn, String operator, MessageContext mc) throws DBUtilException {
+	private boolean checkSpendLimit(String msisdn, String operator, MessageContext mc) throws AxataDBUtilException {
 		AuthenticationContext authContext = APISecurityUtils.getAuthenticationContext(mc);
 		String consumerKey = "";
 		if (authContext != null) {

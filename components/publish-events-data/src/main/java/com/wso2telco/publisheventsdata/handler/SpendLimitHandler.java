@@ -15,8 +15,8 @@
  ******************************************************************************/
 package com.wso2telco.publisheventsdata.handler;
 
-import com.wso2telco.dbutils.DBUtilException;
-import com.wso2telco.dbutils.DbService;
+import com.wso2telco.dbutils.AxataDBUtilException;
+import com.wso2telco.dbutils.AxiataDbService;
 import com.wso2telco.publisheventsdata.MifeEventsConstants;
 import com.wso2telco.publisheventsdata.internal.MifeEventsDataHolder;
 import java.util.Properties;
@@ -31,7 +31,7 @@ public class SpendLimitHandler {
     private final boolean isEventsEnabled;
     
     /** The dbservice. */
-    private DbService dbservice;
+    private AxiataDbService dbservice;
 
     /**
      * Instantiates a new spend limit handler.
@@ -40,7 +40,7 @@ public class SpendLimitHandler {
         Properties properties = MifeEventsDataHolder.getMifeEventsProps();
         String eventsEnabled = properties.getProperty(MifeEventsConstants.CEP_SPEND_LIMIT_HANDLER_ENABLED_PROPERTY);
         isEventsEnabled = Boolean.parseBoolean(eventsEnabled);
-        dbservice = new DbService();
+        dbservice = new AxiataDbService();
     }
 
     /**
@@ -50,10 +50,10 @@ public class SpendLimitHandler {
      * @param consumerKey the consumer key
      * @param operatorId the operator id
      * @return true, if is spend limit exceeded
-     * @throws DBUtilException the db util exception
+     * @throws AxataDBUtilException the axata db util exception
      */
     public boolean isSpendLimitExceeded(String msisdn, String consumerKey, String operatorId) throws
-    DBUtilException {
+            AxataDBUtilException {
         return isEventsEnabled && (isMSISDNSpendLimitExceeded(msisdn) || isApplicationSpendLimitExceeded(consumerKey)
                 || isOperatorSpendLimitExceeded(operatorId));
     }
@@ -63,9 +63,9 @@ public class SpendLimitHandler {
      *
      * @param msisdn the msisdn
      * @return true, if is MSISDN spend limit exceeded
-     * @throws DBUtilException the db util exception
+     * @throws AxataDBUtilException the axata db util exception
      */
-    public boolean isMSISDNSpendLimitExceeded(String msisdn) throws DBUtilException {
+    public boolean isMSISDNSpendLimitExceeded(String msisdn) throws AxataDBUtilException {
         if (isEventsEnabled) {
 //            HazelcastInstance hazelcastInstance = MifeEventsDataHolder.getHazelcastInstance();
 //            IMap<String, Object> cacheMap = hazelcastInstance.getMap(MifeEventsConstants.MSISDN_HAZELCAST_MAP_NAME);
@@ -80,9 +80,9 @@ public class SpendLimitHandler {
      *
      * @param consumerKey the consumer key
      * @return true, if is application spend limit exceeded
-     * @throws DBUtilException the db util exception
+     * @throws AxataDBUtilException the axata db util exception
      */
-    public boolean isApplicationSpendLimitExceeded(String consumerKey) throws DBUtilException {
+    public boolean isApplicationSpendLimitExceeded(String consumerKey) throws AxataDBUtilException {
         if (isEventsEnabled) {
 //            HazelcastInstance hazelcastInstance = MifeEventsDataHolder.getHazelcastInstance();
 //            IMap<String, Object> cacheMap = hazelcastInstance.getMap(MifeEventsConstants.APPLICATION_HAZELCAST_MAP_NAME);
@@ -97,9 +97,9 @@ public class SpendLimitHandler {
      *
      * @param operatorId the operator id
      * @return true, if is operator spend limit exceeded
-     * @throws DBUtilException the db util exception
+     * @throws AxataDBUtilException the axata db util exception
      */
-    public boolean isOperatorSpendLimitExceeded(String operatorId) throws DBUtilException {
+    public boolean isOperatorSpendLimitExceeded(String operatorId) throws AxataDBUtilException {
         if (isEventsEnabled) {
 //            HazelcastInstance hazelcastInstance = MifeEventsDataHolder.getHazelcastInstance();
 //            IMap<String, Object> cacheMap = hazelcastInstance.getMap(MifeEventsConstants.OPERATOR_HAZELCAST_MAP_NAME);
