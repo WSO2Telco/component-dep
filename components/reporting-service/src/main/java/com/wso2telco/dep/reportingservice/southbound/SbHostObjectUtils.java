@@ -939,6 +939,7 @@ public class SbHostObjectUtils {
 		BillingDAO billingDAO = new BillingDAO();
 		List<OperatorDetailsEntity> operatorMap = billingDAO
 				.getOperatorDetailsOfSubscription(appId, apiId);
+		log.debug("Operator Map for the subscription appplicationId : " + appId + " apiId : " + apiId + " : " + operatorMap.toString());
 		for (OperatorDetailsEntity operatorDetail : operatorMap) {
 
 			String operator = operatorDetail.getOperatorName();
