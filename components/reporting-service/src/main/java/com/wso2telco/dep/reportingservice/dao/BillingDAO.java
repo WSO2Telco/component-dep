@@ -1698,8 +1698,9 @@ public class BillingDAO {
      * @return the API wise traffic for report
      * @throws Exception the exception
      */
-    public List<String[]> getAPIWiseTrafficForReport(String fromDate, String toDate, String subscriber, String operator, String api, boolean isError) throws Exception {
-        if (subscriber.equals("__ALL__")) {
+    public List<String[]> getAPIWiseTrafficForReport(String fromDate, String toDate, String subscriber, String operator, String api, boolean isError, int applicationId) throws Exception {
+    	String consumerKey = null;
+    	if (subscriber.equals("__ALL__")) {
             subscriber = "%";
         }
         if (operator.equals("__ALL__")) {
@@ -1708,6 +1709,12 @@ public class BillingDAO {
         if (api.equals("__ALL__")) {
             api = "%";
         }
+        if (applicationId == 0) {
+            consumerKey = "%";
+        } else {
+            consumerKey = ApiManagerDAO.getConsumerKeyByApplication(applicationId);
+        }
+        
         String responseStr = "responseCode LIKE '20_' ";
 		if (isError) {
 			responseStr = "responseCode NOT LIKE '20_' ";
@@ -1730,7 +1737,7 @@ public class BillingDAO {
         .append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject()) 
         .append(" WHERE ")
         .append(responseStr)        
-        .append(" AND operatorId LIKE ? AND replace(userid,'@carbon.super','') LIKE ? AND api LIKE ? ");
+        .append(" AND operatorId LIKE ? AND replace(userid,'@carbon.super','') LIKE ? AND api LIKE ? AND consumerKey LIKE ? ");
         if(isSameYear && isSameMonth){
 			sql.append("AND (day between ? and ? ) AND (month = ?) AND (year = ?) ");
 
@@ -1748,20 +1755,24 @@ public class BillingDAO {
             ps.setString(1, operator);
 			ps.setString(2, subscriber);
 			ps.setString(3, api);
+			ps.setString(4, consumerKey);
 		
 			 if (isSameYear && isSameMonth) {
-                ps.setInt(4,Integer.parseInt(fromDateArray[2]) );
-                ps.setInt(5,Integer.parseInt(toDateArray[2]) );
-				ps.setInt(6, Integer.parseInt(fromDateArray[1]));
-				ps.setInt(7, Integer.parseInt(fromDateArray[0]));
+                ps.setInt(5,Integer.parseInt(fromDateArray[2]) );
+                ps.setInt(6,Integer.parseInt(toDateArray[2]) );
+				ps.setInt(7, Integer.parseInt(fromDateArray[1]));
+				ps.setInt(8, Integer.parseInt(fromDateArray[0]));
 			} else {
-				ps.setString(4, fromDate);
-				ps.setString(5, toDate);
+				ps.setString(5, fromDate);
+				ps.setString(6, toDate);
 			}
             
             log.debug("getAPIWiseTrafficForReport");
             log.debug("SQL (PS) ---> " + ps.toString());  
             results = ps.executeQuery();
+            System.out.println("getAPIWiseTrafficForReport---------------------------------");
+            System.out.print("SQL (PS) ---> " + ps.toString());
+                         
             
             while (results.next()) {
                 
@@ -2086,8 +2097,12 @@ public class BillingDAO {
                         event_type = "Charge";
                     } else if (apitype.equalsIgnoreCase("location")) {
                         event_type = "Location";
-                    } else if (apitype.equalsIgnoreCase("sms_inbound_notifications")){
-                        event_type = "Inbound Traffic";
+                    }else if (apitype.equalsIgnoreCase("sms_dn_inbound_notifications")){
+						event_type = "DNCallback ";
+					} else if (apitype.equalsIgnoreCase("sms_mo_inbound_notifications")) {
+						event_type = "MOCallback";
+					} else if (apitype.equalsIgnoreCase("query_sms")) {
+						event_type = "DNQuery";
                     }
                 }
 
@@ -2263,6 +2278,7 @@ public class BillingDAO {
         String regKeyString = "registrations";
         String delivaryInfoKeyString = "deliveryInfos";
         String delivaryNotifyString = "DeliveryInfoNotification";
+        String receivedInfoNotification = "ReceivedInfoNotification";
         String locationString = "location";
         String ussdKeyString = "ussd";
 
@@ -2291,7 +2307,7 @@ public class BillingDAO {
         } else if (ResourceURL.toLowerCase().contains(paymentKeyString.toLowerCase())) {
             apiType = "payment";
         } else if (ResourceURL.toLowerCase().contains(delivaryNotifyString.toLowerCase())) {
-            apiType = "sms_inbound_notifications";
+        	apiType = "sms_dn_inbound_notifications";
         } else if (!requested_api.isEmpty() && requested_api.toLowerCase().contains(ussdKeyString.toLowerCase())){
             if(ResourceURL.toLowerCase().contains("outbound")){
                 apiType = "ussd_send";
@@ -2304,13 +2320,13 @@ public class BillingDAO {
                     apiType = "stop_ussd_subscription";
                 }
             }
-
         } else if (ResourceURL.toLowerCase().contains(locationString.toLowerCase())) {
             apiType = "location";
+        }else if (ResourceURL.toLowerCase().contains(receivedInfoNotification.toLowerCase())) {
+            apiType = "sms_mo_inbound_notifications";
         } else {
             return null;
         }
-
         return apiType;
     }
 

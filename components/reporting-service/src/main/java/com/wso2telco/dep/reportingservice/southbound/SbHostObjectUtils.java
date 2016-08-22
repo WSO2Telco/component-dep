@@ -1345,7 +1345,7 @@ public class SbHostObjectUtils {
 	 */
 	public static NativeArray generateCustomTrafficReport(
 			boolean isPersistReport, String fromDate, String toDate,
-			String subscriberName, String operator, String api, boolean isError,
+			String subscriberName, String operator, String api, boolean isError, int applicationId,
 			String timeOffset, String resType) throws Exception {
 
 		// This is to test

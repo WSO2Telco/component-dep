@@ -307,11 +307,12 @@ public class BillingHostObject extends ScriptableObject {
         String operator = (String) args[3];
         String api = (String) args[4];
         String isError = (String) args[5];
-        String timeOffset = (String) args[6];
-        String responseType = (String) args[7];
-        boolean isNorthbound = (Boolean) args[8];
+        int applicationId = Integer.parseInt(args[6].toString());
+        String timeOffset = (String) args[7];
+        String responseType = (String) args[8];
+        boolean isNorthbound = (Boolean) args[9];
 
-        generateCustomApiTrafficReport(fromDate, toDate, subscriberName, operator, api, (isError.equalsIgnoreCase("true") ? true : false), timeOffset, responseType, isNorthbound);
+        generateCustomApiTrafficReport(fromDate, toDate, subscriberName, operator, api, (isError.equalsIgnoreCase("true") ? true : false), applicationId, timeOffset, responseType, isNorthbound);
 
         String fileContent = SbHostObjectUtils.getCustomReport(fromDate, toDate, subscriberName, operator, api);
         return fileContent;
@@ -532,19 +533,19 @@ public class BillingHostObject extends ScriptableObject {
      * @return the native array
      * @throws APIManagementException the API management exception
      */
-    private static NativeArray generateCustomApiTrafficReport(String fromDate, String toDate, String subscriberName, String operator, String api,boolean isError, String timeOffset, String resType, boolean isNorthbound) throws BusinessException {
+    private static NativeArray generateCustomApiTrafficReport(String fromDate, String toDate, String subscriberName, String operator, String api,boolean isError, int applicationId, String timeOffset, String resType, boolean isNorthbound) throws BusinessException {
 
         NativeArray ret = null;
         try {
             if (isNorthbound) {
                 try {
-					ret = NbHostObjectUtils.generateCustomTrafficReport(true, fromDate, toDate, subscriberName, operator, api, isError, timeOffset, resType);
+					ret = NbHostObjectUtils.generateCustomTrafficReport(true, fromDate, toDate, subscriberName, operator, api, isError, int applicationId, timeOffset, resType);
 				} catch (Exception e) {
 					
 					e.printStackTrace();
 				}
             } else {
-                ret = SbHostObjectUtils.generateCustomTrafficReport(true, fromDate, toDate, subscriberName, operator, api, isError, timeOffset, resType);
+                ret = SbHostObjectUtils.generateCustomTrafficReport(true, fromDate, toDate, subscriberName, operator, api, isError, int applicationId, timeOffset, resType);
             }
         } catch (Exception e) {
             log.error("generateCustomApiTrafficReport",e);        	
