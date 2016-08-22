@@ -66,7 +66,7 @@
 						<%
 							}
 							%>
-
+						<td><b>Application:</b></td>
 						<td><b>API:</b></td>
 						<td><b>Status:</b></td>
 						<td><b>Operation Type:</b></td>
@@ -114,7 +114,7 @@
 								<%
 								for (i = 0; i < subscriberList.length; i++) {
 									var subscriber = subscriberList[i];
-									%>
+										%>
 								<option value="<%=subscriber%>"><%=subscriber%></option>
 								<%	
 									}
@@ -125,7 +125,36 @@
 							}
 							}
 							%>
-						<!-- 
+							
+							<td>
+							<select id="app" style="width: 140px;" autofocus="autofocus">
+								<%
+								if(isAdmin == true || isOperator != null){
+								%>
+								<option value="0">All</option>
+								<%		
+								}
+								%>
+								<%
+								if(isAdmin != true && isOperator == null){
+									var applicationList = outputs.applications;
+								%>
+								<option value="0">All</option>
+								<%
+								if(applicationList != null){
+								for (i = 0; i < applicationList.length; i++) {
+									var app = applicationList[i];
+								%>
+								<option value="<%=app.id%>"><%=app.name%></option>
+								<%		
+								}
+								}
+								}
+								%>
+							</select>
+						</td>
+						
+						<
 						<td><%		
 						var apiList = outputs.apis;
 						if(apiList != null){
@@ -155,7 +184,7 @@
 							}
 							%>
 						</td>
-						 -->
+						 
 						 
 						 <td><%		
 						var opList = outputs.operations;
@@ -183,6 +212,12 @@
 						</td>
 
 						<td>
+						<select id="isError" size="1" style="width: 150px">
+		                  		<option value="false" selected="selected">Successful</option>
+		                  		<option value="true">Error</option>
+						    </select>
+						</td>
+						<td>
 							<!-- <button class="btn btn-primary" id="generate"
 								onclick="getAPIWiseTraffic()">Generate</button>
 								 -->
@@ -208,7 +243,9 @@
     <input type="hidden" id="selected_todate" name="todate" value=""/>
     <input type="hidden" id="selected_operator" name="operator" value=""/>
     <input type="hidden" id="selected_subscriber" name="subscriber" value=""/>
+    <input type="hidden" id="selected_application" name="application" value=""/>
     <input type="hidden" id="selected_api" name="api" value=""/>
+    <input type="hidden" id="selected_iserror" name="isError" value=""/>
     <input type="hidden" id="selected_res_type" name="resType" value=""/>
     <input type="hidden" id="timeOffset" name="timeOffset" value=""/>
 </form>

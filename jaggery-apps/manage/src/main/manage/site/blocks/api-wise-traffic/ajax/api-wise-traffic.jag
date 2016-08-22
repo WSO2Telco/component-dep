@@ -52,6 +52,7 @@ include("/jagg/jagg.jag");
         var toDate = request.getParameter("todate");
         var operator = request.getParameter("operator");
         var subscriber = request.getParameter("subscriber");
+        var application = request.getParameter("application");
         var api = request.getParameter("api");
         var timeOffset = request.getParameter("timeOffset");
         var resType = request.getParameter("resType");
@@ -67,15 +68,30 @@ include("/jagg/jagg.jag");
         username = user.username;
         
         var mod = jagg.module("api-wise-traffic");
-        var result = mod.getReportFileContent(fromDate, toDate, subscriber, operator, api, isError, timeOffset, resType, isNorthbound);
+        var result = mod.getReportFileContent(fromDate, toDate, subscriber, operator, api, isError, application, timeOffset, resType, isNorthbound);
         
 		response.contentType = 'application/csv';
-	    response.addHeader('Content-Disposition', 'attachment;filename='+fromDate+'-'+toDate+'-'+subscriber+'-'+operator+'-'+api+'.csv');
-	
+		response.addHeader('Content-Disposition', 'attachment;filename='+fromDate+'-'+toDate+'-'+subscriber+'-'+application+'-'+operator+'-'+api+'.csv');	
 	    print(result);
-        
-	}
-	else{
+	    } else if (action == "getAppsBySubscriber"){
+	    		var selectedSubscriber = request.getParameter("subscriber");		
+	    		//log.info("getAppsBySubscriber");
+	    		var mod = jagg.module("api-wise-traffic");
+	    		var result = mod.getAppsBySubscriber(selectedSubscriber);
+	    		//log.info(result.data);
+	    		if (result.error) {
+	    			obj = {
+	    				error:result.error,
+	    				message:result.message
+	    			};
+	    		} else {
+	    			obj = {
+	    				error:false,
+	    				data: result.data
+	    			}
+	    		}
+	    		print(obj);
+	}else{
 		print({
 			error:true,
 			message:msg.error.invalidAction(action)
