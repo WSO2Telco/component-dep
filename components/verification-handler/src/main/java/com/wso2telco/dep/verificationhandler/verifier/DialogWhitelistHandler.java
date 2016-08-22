@@ -16,10 +16,9 @@
 package com.wso2telco.dep.verificationhandler.verifier;
 
 import com.google.gson.Gson;
-import com.wso2telco.dep.verificationhandler.model.Payment.PaymentRequestWrap;
-import com.wso2telco.dep.verificationhandler.model.USSD.OutboundUSSDRequestWrap;
-import com.wso2telco.dep.verificationhandler.model.sms.SMSMessagingRequestWrap;
-
+import com.wso2telco.dep.verificationhandler.model.payment.PaymentRequestWrap;
+import com.wso2telco.dep.verificationhandler.model.smsmessaging.SMSMessagingRequestWrap;
+import com.wso2telco.dep.verificationhandler.model.ussd.OutboundUSSDRequestWrap;
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
@@ -38,9 +37,7 @@ import org.json.JSONException;
 import org.json.XML;
 import org.wso2.carbon.apimgt.gateway.handlers.Utils;
 import org.wso2.carbon.apimgt.gateway.handlers.security.APISecurityConstants;
-
 import javax.naming.NamingException;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
