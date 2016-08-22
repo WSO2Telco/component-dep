@@ -15,9 +15,11 @@
  ******************************************************************************/
 package com.wso2telco.dep.oneapivalidation.util;
 
+import java.io.File;
 import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.utils.CarbonUtils;
 import com.wso2telco.dbutils.fileutils.FileReader;
 
 public class PropertyUtils {
@@ -32,12 +34,14 @@ public class PropertyUtils {
 	public int getSMSBatchSize() {
 
 		FileReader fileReader = new FileReader();
+		String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
+				+ FileNames.ONEAPI_VALIDATION_CONF_FILE.getFileName();
 
 		int result = 0;
 
 		try {
 
-			Map<String, String> oneAPIValidationConfMap = fileReader.readOneAPIValidationConfFile();
+			Map<String, String> oneAPIValidationConfMap = fileReader.readPropertyFile(file);
 			String batchSize = oneAPIValidationConfMap.get("sms.batchSize");
 
 			if (batchSize == null || batchSize.trim().length() <= 0) {
@@ -61,11 +65,13 @@ public class PropertyUtils {
 	public boolean getApiTypeAvailability(String apiTypeParam) {
 
 		FileReader fileReader = new FileReader();
+		String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
+				+ FileNames.ONEAPI_VALIDATION_CONF_FILE.getFileName();
 		boolean isAvailable = false;
 
 		try {
 
-			Map<String, String> oneAPIValidationConfMap = fileReader.readOneAPIValidationConfFile();
+			Map<String, String> oneAPIValidationConfMap = fileReader.readPropertyFile(file);
 			String value = oneAPIValidationConfMap.get(apiTypeParam);
 
 			if (!value.equals("")) {
@@ -82,24 +88,26 @@ public class PropertyUtils {
 	}
 
 	public boolean getIsSMSLimitToOne() {
-		
+
 		FileReader fileReader = new FileReader();
+		String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
+				+ FileNames.ONEAPI_VALIDATION_CONF_FILE.getFileName();
 		boolean result = true;
-		
+
 		try {
-			
-			Map<String, String> oneAPIValidationConfMap = fileReader.readOneAPIValidationConfFile();
+
+			Map<String, String> oneAPIValidationConfMap = fileReader.readPropertyFile(file);
 			String value = oneAPIValidationConfMap.get("sms.limitToOne");
-			
+
 			if (value.equals("false")) {
-				
+
 				result = false;
 			}
 		} catch (Exception e) {
-			
+
 			log.error("error in getIsSMSLimitToOne ", e);
 		}
-		
+
 		return result;
 	}
 }

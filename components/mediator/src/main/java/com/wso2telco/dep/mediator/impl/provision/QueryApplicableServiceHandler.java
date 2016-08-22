@@ -20,10 +20,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
+import java.io.File;
 import org.json.JSONObject;
+import org.wso2.carbon.utils.CarbonUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wso2telco.dbutils.fileutils.FileReader;
+import com.wso2telco.dep.mediator.util.FileNames;
 import com.wso2telco.dep.mediator.MSISDNConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.entity.provision.QueryApplicableServiceResponse;
@@ -32,7 +35,7 @@ import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.dep.oneapivalidation.service.impl.provision.ValidateQueryApplicableServices;
-import com.wso2telco.subscriptionvalidator.util.ValidatorUtils;
+import com.wso2telco.dep.subscriptionvalidator.util.ValidatorUtils;
 
 public class QueryApplicableServiceHandler implements ProvisionHandler {
 
@@ -71,8 +74,8 @@ public class QueryApplicableServiceHandler implements ProvisionHandler {
 	@Override
 	public boolean handle(MessageContext context) throws Exception {
 
-		String[] params = executor.getSubResourcePath().split("/"); 
-		context.setProperty(MSISDNConstants.USER_MSISDN, params[1].substring(5)); 
+		String[] params = executor.getSubResourcePath().split("/");
+		context.setProperty(MSISDNConstants.USER_MSISDN, params[1].substring(5));
 
 		OperatorEndpoint endpoint = null;
 
@@ -111,9 +114,12 @@ public class QueryApplicableServiceHandler implements ProvisionHandler {
 		String jsonResponse = null;
 		QueryApplicableServiceResponse queryApplicableServiceResponse = null;
 		String requestResourceURL = executor.getResourceUrl();
-		
+
 		FileReader fileReader = new FileReader();
-		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
+		String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
+				+ FileNames.MEDIATOR_CONF_FILE.getFileName();
+
+		Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
 
 		try {
 
@@ -126,7 +132,7 @@ public class QueryApplicableServiceHandler implements ProvisionHandler {
 
 				if (serviceList != null) {
 
-					serviceList.setResourceURL(ResourceUrlPrefix); 
+					serviceList.setResourceURL(ResourceUrlPrefix);
 					queryApplicableServiceResponse.setServiceList(serviceList);
 
 					jsonResponse = gson.toJson(queryApplicableServiceResponse);

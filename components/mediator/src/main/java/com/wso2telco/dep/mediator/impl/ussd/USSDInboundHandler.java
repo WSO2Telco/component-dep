@@ -15,13 +15,14 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.impl.ussd;
 
-import com.wso2telco.datapublisher.DataPublisherConstants;
 import com.wso2telco.dbutils.fileutils.FileReader;
+import com.wso2telco.dep.mediator.util.FileNames;
+import com.wso2telco.dep.datapublisher.DataPublisherConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.dep.mediator.service.USSDService;
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
-
+import java.io.File;
 import java.util.Map;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
@@ -30,6 +31,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONObject;
+import org.wso2.carbon.utils.CarbonUtils;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -78,13 +80,15 @@ public class USSDInboundHandler implements USSDHandler {
 		String requestPath = executor.getSubResourcePath();
 		String subscriptionId = requestPath.substring(requestPath.lastIndexOf("/") + 1);
 		FileReader fileReader = new FileReader();
+		String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
+				+ FileNames.MEDIATOR_CONF_FILE.getFileName();
 
 		// remove non numeric chars
 		subscriptionId = subscriptionId.replaceAll("[^\\d.]", "");
 		log.debug("subscriptionId - " + subscriptionId);
 		String notifyurl = ussdService.getUSSDNotifyURL(Integer.valueOf(subscriptionId));
 
-		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
+		Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
 
 		JSONObject jsonBody = executor.getJsonBody();
 		jsonBody.getJSONObject("inboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL",

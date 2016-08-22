@@ -11,14 +11,13 @@
 --
 
 CREATE TABLE IF NOT EXISTS `ussd_request_entry` (
-  `ID` int(20) NOT NULL AUTO_INCREMENT,
-  `axiataid` int(11) DEFAULT NULL,
+  `ussd_request_did` int(20) NOT NULL AUTO_INCREMENT,
   `notifyurl` varchar(255) DEFAULT NULL,
   `created` varchar(25) DEFAULT NULL,
   `created_date` timestamp NULL DEFAULT NULL,
   `lastupdated` varchar(25) DEFAULT NULL,
   `lastupdated_date` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`ussd_request_did`)
 );
 
 

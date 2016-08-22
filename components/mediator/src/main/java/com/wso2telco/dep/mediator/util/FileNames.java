@@ -1,7 +1,7 @@
 /*******************************************************************************
  * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
  *  
- *  WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
+ * WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
  * 
@@ -13,26 +13,24 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.subscriptionvalidator.services.impl;
+package com.wso2telco.dep.mediator.util;
 
-import org.apache.synapse.MessageContext;
+public enum FileNames {
 
-import com.wso2telco.subscriptionvalidator.services.MifeValidator;
+	MEDIATOR_CONF_FILE("mediator-conf.properties");
 
+	FileNames(String fileName) {
 
-// TODO: Auto-generated Javadoc
-/**
- * The Class PassThroughValidator.
- */
-public class PassThroughValidator implements MifeValidator {
-
-	/* (non-Javadoc)
-	 * @see com.wso2telco.subscriptionvalidator.services.MifeValidator#validate(org.apache.synapse.MessageContext)
-	 */
-	public boolean validate(MessageContext messageContext) {
-		// TODO Auto-generated method stub
-		return true;
+		this.fileName = fileName;
 	}
 
-  
+	private String fileName;
+
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
+	}
 }
