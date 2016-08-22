@@ -16,8 +16,8 @@
 package com.wso2telco.verificationhandler.verifier;
 
 
-import com.wso2telco.datapublisher.DataPublisherConstants;
-import com.wso2telco.datapublisher.NorthboundDataPublisherClient;
+import com.wso2telco.dep.datapublisher.DataPublisherConstants;
+import com.wso2telco.dep.datapublisher.NorthboundDataPublisherClient;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

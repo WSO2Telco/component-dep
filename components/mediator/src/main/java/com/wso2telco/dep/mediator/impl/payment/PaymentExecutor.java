@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.impl.payment;
 
-import com.wso2telco.datapublisher.DataPublisherConstants;
+import com.wso2telco.dep.datapublisher.DataPublisherConstants;
 import com.wso2telco.dep.mediator.MSISDNConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.RequestExecutor;
@@ -35,7 +35,7 @@ import com.wso2telco.dep.oneapivalidation.service.impl.payment.ValidateReleaseRe
 import com.wso2telco.dep.oneapivalidation.service.impl.payment.ValidateReserveAdditional;
 import com.wso2telco.dep.oneapivalidation.service.impl.payment.ValidateReserveAmount;
 import com.wso2telco.dep.publisheventsdata.handler.SpendLimitHandler;
-import com.wso2telco.subscriptionvalidator.util.ValidatorUtils;
+import com.wso2telco.dep.subscriptionvalidator.util.ValidatorUtils;
 import com.wso2telco.utils.exception.BusinessException;
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;

@@ -13,11 +13,12 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.datapublisher;
+package com.wso2telco.dep.datapublisher;
 
-import com.wso2telco.datapublisher.dto.NorthboundRequestPublisherDTO;
-import com.wso2telco.datapublisher.dto.NorthboundResponsePublisherDTO;
-import com.wso2telco.datapublisher.internal.SouthboundDataComponent;
+import com.wso2telco.dep.datapublisher.dto.NorthboundRequestPublisherDTO;
+import com.wso2telco.dep.datapublisher.dto.NorthboundResponsePublisherDTO;
+import com.wso2telco.dep.datapublisher.internal.SouthboundDataComponent;
+
 import org.apache.axis2.Constants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

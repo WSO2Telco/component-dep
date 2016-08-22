@@ -13,11 +13,11 @@
  * See the License for the specific language governing permissions and
  * limitations under the License.
  ******************************************************************************/
-package com.wso2telco.datapublisher.dto;
+package com.wso2telco.dep.datapublisher.dto;
 
 import org.wso2.carbon.apimgt.usage.publisher.dto.RequestPublisherDTO;
 
-import com.wso2telco.datapublisher.DataPublisherConstants;
+import com.wso2telco.dep.datapublisher.DataPublisherConstants;
 
 // TODO: Auto-generated Javadoc
 /**
