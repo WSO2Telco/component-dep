@@ -2115,7 +2115,8 @@ public class BillingDAO {
                     }
                 }
 
-                String[] temp = {dateTime, userId, results.getString(3), event_type, results.getString(4), clientCorelator, results.getString(5), results.getString(6), currency, results.getString(7), results.getString(11)};                api_request.add(temp);
+                String[] temp = {dateTime, userId, results.getString(3), event_type, results.getString(4), clientCorelator, results.getString(5), results.getString(6), currency, results.getString(7), results.getString(11), results.getString(13), results.getString(14), results.getString(15), results.getString(16)};                
+                api_request.add(temp);
             }
         } catch (Exception e) {
             handleException("getAPIWiseTrafficForReportCharging", e);
