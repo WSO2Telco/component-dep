@@ -66,14 +66,14 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
 						<Bundle-Name>${project.artifactId}</Bundle-Name>
 						<Private-Package>
-							com.wso2telco.datapublisher.internal
+							com.wso2telco.dep.datapublisher.internal
 						</Private-Package>
 						<Export-Package>
-							!com.wso2telco.datapublisher.internal,
-							com.wso2telco.datapublisher.*
+							!com.wso2telco.dep.datapublisher.internal,
+							com.wso2telco.dep.datapublisher.*
 						</Export-Package>
 						<Import-Package>
 							javax.servlet;version="[2.6.0, 3.0.0)",

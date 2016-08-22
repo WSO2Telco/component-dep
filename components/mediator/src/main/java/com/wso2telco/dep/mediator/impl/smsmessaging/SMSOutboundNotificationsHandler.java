@@ -22,20 +22,24 @@ import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONObject;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.wso2telco.datapublisher.DataPublisherConstants;
 import com.wso2telco.dbutils.fileutils.FileReader;
+import com.wso2telco.dep.mediator.util.FileNames;
+import com.wso2telco.dep.datapublisher.DataPublisherConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.entity.smsmessaging.OutboundRequest;
 import com.wso2telco.dep.mediator.entity.smsmessaging.OutboundRequestOp;
 import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.service.SMSMessagingService;
+import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.mnc.resolver.MNCQueryClient;
-import com.wso2telco.oneapivalidation.exceptions.CustomException;
+
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 import org.wso2.carbon.apimgt.gateway.APIMgtGatewayConstants;
+import org.wso2.carbon.utils.CarbonUtils;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -80,9 +84,12 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 		String moSubscriptionId = requestPath.substring(requestPath.lastIndexOf("/") + 1);
 
 		FileReader fileReader = new FileReader();
-		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
+		String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
+				+ FileNames.MEDIATOR_CONF_FILE.getFileName();
 
-		HashMap<String, String> dnSubscriptionDetails =(HashMap<String, String>) smsMessagingService
+		Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
+
+		HashMap<String, String> dnSubscriptionDetails = (HashMap<String, String>) smsMessagingService
 				.subscriptionDNNotifiMap(Integer.valueOf(moSubscriptionId));
 		String notifyurl = dnSubscriptionDetails.get("notifyurl");
 		String serviceProvider = dnSubscriptionDetails.get("serviceProvider");

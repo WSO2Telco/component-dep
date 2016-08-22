@@ -87,6 +87,25 @@ function getApprovalHistoryApp(applicationid,operator){
 	}
 }
 
+
+
+function getAllOperator(){
+	var log = new Log();
+	
+	var billing = jagg.module("manager").getCustomBilling();
+	var apis = [];
+	try {
+		apis = billing.getAllOperators();
+		log.info("Operators " + stringify(apis));
+		return {error:false, data : apis};
+
+	} catch (e) {
+		log.error(e.message);
+		return { error:true,message:e.message};
+	}
+}
+
+
 function getApprovalHistory(fromDate, toDate, subscriber, application, operator, api){
 	var log = new Log();
 	log.info("*****************************************");
