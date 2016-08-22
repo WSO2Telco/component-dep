@@ -67,8 +67,9 @@
 							}
 							%>
 
-						<td><b>API:</b></td>s
-						<td><b>Status:</b></td>
+						<!-- <td><b>API:</b></td> -->
+						<td><b>Operation Type:</b></td>
+						<td><b>Records type:</b></td>
 						<td></td>
 					</tr>
 					<tr>

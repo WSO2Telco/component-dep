@@ -196,7 +196,7 @@ var populateUsageData = function(period, subscriber,operatorName) {
                                             row.appendChild(cell51);*/
                                             
                                             var cell6 = document.createElement("td");
-                                            cell6.innerHTML = operatorSub.rateName;
+                                            cell6.innerHTML = operatorSub.ratename;
                                             row.appendChild(cell6);
 
                                             var cell7 = document.createElement("td");
