@@ -1733,7 +1733,7 @@ public class BillingDAO {
 
         StringBuilder sql = new StringBuilder(); 
         
-        sql.append("SELECT time, userId, operatorId, requestId, msisdn, response_count, responseCode, jsonBody, resourcePath, method,api FROM ")
+        sql.append("SELECT time, userId, operatorId, requestId, msisdn, response_count, responseCode, jsonBody, resourcePath, method, api, ussdAction, ussdSessionId FROM ")
         .append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject()) 
         .append(" WHERE ")
         .append(responseStr)        
@@ -1828,6 +1828,12 @@ public class BillingDAO {
                         event_type = "Charge";
                     } else if (apitype.equalsIgnoreCase("ussd_send")) {
                         event_type = "USSD Outbound";
+                    } else if (apitype.equalsIgnoreCase("ussd_receive")) {
+                        if(results.getString(12) != null &&  (results.getString(12).equalsIgnoreCase("mocont") || results.getString(12).equalsIgnoreCase("mofin"))){
+                            event_type = "USSD MO Callback";
+                        } else if (results.getString(12) != null &&  (results.getString(12).equalsIgnoreCase("mtcont") || results.getString(12).equalsIgnoreCase("mtcont"))) {
+                            event_type = "USSD MT Callback";
+                        }
                     } else if (apitype.equalsIgnoreCase("ussd_subscription")) {
                         event_type = "USSD Subscription";
                     } else if (apitype.equalsIgnoreCase("stop_ussd_subscription")) {
@@ -1839,7 +1845,8 @@ public class BillingDAO {
                     }
                 }
 
-                String[] temp = {dateTime, userId, results.getString(3), event_type, results.getString(4), clientCorelator, results.getString(5), results.getString(6), results.getString(7)};                api_request.add(temp);
+                String[] temp = {dateTime, userId, results.getString(3), event_type, results.getString(4), clientCorelator, results.getString(5), results.getString(6), results.getString(7), results.getString(13) };                
+                api_request.add(temp);
             }
         } catch (Exception e) {
             handleException("Error occured while getting API wise traffic for report from the database", e);
@@ -1995,17 +2002,18 @@ public class BillingDAO {
 
         StringBuilder sql = new StringBuilder(); 
         
-        sql.append("SELECT time, userId, operatorId, requestId, msisdn, chargeAmount, responseCode, jsonBody, resourcePath, method, purchaseCategoryCode, api, taxAmount , channel , onBehalfOf ,description FROM ")
-        .append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject())
+        sql.append("SELECT res.time, res.userId, res.operatorId, res.requestId, res.msisdn, res.chargeAmount, res.responseCode, res.jsonBody, res.resourcePath, res.method, res.purchaseCategoryCode, res.api, res.taxAmount , res.channel , res.onBehalfOf ,res.description, res.transactionOperationStatus , req.transactionOperationStatus  FROM ")
+        .append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject()).append(" res, ")
+        .append(ReportingTable.SB_API_REQUEST_SUMMARY.getTObject()).append(" req")
         .append(" WHERE ")
         .append(responseStr)
-        .append("  AND operatorId LIKE ? AND replace(userid,'@carbon.super','') LIKE ? AND api LIKE ? ");
+        .append("  AND res.operatorId LIKE ? AND replace(res.userid,'@carbon.super','') LIKE ? AND res.api LIKE ? AND res.requestId = req.requestId");
 
         if (isSameYear && isSameMonth){
-			sql.append("AND (day between ? and ? ) AND (month = ?) AND (year = ?) ");
+			sql.append("AND (res.day between ? and ? ) AND (res.month = ?) AND (res.year = ?) ");
 
 		} else {
-			sql.append("AND STR_TO_DATE(time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') ");
+			sql.append("AND STR_TO_DATE(res.time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') ");
 		}
         
         List<String[]> api_request = new ArrayList<String[]>();
@@ -2097,7 +2105,11 @@ public class BillingDAO {
                     } else if (apitype.equalsIgnoreCase("retrive_sms")) {
                         event_type = "Inbound ";
                     } else if (apitype.equalsIgnoreCase("payment")) {
-                        event_type = "Charge";
+                    	 if (results.getString(18) != null) {
+                             event_type = results.getString(18);
+                         } else {
+                             event_type = "";
+                         }
                     } else if (apitype.equalsIgnoreCase("location")) {
                         event_type = "Location";
                     }else if (apitype.equalsIgnoreCase("sms_dn_inbound_notifications")){
@@ -2115,7 +2127,9 @@ public class BillingDAO {
                     }
                 }
 
-                String[] temp = {dateTime, userId, results.getString(3), event_type, results.getString(4), clientCorelator, results.getString(5), results.getString(6), currency, results.getString(7), results.getString(11), results.getString(13), results.getString(14), results.getString(15), results.getString(16)};                
+                String[] temp = {dateTime, userId, results.getString(3), event_type, results.getString(4), clientCorelator, results.getString(5), results.getString(6),
+		                        currency, results.getString(7), results.getString(11), results.getString(13), results.getString(14), results.getString(15),
+		                        results.getString(16), results.getString(17)};               
                 api_request.add(temp);
             }
         } catch (Exception e) {
