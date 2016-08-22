@@ -2086,6 +2086,8 @@ public class BillingDAO {
                         event_type = "Charge";
                     } else if (apitype.equalsIgnoreCase("location")) {
                         event_type = "Location";
+                    } else if (apitype.equalsIgnoreCase("sms_inbound_notifications")){
+                        event_type = "Inbound Traffic";
                     }
                 }
 
