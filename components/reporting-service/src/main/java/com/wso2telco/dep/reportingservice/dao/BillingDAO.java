@@ -1743,7 +1743,7 @@ public class BillingDAO {
         .append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject()) 
         .append(" WHERE ")
         .append(responseStr)        
-        .append(" AND operatorId LIKE ? AND replace(userid,'@carbon.super','') LIKE ? AND api LIKE ? AND ( consumerKey LIKE ? OR spConsumerKey LIKE ? ) ");
+        .append(" (operatorId LIKE ? OR spOperatorId LIKE ?) AND ((replace(userid,'@carbon.super','') LIKE ?) OR (replace(userid,'@carbon.super','') LIKE ?)) AND api LIKE ? AND ( consumerKey LIKE ? OR spConsumerKey LIKE ? ) ");
         if(isSameYear && isSameMonth){
 			sql.append("AND (day between ? and ? ) AND (month = ?) AND (year = ?) ");
 
@@ -1759,22 +1759,32 @@ public class BillingDAO {
             conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
             ps = conn.prepareStatement(sql.toString());
             ps.setString(1, operator);
-			ps.setString(2, subscriber);
-			ps.setString(3, api);
-			ps.setString(4, consumerKey);
-			if (api.equalsIgnoreCase("ussd")){
-                ps.setString(5, consumerKey);
+            if (api.equalsIgnoreCase("ussd")){
+                ps.setString(2, operator);
             } else {
-                ps.setString(5, null);
+                ps.setString(2, null);
+            }//ADDED OperatorId
+            ps.setString(3, subscriber);
+            if (api.equalsIgnoreCase("ussd")){
+                ps.setString(4, subscriber);
+            } else {
+                ps.setString(4, null);
+            }//ADDED UserId
+            ps.setString(5, api);
+            ps.setString(6, consumerKey);
+			if (api.equalsIgnoreCase("ussd")){
+                ps.setString(7, consumerKey);
+            } else {
+                ps.setString(7, null);
             }
 			if (isSameYear && isSameMonth) {
-                ps.setInt(6,Integer.parseInt(fromDateArray[2]) );
-                ps.setInt(7,Integer.parseInt(toDateArray[2]) );
-				ps.setInt(8, Integer.parseInt(fromDateArray[1]));
-				ps.setInt(9, Integer.parseInt(fromDateArray[0]));
+                ps.setInt(8,Integer.parseInt(fromDateArray[2]) );
+                ps.setInt(9,Integer.parseInt(toDateArray[2]) );
+				ps.setInt(10, Integer.parseInt(fromDateArray[1]));
+				ps.setInt(11, Integer.parseInt(fromDateArray[0]));
 			} else {
-				ps.setString(6, fromDate);
-				ps.setString(7, toDate);
+				ps.setString(8, fromDate);
+				ps.setString(9, toDate);
 			}
             
             log.debug("getAPIWiseTrafficForReport");
