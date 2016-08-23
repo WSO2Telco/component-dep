@@ -116,7 +116,42 @@
                 });
             }
         <% } %>
-    });
+
+        <%
+            var executorService = jagg.module("manager").getExecutorService();
+
+            var executorList = executorService.getExecutorwithDesc();
+            print('var executorList = ' + stringify(executorList) + ';');
+        %>
+
+         $.each(executorList, function(key, value) {
+            $('#executor')
+                .append($("<option></option>")
+                    //.attr("value",key)
+                    .text(key));
+        });
+
+        var executor_selector = $('#executor').find(":selected").val();
+        $('#executor').change( function () {
+            executor_selector = $('#executor').find(":selected").val();
+
+           /* $.each (descriptionrr, function (key, value) {
+                if (executor_selector == key) {
+                    alert("buddhi");
+                    $("role_help_executor").html("buddhi");
+                }
+            })*/
+
+            <%
+                var executorService = jagg.module("manager").getExecutorService();
+                var description = executorService.executorDescription("payment_executor");
+
+    var log = new Log();
+    log.info(description);
+
+            %>
+        });
+});
 </script>
 
     <div class="row-fluid">
@@ -204,6 +239,24 @@
                 <input type="hidden" name="provider" value="<%= encode.forHtml(api.provider) %>" />
                 <input type="hidden" name="context" value="<%= encode.forHtml(api.context) %>" />
     <% } %>
+
+
+
+    <div class="control-group">
+        <label class="control-label" for="executor"><%=i18n.localize("executor")%>:<span class="requiredAstrix">*</span></label>
+        <div class="controls">
+            <select class="select required" id="executor" name="executor">
+            </select>
+                <a class="icon-question-sign help_popup" help_data="role_help_executor"></a>
+                <p id="role_help_executor" class="hide"></p>
+        </div>
+    </div>
+
+
+
+
+
+
 
     <div class="control-group">
         <label class="control-label" for="visibility"><%=i18n.localize("visibility")%>:</label>
