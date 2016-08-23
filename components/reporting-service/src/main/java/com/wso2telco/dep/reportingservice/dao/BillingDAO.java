@@ -1845,9 +1845,17 @@ public class BillingDAO {
                     } else if (apitype.equalsIgnoreCase("stop_ussd_subscription")) {
                         if (requestMethod.equalsIgnoreCase("DELETE")) {
                             event_type = "Stop ussd subscription";
-                        };
+                        }
                     } else if (apitype.equalsIgnoreCase("location")) {
                         event_type = "Location";
+                    } else if (apitype.equalsIgnoreCase("wallet/payment")){
+                        event_type = "Wallet Payment";
+                    }else if (apitype.equalsIgnoreCase("wallet/refund")){
+                        event_type = "Wallet Refund";
+                    }else if (apitype.equalsIgnoreCase("wallet/list")){
+                        event_type = "Wallet List";
+                    }else if (apitype.equalsIgnoreCase("wallet/balance")){
+                        event_type = "Wallet Balance";
                     }
                 }
 
@@ -2314,6 +2322,9 @@ public class BillingDAO {
         String smsKeyString = "smsmessaging";
         String paymentapiKeyString = "payment";
         String refundapiKeyString = "refund";
+        String walletKeyString = "wallet";
+        String balanceKeyString ="balance";
+        String listKeyString ="list";
 
         String lastWord = ResourceURL.substring(ResourceURL.lastIndexOf("/") + 1);
 
@@ -2367,6 +2378,19 @@ public class BillingDAO {
         } else if (!requested_api.isEmpty() && requested_api.toLowerCase().contains(refundapiKeyString.toLowerCase()) &&
                 ResourceURL.toLowerCase().contains(paymentapiKeyString.toLowerCase())){
 	        	apiType = "refund";
+        }else if (!requested_api.isEmpty() && requested_api.toLowerCase().contains(walletKeyString.toLowerCase())){
+        	
+                if(ResourceURL.toLowerCase().contains(paymentapiKeyString.toLowerCase())){
+                    apiType = "wallet/payment";}
+                else if(ResourceURL.toLowerCase().contains(refundapiKeyString.toLowerCase())){
+                    apiType = "wallet/refund";
+
+                }else if(ResourceURL.toLowerCase().contains(listKeyString.toLowerCase())){
+                   apiType = "wallet/list";
+
+                }else if(ResourceURL.toLowerCase().contains(balanceKeyString.toLowerCase())){
+                    apiType = "wallet/balance";
+                }
         } else {
             return null;
         }
@@ -2983,5 +3007,174 @@ public class BillingDAO {
         return convertedDateTimeString;
 
     }
+    
+    public static List<String[]> getAPIWiseTrafficForReportWallet(String fromDate, String toDate, String subscriber, String operator, String api, boolean isError) throws Exception {
+        
+    	if (subscriber.equals("__ALL__")) {
+            subscriber = "%";
+        }
+        if (operator.equals("__ALL__")) {
+            operator = "%";
+        }
+        if (api.equals("__ALL__")) {
+            api = "%";
+        }
+
+        String responseStr = "responseCode LIKE '20_' ";
+        
+        if (isError) {
+            responseStr = "responseCode NOT LIKE '20_' ";
+        }
+
+        String[] fromDateArray = fromDate.split("-");
+        String[] toDateArray = toDate.split("-");
+
+        boolean isSameYear = fromDateArray[0].equalsIgnoreCase(toDateArray[0]) ? true : false;
+        boolean isSameMonth = fromDateArray[1].equalsIgnoreCase(toDateArray[1]) ? true : false;
+
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet results = null;
+        StringBuilder sql = new StringBuilder(); 
+        String userId;
+        
+        sql.append("SELECT res.time, res.userId, res.operatorId, res.requestId, res.msisdn, res.chargeAmount, res.responseCode, res.jsonBody, res.resourcePath, res.method, res.purchaseCategoryCode, res.api, res.taxAmount , res.channel , res.onBehalfOf, res.description, res.transactionOperationStatus , req.transactionOperationStatus ")
+        .append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject()).append(" res, ")
+        .append(ReportingTable.SB_API_REQUEST_SUMMARY.getTObject()).append(" req ")
+        .append("WHERE ")
+        .append(responseStr)
+        .append(" AND res.operatorId LIKE ? AND replace(res.userid,'@carbon.super','') LIKE ? AND res.api LIKE ? AND res.requestId = req.requestId ");
+        
+        if (isSameYear && isSameMonth) {
+        	sql.append("AND (res.day between ? and ? ) AND (res.month = ?) AND (res.year = ?) ");
+        } else {
+        	sql.append("AND STR_TO_DATE(res.time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') ");
+        }
+
+        List<String[]> api_request = new ArrayList<String[]>();
+
+        try {
+        	conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
+        	ps = conn.prepareStatement(sql.toString());
+            ps.setString(1, operator);
+            ps.setString(2, subscriber);
+            ps.setString(3, api);
+
+            log.debug(api);
+            if (isSameYear && isSameMonth) {
+                ps.setInt(4, Integer.parseInt(fromDateArray[2]));
+                ps.setInt(5, Integer.parseInt(toDateArray[2]));
+                ps.setInt(6, Integer.parseInt(fromDateArray[1]));
+                ps.setInt(7, Integer.parseInt(fromDateArray[0]));
+            } else {
+                ps.setString(4, fromDate);
+                ps.setString(5, toDate);
+            }
+
+            log.debug("getAPIWiseTrafficForReportWallet"+sql);
+            log.debug("SQL (PS) ---> " + ps.toString());
+
+            results = ps.executeQuery();
+            while (results.next()) {
+                String jsonBody = results.getString(8);
+                String requestUrl = results.getString(9);
+                String requestMethod = results.getString(10);
+                String requestapi = results.getString(12);
+                if (results.getString(2) != null && results.getString(2).contains("@")) {
+                    userId = results.getString(2).split("@")[0];
+                } else {
+                    userId = results.getString(2);
+                }
+
+                String dateTime = results.getString(1);
+                if (dateTime == null) {
+                    dateTime = "";
+                }
+
+                String msisdn = "";
+                String clientCorelator = "";
+                String currency = "";
+                String event_type = "";
+                String amount = "";
+
+                if (!jsonBody.isEmpty()) {
+                    try {
+
+                        JSONObject homejson = new JSONObject(jsonBody);
+                        if (!homejson.isNull("makePayment")) {
+                            JSONObject transactionObject = (JSONObject) homejson.get("makePayment");
+                            if (!transactionObject.isNull("endUserId")) {
+                                msisdn = transactionObject.getString("endUserId");
+                            }
+                            if (!transactionObject.isNull("clientCorrelator")) {
+                                clientCorelator = transactionObject.getString("clientCorrelator");
+                            }
+                            if (!transactionObject.isNull("paymentAmount")) {
+                                JSONObject paymentAmountoObj = (JSONObject) transactionObject.get("paymentAmount");
+                               if (!paymentAmountoObj.isNull("chargingInformation")) {
+                                    JSONObject chargingInfoObj = (JSONObject) paymentAmountoObj.get("chargingInformation");
+                                    if (!chargingInfoObj.isNull("currency")) {
+                                        currency = chargingInfoObj.getString("currency");
+                                        amount= chargingInfoObj.getString("amount");
+                                    }
+                                }
+                            }
+                        }
+
+
+                        if (!homejson.isNull("refundTransaction")) {
+                            JSONObject transactionObject = (JSONObject) homejson.get("refundTransaction");
+                            if (!transactionObject.isNull("endUserId")) {
+                               msisdn = transactionObject.getString("endUserId");
+                            }
+                            if (!transactionObject.isNull("clientCorrelator")) {
+                                clientCorelator = transactionObject.getString("clientCorrelator");
+                            }
+                            if (!transactionObject.isNull("paymentAmount")) {
+                                JSONObject paymentAmountoObj = (JSONObject) transactionObject.get("paymentAmount");
+                                if (!paymentAmountoObj.isNull("chargingInformation")) {
+                                    JSONObject chargingInfoObj = (JSONObject) paymentAmountoObj.get("chargingInformation");
+                                    if (!chargingInfoObj.isNull("currency")) {
+                                        currency = chargingInfoObj.getString("currency");
+                                        amount= chargingInfoObj.getString("amount");
+                                    }
+                                }
+                            }
+                       }
+
+                    } catch (Exception ex) {
+                        System.out.println("Unable to read JSON body stored in DB :: " + ex);
+                        clientCorelator = "";
+                    }
+    	               }
+
+               if (!requestUrl.isEmpty()) {
+                    String apitype = findAPIType(requestUrl, requestapi, requestMethod);
+                    if (apitype.equalsIgnoreCase("wallet/payment")){
+                        event_type = "Wallet Payment";
+                    }else if (apitype.equalsIgnoreCase("wallet/refund")){
+                        event_type = "Wallet Refund";
+                    }else if (apitype.equalsIgnoreCase("wallet/list")){
+                        event_type = "Wallet List";
+                    }else if (apitype.equalsIgnoreCase("wallet/balance")){
+                        event_type = "Wallet Balance";
+                    }
+               }
+
+                String[] temp = {dateTime, userId, results.getString(3), event_type, results.getString(4), clientCorelator, results.getString(5), amount,
+                        currency, results.getString(7), results.getString(11), results.getString(13), results.getString(14), results.getString(15),
+                        results.getString(16), results.getString(17)};
+                api_request.add(temp);
+            }
+        } catch (Exception e) {
+            System.out.println("Error occured while getting API wise traffic for report (Charging) from the database" + e);
+            handleException("Error occured while getting API wise traffic for report (Charging) from the database", e);
+        } finally {
+        	DbUtils.closeAllConnections(ps, conn, results);
+        }
+        log.debug("end getAPIWiseTrafficForReportCharging");
+        return api_request;
+    }
+    
 
 }
