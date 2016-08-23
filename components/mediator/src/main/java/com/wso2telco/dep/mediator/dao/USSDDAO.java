@@ -64,15 +64,16 @@ public class USSDDAO {
 			}
 
 			st = con.createStatement();
-            String sql = "SELECT MAX(axiataid) maxid FROM ussd_request_entry";
-
-            select_result = st.executeQuery(sql);
+			StringBuilder queryString = new StringBuilder(" SELECT MAX(ussd_request_did) maxid ")
+            .append("FROM ")
+			.append(DatabaseTables.USSD_REQUEST_ENTRY.getTableName());
+            select_result = st.executeQuery(queryString.toString());
             if (select_result.next()) {
             	selectId = select_result.getInt("maxid") + 1;
             }
             
 			
-			StringBuilder insertQueryString = new StringBuilder("INSERT INTO ");
+			StringBuilder insertQueryString = new StringBuilder(" INSERT INTO ");
 			insertQueryString.append(DatabaseTables.USSD_REQUEST_ENTRY.getTableName());
 			insertQueryString.append(" (ussd_request_did,notifyurl,sp_consumerKey,operatorId,userId) ");
 			insertQueryString.append("VALUES (?,?,?,?)");
@@ -191,9 +192,9 @@ public class USSDDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder queryString = new StringBuilder("DELETE FROM ");
-			queryString.append(DatabaseTables.USSD_REQUEST_ENTRY.getTableName());
-			queryString.append(" WHERE ussd_request_did = ?");
+			StringBuilder queryString = new StringBuilder("DELETE FROM ")
+			.append(DatabaseTables.USSD_REQUEST_ENTRY.getTableName())
+			.append(" WHERE ussd_request_did = ?");
 
 			ps = con.prepareStatement(queryString.toString());
 
@@ -341,21 +342,20 @@ public class USSDDAO {
 			 */
 			con.setAutoCommit(false);
 
-			StringBuilder deleteSubscriptionsQueryString = new StringBuilder("DELETE FROM ");
-			deleteSubscriptionsQueryString.append(DatabaseTables.USSD_REQUEST_ENTRY.getTableName());
-			deleteSubscriptionsQueryString.append(" WHERE axiataid = ?");
+			StringBuilder deleteSubscriptionsQueryString = new StringBuilder("DELETE FROM ")
+			.append(DatabaseTables.USSD_REQUEST_ENTRY.getTableName())
+			.append(" WHERE axiataid = ?");
 
 			deleteSubscriptionsStatement = con.prepareStatement(deleteSubscriptionsQueryString.toString());
-
 			deleteSubscriptionsStatement.setInt(1, moSubscriptionId);
 			
 			log.debug("sql query in outboundSubscriptionDelete : " + deleteSubscriptionsStatement);
 
 			deleteSubscriptionsStatement.executeUpdate();
 
-			StringBuilder deleteOperatorSubscriptionsQueryString = new StringBuilder("DELETE FROM ");
-			deleteOperatorSubscriptionsQueryString.append(DatabaseTables.MO_USSD_SUBSCRIPTIONS.getTableName());
-			deleteOperatorSubscriptionsQueryString.append(" WHERE axiataid = ?");
+			StringBuilder deleteOperatorSubscriptionsQueryString = new StringBuilder("DELETE FROM ")
+			.append(DatabaseTables.MO_USSD_SUBSCRIPTIONS.getTableName())
+			.append(" WHERE axiataid = ?");
 
 			deleteOperatorSubscriptionsStatement = con.prepareStatement(deleteOperatorSubscriptionsQueryString.toString());
 
@@ -395,14 +395,20 @@ public class USSDDAO {
 	}
 
 	public String getOperatorIdByOperator(String operator)  throws SQLException, Exception {
-		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
-	       PreparedStatement ps = null;
+		
+			Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+			PreparedStatement ps = null;
 	        ResultSet rs = null;
 	        String operatorId="";
 	
 	        try {
-	            String sql = "SELECT id FROM operators o where operatorname=?";
-	            ps = con.prepareStatement(sql);
+	        	StringBuilder queryString = new StringBuilder(" SELECT id FROM ")
+	        	.append(DatabaseTables.OPERATORS.getTableName())
+	        	.append(" o ")
+	        	.append(" WHERE ")
+	        	.append(" operatorname=? ");
+	        	
+	            ps = con.prepareStatement(queryString.toString());
 	            ps.setString(1, operator);
 	            rs = ps.executeQuery();
 	
@@ -420,23 +426,33 @@ public class USSDDAO {
 	}	
 
 		public void updateOperatorIdBySubscriptionId(Integer subscriptionId, String operatorId)  throws SQLException, Exception {
-    		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
-			    Statement st = null;
-			    try {
-			        if (con == null) {
-			            throw new Exception("Connection not found");
-			        }
-			
-			        st = con.createStatement();
-			        String sql = "update ussd_request_entry set operatorId='"+operatorId+"' where axiataid = '"+subscriptionId+"'";			
-			        st.executeUpdate(sql);
-			
-			    } catch (Exception e) {
-			    	throw e;
-			    } finally {
-			        DbUtils.closeAllConnections(st, con, null);
-			    }
+    		
+			Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+			PreparedStatement ps = null;
+			    
+			try {
+				if (con == null) {
+					throw new Exception("Connection not found");
+				}
 				
-			
-		}
+				StringBuilder queryString = new StringBuilder(" UPDATE ")
+				.append(DatabaseTables.USSD_REQUEST_ENTRY.getTableName())
+				.append(" SET ")
+				.append(" operatorId= ? ")
+				.append(" WHERE ")
+				.append(" axiataid = ? ");
+				
+				ps = con.prepareStatement(queryString.toString());	           
+				ps.setString(1, operatorId);
+				ps.setInt(2,subscriptionId);
+	           
+				ps.executeUpdate();
+		
+			} catch (Exception e) {
+				throw e;
+			} finally {
+				DbUtils.closeAllConnections(ps, con, null);
+			}
+				
+			}
 }
