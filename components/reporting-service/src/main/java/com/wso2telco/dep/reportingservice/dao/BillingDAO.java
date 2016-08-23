@@ -782,7 +782,7 @@ public class BillingDAO {
         .append(" WHERE api_version =? and consumerKey=? and operatorId =? and responseCode like '2%' and month=? and year=? and operationType=? and category=? and subcategory=? AND operatorRef NOT IN ")
         .append(" (SELECT distinct operatorRef FROM ")
         .append(HostObjectConstants.SB_RESPONSE_SUMMARY_TABLE)
-        .append(" WHERE api=refund) ");
+        .append(" WHERE api='refund') ");
 
         Set<PaymentRequestDTO> requestSet = new HashSet<PaymentRequestDTO>();
         try {
@@ -1743,7 +1743,7 @@ public class BillingDAO {
         .append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject()) 
         .append(" WHERE ")
         .append(responseStr)        
-        .append(" (operatorId LIKE ? OR spOperatorId LIKE ?) AND ((replace(userid,'@carbon.super','') LIKE ?) OR (replace(userid,'@carbon.super','') LIKE ?)) AND api LIKE ? AND ( consumerKey LIKE ? OR spConsumerKey LIKE ? ) ");
+        .append("AND (operatorId LIKE ? OR spOperatorId LIKE ?) AND ((replace(userid,'@carbon.super','') LIKE ?) OR (replace(spUserId,'@carbon.super','') LIKE ?)) AND api LIKE ? AND ( consumerKey LIKE ? OR spConsumerKey LIKE ? ) ");
         if(isSameYear && isSameMonth){
 			sql.append("AND (day between ? and ? ) AND (month = ?) AND (year = ?) ");
 
