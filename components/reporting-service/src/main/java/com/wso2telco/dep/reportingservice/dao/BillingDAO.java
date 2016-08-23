@@ -1528,7 +1528,9 @@ public class BillingDAO {
 			.append( " x WHERE operatorId LIKE ? AND replace(userid,'@carbon.super','') LIKE ? AND api LIKE ? AND consumerKey LIKE ? AND STR_TO_DATE(x.time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') ");			 
 		}
 		if (!msisdn.isEmpty()) {
-			sql.append("AND msisdn LIKE ? ");
+			sql.append("AND msisdn LIKE ? or (msisdn LIKE ? or x.jsonbody like '%senderAddress\":\"")
+			.append(msisdn)
+			.append("%')");
 		}
 		
 		sql.append("LIMIT ")
@@ -1554,7 +1556,9 @@ public class BillingDAO {
 
 				if (!msisdn.isEmpty()) {
 					// ps.setInt(9,Integer.parseInt(msisdn));
-					ps.setString(9, "%" + msisdn);
+                    ps.setString(9, "%" + msisdn);
+                    ps.setString(10, "%" + msisdn);
+                    //ps.setString(10, msisdn);
 
 				}
 			} else {
@@ -1563,7 +1567,9 @@ public class BillingDAO {
 
 				if (!msisdn.isEmpty()) {
 					// ps.setInt(7,Integer.parseInt(msisdn));
-					ps.setString(7, "%" + msisdn);
+                    ps.setString(7, "%" + msisdn);
+                    ps.setString(8, "%" + msisdn);
+                    //ps.setString(8, msisdn);
 				}
 			}
 
