@@ -14,14 +14,6 @@
     <url>http://wso2.org</url>
     <description>This feature contains the server bundles required for workflow manager</description>
 
-    <dependencies>
-        <!--dependency>
-            <groupId>com.wso2telco.ids</groupId>
-            <artifactId>authenticate-selector</artifactId>
-            <version>${com.wso2telco.ids.version}</version>
-        </dependency-->
-    </dependencies>
-
     <build>
         <plugins>
             <plugin>
