@@ -1528,7 +1528,7 @@ public class BillingDAO {
 			.append( " x WHERE operatorId LIKE ? AND replace(userid,'@carbon.super','') LIKE ? AND api LIKE ? AND consumerKey LIKE ? AND STR_TO_DATE(x.time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') ");			 
 		}
 		if (!msisdn.isEmpty()) {
-			sql.append("AND msisdn LIKE ? or (msisdn LIKE ? or x.jsonbody like '%senderAddress\":\"")
+			sql.append("AND msisdn LIKE ? or (msisdn LIKE ? or x.jsonBody like '%senderAddress\":\"")
 			.append(msisdn)
 			.append("%')");
 		}
