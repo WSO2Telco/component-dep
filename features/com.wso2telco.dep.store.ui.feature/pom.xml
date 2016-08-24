@@ -8,7 +8,7 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>com.wso2telco.dep.store.feature</artifactId>
+    <artifactId>com.wso2telco.dep.store.ui.feature</artifactId>
     <packaging>pom</packaging>
     <name>WSO2.Telco Store</name>
     <url>http://wso2.org</url>
@@ -100,7 +100,7 @@
                             <goal>p2-feature-gen</goal>
                         </goals>
                         <configuration>
-                            <id>com.wso2telco.dep.store</id>
+                            <id>com.wso2telco.dep.store.ui</id>
                             <propertiesFile>../feature.properties</propertiesFile>
                             <adviceFile>
                                 <properties>
