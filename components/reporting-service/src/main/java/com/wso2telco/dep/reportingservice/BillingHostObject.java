@@ -15,8 +15,6 @@
  ******************************************************************************/
 package com.wso2telco.dep.reportingservice;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -24,8 +22,6 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 import javax.xml.stream.XMLStreamException;
 
@@ -33,7 +29,6 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.openjpa.lib.jdbc.ReportingSQLException;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.NativeArray;
@@ -49,17 +44,16 @@ import org.wso2.carbon.apimgt.impl.APIManagerFactory;
 import org.wso2.carbon.apimgt.impl.dao.ApiMgtDAO;
 import org.wso2.carbon.apimgt.impl.utils.APIUtil;
 import org.wso2.carbon.apimgt.usage.client.dto.APIVersionUserUsageDTO;
-import org.wso2.carbon.apimgt.usage.client.exception.APIMgtUsageQueryServiceClientException;
 
 import com.wso2telco.dep.reportingservice.dao.Approval;
 import com.wso2telco.dep.reportingservice.dao.BillingDAO;
 import com.wso2telco.dep.reportingservice.dao.OperatorDAO;
+import com.wso2telco.dep.reportingservice.exception.ReportingServiceError;
 import com.wso2telco.dep.reportingservice.northbound.NbHostObjectUtils;
 import com.wso2telco.dep.reportingservice.southbound.SbHostObjectUtils;
 import com.wso2telco.dep.reportingservice.util.ChargeRate;
 import com.wso2telco.dep.reportingservice.util.RateKey;
 import com.wso2telco.utils.exception.BusinessException;
-import com.wso2telco.dep.reportingservice.exception.ReportingServiceError;
 
 // TODO: Auto-generated Javadoc
 /**

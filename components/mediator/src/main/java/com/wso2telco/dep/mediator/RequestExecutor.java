@@ -52,6 +52,7 @@ import com.wso2telco.dep.mediator.entity.cep.ConsumerSecretWrapperDTO;
 import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.InboundSMSMessage;
 import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.InboundSMSMessageList;
 import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.SouthboundRetrieveResponse;
+import com.wso2telco.dep.mediator.internal.PaymentType;
 import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.unmarshaler.GroupDTO;
 import com.wso2telco.dep.mediator.unmarshaler.GroupEventUnmarshaller;

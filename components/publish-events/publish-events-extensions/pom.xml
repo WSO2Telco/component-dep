@@ -22,47 +22,33 @@
     	<groupId>com.wso2telco.dep</groupId>
     	<artifactId>component-dep-parent</artifactId>
     	<version>1.8.0-SNAPSHOT</version>
-    	<relativePath>../../parent/pom.xml</relativePath>
+    	<relativePath>../../../parent/pom.xml</relativePath>
     </parent>
 
-    <artifactId>publish-events-data</artifactId>
+    <artifactId>publish-events-extensions</artifactId>
+
 
     <packaging>bundle</packaging>
-    <name>WSO2.Telco Publish Events Data Module</name>
-    <description>Events Processing Data Component for AM</description>
+    <name>WSO2.Telco Publish Events CEP Extensions Module</name>
+    <description>CEP Extensions for Publishing Events</description>
 
     <dependencies>
         <dependency>
-            <groupId>org.apache.synapse</groupId>
-            <artifactId>synapse-core</artifactId>
+            <groupId>org.wso2.siddhi</groupId>
+            <artifactId>siddhi-core</artifactId>
+            <version>2.1.0-wso2v1</version>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon.apimgt</groupId>
-            <artifactId>org.wso2.carbon.apimgt.impl</artifactId>
+            <groupId>org.wso2.siddhi</groupId>
+            <artifactId>siddhi-api</artifactId>
+            <version>2.1.0-wso2v1</version>
         </dependency>
         <dependency>
-            <groupId>org.wso2.carbon.commons</groupId>
-            <artifactId>org.wso2.carbon.databridge.agent.thrift</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon</groupId>
-            <artifactId>org.wso2.carbon.utils</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.carbon.apimgt</groupId>
-            <artifactId>org.wso2.carbon.apimgt.usage.publisher</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.orbit.com.hazelcast</groupId>
-            <artifactId>hazelcast</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>com.wso2telco.core</groupId>
-            <artifactId>dbutils</artifactId>   
-			<version>2.0.1-SNAPSHOT</version>
+            <groupId>org.quartz-scheduler</groupId>
+            <artifactId>quartz</artifactId>
+            <version>2.2.1</version>
         </dependency>
     </dependencies>
-
 
     <build>
         <plugins>
@@ -75,11 +61,11 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Private-Package>
-                            com.wso2telco.publisheventsdata.internal
+                            com.axiata.dialog.mife.events.extensions.internal
                         </Private-Package>
                         <Export-Package>
-                            !com.wso2telco.publisheventsdata.internal,
-                            com.wso2telco.publisheventsdata.*
+                            !com.axiata.dialog.mife.events.extensions.internal,
+                            com.axiata.dialog.mife.events.extensions.*
                         </Export-Package>
                         <Import-Package>
                             javax.servlet;version="[2.6.0, 3.0.0)",
@@ -116,5 +102,17 @@
             </plugin>
         </plugins>
     </build>
+
+    <repositories>
+        <repository>
+            <id>wso2-nexus</id>
+            <url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+                <checksumPolicy>ignore</checksumPolicy>
+            </releases>
+        </repository>
+    </repositories>
 
 </project>

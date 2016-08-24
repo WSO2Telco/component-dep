@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<executionPlan name="OLDMonthSpendLimitAnalyzer" statistics="disable"
+<executionPlan name="MonthSpendLimitAnalyzer" statistics="disable"
   trace="disable" xmlns="http://wso2.org/carbon/eventprocessor">
-  <description>Analyze Month spend limit data payment API requests</description>
+  <description>Analyze Month spend limit data payment API requests for particular groups</description>
   <siddhiConfiguration>
     <property name="siddhi.persistence.snapshot.time.interval.minutes">0</property>
     <property name="siddhi.enable.distributed.processing">false</property>
@@ -9,28 +9,26 @@
   <importedStreams>
     <stream as="SpendLimitData" name="mife.events.spend.limit.data" version="1.0.0"/>
   </importedStreams>
-  <queryExpressions><![CDATA[define table monthSpendLimitDataTable(consumerKey string, operatorId string,msisdn string, amount double) from ('datasource.name'='AXIATA_MIFE_DB', 'table.name'='month_spendlimitdata'); 
+  <queryExpressions><![CDATA[define table groupMonthSpendLimitDataTable(groupName string, consumerKey string, operatorId string,msisdn string, amount double,currentDateTime string,responseTime long) from ('datasource.name'='AXIATA_MIFE_DB', 'table.name'='month_spendlimitdata');
 
-from SpendLimitData 
-select consumerKey,operatorId, msisdn, chargeAmount, false as reset
-insert into spendLimitSummingStream;
+from SpendLimitData
+select groupName,consumerKey,operatorId,msisdn,chargeAmount, false as reset,paymentType,currentDateTime,responseTime
+insert into SpendLimitSummingStream;
 
-from spendLimitSummingStream#window.mife:cron('0 0 0 1 1/1 ? *','msisdn')
-select consumerKey,operatorId,msisdn, mife:optsum(chargeAmount,reset) as totalAmount, reset
-group by consumerKey, msisdn
-insert into monthTotalStream;
+from SpendLimitSummingStream#window.mife:cron('0 0 0 1 1/1 ? *','groupName','operatorId','msisdn')
+select groupName,consumerKey,operatorId,msisdn, mife:optsum(chargeAmount,reset,paymentType,groupName ) as totalAmount, reset,currentDateTime,responseTime
+group by groupName,operatorId,msisdn
+insert into totalStream;
 
-from monthTotalStream[reset==true]
-delete monthSpendLimitDataTable
-on monthTotalStream.msisdn == monthSpendLimitDataTable.msisdn;
+from totalStream[reset==true]
+delete groupMonthSpendLimitDataTable
+on totalStream.groupName == groupMonthSpendLimitDataTable.groupName;
 
-from monthTotalStream[reset!=true ]
-select consumerKey,operatorId,msisdn, totalAmount
-insert into monthSpendLimitDataTable;
+from totalStream[reset!=true ]
+select groupName,consumerKey,operatorId,msisdn, totalAmount,currentDateTime,responseTime
+insert into groupMonthSpendLimitDataTable;
 
 
 ]]></queryExpressions>
   <exportedStreams/>
 </executionPlan>
-
-

@@ -4,7 +4,6 @@ var log=new Log();
 
 var getTasks = function (filterCategory,taskType) {
 	
-	
 	var version = new ws.WSRequest();
 	var options = new Array();
 	options.useSOAP = 1.2;
@@ -63,7 +62,7 @@ var getTasks = function (filterCategory,taskType) {
 		}
 };
 
-var parseResponse=function parseResponse(response,taskType,endpoint){
+var parseResponse=function parseResponse(response,taskType,endp
 	var tasks=response.*::taskSimpleQueryResultSet.*::row
 	var tasksObject=[];
 
@@ -235,7 +234,7 @@ function getTaskDetails(taskId) {
 			version.open(options,endpoint, false);
 			version.send(payload);
 			result = version.responseE4X;
-			//log.info("Task Details: " + stringify(result));
+			log.info("Task Details: " + stringify(result));
 
 			return result;
 
@@ -254,8 +253,8 @@ function getApplicationDetails(taskId){
 		var endpoint=prefixEndpoint+"HumanTaskClientAPIAdmin/";
 
 		applicationDetails = getTaskDetails(taskId);
-		// 		log.info("Application Details: " + stringify(applicationDetails));
-		// 		log.info("============================================================================================================");
+		 		log.info("Application Details: " + stringify(applicationDetails));
+		 		log.info("============================================================================================================");
 		return parseApplicationDetailsResponse(applicationDetails, endpoint, taskId);
 	} catch (e) {
 		log.error(e.toString());

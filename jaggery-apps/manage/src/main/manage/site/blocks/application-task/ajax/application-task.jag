@@ -1,160 +1,194 @@
-<% include("/jagg/jagg.jag");
-var ws = require("ws");
-var log = new Log();
-(function() {
-    var action = request.getParameter("action");
-    var appName = request.getParameter("appName");
-    var appDescription = request.getParameter("appDesc");
-    var cookievalue = request.getHeader("applicationCookie");
-    log.info("cookievalue : " + cookievalue);
+<%
+include("/jagg/jagg.jag");
 
-    if (action == "createSpAppIs") {
-        var oauthData = getOAuthConsumerKeyOfApp(appName, cookievalue);
-        var oauthConsumerKey = oauthData.oauthConsumerKey;
-        var oauthConsumerSecret = oauthData.oauthConsumerSecret;
-        createApplication(appName, appDescription, cookievalue);
-        var appData = getApplicationID(appName, cookievalue);
-        var appID = appData.applicationID;
-        updateApplication(appID, appName, appDescription, oauthConsumerKey, oauthConsumerSecret, cookievalue);
-    }
-    if (action == "removeSpAppIs") {
-        removeApplication(appName, cookievalue);
-    }
+(function () {
+
+	var msg = require("/site/conf/ui-messages.jag");
+	var action = request.getParameter("action");
+	var user = jagg.getUser();
+	var site = require("/site/conf/site.json");
+	var obj;
+
+	var log = new Log();
+	if(action == "setApplicationTier") {
+		if (!user) {
+			print({
+				error:true,
+				message:msg.error.loginRequired(action)
+			});
+			return;
+		}
+		var username = user.username;
+
+		var externalWFReference, taskId, taskType, tierId, taskManagerModule, result;
+
+		taskId = request.getParameter("taskId");
+		taskType = request.getParameter("taskType");
+		tierId = request.getParameter("tierId");
+
+		var prefixEndpoint = site.workflows.applicationWorkFlowServerURL;
+		var endpoint = prefixEndpoint+ "HumanTaskClientAPIAdmin/";
+
+		taskManagerModule = jagg.module("taskmanager");
+		result = taskManagerModule.setApplicationTier(taskId, taskType, tierId, endpoint);
+
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:msg.error.authError(action, username)
+			};
+		} else {
+			obj = {
+				error:false,
+				"status":result
+			}
+		}
+		print(obj);
+	}else if(action == "getApplicationDetails"){
+		if (!user) {
+			print({
+				error:true,
+				message:msg.error.loginRequired(action)
+			});
+			return;
+		}
+		var username = user.username;
+
+		var taskId, taskManagerModule, result;
+
+		taskId = request.getParameter("taskId");
+		taskManagerModule = jagg.module("taskmanager");
+		result = taskManagerModule.getApplicationDetails(taskId);
+
+		log.debug("::: Application details retrieval result: >> "+ stringify(result));
+		//log.info("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ: " + taskId);
+		// 		log.info("::: Application details retrieval result: >> "+ stringify(result));
+		// 		log.info("---------------------------------------------------------------------------------");
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:msg.error.authError(action, username)
+			};
+		} else {
+			obj = {
+				error:false,
+				"data":result
+			}
+		}
+		print(obj);
+	}else if(action == "getProfileData"){
+		try {
+			var store = jagg.module("manager").getAPIStoreObj();
+			var serverUrl =  store.getAuthServerURL()+"UserProfileMgtService/";
+
+
+			// 			var user = session.get("logged.user");
+			// 			var json = session.get("workflowCookie");
+
+			//var json = (user.cookie)/* .split(": ")[1].split("=")[1] */;
+			//var json = parse(user.cookie);
+			// 			log.info("aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaax>>" + session);
+
+
+			var profileUser = request.getParameter("profileUser");
+			var payload = '<mgt:getUserProfile xmlns:mgt="http://mgt.profile.user.identity.carbon.wso2.org">'+
+			'<mgt:username>' + profileUser + '</mgt:username>' +
+			'<mgt:profileName>default</mgt:profileName>' +
+			'</mgt:getUserProfile>';
+
+			var ws = require('ws');
+			var webService = new ws.WSRequest();
+			var profileName = 'default';
+			var options = new Array();
+			options.useSOAP = 1.2;
+			options.useWSA = 1.0;
+			options.action = "urn:getUserProfile";
+			// 			options["HTTPHeaders"] = [{name: "cookie", value: json}];
+			// 	        log.debug(options["HTTPHeaders"]);
+			// 	        webService.open(options, serverUrl, false);
+
+
+
+			//get AuthManager admin credentials from api-manager.xml (source copied from /manage/modules/user/login.jag)
+			var configPath = "file://" + Packages.java.lang.System.getProperty("carbon.config.dir.path");
+			var amConfigPath = configPath + "/api-manager.xml";
+			var file = new File(amConfigPath);
+			file.open("r");
+			var amConfig = new XML(file.readAll());
+			file.close();
+			var adminUsername = String(amConfig.AuthManager.Username.text());
+			var adminPassword = String(amConfig.AuthManager.Password.text());
+
+
+
+			var wsUtil = require('wsUtil.jag');
+			var result = wsUtil.callWSReturnJSON(options, webService, serverUrl, payload, adminUsername, adminPassword);
+			if(result.error) {
+				print(result);
+				return;
+			}
+
+			log.info("DddddddddddddddddddddddddD:" + webService + ":" + serverUrl);
+			log.info(stringify(result));
+
+			var firstNameUri = "http://wso2.org/claims/givenname";
+			var lastNameUri = "http://wso2.org/claims/lastname";
+			var addressUri = "http://wso2.org/claims/streetaddress";
+			var countryUri = "http://wso2.org/claims/country";
+			var organizationUri = "http://wso2.org/claims/organization";
+			var emailUri = "http://wso2.org/claims/emailaddress";
+			var telephoneUri = "http://wso2.org/claims/telephone";
+			var mobileUri = "http://wso2.org/claims/mobile";
+			var retObj = new Object();
+
+			for(var x = 0; x < result.return.fieldValues.length; x++){
+				var obj = result.return.fieldValues[x];
+				if(obj.claimUri == firstNameUri){
+					retObj.firstName = obj.fieldValue;
+				} else if (obj.claimUri == lastNameUri){
+					retObj.lastName = obj.fieldValue;
+				} else if (obj.claimUri == addressUri){
+					retObj.address = obj.fieldValue;
+				} else if (obj.claimUri == countryUri){
+					retObj.country = obj.fieldValue;
+				} else if (obj.claimUri == organizationUri){
+					retObj.organization = obj.fieldValue;
+				} else if (obj.claimUri == emailUri){
+					retObj.email = obj.fieldValue;
+				} else if (obj.claimUri == telephoneUri){
+					retObj.telephone = obj.fieldValue;
+				} else if (obj.claimUri == mobileUri){
+					retObj.mobile = obj.fieldValue;
+				}
+			}
+			print(retObj);
+		} catch (e) {
+			var retObj = new Object();
+			retObj.error = true;
+			retObj.errorMsg = e.toString();
+			print(retObj);
+		}
+	} else if (action == "getApplicationTasks") {
+		var filterCategory, taskType, result, mod, tasks;
+		filterCategory = request.getParameter("filterCategory");
+		if(filterCategory==null){
+			filterCategory='userOnly';
+		}
+		taskType = "ApproveApplication";
+		mod = jagg.module("taskmanager");
+		result = mod.getTasks(filterCategory, taskType);
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:msg.error.authError(action, username)
+			};
+		} else {
+			obj = {
+				error:false,
+				"tasks":result
+			}
+		}
+		print(obj);
+	}
 }());
-
-function createApplication(appName, description, cookievalue) {
-    var version = new ws.WSRequest();
-    var options = new Array();
-    options.useSOAP = 1.1;
-    options.mep = 'in-only';
-    options.action = "urn:createApplication";
-    options["HTTPHeaders"] = [{
-        name: "Cookie",
-        value: cookievalue
-    }, ];
-    var payload = '<xsd:createApplication xmlns:xsd=\"http://org.apache.axis2/xsd\">' + '<xsd:serviceProvider xmlns:xsd=\"http://org.apache.axis2/xsd\">' + '<xsd1:applicationName xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\">' + appName + '</xsd1:applicationName>' + '<xsd1:description xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\"></xsd1:description>' + '</xsd:serviceProvider>' + '</xsd:createApplication>';
-    var result;
-    var site = require("/site/conf/site.json");
-    var identityServerUrl = site.IS_URL;
-    var endpoint = site.IS_URL + "services/IdentityApplicationManagementService/";
-    try {
-        version.open(options, endpoint, false);
-        version.send(payload);
-        result = version.responseE4X;
-    } catch (e) {
-        log.error(e.toString());
-        session.put("showLogin", "true");
-        return null;
-    }
-};
-
-function updateApplication(appId, appName, description, oauthConsumerKey, oauthConsumerSecret, cookievalue) {
-    var version = new ws.WSRequest();
-    var options = new Array();
-    options.useSOAP = 1.1;
-    options.mep = 'in-only';
-    options.action = "urn:updateApplication";
-    options["HTTPHeaders"] = [{
-        name: "Cookie",
-        value: cookievalue
-    }, ];
-    var payload = '<xsd:updateApplication xmlns:xsd=\"http://org.apache.axis2/xsd\">' + '<xsd:serviceProvider xmlns:xsd=\"http://org.apache.axis2/xsd\">' + '<xsd1:applicationId xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\">' + appId + '</xsd1:applicationId>' + '<xsd1:applicationName xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\">' + appName + '</xsd1:applicationName>' + '<xsd1:description xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\"></xsd1:description>' + '<xsd1:inboundAuthenticationConfig xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\">' + '<xsd1:inboundAuthenticationRequestConfigs xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\">' + '<xsd1:inboundAuthKey xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\">' + oauthConsumerKey + '</xsd1:inboundAuthKey>' + '<xsd1:inboundAuthType xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\">oauth2</xsd1:inboundAuthType>' + '<xsd1:properties xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\">' + '<xsd1:confidential xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\">false</xsd1:confidential>' + '<xsd1:name xmlns:x1001=\"http://dto.oauth.identity.carbon.wso2.org/xsd\">oauthConsumerSecret</xsd1:name>' + '<xsd1:required xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\">false</xsd1:required>' + '<xsd1:value xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\">' + oauthConsumerSecret + '</xsd1:value>' + '</xsd1:properties>' + '</xsd1:inboundAuthenticationRequestConfigs>' + '</xsd1:inboundAuthenticationConfig>' + '<xsd1:outboundProvisioningConfig xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\"></xsd1:outboundProvisioningConfig>' + '<xsd1:permissionAndRoleConfig xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\" />' + '<xsd1:saasApp xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\">false</xsd1:saasApp>' + '</xsd:serviceProvider>' + '</xsd:updateApplication>';
-    var result;
-    var site = require("/site/conf/site.json");
-    var identityServerUrl = site.IS_URL;
-    var endpoint = site.IS_URL + "services/IdentityApplicationManagementService/";
-    try {
-        version.open(options, endpoint, false);
-        version.send(payload);
-        result = version.responseE4X;
-    } catch (e) {
-        log.error(e.toString());
-        session.put("showLogin", "true");
-        return null;
-    }    
-}
-
-function removeApplication(appName, cookievalue) {
-    var version = new ws.WSRequest();
-    var options = new Array();
-    options.useSOAP = 1.1;
-    options.mep = 'in-only';
-    options.action = "urn:deleteApplication";
-    options["HTTPHeaders"] = [{
-        name: "Cookie",
-        value: cookievalue
-    }, ];
-    var payload = '<xsd:deleteApplication xmlns:xsd=\"http://org.apache.axis2/xsd\">' + '<xsd1:applicationName xmlns:xsd1=\"http://dto.oauth.identity.carbon.wso2.org/xsd\">' + appName + '</xsd1:applicationName>' + '</xsd:deleteApplication>';
-    var result;
-    var site = require("/site/conf/site.json");
-    var identityServerUrl = site.IS_URL;
-    var endpoint = site.IS_URL + "services/IdentityApplicationManagementService/";
-    try {
-        version.open(options, endpoint, false);
-        version.send(payload);
-        result = version.responseE4X;
-    } catch (e) {
-        log.error(e.toString());
-        session.put("showLogin", "true");
-        return null;
-    }
-}
-
-function getApplicationID(appName, cookievalue) {
-    var version = new ws.WSRequest();
-    var options = new Array();
-    options.useSOAP = 1.1;
-    options.action = "urn:getApplication";
-    options["HTTPHeaders"] = [{
-        name: "Cookie",
-        value: cookievalue
-    }, ];
-    var payload = '<xsd:getApplication xmlns:xsd=\"http://org.apache.axis2/xsd\">' + '<xsd:applicationName xmlns:xsd=\"http://org.apache.axis2/xsd\">' + appName + '</xsd:applicationName>' + '</xsd:getApplication>';
-    var site = require("/site/conf/site.json");
-    var identityServerUrl = site.IS_URL;
-    var endpoint = site.IS_URL + "services/IdentityApplicationManagementService/";
-    try {
-        version.open(options, endpoint, false);
-        version.send(payload);
-        result = version.responseE4X;
-        var wsUtil = require('wsUtil.jag');
-        var json = wsUtil.E4XtoJSON(result);
-        return json.
-        return;
-    } catch (e) {
-        log.error(e.toString());
-        session.put("showLogin", "true");
-        return null;
-    }
-    // 	return json.return.oauthConsumerKey;
-    return json.
-    return;
-}
-
-function getOAuthConsumerKeyOfApp(appName, cookievalue) {
-    var version = new ws.WSRequest();
-    var options = new Array();
-    options.useSOAP = 1.1;
-    options.action = "urn:getOAuthApplicationDataByAppName";
-    options["HTTPHeaders"] = [{
-        name: "Cookie",
-        value: cookievalue
-    }, ];
-    var payload = '<xsd:getOAuthApplicationDataByAppName xmlns:xsd=\"http://org.apache.axis2/xsd\">' + '<xsd:appName xmlns:xsd=\"http://org.apache.axis2/xsd\">' + appName + '</xsd:appName>' + '</xsd:getOAuthApplicationDataByAppName>';
-    var site = require("/site/conf/site.json");
-    var identityServerUrl = site.IS_URL;
-    var endpoint = site.IS_URL + "services/OAuthAdminService/";
-    try {
-        version.open(options, endpoint, false);
-        version.send(payload);
-        result = version.responseE4X;
-        var wsUtil = require('wsUtil.jag');
-        var json = wsUtil.E4XtoJSON(result);
-        return json.
-        return;
-    } catch (e) {
-        log.error(e.toString());
-        session.put("showLogin", "true");
-        return null;
-    }
-} %>
+%>
