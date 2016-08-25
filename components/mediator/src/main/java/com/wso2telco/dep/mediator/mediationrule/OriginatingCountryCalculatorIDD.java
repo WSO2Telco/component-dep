@@ -40,7 +40,7 @@ import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.dep.operatorservice.model.OperatorApplicationDTO;
 import com.wso2telco.dep.operatorservice.model.OperatorEndPointDTO;
 import com.wso2telco.dep.operatorservice.service.OparatorService;
-import com.wso2telco.mnc.resolver.MNCQueryClient;
+import com.wso2telco.core.mnc.resolver.MNCQueryClient;
 
 // TODO: Auto-generated Javadoc
 /**
