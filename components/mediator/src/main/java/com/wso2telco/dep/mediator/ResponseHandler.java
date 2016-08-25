@@ -18,14 +18,13 @@ package com.wso2telco.dep.mediator;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wso2telco.dep.datapublisher.DataPublisherConstants;
-import com.wso2telco.dbutils.fileutils.FileReader;
+import com.wso2telco.core.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.util.FileNames;
 import com.wso2telco.dep.mediator.entity.smsmessaging.DeliveryInfo;
 import com.wso2telco.dep.mediator.entity.smsmessaging.DeliveryInfoList;
 import com.wso2telco.dep.mediator.entity.smsmessaging.QuerySMSStatusResponse;
 import com.wso2telco.dep.mediator.entity.smsmessaging.SendSMSResponse;
 import com.wso2telco.dep.mediator.internal.UID;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
@@ -33,7 +32,6 @@ import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.wso2.carbon.utils.CarbonUtils;
-
 import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;

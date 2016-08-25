@@ -26,7 +26,7 @@ import org.apache.log4j.Logger;
 import com.wso2telco.aggregatorblacklist.model.ErrorReturn;
 import com.wso2telco.aggregatorblacklist.model.ProvisionReq;
 import com.wso2telco.aggregatorblacklist.model.RequestError;
-import com.wso2telco.dbutils.AxataDBUtilException;
+import com.wso2telco.core.dbutils.AxataDBUtilException;
 import com.google.gson.Gson;
 
 
