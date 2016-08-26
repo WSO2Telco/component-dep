@@ -99,6 +99,7 @@
 
 <script>
     $(document).ready(function() {
+
         <% if(api != null && api.subs == 0) { %>
             var visibility = $('#visibility').find(":selected").val();
             if (visibility == "public"){
@@ -154,20 +155,20 @@
 });
 </script>
 
-    <div class="row-fluid">
-        <div class="span12">
-            <div id="swaggerUpload" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
-                <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="swaggerUploadLabel">Import API Definition</h3>                    
-                </div>
-                <div class="modal-body">
-                    <div id="swagger_help" class="alert alert-danger hide" role="alert">
-                         Enter a valid url
-                         <button type="button" class="close" id="errorMsgClose"><span aria-hidden="true">&times;</span></button>
-                    </div>
-                    <div id="swagger_file_help" class="alert alert-danger hide" role="alert">
-                         <%=i18n.localize("invalidSwaggerFileErrorMsg")%>
+<div class="row-fluid">
+<div class="span12">
+    <div id="swaggerUpload" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="swaggerUploadLabel">Import API Definition</h3>
+        </div>
+        <div class="modal-body">
+            <div id="swagger_help" class="alert alert-danger hide" role="alert">
+                 Enter a valid url
+                 <button type="button" class="close" id="errorMsgClose"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div id="swagger_file_help" class="alert alert-danger hide" role="alert">
+                 <%=i18n.localize("invalidSwaggerFileErrorMsg")%>
                          <button type="button" class="close" id="fileErrorMsgClose"><span aria-hidden="true">&times;</span></button>
                     </div>
                     <div class="form-inline">
@@ -240,8 +241,6 @@
                 <input type="hidden" name="context" value="<%= encode.forHtml(api.context) %>" />
     <% } %>
 
-
-
     <div class="control-group">
         <label class="control-label" for="executor"><%=i18n.localize("executor")%>:<span class="requiredAstrix">*</span></label>
         <div class="controls">
@@ -251,12 +250,6 @@
                 <p id="role_help_executor" class="hide"></p>
         </div>
     </div>
-
-
-
-
-
-
 
     <div class="control-group">
         <label class="control-label" for="visibility"><%=i18n.localize("visibility")%>:</label>
@@ -274,7 +267,7 @@
                     <% if(!(enableRestrictByRoles == 'false')) {%>
                              <option value="restricted" <%if(api.visibility=="restricted"){%> selected="selected" <%}%>><%=i18n.localize("restricted")%></option>
                     <% } %>
-                    
+
                 <%} else {%>
                     <option value="public"><%=i18n.localize("public")%></option>
 		    <% if(isMultipleTenantsAvailable == true) {%>
@@ -604,6 +597,11 @@
                 var designer = APIDesigner();
                 location.href = "<%= jagg.url("/implement")%>?name="+designer.saved_api.name+"&version="+designer.saved_api.version+"&provider="+designer.saved_api.provider;                
             });
+            $('#description').val(function(index, value){
+                var executor_class = "com.wso2telco.dep.mediator.impl.payment.PaymentExecutor";
+                return value + '*' + executor_class;
+            });
+
             $("#design_form").submit();
         });
 
