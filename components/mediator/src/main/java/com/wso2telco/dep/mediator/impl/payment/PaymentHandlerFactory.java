@@ -16,7 +16,7 @@
 
 package com.wso2telco.dep.mediator.impl.payment;
 
-import com.wso2telco.oneapivalidation.exceptions.CustomException;
+import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;

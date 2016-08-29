@@ -28,10 +28,10 @@ import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.dep.mediator.service.SMSMessagingService;
-import com.wso2telco.oneapivalidation.exceptions.CustomException;
-import com.wso2telco.oneapivalidation.service.IServiceValidate;
-import com.wso2telco.oneapivalidation.service.impl.sms.ValidateDNCancelSubscription;
-import com.wso2telco.oneapivalidation.service.impl.sms.ValidateDNCancelSubscriptionPlugin;
+import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
+import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
+import com.wso2telco.dep.oneapivalidation.service.impl.smsmessaging.ValidateDNCancelSubscription;
+import com.wso2telco.dep.oneapivalidation.service.impl.smsmessaging.ValidateDNCancelSubscriptionPlugin;
 
 // TODO: Auto-generated Javadoc
 /**

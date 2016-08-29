@@ -15,9 +15,6 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.impl.smsmessaging;
 
-import java.util.HashMap;
-import java.util.Map;
-
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.commons.logging.Log;
@@ -25,23 +22,30 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONObject;
-import org.wso2.carbon.apimgt.gateway.APIMgtGatewayConstants;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.wso2telco.datapublisher.DataPublisherConstants;
 import com.wso2telco.dbutils.fileutils.FileReader;
+import com.wso2telco.dep.mediator.util.FileNames;
+import com.wso2telco.dep.datapublisher.DataPublisherConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.entity.smsmessaging.OutboundRequest;
 import com.wso2telco.dep.mediator.entity.smsmessaging.OutboundRequestOp;
 import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.service.SMSMessagingService;
+import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
+import com.wso2telco.dep.oneapivalidation.service.impl.smsmessaging.northbound.ValidateNBDeliveryInfoNotification;
+import com.wso2telco.dep.oneapivalidation.service.impl.smsmessaging.southbound.ValidateSBDeliveryInfoNotification;
 import com.wso2telco.mnc.resolver.MNCQueryClient;
-import com.wso2telco.oneapivalidation.exceptions.CustomException;
-import com.wso2telco.oneapivalidation.service.IServiceValidate;
-import com.wso2telco.oneapivalidation.service.impl.sms.nb.ValidateNBDeliveryInfoNotification;
-import com.wso2telco.oneapivalidation.service.impl.sms.sb.ValidateSBDeliveryInfoNotification;
+import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
+
+import java.io.File;
+import java.util.HashMap;
+import java.util.Map;
+
+import org.wso2.carbon.apimgt.gateway.APIMgtGatewayConstants;
+import org.wso2.carbon.utils.CarbonUtils;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -55,6 +59,7 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 	/** The executor. */
 	private SMSExecutor executor;
 
+	/** The mnc queryclient. */
 	MNCQueryClient mncQueryclient = null;
 
 	private static Log log = LogFactory.getLog(SMSOutboundNotificationsHandler.class);
@@ -88,13 +93,18 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 		String requestPath = executor.getSubResourcePath();
 		String moSubscriptionId = requestPath.substring(requestPath.lastIndexOf("/") + 1);
 
-		HashMap<String, String> dnSubscriptionDetails =(HashMap<String, String>) smsMessagingService.subscriptionDNNotifiMap(Integer.valueOf(moSubscriptionId));
+		FileReader fileReader = new FileReader();
+		String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
+				+ FileNames.MEDIATOR_CONF_FILE.getFileName();
+
+		Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
+
+		HashMap<String, String> dnSubscriptionDetails = (HashMap<String, String>) smsMessagingService
+				.subscriptionDNNotifiMap(Integer.valueOf(moSubscriptionId));
 		String notifyurl = dnSubscriptionDetails.get("notifyurl");
 		String serviceProvider = dnSubscriptionDetails.get("serviceProvider");
-		
+
 		String notifyurlRoute = notifyurl;
-		FileReader fileReader = new FileReader();
-		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
 		String requestRouterUrl = mediatorConfMap.get("requestRouterUrl");
 		if (requestRouterUrl != null) {
 			notifyurlRoute = requestRouterUrl + notifyurlRoute;
@@ -125,6 +135,7 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
 			context.setProperty(DataPublisherConstants.OPERATOR_ID,operator);
 			context.setProperty(APIMgtGatewayConstants.USER_ID, serviceProvider);
 		} else {
+
 			OutboundRequest outboundRequest = gson.fromJson(executor.getJsonBody().toString(), OutboundRequest.class);
 			formattedString = gson.toJson(outboundRequest);
 			String msisdn = outboundRequest.getDeliveryInfoNotification().getDeliveryInfo().getAddress();
@@ -144,6 +155,7 @@ public class SMSOutboundNotificationsHandler implements SMSHandler {
         	        
         int notifyret = executor.makeNorthBoundRequest(new OperatorEndpoint(new EndpointReference(notifyurl), null), notifyurlRoute,formattedString, true, context,false);        	
 		executor.removeHeaders(context);
+
 		if (notifyret == 0) {
 			throw new CustomException("SVC1000", "", new String[]{null});
 		}

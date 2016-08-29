@@ -20,7 +20,8 @@ import com.wso2telco.dep.mediator.impl.smsmessaging.northbound.RetrieveSMSNorthb
 import com.wso2telco.dep.mediator.impl.smsmessaging.northbound.SMSInboundSubscriptionsNorthboundHandler;
 import com.wso2telco.dep.mediator.impl.smsmessaging.southbound.OutboundSMSSubscriptionsSouthboundHandler;
 import com.wso2telco.dep.mediator.impl.smsmessaging.southbound.RetrieveSMSSouthboundHandler;
-import com.wso2telco.oneapivalidation.exceptions.CustomException;
+import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONObject;

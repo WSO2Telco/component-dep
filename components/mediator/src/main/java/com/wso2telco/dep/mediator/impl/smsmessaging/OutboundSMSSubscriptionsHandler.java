@@ -15,11 +15,12 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.impl.smsmessaging;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
+import com.wso2telco.dep.operatorservice.model.OperatorSubscriptionDTO;
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -27,10 +28,11 @@ import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONException;
 import org.json.JSONObject;
-
+import org.wso2.carbon.utils.CarbonUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wso2telco.dbutils.fileutils.FileReader;
+import com.wso2telco.dep.mediator.util.FileNames;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.entity.smsmessaging.DeliveryReceiptSubscriptionRequest;
 import com.wso2telco.dep.mediator.internal.ApiUtils;
@@ -38,11 +40,10 @@ import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.dep.mediator.service.SMSMessagingService;
-import com.wso2telco.dep.operatorservice.model.OperatorSubscriptionDTO;
-import com.wso2telco.oneapivalidation.exceptions.CustomException;
-import com.wso2telco.oneapivalidation.service.IServiceValidate;
-import com.wso2telco.oneapivalidation.service.impl.sms.ValidateCancelSubscription;
-import com.wso2telco.oneapivalidation.service.impl.sms.ValidateOutboundSubscription;
+import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
+import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
+import com.wso2telco.dep.oneapivalidation.service.impl.smsmessaging.ValidateCancelSubscription;
+import com.wso2telco.dep.oneapivalidation.service.impl.smsmessaging.ValidateOutboundSubscription;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -54,7 +55,7 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
 	private static Log log = LogFactory.getLog(OutboundSMSSubscriptionsHandler.class);
 
 	/** The Constant API_TYPE. */
-	private static final String API_TYPE = "sms";
+	private static final String API_TYPE = "smsmessaging";
 
 	/** The occi. */
 	private OriginatingCountryCalculatorIDD occi;
@@ -65,8 +66,9 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
 	/** The executor. */
 	private SMSExecutor executor;
 
+	/** The api utils. */
 	private ApiUtils apiUtils;
-	 
+
 	/**
 	 * Instantiates a new outbound sms subscriptions handler.
 	 *
@@ -99,6 +101,13 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
 		return false;
 	}
 
+	/*
+	 * (non-Javadoc)
+	 * 
+	 * @see
+	 * com.wso2telco.mediator.impl.sms.SMSHandler#validate(java.lang.String,
+	 * java.lang.String, org.json.JSONObject, org.apache.synapse.MessageContext)
+	 */
 	@Override
 	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context) throws Exception {
 		//context.setProperty("mife.prop.operationType", 205);
@@ -135,22 +144,19 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
 
 		String requestid = UID.getUniqueID(Type.RETRIVSUB.getCode(), context,executor.getApplicationid());
 		Gson gson = new GsonBuilder().serializeNulls().create();
-		
-		FileReader fileReader = new FileReader();
-		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
 
-		
+		FileReader fileReader = new FileReader();
+		String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
+				+ FileNames.MEDIATOR_CONF_FILE.getFileName();
+		Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
 		HashMap<String, String> jwtDetails = apiUtils.getJwtTokenDetails(context);
-		
 		JSONObject jsonBody = executor.getJsonBody();
 		JSONObject jsondstaddr = jsonBody.getJSONObject("deliveryReceiptSubscription");
-		
-		//String orgclientcl = jsondstaddr.getString("clientCorrelator");
 		String orgclientcl = "";
 		if (!jsondstaddr.isNull("clientCorrelator")) {
 			orgclientcl = jsondstaddr.getString("clientCorrelator");
 		}
-		
+
 		String serviceProvider = jwtDetails.get("subscriber");
 		log.debug("Subscriber Name : " + serviceProvider);
 		
@@ -158,7 +164,9 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
 		log.debug("Hub / Gateway DN Notify URL : " + hubDNSubsGatewayEndpoint);
 		
 		if (!jsondstaddr.isNull("filterCriteria")) {
-			DeliveryReceiptSubscriptionRequest subsrequst = gson.fromJson(jsonBody.toString(),DeliveryReceiptSubscriptionRequest.class);
+
+			DeliveryReceiptSubscriptionRequest subsrequst = gson.fromJson(jsonBody.toString(),
+					DeliveryReceiptSubscriptionRequest.class);
 			String origNotiUrl = subsrequst.getDeliveryReceiptSubscription().getCallbackReference().getNotifyURL();
 			subsrequst.getDeliveryReceiptSubscription().setClientCorrelator(orgclientcl + ":" + requestid);
 			List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(API_TYPE, executor.getSubResourcePath(), executor.getValidoperators());
@@ -169,7 +177,7 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
 			jsondstaddr.getJSONObject("callbackReference").put("notifyURL", subsEndpoint); 
 
 			subsrequst.getDeliveryReceiptSubscription().getCallbackReference().setNotifyURL(subsEndpoint);
-			
+
 			String sbRequestBody = removeResourceURL(gson.toJson(subsrequst));
 			List<OperatorSubscriptionDTO> domainsubs = new ArrayList<OperatorSubscriptionDTO>();
 			DeliveryReceiptSubscriptionRequest subsresponse = null;
@@ -177,82 +185,60 @@ public class OutboundSMSSubscriptionsHandler implements SMSHandler {
 			for (OperatorEndpoint endpoint : endpoints) {
 				String notifyres = executor.makeRequest(endpoint, endpoint.getEndpointref().getAddress(),sbRequestBody,true, context, false);
 				if (notifyres == null) {
-					throw new CustomException("POL0299", "",new String[] { "Error registering subscription" });
+					throw new CustomException("POL0299", "", new String[] { "Error registering subscription" });
 				} else {
-					subsresponse = gson.fromJson(notifyres,DeliveryReceiptSubscriptionRequest.class);
+					subsresponse = gson.fromJson(notifyres, DeliveryReceiptSubscriptionRequest.class);
 					if (subsrequst.getDeliveryReceiptSubscription() == null) {
 						executor.handlePluginException(notifyres);
 					}
-					domainsubs.add(new OperatorSubscriptionDTO(endpoint.getOperator(),subsresponse.getDeliveryReceiptSubscription().getResourceURL()));
-
+					domainsubs.add(new OperatorSubscriptionDTO(endpoint.getOperator(),
+							subsresponse.getDeliveryReceiptSubscription().getResourceURL()));
 				}
 			}
 
-			smsMessagingService.outboundOperatorsubsEntry(domainsubs,dnSubscriptionId);
+			smsMessagingService.outboundOperatorsubsEntry(domainsubs, dnSubscriptionId);
 			String ResourceUrlPrefix = mediatorConfMap.get("hubGateway");
-			subsresponse.getDeliveryReceiptSubscription().setResourceURL(ResourceUrlPrefix + executor.getResourceUrl() + "/"+ dnSubscriptionId);
+			subsresponse.getDeliveryReceiptSubscription()
+					.setResourceURL(ResourceUrlPrefix + executor.getResourceUrl() + "/" + dnSubscriptionId);
 			JSONObject replyobj = new JSONObject(subsresponse);
 			JSONObject replysubs = replyobj.getJSONObject("deliveryReceiptSubscription");
-			// String replydest = replysubs.getString("destinationAddress");
 			replysubs.put("clientCorrelator", orgclientcl);
-			/*
-			 * JSONArray arradd = new JSONArray(); arradd.put(replydest);
-			 * replysubs.put("destinationAddress", arradd);
-			 */
 
-			replysubs.getJSONObject("callbackReference").put("notifyURL",origNotiUrl);
-			//jsondstaddr.put("resourceURL",ResourceUrlPrefix + executor.getResourceUrl() + "/"+ dnSubscriptionId);
+			replysubs.getJSONObject("callbackReference").put("notifyURL", origNotiUrl);
 			replysubs.put("resourceURL", ResourceUrlPrefix + executor.getResourceUrl() + "/" + dnSubscriptionId);
-			
+
 			executor.removeHeaders(context);
 			((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 201);
 			executor.setResponse(context, replyobj.toString());
-		} 
-		return true;
+		}
 
+		return true;
 	}
 
+	/**
+	 * Removes the resource url.
+	 *
+	 * @param sbSubsrequst
+	 *            the sb subsrequst
+	 * @return the string
+	 */
 	private String removeResourceURL(String sbSubsrequst) {
+
 		String sbDeliveryNotificationrequestString = "";
+
 		try {
+
 			JSONObject objJSONObject = new JSONObject(sbSubsrequst);
 			JSONObject objDeliveryNotificationRequest = (JSONObject) objJSONObject.get("deliveryReceiptSubscription");
 			objDeliveryNotificationRequest.remove("resourceURL");
-			
+
 			sbDeliveryNotificationrequestString = objDeliveryNotificationRequest.toString();
 		} catch (JSONException ex) {
+
 			log.error("Error in removeResourceURL" + ex.getMessage());
-			throw new CustomException("POL0299", "",new String[] { "Error registering subscription" });
+			throw new CustomException("POL0299", "", new String[] { "Error registering subscription" });
 		}
-		 return "{\"deliveryReceiptSubscription\":" + sbDeliveryNotificationrequestString + "}";
+
+		return "{\"deliveryReceiptSubscription\":" + sbDeliveryNotificationrequestString + "}";
 	}
-	
-	
-	/*private boolean deleteSubscriptions(MessageContext context) throws Exception {
-		        String requestPath = executor.getSubResourcePath();
-		        String dnSubscriptionId = requestPath.substring(requestPath.lastIndexOf("/") + 1);
-		
-		        String requestid = UID.getUniqueID(Type.DELRETSUB.getCode(), context, executor.getApplicationid());
-		
-		        List<OperatorSubscriptionDTO> domainsubs = smsMessagingService.outboudSubscriptionQuery(Integer.valueOf(dnSubscriptionId));
-		        if (domainsubs.isEmpty()) {
-		           throw new CustomException("POL0001", "", new String[]{"SMS Receipt Subscription Not Found: " + dnSubscriptionId});
-		        }
-		
-		        String resStr = "";
-		        for (OperatorSubscriptionDTO subs : domainsubs) {
-		            resStr = executor.makeDeleteRequest(new OperatorEndpoint(new EndpointReference(subs.getDomain()), subs.getOperator()), subs.getDomain(), null, true, context,false);
-		        }
-		        new SMSMessagingService().subscriptionDelete(Integer.valueOf(dnSubscriptionId));
-				        //JSONObject reply = new JSONObject();
-		        //reply.put("response", "No content");
-		
-		        //replyGracefully(reply, context);
-		       //routeToEndPoint(new OperatorEndpoint(new EndpointReference(sendResponse),null),context, sendResponse, "",
-		        // "", "");
-		        executor.removeHeaders(context);
-		        ((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 204);
-		
-		        return true;
-		    }*/
 }

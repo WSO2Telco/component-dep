@@ -33,7 +33,7 @@ import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.RequestExecutor;
 import com.wso2telco.dep.mediator.entity.OparatorEndPointSearchDTO;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
-import com.wso2telco.oneapivalidation.exceptions.CustomException;
+import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 
 // TODO: Auto-generated Javadoc
 /**

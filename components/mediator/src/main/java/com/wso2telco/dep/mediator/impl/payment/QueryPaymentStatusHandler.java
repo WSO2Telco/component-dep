@@ -23,10 +23,10 @@ import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.ResponseHandler;
 import com.wso2telco.dep.mediator.entity.OparatorEndPointSearchDTO;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
-import com.wso2telco.oneapivalidation.service.impl.payment.ValidateQueryPaymentStatus;
-import com.wso2telco.subscriptionvalidator.util.ValidatorUtils;
-import com.wso2telco.oneapivalidation.exceptions.CustomException;
-import com.wso2telco.oneapivalidation.service.IServiceValidate;
+import com.wso2telco.dep.oneapivalidation.service.impl.payment.ValidateQueryPaymentStatus;
+import com.wso2telco.dep.subscriptionvalidator.util.ValidatorUtils;
+import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
+import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;

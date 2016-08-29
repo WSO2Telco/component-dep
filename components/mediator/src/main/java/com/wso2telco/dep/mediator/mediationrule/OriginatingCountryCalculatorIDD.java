@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.mediationrule;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
@@ -25,21 +26,21 @@ import org.apache.axis2.addressing.EndpointReference;
 import org.apache.axis2.context.MessageContext;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.synapse.core.axis2.Axis2MessageContext;
+import org.wso2.carbon.utils.CarbonUtils;
 
-import com.wso2telco.core.msisdnvalidator.*;
+import com.wso2telco.core.msisdnvalidator.MSISDN;
+import com.wso2telco.core.msisdnvalidator.MSISDNUtil;
 import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.entity.OparatorEndPointSearchDTO;
-import com.wso2telco.dep.mediator.impl.smsmessaging.SendSMSHandler;
 import com.wso2telco.dep.mediator.util.ErrorHolder;
-import com.wso2telco.dep.operatorservice.model.Operator;
+import com.wso2telco.dep.mediator.util.FileNames;
+import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.dep.operatorservice.model.OperatorApplicationDTO;
 import com.wso2telco.dep.operatorservice.model.OperatorEndPointDTO;
 import com.wso2telco.dep.operatorservice.service.OparatorService;
 import com.wso2telco.mnc.resolver.MNCQueryClient;
-import com.wso2telco.oneapivalidation.exceptions.CustomException;
-
-import org.apache.synapse.core.axis2.Axis2MessageContext;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -78,7 +79,8 @@ public class OriginatingCountryCalculatorIDD extends OriginatingCountryCalculato
 	static{
 		
 		FileReader fileReader = new FileReader();
-		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
+		String file = CarbonUtils.getCarbonConfigDirPath() + File.separator + FileNames.MEDIATOR_CONF_FILE.getFileName();
+		Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
 		String countries = mediatorConfMap.get("search.oparatorOnHeader");
 		if (countries != null) {
 			// Split the comma separated country codes

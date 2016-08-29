@@ -21,7 +21,6 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.wso2telco.dbutils.Operatorsubs;
 import com.wso2telco.dep.mediator.dao.SMSMessagingDAO;
 import com.wso2telco.dep.mediator.util.ErrorType;
 import com.wso2telco.dep.operatorservice.model.OperatorSubscriptionDTO;

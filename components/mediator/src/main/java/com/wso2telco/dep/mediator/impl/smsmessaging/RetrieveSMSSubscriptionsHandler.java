@@ -30,13 +30,15 @@ import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.dep.mediator.service.SMSMessagingService;
+import com.wso2telco.dep.mediator.util.FileNames;
 import com.wso2telco.dep.operatorservice.model.OperatorSubscriptionDTO;
-import com.wso2telco.oneapivalidation.exceptions.CustomException;
-import com.wso2telco.oneapivalidation.service.IServiceValidate;
-import com.wso2telco.oneapivalidation.service.impl.sms.ValidateCancelSubscription;
-import com.wso2telco.oneapivalidation.service.impl.sms.nb.ValidateNBSubscription;
-import com.wso2telco.oneapivalidation.service.impl.sms.sb.ValidateSBSubscription;
+import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
+import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
+import com.wso2telco.dep.oneapivalidation.service.impl.smsmessaging.ValidateCancelSubscription;
+import com.wso2telco.dep.oneapivalidation.service.impl.smsmessaging.northbound.ValidateNBSubscription;
+import com.wso2telco.dep.oneapivalidation.service.impl.smsmessaging.southbound.ValidateSBSubscription;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +52,7 @@ import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONObject;
 import org.json.JSONException;
+import org.wso2.carbon.utils.CarbonUtils;
 
 public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 
@@ -126,7 +129,8 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
         log.debug("Subscriber Name : " + serviceProvider);
 
         FileReader fileReader = new FileReader();
-		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
+        String file = CarbonUtils.getCarbonConfigDirPath() + File.separator + FileNames.MEDIATOR_CONF_FILE.getFileName();
+		Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
 
         String hubMOSubsGatewayEndpoint = mediatorConfMap.get("hubMOSubsGatewayEndpoint");
         log.debug("Hub / Gateway MO Notify URL : " + hubMOSubsGatewayEndpoint);

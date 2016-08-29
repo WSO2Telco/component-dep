@@ -15,17 +15,10 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.impl.ussd;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.wso2telco.dbutils.fileutils.FileReader;
-import com.wso2telco.dep.mediator.OperatorEndpoint;
-import com.wso2telco.dep.mediator.entity.SubscriptionRequest;
-import com.wso2telco.dep.mediator.internal.ApiUtils;
-import com.wso2telco.dep.mediator.internal.Type;
-import com.wso2telco.dep.mediator.internal.UID;
-import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
-import com.wso2telco.dep.mediator.service.USSDService;
-import com.wso2telco.dep.operatorservice.model.OperatorSubscriptionDTO;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -34,10 +27,18 @@ import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONObject;
 import org.wso2.carbon.apimgt.gateway.handlers.security.APISecurityUtils;
 import org.wso2.carbon.apimgt.gateway.handlers.security.AuthenticationContext;
+import org.wso2.carbon.utils.CarbonUtils;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.wso2telco.dbutils.fileutils.FileReader;
+import com.wso2telco.dep.mediator.OperatorEndpoint;
+import com.wso2telco.dep.mediator.entity.SubscriptionRequest;
+import com.wso2telco.dep.mediator.internal.ApiUtils;
+import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
+import com.wso2telco.dep.mediator.service.USSDService;
+import com.wso2telco.dep.mediator.util.FileNames;
+import com.wso2telco.dep.operatorservice.model.OperatorSubscriptionDTO;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -88,10 +89,9 @@ public class MOUSSDSubscribeHandler implements USSDHandler {
 	public boolean handle(MessageContext context) throws Exception {
 
 		FileReader fileReader = new FileReader();
-		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
-		
-		String requestid = UID.getUniqueID(Type.MO_USSD.getCode(), context, executor.getApplicationid());
-		
+		String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
+				+ FileNames.MEDIATOR_CONF_FILE.getFileName();
+
 		JSONObject jsonBody = executor.getJsonBody();
 		String notifyUrl = jsonBody.getJSONObject("subscription").getJSONObject("callbackReference").getString("notifyURL");
 		Gson gson = new GsonBuilder().serializeNulls().create();
@@ -102,13 +102,11 @@ public class MOUSSDSubscribeHandler implements USSDHandler {
         if (authContext != null) {
             consumerKey = authContext.getConsumerKey();
             userId=authContext.getUsername();
-
         }
-		
-		//Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl,consumerKey);
-		String operatorId="";
-        Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl,consumerKey,operatorId,userId);
-		log.info("created subscriptionId  -  " + subscriptionId);	
+        String operatorId="";
+		Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl,consumerKey,operatorId,userId);
+
+		Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
 
 		String subsEndpoint = mediatorConfMap.get("ussdGatewayEndpoint") + subscriptionId;
 		log.info("Subsendpoint - " +subsEndpoint);

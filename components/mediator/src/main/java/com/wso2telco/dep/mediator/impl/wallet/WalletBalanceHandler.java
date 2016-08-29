@@ -27,10 +27,10 @@ import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
-import com.wso2telco.oneapivalidation.exceptions.CustomException;
-import com.wso2telco.oneapivalidation.service.IServiceValidate;
-import com.wso2telco.oneapivalidation.service.impl.ValidateWalletBalance;
-import com.wso2telco.subscriptionvalidator.util.ValidatorUtils;
+import com.wso2telco.dep.oneapivalidation.service.impl.ValidateWalletBalance;
+import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
+import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
+import com.wso2telco.dep.subscriptionvalidator.util.ValidatorUtils;
 
 public class WalletBalanceHandler implements WalletHandler{
 

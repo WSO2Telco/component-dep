@@ -17,8 +17,9 @@ package com.wso2telco.dep.mediator;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.wso2telco.datapublisher.DataPublisherConstants;
+import com.wso2telco.dep.datapublisher.DataPublisherConstants;
 import com.wso2telco.dbutils.fileutils.FileReader;
+import com.wso2telco.dep.mediator.util.FileNames;
 import com.wso2telco.dep.mediator.entity.smsmessaging.DeliveryInfo;
 import com.wso2telco.dep.mediator.entity.smsmessaging.DeliveryInfoList;
 import com.wso2telco.dep.mediator.entity.smsmessaging.QuerySMSStatusResponse;
@@ -31,10 +32,15 @@ import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.wso2.carbon.utils.CarbonUtils;
 
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+import java.util.Map;;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -118,7 +124,10 @@ public class ResponseHandler {
 	private String getResourceURL(MessageContext mc, String senderAddress) {
 
 		FileReader fileReader = new FileReader();
-		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
+		String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
+				+ FileNames.MEDIATOR_CONF_FILE.getFileName();
+
+		Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
 
 		String resourceURL = mediatorConfMap.get("sendSMSResourceURL");
 		if (resourceURL != null && !resourceURL.isEmpty()) {
@@ -146,7 +155,10 @@ public class ResponseHandler {
 		String jsonPayload = null;
 
 		FileReader fileReader = new FileReader();
-		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
+		String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
+				+ FileNames.MEDIATOR_CONF_FILE.getFileName();
+
+		Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
 
 		Gson gson = new GsonBuilder().serializeNulls().create();
 		org.json.JSONObject jsonObj = new org.json.JSONObject(jsonBody);
@@ -180,7 +192,9 @@ public class ResponseHandler {
  
          String jsonPayload = null;
          FileReader fileReader = new FileReader();
- 		 Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
+         String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
+ 				+ FileNames.MEDIATOR_CONF_FILE.getFileName();
+ 		Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
  
          Gson gson = new GsonBuilder().serializeNulls().create();
          org.json.JSONObject jsonObj = new org.json.JSONObject(jsonBody);
@@ -265,8 +279,9 @@ public class ResponseHandler {
         org.json.JSONObject jsonObj = new org.json.JSONObject(jsonBody);
         JSONObject objPay = jsonObj.getJSONObject("makePayment");
         FileReader fileReader = new FileReader();
-		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
-		
+        String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
+				+ FileNames.MEDIATOR_CONF_FILE.getFileName();
+		Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
         String endUserId = objPay.get("endUserId").toString();
         log.debug("Creating wallet payment charge response -> endUserId : " + endUserId);
         String pluginResourceUrl = objPay.getString("notifyURL");

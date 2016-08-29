@@ -16,8 +16,8 @@
 
 package com.wso2telco.dep.mediator.impl.credit;
 
+import java.io.File;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -25,22 +25,20 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONObject;
+import org.wso2.carbon.utils.CarbonUtils;
 
 import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.MSISDNConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.ResponseHandler;
-import com.wso2telco.dep.mediator.impl.payment.PaymentUtil;
-import com.wso2telco.dep.mediator.internal.AggregatorValidator;
 import com.wso2telco.dep.mediator.internal.ApiUtils;
 import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
-import com.wso2telco.dep.mediator.service.PaymentService;
-import com.wso2telco.oneapivalidation.service.IServiceValidate;
-import com.wso2telco.oneapivalidation.service.impl.ValidateCreditRefund;
-import com.wso2telco.oneapivalidation.service.impl.ValidateWalletRefund;
-import com.wso2telco.subscriptionvalidator.util.ValidatorUtils;
+import com.wso2telco.dep.mediator.util.FileNames;
+import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
+import com.wso2telco.dep.oneapivalidation.service.impl.ValidateCreditRefund;
+import com.wso2telco.dep.subscriptionvalidator.util.ValidatorUtils;
 
 public class CreditRefundHandler implements CreditHandler {
 	
@@ -69,8 +67,8 @@ public class CreditRefundHandler implements CreditHandler {
         String requestResourceURL = executor.getResourceUrl();
 
         FileReader fileReader = new FileReader();
-        Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
-        
+        String file = CarbonUtils.getCarbonConfigDirPath() + File.separator + FileNames.MEDIATOR_CONF_FILE.getFileName();
+		Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
         String hub_gateway_id = mediatorConfMap.get("hub_gateway_id");
         log.debug("Hub / Gateway Id : " + hub_gateway_id);
 

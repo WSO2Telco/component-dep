@@ -15,6 +15,25 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.impl.smsmessaging.southbound;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.wso2telco.dep.mediator.OperatorEndpoint;
+import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.InboundSMSMessage;
+import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.SouthboundRetrieveResponse;
+import com.wso2telco.dbutils.fileutils.FileReader;
+import com.wso2telco.dep.mediator.impl.smsmessaging.SMSExecutor;
+import com.wso2telco.dep.mediator.impl.smsmessaging.SMSHandler;
+import com.wso2telco.dep.mediator.internal.APICall;
+import com.wso2telco.dep.mediator.internal.ApiUtils;
+import com.wso2telco.dep.mediator.internal.Type;
+import com.wso2telco.dep.mediator.internal.UID;
+import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
+import com.wso2telco.dep.mediator.util.FileNames;
+import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
+import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
+import com.wso2telco.dep.oneapivalidation.service.impl.smsmessaging.southbound.ValidateSBRetrieveSms;
+
+import java.io.File;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -30,23 +49,7 @@ import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONArray;
 import org.json.JSONObject;
-
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-import com.wso2telco.dbutils.fileutils.FileReader;
-import com.wso2telco.dep.mediator.OperatorEndpoint;
-import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.InboundSMSMessage;
-import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.SouthboundRetrieveResponse;
-import com.wso2telco.dep.mediator.impl.smsmessaging.SMSExecutor;
-import com.wso2telco.dep.mediator.impl.smsmessaging.SMSHandler;
-import com.wso2telco.dep.mediator.internal.APICall;
-import com.wso2telco.dep.mediator.internal.ApiUtils;
-import com.wso2telco.dep.mediator.internal.Type;
-import com.wso2telco.dep.mediator.internal.UID;
-import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
-import com.wso2telco.oneapivalidation.exceptions.CustomException;
-import com.wso2telco.oneapivalidation.service.IServiceValidate;
-import com.wso2telco.oneapivalidation.service.impl.sms.sb.ValidateSBRetrieveSms;
+import org.wso2.carbon.utils.CarbonUtils;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -131,7 +134,8 @@ public class RetrieveSMSSouthboundHandler implements SMSHandler {
         boolean retryFlag=true;
         
         FileReader fileReader = new FileReader();
-        Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
+        String file = CarbonUtils.getCarbonConfigDirPath() + File.separator + FileNames.MEDIATOR_CONF_FILE.getFileName();
+		Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
         Boolean retry = false;
         retry =Boolean.valueOf(mediatorConfMap.get("retry_on_fail"));
         Integer retryCount = Integer.valueOf(mediatorConfMap.get("retry_count"));

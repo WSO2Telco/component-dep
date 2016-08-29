@@ -31,7 +31,9 @@ public enum ErrorType implements ThrowableError {
 	INVALID_CONSUMER_KEY("MED0008","Invalid consumer key"),
 	INVALID_OPERATOR_ID("MED0008","Invalid operator id"),
 	INVALID_OPERATOR("MED0008","Invalid operator"),
-	INVALID_USER_ID("MED0008","Invalid user id");
+	INVALID_USER_ID("MED0008","Invalid user id"),
+	INVALID_PROVISION_SERVICE_ID("MED0009","Invalid provision service id"),
+	INVALID_OPERATOR_ENDPOINT("MED0010","Invalid operator endpoint");
 
 	private String code;
 	private String desc;

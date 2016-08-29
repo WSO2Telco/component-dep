@@ -35,7 +35,6 @@ import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpStatus;
-import org.apache.http.client.HttpResponseException;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.commons.json.JsonUtil;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
@@ -46,8 +45,8 @@ import org.wso2.carbon.apimgt.gateway.handlers.security.AuthenticationContext;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.wso2telco.datapublisher.DataPublisherClient;
-import com.wso2telco.datapublisher.DataPublisherConstants;
+import com.wso2telco.dep.datapublisher.DataPublisherClient;
+import com.wso2telco.dep.datapublisher.DataPublisherConstants;
 import com.wso2telco.dep.mediator.entity.cep.ConsumerSecretWrapperDTO;
 import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.InboundSMSMessage;
 import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.InboundSMSMessageList;
@@ -56,13 +55,13 @@ import com.wso2telco.dep.mediator.internal.PaymentType;
 import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.unmarshaler.GroupDTO;
 import com.wso2telco.dep.mediator.unmarshaler.GroupEventUnmarshaller;
+import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
+import com.wso2telco.dep.oneapivalidation.exceptions.RequestError;
+import com.wso2telco.dep.oneapivalidation.exceptions.ResponseError;
 import com.wso2telco.dep.operatorservice.model.OperatorApplicationDTO;
 import com.wso2telco.dep.operatorservice.service.OparatorService;
-import com.wso2telco.oneapivalidation.exceptions.CustomException;
-import com.wso2telco.oneapivalidation.exceptions.RequestError;
-import com.wso2telco.oneapivalidation.exceptions.ResponseError;
-import com.wso2telco.publisheventsdata.PublishEventsConstants;
-import com.wso2telco.publisheventsdata.publisher.EventsDataPublisherClient;
+import com.wso2telco.dep.publisheventsdata.PublishEventsConstants;
+import com.wso2telco.dep.publisheventsdata.publisher.EventsDataPublisherClient;
 
 // TODO: Auto-generated Javadoc
 /**

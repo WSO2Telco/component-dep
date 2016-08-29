@@ -18,13 +18,10 @@ package com.wso2telco.dep.mediator.impl.payment;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import javax.xml.bind.JAXBContext;
 import javax.xml.bind.JAXBException;
-import javax.xml.bind.Unmarshaller;
 
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
@@ -40,14 +37,13 @@ import org.wso2.carbon.utils.CarbonUtils;
 import com.wso2telco.dbutils.AxataDBUtilException;
 import com.wso2telco.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.MSISDNConstants;
-import com.wso2telco.dep.mediator.entity.DailyLimit;
-import com.wso2telco.dep.mediator.entity.DailyLimitList;
 import com.wso2telco.dep.mediator.entity.cep.ConsumerSecretWrapperDTO;
 import com.wso2telco.dep.mediator.internal.Base64Coder;
 import com.wso2telco.dep.mediator.unmarshaler.GroupDTO;
 import com.wso2telco.dep.mediator.unmarshaler.GroupEventUnmarshaller;
-import com.wso2telco.oneapivalidation.exceptions.CustomException;
-import com.wso2telco.publisheventsdata.handler.SpendLimitHandler;
+import com.wso2telco.dep.mediator.util.FileNames;
+import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
+import com.wso2telco.dep.publisheventsdata.handler.SpendLimitHandler;
 
 /**
  *
@@ -68,8 +64,8 @@ public class PaymentUtil {
 		AuthenticationContext authContext = APISecurityUtils
 				.getAuthenticationContext(context);
 		FileReader fileReader = new FileReader();
-		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
-
+		String file = CarbonUtils.getCarbonConfigDirPath() + File.separator + FileNames.MEDIATOR_CONF_FILE.getFileName();
+		Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
 		if (authContext != null) {
 			consumerKey = authContext.getConsumerKey();
 		}

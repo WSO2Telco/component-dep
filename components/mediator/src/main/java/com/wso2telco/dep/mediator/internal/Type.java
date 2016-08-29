@@ -15,13 +15,12 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.internal;
 
- 
 // TODO: Auto-generated Javadoc
 /**
  * The Enum Type.
  */
 public enum Type {
-        
+
 	/** The smssend. */
 	SMSSEND("SM"),
 	/** The smsretrive. */
@@ -36,6 +35,8 @@ public enum Type {
 	ALERTINBOUND("AI"),
 	/** The locreq. */
 	LOCREQ("LR"), 
+	/** The provision. */
+	PROVISION("PR"),
 	
 	SEND_USSD("SU"), 
 	

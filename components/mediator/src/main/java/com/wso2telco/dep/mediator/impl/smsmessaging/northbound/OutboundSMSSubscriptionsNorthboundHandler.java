@@ -17,15 +17,14 @@ package com.wso2telco.dep.mediator.impl.smsmessaging.northbound;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.wso2telco.dbutils.Operatorsubs;
 import com.wso2telco.dbutils.fileutils.FileReader;
+import com.wso2telco.dep.mediator.util.FileNames;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.entity.smsmessaging.CallbackReference;
 import com.wso2telco.dep.mediator.entity.smsmessaging.northbound.NorthboundDeliveryReceiptSubscriptionRequest;
 import com.wso2telco.dep.mediator.entity.smsmessaging.northbound.SenderAddresses;
 import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.DeliveryReceiptSubscription;
 import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.SouthboundDeliveryReceiptSubscriptionRequest;
-import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.SouthboundOutboundSubscriptionRequest;
 import com.wso2telco.dep.mediator.impl.smsmessaging.SMSExecutor;
 import com.wso2telco.dep.mediator.impl.smsmessaging.SMSHandler;
 import com.wso2telco.dep.mediator.internal.ApiUtils;
@@ -33,11 +32,11 @@ import com.wso2telco.dep.mediator.internal.Type;
 import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.dep.mediator.service.SMSMessagingService;
-import com.wso2telco.oneapivalidation.exceptions.CustomException;
-import com.wso2telco.oneapivalidation.service.IServiceValidate;
-import com.wso2telco.oneapivalidation.service.impl.sms.ValidateCancelSubscription;
-import com.wso2telco.oneapivalidation.service.impl.sms.nb.ValidateNBOutboundSubscription;
-
+import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
+import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
+import com.wso2telco.dep.oneapivalidation.service.impl.smsmessaging.ValidateCancelSubscription;
+import com.wso2telco.dep.oneapivalidation.service.impl.smsmessaging.northbound.ValidateNBOutboundSubscription;
+import java.io.File;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -50,6 +49,8 @@ import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONException;
 import org.json.JSONObject;
+import org.wso2.carbon.utils.CarbonUtils;
+
 
 import com.wso2telco.dep.operatorservice.model.OperatorSubscriptionDTO;
 
@@ -154,7 +155,9 @@ public class OutboundSMSSubscriptionsNorthboundHandler implements SMSHandler {
 		Gson gson = new GsonBuilder().serializeNulls().create();
 
 		FileReader fileReader = new FileReader();
-		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
+		String file = CarbonUtils.getCarbonConfigDirPath() + File.separator + FileNames.MEDIATOR_CONF_FILE.getFileName();
+		
+		Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
 
 		HashMap<String, String> jwtDetails = apiUtils.getJwtTokenDetails(context);
 		JSONObject jsonBody = executor.getJsonBody();

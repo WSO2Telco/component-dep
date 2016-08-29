@@ -19,7 +19,7 @@ package com.wso2telco.dep.mediator.impl.credit;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import com.wso2telco.oneapivalidation.exceptions.CustomException;
+import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 
 public class CreditHandlerFactory {
 

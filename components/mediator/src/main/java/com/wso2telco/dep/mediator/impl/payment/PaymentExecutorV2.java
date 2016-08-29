@@ -15,26 +15,10 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.impl.payment;
 
-import com.wso2telco.dbutils.AxataDBUtilException;
-import com.wso2telco.dbutils.fileutils.FileReader;
-import com.wso2telco.dep.mediator.service.PaymentService;
-import com.wso2telco.publisheventsdata.handler.SpendLimitHandler;
-import com.wso2telco.dep.mediator.MSISDNConstants;
-import com.wso2telco.dep.mediator.RequestExecutor;
-import com.wso2telco.dep.mediator.OperatorEndpoint;
-import com.wso2telco.dep.mediator.ResponseHandler;
-import com.wso2telco.dep.mediator.internal.AggregatorValidator;
-import com.wso2telco.dep.mediator.internal.ApiUtils;
-import com.wso2telco.dep.mediator.internal.Type;
-import com.wso2telco.dep.mediator.internal.UID;
-import com.wso2telco.dep.mediator.internal.Base64Coder;
-import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
-import com.wso2telco.subscriptionvalidator.util.ValidatorUtils;
-import com.wso2telco.oneapivalidation.exceptions.CustomException;
-import com.wso2telco.oneapivalidation.service.impl.payment.ValidatePaymentCharge;
-
-import java.io.IOException;
+import java.io.File;
 import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
@@ -43,11 +27,24 @@ import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.wso2.carbon.apimgt.gateway.handlers.security.APISecurityUtils;
-import org.wso2.carbon.apimgt.gateway.handlers.security.AuthenticationContext;
+import org.wso2.carbon.utils.CarbonUtils;
 
-import java.util.List;
-import java.util.Map;
+import com.wso2telco.dbutils.fileutils.FileReader;
+import com.wso2telco.dep.mediator.MSISDNConstants;
+import com.wso2telco.dep.mediator.OperatorEndpoint;
+import com.wso2telco.dep.mediator.RequestExecutor;
+import com.wso2telco.dep.mediator.ResponseHandler;
+import com.wso2telco.dep.mediator.internal.AggregatorValidator;
+import com.wso2telco.dep.mediator.internal.ApiUtils;
+import com.wso2telco.dep.mediator.internal.Base64Coder;
+import com.wso2telco.dep.mediator.internal.Type;
+import com.wso2telco.dep.mediator.internal.UID;
+import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
+import com.wso2telco.dep.mediator.service.PaymentService;
+import com.wso2telco.dep.mediator.util.FileNames;
+import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
+import com.wso2telco.dep.oneapivalidation.service.impl.payment.ValidatePaymentCharge;
+import com.wso2telco.dep.subscriptionvalidator.util.ValidatorUtils;
 
 public class PaymentExecutorV2 extends RequestExecutor {
 
@@ -112,7 +109,8 @@ public class PaymentExecutorV2 extends RequestExecutor {
         String requestResourceURL = this.getResourceUrl();
 
         FileReader fileReader = new FileReader();
-		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
+        String file = CarbonUtils.getCarbonConfigDirPath() + File.separator + FileNames.MEDIATOR_CONF_FILE.getFileName();
+		Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
         
         String hub_gateway_id = mediatorConfMap.get("hub_gateway_id");
         log.debug("Hub / Gateway Id : " + hub_gateway_id);
@@ -190,54 +188,6 @@ public class PaymentExecutorV2 extends RequestExecutor {
         setResponse(mc, responseStr);
 
         return true;
-    }
-
-    private boolean checkSpendLimit(String msisdn, String operator, MessageContext mc, String chargeAmount) throws AxataDBUtilException {
-        AuthenticationContext authContext = APISecurityUtils.getAuthenticationContext(mc);
-        String consumerKey = "";
-        if (authContext != null) {
-            consumerKey = authContext.getConsumerKey();
-        }
-
-        SpendLimitHandler spendLimitHandler = new SpendLimitHandler();
-        FileReader fileReader = new FileReader();
-		Map<String, String> mediatorConfMap = fileReader.readMediatorConfFile();
-        Double msisdn_day_amount = null;
-        Double application_day_amount = null;
-        Double oprator_day_amount = null;
-        
-            
-        msisdn_day_amount = Double.parseDouble(mediatorConfMap.get("msisdn_day_amount"));
-        application_day_amount = Double.parseDouble(mediatorConfMap.get("application_day_amount"));
-        oprator_day_amount = Double.parseDouble( mediatorConfMap.get("operator_day_amount"));
-
-       
-
-        /*if (((spendLimitHandler.isMSISDNSpendLimitExceeded(msisdn)) != null && (spendLimitHandler.isMSISDNSpendLimitExceeded(msisdn) >= msisdn_day_amount))
-        		                || (msisdn_day_amount <= (Double.parseDouble(chargeAmount))) ||
-        		                ( spendLimitHandler.isMSISDNSpendLimitExceeded(msisdn) != null &&
-        		                        (Double.parseDouble(chargeAmount)+spendLimitHandler.isMSISDNSpendLimitExceeded(msisdn))> msisdn_day_amount )) {
-	
-        	throw new CustomException("POL1001", "The %1 charging limit for this user has been exceeded", new String[]{"daily"});
-
-        } else if ((spendLimitHandler.isApplicationSpendLimitExceeded(consumerKey)!= null  && spendLimitHandler.isApplicationSpendLimitExceeded(consumerKey) >= application_day_amount)
-		                ||(application_day_amount <= Double.parseDouble(chargeAmount)) ||
-		                (spendLimitHandler.isApplicationSpendLimitExceeded(consumerKey)!= null  &&
-		                        (spendLimitHandler.isApplicationSpendLimitExceeded(consumerKey)+Double.parseDouble(chargeAmount))> application_day_amount)) {
-
-	
-        	throw new CustomException("POL1001", "The %1 charging limit for this application has been exceeded", new String[]{"daily"});
-
-        } else if ((spendLimitHandler.isOperatorSpendLimitExceeded(operator) != null && spendLimitHandler.isOperatorSpendLimitExceeded(operator) >= oprator_day_amount)
-		                || (oprator_day_amount <= Double.parseDouble(chargeAmount)) ||
-		                (spendLimitHandler.isOperatorSpendLimitExceeded(operator) != null &&
-		                        (spendLimitHandler.isOperatorSpendLimitExceeded(operator)+ Double.parseDouble(chargeAmount) > oprator_day_amount))) {
-        	throw new CustomException("POL1001", "The %1 charging limit for this operator has been exceeded", new String[]{"daily"});
-
-        }*/
-
-        return true;
-
     }
 
     /*private String storeSubscription(MessageContext context) throws AxisFault {

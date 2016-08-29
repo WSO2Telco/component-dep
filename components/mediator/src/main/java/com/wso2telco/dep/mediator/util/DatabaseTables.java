@@ -24,9 +24,11 @@ public enum DatabaseTables {
 	OUTBOUND_SUBSCRIPTIONS("outbound_subscriptions"), 
 	OUTBOUND_OPERATORSUBS("outbound_operatorsubs"), 
 	SEND_SMS_REQID("sendsms_reqid"), 
-	SUBSCRIPTIONS("subscriptions"),
+	SUBSCRIPTIONS("subscriptions"), 
 	MO_USSD_SUBSCRIPTIONS("mo_ussd_subscription"),
-	OPERATORSUBS("operatorsubs");
+	OPERATORSUBS("operatorsubs"),
+	PROVISION_SERVICE_ENTRY("provision_services"),
+	PROVISION_SERVICE_OPERATOR_ENDPOINTS("provision_service_operator_endpoints");
 
 	private String tableName;
 
