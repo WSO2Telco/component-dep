@@ -49,7 +49,9 @@
 												 {'name':'date_Time','type':'STRING'},
 												 {'name':'resourceURL','type':'STRING'},
 												 {'name':'messageId','type':'STRING'},						
-						 						 {'name':'spConsumerKey','type':'STRING'},	
+						 						 {'name':'spConsumerKey','type':'STRING'},
+												 {'name':'spOperatorId','type':'STRING'},
+												 {'name':'spUserId','type':'STRING'},
 											 
 
 												 {'name':'operationType','type':'INT'},

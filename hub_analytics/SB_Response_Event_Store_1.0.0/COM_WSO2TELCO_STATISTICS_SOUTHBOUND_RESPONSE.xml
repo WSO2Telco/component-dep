@@ -332,5 +332,19 @@
             <EnableScoreParam>false</EnableScoreParam>  
             <Type>STRING</Type> 
         </ColumnDefinition>
+		<ColumnDefinition>  
+            <Name>spOperatorId</Name>    
+            <EnableIndexing>false</EnableIndexing>   
+            <IsPrimaryKey>false</IsPrimaryKey>  
+            <EnableScoreParam>false</EnableScoreParam>  
+            <Type>STRING</Type> 
+        </ColumnDefinition>
+		<ColumnDefinition>  
+            <Name>spUserId</Name>    
+            <EnableIndexing>false</EnableIndexing>   
+            <IsPrimaryKey>false</IsPrimaryKey>  
+            <EnableScoreParam>false</EnableScoreParam>  
+            <Type>STRING</Type> 
+        </ColumnDefinition>
         </TableSchema>    
 </EventStoreConfiguration>
