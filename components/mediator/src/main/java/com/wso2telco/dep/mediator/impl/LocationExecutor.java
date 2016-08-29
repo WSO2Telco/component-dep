@@ -74,11 +74,9 @@ public class LocationExecutor extends RequestExecutor {
 
 			endpoint = occi.getOperatorEndpoint(searchDTO);
 
-			/*
-			 * endpoint = occi.getAPIEndpointsByMSISDN(params[0].replace("tel:",
-			 * ""), "location", getSubResourcePath(), true,
-			 * getValidoperators());
-			 */
+			
+			 //endpoint = occi.getAPIEndpointsByMSISDN(params[0].replace("tel:", ""), "location", getSubResourcePath(), true, getValidoperators());
+			 
 
 		}
         String sending_add = endpoint.getEndpointref().getAddress();
