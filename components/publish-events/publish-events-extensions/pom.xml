@@ -61,11 +61,11 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Private-Package>
-                            com.axiata.dialog.mife.events.extensions.internal
+                           com.wso2telco.dep.publish.events.extensions.internal
                         </Private-Package>
                         <Export-Package>
-                            !com.axiata.dialog.mife.events.extensions.internal,
-                            com.axiata.dialog.mife.events.extensions.*
+                            !com.wso2telco.dep.publish.events.extensions.internal,
+                            com.wso2telco.dep.publish.events.extensions.*
                         </Export-Package>
                         <Import-Package>
                             javax.servlet;version="[2.6.0, 3.0.0)",

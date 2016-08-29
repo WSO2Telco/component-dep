@@ -61,7 +61,7 @@ import com.wso2telco.dep.operatorservice.service.OparatorService;
 import com.wso2telco.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.oneapivalidation.exceptions.RequestError;
 import com.wso2telco.oneapivalidation.exceptions.ResponseError;
-import com.wso2telco.publisheventsdata.MifeEventsConstants;
+import com.wso2telco.publisheventsdata.PublishEventsConstants;
 import com.wso2telco.publisheventsdata.publisher.EventsDataPublisherClient;
 
 // TODO: Auto-generated Javadoc
@@ -1257,7 +1257,7 @@ public abstract class RequestExecutor {
 				} else {
 					 paymentType =PaymentType.CHARGED.getType();
                 }
-				messageContext.setProperty(MifeEventsConstants.PAYMENT_TYPE,paymentType);
+				messageContext.setProperty(PublishEventsConstants.PAYMENT_TYPE,paymentType);
 				if (paymentRes != null) {
 					if (paymentRes.has("serverReferenceCode")) {
 						messageContext.setProperty(DataPublisherConstants.OPERATOR_REF,
@@ -1330,8 +1330,8 @@ public abstract class RequestExecutor {
 	            	DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
                     Date date = new Date();
                     String currentDate =  dateFormat.format(date);
-                    messageContext.setProperty(MifeEventsConstants.CURRENT_DATE_TIME,currentDate);
-	                messageContext.setProperty(MifeEventsConstants.GROUP_NAME, groupDTO.getGroupName());
+                    messageContext.setProperty(PublishEventsConstants.CURRENT_DATE_TIME,currentDate);
+	                messageContext.setProperty(PublishEventsConstants.GROUP_NAME, groupDTO.getGroupName());
 	                eventsPublisherClient.publishEvent(messageContext);
 	            }
         }

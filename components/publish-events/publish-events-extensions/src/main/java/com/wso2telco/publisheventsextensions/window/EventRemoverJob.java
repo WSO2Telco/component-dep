@@ -1,6 +1,6 @@
-package com.axiata.dialog.mife.events.extensions.window;
+package com.wso2telco.publisheventsextensions.window;
 
-import com.axiata.dialog.mife.events.extensions.MifeEventsExtensionsConstants;
+import com.wso2telco.publisheventsextensions.PublishEventsExtensionsConstants;
 import org.apache.log4j.Logger;
 import org.quartz.*;
 import org.wso2.siddhi.core.event.in.InEvent;
@@ -20,7 +20,7 @@ public class EventRemoverJob implements Job {
 
         for (String eventKey : window.getNewEventKeyList()) {
             String [] y = eventKey.split(",");
-            InEvent resetEvent = new InEvent(MifeEventsExtensionsConstants.SPEND_LIMIT_SUMMING_STREAM, System
+            InEvent resetEvent = new InEvent(PublishEventsExtensionsConstants.SPEND_LIMIT_SUMMING_STREAM, System
                     .currentTimeMillis(), new Object[]{y[0].trim(),"",y[1].trim(),y[2].trim(), 0.0, true,"","",""});
             window.processEvent(resetEvent);
 

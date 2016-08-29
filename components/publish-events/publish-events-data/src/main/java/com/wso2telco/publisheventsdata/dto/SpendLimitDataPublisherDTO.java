@@ -18,7 +18,7 @@ package com.wso2telco.publisheventsdata.dto;
 
 import org.wso2.carbon.apimgt.usage.publisher.dto.ResponsePublisherDTO;
 
-import com.wso2telco.publisheventsdata.MifeEventsConstants;
+import com.wso2telco.publisheventsdata.PublishEventsConstants;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -148,8 +148,8 @@ public class SpendLimitDataPublisherDTO extends ResponsePublisherDTO {
      */
     public static String getStreamDefinition() {
         String streamDefinition = "{" +
-                "  'name':'" + MifeEventsConstants .MIFE_SPEND_LIMIT_DATA_STREAM_NAME + "'," +
-                "  'version':'" + MifeEventsConstants.MIFE_SPEND_LIMIT_DATA_STREAM_VERSION + "'," +
+                "  'name':'" + PublishEventsConstants .SPEND_LIMIT_DATA_STREAM_NAME + "'," +
+                "  'version':'" + PublishEventsConstants.SPEND_LIMIT_DATA_STREAM_VERSION + "'," +
                 "  'nickName': 'MIFE Spend Limit Data'," +
                 "  'description': 'MIFE Spend Limit Data'," +
                 "  'metaData':[" +

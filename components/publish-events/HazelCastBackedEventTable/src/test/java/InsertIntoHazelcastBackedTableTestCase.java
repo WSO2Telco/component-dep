@@ -31,7 +31,7 @@ import org.wso2.siddhi.event.table.extension.HazelcastBackedEventTable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class InsertIntoHazelcastBackedTableTestCase {
+public class 	 {
     static final Logger log = Logger.getLogger(InsertIntoHazelcastBackedTableTestCase.class);
 
     private int count;

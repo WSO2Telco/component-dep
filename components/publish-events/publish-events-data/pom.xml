@@ -52,9 +52,10 @@
             <groupId>org.wso2.carbon.apimgt</groupId>
             <artifactId>org.wso2.carbon.apimgt.usage.publisher</artifactId>
         </dependency>
-        <dependency>
-            <groupId>org.wso2.orbit.com.hazelcast</groupId>
+         <dependency>
+            <groupId>com.hazelcast</groupId>
             <artifactId>hazelcast</artifactId>
+            <version>3.0.1</version>
         </dependency>
         <dependency>
             <groupId>com.wso2telco.core</groupId>

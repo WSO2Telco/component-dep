@@ -15,11 +15,12 @@
  ******************************************************************************/
 package com.wso2telco.publisheventsdata.handler;
 
+import java.util.Properties;
+
 import com.wso2telco.dbutils.AxataDBUtilException;
 import com.wso2telco.dbutils.AxiataDbService;
-import com.wso2telco.publisheventsdata.MifeEventsConstants;
-import com.wso2telco.publisheventsdata.internal.MifeEventsDataHolder;
-import java.util.Properties;
+import com.wso2telco.publisheventsdata.PublishEventsConstants;
+import com.wso2telco.publisheventsdata.internal.EventsDataHolder;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -37,8 +38,8 @@ public class SpendLimitHandler {
      * Instantiates a new spend limit handler.
      */
     public SpendLimitHandler() {
-        Properties properties = MifeEventsDataHolder.getMifeEventsProps();
-        String eventsEnabled = properties.getProperty(MifeEventsConstants.CEP_SPEND_LIMIT_HANDLER_ENABLED_PROPERTY);
+        Properties properties = EventsDataHolder.getEventsProps();
+        String eventsEnabled = properties.getProperty(PublishEventsConstants.CEP_SPEND_LIMIT_HANDLER_ENABLED_PROPERTY);
         isEventsEnabled = Boolean.parseBoolean(eventsEnabled);
         dbservice = new AxiataDbService();
     }

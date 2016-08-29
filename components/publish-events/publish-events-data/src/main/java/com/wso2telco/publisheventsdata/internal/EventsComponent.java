@@ -16,20 +16,21 @@
 package com.wso2telco.publisheventsdata.internal;
 
 
-import com.hazelcast.core.HazelcastInstance;
-import com.wso2telco.publisheventsdata.MifeEventsConstants;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.osgi.service.component.ComponentContext;
-import org.wso2.carbon.databridge.agent.thrift.lb.LoadBalancingDataPublisher;
-import org.wso2.carbon.utils.CarbonUtils;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
 import java.util.concurrent.ConcurrentHashMap;
+
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.osgi.service.component.ComponentContext;
+import org.wso2.carbon.databridge.agent.thrift.lb.LoadBalancingDataPublisher;
+import org.wso2.carbon.utils.CarbonUtils;
+
+import com.hazelcast.core.HazelcastInstance;
+import com.wso2telco.publisheventsdata.PublishEventsConstants;
 
  
 /**
@@ -38,10 +39,10 @@ import java.util.concurrent.ConcurrentHashMap;
  * interface="com.hazelcast.core.HazelcastInstance" cardinality="0..1"
  * policy="dynamic" bind="setHazelcastInstance" unbind="unsetHazelcastInstance"
  */
-public class MifeEventsComponent {
+public class EventsComponent {
 
     /** The Constant log. */
-    private static final Log log = LogFactory.getLog(MifeEventsComponent.class);
+    private static final Log log = LogFactory.getLog(EventsComponent.class);
 
     /** The data publisher map. */
     private static Map<String, LoadBalancingDataPublisher> dataPublisherMap;
@@ -55,7 +56,7 @@ public class MifeEventsComponent {
         try {
             dataPublisherMap = new ConcurrentHashMap<String, LoadBalancingDataPublisher>();
             Properties eventProperties = loadEventProperties();
-            MifeEventsDataHolder.setMifeEventsProps(eventProperties);
+            EventsDataHolder.setEventsProps(eventProperties);
 
             log.debug("MIFE Events bundle is activated ");
         } catch (Throwable e) {
@@ -109,7 +110,7 @@ public class MifeEventsComponent {
      * @param hazelcastInstance the new hazelcast instance
      */
     protected void setHazelcastInstance(HazelcastInstance hazelcastInstance) {
-        MifeEventsDataHolder.registerHazelcastInstance(hazelcastInstance);
+        EventsDataHolder.registerHazelcastInstance(hazelcastInstance);
     }
 
     /**
@@ -118,7 +119,7 @@ public class MifeEventsComponent {
      * @param hazelcastInstance the hazelcast instance
      */
     protected void unsetHazelcastInstance(HazelcastInstance hazelcastInstance) {
-        MifeEventsDataHolder.registerHazelcastInstance(null);
+        EventsDataHolder.registerHazelcastInstance(null);
     }
 
     /**
@@ -127,7 +128,7 @@ public class MifeEventsComponent {
      * @return the properties
      */
     private Properties loadEventProperties(){
-        String configPath = CarbonUtils.getCarbonConfigDirPath() + File.separator + MifeEventsConstants.MIFE_EVENTS_PROPERTIES_FILE;
+        String configPath = CarbonUtils.getCarbonConfigDirPath() + File.separator + PublishEventsConstants.EVENTS_PROPERTIES_FILE;
         Properties props = new Properties();
         try {
             props.load(new FileInputStream(configPath));

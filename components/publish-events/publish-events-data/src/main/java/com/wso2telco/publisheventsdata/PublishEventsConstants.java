@@ -22,14 +22,14 @@ package com.wso2telco.publisheventsdata;
  */
 public class PublishEventsConstants {
 
-    /** The Constant MIFE_SPEND_LIMIT_DATA_STREAM_NAME. */
-    public static final String MIFE_SPEND_LIMIT_DATA_STREAM_NAME = "publish.events.spend.limit.data";
+    /** The Constant SPEND_LIMIT_DATA_STREAM_NAME. */
+    public static final String SPEND_LIMIT_DATA_STREAM_NAME = "publish.events.spend.limit.data";
     
-    /** The Constant MIFE_SPEND_LIMIT_DATA_STREAM_VERSION. */
-    public static final String MIFE_SPEND_LIMIT_DATA_STREAM_VERSION = "1.0.0";
+    /** The Constant SPEND_LIMIT_DATA_STREAM_VERSION. */
+    public static final String SPEND_LIMIT_DATA_STREAM_VERSION = "1.0.0";
 
-    /** The Constant MIFE_EVENTS_PROPERTIES_FILE. */
-    public static final String MIFE_EVENTS_PROPERTIES_FILE = "publish-events.properties";
+    /** The Constant EVENTS_PROPERTIES_FILE. */
+    public static final String EVENTS_PROPERTIES_FILE = "publish-events.properties";
     
     /** The Constant CEP_SPEND_LIMIT_HANDLER_ENABLED_PROPERTY. */
     public static final String CEP_SPEND_LIMIT_HANDLER_ENABLED_PROPERTY = "com.wso2telco.events.spend.limit.handler.enabled";

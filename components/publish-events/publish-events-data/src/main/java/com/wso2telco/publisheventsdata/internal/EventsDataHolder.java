@@ -22,38 +22,38 @@ import java.util.Properties;
 
 // TODO: Auto-generated Javadoc
 /**
- * The Class MifeEventsDataHolder.
+ * The Class EventsDataHolder.
  */
-public class MifeEventsDataHolder {
+public class EventsDataHolder {
 
-    /** The mife events props. */
-    private static Properties mifeEventsProps;
+    /** The  events props. */
+    private static Properties EventsProps;
     
     /** The hazelcast instance. */
     private static HazelcastInstance hazelcastInstance;
 
     /**
-     * Instantiates a new mife events data holder.
+     * Instantiates a new  events data holder.
      */
-    private MifeEventsDataHolder() {
+    private EventsDataHolder() {
     }
 
     /**
-     * Gets the mife events props.
+     * Gets the  events props.
      *
-     * @return the mife events props
+     * @return the  events props
      */
-    public static Properties getMifeEventsProps() {
-        return mifeEventsProps;
+    public static Properties getEventsProps() {
+        return EventsProps;
     }
 
     /**
-     * Sets the mife events props.
+     * Sets the  events props.
      *
-     * @param mifeEventsProps the new mife events props
+     * @param EventsProps the new  events props
      */
-    public static void setMifeEventsProps(Properties mifeEventsProps) {
-        MifeEventsDataHolder.mifeEventsProps = mifeEventsProps;
+    public static void setEventsProps(Properties EventsProps) {
+        EventsDataHolder.EventsProps = EventsProps;
     }
 
     /**
@@ -62,7 +62,7 @@ public class MifeEventsDataHolder {
      * @param hazelcastInstance the hazelcast instance
      */
     public static void registerHazelcastInstance(HazelcastInstance hazelcastInstance) {
-        MifeEventsDataHolder.hazelcastInstance = hazelcastInstance;
+        EventsDataHolder.hazelcastInstance = hazelcastInstance;
     }
 
     /**

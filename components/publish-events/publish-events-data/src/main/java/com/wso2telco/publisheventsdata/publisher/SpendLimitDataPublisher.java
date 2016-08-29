@@ -25,11 +25,11 @@ import org.wso2.carbon.databridge.agent.thrift.lb.ReceiverGroup;
 import org.wso2.carbon.databridge.agent.thrift.util.DataPublisherUtil;
 import org.wso2.carbon.databridge.commons.exception.AuthenticationException;
 import org.wso2.carbon.databridge.commons.exception.TransportException;
-import com.wso2telco.publisheventsdata.MifeEventsConstants;
+import com.wso2telco.publisheventsdata.PublishEventsConstants;
 import com.wso2telco.publisheventsdata.dto.SpendLimitDataPublisherDTO;
 import com.wso2telco.publisheventsdata.internal.DataPublisherAlreadyExistsException;
-import com.wso2telco.publisheventsdata.internal.MifeEventsComponent;
-import com.wso2telco.publisheventsdata.internal.MifeEventsDataHolder;
+import com.wso2telco.publisheventsdata.internal.EventsComponent;
+import com.wso2telco.publisheventsdata.internal.EventsDataHolder;
 
 import java.net.MalformedURLException;
 import java.util.ArrayList;
@@ -60,14 +60,14 @@ public class SpendLimitDataPublisher {
             this.dataPublisher = getDataPublisher();
 
             //If Stream Definition does not exist.
-            if(!dataPublisher.isStreamDefinitionAdded(MifeEventsConstants.MIFE_SPEND_LIMIT_DATA_STREAM_NAME,
-                     MifeEventsConstants.MIFE_SPEND_LIMIT_DATA_STREAM_VERSION)){
+            if(!dataPublisher.isStreamDefinitionAdded(PublishEventsConstants.SPEND_LIMIT_DATA_STREAM_NAME,
+                     PublishEventsConstants.SPEND_LIMIT_DATA_STREAM_VERSION)){
 
                 String spendLimitDataStreamDefinition = SpendLimitDataPublisherDTO.getStreamDefinition();
 
                 dataPublisher.addStreamDefinition(spendLimitDataStreamDefinition,
-                        MifeEventsConstants.MIFE_SPEND_LIMIT_DATA_STREAM_NAME,
-                        MifeEventsConstants.MIFE_SPEND_LIMIT_DATA_STREAM_VERSION);
+                        PublishEventsConstants.SPEND_LIMIT_DATA_STREAM_NAME,
+                        PublishEventsConstants.SPEND_LIMIT_DATA_STREAM_VERSION);
 
             }
 
@@ -84,8 +84,8 @@ public class SpendLimitDataPublisher {
     public void publishEvent(SpendLimitDataPublisherDTO spendLimitDataPublisherDTO) {
         try {
             //Publish Response Data
-            dataPublisher.publish(MifeEventsConstants.MIFE_SPEND_LIMIT_DATA_STREAM_NAME,
-                    MifeEventsConstants.MIFE_SPEND_LIMIT_DATA_STREAM_VERSION,
+            dataPublisher.publish(PublishEventsConstants.SPEND_LIMIT_DATA_STREAM_NAME,
+                    PublishEventsConstants.SPEND_LIMIT_DATA_STREAM_VERSION,
                     System.currentTimeMillis(), new Object[]{"external"}, null,
                     (Object[]) spendLimitDataPublisherDTO.createPayload());
 
@@ -109,16 +109,16 @@ public class SpendLimitDataPublisher {
         String tenantDomain = CarbonContext.getThreadLocalCarbonContext().getTenantDomain();
 
         //Get LoadBalancingDataPublisher which has been registered for the tenant.
-        LoadBalancingDataPublisher loadBalancingDataPublisher = MifeEventsComponent.getDataPublisher(tenantDomain);
+        LoadBalancingDataPublisher loadBalancingDataPublisher = EventsComponent.getDataPublisher(tenantDomain);
 
         //If a LoadBalancingDataPublisher had not been registered for the tenant.
         if (loadBalancingDataPublisher == null) {
-            Properties mifeEventsProps = MifeEventsDataHolder.getMifeEventsProps();
+            Properties EventsProps = EventsDataHolder.getEventsProps();
 
-            List<String> receiverGroups = DataPublisherUtil.getReceiverGroups(mifeEventsProps.getProperty(MifeEventsConstants.CEP_URL_PROPERTY));
+            List<String> receiverGroups = DataPublisherUtil.getReceiverGroups(EventsProps.getProperty(PublishEventsConstants.CEP_URL_PROPERTY));
 
-            String serverUser = mifeEventsProps.getProperty(MifeEventsConstants.CEP_USERNAME_PROPERTY);
-            String serverPassword = mifeEventsProps.getProperty(MifeEventsConstants.CEP_PASSWORD_PROPERTY);
+            String serverUser = EventsProps.getProperty(PublishEventsConstants.CEP_USERNAME_PROPERTY);
+            String serverPassword = EventsProps.getProperty(PublishEventsConstants.CEP_PASSWORD_PROPERTY);
             List<ReceiverGroup> allReceiverGroups = new ArrayList<ReceiverGroup>();
 
             for (String receiverGroupString : receiverGroups) {
@@ -140,11 +140,11 @@ public class SpendLimitDataPublisher {
             loadBalancingDataPublisher = new LoadBalancingDataPublisher((ArrayList) allReceiverGroups);
             try {
                 //Add created LoadBalancingDataPublisher.
-                MifeEventsComponent.addDataPublisher(tenantDomain, loadBalancingDataPublisher);
+                EventsComponent.addDataPublisher(tenantDomain, loadBalancingDataPublisher);
             } catch (DataPublisherAlreadyExistsException e) {
                 log.warn("Attempting to register a data publisher for the tenant " + tenantDomain +
                         " when one already exists. Returning existing data publisher");
-                return MifeEventsComponent.getDataPublisher(tenantDomain);
+                return EventsComponent.getDataPublisher(tenantDomain);
             }
         }
 

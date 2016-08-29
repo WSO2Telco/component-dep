@@ -15,7 +15,7 @@
 * specific language governing permissions and limitations
 * under the License.
 */
-package com.axiata.dialog.mife.events.extensions.aggregator;
+package com.wso2telco.publisheventsextensions.aggregator;
 
 import org.wso2.siddhi.core.query.selector.attribute.factory.OutputAttributeAggregatorFactory;
 import org.wso2.siddhi.core.query.selector.attribute.handler.OutputAttributeAggregator;

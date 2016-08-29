@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.wso2telco.publisheventsdata.publisher;
 
+import java.util.Properties;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
@@ -23,11 +25,9 @@ import org.wso2.carbon.apimgt.gateway.handlers.security.APISecurityUtils;
 import org.wso2.carbon.apimgt.gateway.handlers.security.AuthenticationContext;
 import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
-import com.wso2telco.publisheventsdata.MifeEventsConstants;
+import com.wso2telco.publisheventsdata.PublishEventsConstants;
 import com.wso2telco.publisheventsdata.dto.SpendLimitDataPublisherDTO;
-import com.wso2telco.publisheventsdata.internal.MifeEventsDataHolder;
-
-import java.util.Properties;
+import com.wso2telco.publisheventsdata.internal.EventsDataHolder;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -48,8 +48,8 @@ public class EventsDataPublisherClient {
      * Instantiates a new events data publisher client.
      */
     public EventsDataPublisherClient() {
-        Properties properties = MifeEventsDataHolder.getMifeEventsProps();
-        String eventsEnabled = properties.getProperty(MifeEventsConstants.CEP_SPEND_LIMIT_HANDLER_ENABLED_PROPERTY);
+        Properties properties = EventsDataHolder.getEventsProps();
+        String eventsEnabled = properties.getProperty(PublishEventsConstants.CEP_SPEND_LIMIT_HANDLER_ENABLED_PROPERTY);
         enabled = Boolean.parseBoolean(eventsEnabled);
     }
 
@@ -113,14 +113,14 @@ public class EventsDataPublisherClient {
         dataPublisherDTO.setApplicationName(applicationName);
         dataPublisherDTO.setApplicationId(applicationId);
 
-        dataPublisherDTO.setOperatorId((String) mc.getProperty(MifeEventsConstants.OPERATOR_ID));
-        dataPublisherDTO.setResponseCode((String) mc.getProperty(MifeEventsConstants.RESPONSE_CODE));
-        dataPublisherDTO.setMsisdn((String) mc.getProperty(MifeEventsConstants.MSISDN));
-        String chargeAmountStr = (String) mc.getProperty(MifeEventsConstants.CHARGE_AMOUNT);
+        dataPublisherDTO.setOperatorId((String) mc.getProperty(PublishEventsConstants.OPERATOR_ID));
+        dataPublisherDTO.setResponseCode((String) mc.getProperty(PublishEventsConstants.RESPONSE_CODE));
+        dataPublisherDTO.setMsisdn((String) mc.getProperty(PublishEventsConstants.MSISDN));
+        String chargeAmountStr = (String) mc.getProperty(PublishEventsConstants.CHARGE_AMOUNT);
         dataPublisherDTO.setChargeAmount(Double.parseDouble(chargeAmountStr));
-        dataPublisherDTO.setGroupName((String) mc.getProperty(MifeEventsConstants.GROUP_NAME));
-        dataPublisherDTO.setPaymentType((String) mc.getProperty(MifeEventsConstants.PAYMENT_TYPE));
-        dataPublisherDTO.setCurrentDateTime((String)mc.getProperty(MifeEventsConstants.CURRENT_DATE_TIME));
+        dataPublisherDTO.setGroupName((String) mc.getProperty(PublishEventsConstants.GROUP_NAME));
+        dataPublisherDTO.setPaymentType((String) mc.getProperty(PublishEventsConstants.PAYMENT_TYPE));
+        dataPublisherDTO.setCurrentDateTime((String)mc.getProperty(PublishEventsConstants.CURRENT_DATE_TIME));
         
 
         publisher.publishEvent(dataPublisherDTO);

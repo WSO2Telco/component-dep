@@ -1,4 +1,4 @@
-package com.axiata.dialog.mife.events.extensions.window;
+package com.wso2telco.publisheventsextensions.window;
 
 import org.apache.log4j.Logger;
 import org.quartz.*;
