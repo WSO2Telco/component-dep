@@ -325,5 +325,12 @@
             <EnableScoreParam>false</EnableScoreParam>  
             <Type>STRING</Type> 
         </ColumnDefinition>
+		<ColumnDefinition>  
+            <Name>spConsumerKey</Name>    
+            <EnableIndexing>false</EnableIndexing>   
+            <IsPrimaryKey>false</IsPrimaryKey>  
+            <EnableScoreParam>false</EnableScoreParam>  
+            <Type>STRING</Type> 
+        </ColumnDefinition>
         </TableSchema>    
 </EventStoreConfiguration>

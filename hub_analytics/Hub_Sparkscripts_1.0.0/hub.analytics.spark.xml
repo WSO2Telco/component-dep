@@ -152,6 +152,7 @@
 			date_Time ,
 			resourceURL ,
 			message_Id, 
+			spConsumerKey,
 		    cast(getYear(responseTime) as String) as year,
 		    cast(getMonth(responseTime) as String) as month,
 		    cast(getDay(responseTime) as String) as day,
