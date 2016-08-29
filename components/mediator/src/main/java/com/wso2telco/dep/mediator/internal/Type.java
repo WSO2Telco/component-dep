@@ -34,30 +34,39 @@ public enum Type {
 	/** The alertinbound. */
 	ALERTINBOUND("AI"),
 	/** The locreq. */
-	LOCREQ("LR"),
+	LOCREQ("LR"), 
 	/** The provision. */
-	PROVISION("PR");
+	PROVISION("PR"),
+	
+	SEND_USSD("SU"), 
+	
+	RETRIEVE_USSD("RU"), 
+	
+	MO_USSD("RU"),
+	
+	WALLET("WA"),
+	
+	CREDIT("CR");
+        
+        /** The code. */
+        private String code;
 
-	/** The code. */
-	private String code;
-
-	/**
-	 * Instantiates a new type.
-	 *
-	 * @param value
-	 *            the value
-	 */
-	private Type(String value) {
-		this.code = value;
-	}
-
-	/**
-	 * Gets the code.
-	 *
-	 * @return the code
-	 */
-	public String getCode() {
-		return code;
-	}
-
+        /**
+         * Instantiates a new type.
+         *
+         * @param value the value
+         */
+        private Type(String value) {
+                this.code = value;
+        }
+        
+        /**
+         * Gets the code.
+         *
+         * @return the code
+         */
+        public String getCode() {
+            return code;
+        }
+             
 };

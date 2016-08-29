@@ -146,7 +146,7 @@ function getOperatorWiseAPITraffic(fromDate, toDate, subscriber, operator, api){
 		return { error:true,message:e.message};
 	}
 }
-function getReportFileContent(fromDate, toDate, subscriber, operator, api, timeOffset, resType, isNorhbound) {
+function getReportFileContent(fromDate, toDate, subscriber, operator, api, isError, application, timeOffset, resType, isNorhbound) {
 	/*Identify the Operator*/
 	if(isAdmin != true && isOperator != null){
 		operator = isOperator;
@@ -161,6 +161,7 @@ function getReportFileContent(fromDate, toDate, subscriber, operator, api, timeO
 	log.info("From: " + stringify(fromDate));
 	log.info("To: " + stringify(toDate));
 	log.info("Subscriber: " + stringify(subscriber));
+	log.info("Application: " + stringify(application));
 	log.info("Operator: " + stringify(operator));
 	log.info("API: " + stringify(api));
 	log.info("ResType: " + stringify(resType));
@@ -169,7 +170,7 @@ function getReportFileContent(fromDate, toDate, subscriber, operator, api, timeO
 	var usage = [];
 	var store = jagg.module("manager").getCustomBilling();
 	try {
-		usage = store.getCustomApiTrafficReportFileContent(fromDate, toDate, subscriber, operator, api, timeOffset, resType, isNorhbound);
+		usage = store.getCustomApiTrafficReportFileContent(fromDate, toDate, subscriber, operator, api, isError, application, timeOffset, resType, isNorhbound);
 		if (log.isDebugEnabled()) {
 			log.debug("getReportFileContent for : " + server);
 		}
@@ -177,12 +178,31 @@ function getReportFileContent(fromDate, toDate, subscriber, operator, api, timeO
 		if (usage == null) {
 			return {error:true};
 		} else {
-			log.debug(usage);
-			return usage;
+			log.error(usage);
+			print(usage);
 		}
 	} catch (e) {
 		log.error(e.message);
 		return { error:e,usage:null};
 		}
 }
+
+function getAppsBySubscriber(selectedSubscriber){
+	var log = new Log();
+	log.info("Selected Subscriber: " + stringify(selectedSubscriber));
+	//log.info("*************************Get All Apps from Host Object***************************");
+
+	var store = jagg.module("manager").getAPIStoreObj();
+	var apps = [];
+	try {
+		apps = store.getApplications(selectedSubscriber);
+		log.info("Application List: " + stringify(apps));
+	return {error:false, data : apps};
+
+	} catch (e) {
+		log.error(e.message);
+		return { error:true,message:e.message};
+	}
+}
+
 %>

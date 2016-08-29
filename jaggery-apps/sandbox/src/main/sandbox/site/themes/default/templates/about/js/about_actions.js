@@ -32,7 +32,7 @@ $(document).ready(function(){
                     
                     var closestTR = $(this).closest('tr');
                     
-                    $(closestTR.find('td').children()[0]).attr("class", "required tel");
+                    $(closestTR.find('td').children()[0]).attr("class", "required");
                     $(closestTR.find('td').children()[1]).attr("class", "required");
                     $(closestTR.find('td').children()[2]).attr("class", "required balance");
                     
@@ -167,7 +167,7 @@ $(document).ready(function(){
                 
                 $("#add_number_row_button").click(function(){
                     row = $("<tr></tr>");
-                    col1 = $('<td class="editable_td"><input type="text" class="required tel managenum_exist" placeholder="Ex: 94773123456" /></td>');
+                    col1 = $('<td class="editable_td"><input type="text" class="required managenum_exist" placeholder="Ex: 94773123456" /></td>');
                     col2 = $('<td class="editable_td"><input type="text" class="required" placeholder="Ex: Tesing number" /></td>');
                     col3 = $('<td class="editable_td"><input type="text" class="required balance" placeholder="Ex: 1000.00" value="1000.00" /></td>');
                     col4 = $('<td class="da-icon-column"><input type="hidden" class="row_data_key" value="" /><a title="Save" class="save_data_icon"><img src="/sandbox/site/themes/default/images/icons/color/disk.png"/></a><a title="Cancel" class="cancel_added_row"><img src="/sandbox/site/themes/default/images/icons/color/cross.png" /></a></td>');

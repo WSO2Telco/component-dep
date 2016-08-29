@@ -1342,14 +1342,13 @@ public class NbHostObjectUtils {
 	 */
 	public static NativeArray generateCustomTrafficReport(
 			boolean isPersistReport, String fromDate, String toDate,
-			String subscriberName, String operator, String api,
+			String subscriberName, String operator, String api, boolean isError, int applicationId,
 			String timeOffset, String resType) throws Exception {
 
 		// This is to test
 		int operationType = Integer.valueOf(api);
 
-		FileWriter fileWriter = getCustomApiTrafficReportLocation(fromDate,
-				toDate, subscriberName, operator, String.valueOf(operationType));
+		FileWriter fileWriter = getCustomApiTrafficReportLocation(fromDate,toDate, subscriberName, operator, String.valueOf(operationType));
 		NativeArray nativeArray = new NativeArray(0);
 		TxCardDAO currentDao = null;
 
@@ -2419,12 +2418,12 @@ public class NbHostObjectUtils {
 	 * @throws Exception 
 	 */
 	public static List<String[]> getAPIWiseTrafficForReport(String fromDate,
-			String toDate, String subscriber, String operator, String api)
+			String toDate, String subscriber, String operator, String api, boolean isError, int applicationId)
 			throws Exception {
 		BillingDAO billingDAO = new BillingDAO();
 		List<String[]> api_request_data = billingDAO
 				.getAPIWiseTrafficForReport(fromDate, toDate, subscriber,
-						operator, api);
+						operator, api,isError, applicationId);
 		return api_request_data;
 	}
 
@@ -2469,11 +2468,11 @@ public class NbHostObjectUtils {
 	 */
 	public static List<String[]> getAPIWiseTrafficForReportCharging(
 			String fromDate, String toDate, String subscriber, String operator,
-			String api) throws Exception {
+			String api, boolean isError) throws Exception {
 		BillingDAO billingDAO = new BillingDAO();
 		List<String[]> charging_request_data = billingDAO
 				.getAPIWiseTrafficForReportCharging(fromDate, toDate,
-						subscriber, operator, api);
+						subscriber, operator, api,isError);
 		return charging_request_data;
 	}
 

@@ -24,6 +24,9 @@ jagg.module("api-wise-traffic", {
 	getReportFileContent:function () {
 		return jagg.require(jagg.getModulesDir() + "api-wise-traffic/api-wise-traffic.jag").getReportFileContent.apply(this, arguments);
 	},
+	getAppsBySubscriber:function () {
+			return jagg.require(jagg.getModulesDir() + "api-wise-traffic/api-wise-traffic.jag").getAppsBySubscriber.apply(this, arguments);
+	},
 	getAllOperations:function () {
 		return jagg.require(jagg.getModulesDir() + "api-wise-traffic/api-wise-traffic.jag").getAllOperations.apply(this, arguments);
 	}

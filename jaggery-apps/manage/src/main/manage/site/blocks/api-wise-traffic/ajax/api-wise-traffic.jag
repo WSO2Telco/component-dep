@@ -52,10 +52,12 @@ include("/jagg/jagg.jag");
         var toDate = request.getParameter("todate");
         var operator = request.getParameter("operator");
         var subscriber = request.getParameter("subscriber");
+        var application = request.getParameter("application");
         var api = request.getParameter("api");
         var timeOffset = request.getParameter("timeOffset");
         var resType = request.getParameter("resType");
         var isNorthbound = false;
+        var isError = request.getParameter("isError");
         
         //log.info("From: " + stringify(fromDate));
         //log.info("To: " + stringify(toDate));
@@ -66,22 +68,30 @@ include("/jagg/jagg.jag");
         username = user.username;
         
         var mod = jagg.module("api-wise-traffic");
-        var result = mod.getReportFileContent(fromDate, toDate, subscriber, operator, api, timeOffset, resType, isNorthbound);
+        var result = mod.getReportFileContent(fromDate, toDate, subscriber, operator, api, isError, application, timeOffset, resType, isNorthbound);
         
-        response.addHeader("Pragma", "public");
-        response.addHeader("Expires", "0"); 
-        response.addHeader("Cache-Control", "must-revalidate, post-check=0, pre-check=0");
-        response.addHeader("Content-Type", "application/csv");
-        response.addHeader("Content-Disposition", "attachment;filename="+fromDate+"-"+toDate+"-"+subscriber+"-"+operator+"-"+api+".csv"); 
-        
-        //response.contentType = 'application/csv';
-        //response.addHeader('Content-Disposition', 'attachment;filename='+fromDate+'-'+toDate+'-'+subscriber+'-'+operator+'-'+api+'.csv');
-		
-        //log.info(result);
-        print(result.trim());
-        
-	}
-	else{
+		response.contentType = 'application/csv';
+		response.addHeader('Content-Disposition', 'attachment;filename='+fromDate+'-'+toDate+'-'+subscriber+'-'+application+'-'+operator+'-'+api+'.csv');	
+	    print(result);
+	    } else if (action == "getAppsBySubscriber"){
+	    		var selectedSubscriber = request.getParameter("subscriber");		
+	    		//log.info("getAppsBySubscriber");
+	    		var mod = jagg.module("api-wise-traffic");
+	    		var result = mod.getAppsBySubscriber(selectedSubscriber);
+	    		//log.info(result.data);
+	    		if (result.error) {
+	    			obj = {
+	    				error:result.error,
+	    				message:result.message
+	    			};
+	    		} else {
+	    			obj = {
+	    				error:false,
+	    				data: result.data
+	    			}
+	    		}
+	    		print(obj);
+	}else{
 		print({
 			error:true,
 			message:msg.error.invalidAction(action)

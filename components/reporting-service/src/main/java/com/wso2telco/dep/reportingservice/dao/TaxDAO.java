@@ -162,24 +162,27 @@ public class TaxDAO {
         PreparedStatement ps = null;
         ResultSet results = null;
         String sql = "SELECT api_version,response_count AS count,STR_TO_DATE(time,'%Y-%m-%d') as date FROM " +
-                HostObjectConstants.SB_RESPONSE_SUMMARY_TABLE + " WHERE year=? and month=? and consumerKey=? and " +
-                "api=? and api_version=? and operatorId=? and operationType=? and category =? and subcategory=? and responseCode like '2%'";
+                HostObjectConstants.SB_RESPONSE_SUMMARY_TABLE + " WHERE consumerKey=? and api=? and api_version=? and operatorId=? and responseCode like '20_' and month=? and year=? and operationType=? and category =? and subcategory=? ";
 
         Set<APIRequestDTO> apiRequests = new HashSet<APIRequestDTO>();
         try {
             connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
             ps = connection.prepareStatement(sql);
-            ps.setShort(1, year);
-            ps.setShort(2, month);
-            ps.setString(3, consumerKey);
-            ps.setString(4, apiName);
-            ps.setString(5, apiVersion);
-            ps.setString(6, operatorId);
+            ps.setString(1, consumerKey);
+            ps.setString(2, apiName);
+            ps.setString(3, apiVersion);
+            ps.setString(4, operatorId);
+            ps.setShort(5, month);
+            ps.setShort(6, year);
             ps.setInt(7, operation);
             ps.setString(8, category);
             ps.setString(9, subcategory);
 
+            log.debug("SQL (PS) st ---> " + ps.toString());
+            
             results = ps.executeQuery();
+            log.debug("SQL (PS) ed ---> ");
+            
             while (results.next()) {
                 APIRequestDTO req = new APIRequestDTO();
                 req.setApiVersion(results.getString("api_version"));
@@ -193,7 +196,7 @@ public class TaxDAO {
         } finally {
             DbUtils.closeAllConnections(ps, connection, results);
         }
-
+        log.debug("done getAPIRequestTimesForSubscription");
         return apiRequests;
     }
 
@@ -270,18 +273,21 @@ public class TaxDAO {
         PreparedStatement ps = null;
         ResultSet results = null;
         String sql = "SELECT api_version,total_request_count AS count,STR_TO_DATE(time,'%Y-%m-%d') as date FROM  "+ ReportingTable.API_REQUEST_SUMMARY +
-                "WHERE year=? AND month=? AND consumerKey=?  AND userId=?;";
+                "WHERE consumerKey=?  AND userId=? AND month=? AND year=?;";
 
         Map<String, List<APIRequestDTO>> apiRequests = new HashMap<String, List<APIRequestDTO>>();
         try {
             connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
             ps = connection.prepareStatement(sql);
-            ps.setShort(1, year);
-            ps.setShort(2, month);
-            ps.setString(3, consumerKey);
-            ps.setString(4, userId);
-
+            ps.setString(1, consumerKey);
+            ps.setString(2, userId);
+            ps.setShort(3, month);
+            ps.setShort(4, year);
+            
+            log.debug("SQL (PS) st ---> " + ps.toString());
             results = ps.executeQuery();
+            log.debug("SQL (PS) ed ---> ");
+            
             while (results.next()) {
                 APIRequestDTO req = new APIRequestDTO();
                 req.setApiVersion(results.getString("api_version"));

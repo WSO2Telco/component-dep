@@ -87,7 +87,7 @@ public class QueryApplicableServiceHandler implements ProvisionHandler {
 		String sendingAddress = endpoint.getEndpointref().getAddress();
 
 		String responseStr = executor.makeGetRequest(endpoint, sendingAddress, executor.getSubResourcePath(), true,
-				context);
+				context,false);
 
 		executor.removeHeaders(context);
 

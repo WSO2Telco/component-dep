@@ -20,8 +20,12 @@ import com.wso2telco.dep.datapublisher.DataPublisherConstants;
 import com.wso2telco.dep.mediator.MSISDNConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.RequestExecutor;
+import com.wso2telco.dep.mediator.entity.OparatorEndPointSearchDTO;
 import com.wso2telco.dep.mediator.internal.ResourceURLUtil;
+import com.wso2telco.dep.mediator.internal.Type;
+import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
+import com.wso2telco.dep.mediator.util.APIType;
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.dep.oneapivalidation.service.impl.location.ValidateLocation;
 import com.wso2telco.dep.subscriptionvalidator.util.ValidatorUtils;
@@ -53,19 +57,39 @@ public class LocationExecutor extends RequestExecutor {
     @Override
     public boolean execute(MessageContext context) throws CustomException, AxisFault, Exception {
 
+    	String requestid = UID.getUniqueID(Type.LOCREQ.getCode(), context, getApplicationid());
         String[] params = new ResourceURLUtil().getParamValues(getSubResourcePath());
         context.setProperty(MSISDNConstants.USER_MSISDN, params[0].substring(5));
         OperatorEndpoint endpoint = null;
-        if (ValidatorUtils.getValidatorForSubscription(context).validate(context)) {
-            endpoint = occi.getAPIEndpointsByMSISDN(params[0].replace("tel:", ""), "location", getSubResourcePath(), true,
-                    getValidoperators());
-        }
+		if (ValidatorUtils.getValidatorForSubscription(context).validate(
+				context)) {
+			// MIFE-805
+			OparatorEndPointSearchDTO searchDTO = new OparatorEndPointSearchDTO();
+			searchDTO.setApi(APIType.LOCATION);
+			searchDTO.setContext(context);
+			searchDTO.setIsredirect(true);
+			searchDTO.setMSISDN(params[0]);
+			searchDTO.setOperators(getValidoperators());
+			searchDTO.setRequestPathURL(getSubResourcePath());
+
+			endpoint = occi.getOperatorEndpoint(searchDTO);
+
+			
+			 //endpoint = occi.getAPIEndpointsByMSISDN(params[0].replace("tel:", ""), "location", getSubResourcePath(), true, getValidoperators());
+			 
+
+		}
         String sending_add = endpoint.getEndpointref().getAddress();
 
-        String responseStr = makeGetRequest(endpoint, sending_add, getSubResourcePath(), true, context);
+        String responseStr = makeGetRequest(endpoint, sending_add, getSubResourcePath(), true, context, false);
 
         removeHeaders(context);
-        handlePluginException(responseStr);
+        
+		if (responseStr == null || responseStr.equals("") || responseStr.isEmpty()) {
+			throw new CustomException("SVC1000", "", new String[] { null });
+		} else {
+			handlePluginException(responseStr);
+		}
         //set response re-applied
         setResponse(context, responseStr);
         ((Axis2MessageContext) context).getAxis2MessageContext().setProperty("messageType", "application/json");

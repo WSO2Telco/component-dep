@@ -15,6 +15,8 @@
  ******************************************************************************/
 package com.wso2telco.dep.datapublisher;
 
+import com.google.gson.Gson;
+import com.wso2telco.dep.datapublisher.JsonPOJOforMO.InboundSMSMessageNotification;
 import com.wso2telco.dep.datapublisher.dto.SouthboundRequestPublisherDTO;
 import com.wso2telco.dep.datapublisher.dto.SouthboundResponsePublisherDTO;
 import com.wso2telco.dep.datapublisher.internal.SouthboundDataComponent;
@@ -25,6 +27,9 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.apache.synapse.rest.RESTConstants;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.wso2.carbon.apimgt.gateway.APIMgtGatewayConstants;
 import org.wso2.carbon.apimgt.gateway.handlers.security.APISecurityUtils;
 import org.wso2.carbon.apimgt.gateway.handlers.security.AuthenticationContext;
@@ -114,6 +119,75 @@ public class DataPublisherClient {
         String method = (String) ((Axis2MessageContext) mc).getAxis2MessageContext().getProperty(
                 Constants.Configuration.HTTP_METHOD);
         String tenantDomain = MultitenantUtils.getTenantDomain(username);
+        
+        JSONObject amountTransaction = null;
+        JSONObject creditApplyRequest = null;
+        String taxAmount = null;
+        String channel= null; 
+        String onBehalfOf = null;
+        String description = null;
+        String transactionOperationStatus = null;
+        String referenceCode =null;
+        String amount = null;
+        String clientCorrelator = null;
+       
+        if (jsonBody != null && !jsonBody.isEmpty()) {
+       		try {
+        		amountTransaction = new JSONObject(jsonBody).optJSONObject("amountTransaction");
+        		
+        		if (amountTransaction != null) {
+        			
+        			JSONObject chargingMetaData = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingMetaData");
+		        	taxAmount = chargingMetaData.optString("taxAmount");
+		        	channel = chargingMetaData.optString("channel"); 
+		        	onBehalfOf = chargingMetaData.optString("onBehalfOf");
+		        	JSONObject chargingInformation = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingInformation");
+		        	description = chargingInformation.optString("description");
+		        	transactionOperationStatus = amountTransaction.optString("transactionOperationStatus");
+                    referenceCode = amountTransaction.optString("referenceCode");
+                    
+        			}
+        		
+        		creditApplyRequest = new JSONObject(jsonBody).optJSONObject("creditApplyRequest");
+	                
+        		if (creditApplyRequest != null) {
+	
+	                    amount = creditApplyRequest.optString("amount");
+	                    channel = creditApplyRequest.optString("type");
+	                    clientCorrelator = creditApplyRequest.optString("clientCorrelator");
+	                    description = creditApplyRequest.optString("reasonForCredit");
+	                    referenceCode = creditApplyRequest.optString("merchantIdentification");
+	
+        		}
+        		
+        		JSONObject refundRequest = new JSONObject(jsonBody).optJSONObject("refundRequest");
+                
+        		if (refundRequest != null) {
+
+
+
+                    description = refundRequest.optString("reasonForCredit");
+                    referenceCode = refundRequest.optString("merchantIdentification");
+                    clientCorrelator= refundRequest.optString("clientCorrelator");
+                    JSONObject paymentAmount=refundRequest.getJSONObject("paymentAmount");
+                    JSONObject chargingInformation=paymentAmount.getJSONObject("chargingInformation");
+                    description = chargingInformation.optString("description");
+                    referenceCode = chargingInformation.optString("originalReferenceCode");
+                    amount = chargingInformation.optString("amount");
+
+                    JSONObject chargingMetaData = paymentAmount.getJSONObject("chargingMetaData");
+        		
+                    channel = chargingMetaData.optString("channel");
+                    onBehalfOf = chargingMetaData.optString("onBehalfOf");
+                    transactionOperationStatus = chargingMetaData.optString("status");
+                    
+				}
+
+			} catch (JSONException e) {
+				log.error(
+						"Error in converting request to json. "+ e.getMessage(), e);
+			}
+		}
 
         SouthboundRequestPublisherDTO requestPublisherDTO = new SouthboundRequestPublisherDTO();
         requestPublisherDTO.setConsumerKey(consumerKey);
@@ -136,21 +210,30 @@ public class DataPublisherClient {
         requestPublisherDTO.setApiPublisher(apiPublisher);
         requestPublisherDTO.setApplicationName(applicationName);
         requestPublisherDTO.setApplicationId(applicationId);
-
+        
         requestPublisherDTO.setRequestId((String) mc.getProperty(DataPublisherConstants.REQUEST_ID));
         requestPublisherDTO.setOperatorId((String) mc.getProperty(DataPublisherConstants.OPERATOR_ID));
         requestPublisherDTO.setSbEndpoint((String) mc.getProperty(DataPublisherConstants.SB_ENDPOINT));
         requestPublisherDTO.setChargeAmount((String) mc.getProperty(DataPublisherConstants.CHARGE_AMOUNT));
         requestPublisherDTO.setPurchaseCategoryCode((String) mc.getProperty(DataPublisherConstants.PAY_CATEGORY));
         requestPublisherDTO.setJsonBody(jsonBody);
-
+        requestPublisherDTO.setTaxAmount(taxAmount);
+        requestPublisherDTO.setChannel(channel);
+        requestPublisherDTO.setOnBehalfOf(onBehalfOf);
+        requestPublisherDTO.setDescription(description);
+        requestPublisherDTO.setTransactionOperationStatus(transactionOperationStatus);
+        requestPublisherDTO.setReferenceCode(referenceCode);
+        requestPublisherDTO.setChargeAmount(amount);
+        requestPublisherDTO.setPurchaseCategoryCode(clientCorrelator);
+        
+        
         //added to get Subscriber in end User request scenario 
-        String userIdToPublish = requestPublisherDTO.getUsername();
+       /* String userIdToPublish = requestPublisherDTO.getUsername();
         if (userIdToPublish != null && userIdToPublish.contains("@")) {
             String[] userIdArray = userIdToPublish.split("@");
             userIdToPublish = userIdArray[0];
             requestPublisherDTO.setUsername(userIdToPublish);
-        }
+        }*/
 
         publisher.publishEvent(requestPublisherDTO);
 
@@ -182,56 +265,272 @@ public class DataPublisherClient {
         Long currentTime = System.currentTimeMillis();
 
         Long serviceTime = currentTime - (Long) mc.getProperty(DataPublisherConstants.REQUEST_TIME);
+        
+        JSONObject amountTransaction,makePayment,refundTransaction = null;
+        JSONObject outboundUSSDMessageRequest = null;
+        JSONObject creditApplyResponse = null;
+        JSONObject refundResponse = null;
+
+        String taxAmount = null;
+        String channel= null; 
+        String onBehalfOf = null;
+        String description = null;    
+        String ussdAction = null;
+        String ussdSessionId = null;
+		String transactionOperationStatus = null;
+		String referenceCode = null;
+        String amount = null;
+        String clientCorrelator = null;
+		
+        if (jsonBody != null && !jsonBody.isEmpty()) {
+    		   try {
+        		   amountTransaction = new JSONObject(jsonBody).optJSONObject("amountTransaction");
+        		   if (amountTransaction != null) {
+			        	JSONObject chargingMetaData = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingMetaData");
+			        	taxAmount = chargingMetaData.optString("taxAmount");
+			        	channel = chargingMetaData.optString("channel"); 
+			        	onBehalfOf = chargingMetaData.optString("onBehalfOf");
+			        	JSONObject chargingInformation = amountTransaction.getJSONObject("paymentAmount").getJSONObject("chargingInformation");
+			        	description = chargingInformation.optString("description");
+			        	transactionOperationStatus = amountTransaction.optString("transactionOperationStatus");
+	                    referenceCode = amountTransaction.optString("referenceCode");
+        		   }
+        		   outboundUSSDMessageRequest = new JSONObject(jsonBody).optJSONObject("outboundUSSDMessageRequest");
+                   if(outboundUSSDMessageRequest != null) {
+                       ussdAction = outboundUSSDMessageRequest.optString("ussdAction");
+                       ussdSessionId = outboundUSSDMessageRequest.optString("sessionID");
+                   }
+                   makePayment = new JSONObject(jsonBody).optJSONObject("makePayment");
+                   if (makePayment != null) {
+                       JSONObject chargingMetaData = makePayment.getJSONObject("paymentAmount").getJSONObject("chargingMetaData");
+                       taxAmount = chargingMetaData.optString("taxAmount");
+                       channel = chargingMetaData.optString("channel");
+                       onBehalfOf = chargingMetaData.optString("onBehalfOf");
+                       JSONObject chargingInformation = makePayment.getJSONObject("paymentAmount").getJSONObject("chargingInformation");
+                       description = chargingInformation.optString("description");
+                       transactionOperationStatus = makePayment.optString("transactionOperationStatus");
+                       referenceCode = makePayment.optString("referenceCode");
+                   }
+   
+               
+            	   refundTransaction = new JSONObject(jsonBody).optJSONObject("refundTransaction");
+   
+            	   if (refundTransaction != null) {
+                       JSONObject chargingMetaData = refundTransaction.getJSONObject("paymentAmount").getJSONObject("chargingMetaData");
+                       taxAmount = chargingMetaData.optString("taxAmount");
+                       channel = chargingMetaData.optString("channel");
+                       onBehalfOf = chargingMetaData.optString("onBehalfOf");
+                       JSONObject chargingInformation = refundTransaction.getJSONObject("paymentAmount").getJSONObject("chargingInformation");                       description = chargingInformation.optString("description");
+                       transactionOperationStatus = refundTransaction.optString("transactionOperationStatus");
+                       referenceCode = refundTransaction.optString("referenceCode");
+                  }
+   
+                
+                   creditApplyResponse = new JSONObject(jsonBody).optJSONObject("creditApplyResponse");
+   
+                   if (creditApplyResponse != null) {
+                       amount = creditApplyResponse.optString("amount");
+                       channel = creditApplyResponse.optString("type");
+               	                       clientCorrelator= creditApplyResponse.optString("clientCorrelator");
+                       description = creditApplyResponse.optString("reasonForCredit");
+                       referenceCode = creditApplyResponse.optString("merchantIdentification");
+                       transactionOperationStatus = creditApplyResponse.optString("status");
+                       clientCorrelator=creditApplyResponse.optString("clientCorrelator");
+   
+                   }
+                   refundResponse = new JSONObject(jsonBody).optJSONObject("refundResponse");
+               	                   if (refundResponse != null) {
+                       description = refundResponse.optString("reasonForCredit");
+                       referenceCode = refundResponse.optString("merchantIdentification");
+                       clientCorrelator=refundResponse.optString("clientCorrelator");
+   
+                       JSONObject paymentAmount=refundResponse.getJSONObject("paymentAmount");
+               	                       JSONObject chargingMetaData=paymentAmount.getJSONObject("chargingMetaData");
+                       JSONObject chargingInformation=paymentAmount.getJSONObject("chargingInformation");
+   
+                       description = chargingInformation.optString("description");
+                       amount = chargingInformation.optString("amount");
+                       referenceCode = chargingInformation.optString("originalReferenceCode");
+                       channel = chargingMetaData.optString("channel");
+                       onBehalfOf = chargingMetaData.optString("onBehalfOf");
+                       transactionOperationStatus = chargingMetaData.optString("status");  
+               	                   }
+               } catch (JSONException e) {
+                   log.error("Error in converting request to json. " + e.getMessage(), e);
+               }
+        	  
+        } 
 
         SouthboundResponsePublisherDTO responsePublisherDTO = new SouthboundResponsePublisherDTO();
+        
+        responsePublisherDTO.setRequestId((String) mc.getProperty(DataPublisherConstants.REQUEST_ID));
+		responsePublisherDTO.setOperatorId((String) mc.getProperty(DataPublisherConstants.OPERATOR_ID));
+		responsePublisherDTO.setResponseCode((String) mc.getProperty(DataPublisherConstants.RESPONSE_CODE));
+		responsePublisherDTO.setMsisdn((String) mc.getProperty(DataPublisherConstants.MSISDN));
+		responsePublisherDTO.setChargeAmount((String) mc.getProperty(DataPublisherConstants.CHARGE_AMOUNT));
+		responsePublisherDTO.setPurchaseCategoryCode((String) mc.getProperty(DataPublisherConstants.PAY_CATEGORY));
+		responsePublisherDTO.setOperatorRef((String) mc.getProperty(DataPublisherConstants.OPERATOR_REF));
+		responsePublisherDTO.setExceptionId((String) mc.getProperty(DataPublisherConstants.EXCEPTION_ID));
+		responsePublisherDTO.setExceptionMessage((String) mc.getProperty(DataPublisherConstants.EXCEPTION_MESSAGE));
+        
+        
         responsePublisherDTO.setConsumerKey((String) mc.getProperty(APIMgtGatewayConstants.CONSUMER_KEY));
         responsePublisherDTO.setUsername((String) mc.getProperty(APIMgtGatewayConstants.USER_ID));
-        responsePublisherDTO.setTenantDomain(MultitenantUtils.getTenantDomain(responsePublisherDTO.getUsername()));
+        
         responsePublisherDTO.setContext((String) mc.getProperty(APIMgtGatewayConstants.CONTEXT));
         responsePublisherDTO.setApi_version((String) mc.getProperty(APIMgtGatewayConstants.API_VERSION));
         responsePublisherDTO.setApi((String) mc.getProperty(APIMgtGatewayConstants.API));
         responsePublisherDTO.setVersion((String) mc.getProperty(APIMgtGatewayConstants.VERSION));
         responsePublisherDTO.setResourcePath((String) mc.getProperty(APIMgtGatewayConstants.RESOURCE));
         responsePublisherDTO.setMethod((String) mc.getProperty(APIMgtGatewayConstants.HTTP_METHOD));
-        responsePublisherDTO.setResponseTime(currentTime);
-        responsePublisherDTO.setServiceTime(serviceTime);
+        
         responsePublisherDTO.setHostName((String) mc.getProperty(APIMgtGatewayConstants.HOST_NAME));
         responsePublisherDTO.setApiPublisher((String) mc.getProperty(APIMgtGatewayConstants.API_PUBLISHER));
+        
         responsePublisherDTO.setApplicationName((String) mc.getProperty(APIMgtGatewayConstants.APPLICATION_NAME));
         responsePublisherDTO.setApplicationId((String) mc.getProperty(APIMgtGatewayConstants.APPLICATION_ID));
+        responsePublisherDTO.setSpConsumerKey((String) mc.getProperty(DataPublisherConstants.SP_CONSUMER_KEY));
+        
+        //================
+        responsePublisherDTO.setSpOperatorId((String) mc.getProperty(DataPublisherConstants.SP_OPERATOR_ID));
+        responsePublisherDTO.setSpUserId((String) mc.getProperty(DataPublisherConstants.SP_USER_ID));
+        //================
+        
+      
 
-        responsePublisherDTO.setRequestId((String) mc.getProperty(DataPublisherConstants.REQUEST_ID));
-        responsePublisherDTO.setOperatorId((String) mc.getProperty(DataPublisherConstants.OPERATOR_ID));
-        responsePublisherDTO.setResponseCode((String) mc.getProperty(DataPublisherConstants.RESPONSE_CODE));
-        responsePublisherDTO.setMsisdn((String) mc.getProperty(DataPublisherConstants.MSISDN));
-        responsePublisherDTO.setChargeAmount((String) mc.getProperty(DataPublisherConstants.CHARGE_AMOUNT));
-        responsePublisherDTO.setPurchaseCategoryCode((String) mc.getProperty(DataPublisherConstants.PAY_CATEGORY));
-        responsePublisherDTO.setOperatorRef((String) mc.getProperty(DataPublisherConstants.OPERATOR_REF));
-        responsePublisherDTO.setExceptionId((String) mc.getProperty(DataPublisherConstants.EXCEPTION_ID));
-        responsePublisherDTO.setExceptionMessage((String) mc.getProperty(DataPublisherConstants.EXCEPTION_MESSAGE));
-        responsePublisherDTO.setJsonBody(jsonBody);
         if (mc.getProperty(DataPublisherConstants.RESPONSE) != null) {
-            responsePublisherDTO.setResponse(Integer.parseInt((String) mc.getProperty(DataPublisherConstants.RESPONSE)));
-        } else {
-            responsePublisherDTO.setResponse(1);
-        }
+				responsePublisherDTO.setResponse(Integer.parseInt((String) mc.getProperty(DataPublisherConstants.RESPONSE)));
+			} else {
+				responsePublisherDTO.setResponse(1);
+		}
+			
+		responsePublisherDTO.setTenantDomain(MultitenantUtils.getTenantDomain(responsePublisherDTO.getUsername()));
+		responsePublisherDTO.setResponseTime(currentTime);
+		responsePublisherDTO.setServiceTime(serviceTime);
+        	
+        responsePublisherDTO.setJsonBody(jsonBody);
+        responsePublisherDTO.setTaxAmount(taxAmount);
+        responsePublisherDTO.setChannel(channel);
+        responsePublisherDTO.setOnBehalfOf(onBehalfOf);
+        responsePublisherDTO.setDescription(description);
+        responsePublisherDTO.setUssdAction(ussdAction);
+       // responsePublisherDTO.setChargeAmount(amount);
+        responsePublisherDTO.setUssdSessionId(ussdSessionId);
+		responsePublisherDTO.setTransactionOperationStatus(transactionOperationStatus);
+        responsePublisherDTO.setReferenceCode(referenceCode);
+       // responsePublisherDTO.setPurchaseCategoryCode(clientCorrelator);
+        
+        //log.info("HHHHHHHHHHHHHHHHHHHHHHHHHHHH			responsePublisherDTO.getApi() : " + responsePublisherDTO.getApi());
+        //log.info("HHHHHHHHHHHHHHHHHHHHHHHHHHHH			responsePublisherDTO.getResourcePath() : " + responsePublisherDTO.getResourcePath()
+        
+       
+        /*if (responsePublisherDTO.getApi().equals("smsmessaging") && responsePublisherDTO.getResourcePath().contains("/inbound/registrations")) {
+			Gson gson = new Gson();
+			if (isJSONValid(jsonBody)) {
+				//log.info("HHHHHHHHHHHHHHHHHHHHHHHHHHHH			jsonBody : " + jsonBody);
+				JsonPOJO jsonPOJO = gson.fromJson(jsonBody, JsonPOJO.class);
+				InboundSMSMessage[] inboundSMSMessageList=jsonPOJO.getInboundSMSMessageList().getInboundSMSMessage();
+				//log.info("HHHHHHHHHHHHHHHHHHHHHHHHHHHH			inboundSMSMessageList.length : " + inboundSMSMessageList.length);
+				if (inboundSMSMessageList.length > 0) {
+					for (InboundSMSMessage inboundSMSMessage : inboundSMSMessageList) {
+						//log.info("XXXXXXXXXXXXXXXXXXXXXXXX inboundSMSMessageList : " + inboundSMSMessageList);
+						responsePublisherDTO.setDateTime(inboundSMSMessage.getDateTime());
+						//log.info("XXXXXXXXXXXXXXXXXXXXXXXX			inboundSMSMessageList : " + inboundSMSMessage.getDateTime());
+						responsePublisherDTO.setDestinationAddress(inboundSMSMessage.getDestinationAddress());
+						//log.info("XXXXXXXXXXXXXXXXXXXXXXXX			inboundSMSMessageList : " + inboundSMSMessage.getDestinationAddress());
+						responsePublisherDTO.setMessage(inboundSMSMessage.getMessage());
+						//log.info("XXXXXXXXXXXXXXXXXXXXXXXX			inboundSMSMessageList : " + inboundSMSMessage.getMessage());
+						responsePublisherDTO.setMessageId(inboundSMSMessage.getMessageId());
+						//log.info("XXXXXXXXXXXXXXXXXXXXXXXX			inboundSMSMessageList : " + inboundSMSMessage.getMessageId());
+						responsePublisherDTO.setResourceURL(inboundSMSMessage.getResourceURL());
+						//log.info("XXXXXXXXXXXXXXXXXXXXXXXX			inboundSMSMessageList : " + inboundSMSMessage.getResourceURL());
+						responsePublisherDTO.setSenderAddress(inboundSMSMessage.getSenderAddress());
+						//log.info("XXXXXXXXXXXXXXXXXXXXXXXX			inboundSMSMessageList : " + inboundSMSMessage.getSenderAddress());
 
-        responsePublisherDTO.setOperationType((Integer) mc.getProperty(DataPublisherConstants.OPERATION_TYPE));
-        responsePublisherDTO.setMerchantId((String) mc.getProperty(DataPublisherConstants.MERCHANT_ID));
-        responsePublisherDTO.setCategory((String) mc.getProperty(DataPublisherConstants.CATEGORY));
-        responsePublisherDTO.setSubCategory((String) mc.getProperty(DataPublisherConstants.SUB_CATEGORY));
+						//log.info("XXXXXXXXXXXXXXXXXXXXXXXX PUBLISHED");
+				        publisher.publishEvent(responsePublisherDTO);
+					}
+				}else {
+					//log.info("YYYYYYYYYYYYYYYYYYYYYYYYY PUBLISHED");
+					publisher.publishEvent(responsePublisherDTO);
+				}
+			}else{
+				//log.info("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ PUBLISHED");
+			publisher.publishEvent(responsePublisherDTO);
+			}
 
-        //added to get Subscriber in end User request scenario 
-        String userIdToPublish = responsePublisherDTO.getUsername();
-        if (userIdToPublish != null && userIdToPublish.contains("@")) {
-            String[] userIdArray = userIdToPublish.split("@");
-            userIdToPublish = userIdArray[0];
-            responsePublisherDTO.setUsername(userIdToPublish);
-        }
-
-        publisher.publishEvent(responsePublisherDTO);
+		}else {
+			//log.info("UUUUUUUUUUUUUUUUUUUUUUUUUUUUUUUU PUBLISHED");
+			publisher.publishEvent(responsePublisherDTO);			
+		}*/
+        
+        
+        if (responsePublisherDTO.getApi().equals("smsmessaging") && responsePublisherDTO.getResourcePath().contains("/inbound/registrations")) {
+			Gson gson = new Gson();
+			if (isJSONValid(jsonBody)) {
+			JsonPOJO jsonPOJO = gson.fromJson(jsonBody, JsonPOJO.class);
+				InboundSMSMessage[] inboundSMSMessageList=jsonPOJO.getInboundSMSMessageList().getInboundSMSMessage();
+				if (inboundSMSMessageList!=null && inboundSMSMessageList.length > 0) {
+					for (InboundSMSMessage inboundSMSMessage : inboundSMSMessageList) {
+						responsePublisherDTO.setDateTime(inboundSMSMessage.getDateTime());
+						responsePublisherDTO.setDestinationAddress(inboundSMSMessage.getDestinationAddress());
+						responsePublisherDTO.setMessage(inboundSMSMessage.getMessage());
+						responsePublisherDTO.setMessageId(inboundSMSMessage.getMessageId());
+						responsePublisherDTO.setResourceURL(inboundSMSMessage.getResourceURL());
+						responsePublisherDTO.setSenderAddress(inboundSMSMessage.getSenderAddress());
+						responsePublisherDTO.setResponse(1);
+						
+						publisher.publishEvent(responsePublisherDTO);
+					}
+			}else {
+					publisher.publishEvent(responsePublisherDTO);
+				}
+			}else{
+				publisher.publishEvent(responsePublisherDTO);
+			}
+	
+		}else if (responsePublisherDTO.getApi().equals("smsmessaging") && responsePublisherDTO.getResourcePath().contains("ReceivedInfoNotification")) {
+		Gson gson = new Gson();
+			if (isJSONValid(jsonBody)) {
+				JsonPOJOforMO jsonPOJOforMO = gson.fromJson(jsonBody, JsonPOJOforMO.class);
+				InboundSMSMessageNotification inboundSMSNotification=jsonPOJOforMO.getInboundSMSMessageNotification();
+				if (inboundSMSNotification!=null) {
+					System.out.print(inboundSMSNotification.getcallbackData());
+					responsePublisherDTO.setDateTime(inboundSMSNotification.getInboundSMSMessage().getDateTime());
+					responsePublisherDTO.setDestinationAddress(inboundSMSNotification.getInboundSMSMessage().getDestinationAddress());
+					responsePublisherDTO.setMessage(inboundSMSNotification.getInboundSMSMessage().getMessage());
+					responsePublisherDTO.setMessageId(inboundSMSNotification.getInboundSMSMessage().getMessageId());
+					responsePublisherDTO.setResourceURL(inboundSMSNotification.getInboundSMSMessage().getResourceURL());
+				responsePublisherDTO.setSenderAddress(inboundSMSNotification.getInboundSMSMessage().getSenderAddress());
+					publisher.publishEvent(responsePublisherDTO);
+				}else {
+					publisher.publishEvent(responsePublisherDTO);
+				}
+			}else{
+				publisher.publishEvent(responsePublisherDTO);
+			}
+	
+		}else{
+			responsePublisherDTO.setChargeAmount(amount);
+	        responsePublisherDTO.setPurchaseCategoryCode(clientCorrelator);
+	        
+			publisher.publishEvent(responsePublisherDTO);
+		}
+       
     }
+    public boolean isJSONValid(String jsonString) {
+		try {
+			new JSONObject(jsonString);
+		} catch (JSONException ex) {
 
+			try {
+				new JSONArray(jsonString);
+			} catch (JSONException exN) {
+				return false;
+			}
+		}
+		return true;
+	}
     /**
      * Extract resource.
      *

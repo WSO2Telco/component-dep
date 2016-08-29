@@ -22,10 +22,13 @@ import com.wso2telco.dep.datapublisher.DataPublisherConstants;
 import com.wso2telco.dep.mediator.MSISDNConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.ResponseHandler;
+import com.wso2telco.dep.mediator.entity.OparatorEndPointSearchDTO;
 import com.wso2telco.dep.mediator.entity.smsmessaging.QuerySMSStatusResponse;
+import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.internal.Util;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.dep.mediator.service.SMSMessagingService;
+import com.wso2telco.dep.mediator.util.APIType;
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.dep.oneapivalidation.service.impl.smsmessaging.ValidateDeliveryStatus;
@@ -161,14 +164,27 @@ public class QuerySMSStatusHandler implements SMSHandler {
 				context.setProperty(MSISDNConstants.USER_MSISDN, address.substring(5));
 				OperatorEndpoint endpoint = null;
 				String resourcePath = resourcePathPrefix + reqId + "/deliveryInfos";
-				if (ValidatorUtils.getValidatorForSubscription(context).validate(context)) {
-					endpoint = occi.getAPIEndpointsByMSISDN(address.replace("tel:", ""), API_TYPE, resourcePath, true,
-							executor.getValidoperators());
+				if (ValidatorUtils.getValidatorForSubscription(context)
+						.validate(context)) {
+					OparatorEndPointSearchDTO searchDTO = new OparatorEndPointSearchDTO();
+					searchDTO.setApi(APIType.SMS);
+					searchDTO.setContext(context);
+					searchDTO.setIsredirect(true);
+					searchDTO.setMSISDN(address);
+					searchDTO.setOperators(executor.getValidoperators());
+					searchDTO.setRequestPathURL(resourcePath);
+
+					endpoint = occi.getOperatorEndpoint(searchDTO);
+					/*
+					 * occi.getAPIEndpointsByMSISDN(address.replace("tel:", ""),
+					 * API_TYPE, resourcePath, true,
+					 * executor.getValidoperators());
+					 */
 				}
 				String sending_add = endpoint.getEndpointref().getAddress();
-				log.info("sending endpoint found: " + sending_add);
+				log.info("sending endpoint found: " + sending_add + " Request ID: " + UID.getRequestID(context));
 
-				String responseStr = executor.makeGetRequest(endpoint, sending_add, resourcePath, true, context);
+				String responseStr = executor.makeGetRequest(endpoint, sending_add, resourcePath, true, context,false);
 				QuerySMSStatusResponse statusResponse = parseJsonResponse(responseStr);
 				statusResponses.put(address, statusResponse);
 			} else {

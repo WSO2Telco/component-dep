@@ -133,7 +133,7 @@ public class SMSInboundSubscriptionsHandler implements SMSHandler {
 		for (OperatorEndpoint endpoint : endpoints) {
 
 			String notifyres = executor.makeRequest(endpoint, endpoint.getEndpointref().getAddress(),
-					jsonBody.toString(), true, context);
+					jsonBody.toString(), true, context,false);
 
 			if (notifyres == null) {
 

@@ -78,7 +78,7 @@ public class ValidateSBOutboundSubscription implements IServiceValidate {
 
         ValidationRule[] rules = null;
         rules = new ValidationRule[]{
-            new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "filterCriteria", filterCriteria),
+            new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "filterCriteria", filterCriteria),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "operatorCode", operatorCode),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "clientCorrelator", clientCorrelator),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "callbackData", callbackData),

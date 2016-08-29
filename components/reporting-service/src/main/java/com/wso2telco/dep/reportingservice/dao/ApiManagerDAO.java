@@ -47,7 +47,7 @@ public class ApiManagerDAO {
      * @throws APIMgtUsageQueryServiceClientException the API mgt usage query service client exception
      * @throws SQLException the SQL exception
      */
-    public String getConsumerKeyByApplication(int applicationId) throws APIMgtUsageQueryServiceClientException, SQLException {
+    public static String getConsumerKeyByApplication(int applicationId) throws APIMgtUsageQueryServiceClientException, SQLException {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet results = null;

@@ -136,6 +136,10 @@
 			<artifactId>mnc-resolver</artifactId>
 		</dependency>
 		<dependency>
+			<groupId>com.wso2telco.core</groupId>
+			<artifactId>msisdn-validator</artifactId>
+		</dependency>
+		<dependency>
 			<groupId>com.wso2telco.dep</groupId>
 			<artifactId>publish-events-data</artifactId>
 		</dependency>
@@ -191,6 +195,7 @@
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-compiler-plugin</artifactId>
+				<version>3.1</version>
 				<configuration>
 					<source>1.6</source>
 					<target>1.6</target>
