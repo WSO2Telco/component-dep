@@ -18,9 +18,9 @@ package com.wso2telco.publisheventsdata.handler;
 import java.util.Properties;
 
 import com.wso2telco.dbutils.AxataDBUtilException;
-import com.wso2telco.dbutils.AxiataDbService;
 import com.wso2telco.publisheventsdata.PublishEventsConstants;
 import com.wso2telco.publisheventsdata.internal.EventsDataHolder;
+import com.wso2telco.publisheventsdata.service.SpendLimitService;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -32,7 +32,7 @@ public class SpendLimitHandler {
     private final boolean isEventsEnabled;
     
     /** The dbservice. */
-    private AxiataDbService dbservice;
+    private SpendLimitService dbservice;
 
     /**
      * Instantiates a new spend limit handler.
@@ -41,11 +41,11 @@ public class SpendLimitHandler {
         Properties properties = EventsDataHolder.getEventsProps();
         String eventsEnabled = properties.getProperty(PublishEventsConstants.CEP_SPEND_LIMIT_HANDLER_ENABLED_PROPERTY);
         isEventsEnabled = Boolean.parseBoolean(eventsEnabled);
-        dbservice = new AxiataDbService();
+        dbservice = new SpendLimitService();
     }
   
 
-    public Double getGroupTotalDayAmount(String groupName,String operator,String msisdn) throws AxataDBUtilException {
+    public Double getGroupTotalDayAmount(String groupName,String operator,String msisdn) throws Exception {
         if (isEventsEnabled) {
 
 			return dbservice.getGroupTotalDayAmount(groupName, operator,msisdn);
@@ -53,7 +53,7 @@ public class SpendLimitHandler {
 		return 0.0;
 	}
 
-    public Double getGroupTotalMonthAmount(String groupName,String operator,String msisdn) throws AxataDBUtilException {
+    public Double getGroupTotalMonthAmount(String groupName,String operator,String msisdn) throws Exception {
 
         if (isEventsEnabled) {
 
