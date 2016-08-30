@@ -39,10 +39,10 @@ public class BlackListWhiteListDAO {
 				+ apiID + " apiName:" + apiName + " userID:" + userID);
 
 		StringBuilder sql = new StringBuilder();
-		sql.append(" INSERT INTO ");
+		sql.append(" INSERT INTO `");
 		sql.append(OparatorTable.BLACKLIST_MSISDN.getTObject());
 		sql.append("(MSISDN,API_ID,API_NAME,USER_ID)");
-		sql.append(" VALUES (?, ?, ?, ?)");
+		sql.append("	VALUES (?,?,?,?);");
 
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -151,35 +151,24 @@ public class BlackListWhiteListDAO {
 
 	public void removeBlacklist(final String apiName, final String userMSISDN) throws SQLException, Exception {
 
-		StringBuilder sql = new StringBuilder();
-		sql.append("DELETE FROM ");
-		sql.append(OparatorTable.BLACKLIST_MSISDN.getTObject());
-		sql.append(" WHERE API_NAME = ?");
-		sql.append(" AND MSISDN = ?");
-		//sql.append(" (API_NAME, MSISDN) ");
-		//sql.append("VALUES (?, ?)");
-
-		
-		
-		//String sql = "DELETE FROM `blacklistmsisdn` WHERE `API_NAME`=? && `MSISDN`=?;";
+		String sql = "DELETE FROM `blacklistmsisdn` WHERE `API_NAME`=? && `MSISDN`=?;";
 
 		Connection conn = null;
 		PreparedStatement ps = null;
-		ResultSet rs = null;
+
 		try {
 			conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
-			ps = conn.prepareStatement(sql.toString());
+			ps = conn.prepareStatement(sql);
 
 			ps.setString(1, apiName);
 			ps.setString(2, userMSISDN);
 
-			ps.executeUpdate();
-							
+			ps.execute();
 		} catch (SQLException e) {
 			throw e;
 		} finally {
 
-			DbUtils.closeAllConnections(ps, conn, rs);
+			DbUtils.closeAllConnections(ps, conn, null);
 
 		}
 	}
@@ -194,7 +183,7 @@ public class BlackListWhiteListDAO {
 	 * @throws SQLException
 	 * @throws Exception
 	 */
-	public void whitelist(List<MSISDN> userMSISDNs, String SubscriptionID, String apiID, String applicationID) 	throws SQLException, Exception {
+	public void whitelist(List<MSISDN> userMSISDNs, String SubscriptionID, String apiID, String applicationID) 			throws SQLException, Exception {
 
 		StringBuilder sql = new StringBuilder();
 		sql.append("INSERT INTO ");

@@ -2,13 +2,19 @@
 var isAdmin = jagg.getUser().isAdmin;
 var isOperator = jagg.getUser().operator;
 
+// var addSingleURL = "http://10.62.96.185:8280/customerProfile/queries/Blacklist/tel3A%2B"; // 9477*** Should be appended
+// var addBulkURL = "http://10.62.96.185:8280/customerProfile/queries/Blacklist";
+// var getBlacklistURL = "http://10.62.96.185:8280/customerProfile/queries/GetBlacklistPerApi/"; // apiName Should be appended
+// var removeBlacklistURL = "http://10.62.96.185:8280/customerProfile/queries/RemoveFromBlacklist/tel3A%2B"; // 9477*** Should be appended
+
 var site = require("/site/conf/site.json");
 var externalServicesUrl = site.externalServicesUrl;
 
-var addSingleURL = externalServicesUrl + "blcklist-whitelist-service/queries/Blacklist/tel:+";
-var addBulkURL = externalServicesUrl +"blcklist-whitelist-service/queries/Blacklist";
-var getBlacklistURL = externalServicesUrl + "blcklist-whitelist-service/queries/GetBlacklistPerApi/";
-var removeBlacklistURL = externalServicesUrl + "blcklist-whitelist-service/queries/RemoveFromBlacklist/";
+var addSingleURL = externalServicesUrl + "locationrest/queries/Blacklist/tel3A%2B";
+var addBulkURL = externalServicesUrl + "locationrest/queries/Blacklist";
+var getBlacklistURL = externalServicesUrl + "locationrest/queries/GetBlacklistPerApi/";
+var removeBlacklistURL = externalServicesUrl + "locationrest/queries/RemoveFromBlacklist/tel3A%2B";
+
 
 %>
 
@@ -16,10 +22,23 @@ var removeBlacklistURL = externalServicesUrl + "blcklist-whitelist-service/queri
 function getApiwiseBlacklist(api){
 	var log = new Log();
 
+	// NO API implementation
+	/* if (isAdmin) {
+	if (api == "USSD") {
+	return ["94777000000", "94777000000", "94777000000"];
+	} else if (api == "SMS") {
+	return ["94777000001", "94777000001", "94777000001"];
+	} else if (api == "LBS") {
+	return ["94777000002", "94777000002", "94777000002"];
+	} else { // Payment
+	return ["94777000003", "94777000003", "94777000003"];
+	}
+	} */
+
 	// API invocation
 	if (isAdmin || isOperator) {
 		log.info(api);
-		var data = {"apiName":api
+		var data = {
 		};
 		var newURL = getBlacklistURL + api;
 		var response = postJSON(newURL, data);
@@ -50,7 +69,7 @@ function addNewToBlacklist(api, subscriberList){
 	log.info(subscribers[i]);
 	var newURL = addSingleURL + subscribers[i];
 	var data = {
-	"apiID":"5",
+	"apiID":"1",
 	"apiName":api,
 	"userID":jagg.getUser().username
 	};
@@ -74,14 +93,17 @@ function addNewToBlacklist(api, subscriberList){
 
 function removeFromBlacklist(api, subscriber){
 	var log = new Log();
+
+	subscriber = urlEncode(subscriber);
+	
 	log.info("subscriber: " + subscriber);
-	//subscriber = urlEncode(subscriber);
 	var newURL = removeBlacklistURL + subscriber;
 	var data = {
 		"apiName":api
 	};
 	var response = postJSON(newURL, data);
 	log.info("response = " + response);
+
 	return 1;
 }
 
@@ -109,7 +131,7 @@ function postJSON(url, data) {
 
 function urlEncode(subscribers){
 	for (i = 0; i < subscribers.length; i++) {
-	    subscribers[i] = "tel:+" + subscribers[i];
+	    subscribers[i] = "tel3A+" + subscribers[i];
 	}
 	return subscribers;
 }
@@ -123,8 +145,8 @@ function urlDecode(blacklist){
 	};
 	
 	for (i = 0; i < blacklist.length; i++) {
-		if(blacklist[i].startsWith("tel:+")){
-			blacklist[i] = blacklist[i].replace("tel:+", "");
+		if(blacklist[i].startsWith("tel3A+")){
+			blacklist[i] = blacklist[i].replace("tel3A+", "");
 		}
 	}
 	return blacklist;
