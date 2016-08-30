@@ -59,7 +59,7 @@ public class Queries {
 	 */
 	@POST
 	@Path("/Blacklist/{MSISDN}")
-	@Consumes("application/json")
+	@Consumes({"application/json","application/octet-stream"})
 	@Produces("application/json")
 	public Response location(@PathParam("MSISDN") String msisdn, String jsonBody) throws Exception {
 		LOG.debug("location Triggerd  jsonBody :" + jsonBody + " jsonBody: " + jsonBody);
@@ -110,7 +110,7 @@ public class Queries {
 
 	@POST
 	@Path("/Blacklist")
-	@Consumes("application/json")
+	@Consumes({"application/json","application/octet-stream","text/plain"})
 	@Produces("text/plain")
 	public Response location(String jsonBody) {
 
@@ -220,7 +220,7 @@ public class Queries {
 	 */
 	@POST
 	@Path("/RemoveFromBlacklist/{MSISDN}")
-	@Consumes("application/json")
+	@Consumes({"application/json","application/octet-stream","text/plain"})
 	@Produces("application/json")
 	public Response removeFromBlacklist(@PathParam("MSISDN") String msisdn, String jsonBody) throws SQLException {
 		LOG.debug("removeFromBlacklist Triggerd  jsonBody :" + jsonBody + " , msisdn :" + msisdn);
@@ -248,7 +248,7 @@ public class Queries {
 				jsonreturn.append("Blacklist number successfully removed ").append("\",").append("\"variables\":\"")
 						.append(msisdn).append("\"").append("}}");
 
-				return Response.status(Response.Status.OK).entity(jsonreturn).build();
+				return Response.status(Response.Status.OK).entity(jsonreturn.toString()).build();
 			} catch (BusinessException e) {
 				LOG.error("", e);
 
