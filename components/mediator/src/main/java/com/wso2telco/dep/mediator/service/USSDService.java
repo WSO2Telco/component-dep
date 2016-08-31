@@ -17,17 +17,18 @@ package com.wso2telco.dep.mediator.service;
 
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import com.wso2telco.dep.mediator.dao.USSDDAO;
 import com.wso2telco.dep.mediator.util.ErrorType;
 import com.wso2telco.dep.operatorservice.model.OperatorSubscriptionDTO;
 import com.wso2telco.dep.operatorservice.util.OparatorError;
 import com.wso2telco.utils.exception.BusinessException;
 import com.wso2telco.utils.exception.GenaralError;
-
+import com.wso2telco.core.dbutils.exception.BusinessException;
+import com.wso2telco.core.dbutils.exception.GenaralError;
+import com.wso2telco.dep.mediator.dao.USSDDAO;
+import com.wso2telco.dep.mediator.util.ErrorType;
 import edu.emory.mathcs.backport.java.util.Collections;
 
 public class USSDService {

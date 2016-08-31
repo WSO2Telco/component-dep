@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.wso2telco.dep.oneapivalidation.util;
 
+import com.wso2telco.core.dbutils.exception.ThrowableError;
 public enum FileNames {
 
 	ONEAPI_VALIDATION_CONF_FILE("oneapi-validation-conf.properties");

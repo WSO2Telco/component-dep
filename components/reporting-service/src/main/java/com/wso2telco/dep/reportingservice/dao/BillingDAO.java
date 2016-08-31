@@ -41,6 +41,8 @@ import org.wso2.carbon.apimgt.api.model.Application;
 import org.wso2.carbon.apimgt.impl.dao.ApiMgtDAO;
 import org.wso2.carbon.apimgt.impl.workflow.WorkflowConstants;
 import com.wso2telco.core.dbutils.DbUtils;
+import com.wso2telco.core.dbutils.exception.BusinessException;
+import com.wso2telco.core.dbutils.exception.GenaralError;
 import com.wso2telco.core.dbutils.util.DataSourceNames;
 import com.wso2telco.dep.reportingservice.APIResponseDTO;
 import com.wso2telco.dep.reportingservice.HostObjectConstants;
@@ -51,8 +53,6 @@ import com.wso2telco.dep.reportingservice.southbound.CategoryCharge;
 import com.wso2telco.dep.reportingservice.util.CommissionPercentagesDTO;
 import com.wso2telco.dep.reportingservice.util.OperatorDetailsEntity;
 import com.wso2telco.dep.reportingservice.util.ReportingTable;
-import com.wso2telco.core.utils.exception.BusinessException;
-import com.wso2telco.core.utils.exception.GenaralError;
 
 /**
  * The Class BillingDataAccessObject.

@@ -1,6 +1,6 @@
 package com.wso2telco.dep.operatorservice.util;
 
-import com.wso2telco.utils.exception.ThrowableError;
+import com.wso2telco.core.dbutils.exception.ThrowableError;
 
 public enum OparatorError implements ThrowableError  {
 	

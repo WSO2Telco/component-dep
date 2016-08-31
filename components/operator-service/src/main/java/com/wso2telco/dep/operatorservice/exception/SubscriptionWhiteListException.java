@@ -1,7 +1,7 @@
 package com.wso2telco.dep.operatorservice.exception;
 
-import com.wso2telco.utils.exception.BusinessException;
-import com.wso2telco.utils.exception.ThrowableError;
+import com.wso2telco.core.dbutils.exception.BusinessException;
+import com.wso2telco.core.dbutils.exception.ThrowableError;
 
 public class SubscriptionWhiteListException extends BusinessException {
 
