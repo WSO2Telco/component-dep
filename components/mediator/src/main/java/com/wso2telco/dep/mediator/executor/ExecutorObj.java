@@ -22,9 +22,9 @@ public class ExecutorObj {
         this.fullQulifiedName = fullQulifiedName;
     }
 
-    public ExecutorObj (String executorId,String executorName, String executorDescription) {
-        this.executorId = executorId;
+    public ExecutorObj (String executorName, String fullQulifiedName, String executorDescription) {
         this.executorName = executorName;
+        this.fullQulifiedName = fullQulifiedName;
         this.executorDescription = executorDescription;
     }
 
@@ -44,10 +44,13 @@ public class ExecutorObj {
         this.executorName = executorName;
     }
 
-
     public String getExecutorId() { return executorId; }
 
     public void setExecutorId(String executorId) { this.executorId = executorId; }
+
+    public String getFullQulifiedName() { return fullQulifiedName; }
+
+    public void setFullQulifiedName(String fullQulifiedName) { this.fullQulifiedName = fullQulifiedName; }
 
     //TODO: serialize or not
 }
