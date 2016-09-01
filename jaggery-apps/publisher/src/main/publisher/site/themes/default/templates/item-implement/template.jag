@@ -15,6 +15,15 @@
 %>
 <script type="text/javascript">
     var VERBS = [ 'GET' , 'POST' , 'PUT' , 'DELETE', 'PATCH', 'OPTIONS'];
+
+    <%
+    var executorService = jagg.module("manager").getExecutorService();
+    var helperList = executorService.getHandlers();
+
+    print('var HELPERS = ' + stringify(helperList) + ';');
+    %>
+
+
     var AUTH_TYPES = [
       { "value": "<%=i18n.localize("none")%>", "text":"<%=i18n.localize("none")%>"} ,
       { "value": "<%=i18n.localize("application")%>", "text":"<%=i18n.localize("application")%>"},
@@ -422,6 +431,20 @@ mc.setPayloadJSON('{ "data" : "sample JSON"}');*/
 </textarea>
 </div>  
 </script>
+
+<script id="designer-resources-handlers" type="text/x-handlebars-template">
+    <div class="control-group">
+            <label class="control-label" for=""></label>
+            <div class="controls">
+                {{#each helpers}}
+                    <label class="checkbox">
+                    <input id="{{ . }}" type="checkbox" value="{{ . }}" class="http_verb_select" >  {{ . }}
+                    </label>
+                {{/each}}
+            </div>
+        </div>
+</script>
+
 <div  id="environmentsRetry-modal" class="modal hide fade">
         <div class="modal-header">
         <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>

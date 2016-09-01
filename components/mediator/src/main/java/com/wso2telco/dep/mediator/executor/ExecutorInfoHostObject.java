@@ -120,6 +120,11 @@ public class ExecutorInfoHostObject extends ScriptableObject {
         return getHandlerObjects(thisObj);
     }
 
+    public static NativeArray jsFunction_getExecutorObjects (Context cx, Scriptable thisObj, Object[] args,
+                                                             Function funObj) throws APIManagementException {
+        return getExecutorObjects(thisObj);
+    }
+
     //TODO:use osgi service to bind data.
     private void bindExecutors () {
 
@@ -136,6 +141,10 @@ public class ExecutorInfoHostObject extends ScriptableObject {
 
     public static NativeArray getHandlerObjects (Scriptable thisObj) {
         return ((ExecutorInfoHostObject)thisObj).getHandlerObjects();
+    }
+
+    public static NativeArray getExecutorObjects (Scriptable thisObj) {
+        return ((ExecutorInfoHostObject)thisObj).getExecutorObjects();
     }
 
     public static NativeArray getHandlerList (Scriptable thisObj) {
@@ -189,7 +198,7 @@ public class ExecutorInfoHostObject extends ScriptableObject {
     private NativeArray getHandlerObjects () {
 
         Object[] values = handlers.values().toArray();
-        NativeArray nativeArray = new NativeArray(values.length);
+        NativeArray nativeArray = new NativeArray(1);
         JSONArray jsonArray = new JSONArray();
 
         for (Object obj : values) {
@@ -206,12 +215,26 @@ public class ExecutorInfoHostObject extends ScriptableObject {
         }
 
         nativeArray.put(0, nativeArray, jsonArray.toJSONString());
+        return nativeArray;
+    }
 
+    private NativeArray getExecutorObjects () {
 
+        Object[] values = executors.values().toArray();
+        NativeArray nativeArray = new NativeArray(1);
+        JSONArray jsonArray = new JSONArray();
 
+        for (Object obj :values) {
 
+            ExecutorObj executorObj = (ExecutorObj) obj;
+            JSONObject jsonObject = new JSONObject();
+            jsonObject.put("executorName", executorObj.getExecutorName());
+            jsonObject.put("executorFQN", executorObj.getFullQulifiedName());
 
+            jsonArray.add(jsonObject);
+        }
 
+        nativeArray.put(0, nativeArray, jsonArray.toJSONString());
         return nativeArray;
     }
 
