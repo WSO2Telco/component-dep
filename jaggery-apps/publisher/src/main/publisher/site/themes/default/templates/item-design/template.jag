@@ -641,7 +641,6 @@
                     }
                 });
 
-                var executor_class = "com.wso2telco.dep.mediator.impl.payment.PaymentExecutor";
                 return value + '|executor#' + executorFQN + "|handlers#" + helperFQN;
             });
 

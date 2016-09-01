@@ -133,6 +133,7 @@ public class ExecutorInfoHostObject extends ScriptableObject {
         //executors.put("wallet_executor", new ExecutorObj("wallet_executor","Wallet Executor", "Wallet Executor Description"));
     }
 
+    //TODO: bind these handlers in correct sequence. Sequence here is the same sequence that will  be added to the synapse configuration file.
     private void bindHandlers () {
 
         handlers.put("DialogAPIRequestHandler", new HandlerObj("DialogAPIRequestHandler", "com.wso2telco.verificationhandler.verifier.DialogAPIRequestHandler"));
