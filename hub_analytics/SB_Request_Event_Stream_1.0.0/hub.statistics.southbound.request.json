@@ -29,6 +29,15 @@
                                                  {'name':'sbEndpoint','type':'STRING'},
                                                  {'name':'chargeAmount','type':'STRING'},
 												 {'name':'purchaseCategoryCode','type':'STRING'},
-                                                 {'name':'jsonBody','type':'STRING'}
+                                                 {'name':'jsonBody','type':'STRING'},
+                                                 {'name':'taxAmount','type':'STRING'},
+                                                 {'name':'channel','type':'STRING'},
+                                                 {'name':'onBehalfOf','type':'STRING'},
+                                                 {'name':'description','type':'STRING'},
+												 {'name':'transactionOperationStatus','type':'STRING'},
+												 {'name':'referenceCode','type':'STRING'}
+
+
+
                                          ]
                                        }

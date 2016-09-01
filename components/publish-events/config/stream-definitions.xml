@@ -1,0 +1,82 @@
+<streamDefinitions xmlns="http://wso2.org/carbon/databridge">
+
+    <streamDefinition>
+      {
+        "streamId": "mife.events.spend.limit.data:1.0.0",
+        "name": "mife.events.spend.limit.data",
+        "version": "1.0.0",
+        "nickName": "MIFE Spend Limit Data",
+        "description": "MIFE Spend Limit Data",
+        "metaData": [
+          {
+            "name": "clientType",
+            "type": "STRING"
+          }
+        ],
+        "payloadData": [
+          {
+            "name": "consumerKey",
+            "type": "STRING"
+          },
+          {
+            "name": "context",
+            "type": "STRING"
+          },
+          {
+            "name": "api",
+            "type": "STRING"
+          },
+          {
+            "name": "version",
+            "type": "STRING"
+          },
+          {
+            "name": "responseTime",
+            "type": "LONG"
+          },
+          {
+            "name": "userId",
+            "type": "STRING"
+          },
+          {
+            "name": "tenantDomain",
+            "type": "STRING"
+          },
+          {
+            "name": "applicationName",
+            "type": "STRING"
+          },
+          {
+            "name": "applicationId",
+            "type": "STRING"
+          },
+          {
+            "name": "operatorId",
+            "type": "STRING"
+          },
+          {
+            "name": "responseCode",
+            "type": "STRING"
+          },
+          {
+            "name": "msisdn",
+            "type": "STRING"
+          },
+          {
+            "name": "chargeAmount",
+            "type": "DOUBLE"
+          },{
+            "name": "groupName",
+            "type": "STRING"
+          },{
+            "name": "paymentType",
+            "type": "STRING"
+          },{
+            "name": "currentDateTime",
+            "type": "STRING"
+          }	
+        ]
+      }
+
+    </streamDefinition>    
+</streamDefinitions>

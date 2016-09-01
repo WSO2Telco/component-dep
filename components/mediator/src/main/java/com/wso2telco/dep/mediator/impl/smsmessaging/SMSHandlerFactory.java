@@ -53,6 +53,7 @@ public class SMSHandlerFactory {
 		String regKeyString = "registrations";
 		String deliveryInfoKeyString = "deliveryInfos";
 		String deliveryNotifyString = "DeliveryInfoNotification";
+		String receivedInfoNotification = "ReceivedInfoNotification";
 
 		String lastWord = ResourceURL.substring(ResourceURL.lastIndexOf("/") + 1);
 		RequestType apiType;
@@ -80,33 +81,36 @@ public class SMSHandlerFactory {
 				if (resourceURLParts.length == 6) {
 
 					handler = new RetrieveSMSSouthboundHandler(executor);
-					log.debug("invoking retrieve sms southbound handler");
+					log.debug("nvoke SouthBound Retrieve SMS Handler ");
 				} else if (resourceURLParts.length == 5) {
 
 					handler = new RetrieveSMSHandler(executor);
-					log.debug("invoking retrieve sms handler");
+					log.debug("Invoke RetrieveSMSHandler");
 				}
 			}
 		} else if (ResourceURL.toLowerCase().contains(retrieveSMSString.toLowerCase())
 				&& ResourceURL.toLowerCase().contains(subscriptionKeyString.toLowerCase())) {
 
 			apiType = RequestType.RETRIEVE_SMS_SUBSCRIPTIONS;
-			if (httpMethod.equalsIgnoreCase("delete")) {
-
-				handler = new StopInboundSMSSubscriptionsHandler(executor);
-				log.debug("invoking stop inbound sms subscriptions handler");
-			} else {
-
-				handler = findInboundNotificationSubscriptionsHandlerType(executor);
-			}
-		} else if (ResourceURL.toLowerCase().contains(deliveryNotifyString.toLowerCase())) {
+			handler = new RetrieveSMSSubscriptionsHandler(executor);
+			
+		} else if (ResourceURL.toLowerCase().contains(receivedInfoNotification.toLowerCase())) {
 
 			apiType = RequestType.SMS_INBOUND_NOTIFICATIONS;
-			handler = findSMSInboundNotificationsHandlerType(executor);
-		} else if (ResourceURL.toLowerCase().contains(sendSMSKeyString.toLowerCase())
+	        log.debug("Invoke SMSInboundNotificationsHandler");
+			handler = new SMSInboundNotificationsHandler(executor);
+			
+		} else if (ResourceURL.toLowerCase().contains(deliveryNotifyString.toLowerCase())) {
+			
+            apiType = RequestType.SMS_OUTBOUND_NOTIFICATIONS;
+            log.debug("Invoke SMSOutboundNotificationsHandler");
+            handler = new SMSOutboundNotificationsHandler(executor);
+            
+		}else if (ResourceURL.toLowerCase().contains(sendSMSKeyString.toLowerCase())
 				&& lastWord.equals(subscriptionKeyString)) {
 
 			apiType = RequestType.START_OUTBOUND_SUBSCRIPTION;
+			//handler = new OutboundSMSSubscriptionsHandler(executor);//ADDED
 			if (ResourceURL.toLowerCase().contains("/outbound/subscriptions")) {
 
 				handler = new OutboundSMSSubscriptionsNorthboundHandler(executor);
@@ -197,40 +201,6 @@ public class SMSHandlerFactory {
 	}
 
 	/**
-	 * Find sms inbound notifications handler type.
-	 *
-	 * @param executor
-	 *            the executor
-	 * @return the SMS handler
-	 */
-	private static SMSHandler findSMSInboundNotificationsHandlerType(SMSExecutor executor) {
-
-		SMSHandler handler = null;
-
-		try {
-
-			JSONObject objJSONObject = executor.getJsonBody();
-
-			if (objJSONObject.isNull("inboundSMSMessageNotification")) {
-
-				handler = new SMSOutboundNotificationsHandler(executor);
-				log.debug("invoking sms outbound notifications handler");
-			} else if (objJSONObject.isNull("deliveryInfoNotification")) {
-
-				handler = new SMSInboundNotificationsHandler(executor);
-				log.debug("invoking sms inbound notifications handler");
-			}
-		} catch (Exception e) {
-
-			log.error("error in findSMSInboundNotificationsHandlerType : " + e.getMessage());
-			throw new CustomException("SVC0005", "Error when selecting Delivery reciept handler",
-					new String[] { null });
-		}
-
-		return handler;
-	}
-
-	/**
 	 * The Enum RequestType.
 	 */
 	private enum RequestType {
@@ -254,6 +224,8 @@ public class SMSHandlerFactory {
 		STOP_OUTBOUND_SUBSCRIPTION,
 
 		/** The query sms. */
-		QUERY_SMS
+		QUERY_SMS,
+		
+		SMS_OUTBOUND_NOTIFICATIONS
 	}
 }

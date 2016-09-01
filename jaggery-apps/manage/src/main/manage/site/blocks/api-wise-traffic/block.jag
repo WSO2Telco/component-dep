@@ -17,6 +17,7 @@ jagg.block("api-wise-traffic", {
 		var data_operators;
 		var data_apis;
 		var data_operations;
+		var data_applications;
 		
 		if(user != null){
 			var apiWiseTrafficModule = jagg.module("api-wise-traffic");
@@ -45,15 +46,18 @@ jagg.block("api-wise-traffic", {
 			var apiWiseTrafficModule = jagg.module("api-wise-traffic");
 			var result_operators = apiWiseTrafficModule.getOperatorsBySubscriber(jagg.getUser().username);
 			var result_apis = apiWiseTrafficModule.getAPIsBySubscriber(jagg.getUser().username);
+			var result_applications = apiWiseTrafficModule.getAppsBySubscriber(jagg.getUser().username);
 			
 			data_operators = result_operators.data;
 			data_apis = result_apis.data;
+			data_applications = result_applications.data;
 		}
 		return {
 			"subscribers" : data_subscribers,
 			"operators" : data_operators,
 			"apis" : data_apis,
-			"operations" : data_operations
+			"operations" : data_operations,
+			"applications" : data_applications
 		};
 	}
 

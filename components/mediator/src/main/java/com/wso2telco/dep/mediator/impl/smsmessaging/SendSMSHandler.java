@@ -24,6 +24,7 @@ import com.wso2telco.dep.datapublisher.DataPublisherConstants;
 import com.wso2telco.dep.mediator.MSISDNConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.ResponseHandler;
+import com.wso2telco.dep.mediator.entity.OparatorEndPointSearchDTO;
 import com.wso2telco.dep.mediator.entity.smsmessaging.SendSMSRequest;
 import com.wso2telco.dep.mediator.entity.smsmessaging.SendSMSResponse;
 import com.wso2telco.dep.mediator.internal.Type;
@@ -57,7 +58,7 @@ public class SendSMSHandler implements SMSHandler {
 	private Log log = LogFactory.getLog(SendSMSHandler.class);
 
 	/** The Constant API_TYPE. */
-	private static final String API_TYPE = "sms";
+	private static final String API_TYPE = "smsmessaging";
 
 	/** The occi. */
 	private OriginatingCountryCalculatorIDD occi;
@@ -103,11 +104,17 @@ public class SendSMSHandler implements SMSHandler {
 		SendSMSRequest subsrequest = gson.fromJson(jsonBody.toString(), SendSMSRequest.class);
 		String senderAddress = subsrequest.getOutboundSMSMessageRequest().getSenderAddress();
 
+		// ========================UNICODE PATCH
+		byte[] preUtf8 = subsrequest.getOutboundSMSMessageRequest().getOutboundTextMessage().getMessage().getBytes("UTF-8");
+		String utf8String = new String(preUtf8, "UTF-8");
+		subsrequest.getOutboundSMSMessageRequest().getOutboundTextMessage().setMessage(utf8String);
+		// ========================UNICODE PATCH
+		        
+		
 		if (!ValidatorUtils.getValidatorForSubscription(context).validate(context)) {
 			throw new CustomException("SVC0001", "", new String[] { "Subscription Validation Unsuccessful" });
 		}
-		int smsCount = getSMSMessageCount(
-				subsrequest.getOutboundSMSMessageRequest().getOutboundTextMessage().getMessage());
+		int smsCount = getSMSMessageCount(subsrequest.getOutboundSMSMessageRequest().getOutboundTextMessage().getMessage());
 		context.setProperty(DataPublisherConstants.RESPONSE, String.valueOf(smsCount));
 
 		Map<String, SendSMSResponse> smsResponses = smssendmulti(context, subsrequest,
@@ -133,8 +140,7 @@ public class SendSMSHandler implements SMSHandler {
 	 * java.lang.String, org.json.JSONObject, org.apache.synapse.MessageContext)
 	 */
 	@Override
-	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context)
-			throws Exception {
+	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context) throws Exception {
 
 		if (!httpMethod.equalsIgnoreCase("POST")) {
 			((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 405);
@@ -193,8 +199,7 @@ public class SendSMSHandler implements SMSHandler {
 	 * @throws Exception
 	 *             the exception
 	 */
-	private Map<String, SendSMSResponse> smssendmulti(MessageContext smsmc, SendSMSRequest sendreq, JSONArray listaddr,
-			String apitype, List<OperatorApplicationDTO> operators) throws Exception {
+	private Map<String, SendSMSResponse> smssendmulti(MessageContext smsmc, SendSMSRequest sendreq, JSONArray listaddr, String apitype, List<OperatorApplicationDTO> operators) throws Exception {
 
 		OperatorEndpoint endpoint = null;
 		String jsonStr;
@@ -205,19 +210,35 @@ public class SendSMSHandler implements SMSHandler {
 			SendSMSResponse sendSMSResponse = null;
 			address = listaddr.getString(i);
 
-			log.info("id : " + address);
+            log.info("id : " + address + " Request ID: " + UID.getRequestID(smsmc));
 			smsmc.setProperty(MSISDNConstants.USER_MSISDN, address.substring(5));
-			endpoint = occi.getAPIEndpointsByMSISDN(address.replace("tel:", ""), apitype, executor.getSubResourcePath(),
-					false, operators); // smsSend;
+			OparatorEndPointSearchDTO searchDTO = new OparatorEndPointSearchDTO();
+			searchDTO.setApiName(apitype);
+			searchDTO.setContext(smsmc);
+			searchDTO.setIsredirect(false);
+			searchDTO.setMSISDN(address);
+			searchDTO.setOperators(operators);
+			searchDTO.setRequestPathURL(executor.getSubResourcePath());
 
+			endpoint = occi.getOperatorEndpoint(searchDTO);
+
+			/*endpoint = occi.getAPIEndpointsByMSISDN(address.replace("tel:", ""), apitype, executor.getSubResourcePath(),
+					false, operators); // smsSend;
+*/
 			List<String> sendAdr = new ArrayList<String>();
 			sendAdr.add(address);
 			sendreq.getOutboundSMSMessageRequest().setAddress(sendAdr);
 			jsonStr = new Gson().toJson(sendreq);
 			String sending_add = endpoint.getEndpointref().getAddress();
-			log.info("sending endpoint found: " + sending_add);
-
-			String responseStr = executor.makeRequest(endpoint, sending_add, jsonStr, true, smsmc);
+			log.info("sending endpoint found: " + sending_add + " Request ID: " + UID.getRequestID(smsmc));
+			  //-----URL DECODE
+            if (sending_add.contains("outbound") && sending_add.contains("requests") && sending_add.contains("tel:+")) {
+            	sending_add.replace("tel:+", "tel:+");
+			}else{
+				sending_add = java.net.URLDecoder.decode(sending_add, "UTF-8");
+			}                
+            //-----URL DECODE
+			String responseStr = executor.makeRequest(endpoint, sending_add, jsonStr, true, smsmc,false);
 			sendSMSResponse = parseJsonResponse(responseStr);
 
 			smsResponses.put(address, sendSMSResponse);

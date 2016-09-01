@@ -77,7 +77,7 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>com.wso2telco.dep</groupId>
-                                    <artifactId>manage</artifactId>
+                                    <artifactId>publisher</artifactId>
                                     <version>${com.wso2telco.dep.version}</version>
                                     <type>zip</type>
 		                    <destFileName>publisher.zip</destFileName>

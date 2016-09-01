@@ -66,18 +66,20 @@
 						<%
 							}
 							%>
-
-						<!-- <td><b>API:</b></td> -->
+						<td><b>Application:</b></td>
+						<td><b>API:</b></td>
+						<td><b>Status:</b></td>
 						<td><b>Operation Type:</b></td>
 						<td><b>Records type:</b></td>
+						
 						<td></td>
 					</tr>
 					<tr>
 						<td><input type="text" id="from_date" class="input-large"
-							style="margin-bottom: 0px; width: 150px;">
+							style="margin-bottom: 0px; width: 140px;">
 						</td>
 						<td><input type="text" id="to_date" class="input-large"
-							style="margin-bottom: 0px; width: 150px;">
+							style="margin-bottom: 0px; width: 140px;">
 						</td>
 
 						<%
@@ -85,7 +87,7 @@
 								var operatorList = outputs.operators;
 								if(operatorList != null){
 						%>
-						<td><select id="operator" style="width: 150px;">
+						<td><select id="operator" style="width: 140px;">
 								<option value="__ALL__">All</option>
 								<%
 								for (i = 0; i < operatorList.length; i++) {
@@ -106,13 +108,13 @@
 							  	var subscriberList = outputs.subscribers;
 							  	if(subscriberList != null){
 						%>
-						<td><select id="subscriber" size="1" style="width: 150px"
+						<td><select id="subscriber" size="1" style="width: 140px"
 							onchange="getSelectedSubscriber()" name="subscriber">
 								<option value="__ALL__">All</option>
 								<%
 								for (i = 0; i < subscriberList.length; i++) {
 									var subscriber = subscriberList[i];
-									%>
+										%>
 								<option value="<%=subscriber%>"><%=subscriber%></option>
 								<%	
 									}
@@ -123,11 +125,40 @@
 							}
 							}
 							%>
-						<!-- 
+							
+							<td>
+							<select id="app" style="width: 140px;" autofocus="autofocus">
+								<%
+								if(isAdmin == true || isOperator != null){
+								%>
+								<option value="0">All</option>
+								<%		
+								}
+								%>
+								<%
+								if(isAdmin != true && isOperator == null){
+									var applicationList = outputs.applications;
+								%>
+								<option value="0">All</option>
+								<%
+								if(applicationList != null){
+								for (i = 0; i < applicationList.length; i++) {
+									var app = applicationList[i];
+								%>
+								<option value="<%=app.id%>"><%=app.name%></option>
+								<%		
+								}
+								}
+								}
+								%>
+							</select>
+						</td>
+						
+						<
 						<td><%		
 						var apiList = outputs.apis;
 						if(apiList != null){
-							%> <select id="api" style="width: 150px;" autofocus="autofocus">
+							%> <select id="api" style="width: 140px;" autofocus="autofocus">
 								<%
 								if(isAdmin == true || isOperator != null){
 								for (i = 0; i < apiList.length; i++) {
@@ -153,12 +184,12 @@
 							}
 							%>
 						</td>
-						 -->
+						 
 						 
 						 <td><%		
 						var opList = outputs.operations;
 						if(opList != null){
-							%> <select id="api" style="width: 150px;" autofocus="autofocus">
+							%> <select id="api" style="width: 140px;" autofocus="autofocus">
 								
 								<%
 								for (i = 0; i < opList.length; i++) {
@@ -179,7 +210,13 @@
 								<option value="2">Error Responses</option>
 							</select>
 						</td>
-						
+
+						<td>
+						<select id="isError" size="1" style="width: 150px">
+		                  		<option value="false" selected="selected">Successful</option>
+		                  		<option value="true">Error</option>
+						    </select>
+						</td>
 						<td>
 							<!-- <button class="btn btn-primary" id="generate"
 								onclick="getAPIWiseTraffic()">Generate</button>
@@ -193,7 +230,7 @@
 			</div>
 
 			<br /> <br />
-
+			<div id="loader"></div>
 			<div id="api-wise-traffic-histogram"
 				style="width: 700px; height: 400px"></div>
 			<br /> <br />
@@ -206,7 +243,9 @@
     <input type="hidden" id="selected_todate" name="todate" value=""/>
     <input type="hidden" id="selected_operator" name="operator" value=""/>
     <input type="hidden" id="selected_subscriber" name="subscriber" value=""/>
+    <input type="hidden" id="selected_application" name="application" value=""/>
     <input type="hidden" id="selected_api" name="api" value=""/>
+    <input type="hidden" id="selected_iserror" name="isError" value=""/>
     <input type="hidden" id="selected_res_type" name="resType" value=""/>
     <input type="hidden" id="timeOffset" name="timeOffset" value=""/>
 </form>

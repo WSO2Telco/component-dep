@@ -155,8 +155,7 @@ public class BillingDAO {
             ps = connection.prepareStatement(sql.toString());
             log.debug("getResponseTimeForAPI for apiVersion---> " + apiVersion);
             ps.setString(1, apiVersion);
-            log.debug("SQL (PS) ---> " + ps.toString());
-            log.debug("SQL (PS) ---> " + ps.toString());
+            log.debug("SQL (PS) ---> " + ps.toString()); 
             results = ps.executeQuery();
             while (results.next()) {
                 return results.getString("serviceTime");
@@ -498,7 +497,7 @@ public class BillingDAO {
         } finally {
             DbUtils.closeAllConnections(ps, connection, results);
         }
-
+        log.debug("apiCount :" + apiName + " :" + apiVersion + ": " + consumerKey);
         return apiCount;
     }
     
@@ -780,31 +779,33 @@ public class BillingDAO {
         
         sql.append("SELECT api,userId,consumerKey,chargeAmount,category,subcategory,merchantId,time FROM ")
         .append(HostObjectConstants.SB_RESPONSE_SUMMARY_TABLE)
-        .append(" WHERE year=? and month=? and api_version =? and consumerKey=? and operatorId =? and operationType=? and category=? and subcategory=? and responseCode like '2%' AND operatorRef NOT IN ")
+        .append(" WHERE api_version =? and consumerKey=? and operatorId =? and responseCode like '2%' and month=? and year=? and operationType=? and category=? and subcategory=? AND operatorRef NOT IN ")
         .append(" (SELECT distinct operatorRef FROM ")
         .append(HostObjectConstants.SB_RESPONSE_SUMMARY_TABLE)
-        .append(" WHERE year=? and month=? and consumerKey=? and operatorId =? and operationType=101 and responseCode like '2%')");
+        .append(" WHERE api='refund') ");
 
         Set<PaymentRequestDTO> requestSet = new HashSet<PaymentRequestDTO>();
         try {
             connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
             ps = connection.prepareStatement(sql.toString());
-            ps.setShort(1, year);
-            ps.setShort(2, month);
-            ps.setString(3, api_version);
-            ps.setString(4, consumerKey);
-            ps.setString(5, operatorId);
+            ps.setString(1, api_version);
+            ps.setString(2, consumerKey);
+            ps.setString(3, operatorId);
+            ps.setShort(4, month);
+            ps.setShort(5, year);
             ps.setInt(6, operation);
             ps.setString(7, category);
             ps.setString(8, subcategory);
-            ps.setShort(9, year);
-            ps.setShort(10, month);
-            ps.setString(11, consumerKey);
-            ps.setString(12, operatorId);
-
-
+            
+            ps.setString(9, consumerKey);
+            ps.setString(10, operatorId);
+            ps.setShort(11, year);
+            ps.setShort(12, month);
+            
+            log.debug("SQL (PS) st ---> " + ps.toString());
             results = ps.executeQuery();
-
+            log.debug("SQL (PS) ed ---> ");
+            
             while (results.next()) {
                 PaymentRequestDTO paymentRequest = new PaymentRequestDTO();
                 paymentRequest.setUserId(results.getString("userId"));
@@ -823,7 +824,7 @@ public class BillingDAO {
         } finally {
             DbUtils.closeAllConnections(ps, connection, results);
         }
-
+        log.debug("done getPaymentAmounts :" + consumerKey + " :" + api_version + " :" + operatorId);
         return requestSet;
     }
     
@@ -1464,6 +1465,7 @@ public class BillingDAO {
         } finally {
             DbUtils.closeAllConnections(ps, conn, results);
         }
+        log.debug("getAllErrorResponseCodes :");
         return resCodes;
     }
 
@@ -1502,42 +1504,89 @@ public class BillingDAO {
             api = "%";
         }
 
-        Connection conn = null;
-        PreparedStatement ps = null;
-        ResultSet results = null;
-        StringBuilder sql = new StringBuilder(); 
-        sql.append("SELECT x.time, x.jsonBody, x.api FROM ")
-        .append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject())
-        .append(" x WHERE STR_TO_DATE(x.time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') AND operatorId LIKE ? AND userid LIKE ? AND api LIKE ? AND consumerKey LIKE ? AND msisdn LIKE ? LIMIT ")
-        .append(startLimit)
-        .append(" ,")
-        .append(endLimit);
+        
+		String[] fromDateArray = fromDate.split("-");
+		String[] toDateArray = toDate.split("-");
+
+		boolean isSameYear = fromDateArray[0].equalsIgnoreCase(toDateArray[0]) ? true: false;
+		boolean isSameMonth = fromDateArray[1].equalsIgnoreCase(toDateArray[1]) ? true: false;
+
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet results = null;
+		StringBuilder sql = new StringBuilder();
+		
+		
+		
+		if (isSameYear && isSameMonth) {
+			sql.append("SELECT time, jsonBody, api  FROM ")
+			.append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject())
+			.append(" WHERE operatorId LIKE ? AND replace(userid,'@carbon.super','') LIKE ? AND api LIKE ? AND consumerKey LIKE ? AND (day between ? and ? ) AND (month = ?) AND (year = ?) ");
+		} else {
+			sql.append("SELECT x.time, x.jsonBody, x.api FROM ")
+			.append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject())
+			.append( " x WHERE operatorId LIKE ? AND replace(userid,'@carbon.super','') LIKE ? AND api LIKE ? AND consumerKey LIKE ? AND STR_TO_DATE(x.time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') ");			 
+		}
+		if (!msisdn.isEmpty()) {
+			sql.append("AND (msisdn LIKE ? or (msisdn LIKE ? or jsonBody like '%senderAddress\":\"")
+			.append(msisdn)
+			.append("%')) ");
+		}
+		
+		sql.append("LIMIT ")
+		.append(startLimit)
+		.append(" ,")
+		.append(endLimit);
         
         List<String[]> api_request_data = new ArrayList<String[]>();
 
-        try {
-            conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
-            ps = conn.prepareStatement(sql.toString());
-            ps.setString(1, fromDate);
-            ps.setString(2, toDate);
-            ps.setString(3, operator);
-            ps.setString(4, subscriber);
-            ps.setString(5, api);
-            ps.setString(6, consumerKey);
-            ps.setString(7, "%" + msisdn);
+		try {
+			conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
+			ps = conn.prepareStatement(sql.toString());
+			ps.setString(1, operator);
+			ps.setString(2, subscriber);
+			ps.setString(3, api);
+			ps.setString(4, consumerKey);	
 
-            log.debug("getCustomerCareReportData");
-            results = ps.executeQuery();
-            while (results.next()) {
-                String localTime = convertToLocalTime(timeOffset, results.getString(1));
-                String[] temp = {localTime, results.getString(2), results.getString(3)};
-                api_request_data.add(temp);
-            }
-        } catch (Exception e) {
+			if (isSameYear && isSameMonth) {
+				ps.setInt(5, Integer.parseInt(fromDateArray[2]));
+				ps.setInt(6, Integer.parseInt(toDateArray[2]));
+				ps.setInt(7, Integer.parseInt(fromDateArray[1]));
+				ps.setInt(8, Integer.parseInt(fromDateArray[0]));
+
+				if (!msisdn.isEmpty()) {
+					// ps.setInt(9,Integer.parseInt(msisdn));
+                    ps.setString(9, "%" + msisdn);
+                    ps.setString(10, "%" + msisdn);
+                    //ps.setString(10, msisdn);
+
+				}
+			} else {
+				ps.setString(5, fromDate);
+				ps.setString(6, toDate);
+
+				if (!msisdn.isEmpty()) {
+					// ps.setInt(7,Integer.parseInt(msisdn));
+                    ps.setString(7, "%" + msisdn);
+                    ps.setString(8, "%" + msisdn);
+                    //ps.setString(8, msisdn);
+				}
+			}
+
+			log.debug("getCustomerCareReportData");
+			log.debug("SQL (PS) ---> " + ps.toString());
+			results = ps.executeQuery();
+			while (results.next()) {
+				String localTime = convertToLocalTime(timeOffset,results.getString(1));
+				String[] temp = { localTime, results.getString(2),results.getString(3) };
+				api_request_data.add(temp);
+			}
+		} catch (Exception e) {
             handleException("getCustomerCareReportData", e);
         } finally {
             DbUtils.closeAllConnections(ps, conn, results);
         }
+		log.debug("end getCustomerCareReportData: " + api_request_data.size());
         return api_request_data;
     }
     
@@ -1573,6 +1622,12 @@ public class BillingDAO {
         if (api.equalsIgnoreCase("__ALL__")) {
             api = "%";
         }
+        String[] fromDateArray = fromDate.split("-");
+		String[] toDateArray = toDate.split("-");
+
+		boolean isSameYear = fromDateArray[0].equalsIgnoreCase(toDateArray[0]) ? true: false;
+		boolean isSameMonth = fromDateArray[1].equalsIgnoreCase(toDateArray[1]) ? true: false;
+		
 
         Connection conn = null;
         PreparedStatement ps = null;
@@ -1580,30 +1635,61 @@ public class BillingDAO {
         StringBuilder sql = new StringBuilder(); 
         sql.append("SELECT COUNT(*) FROM ")
         .append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject())
-        .append(" x WHERE STR_TO_DATE(x.time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') AND operatorId LIKE ? AND userid LIKE ? AND api LIKE ? AND consumerKey LIKE ? AND msisdn LIKE ?");
- 
+        .append(" WHERE operatorId LIKE ? AND replace(userid,'@carbon.super','') LIKE ? AND api LIKE ? AND consumerKey LIKE ? ");
+        
+        if(isSameYear && isSameMonth ){
+        	
+        	sql.append("AND (day between ? and ? ) AND (month = ?) AND (year = ?) ");
+        }else{
+        	sql.append("AND STR_TO_DATE(x.time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') ");
+        }
+        
+        if(!msisdn.isEmpty()) {
+        	sql.append("AND msisdn LIKE ? ");
+        }
+        
+        
         List<String[]> api_request_data = new ArrayList<String[]>();
 
-        try {
-            conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
-            ps = conn.prepareStatement(sql.toString());
-            ps.setString(1, fromDate);
-            ps.setString(2, toDate);
-            ps.setString(3, operator);
-            ps.setString(4, subscriber);
-            ps.setString(5, api);
-            ps.setString(6, consumerKey);
-            ps.setString(7, "%" + msisdn);
+		try {
+			conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
+			ps = conn.prepareStatement(sql.toString());
+			ps.setString(1, operator);
+			ps.setString(2, subscriber);
+			ps.setString(3, api);
+			ps.setString(4, consumerKey);
 
-            log.debug("getCustomerCareReportData");
-            results = ps.executeQuery();
-            results.next();
-            count = results.getString(1);
-        } catch (Exception e) {        	
+			if (isSameYear && isSameMonth) {
+				ps.setInt(5, Integer.parseInt(fromDateArray[2]));
+				ps.setInt(6, Integer.parseInt(toDateArray[2]));
+				ps.setInt(7, Integer.parseInt(fromDateArray[1]));
+				ps.setInt(8, Integer.parseInt(fromDateArray[0]));
+				if (!msisdn.isEmpty()) {
+					// ps.setInt(9,Integer.parseInt(msisdn));
+					ps.setString(9, "%" + msisdn);
+				}
+			} else {
+				ps.setString(5, fromDate);
+				ps.setString(6, toDate);
+
+				if (!msisdn.isEmpty()) {
+					// ps.setInt(7,Integer.parseInt(msisdn));
+					ps.setString(7, "%" + msisdn);
+				}
+			}
+		
+
+			log.debug("getCustomerCareReportData count");
+			log.debug("SQL (PS) ---> " + ps.toString());
+			results = ps.executeQuery();
+			results.next();
+			count = results.getString(1);
+		} catch (Exception e) {        	
             handleException("getCustomerCareReportDataCount", e);
         } finally {
             DbUtils.closeAllConnections(ps, conn, results);
         }
+		log.debug("getCustomerCareReportDataCount :" + count);
         return count;
     }
 
@@ -1618,8 +1704,9 @@ public class BillingDAO {
      * @return the API wise traffic for report
      * @throws Exception the exception
      */
-    public List<String[]> getAPIWiseTrafficForReport(String fromDate, String toDate, String subscriber, String operator, String api) throws Exception {
-        if (subscriber.equals("__ALL__")) {
+    public List<String[]> getAPIWiseTrafficForReport(String fromDate, String toDate, String subscriber, String operator, String api, boolean isError, int applicationId) throws Exception {
+    	String consumerKey = null;
+    	if (subscriber.equals("__ALL__")) {
             subscriber = "%";
         }
         if (operator.equals("__ALL__")) {
@@ -1628,29 +1715,85 @@ public class BillingDAO {
         if (api.equals("__ALL__")) {
             api = "%";
         }
-
+        if (applicationId == 0) {
+            consumerKey = "%";
+        } else {
+            consumerKey = ApiManagerDAO.getConsumerKeyByApplication(applicationId);
+        }
+        
+        String responseStr = "responseCode LIKE '20_' ";
+		if (isError) {
+			responseStr = "responseCode NOT LIKE '20_' ";
+		}
+		
+		String[] fromDateArray = fromDate.split("-");
+		String[] toDateArray = toDate.split("-");
+		String userId;    
+                
+    	boolean isSameYear = fromDateArray[0].equalsIgnoreCase(toDateArray[0]) ? true : false;
+        boolean isSameMonth = fromDateArray[1].equalsIgnoreCase(toDateArray[1]) ? true : false;
+        
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet results = null;
 
         StringBuilder sql = new StringBuilder(); 
         
-        sql.append("SELECT time, userId, operatorId, requestId, msisdn, response_count, responseCode, jsonBody, resourcePath, method,api FROM ")
+        sql.append("SELECT time, userId, operatorId, requestId, msisdn, response_count, responseCode, jsonBody, resourcePath, method, api, ussdAction, ussdSessionId, destinationAddress, senderAddress, message, date_Time, resourceURL, message_Id  FROM ")
         .append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject()) 
-        .append(" WHERE STR_TO_DATE(time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') AND operatorId LIKE ? AND userid LIKE ? AND api LIKE ?");
+        .append(" WHERE ")
+        .append(responseStr)        
+        .append("AND (operatorId LIKE ? OR spOperatorId LIKE ?) AND ((replace(userid,'@carbon.super','') LIKE ?) OR (replace(spUserId,'@carbon.super','') LIKE ?)) AND api LIKE ? AND ( consumerKey LIKE ? OR spConsumerKey LIKE ? ) ");
+        if(isSameYear && isSameMonth){
+			sql.append("AND (day between ? and ? ) AND (month = ?) AND (year = ?) ");
 
+		} else {
+			sql.append("AND STR_TO_DATE(time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') ");
+			       
+		} 
+        
+        
         List<String[]> api_request = new ArrayList<String[]>();
 
         try {
             conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
             ps = conn.prepareStatement(sql.toString());
-            ps.setString(1, fromDate);
-            ps.setString(2, toDate);
-            ps.setString(3, operator);
-            ps.setString(4, subscriber);
+            ps.setString(1, operator);
+            if (api.equalsIgnoreCase("ussd")){
+                ps.setString(2, operator);
+            } else {
+                ps.setString(2, null);
+            }//ADDED OperatorId
+            ps.setString(3, subscriber);
+            if (api.equalsIgnoreCase("ussd")){
+                ps.setString(4, subscriber);
+            } else {
+                ps.setString(4, null);
+            }//ADDED UserId
             ps.setString(5, api);
+            ps.setString(6, consumerKey);
+			if (api.equalsIgnoreCase("ussd")){
+                ps.setString(7, consumerKey);
+            } else {
+                ps.setString(7, null);
+            }
+			if (isSameYear && isSameMonth) {
+                ps.setInt(8,Integer.parseInt(fromDateArray[2]) );
+                ps.setInt(9,Integer.parseInt(toDateArray[2]) );
+				ps.setInt(10, Integer.parseInt(fromDateArray[1]));
+				ps.setInt(11, Integer.parseInt(fromDateArray[0]));
+			} else {
+				ps.setString(8, fromDate);
+				ps.setString(9, toDate);
+			}
+            
             log.debug("getAPIWiseTrafficForReport");
+            log.debug("SQL (PS) ---> " + ps.toString());  
             results = ps.executeQuery();
+            System.out.println("getAPIWiseTrafficForReport---------------------------------");
+            System.out.print("SQL (PS) ---> " + ps.toString());
+                         
+            
             while (results.next()) {
                 
                 String dateTime = results.getString(1);
@@ -1662,7 +1805,13 @@ public class BillingDAO {
                 String requestUrl = results.getString(9);
                 String requestMethod = results.getString(10);
                 String requestapi = results.getString(11);
-
+                
+                if(results.getString(2)!=null && results.getString(2).contains("@")){
+					userId = results.getString(2).split("@")[0];
+				} else {
+					userId = results.getString(2);
+				}
+                
                 String event_type = "";
                 String clientCorelator = "";
 
@@ -1684,7 +1833,7 @@ public class BillingDAO {
                 }
 
                 if (!requestUrl.isEmpty() && !requestapi.isEmpty()) {
-                    String apitype = findAPIType(requestUrl ,requestapi);
+                	String apitype = findAPIType(requestUrl, requestapi , requestMethod);
                     if (apitype.equalsIgnoreCase("send_sms")) {
                         event_type = "Outbound";
                     } else if (apitype.equalsIgnoreCase("retrive_sms_subscriptions")) {
@@ -1699,25 +1848,40 @@ public class BillingDAO {
                         event_type = "Charge";
                     } else if (apitype.equalsIgnoreCase("ussd_send")) {
                         event_type = "USSD Outbound";
-                    }else if (apitype.equalsIgnoreCase("ussd_subscription")) {
+                    } else if (apitype.equalsIgnoreCase("ussd_receive")) {
+                        if(results.getString(12) != null &&  (results.getString(12).equalsIgnoreCase("mocont") || results.getString(12).equalsIgnoreCase("mofin"))){
+                            event_type = "USSD MO Callback";
+                        } else if (results.getString(12) != null &&  (results.getString(12).equalsIgnoreCase("mtcont") || results.getString(12).equalsIgnoreCase("mtcont"))) {
+                            event_type = "USSD MT Callback";
+                        }
+                    } else if (apitype.equalsIgnoreCase("ussd_subscription")) {
                         event_type = "USSD Subscription";
-                    }else if (apitype.equalsIgnoreCase("stop_ussd_subscription")) {
+                    } else if (apitype.equalsIgnoreCase("stop_ussd_subscription")) {
                         if (requestMethod.equalsIgnoreCase("DELETE")) {
                             event_type = "Stop ussd subscription";
-                        };
-                    }else if (apitype.equalsIgnoreCase("location")) {
+                        }
+                    } else if (apitype.equalsIgnoreCase("location")) {
                         event_type = "Location";
+                    } else if (apitype.equalsIgnoreCase("wallet/payment")){
+                        event_type = "Wallet Payment";
+                    }else if (apitype.equalsIgnoreCase("wallet/refund")){
+                        event_type = "Wallet Refund";
+                    }else if (apitype.equalsIgnoreCase("wallet/list")){
+                        event_type = "Wallet List";
+                    }else if (apitype.equalsIgnoreCase("wallet/balance")){
+                        event_type = "Wallet Balance";
                     }
                 }
 
-                String[] temp = {dateTime, results.getString(2), results.getString(3), event_type, results.getString(4), clientCorelator, results.getString(5), results.getString(6), results.getString(7)};
+                String[] temp = {dateTime, userId, results.getString(3), event_type, results.getString(4), clientCorelator, results.getString(5), results.getString(6), results.getString(7) , results.getString(13), results.getString(14), results.getString(15), results.getString(16), results.getString(17), results.getString(18), results.getString(19)};
                 api_request.add(temp);
             }
         } catch (Exception e) {
-            handleException("getAPIWiseTrafficForReport", e);
+            handleException("Error occured while getting API wise traffic for report from the database", e);
         } finally {
             DbUtils.closeAllConnections(ps, conn, results);
         }
+        log.debug("end getAPIWiseTrafficForReport");
         return api_request;
     }
 
@@ -1839,7 +2003,7 @@ public class BillingDAO {
      * @return the API wise traffic for report charging
      * @throws Exception the exception
      */
-    public List<String[]> getAPIWiseTrafficForReportCharging(String fromDate, String toDate, String subscriber, String operator, String api) throws Exception {
+    public List<String[]> getAPIWiseTrafficForReportCharging(String fromDate, String toDate, String subscriber, String operator, String api, boolean isError) throws Exception {
         if (subscriber.equals("__ALL__")) {
             subscriber = "%";
         }
@@ -1849,35 +2013,72 @@ public class BillingDAO {
         if (api.equals("__ALL__")) {
             api = "%";
         }
-
+        String responseStr = "responseCode LIKE '20_' ";
+		if (isError) {
+			responseStr = "responseCode NOT LIKE '20_' ";
+		}
+		String[] fromDateArray = fromDate.split("-");
+		String[] toDateArray = toDate.split("-");
+		String userId;      
+                
+    	boolean isSameYear = fromDateArray[0].equalsIgnoreCase(toDateArray[0]) ? true : false;
+        boolean isSameMonth = fromDateArray[1].equalsIgnoreCase(toDateArray[1]) ? true : false;
+        
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet results = null;
 
         StringBuilder sql = new StringBuilder(); 
         
-        sql.append("SELECT time, userId, operatorId, requestId, msisdn, chargeAmount, responseCode, jsonBody, resourcePath, method, purchaseCategoryCode,api FROM ")
-        .append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject())
-        .append(" WHERE STR_TO_DATE(time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') AND operatorId LIKE ? AND userid LIKE ? AND api LIKE ?;");
+        sql.append("SELECT res.time, res.userId, res.operatorId, res.requestId, res.msisdn, res.chargeAmount, res.responseCode, res.jsonBody, res.resourcePath, res.method, res.purchaseCategoryCode, res.api, res.taxAmount , res.channel , res.onBehalfOf ,res.description, res.transactionOperationStatus , req.transactionOperationStatus  FROM ")
+        .append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject()).append(" res, ")
+        .append(ReportingTable.SB_API_REQUEST_SUMMARY.getTObject()).append(" req")
+        .append(" WHERE ")
+        .append(responseStr)
+        .append("  AND res.operatorId LIKE ? AND replace(res.userid,'@carbon.super','') LIKE ? AND res.api LIKE ? AND res.requestId = req.requestId");
 
+        if (isSameYear && isSameMonth){
+			sql.append("AND (res.day between ? and ? ) AND (res.month = ?) AND (res.year = ?) ");
+
+		} else {
+			sql.append("AND STR_TO_DATE(res.time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') ");
+		}
+        
         List<String[]> api_request = new ArrayList<String[]>();
 
         try {
             conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
             ps = conn.prepareStatement(sql.toString());
-            ps.setString(1, fromDate);
-            ps.setString(2, toDate);
-            ps.setString(3, operator);
-            ps.setString(4, subscriber);
-            ps.setString(5, api);
+            ps.setString(1, operator);
+            ps.setString(2, subscriber);
+			ps.setString(3, api);
+			log.debug(api);
+			
+			if (isSameYear && isSameMonth) {
+				ps.setInt(4, Integer.parseInt(fromDateArray[2]));
+				ps.setInt(5, Integer.parseInt(toDateArray[2]));
+				ps.setInt(6, Integer.parseInt(fromDateArray[1]));
+				ps.setInt(7, Integer.parseInt(fromDateArray[0]));
+			} else {
+				ps.setString(4, fromDate);
+				ps.setString(5, toDate);
+			}
 
             log.debug("getAPIWiseTrafficForReportCharging");
+           
+            log.debug("SQL (PS) ---> " + ps.toString());
+ 
             results = ps.executeQuery();
             while (results.next()) {
                 String jsonBody = results.getString(8);
                 String requestUrl = results.getString(9);
                 String requestMethod = results.getString(10);
                 String requestapi = results.getString(12);
+                if(results.getString(2)!=null && results.getString(2).contains("@")){
+					userId = results.getString(2).split("@")[0];
+				} else {
+					userId = results.getString(2);
+				}
                 
                 String dateTime = results.getString(1);
                 if(dateTime == null){
@@ -1920,7 +2121,7 @@ public class BillingDAO {
                 }
 
                 if (!requestUrl.isEmpty()) {
-                    String apitype = findAPIType(requestUrl ,requestapi);
+                	String apitype = findAPIType(requestUrl, requestapi, requestMethod);
                     if (apitype.equalsIgnoreCase("send_sms")) {
                         event_type = "Outbound";
                     } else if (apitype.equalsIgnoreCase("retrive_sms_subscriptions")) {
@@ -1932,13 +2133,31 @@ public class BillingDAO {
                     } else if (apitype.equalsIgnoreCase("retrive_sms")) {
                         event_type = "Inbound ";
                     } else if (apitype.equalsIgnoreCase("payment")) {
-                        event_type = "Charge";
+                    	 if (results.getString(18) != null) {
+                             event_type = results.getString(18);
+                         } else {
+                             event_type = "";
+                         }
                     } else if (apitype.equalsIgnoreCase("location")) {
                         event_type = "Location";
+                    }else if (apitype.equalsIgnoreCase("sms_dn_inbound_notifications")){
+						event_type = "DNCallback ";
+					} else if (apitype.equalsIgnoreCase("sms_mo_inbound_notifications")) {
+						event_type = "MOCallback";
+					} else if (apitype.equalsIgnoreCase("query_sms")) {
+						event_type = "DNQuery";
+					} else if (apitype.equalsIgnoreCase("start_outbound_subscription")){
+						event_type = "DNSubscription";
+					} else if (apitype.equalsIgnoreCase("stop_outbound_subscription")) {
+						event_type = "DNStopSubscription";
+					} else if (apitype.equalsIgnoreCase("refund")){
+                        event_type = "Refund";
                     }
                 }
 
-                String[] temp = {dateTime, results.getString(2), results.getString(3), event_type, results.getString(4), clientCorelator, results.getString(5), results.getString(6), currency, results.getString(7), results.getString(11)};
+                String[] temp = {dateTime, userId, results.getString(3), event_type, results.getString(4), clientCorelator, results.getString(5), results.getString(6),
+		                        currency, results.getString(7), results.getString(11), results.getString(13), results.getString(14), results.getString(15),
+		                        results.getString(16), results.getString(17)};               
                 api_request.add(temp);
             }
         } catch (Exception e) {
@@ -1946,6 +2165,7 @@ public class BillingDAO {
         } finally {
             DbUtils.closeAllConnections(ps, conn, results);
         }
+        log.debug("end getAPIWiseTrafficForReportCharging");
         return api_request;
     }
 
@@ -2098,7 +2318,7 @@ public class BillingDAO {
      * @param requested_api the requested_api
      * @return the string
      */
-    private String findAPIType(String ResourceURL , String requested_api) {
+    private static String findAPIType(String ResourceURL, String requested_api , String serviceMethod) {
 
         String apiType = null;
 
@@ -2110,54 +2330,84 @@ public class BillingDAO {
         String regKeyString = "registrations";
         String delivaryInfoKeyString = "deliveryInfos";
         String delivaryNotifyString = "DeliveryInfoNotification";
+        String receivedInfoNotification = "ReceivedInfoNotification";
         String locationString = "location";
         String ussdKeyString = "ussd";
+        String smsKeyString = "smsmessaging";
+        String paymentapiKeyString = "payment";
+        String refundapiKeyString = "refund";
+        String walletKeyString = "wallet";
+        String balanceKeyString ="balance";
+        String listKeyString ="list";
 
         String lastWord = ResourceURL.substring(ResourceURL.lastIndexOf("/") + 1);
 
-        if (ResourceURL.toLowerCase().contains(outboundkeyString.toLowerCase())
-                && ResourceURL.toLowerCase().contains(sendSMSkeyStringRequest.toLowerCase())
-                && (!lastWord.equals(delivaryInfoKeyString))) {
-            apiType = "send_sms";
-        } else if (ResourceURL.toLowerCase().contains(outboundkeyString.toLowerCase())
-                && lastWord.equals(subscriptionKeyString)) {
-            apiType = "start_outbound_subscription";
-        } else if (ResourceURL.toLowerCase().contains(outboundkeyString.toLowerCase())
-                && ResourceURL.toLowerCase().contains(subscriptionKeyString.toLowerCase())
-                && (!lastWord.equals(subscriptionKeyString))) {
-            apiType = "stop_outbound_subscription";
-        } else if (lastWord.equals(delivaryInfoKeyString)) {
-            apiType = "query_sms";
-        } else if (ResourceURL.toLowerCase().contains(retriveSMSString.toLowerCase())
-                && ResourceURL.toLowerCase().contains(regKeyString.toLowerCase())) {
-            apiType = "retrive_sms";
-        } else if ( !requested_api.isEmpty() && !requested_api.toLowerCase().contains(ussdKeyString.toLowerCase())
-                && ResourceURL.toLowerCase().contains(retriveSMSString.toLowerCase())
-                && ResourceURL.toLowerCase().contains(subscriptionKeyString.toLowerCase())) {
-            apiType = "retrive_sms_subscriptions";
-        } else if (ResourceURL.toLowerCase().contains(paymentKeyString.toLowerCase())) {
-            apiType = "payment";
-        } else if (ResourceURL.toLowerCase().contains(delivaryNotifyString.toLowerCase())) {
-            apiType = "sms_inbound_notifications";
-        }else if (!requested_api.isEmpty() && requested_api.toLowerCase().contains(ussdKeyString.toLowerCase())){
-            if(ResourceURL.toLowerCase().contains("outbound")){
-                apiType = "ussd_send";
-            } else if (!ResourceURL.toLowerCase().contains(subscriptionKeyString.toLowerCase())){
-                apiType = "ussd_receive";
-            } else {
-                if (lastWord.equals(subscriptionKeyString.toLowerCase())){
-                    apiType = "ussd_subscription";
-                } else {
-                    apiType = "stop_ussd_subscription";
-                }
+        if (!requested_api.isEmpty() && requested_api.toLowerCase().contains(smsKeyString.toLowerCase())){
+        	
+            if (ResourceURL.toLowerCase().contains(outboundkeyString.toLowerCase())
+                    && ResourceURL.toLowerCase().contains(sendSMSkeyStringRequest.toLowerCase())
+                    && (!lastWord.equals(delivaryInfoKeyString))) {
+               apiType = "send_sms";
+            } else if (ResourceURL.toLowerCase().contains(outboundkeyString.toLowerCase())
+                    && lastWord.equals(subscriptionKeyString) &&
+                    !requested_api.toLowerCase().contains(ussdKeyString.toLowerCase())) {
+                apiType = "start_outbound_subscription";
+            } else if (ResourceURL.toLowerCase().contains(outboundkeyString.toLowerCase())
+                    && ResourceURL.toLowerCase().contains(subscriptionKeyString.toLowerCase())
+                    && (!lastWord.equals(subscriptionKeyString)) && serviceMethod.equalsIgnoreCase("DELETE")) {
+                apiType = "stop_outbound_subscription";
+            } else if (lastWord.equals(delivaryInfoKeyString)) {
+                apiType = "query_sms";
+            } else if (ResourceURL.toLowerCase().contains(retriveSMSString.toLowerCase())
+                    && ResourceURL.toLowerCase().contains(regKeyString.toLowerCase())) {
+                apiType = "retrive_sms";
+            } else if (!requested_api.isEmpty() && !requested_api.toLowerCase().contains(ussdKeyString.toLowerCase())
+                    && ResourceURL.toLowerCase().contains(retriveSMSString.toLowerCase())
+                    && ResourceURL.toLowerCase().contains(subscriptionKeyString.toLowerCase())) {
+                apiType = "retrive_sms_subscriptions";
+            } else if (ResourceURL.toLowerCase().contains(delivaryNotifyString.toLowerCase())) {
+                apiType = "sms_dn_inbound_notifications";
+            } else if (ResourceURL.toLowerCase().contains(receivedInfoNotification.toLowerCase())) {
+                apiType = "sms_mo_inbound_notifications";
             }
+        	
+		} else if (!requested_api.isEmpty() && requested_api.toLowerCase().contains(ussdKeyString.toLowerCase())) {
+			if (ResourceURL.toLowerCase().contains("outbound")) {
+				apiType = "ussd_send";
+			} else if (!ResourceURL.toLowerCase().contains(
+					subscriptionKeyString.toLowerCase())) {
+				apiType = "ussd_receive";
+			} else {
+				if (lastWord.equals(subscriptionKeyString.toLowerCase())) {
+					apiType = "ussd_subscription";
+				} else {
+					apiType = "stop_ussd_subscription";
+				}
+			}
+		} else if (!requested_api.isEmpty() && requested_api.toLowerCase().contains(locationString.toLowerCase()) &&
+            	ResourceURL.toLowerCase().contains(locationString.toLowerCase())) {
+        }  else if ( !requested_api.isEmpty() && requested_api.toLowerCase().contains(paymentapiKeyString.toLowerCase()) &&
+                ResourceURL.toLowerCase().contains(paymentKeyString.toLowerCase())) {
+	            apiType = "payment";
+        } else if (!requested_api.isEmpty() && requested_api.toLowerCase().contains(refundapiKeyString.toLowerCase()) &&
+                ResourceURL.toLowerCase().contains(paymentapiKeyString.toLowerCase())){
+	        	apiType = "refund";
+        }else if (!requested_api.isEmpty() && requested_api.toLowerCase().contains(walletKeyString.toLowerCase())){
+        	
+                if(ResourceURL.toLowerCase().contains(paymentapiKeyString.toLowerCase())){
+                    apiType = "wallet/payment";}
+                else if(ResourceURL.toLowerCase().contains(refundapiKeyString.toLowerCase())){
+                    apiType = "wallet/refund";
 
-        } else if (ResourceURL.toLowerCase().contains(locationString.toLowerCase())) {
-            apiType = "location";
+                }else if(ResourceURL.toLowerCase().contains(listKeyString.toLowerCase())){
+                   apiType = "wallet/list";
+
+                }else if(ResourceURL.toLowerCase().contains(balanceKeyString.toLowerCase())){
+                    apiType = "wallet/balance";
+                }
         } else {
             return null;
         }
-
         return apiType;
     }
 
@@ -2383,7 +2633,7 @@ public class BillingDAO {
             ps.setString(5, api);
             ps.setString(6, consumerKey);
             if (log.isDebugEnabled()) {
-        	log.debug("getTotalTrafficForLineChart : SQL " + ps.toString() );
+        	log.debug("getTotalTrafficForLineChart : SQL " + ps.toString());
             }
             
             results = ps.executeQuery();
@@ -2414,11 +2664,11 @@ public class BillingDAO {
     public List<APIResponseDTO> getAllResponseTimesForAllAPIs(String operator, String userId, String fromDate,
             String toDate, String timeRange) throws Exception {
 
-	if (log.isDebugEnabled()) {
-	    log.debug("getAllResponseTimesForAllAPIs() for  Operator "
-		    + operator + " Subscriber " + userId + " betweeen "
-		    + fromDate + " to " + toDate);
-	}
+		if (log.isDebugEnabled()) {
+		    log.debug("getAllResponseTimesForAllAPIs() for  Operator "
+			    + operator + " Subscriber " + userId + " betweeen "
+			    + fromDate + " to " + toDate);
+		}
         
         if (operator.contains("__ALL__")) {
             operator = "%";
@@ -2771,5 +3021,174 @@ public class BillingDAO {
         return convertedDateTimeString;
 
     }
+    
+    public static List<String[]> getAPIWiseTrafficForReportWallet(String fromDate, String toDate, String subscriber, String operator, String api, boolean isError) throws Exception {
+        
+    	if (subscriber.equals("__ALL__")) {
+            subscriber = "%";
+        }
+        if (operator.equals("__ALL__")) {
+            operator = "%";
+        }
+        if (api.equals("__ALL__")) {
+            api = "%";
+        }
+
+        String responseStr = "responseCode LIKE '20_' ";
+        
+        if (isError) {
+            responseStr = "responseCode NOT LIKE '20_' ";
+        }
+
+        String[] fromDateArray = fromDate.split("-");
+        String[] toDateArray = toDate.split("-");
+
+        boolean isSameYear = fromDateArray[0].equalsIgnoreCase(toDateArray[0]) ? true : false;
+        boolean isSameMonth = fromDateArray[1].equalsIgnoreCase(toDateArray[1]) ? true : false;
+
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet results = null;
+        StringBuilder sql = new StringBuilder(); 
+        String userId;
+        
+        sql.append("SELECT res.time, res.userId, res.operatorId, res.requestId, res.msisdn, res.chargeAmount, res.responseCode, res.jsonBody, res.resourcePath, res.method, res.purchaseCategoryCode, res.api, res.taxAmount , res.channel , res.onBehalfOf, res.description, res.transactionOperationStatus , req.transactionOperationStatus ")
+        .append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject()).append(" res, ")
+        .append(ReportingTable.SB_API_REQUEST_SUMMARY.getTObject()).append(" req ")
+        .append("WHERE ")
+        .append(responseStr)
+        .append(" AND res.operatorId LIKE ? AND replace(res.userid,'@carbon.super','') LIKE ? AND res.api LIKE ? AND res.requestId = req.requestId ");
+        
+        if (isSameYear && isSameMonth) {
+        	sql.append("AND (res.day between ? and ? ) AND (res.month = ?) AND (res.year = ?) ");
+        } else {
+        	sql.append("AND STR_TO_DATE(res.time,'%Y-%m-%d') between STR_TO_DATE(?,'%Y-%m-%d') and STR_TO_DATE(?,'%Y-%m-%d') ");
+        }
+
+        List<String[]> api_request = new ArrayList<String[]>();
+
+        try {
+        	conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
+        	ps = conn.prepareStatement(sql.toString());
+            ps.setString(1, operator);
+            ps.setString(2, subscriber);
+            ps.setString(3, api);
+
+            log.debug(api);
+            if (isSameYear && isSameMonth) {
+                ps.setInt(4, Integer.parseInt(fromDateArray[2]));
+                ps.setInt(5, Integer.parseInt(toDateArray[2]));
+                ps.setInt(6, Integer.parseInt(fromDateArray[1]));
+                ps.setInt(7, Integer.parseInt(fromDateArray[0]));
+            } else {
+                ps.setString(4, fromDate);
+                ps.setString(5, toDate);
+            }
+
+            log.debug("getAPIWiseTrafficForReportWallet"+sql);
+            log.debug("SQL (PS) ---> " + ps.toString());
+
+            results = ps.executeQuery();
+            while (results.next()) {
+                String jsonBody = results.getString(8);
+                String requestUrl = results.getString(9);
+                String requestMethod = results.getString(10);
+                String requestapi = results.getString(12);
+                if (results.getString(2) != null && results.getString(2).contains("@")) {
+                    userId = results.getString(2).split("@")[0];
+                } else {
+                    userId = results.getString(2);
+                }
+
+                String dateTime = results.getString(1);
+                if (dateTime == null) {
+                    dateTime = "";
+                }
+
+                String msisdn = "";
+                String clientCorelator = "";
+                String currency = "";
+                String event_type = "";
+                String amount = "";
+
+                if (!jsonBody.isEmpty()) {
+                    try {
+
+                        JSONObject homejson = new JSONObject(jsonBody);
+                        if (!homejson.isNull("makePayment")) {
+                            JSONObject transactionObject = (JSONObject) homejson.get("makePayment");
+                            if (!transactionObject.isNull("endUserId")) {
+                                msisdn = transactionObject.getString("endUserId");
+                            }
+                            if (!transactionObject.isNull("clientCorrelator")) {
+                                clientCorelator = transactionObject.getString("clientCorrelator");
+                            }
+                            if (!transactionObject.isNull("paymentAmount")) {
+                                JSONObject paymentAmountoObj = (JSONObject) transactionObject.get("paymentAmount");
+                               if (!paymentAmountoObj.isNull("chargingInformation")) {
+                                    JSONObject chargingInfoObj = (JSONObject) paymentAmountoObj.get("chargingInformation");
+                                    if (!chargingInfoObj.isNull("currency")) {
+                                        currency = chargingInfoObj.getString("currency");
+                                        amount= chargingInfoObj.getString("amount");
+                                    }
+                                }
+                            }
+                        }
+
+
+                        if (!homejson.isNull("refundTransaction")) {
+                            JSONObject transactionObject = (JSONObject) homejson.get("refundTransaction");
+                            if (!transactionObject.isNull("endUserId")) {
+                               msisdn = transactionObject.getString("endUserId");
+                            }
+                            if (!transactionObject.isNull("clientCorrelator")) {
+                                clientCorelator = transactionObject.getString("clientCorrelator");
+                            }
+                            if (!transactionObject.isNull("paymentAmount")) {
+                                JSONObject paymentAmountoObj = (JSONObject) transactionObject.get("paymentAmount");
+                                if (!paymentAmountoObj.isNull("chargingInformation")) {
+                                    JSONObject chargingInfoObj = (JSONObject) paymentAmountoObj.get("chargingInformation");
+                                    if (!chargingInfoObj.isNull("currency")) {
+                                        currency = chargingInfoObj.getString("currency");
+                                        amount= chargingInfoObj.getString("amount");
+                                    }
+                                }
+                            }
+                       }
+
+                    } catch (Exception ex) {
+                        System.out.println("Unable to read JSON body stored in DB :: " + ex);
+                        clientCorelator = "";
+                    }
+    	               }
+
+               if (!requestUrl.isEmpty()) {
+                    String apitype = findAPIType(requestUrl, requestapi, requestMethod);
+                    if (apitype.equalsIgnoreCase("wallet/payment")){
+                        event_type = "Wallet Payment";
+                    }else if (apitype.equalsIgnoreCase("wallet/refund")){
+                        event_type = "Wallet Refund";
+                    }else if (apitype.equalsIgnoreCase("wallet/list")){
+                        event_type = "Wallet List";
+                    }else if (apitype.equalsIgnoreCase("wallet/balance")){
+                        event_type = "Wallet Balance";
+                    }
+               }
+
+                String[] temp = {dateTime, userId, results.getString(3), event_type, results.getString(4), clientCorelator, results.getString(5), amount,
+                        currency, results.getString(7), results.getString(11), results.getString(13), results.getString(14), results.getString(15),
+                        results.getString(16), results.getString(17)};
+                api_request.add(temp);
+            }
+        } catch (Exception e) {
+            System.out.println("Error occured while getting API wise traffic for report (Charging) from the database" + e);
+            handleException("Error occured while getting API wise traffic for report (Charging) from the database", e);
+        } finally {
+        	DbUtils.closeAllConnections(ps, conn, results);
+        }
+        log.debug("end getAPIWiseTrafficForReportCharging");
+        return api_request;
+    }
+    
 
 }

@@ -164,8 +164,7 @@ include("/jagg/jagg.jag");
             }
         }
         print(obj);
-                
-    }
+        	}
 	else{
         print({
             error:true,

@@ -40,14 +40,28 @@ public class USSDHandlerFactory {
         String sendUSSDKeyString = "outbound";
         String retrieveUSSDString = "inbound";
         String moUssdSubsciption = "inbound/subscriptions";
+        String subscriptions = "subscriptions";
 
         String lastWord = ResourceURL.substring(ResourceURL.lastIndexOf("/") + 1);
         RequestType apiType;
         USSDHandler handler = null;
 
-        if (ResourceURL.toLowerCase().contains(moUssdSubsciption.toLowerCase())) {
-             handler = new MOUSSDSubscribeHandler(executor);
-        } else if (ResourceURL.toLowerCase().contains(sendUSSDKeyString.toLowerCase())) {
+		if (ResourceURL.toLowerCase().contains(moUssdSubsciption.toLowerCase())) {
+			if ((!lastWord.equals(subscriptions))) {
+				handler = new StopMOUSSDSubscriptionHandler(executor);
+			} else {
+				try {
+                    if(!executor.getJsonBody().getJSONObject("subscription").isNull("shortCodes")){
+                        handler = new NBUSSDSubscriptionHandler(executor);
+                    } else {
+                        handler = new MOUSSDSubscribeHandler(executor);
+                    }
+
+                } catch (Exception e) {
+
+                }
+			}
+		} else if (ResourceURL.toLowerCase().contains(sendUSSDKeyString.toLowerCase())) {
             apiType = RequestType.SEND_USSD;
             handler = new SendUSSDHandler(executor);
         } else if (ResourceURL.toLowerCase().contains(retrieveUSSDString.toLowerCase())) {
