@@ -1,14 +1,11 @@
 package com.wso2telco.dep.mediator.executor;
 
-
-import com.wso2telco.dep.mediator.dao.ExecutorDAO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.mozilla.javascript.*;
 import org.wso2.carbon.apimgt.api.APIManagementException;
-
 import java.util.*;
 
 public class ExecutorInfoHostObject extends ScriptableObject {
