@@ -10,17 +10,9 @@
 
     <artifactId>com.wso2telco.dep.publisheventsdata.feature</artifactId>
     <packaging>pom</packaging>
-    <name>publish events data Feature</name>
+    <name>WSO2.Telco Publish Events Data</name>
     <url>http://wso2.org</url>
     <description>This feature contains the server bundles required for publish events data</description>
-
-    <dependencies>
-        <!--dependency>
-            <groupId>com.wso2telco.ids</groupId>
-            <artifactId>authenticate-selector</artifactId>
-            <version>${com.wso2telco.ids.version}</version>
-        </dependency-->
-    </dependencies>
 
     <build>
         <plugins>

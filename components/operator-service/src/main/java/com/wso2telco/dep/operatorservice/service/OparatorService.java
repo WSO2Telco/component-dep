@@ -4,6 +4,9 @@ import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.wso2telco.core.dbutils.exception.BusinessException;
+import com.wso2telco.core.dbutils.exception.GenaralError;
 import com.wso2telco.dep.operatorservice.dao.OperatorDAO;
 import com.wso2telco.dep.operatorservice.exception.APIException;
 import com.wso2telco.dep.operatorservice.exception.APIException.APIErrorType;
@@ -15,8 +18,7 @@ import com.wso2telco.dep.operatorservice.model.Operator;
 import com.wso2telco.dep.operatorservice.model.OperatorSearchDTO;
 import com.wso2telco.dep.operatorservice.model.ProvisionReq;
 import com.wso2telco.dep.operatorservice.util.OparatorError;
-import com.wso2telco.utils.exception.BusinessException;
-import com.wso2telco.utils.exception.GenaralError;
+
 import edu.emory.mathcs.backport.java.util.Collections;
 import com.wso2telco.dep.operatorservice.model.OperatorEndPointDTO;
 import com.wso2telco.dep.operatorservice.model.OperatorApplicationDTO;

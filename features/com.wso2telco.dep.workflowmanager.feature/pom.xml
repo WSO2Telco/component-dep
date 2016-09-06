@@ -10,17 +10,9 @@
 
     <artifactId>com.wso2telco.dep.workflowmanager.feature</artifactId>
     <packaging>pom</packaging>
-    <name>Workflow Manager Feature</name>
+    <name>WSO2.Telco Workflow Manager</name>
     <url>http://wso2.org</url>
-    <description>This feature contains the server bundles required for Workflow Manager</description>
-
-    <dependencies>
-        <!--dependency>
-            <groupId>com.wso2telco.ids</groupId>
-            <artifactId>authenticate-selector</artifactId>
-            <version>${com.wso2telco.ids.version}</version>
-        </dependency-->
-    </dependencies>
+    <description>This feature contains the server bundles required for workflow manager</description>
 
     <build>
         <plugins>

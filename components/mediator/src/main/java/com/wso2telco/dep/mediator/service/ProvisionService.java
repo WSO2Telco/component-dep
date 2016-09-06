@@ -17,11 +17,12 @@ package com.wso2telco.dep.mediator.service;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
+import com.wso2telco.core.dbutils.exception.BusinessException;
+import com.wso2telco.core.dbutils.exception.GenaralError;
 import com.wso2telco.dep.mediator.dao.ProvisionDAO;
 import com.wso2telco.dep.mediator.util.ErrorType;
 import com.wso2telco.dep.operatorservice.util.OparatorError;
-import com.wso2telco.utils.exception.BusinessException;
-import com.wso2telco.utils.exception.GenaralError;
 
 public class ProvisionService {
 

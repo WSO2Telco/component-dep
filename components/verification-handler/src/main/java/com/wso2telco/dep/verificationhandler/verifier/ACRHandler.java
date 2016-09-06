@@ -17,14 +17,12 @@ package com.wso2telco.dep.verificationhandler.verifier;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.wso2telco.dep.verificationhandler.model.sms.SMSMessagingRequestWrap;
-
+import com.wso2telco.dep.verificationhandler.model.smsmessaging.SMSMessagingRequestWrap;
 import java.io.*;
 import java.sql.SQLException;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.ManagedLifecycle;

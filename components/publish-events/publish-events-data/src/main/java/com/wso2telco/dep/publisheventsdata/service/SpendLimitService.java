@@ -2,11 +2,10 @@ package com.wso2telco.dep.publisheventsdata.service;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import com.wso2telco.dep.publisheventsdata.dao.SpendLimitDAO;
 import com.wso2telco.dep.publisheventsdata.util.ErrorType;
-import com.wso2telco.utils.exception.BusinessException;
-import com.wso2telco.utils.exception.GenaralError;
+import com.wso2telco.core.dbutils.exception.BusinessException;
+import com.wso2telco.core.dbutils.exception.GenaralError;
 
 public class SpendLimitService {
 

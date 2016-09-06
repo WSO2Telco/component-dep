@@ -24,14 +24,11 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import com.wso2telco.dbutils.DbUtils;
-import com.wso2telco.dbutils.Operatorsubs;
+import com.wso2telco.core.dbutils.DbUtils;
 import com.wso2telco.dep.operatorservice.model.OperatorSubscriptionDTO;
-import com.wso2telco.dbutils.util.DataSourceNames;
+import com.wso2telco.core.dbutils.util.DataSourceNames;
 import com.wso2telco.dep.mediator.util.DatabaseTables;
 
 public class SMSMessagingDAO {

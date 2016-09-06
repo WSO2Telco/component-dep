@@ -28,7 +28,6 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.joda.time.DateTime;
@@ -41,9 +40,10 @@ import org.wso2.carbon.apimgt.api.model.APIIdentifier;
 import org.wso2.carbon.apimgt.api.model.Application;
 import org.wso2.carbon.apimgt.impl.dao.ApiMgtDAO;
 import org.wso2.carbon.apimgt.impl.workflow.WorkflowConstants;
-
-import com.wso2telco.dbutils.DbUtils;
-import com.wso2telco.dbutils.util.DataSourceNames;
+import com.wso2telco.core.dbutils.DbUtils;
+import com.wso2telco.core.dbutils.exception.BusinessException;
+import com.wso2telco.core.dbutils.exception.GenaralError;
+import com.wso2telco.core.dbutils.util.DataSourceNames;
 import com.wso2telco.dep.reportingservice.APIResponseDTO;
 import com.wso2telco.dep.reportingservice.HostObjectConstants;
 import com.wso2telco.dep.reportingservice.PaymentRequestDTO;
@@ -53,8 +53,6 @@ import com.wso2telco.dep.reportingservice.southbound.CategoryCharge;
 import com.wso2telco.dep.reportingservice.util.CommissionPercentagesDTO;
 import com.wso2telco.dep.reportingservice.util.OperatorDetailsEntity;
 import com.wso2telco.dep.reportingservice.util.ReportingTable;
-import com.wso2telco.utils.exception.BusinessException;
-import com.wso2telco.utils.exception.GenaralError;
 
 /**
  * The Class BillingDataAccessObject.
@@ -707,6 +705,7 @@ public class BillingDAO {
      * @throws Exception the exception
      */
     private static void handleException(String msg, Throwable t) throws BusinessException{
+    	
         log.error(msg, t);
         throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
     }
