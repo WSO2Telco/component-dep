@@ -16,6 +16,14 @@
 %> 
 <script language="javascript">
     var VERBS = [ 'get' , 'post' , 'put' , 'delete', 'patch', 'head'];
+
+    <%
+    var executorService = jagg.module("manager").getExecutorService();
+    var helperList = executorService.getHandlers();
+
+    print('var HELPERS = ' + stringify(helperList) + ';');
+    %>
+
     var AUTH_TYPES = [
       { "value": "<%=i18n.localize("none")%>", "text":"<%=i18n.localize("none")%>"} ,
       { "value": "<%=i18n.localize("application")%>", "text":"<%=i18n.localize("application")%>"},
@@ -99,6 +107,7 @@
 
 <script>
     $(document).ready(function() {
+
         <% if(api != null && api.subs == 0) { %>
             var visibility = $('#visibility').find(":selected").val();
             if (visibility == "public"){
@@ -116,23 +125,37 @@
                 });
             }
         <% } %>
-    });
+
+        <%
+            var executorService = jagg.module("manager").getExecutorService();
+
+            var executorList = executorService.getExecutorwithDesc();
+            print('var executorList = ' + stringify(executorList) + ';');
+        %>
+
+         $.each(executorList, function(key, value) {
+            $('#executor')
+                .append($("<option></option>")
+                    //.attr("value",key)
+                    .text(key));
+        });
+});
 </script>
 
-    <div class="row-fluid">
-        <div class="span12">
-            <div id="swaggerUpload" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
-                <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
-                <h3 id="swaggerUploadLabel">Import API Definition</h3>                    
-                </div>
-                <div class="modal-body">
-                    <div id="swagger_help" class="alert alert-danger hide" role="alert">
-                         Enter a valid url
-                         <button type="button" class="close" id="errorMsgClose"><span aria-hidden="true">&times;</span></button>
-                    </div>
-                    <div id="swagger_file_help" class="alert alert-danger hide" role="alert">
-                         <%=i18n.localize("invalidSwaggerFileErrorMsg")%>
+<div class="row-fluid">
+<div class="span12">
+    <div id="swaggerUpload" class="modal hide fade" tabindex="-1" role="dialog" aria-hidden="true">
+        <div class="modal-header">
+        <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+        <h3 id="swaggerUploadLabel">Import API Definition</h3>
+        </div>
+        <div class="modal-body">
+            <div id="swagger_help" class="alert alert-danger hide" role="alert">
+                 Enter a valid url
+                 <button type="button" class="close" id="errorMsgClose"><span aria-hidden="true">&times;</span></button>
+            </div>
+            <div id="swagger_file_help" class="alert alert-danger hide" role="alert">
+                 <%=i18n.localize("invalidSwaggerFileErrorMsg")%>
                          <button type="button" class="close" id="fileErrorMsgClose"><span aria-hidden="true">&times;</span></button>
                     </div>
                     <div class="form-inline">
@@ -206,6 +229,16 @@
     <% } %>
 
     <div class="control-group">
+        <label class="control-label" for="executor"><%=i18n.localize("executor")%>:<span class="requiredAstrix">*</span></label>
+        <div class="controls">
+            <select class="select required" id="executor" name="executor">
+            </select>
+                <a class="icon-question-sign help_popup" help_data="role_help_executor"></a>
+                <p id="role_help_executor" class="hide"></p>
+        </div>
+    </div>
+
+    <div class="control-group">
         <label class="control-label" for="visibility"><%=i18n.localize("visibility")%>:</label>
         <div class="controls">
             <select class="select required" id="visibility" name="visibility">
@@ -221,7 +254,7 @@
                     <% if(!(enableRestrictByRoles == 'false')) {%>
                              <option value="restricted" <%if(api.visibility=="restricted"){%> selected="selected" <%}%>><%=i18n.localize("restricted")%></option>
                     <% } %>
-                    
+
                 <%} else {%>
                     <option value="public"><%=i18n.localize("public")%></option>
 		    <% if(isMultipleTenantsAvailable == true) {%>
@@ -343,6 +376,7 @@
                         <label class="add-tags-error pull-left"></label>
                     </div>
                 </div>
+            <div id ="resource_handlers">
     </fieldset>
 
                 <% if(session.get("wsdl") || ( api && api.wsdl )) {
@@ -475,7 +509,7 @@
                     <input id="{{ . }}" type="checkbox" value="{{ . }}" class="http_verb_select" >  {{ . }}
                     </label>
                 {{/each}}
-                <div class "checkbox inline" id="options" style="display: none;" >
+                <div class="checkbox inline" id="options" style="display: none;" >
                     <label class="checkbox inline">
                         <input type="checkbox" value="options" class="http_verb_select"> OPTIONS
                     </label>
@@ -518,6 +552,19 @@
 </table>                                         
 </script>
 
+<script id="designer-resources-handlers" type="text/x-handlebars-template">
+    <div class="control-group">
+            <label class="control-label" for=""></label>
+            <div class="controls">
+                {{#each helpers}}
+                    <label class="checkbox">
+                    <input id="{{ . }}" type="checkbox" value="{{ . }}" class="http_verb_select" >  {{ . }}
+                    </label>
+                {{/each}}
+            </div>
+        </div>
+</script>
+
 <script>
     $(document).ready(function(){
 <% if(api){ %>
@@ -551,6 +598,52 @@
                 var designer = APIDesigner();
                 location.href = "<%= jagg.url("/implement")%>?name="+designer.saved_api.name+"&version="+designer.saved_api.version+"&provider="+designer.saved_api.provider;                
             });
+
+            $('#description').val(function(index, value){
+                var handlers = [];
+                $('input:checked').each(function () {
+                    handlers.push( this.id);
+                });
+
+                var executor_selectors = $('#executor').find(":selected").val();
+
+                <%
+                var executorService = jagg.module("manager").getExecutorService();
+                var executorList = executorService.getExecutorObjects();
+
+                print('var executors = ' + stringify(executorList) + ';');
+                %>
+
+                var executorJsonArr = executors[0];
+                var executorObj = JSON.parse(executorJsonArr);
+                var executorFQN;
+
+                executorObj.forEach(function (element,index,array) {
+                    if (element.executorName == executor_selectors) {
+                        executorFQN = element.executorFQN;
+                    }
+                });
+
+                <%
+                var executorService = jagg.module("manager").getExecutorService();
+                var helperList = executorService.getHandlerObjects();
+
+                print('var helpers = ' + stringify(helperList) + ';');
+                %>
+
+                var helpersJsonArr = helpers[0];
+                var helpersObj = JSON.parse(helpersJsonArr);
+                var helperFQN = "";
+
+                helpersObj.forEach(function (element,index,array) {
+                    if (element.handlerName == handlers[index]) {
+                        helperFQN = helperFQN + element.handlerFQN + ",";
+                    }
+                });
+
+                return value + '|executor#' + executorFQN + "|handlers#" + helperFQN;
+            });
+
             $("#design_form").submit();
         });
 

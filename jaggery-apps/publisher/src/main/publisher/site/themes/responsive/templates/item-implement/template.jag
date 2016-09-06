@@ -11,6 +11,14 @@
 %>
 <script language="javascript">
     var VERBS = [ 'GET' , 'POST' , 'PUT' , 'DELETE', 'PATCH', 'OPTIONS'];
+
+    <%
+    var executorService = jagg.module("manager").getExecutorService();
+    var helperList = executorService.getHandlers();
+
+    print('var HELPERS = ' + stringify(helperList) + ';');
+    %>
+
     var AUTH_TYPES = [
       { "value": "<%=i18n.localize("none")%>", "text":"<%=i18n.localize("none")%>"} ,
       { "value": "<%=i18n.localize("application")%>", "text":"<%=i18n.localize("application")%>"},
@@ -384,6 +392,18 @@ mc.setPayloadJSON('{ "data" : "sample JSON"}');*/
 </div>  
 </script>
 
+<script id="designer-resources-handlers" type="text/x-handlebars-template">
+    <div class="control-group">
+            <label class="control-label" for=""></label>
+            <div class="controls">
+                {{#each helpers}}
+                    <label class="checkbox">
+                    <input id="{{ . }}" type="checkbox" value="{{ . }}" class="http_verb_select" >  {{ . }}
+                    </label>
+                {{/each}}
+            </div>
+        </div>
+</script>
 
 <script id="designer-resources-template" type="text/x-handlebars-template">
 <fieldset class="<%= hide_impl %> implementation_method_inline implementation_method">
