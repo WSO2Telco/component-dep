@@ -15,29 +15,24 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.entity.smsmessaging.southbound;
 
-import com.wso2telco.dep.mediator.entity.*;
-import com.wso2telco.dep.mediator.entity.smsmessaging.CallbackReference;
+import com.wso2telco.dep.mediator.entity.smsmessaging.*;
+
 
 // TODO: Auto-generated Javadoc
 /**
  * The Class DeliveryReceiptSubscription.
  */
 public class DeliveryReceiptSubscription {
-
-    /** The callback reference. */
+ 
     private CallbackReference callbackReference;
     
-    /** The operator code. */
     private String operatorCode;
-    
-    /** The filter criteria. */
-    private String filterCriteria;
-    
-    /** The resource url. */
-    private String resourceURL;
-    
-    /** The client correlator. */
+  
     private String clientCorrelator;
+    
+    private String filterCriteria;
+
+    private String resourceURL;
 
     /**
      * Gets the filter criteria.
@@ -93,41 +88,26 @@ public class DeliveryReceiptSubscription {
         this.resourceURL = resourceURL;
     }
 
-    /**
-     * Gets the operator code.
-     *
-     * @return the operator code
-     */
-    public String getOperatorCode() {
-        return operatorCode;
-    }
+	public String getOperatorCode() {
+		return operatorCode;
+	}
 
-    /**
-     * Sets the operator code.
-     *
-     * @param operatorCode the new operator code
-     */
-    public void setOperatorCode(String operatorCode) {
-        this.operatorCode = operatorCode;
-    }
+	public void setOperatorCode(String operatorCode) {
+		this.operatorCode = operatorCode;
+	}
 
-     
-    /**
-     * Gets the client correlator.
-     *
-     * @return the client correlator
-     */
-    public String getClientCorrelator() {
-        return clientCorrelator;
-    }
+	/**
+	 * @return the clientCorrelator
+	 */
+	public String getClientCorrelator() {
+		return clientCorrelator;
+	}
 
-     
-    /**
-     * Sets the client correlator.
-     *
-     * @param clientCorrelator the new client correlator
-     */
-    public void setClientCorrelator(String clientCorrelator) {
-        this.clientCorrelator = clientCorrelator;
-    }
+	/**
+	 * @param clientCorrelator
+	 *            the clientCorrelator to set
+	 */
+	public void setClientCorrelator(String clientCorrelator) {
+		this.clientCorrelator = clientCorrelator;
+	}
 }

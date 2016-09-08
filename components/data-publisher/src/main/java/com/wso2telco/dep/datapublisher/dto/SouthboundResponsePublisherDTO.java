@@ -69,6 +69,90 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
     
     /** The response. */
     private int response;
+    
+    private String taxAmount;
+    private String channel;
+    private String onBehalfOf;
+    private String description;
+    private String ussdAction;
+	private String ussdSessionId;
+	private String transactionOperationStatus;
+	private String referenceCode;
+	private String destinationAddress;
+    private String senderAddress;
+    private String message;
+    private String dateTime;
+    private String resourceURL;
+    private String messageId;
+    private String spConsumerKey;
+    private String spOperatorId;
+	private String spUserId;
+	
+	
+	public String getSpOperatorId() {
+		return spOperatorId;
+	}
+
+	public void setSpOperatorId(String spOperatorId) {
+		this.spOperatorId = spOperatorId;
+	}
+
+	public String getSpUserId() {
+		return spUserId;
+	}
+
+	public void setSpUserId(String spUserId) {
+		this.spUserId = spUserId;
+	}  
+
+
+    public String getDestinationAddress() {
+		return destinationAddress;
+	}
+
+	public void setDestinationAddress(String destinationAddress) {
+		this.destinationAddress = destinationAddress;
+	}
+
+	public String getSenderAddress() {
+		return senderAddress;
+	}
+
+	public void setSenderAddress(String senderAddress) {
+		this.senderAddress = senderAddress;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+	this.message = message;
+	}
+
+	public String getDateTime() {
+		return dateTime;
+	}
+
+	public void setDateTime(String dateTime) {
+		this.dateTime = dateTime;
+	}
+
+	public String getResourceURL() {
+		return resourceURL;
+	}
+
+	public void setResourceURL(String resourceURL) {
+		this.resourceURL = resourceURL;
+	}
+
+	public String getMessageId() {
+		return messageId;
+	}
+
+	public void setMessageId(String messageId) {
+		this.messageId = messageId;
+	}
 
     /**
      * Gets the request id.
@@ -338,7 +422,77 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
     public void setResponse(int response) {
         this.response = response;
     }
+    
+    public String getTaxAmount() {
+		return taxAmount;
+	}
+	public void setTaxAmount(String taxAmount) {
+		this.taxAmount = taxAmount;
+	}
 
+	public String getChannel() {
+		return channel;
+	}
+
+	public void setChannel(String channel) {
+		this.channel = channel;
+	}
+
+	public String getOnBehalfOf() {
+		return onBehalfOf;
+	}
+
+	public void setOnBehalfOf(String onBehalfOf) {
+		this.onBehalfOf = onBehalfOf;
+	}
+
+	public String getDescription() {
+		return description;
+	}
+
+	public void setDescription(String description) {
+		this.description = description;
+	}
+	public String getUssdAction() {
+        return ussdAction;
+    }
+
+    public void setUssdAction(String ussdAction) {
+        this.ussdAction = ussdAction;
+    }
+
+    public String getUssdSessionId() {
+        return ussdSessionId;
+    }
+
+    public void setUssdSessionId(String ussdSessionId) {
+        this.ussdSessionId = ussdSessionId;
+    }
+
+    public String getTransactionOperationStatus() {
+        return transactionOperationStatus;
+    }
+
+    public void setTransactionOperationStatus(String transactionOperationStatus) {
+        this.transactionOperationStatus = transactionOperationStatus;
+    }
+
+    public String getReferenceCode() {
+        return referenceCode;
+    }
+
+    public void setReferenceCode(String referenceCode) {
+        this.referenceCode = referenceCode;
+    }
+    
+    public String getSpConsumerKey() {
+        return spConsumerKey;
+    }
+
+    public void setSpConsumerKey(String spConsumerKey) {
+        this.spConsumerKey = spConsumerKey;
+    }
+		
     /**
      * Gets the stream definition.
      *
@@ -379,11 +533,25 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
                 + "          {'name':'operatorRef','type':'STRING'},"
                 + "          {'name':'exceptionId','type':'STRING'},"
                 + "          {'name':'exceptionMessage','type':'STRING'},"
-                + "          {'name':'jsonBody','type':'STRING'},"
-                + "          {'name':'operationType','type':'INT'},"
-                + "          {'name':'merchantId','type':'STRING'},"
-                + "          {'name':'category','type':'STRING'},"
-                + "          {'name':'subCategory','type':'STRING'}"
+                + "          {'name':'jsonBody','type':'STRING'}"//look comma
+                + "          {'name':'jsonBody','type':'STRING'}," 
+                + "          {'name':'taxAmount','type':'STRING'}," 
+                + "          {'name':'channel','type':'STRING'}," 
+                + "          {'name':'onBehalfOf','type':'STRING'}," 
+                + "          {'name':'description','type':'STRING'},"
+                + "          {'name':'ussdAction','type':'STRING'},"
+                + "          {'name':'ussdSessionId','type':'STRING'},"
+                + "          {'name':'transactionOperationStatus','type':'STRING'},"
+                + "          {'name':'referenceCode','type':'STRING'}," 
+          	  	+ "          {'name':'destinationAddress','type':'STRING'},"
+                + "          {'name':'senderAddress','type':'STRING'},"
+                + "          {'name':'message','type':'STRING'},"
+                + "          {'name':'date_Time','type':'STRING'},"
+                + "          {'name':'resourceURL','type':'STRING'},"
+                + "          {'name':'message_Id','type':'STRING'},"
+                + "			 {'name':'spConsumerKey','type':'STRING'},"
+                + "          {'name':'spOperatorId','type':'STRING'},"
+                + "			 {'name':'spUserId','type':'STRING'}"       
                 + "  ]"
                 + "}";
 
@@ -400,6 +568,10 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
             getVersion(), this.getResponse(), getResponseTime(), getServiceTime(), getUsername(), getTenantDomain(), getHostName(),
             getApiPublisher(), getApplicationName(), getApplicationId(),
             getRequestId(), getOperatorId(), getResponseCode(), getMsisdn(), getChargeAmount(), getPurchaseCategoryCode(),
-            getOperatorRef(), getExceptionId(), getExceptionMessage(), getJsonBody(), getOperationType(), getMerchantId(), getCategory(), getSubCategory()};
-    }
+            getOperatorRef(), getExceptionId(), getExceptionMessage(), getJsonBody(), getTaxAmount() ,getChannel(),
+            getOnBehalfOf(), getDescription(),getUssdAction(), getUssdSessionId(),getTransactionOperationStatus(),getReferenceCode(),
+            getDestinationAddress(),getSenderAddress(),getMessage(),getDateTime(),getResourceURL(),getMessageId(),getSpConsumerKey(),
+            getSpOperatorId(),getSpUserId()
+          };
+        }
 }

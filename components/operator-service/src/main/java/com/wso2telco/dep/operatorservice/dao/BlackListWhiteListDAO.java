@@ -7,14 +7,12 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import com.wso2telco.core.msisdnvalidator.MSISDN;
-import com.wso2telco.dbutils.DbUtils;
-import com.wso2telco.dbutils.util.DataSourceNames;
+import com.wso2telco.core.dbutils.DbUtils;
+import com.wso2telco.core.dbutils.util.DataSourceNames;
 import com.wso2telco.dep.operatorservice.model.MSISDNSearchDTO;
 import com.wso2telco.dep.operatorservice.model.WhiteListMSISDNSearchDTO;
 import com.wso2telco.dep.operatorservice.util.OparatorTable;
@@ -39,10 +37,10 @@ public class BlackListWhiteListDAO {
 				+ apiID + " apiName:" + apiName + " userID:" + userID);
 
 		StringBuilder sql = new StringBuilder();
-		sql.append(" INSERT INTO `");
+		sql.append(" INSERT INTO ");
 		sql.append(OparatorTable.BLACKLIST_MSISDN.getTObject());
 		sql.append("(MSISDN,API_ID,API_NAME,USER_ID)");
-		sql.append("	VALUES (?,?,?,?);");
+		sql.append(" VALUES (?, ?, ?, ?)");
 
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -151,24 +149,29 @@ public class BlackListWhiteListDAO {
 
 	public void removeBlacklist(final String apiName, final String userMSISDN) throws SQLException, Exception {
 
-		String sql = "DELETE FROM `blacklistmsisdn` WHERE `API_NAME`=? && `MSISDN`=?;";
+		StringBuilder sql = new StringBuilder();
+		sql.append("DELETE FROM ");
+		sql.append(OparatorTable.BLACKLIST_MSISDN.getTObject());
+		sql.append(" WHERE API_NAME = ?");
+		sql.append(" AND MSISDN = ?");
 
 		Connection conn = null;
 		PreparedStatement ps = null;
-
+		ResultSet rs = null;
 		try {
 			conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
-			ps = conn.prepareStatement(sql);
+			ps = conn.prepareStatement(sql.toString());
 
 			ps.setString(1, apiName);
 			ps.setString(2, userMSISDN);
 
-			ps.execute();
+			ps.executeUpdate();
+							
 		} catch (SQLException e) {
 			throw e;
 		} finally {
 
-			DbUtils.closeAllConnections(ps, conn, null);
+			DbUtils.closeAllConnections(ps, conn, rs);
 
 		}
 	}
@@ -183,7 +186,7 @@ public class BlackListWhiteListDAO {
 	 * @throws SQLException
 	 * @throws Exception
 	 */
-	public void whitelist(List<MSISDN> userMSISDNs, String SubscriptionID, String apiID, String applicationID) 			throws SQLException, Exception {
+	public void whitelist(List<MSISDN> userMSISDNs, String SubscriptionID, String apiID, String applicationID) 	throws SQLException, Exception {
 
 		StringBuilder sql = new StringBuilder();
 		sql.append("INSERT INTO ");
@@ -276,165 +279,6 @@ public class BlackListWhiteListDAO {
 			DbUtils.closeAllConnections(ps, conn, null);
 		}
 	}
-	
-	/*public static String getSubscribers() throws SQLException, NamingException, ValidatorException {
-		String sql = "SELECT SUBSCRIBER_ID, USER_ID from AM_SUBSCRIBER;";
-		Connection conn = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		try {
-			conn = getAMDBConnection();
-			ps = conn.prepareStatement(sql);
-			rs = ps.executeQuery();
-			String json = "{";
-			while (rs.next()) {
-				String subscriberId = rs.getString("SUBSCRIBER_ID");
-				String username = rs.getString("USER_ID");
-				json += "\"" + subscriberId + "\":\"" + username + "\",";
-			}
-			if (json.endsWith(",")) {
-				json = json.substring(0, json.length() - 1);
-			}
-			json += "}";
-			return json;
-		} catch (SQLException e) {
-			System.out.println(e.toString());
-			throw e;
-		} finally {
-
-			closeAllConnections(ps, conn, rs);
-
-		}
-	}*/
-
-	/*
-	 * public static int next() { if (currentNo == Integer.MAX_VALUE) {
-	 * currentNo = 0; } return currentNo++; }
-	 */
-
-	/*
-	 * 
-	 * 
-	 * // @SuppressWarnings("finally") public static List<String> void
-	 * writeWhitelistNumbersBulk(String[] userMSISDN, String apiId, String
-	 * userID, String appId) throws Exception {
-	 * System.out.println(Arrays.toString(userMSISDN));
-	 * 
-	 * String subscriptionId = findSubscriptionId(appId, apiId); String sql =
-	 * "INSERT INTO `subscription_WhiteList` (`msisdn`,`api_id`,`application_id`,`subscriptionID`) VALUES "
-	 * ;// (`msisdn`,`api_id`,`application_id`,`subscriptionID`) for (int i = 0;
-	 * i < userMSISDN.length; i++) { if (i == 0) { sql += "(?,?,?,?)"; } else {
-	 * sql += " ,(?,?,?,?)"; } } sql += ";";
-	 * 
-	 * Connection conn = null; PreparedStatement ps = null;
-	 * 
-	 * try { conn = getStatDBConnection(); ps = conn.prepareStatement(sql);
-	 * 
-	 * for (int i = 0; i < userMSISDN.length; i++) { int queryStartPos = i * 4 +
-	 * 1; ps.setString(queryStartPos, userMSISDN[i]); ps.setString(queryStartPos
-	 * + 1, apiId); // ps.setString(queryStartPos + 2, apiName);
-	 * ps.setString(queryStartPos + 2, appId); ps.setString(queryStartPos + 3,
-	 * subscriptionId); }
-	 * 
-	 * ps.execute();
-	 * 
-	 * } catch (SQLException e) { System.out.println(e.toString()); throw e; }
-	 * finally {
-	 * 
-	 * closeAllConnections(ps, conn, null);
-	 * 
-	 * }
-	 * 
-	 * }
-	 * 
-	 *
-	 * 
-	
-	 * 
-	 * public static String getApps(String subscriberId) throws SQLException,
-	 * NamingException, ValidatorException { String sql =
-	 * "SELECT APPLICATION_ID, NAME from AM_APPLICATION where SUBSCRIBER_ID = ?"
-	 * ; Connection conn = null; PreparedStatement ps = null; ResultSet rs =
-	 * null; try { conn = getAMDBConnection(); ps = conn.prepareStatement(sql);
-	 * ps.setString(1, subscriberId); rs = ps.executeQuery(); String json = "{";
-	 * while (rs.next()) { String appId = rs.getString("APPLICATION_ID"); String
-	 * appName = rs.getString("NAME"); json += "\"" + appId + "\":\"" + appName
-	 * + "\","; } if (json.endsWith(",")) { json = json.substring(0,
-	 * json.length() - 1); } json += "}"; return json; } catch (SQLException e)
-	 * { System.out.println(e.toString()); throw e; } finally {
-	 * 
-	 * closeAllConnections(ps, conn, rs);
-	 * 
-	 * } }
-	 * 
-	 * public static String getApis(String appId) throws SQLException,
-	 * NamingException, ValidatorException {
-	 * 
-	 * String appSql = "SELECT API_ID,API_NAME from AM_API where API_ID IN";
-	 * String subSql =
-	 * "SELECT DISTINCT API_ID from AM_SUBSCRIPTION where APPLICATION_ID = ?";
-	 * String sql = appSql + "(" + subSql + ");"; Connection conn = null;
-	 * PreparedStatement ps = null; ResultSet rs = null; try { conn =
-	 * getAMDBConnection(); ps = conn.prepareStatement(sql); ps.setString(1,
-	 * appId); rs = ps.executeQuery(); String json = "{"; while (rs.next()) {
-	 * String apiId = rs.getString("API_ID"); String apiName =
-	 * rs.getString("API_NAME"); json += "\"" + apiId + "\":\"" + apiName +
-	 * "\","; } if (json.endsWith(",")) { json = json.substring(0, json.length()
-	 * - 1); } json += "}"; return json; } catch (SQLException e) {
-	 * System.out.println(e.toString()); throw e; } finally {
-	 * 
-	 * closeAllConnections(ps, conn, rs);
-	 * 
-	 * } }
-	 * 
-	 * public static void closeAllConnections(PreparedStatement
-	 * preparedStatement, Connection connection, ResultSet resultSet) {
-	 * 
-	 * closeConnection(connection); closeStatement(preparedStatement);
-	 * closeResultSet(resultSet); }
-	 * 
-	 *//**
-		 * Close Connection
-		 * 
-		 * @param dbConnection
-		 *            Connection
-		 */
-	/*
-	 * private static void closeConnection(Connection dbConnection) { if
-	 * (dbConnection != null) { try { dbConnection.close(); } catch
-	 * (SQLException e) { log.warn(
-	 * "Database error. Could not close database connection. Continuing with " +
-	 * "others. - " + e.getMessage(), e); } } }
-	 * 
-	 *//**
-		 * Close ResultSet
-		 * 
-		 * @param resultSet
-		 *            ResultSet
-		 */
-	/*
-	 * private static void closeResultSet(ResultSet resultSet) { if (resultSet
-	 * != null) { try { resultSet.close(); } catch (SQLException e) { log.warn(
-	 * "Database error. Could not close ResultSet  - " + e.getMessage(), e); } }
-	 * 
-	 * }
-	 * 
-	 *//**
-		 * Close PreparedStatement
-		 * 
-		 * @param preparedStatement
-		 *            PreparedStatement
-		 */
-	/*
-	 * private static void closeStatement(PreparedStatement preparedStatement) {
-	 * if (preparedStatement != null) { try { preparedStatement.close(); } catch
-	 * (SQLException e) { log.warn(
-	 * "Database error. Could not close PreparedStatement. Continuing with" +
-	 * " others. - " + e.getMessage(), e); } }
-	 * 
-	 * }
-	 * 
-	 */
 	
 	 
 	public List<String> getWhiteListNumbers() throws Exception {

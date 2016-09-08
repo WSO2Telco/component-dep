@@ -20,15 +20,18 @@ package com.wso2telco.dep.mediator.impl;
 import java.net.URLDecoder;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONObject;
+
 import com.wso2telco.dep.mediator.MSISDNConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.RequestExecutor;
+import com.wso2telco.dep.mediator.entity.OparatorEndPointSearchDTO;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 
@@ -58,18 +61,34 @@ public class DefaultExecutor extends RequestExecutor {
     public boolean execute(MessageContext context) throws CustomException, AxisFault, Exception {
         String msisdn = readMSISDN(context); // with +
         context.setProperty(MSISDNConstants.USER_MSISDN, msisdn.substring(1)); // without +
-        OperatorEndpoint endpoint = occi.getAPIEndpointsByMSISDN(msisdn, (String) context.getProperty("API_NAME"),
-                getSubResourcePath(), false, getValidoperators());
+        
+		OparatorEndPointSearchDTO searchDTO = new OparatorEndPointSearchDTO();
+		searchDTO.setApiName((String) context.getProperty("API_NAME"));
+		searchDTO.setContext(context);
+		searchDTO.setIsredirect(false);
+		searchDTO.setMSISDN(msisdn);
+		searchDTO.setOperators(getValidoperators());
+		searchDTO.setRequestPathURL(getSubResourcePath());
+
+		// MIFE-805
+		OperatorEndpoint endpoint = occi.getOperatorEndpoint(searchDTO);
+
+		/*
+		 * 
+		 * OperatorEndpoint endpoint = occi.getAPIEndpointsByMSISDN(msisdn,
+		 * (String) context.getProperty("API_NAME"), getSubResourcePath(),
+		 * false, getValidoperators());
+		 */
         String sending_add = endpoint.getEndpointref().getAddress();
         log.info("sending endpoint found: " + sending_add);
 
         String responseString = null;
         if (getHttpMethod().equalsIgnoreCase("POST")) {
-            responseString = makeRequest(endpoint, sending_add, getJsonBody().toString(), true, context);
+            responseString = makeRequest(endpoint, sending_add, getJsonBody().toString(), true, context,false);
         } else if (getHttpMethod().equalsIgnoreCase("GET")) {
-            responseString = makeGetRequest(endpoint, sending_add, null, true, context);
+            responseString = makeGetRequest(endpoint, sending_add, null, true, context,false);
         } else if (getHttpMethod().equalsIgnoreCase("DELETE")) {
-            responseString = makeDeleteRequest(endpoint, sending_add, null, true, context);
+            responseString = makeDeleteRequest(endpoint, sending_add, null, true, context,false);
         }
 
         removeHeaders(context);

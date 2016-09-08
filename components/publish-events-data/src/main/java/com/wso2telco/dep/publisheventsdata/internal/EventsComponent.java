@@ -16,15 +16,13 @@
 package com.wso2telco.dep.publisheventsdata.internal;
 
 import com.hazelcast.core.HazelcastInstance;
-import com.wso2telco.dbutils.fileutils.FileReader;
+import com.wso2telco.core.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.publisheventsdata.util.FileNames;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.databridge.agent.thrift.lb.LoadBalancingDataPublisher;
 import org.wso2.carbon.utils.CarbonUtils;
-
 import java.io.File;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;

@@ -18,7 +18,7 @@ package com.wso2telco.dep.mediator.impl.smsmessaging;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wso2telco.dep.operatorservice.model.OperatorSubscriptionDTO;
-import com.wso2telco.dbutils.fileutils.FileReader;
+import com.wso2telco.core.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.util.FileNames;
 import com.wso2telco.dep.datapublisher.DataPublisherConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
@@ -133,7 +133,7 @@ public class SMSInboundSubscriptionsHandler implements SMSHandler {
 		for (OperatorEndpoint endpoint : endpoints) {
 
 			String notifyres = executor.makeRequest(endpoint, endpoint.getEndpointref().getAddress(),
-					jsonBody.toString(), true, context);
+					jsonBody.toString(), true, context,false);
 
 			if (notifyres == null) {
 

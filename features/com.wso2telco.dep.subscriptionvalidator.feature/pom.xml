@@ -10,9 +10,9 @@
 
     <artifactId>com.wso2telco.dep.subscriptionvalidator.feature</artifactId>
     <packaging>pom</packaging>
-    <name>Subscription Validator Feature</name>
+    <name>WSO2.Telco Subscription Validator</name>
     <url>http://wso2.org</url>
-    <description>This feature contains the server bundles required for Subscription Validator</description>
+    <description>This feature contains the server bundles required for subscription validator</description>
 
     <build>
         <plugins>

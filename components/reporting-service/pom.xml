@@ -92,7 +92,7 @@
 				<version>2.3.5</version>
 				<configuration>
 					<instructions>
-						<Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+						<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
 						<Bundle-Name>${project.artifactId}</Bundle-Name>
 						<Private-Package>
 							com.wso2telco.dep.reportingservice.internal,

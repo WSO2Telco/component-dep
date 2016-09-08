@@ -10,7 +10,7 @@
 
     <artifactId>com.wso2telco.dep.mediator.feature</artifactId>
     <packaging>pom</packaging>
-    <name>WSO2.Telco Mediator Feature</name>
+    <name>WSO2.Telco Mediator</name>
     <description>This feature contains the server bundles required for mediator</description>
     
     <build>

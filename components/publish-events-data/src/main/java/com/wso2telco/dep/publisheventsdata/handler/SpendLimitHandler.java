@@ -15,9 +15,10 @@
  ******************************************************************************/
 package com.wso2telco.dep.publisheventsdata.handler;
 
+import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.dep.publisheventsdata.internal.EventsDataHolder;
 import com.wso2telco.dep.publisheventsdata.service.SpendLimitService;
-import com.wso2telco.utils.exception.BusinessException;
+
 import java.util.Map;
 
 // TODO: Auto-generated Javadoc

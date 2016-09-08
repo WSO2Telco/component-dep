@@ -15,16 +15,21 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.impl.ussd;
 
-import com.wso2telco.dbutils.fileutils.FileReader;
+import org.wso2.carbon.apimgt.gateway.handlers.security.APISecurityUtils;
+import org.wso2.carbon.apimgt.gateway.handlers.security.AuthenticationContext;
+import com.wso2telco.core.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.util.FileNames;
 import com.wso2telco.dep.datapublisher.DataPublisherConstants;
 import com.wso2telco.dep.mediator.MSISDNConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
+import com.wso2telco.dep.mediator.entity.OparatorEndPointSearchDTO;
+import com.wso2telco.dep.mediator.internal.Type;
+import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.dep.mediator.service.USSDService;
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.dep.subscriptionvalidator.util.ValidatorUtils;
-
+import com.wso2telco.dep.mediator.util.APIType;
 import java.io.File;
 import java.util.Map;
 import org.apache.axis2.AxisFault;
@@ -78,6 +83,7 @@ public class SendUSSDHandler implements USSDHandler {
 	@Override
 	public boolean handle(MessageContext context) throws CustomException, AxisFault, Exception {
 
+		String requestid = UID.getUniqueID(Type.SEND_USSD.getCode(), context, executor.getApplicationid());
 		JSONObject jsonBody = executor.getJsonBody();
 		FileReader fileReader = new FileReader();
 		String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
@@ -90,29 +96,57 @@ public class SendUSSDHandler implements USSDHandler {
 
 		Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
 
-		Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl);
+		AuthenticationContext authContext = APISecurityUtils.getAuthenticationContext(context);
+        String consumerKey = "";
+        String userId="";
+        //String operatorId="";
+        if (authContext != null) {
+            consumerKey = authContext.getConsumerKey();
+            userId=authContext.getUsername();
+        }
+		//Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl ,consumerKey);
 
+		OperatorEndpoint endpoint = null;
+        if (ValidatorUtils.getValidatorForSubscription(context).validate(context)) {
+            endpoint = occi.getAPIEndpointsByMSISDN(address.replace("tel:", ""), API_TYPE, executor.getSubResourcePath(), false,executor.getValidoperators());
+        }
+        //operatorId=ussdService.getOperatorIdByOperator(endpoint.getOperator());
+        
+        Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl ,consumerKey,endpoint.getOperator(),userId);
+        log.info("created subscriptionId  -  " + subscriptionId + " Request ID: " + UID.getRequestID(context));
+		
 		String subsEndpoint = mediatorConfMap.get("ussdGatewayEndpoint") + subscriptionId;
-		log.info("Subsendpoint - " + subsEndpoint);
+		log.info("Subsendpoint - " +subsEndpoint + " Request ID: " + UID.getRequestID(context));
 
 		jsonBody.getJSONObject("outboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL",
 				subsEndpoint);
 
 		context.setProperty(MSISDNConstants.USER_MSISDN, msisdn);
-		OperatorEndpoint endpoint = null;
+		/*OperatorEndpoint endpoint = null;
 		if (ValidatorUtils.getValidatorForSubscription(context).validate(context)) {
 			endpoint = occi.getAPIEndpointsByMSISDN(address.replace("tel:", ""), API_TYPE,
 					executor.getSubResourcePath(), false, executor.getValidoperators());
-		}
+			
+			
+			OparatorEndPointSearchDTO searchDTO = new OparatorEndPointSearchDTO();
+			searchDTO.setApi(APIType.USSD);
+			searchDTO.setContext(context);
+			searchDTO.setIsredirect(false);
+			searchDTO.setMSISDN(address);
+			searchDTO.setOperators(executor.getValidoperators());
+			searchDTO.setRequestPathURL(executor.getSubResourcePath());
+
+			endpoint = occi.getOperatorEndpoint(searchDTO);
+			
+		}*/
 		String sending_add = endpoint.getEndpointref().getAddress();
-		log.info("sending endpoint found: " + sending_add);
+		log.info("sending endpoint found: " + sending_add + " Request ID: " + UID.getRequestID(context));
 
-		executor.removeHeaders(context);
-
-		String responseStr = executor.makeRequest(endpoint, sending_add, jsonBody.toString(), true, context);
+		String responseStr = executor.makeRequest(endpoint, sending_add, jsonBody.toString(), true, context,false);
 		executor.handlePluginException(responseStr);
-
+		executor.removeHeaders(context);
 		executor.setResponse(context, responseStr);
+		
 		((Axis2MessageContext) context).getAxis2MessageContext().setProperty("messageType", "application/json");
 
 		return true;

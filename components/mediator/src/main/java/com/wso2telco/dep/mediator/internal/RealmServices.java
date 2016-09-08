@@ -16,10 +16,14 @@
 package com.wso2telco.dep.mediator.internal;
 
  
+import javax.xml.bind.JAXBException;
+
 import org.osgi.framework.BundleContext;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.utils.ConfigurationContextService;
+
+import com.wso2telco.dep.mediator.unmarshaler.GroupEventUnmarshaller;
 
  
 // TODO: Auto-generated Javadoc
@@ -36,9 +40,10 @@ public class RealmServices {
      *
      * @param context the context
      */
-    protected void activate(ComponentContext context) {
+    protected void activate(ComponentContext context) throws JAXBException{
         BundleContext bundleContext = context.getBundleContext();       
-      //  bundleContext.registerService(ApplicationManagementService.class.getName(), mgtService, null);         
+      //  bundleContext.registerService(ApplicationManagementService.class.getName(), mgtService, null);       
+        GroupEventUnmarshaller.startGroupEventUnmarshaller();
     }
 
     /**

@@ -27,10 +27,9 @@ import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.wso2.carbon.utils.CarbonUtils;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.wso2telco.dbutils.fileutils.FileReader;
+import com.wso2telco.core.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.util.FileNames;
 import com.wso2telco.dep.datapublisher.DataPublisherConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
@@ -57,7 +56,7 @@ public class SMSInboundSubscriptionsNorthboundHandler implements SMSHandler {
 	private static Log log = LogFactory.getLog(SMSInboundSubscriptionsNorthboundHandler.class);
 
 	/** The Constant API_TYPE. */
-	private static final String API_TYPE = "sms";
+	private static final String API_TYPE = "smsmessaging";
 
 	/** The occi. */
 	private OriginatingCountryCalculatorIDD occi;
@@ -167,7 +166,7 @@ public class SMSInboundSubscriptionsNorthboundHandler implements SMSHandler {
 							+ sbRequestBody);
 
 					String notifyres = executor.makeRequest(endpoint, endpoint.getEndpointref().getAddress(),
-							sbRequestBody, true, context);
+							sbRequestBody, true, context,false);
 
 					log.debug("subscription southbound response body of " + endpoint.getOperator() + " operator: "
 							+ notifyres);

@@ -436,6 +436,11 @@
 				<version>${com.wso2telco.dep.version}</version>
 			</dependency>
 			<dependency>
+				<groupId>com.wso2telco.dep</groupId>
+				<artifactId>publish-events-extensions</artifactId>
+				<version>${com.wso2telco.dep.version}</version>
+			</dependency>
+			<dependency>
 				<groupId>com.wso2telco.core</groupId>
 				<artifactId>mnc-resolver</artifactId>
 				<version>${com.wso2telco.core.version}</version>

@@ -21,8 +21,8 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import com.wso2telco.dbutils.DbUtils;
-import com.wso2telco.dbutils.util.DataSourceNames;
+import com.wso2telco.core.dbutils.DbUtils;
+import com.wso2telco.core.dbutils.util.DataSourceNames;
 import com.wso2telco.dep.publisheventsdata.util.DatabaseTables;
 
 public class SpendLimitDAO {

@@ -80,20 +80,6 @@ a.link-to-api, a.title{
     padding-left:0;
 }
 
-a.powered-by-logo {
-    background: transparent url(../images/poweredByLogo.png) no-repeat 0 0;
-    display: block;
-    width: 100px;
-    height: 40px;
-    cursor: pointer;
-    padding-right:10px;
-}
-
-.pull-right {
-    float: right;
-}
-
-
 .brand{
     width:145px;
     height:26px;
@@ -115,16 +101,6 @@ a.powered-by-logo {
 }
 .logo-section{
 }
-
-a.powered-by-logo {
-    background: transparent url(../images/poweredByLogo.png) no-repeat 0 0;
-    display: block;
-    width: 100px;
-    height: 40px;
-    cursor: pointer;
-    padding-right:10px;
-}
-
 .menu-back{
     background:transparent url(../images/appFac_04.jpg) repeat-x;
     height:55px;
@@ -1303,3 +1279,30 @@ div.tryit-content div.content-data{
     height: 16px;
     margin-bottom:6px;
 }
+.share-pane a.linkedin{
+
+    background:transparent url(../images/linkedin_16.png) no-repeat left top;
+
+    display: block;
+
+    width: 16px;
+
+    height: 16px;
+
+    margin-bottom:6px;
+
+}
+
+.share-pane a.twitter{
+
+    background:transparent url(../images/twitter_16.png) no-repeat left top;
+
+    display: block;
+
+    width: 16px;
+
+    height: 16px;
+
+    margin-bottom:6px;
+
+ }

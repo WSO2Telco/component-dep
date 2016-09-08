@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!--
+  ~ Copyright (c) 2014, WSO2 Inc. (http://www.wso2.org) All Rights Reserved.
+  ~
+  ~ WSO2 Inc. licenses this file to you under the Apache License,
+  ~ Version 2.0 (the "License"); you may not use this file except
+  ~ in compliance with the License.
+  ~ You may obtain a copy of the License at
+  ~
+  ~   http://www.apache.org/licenses/LICENSE-2.0
+  ~
+  ~ Unless required by applicable law or agreed to in writing,
+  ~ software distributed under the License is distributed on an
+  ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
+  ~ KIND, either express or implied.  See the License for the
+  ~ specific language governing permissions and limitations
+  ~ under the License.
+  -->
+
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+         xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <modelVersion>4.0.0</modelVersion>
+
+    <groupId>org.wso2.siddhi.event.tabel.extension</groupId>
+    <artifactId>hazelcastBackedEventTable</artifactId>
+    <version>1.0.0-SNAPSHOT</version>
+    <packaging>bundle</packaging>
+
+    <dependencies>
+        <dependency>
+            <groupId>com.hazelcast</groupId>
+            <artifactId>hazelcast</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.siddhi</groupId>
+            <artifactId>siddhi-api</artifactId>
+            <scope>provided</scope>
+            <version>2.1.0-wso2v1</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.siddhi</groupId>
+            <artifactId>siddhi-core</artifactId>
+            <scope>provided</scope>
+            <version>2.1.0-wso2v1</version>
+        </dependency>
+        <dependency>
+            <groupId>junit</groupId>
+            <artifactId>junit</artifactId>
+            <version>4.10</version>
+            <scope>test</scope>
+        </dependency>
+        <dependency>
+            <groupId>com.hazelcast</groupId>
+            <artifactId>hazelcast-client</artifactId>
+            <version>3.0.1</version>
+        </dependency>
+
+    </dependencies>
+
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Name>${project.artifactId}</Bundle-Name>
+                        <Export-Package>
+                            org.wso2.siddhi.event.table.extension
+                        </Export-Package>
+                        <Import-Package>
+                            com.hazelcast.client;version="3.0.1",com.hazelcast.client.config;version="3.0.1",
+                            com.hazelcast.config;version="[3.0,4)",com.hazelcast.core;version="[3.0,4)",
+                            com.hazelcast.query;version="[3.0,4)",com.hazelcast.query.impl;version="[3.0,4)",
+                            org.wso2.siddhi.core.config;version="[2.1,3)",org.wso2.siddhi.core.event;version="[2.1,3)",
+                            org.wso2.siddhi.core.event.in;version="[2.1,3)",org.wso2.siddhi.core.exception;version="[2.1,3)",
+                            org.wso2.siddhi.core.executor.conditon;version="[2.1,3)",org.wso2.siddhi.core.table;version="[2.1,3)",
+                            org.wso2.siddhi.core.table.predicate;version="[2.1,3)",
+                            org.wso2.siddhi.core.table.predicate.sql;version="[2.1,3)",
+                            org.wso2.siddhi.query.api.definition;version="[2.1,3)",
+                            org.wso2.siddhi.query.api.extension.annotation;version="[2.1,3)",
+                            org.wso2.siddhi.query.api.query;version="[2.1,3)",
+                            org.wso2.siddhi.query.api.query.input.handler;version="[2.1,3)"
+                        </Import-Package>
+                        <DynamicImport-Package>*</DynamicImport-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+
+    <repositories>
+        <repository>
+            <id>wso2-nexus</id>
+            <url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
+            <releases>
+                <enabled>true</enabled>
+                <updatePolicy>daily</updatePolicy>
+                <checksumPolicy>ignore</checksumPolicy>
+            </releases>
+        </repository>
+    </repositories>
+</project>

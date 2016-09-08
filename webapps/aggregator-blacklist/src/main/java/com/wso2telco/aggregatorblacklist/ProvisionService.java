@@ -17,8 +17,8 @@ import java.sql.Types;
 import org.apache.log4j.Logger;
 
 import com.wso2telco.aggregatorblacklist.model.ProvisionReq;
-import com.wso2telco.dbutils.AxiataDbService;
-import com.wso2telco.dbutils.DbUtils;
+import com.wso2telco.core.dbutils.AxiataDbService;
+import com.wso2telco.core.dbutils.DbUtils;
 import com.wso2telco.dep.operatorservice.model.OperatorSearchDTO;
 import com.wso2telco.dep.operatorservice.service.OparatorService;
 // TODO: Auto-generated Javadoc

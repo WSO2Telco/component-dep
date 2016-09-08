@@ -25,7 +25,7 @@ import org.json.JSONObject;
 import org.wso2.carbon.utils.CarbonUtils;
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.wso2telco.dbutils.fileutils.FileReader;
+import com.wso2telco.core.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.util.FileNames;
 import com.wso2telco.dep.mediator.MSISDNConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
@@ -87,7 +87,7 @@ public class QueryApplicableServiceHandler implements ProvisionHandler {
 		String sendingAddress = endpoint.getEndpointref().getAddress();
 
 		String responseStr = executor.makeGetRequest(endpoint, sendingAddress, executor.getSubResourcePath(), true,
-				context);
+				context,false);
 
 		executor.removeHeaders(context);
 

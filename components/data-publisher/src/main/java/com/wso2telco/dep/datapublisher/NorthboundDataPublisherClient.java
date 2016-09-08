@@ -182,8 +182,10 @@ public class NorthboundDataPublisherClient {
         
         Long currentTime = System.currentTimeMillis();
 
-        Long serviceTime = currentTime - (Long) mc.getProperty(DataPublisherConstants.REQUEST_TIME);
-
+        Long serviceTime = currentTime;
+        if (mc.getProperty(DataPublisherConstants.REQUEST_TIME)!=null) {
+        	serviceTime = currentTime - (Long) mc.getProperty(DataPublisherConstants.REQUEST_TIME);
+		}
         NorthboundResponsePublisherDTO responsePublisherDTO = new NorthboundResponsePublisherDTO();
         responsePublisherDTO.setConsumerKey((String) mc.getProperty(APIMgtGatewayConstants.CONSUMER_KEY));
         responsePublisherDTO.setUsername((String) mc.getProperty(APIMgtGatewayConstants.USER_ID));
@@ -207,9 +209,23 @@ public class NorthboundDataPublisherClient {
         responsePublisherDTO.setPurchaseCategoryCode((String) mc.getProperty(DataPublisherConstants.PAY_CATEGORY));
         responsePublisherDTO.setOperatorRef((String) mc.getProperty(DataPublisherConstants.OPERATOR_REF));
 
-        responsePublisherDTO.setResponseCode((String) mc.getProperty(DataPublisherConstants.RESPONSE_CODE));
-        responsePublisherDTO.setExceptionId((String) mc.getProperty(DataPublisherConstants.EXCEPTION_ID));
-        responsePublisherDTO.setExceptionMessage((String) mc.getProperty(DataPublisherConstants.EXCEPTION_MESSAGE));
+        responsePublisherDTO.setResponseCode("");
+        if (mc.getProperty(DataPublisherConstants.RESPONSE_CODE)!=null) {
+        	String responseCode=(String) mc.getProperty(DataPublisherConstants.RESPONSE_CODE);
+        	responsePublisherDTO.setResponseCode(responseCode);
+		}
+        
+        responsePublisherDTO.setExceptionId("");
+        if (mc.getProperty(DataPublisherConstants.EXCEPTION_ID)!=null) {
+			String exceptionId=(String) mc.getProperty(DataPublisherConstants.EXCEPTION_ID);
+			responsePublisherDTO.setExceptionId(exceptionId);
+        }
+        
+        responsePublisherDTO.setExceptionMessage("");
+        if (mc.getProperty(DataPublisherConstants.EXCEPTION_MESSAGE)!=null) {
+			String exceptionMessage=(String) mc.getProperty(DataPublisherConstants.EXCEPTION_MESSAGE);
+			responsePublisherDTO.setExceptionMessage(exceptionMessage);
+		}
         responsePublisherDTO.setJsonBody(jsonBody);
         
         responsePublisherDTO.setOperationType((Integer) mc.getProperty(DataPublisherConstants.OPERATION_TYPE));

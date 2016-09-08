@@ -15,8 +15,6 @@
  ******************************************************************************/
 package com.wso2telco.dep.reportingservice;
 
-import java.io.IOException;
-import java.sql.SQLException;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -24,16 +22,11 @@ import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.logging.Level;
-import java.util.logging.Logger;
-
 import javax.xml.stream.XMLStreamException;
-
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.openjpa.lib.jdbc.ReportingSQLException;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.NativeArray;
@@ -49,16 +42,15 @@ import org.wso2.carbon.apimgt.impl.APIManagerFactory;
 import org.wso2.carbon.apimgt.impl.dao.ApiMgtDAO;
 import org.wso2.carbon.apimgt.impl.utils.APIUtil;
 import org.wso2.carbon.apimgt.usage.client.dto.APIVersionUserUsageDTO;
-import org.wso2.carbon.apimgt.usage.client.exception.APIMgtUsageQueryServiceClientException;
-
+import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.dep.reportingservice.dao.Approval;
 import com.wso2telco.dep.reportingservice.dao.BillingDAO;
 import com.wso2telco.dep.reportingservice.dao.OperatorDAO;
+import com.wso2telco.dep.reportingservice.exception.ReportingServiceError;
 import com.wso2telco.dep.reportingservice.northbound.NbHostObjectUtils;
 import com.wso2telco.dep.reportingservice.southbound.SbHostObjectUtils;
 import com.wso2telco.dep.reportingservice.util.ChargeRate;
 import com.wso2telco.dep.reportingservice.util.RateKey;
-import com.wso2telco.utils.exception.BusinessException;
 import com.wso2telco.dep.reportingservice.exception.ReportingServiceError;
 
 // TODO: Auto-generated Javadoc
@@ -306,11 +298,13 @@ public class BillingHostObject extends ScriptableObject {
         String subscriberName = (String) args[2];
         String operator = (String) args[3];
         String api = (String) args[4];
-        String timeOffset = (String) args[5];
-        String responseType = (String) args[6];
-        boolean isNorthbound = (Boolean) args[7];
+        String isError = (String) args[5];
+        int applicationId = Integer.parseInt(args[6].toString());
+        String timeOffset = (String) args[7];
+        String responseType = (String) args[8];
+        boolean isNorthbound = (Boolean) args[9];
 
-        generateCustomApiTrafficReport(fromDate, toDate, subscriberName, operator, api, timeOffset, responseType, isNorthbound);
+        generateCustomApiTrafficReport(fromDate, toDate, subscriberName, operator, api, (isError.equalsIgnoreCase("true") ? true : false), applicationId, timeOffset, responseType, isNorthbound);
 
         String fileContent = SbHostObjectUtils.getCustomReport(fromDate, toDate, subscriberName, operator, api);
         return fileContent;
@@ -531,19 +525,19 @@ public class BillingHostObject extends ScriptableObject {
      * @return the native array
      * @throws APIManagementException the API management exception
      */
-    private static NativeArray generateCustomApiTrafficReport(String fromDate, String toDate, String subscriberName, String operator, String api, String timeOffset, String resType, boolean isNorthbound) throws BusinessException {
+    private static NativeArray generateCustomApiTrafficReport(String fromDate, String toDate, String subscriberName, String operator, String api,boolean isError, int applicationId, String timeOffset, String resType, boolean isNorthbound) throws BusinessException {
 
         NativeArray ret = null;
         try {
             if (isNorthbound) {
                 try {
-					ret = NbHostObjectUtils.generateCustomTrafficReport(true, fromDate, toDate, subscriberName, operator, api, timeOffset, resType);
+					ret = NbHostObjectUtils.generateCustomTrafficReport(true, fromDate, toDate, subscriberName, operator, api, isError, applicationId, timeOffset, resType);
 				} catch (Exception e) {
 					
 					e.printStackTrace();
 				}
             } else {
-                ret = SbHostObjectUtils.generateCustomTrafficReport(true, fromDate, toDate, subscriberName, operator, api, timeOffset, resType);
+                ret = SbHostObjectUtils.generateCustomTrafficReport(true, fromDate, toDate, subscriberName, operator, api, isError, applicationId, timeOffset, resType);
             }
         } catch (Exception e) {
             log.error("generateCustomApiTrafficReport",e);        	

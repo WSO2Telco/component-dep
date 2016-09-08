@@ -5,6 +5,7 @@
     "version" : "Version" ,
     "description" : "Description" ,
     "visibility" : "Visibility" ,
+    "executor" : "Executor",
     "thumbnail" : "Thumbnail Image" ,
     "endpoint" : "Production URL" ,
     "transports" : "Transports" ,
@@ -215,6 +216,7 @@
     "testURI": "Test URI",
     "clear": "Clear",
 
+    "executorHelpMsg" : "This is executor help messages",
     "nameHelpMsg" : "Display name to be shown in the API Store." ,
     "contextHelpMsg" : "URI context path of the API (case sensitive).<br/> The supported formats are.. <br/> 1. /foo <br/> 2. /foo/bar <br/> 3. /foo/{version}/bar (case sensitive) - allows the version to be within the context" ,
     "tierHelpMsg" : "Tiers limit the number of requests a subscriber can make to an API. An API can be exposed over one or more tiers. The Gold, Silver and Bronze tiers allow 20, 5 and 1 request/s respectively per minute." ,

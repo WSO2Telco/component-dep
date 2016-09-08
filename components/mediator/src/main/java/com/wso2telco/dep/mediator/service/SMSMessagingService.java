@@ -19,13 +19,12 @@ import java.util.List;
 import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import com.wso2telco.core.dbutils.exception.BusinessException;
+import com.wso2telco.core.dbutils.exception.GenaralError;
 import com.wso2telco.dep.mediator.dao.SMSMessagingDAO;
 import com.wso2telco.dep.mediator.util.ErrorType;
 import com.wso2telco.dep.operatorservice.model.OperatorSubscriptionDTO;
 import com.wso2telco.dep.operatorservice.util.OparatorError;
-import com.wso2telco.utils.exception.BusinessException;
-import com.wso2telco.utils.exception.GenaralError;
-
 import edu.emory.mathcs.backport.java.util.Collections;
 
 public class SMSMessagingService {
@@ -134,7 +133,7 @@ public class SMSMessagingService {
 
 		try {
 
-			newId = smsMessagingDAO.subscriptionEntry(notifyURL, serviceProvider);
+			newId = smsMessagingDAO.subscriptionEntry(notifyURL);
 		} catch (Exception e) {
 
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
@@ -165,7 +164,6 @@ public class SMSMessagingService {
 		}
 	}
 
-	@SuppressWarnings("unchecked")
 	public List<OperatorSubscriptionDTO> subscriptionQuery(Integer moSubscriptionId) throws BusinessException {
 
 		if (moSubscriptionId == null || moSubscriptionId <= 0) {

@@ -15,7 +15,11 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.impl.ussd;
 
-import com.wso2telco.dbutils.fileutils.FileReader;
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Map;
+import com.wso2telco.core.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.util.FileNames;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
@@ -25,10 +29,18 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONObject;
+import org.wso2.carbon.apimgt.gateway.handlers.security.APISecurityUtils;
+import org.wso2.carbon.apimgt.gateway.handlers.security.AuthenticationContext;
 import org.wso2.carbon.utils.CarbonUtils;
-import java.io.File;
-import java.util.List;
-import java.util.Map;
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.wso2telco.dep.mediator.OperatorEndpoint;
+import com.wso2telco.dep.mediator.entity.SubscriptionRequest;
+import com.wso2telco.dep.mediator.internal.ApiUtils;
+import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
+import com.wso2telco.dep.mediator.service.USSDService;
+import com.wso2telco.dep.mediator.util.FileNames;
+import com.wso2telco.dep.operatorservice.model.OperatorSubscriptionDTO;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -51,6 +63,8 @@ public class MOUSSDSubscribeHandler implements USSDHandler {
 
 	/** The ussdDAO. */
 	private USSDService ussdService;
+	
+	private ApiUtils apiUtils;
 
 	/**
 	 * Instantiates a new MOUSSD subscribe handler.
@@ -63,6 +77,7 @@ public class MOUSSDSubscribeHandler implements USSDHandler {
 		occi = new OriginatingCountryCalculatorIDD();
 		this.executor = ussdExecutor;
 		ussdService = new USSDService();
+		apiUtils = new ApiUtils();
 	}
 
 	/*
@@ -80,32 +95,48 @@ public class MOUSSDSubscribeHandler implements USSDHandler {
 				+ FileNames.MEDIATOR_CONF_FILE.getFileName();
 
 		JSONObject jsonBody = executor.getJsonBody();
-		String notifyUrl = jsonBody.getJSONObject("subscription").getJSONObject("callbackReference")
-				.getString("notifyURL");
-
-		Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl);
+		String notifyUrl = jsonBody.getJSONObject("subscription").getJSONObject("callbackReference").getString("notifyURL");
+		Gson gson = new GsonBuilder().serializeNulls().create();
+		
+		AuthenticationContext authContext = APISecurityUtils.getAuthenticationContext(context);
+        String consumerKey = "";
+        String userId="";
+        if (authContext != null) {
+            consumerKey = authContext.getConsumerKey();
+            userId=authContext.getUsername();
+        }
+        String operatorId="";
+		Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl,consumerKey,operatorId,userId);
 
 		Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
 
 		String subsEndpoint = mediatorConfMap.get("ussdGatewayEndpoint") + subscriptionId;
+		log.info("Subsendpoint - " +subsEndpoint);
 
 		jsonBody.getJSONObject("subscription").getJSONObject("callbackReference").put("notifyURL", subsEndpoint);
 
-		List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(API_TYPE, executor.getSubResourcePath(),
-				executor.getValidoperators());
-
-		executor.removeHeaders(context);
+		List<OperatorEndpoint> endpoints = occi.getAPIEndpointsByApp(API_TYPE, executor.getSubResourcePath(),executor.getValidoperators());
 
 		String responseStr = "";
+		SubscriptionRequest subscription_request;
+		List<OperatorSubscriptionDTO> operatorsubses = new ArrayList<OperatorSubscriptionDTO>();
+		
 		for (OperatorEndpoint endpoint : endpoints) {
-
-			responseStr = executor.makeRequest(endpoint, endpoint.getEndpointref().getAddress(), jsonBody.toString(),
-					true, context);
+			//operatorId=ussdService.getOperatorIdByOperator(endpoint.getOperator());
+			ussdService.updateOperatorIdBySubscriptionId(subscriptionId,endpoint.getOperator());
+			responseStr = executor.makeRequest(endpoint, endpoint.getEndpointref().getAddress(), jsonBody.toString(),true, context,false);
+			subscription_request = gson.fromJson(responseStr, SubscriptionRequest.class);
+			operatorsubses.add(new OperatorSubscriptionDTO(endpoint.getOperator(), subscription_request.getSubscription().getResourceURL()));		
 			executor.handlePluginException(responseStr);
 
 		}
-
-		executor.setResponse(context, responseStr);
+		JSONObject jObject  = new JSONObject(responseStr);
+		jObject.getJSONObject("subscription").getJSONObject("callbackReference").put("notifyURL",notifyUrl);
+		jObject.getJSONObject("subscription").put("resourceURL",mediatorConfMap.get("hubGateway")+executor.getResourceUrl()+"/"+subscriptionId);
+		ussdService.moUssdSubscriptionEntry(operatorsubses, subscriptionId);
+		executor.removeHeaders(context);
+		String responseobj =jObject.toString();
+		executor.setResponse(context, responseobj);
 		((Axis2MessageContext) context).getAxis2MessageContext().setProperty("messageType", "application/json");
 
 		return true;
@@ -119,8 +150,7 @@ public class MOUSSDSubscribeHandler implements USSDHandler {
 	 * java.lang.String, org.json.JSONObject, org.apache.synapse.MessageContext)
 	 */
 	@Override
-	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context)
-			throws Exception {
+	public boolean validate(String httpMethod, String requestPath, JSONObject jsonBody, MessageContext context) throws Exception {
 
 		return false;
 	}

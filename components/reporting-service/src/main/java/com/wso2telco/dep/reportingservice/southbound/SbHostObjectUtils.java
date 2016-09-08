@@ -62,6 +62,7 @@ import org.wso2.carbon.registry.core.Registry;
 import org.wso2.carbon.registry.core.Resource;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
 
+import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.dep.reportingservice.APIRequestDTO;
 import com.wso2telco.dep.reportingservice.APIResponseDTO;
 import com.wso2telco.dep.reportingservice.ApiTxCard;
@@ -86,7 +87,6 @@ import com.wso2telco.dep.reportingservice.util.RateType;
 import com.wso2telco.dep.reportingservice.util.SubCategory;
 import com.wso2telco.dep.reportingservice.util.SurchargeEntity;
 import com.wso2telco.dep.reportingservice.util.UsageTiers;
-import com.wso2telco.utils.exception.BusinessException;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -939,6 +939,7 @@ public class SbHostObjectUtils {
 		BillingDAO billingDAO = new BillingDAO();
 		List<OperatorDetailsEntity> operatorMap = billingDAO
 				.getOperatorDetailsOfSubscription(appId, apiId);
+		log.debug("Operator Map for the subscription appplicationId : " + appId + " apiId : " + apiId + " : " + operatorMap.toString());
 		for (OperatorDetailsEntity operatorDetail : operatorMap) {
 
 			String operator = operatorDetail.getOperatorName();
@@ -1344,7 +1345,7 @@ public class SbHostObjectUtils {
 	 */
 	public static NativeArray generateCustomTrafficReport(
 			boolean isPersistReport, String fromDate, String toDate,
-			String subscriberName, String operator, String api,
+			String subscriberName, String operator, String api, boolean isError, int applicationId,
 			String timeOffset, String resType) throws Exception {
 
 		// This is to test
@@ -2484,12 +2485,12 @@ public class SbHostObjectUtils {
 	 * @throws Exception 
 	 */
 	public static List<String[]> getAPIWiseTrafficForReport(String fromDate,
-			String toDate, String subscriber, String operator, String api)
+			String toDate, String subscriber, String operator, String api,boolean isError, int applicationId)
 			throws Exception {
 		BillingDAO billingDAO = new BillingDAO();
 		List<String[]> api_request_data = billingDAO
 				.getAPIWiseTrafficForReport(fromDate, toDate, subscriber,
-						operator, api);
+						operator, api, isError, applicationId);
 		return api_request_data;
 	}
 
@@ -2534,11 +2535,11 @@ public class SbHostObjectUtils {
 	 */
 	public static List<String[]> getAPIWiseTrafficForReportCharging(
 			String fromDate, String toDate, String subscriber, String operator,
-			String api) throws Exception {
+			String api, boolean isError) throws Exception {
 		BillingDAO billingDAO = new BillingDAO();
 		List<String[]> charging_request_data = billingDAO
 				.getAPIWiseTrafficForReportCharging(fromDate, toDate,
-						subscriber, operator, api);
+						subscriber, operator, api, isError);
 		return charging_request_data;
 	}
 

@@ -15,12 +15,17 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.service;
 
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.wso2telco.dep.mediator.dao.USSDDAO;
 import com.wso2telco.dep.mediator.util.ErrorType;
-import com.wso2telco.utils.exception.BusinessException;
-import com.wso2telco.utils.exception.GenaralError;
+import com.wso2telco.dep.operatorservice.model.OperatorSubscriptionDTO;
+import com.wso2telco.dep.operatorservice.util.OparatorError;
+import com.wso2telco.core.dbutils.exception.BusinessException;
+import com.wso2telco.core.dbutils.exception.GenaralError;
+import edu.emory.mathcs.backport.java.util.Collections;
 
 public class USSDService {
 
@@ -33,18 +38,30 @@ public class USSDService {
 		ussdDAO = new USSDDAO();
 	}
 
-	public Integer ussdRequestEntry(String notifyURL) throws BusinessException {
-
+	public Integer ussdRequestEntry(String notifyURL, String consumerKey, String operatorId, String userId) throws Exception {
+		
 		if (notifyURL == null || notifyURL.trim().length() <= 0) {
 
 			throw new BusinessException(ErrorType.INVALID_NOTIFY_URL);
+		}
+		if (consumerKey == null || consumerKey.trim().length() <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_CONSUMER_KEY);
+		}
+		if (operatorId == null || operatorId.trim().length() <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_OPERATOR_ID);
+		}
+		if (userId == null || userId.trim().length() <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_USER_ID);
 		}
 
 		Integer newId = 0;
 
 		try {
 
-			newId = ussdDAO.ussdRequestEntry(notifyURL);
+			newId = ussdDAO.ussdRequestEntry(notifyURL,consumerKey, operatorId, userId);
 		} catch (Exception e) {
 
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
@@ -53,18 +70,20 @@ public class USSDService {
 		return newId;
 	}
 
-	public String getUSSDNotifyURL(Integer subscriptionId) throws BusinessException {
-
+	//public String getUSSDNotifyURL(Integer subscriptionId) throws BusinessException {
+	public List<String> getUSSDNotify(Integer subscriptionId) throws Exception {
+		
 		if (subscriptionId == null || subscriptionId <= 0) {
 
 			throw new BusinessException(ErrorType.INVALID_USSD_REQUEST_DID);
 		}
 
-		String notifyurls = "";
+		//String notifyurls = "";
+		List<String> notifyurls = new ArrayList<String>();
 
 		try {
 
-			notifyurls = ussdDAO.getUSSDNotifyURL(subscriptionId);
+			//notifyurls = ussdDAO.getUSSDNotifyURL(subscriptionId);
 		} catch (Exception e) {
 
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
@@ -90,4 +109,116 @@ public class USSDService {
 
 		return true;
 	}
+	
+	public void moUssdSubscriptionEntry(List<OperatorSubscriptionDTO> domainsubs, Integer moSubscriptionId) throws BusinessException { 
+		
+		if (domainsubs == null || domainsubs.size() <= 0) {
+
+			throw new BusinessException(OparatorError.INVALID_OPERATOR_SUBSCRIPTION_LIST);
+		}
+
+		if (moSubscriptionId == null || moSubscriptionId <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_MO_SUBSCRIPTION_ID);
+		}
+		
+		try {
+
+			ussdDAO.moUssdSubscriptionEntry(domainsubs, moSubscriptionId);
+		} catch (Exception e) {
+
+			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
+		}
+
+	}
+		
+	public List<OperatorSubscriptionDTO> moUssdSubscriptionQuery(Integer moSubscriptionId) throws Exception {
+		
+		if (moSubscriptionId == null || moSubscriptionId <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_MO_SUBSCRIPTION_ID);
+		}
+
+		List<OperatorSubscriptionDTO> domainsubs = null;
+
+		try {
+
+			domainsubs = ussdDAO.moUssdSubscriptionQuery(moSubscriptionId);
+		} catch (Exception e) {
+
+			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
+		}
+
+		if (domainsubs != null) {
+
+			return domainsubs;
+		} else {
+
+			return Collections.emptyList();
+		}
+		
+	}
+		
+	public void moUssdSubscriptionDelete(Integer moSubscriptionId) throws BusinessException {		
+
+			if (moSubscriptionId == null || moSubscriptionId <= 0) {
+
+				throw new BusinessException(ErrorType.INVALID_MO_SUBSCRIPTION_ID);
+			}
+
+			try {
+
+				ussdDAO.moUssdSubscriptionDelete(moSubscriptionId);
+			} catch (Exception e) {
+
+				throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
+			}
+		}
+	
+	public String getOperatorIdByOperator(String operator) throws BusinessException {
+		
+		
+		
+		if (operator == null || operator.trim().length() <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_OPERATOR);
+		}
+
+		String operatorId="";
+		
+		try {
+
+			operatorId = ussdDAO.getOperatorIdByOperator(operator);
+			
+		} catch (Exception e) {
+
+			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
+		}
+		return operatorId;
+		
+		
+	}    
+		
+	public void updateOperatorIdBySubscriptionId(Integer subscriptionId, String operatorId) throws BusinessException {
+		
+		if (subscriptionId == null || subscriptionId <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_USSD_REQUEST_DID);
+		}
+		if (operatorId == null || operatorId.trim().length() <= 0) {
+
+			throw new BusinessException(ErrorType.INVALID_OPERATOR_ID);
+		}
+		try {
+
+			ussdDAO.updateOperatorIdBySubscriptionId(subscriptionId, operatorId);
+
+		} catch (Exception e) {
+
+			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
+		}
+
+	}
+		
+		
 }

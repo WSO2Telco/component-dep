@@ -15,14 +15,17 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.impl.ussd;
 
-import com.wso2telco.dbutils.fileutils.FileReader;
+import com.wso2telco.core.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.util.FileNames;
 import com.wso2telco.dep.datapublisher.DataPublisherConstants;
 import com.wso2telco.dep.mediator.OperatorEndpoint;
+import com.wso2telco.dep.mediator.internal.Type;
+import com.wso2telco.dep.mediator.internal.UID;
 import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.dep.mediator.service.USSDService;
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import java.io.File;
+import java.util.List;
 import java.util.Map;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
@@ -77,6 +80,7 @@ public class USSDInboundHandler implements USSDHandler {
 	@Override
 	public boolean handle(MessageContext context) throws CustomException, AxisFault, Exception {
 
+		String requestid = UID.getUniqueID(Type.RETRIEVE_USSD.getCode(), context, executor.getApplicationid());
 		String requestPath = executor.getSubResourcePath();
 		String subscriptionId = requestPath.substring(requestPath.lastIndexOf("/") + 1);
 		FileReader fileReader = new FileReader();
@@ -86,16 +90,30 @@ public class USSDInboundHandler implements USSDHandler {
 		// remove non numeric chars
 		subscriptionId = subscriptionId.replaceAll("[^\\d.]", "");
 		log.debug("subscriptionId - " + subscriptionId);
-		String notifyurl = ussdService.getUSSDNotifyURL(Integer.valueOf(subscriptionId));
+		
+		
+		List<String> ussdSPDetails = ussdService.getUSSDNotify(Integer.valueOf(subscriptionId));
+       // String notifyurl = dbservice.getUSSDNotify(Integer.valueOf(axiataid));
+		log.info("notifyUrl found -  " + ussdSPDetails.get(0) + " Request ID: " + UID.getRequestID(context));
+		log.info("consumerKey found - " + ussdSPDetails.get(1) + " Request ID: " + UID.getRequestID(context));
+		
+		
 
 		Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
 
 		JSONObject jsonBody = executor.getJsonBody();
-		jsonBody.getJSONObject("inboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL",
-				notifyurl);
+		jsonBody.getJSONObject("inboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL", ussdSPDetails.get(0));
+        context.setProperty(DataPublisherConstants.SP_CONSUMER_KEY, ussdSPDetails.get(1));
+        context.setProperty(DataPublisherConstants.SP_OPERATOR_ID, ussdSPDetails.get(2));
+        context.setProperty(DataPublisherConstants.SP_USER_ID, ussdSPDetails.get(3));
+        
+        
+        log.info("01 SP_CONSUMER_KEY found - " + ussdSPDetails.get(1) + " Request ID: " + UID.getRequestID(context));
+        log.info("01 SP_OPERATOR_ID found - " + ussdSPDetails.get(2) + " Request ID: " + UID.getRequestID(context));
+        log.info("01 SP_USER_ID found - " + ussdSPDetails.get(3) + " Request ID: " + UID.getRequestID(context));
 
-		String notifyret = executor.makeRequest(new OperatorEndpoint(new EndpointReference(notifyurl), null), notifyurl,
-				jsonBody.toString(), true, context);
+        
+        String notifyret = executor.makeRequest(new OperatorEndpoint(new EndpointReference(ussdSPDetails.get(0)), null), ussdSPDetails.get(0),jsonBody.toString(), true, context,false);
 
 		log.debug(notifyret);
 		if (notifyret == null) {
@@ -108,7 +126,7 @@ public class USSDInboundHandler implements USSDHandler {
 		if (action.equalsIgnoreCase("mtcont")) {
 
 			String subsEndpoint = mediatorConfMap.get("ussdGatewayEndpoint") + subscriptionId;
-			log.info("Subsendpoint - " + subsEndpoint);
+			log.info("Subsendpoint - " +subsEndpoint + " Request ID: " + UID.getRequestID(context));
 			replyobj.getJSONObject("outboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL",
 					subsEndpoint);
 
@@ -116,15 +134,34 @@ public class USSDInboundHandler implements USSDHandler {
 
 		if (action.equalsIgnoreCase("mtfin")) {
 			String subsEndpoint = mediatorConfMap.get("ussdGatewayEndpoint") + subscriptionId;
-			log.info("Subsendpoint - " + subsEndpoint);
+			log.info("Subsendpoint - " +subsEndpoint + " Request ID: " + UID.getRequestID(context));
 			replyobj.getJSONObject("outboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL",
 					subsEndpoint);
 
 			boolean deleted = ussdService.ussdEntryDelete(Integer.valueOf(subscriptionId));
-			log.info("Entry deleted " + deleted);
+			log.info("Entry deleted " + deleted + " Request ID: " + UID.getRequestID(context));
 
 		}
+		
+		if(action.equalsIgnoreCase("mocont")){
+			
+            String subsEndpoint = mediatorConfMap.get("ussdGatewayEndpoint")+subscriptionId;
+            log.info("Subsendpoint - " +subsEndpoint + " Request ID: " + UID.getRequestID(context));
+            replyobj.getJSONObject("outboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL", subsEndpoint);
 
+		}
+			
+		if(action.equalsIgnoreCase("mofin")){
+			
+            String subsEndpoint = mediatorConfMap.get("ussdGatewayEndpoint")+subscriptionId;
+            log.info("Subsendpoint - " +subsEndpoint + " Request ID: " + UID.getRequestID(context));
+            replyobj.getJSONObject("outboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL", subsEndpoint);
+	
+	        //boolean deleted = dbservice.ussdEntryDelete(Integer.valueOf(axiataid));
+	        //log.info("Entry deleted after session expired" + deleted);
+            
+		}
+			 
 		executor.removeHeaders(context);
 
 		((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", 201);

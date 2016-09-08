@@ -1,6 +1,6 @@
 package com.wso2telco.dep.reportingservice.exception;
 
-import com.wso2telco.utils.exception.ThrowableError;
+import com.wso2telco.core.dbutils.exception.ThrowableError;
 
 public enum ReportingServiceError implements ThrowableError  {
 	UNDEFINED("CORE0001", "Undefined Error"),

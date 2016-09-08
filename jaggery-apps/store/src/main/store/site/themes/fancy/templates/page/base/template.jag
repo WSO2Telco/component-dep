@@ -38,7 +38,8 @@ i18n.init(request,localeResourcesBasePath);
     <meta name="author" content="">
     <meta charset="UTF-8">
     <meta name="description" content=""/>
-
+ 	<meta http-equiv="cache-control" content="no-cache"/>
+ 
     <!-- Le fav and touch icons -->
     <link rel="shortcut icon" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("images/favicon-store.png"))%>">
     <link rel="apple-touch-icon-precomposed" sizes="144x144" href="bootstrap/ico/apple-touch-icon-144-precomposed.png">

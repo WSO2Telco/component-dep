@@ -20,11 +20,14 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import com.wso2telco.dbutils.DbUtils;
-import com.wso2telco.dbutils.util.DataSourceNames;
+import com.wso2telco.core.dbutils.DbUtils;
+import com.wso2telco.core.dbutils.util.DataSourceNames;
 import com.wso2telco.dep.mediator.util.DatabaseTables;
+import com.wso2telco.dep.operatorservice.model.OperatorSubscriptionDTO;
 
 public class USSDDAO {
 
@@ -40,11 +43,14 @@ public class USSDDAO {
 	 * @throws Exception
 	 *             the exception
 	 */
-	public Integer ussdRequestEntry(String notifyURL) throws SQLException, Exception {
+	public Integer ussdRequestEntry(String notifyURL , String consumerKey, String operatorId, String userId) throws SQLException, Exception {
 
 		Connection con = null;
 		PreparedStatement ps = null;
-		ResultSet rs = null;
+		ResultSet insert_result = null;
+		ResultSet select_result = null;
+		Statement st = null;
+		Integer selectId = 0;
 		Integer newId = 0;
 
 		try {
@@ -55,24 +61,38 @@ public class USSDDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder insertQueryString = new StringBuilder("INSERT INTO ");
+			st = con.createStatement();
+			StringBuilder queryString = new StringBuilder(" SELECT MAX(ussd_request_did) maxid ")
+            .append("FROM ")
+			.append(DatabaseTables.USSD_REQUEST_ENTRY.getTableName());
+            select_result = st.executeQuery(queryString.toString());
+            if (select_result.next()) {
+            	selectId = select_result.getInt("maxid") + 1;
+            }
+            
+			
+			StringBuilder insertQueryString = new StringBuilder(" INSERT INTO ");
 			insertQueryString.append(DatabaseTables.USSD_REQUEST_ENTRY.getTableName());
-			insertQueryString.append(" (notifyurl) ");
-			insertQueryString.append("VALUES (?)");
+			insertQueryString.append(" (ussd_request_did,notifyurl,sp_consumerKey,operatorId,userId) ");
+			insertQueryString.append("VALUES (?,?,?,?)");
 
 			ps = con.prepareStatement(insertQueryString.toString(), Statement.RETURN_GENERATED_KEYS);
 
-			ps.setString(1, notifyURL);
+			ps.setInt(1, selectId);
+			ps.setString(2, notifyURL);
+			ps.setString(3, consumerKey);
+			ps.setString(4, operatorId);
+			ps.setString(5, userId);
 			
 			log.debug("sql query in ussdRequestEntry : " + ps);
 
 			ps.executeUpdate();
 
-			rs = ps.getGeneratedKeys();
+			insert_result = ps.getGeneratedKeys();
 
-			while (rs.next()) {
+			while (insert_result.next()) {
 
-				newId = rs.getInt(1);
+				newId = insert_result.getInt(1);
 			}
 		} catch (SQLException e) {
 
@@ -84,7 +104,9 @@ public class USSDDAO {
 			throw e;
 		} finally {
 
-			DbUtils.closeAllConnections(ps, con, rs);
+			DbUtils.closeAllConnections(ps, con, insert_result);
+			DbUtils.closeAllConnections(st, con, select_result);
+			
 		}
 
 		return newId;
@@ -168,9 +190,9 @@ public class USSDDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder queryString = new StringBuilder("DELETE FROM ");
-			queryString.append(DatabaseTables.USSD_REQUEST_ENTRY.getTableName());
-			queryString.append(" WHERE ussd_request_did = ?");
+			StringBuilder queryString = new StringBuilder("DELETE FROM ")
+			.append(DatabaseTables.USSD_REQUEST_ENTRY.getTableName())
+			.append(" WHERE ussd_request_did = ?");
 
 			ps = con.prepareStatement(queryString.toString());
 
@@ -194,4 +216,241 @@ public class USSDDAO {
 
 		return true;
 	}
+	
+	
+	public void moUssdSubscriptionEntry(List<OperatorSubscriptionDTO> domainsubs,Integer moSubscriptionId) throws SQLException, Exception{
+
+		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+		PreparedStatement insertStatement = null;
+		
+		try {
+			
+			if (con == null) {
+				throw new Exception("Connection not found");
+			}
+			con.setAutoCommit(false);
+			
+			StringBuilder queryString = new StringBuilder("INSERT INTO ");
+			queryString.append(DatabaseTables.MO_USSD_SUBSCRIPTIONS.getTableName());
+			queryString.append(" (ussd_request_did, domainurl, operator) ");
+			queryString.append("VALUES (?, ?, ?)");
+			
+			insertStatement = con.prepareStatement(queryString.toString());
+
+			for (OperatorSubscriptionDTO d : domainsubs) {
+				
+				insertStatement.setInt(1, moSubscriptionId);
+				insertStatement.setString(2, d.getDomain());
+				insertStatement.setString(3, d.getOperator());
+				
+				insertStatement.addBatch();
+			}
+			
+			insertStatement.executeBatch();
+			con.commit();
+			
+
+		} catch (SQLException e) {
+
+			log.error("database operation error in operatorSubsEntry : ", e);
+			throw e;
+		} catch (Exception e) {
+
+			log.error("error in operatorSubsEntry : ", e);
+			throw e;
+		} finally {
+
+			DbUtils.closeAllConnections(insertStatement, con, null);
+		}
+	}
+	
+	/**
+	 * 
+	 * @param moSubscriptionId
+	 * @return
+	 * @throws SQLException
+	 * @throws Exception
+	 */
+	
+	public List<OperatorSubscriptionDTO> moUssdSubscriptionQuery(Integer moSubscriptionId) throws SQLException, Exception {
+	
+		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+		List<OperatorSubscriptionDTO> domainsubs = new ArrayList();
+		
+		try {
+			
+			if (con == null) {
+
+				throw new Exception("Connection not found");
+			}
+
+			StringBuilder queryString = new StringBuilder("SELECT domainurl, operator ");
+			queryString.append("FROM ");
+			queryString.append(DatabaseTables.MO_USSD_SUBSCRIPTIONS.getTableName());
+			queryString.append(" WHERE ussd_request_did = ?");
+
+			ps = con.prepareStatement(queryString.toString());
+
+			ps.setInt(1, moSubscriptionId);
+			
+			log.debug("sql query in subscriptionQuery : " + ps);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				domainsubs.add(new OperatorSubscriptionDTO(rs.getString("operator"), rs.getString("domainurl")));
+			}
+		} catch (SQLException e) {
+
+			log.error("database operation error in moUssdSubscriptionQuery : ", e);
+			throw e;
+		} catch (Exception e) {
+
+			log.error("error in moUssdSubscriptionQuery : ", e);
+			throw e;
+		} finally {
+
+			DbUtils.closeAllConnections(ps, con, rs);
+		}
+		
+		return domainsubs;
+
+}
+	
+	
+	public void moUssdSubscriptionDelete(Integer moSubscriptionId) throws SQLException, Exception {
+
+		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+		PreparedStatement deleteSubscriptionsStatement = null;
+		PreparedStatement deleteOperatorSubscriptionsStatement = null;
+
+		try {
+
+			if (con == null) {
+
+				throw new Exception("Connection not found");
+			}
+
+			/**
+			 * Set autocommit off to handle the transaction
+			 */
+			con.setAutoCommit(false);
+
+			StringBuilder deleteSubscriptionsQueryString = new StringBuilder("DELETE FROM ")
+			.append(DatabaseTables.USSD_REQUEST_ENTRY.getTableName())
+			.append(" WHERE axiataid = ?");
+
+			deleteSubscriptionsStatement = con.prepareStatement(deleteSubscriptionsQueryString.toString());
+			deleteSubscriptionsStatement.setInt(1, moSubscriptionId);
+			
+			log.debug("sql query in outboundSubscriptionDelete : " + deleteSubscriptionsStatement);
+
+			deleteSubscriptionsStatement.executeUpdate();
+
+			StringBuilder deleteOperatorSubscriptionsQueryString = new StringBuilder("DELETE FROM ")
+			.append(DatabaseTables.MO_USSD_SUBSCRIPTIONS.getTableName())
+			.append(" WHERE axiataid = ?");
+
+			deleteOperatorSubscriptionsStatement = con.prepareStatement(deleteOperatorSubscriptionsQueryString.toString());
+
+			deleteOperatorSubscriptionsStatement.setInt(1, moSubscriptionId);
+			
+			log.debug("sql query in outboundSubscriptionDelete : " + deleteOperatorSubscriptionsStatement);
+
+			deleteOperatorSubscriptionsStatement.executeUpdate();
+
+			/**
+			 * commit the transaction if all success
+			 */
+			con.commit();
+		} catch (SQLException e) {
+
+			/**
+			 * rollback if Exception occurs
+			 */
+			con.rollback();
+
+			log.error("database operation error in moUssdSubscriptionDelete : ", e);
+			throw e;
+		} catch (Exception e) {
+
+			/**
+			 * rollback if Exception occurs
+			 */
+			con.rollback();
+
+			log.error("Error while deleting subscriptions. ", e);
+			throw e;
+		} finally {
+
+			DbUtils.closeAllConnections(deleteSubscriptionsStatement, con, null);
+			DbUtils.closeAllConnections(deleteOperatorSubscriptionsStatement, null, null);
+		}
+	}
+
+	public String getOperatorIdByOperator(String operator)  throws SQLException, Exception {
+		
+			Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+			PreparedStatement ps = null;
+	        ResultSet rs = null;
+	        String operatorId="";
+	
+	        try {
+	        	StringBuilder queryString = new StringBuilder(" SELECT id FROM ")
+	        	.append(DatabaseTables.OPERATORS.getTableName())
+	        	.append(" o ")
+	        	.append(" WHERE ")
+	        	.append(" operatorname=? ");
+	        	
+	            ps = con.prepareStatement(queryString.toString());
+	            ps.setString(1, operator);
+	            rs = ps.executeQuery();
+	
+	            if (rs.next() && rs.getString("id")!= null ) {
+	                operatorId=  rs.getString("id") ;
+	            }
+	        } catch (Exception e) {
+	            DbUtils.handleException("Error while checking OperatorId. ", e);
+	        } finally {
+	            DbUtils.closeAllConnections(ps, con, rs);
+	        }
+	        return operatorId;
+		
+		
+	}	
+
+		public void updateOperatorIdBySubscriptionId(Integer subscriptionId, String operatorId)  throws SQLException, Exception {
+    		
+			Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+			PreparedStatement ps = null;
+			    
+			try {
+				if (con == null) {
+					throw new Exception("Connection not found");
+				}
+				
+				StringBuilder queryString = new StringBuilder(" UPDATE ")
+				.append(DatabaseTables.USSD_REQUEST_ENTRY.getTableName())
+				.append(" SET ")
+				.append(" operatorId= ? ")
+				.append(" WHERE ")
+				.append(" axiataid = ? ");
+				
+				ps = con.prepareStatement(queryString.toString());	           
+				ps.setString(1, operatorId);
+				ps.setInt(2,subscriptionId);
+	           
+				ps.executeUpdate();
+		
+			} catch (Exception e) {
+				throw e;
+			} finally {
+				DbUtils.closeAllConnections(ps, con, null);
+			}
+				
+			}
 }

@@ -80,7 +80,6 @@
         <dependency>
 			<groupId>com.wso2telco.core</groupId>
 			<artifactId>dbutils</artifactId>
-			<version>${com.wso2telco.core.version}</version>
 		</dependency>
     </dependencies>
 

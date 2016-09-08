@@ -17,7 +17,8 @@ package com.wso2telco.dep.mediator;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.wso2telco.dbutils.fileutils.FileReader;
+import com.wso2telco.dep.datapublisher.DataPublisherConstants;
+import com.wso2telco.core.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.util.FileNames;
 import com.wso2telco.dep.mediator.entity.smsmessaging.DeliveryInfo;
 import com.wso2telco.dep.mediator.entity.smsmessaging.DeliveryInfoList;
@@ -61,10 +62,8 @@ public class ResponseHandler {
 	 *            the requestid
 	 * @return the string
 	 */
-	public String makeSmsSendResponse(MessageContext mc, String requestBody, Map<String, SendSMSResponse> responseMap,
-			String requestid) {
-		log.debug("Building Send SMS Response: " + requestBody);
-
+	public String makeSmsSendResponse(MessageContext mc, String requestBody, Map<String, SendSMSResponse> responseMap, String requestid) {
+		log.info("Building Send SMS Response: " + requestBody+ " Request ID: " + UID.getRequestID(mc));
 		Gson gson = new GsonBuilder().create();
 		SendSMSResponse finalResponse = gson.fromJson(requestBody, SendSMSResponse.class);
 
@@ -149,9 +148,10 @@ public class ResponseHandler {
 	 * @throws JSONException
 	 *             the JSON exception
 	 */
-	public String makePaymentResponse(String jsonBody, String requestid) throws JSONException {
+	public String makePaymentResponse(String jsonBody, String clientCorrelator, String requestResourceURL, String requestid) throws JSONException {
 
 		String jsonPayload = null;
+
 		FileReader fileReader = new FileReader();
 		String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
 				+ FileNames.MEDIATOR_CONF_FILE.getFileName();
@@ -167,13 +167,15 @@ public class ResponseHandler {
 		String pluginResourceUrl = objPay.getString("resourceURL");
 		log.debug("Creating payment charge response -> pluginResourceUrl : " + pluginResourceUrl);
 		String pluginResourceUrlParts[] = pluginResourceUrl.split("/");
-		String hubResourceURL = mediatorConfMap.get("hubGateway") + "/payment/v1/" + endUserId + "/transactions/amount/"
-				+ pluginResourceUrlParts[pluginResourceUrlParts.length - 1];
+/*		String hubResourceURL = mediatorConfMap.get("hubGateway") + "/payment/v1/" + endUserId + "/transactions/amount/" + pluginResourceUrlParts[pluginResourceUrlParts.length - 1];
+*/
+		String hubResourceURL = mediatorConfMap.get("hubGateway")  + requestResourceURL + "/" + pluginResourceUrlParts[pluginResourceUrlParts.length - 1];
 		log.debug("Creating payment charge response -> hubResourceURL : " + hubResourceURL);
 		log.debug("Creating payment charge response -> requestid : " + requestid);
 
 		try {
-			objPay.put("clientCorrelator", objPay.get("clientCorrelator").toString().split(":")[0]);
+			//objPay.put("clientCorrelator", objPay.get("clientCorrelator").toString().split(":")[0]);
+			objPay.put("clientCorrelator", clientCorrelator);
 			objPay.remove("resourceURL");
 			objPay.put("resourceURL", UID.resourceURL(hubResourceURL, requestid));
 		} catch (Exception e) {
@@ -181,6 +183,45 @@ public class ResponseHandler {
 		}
 		return jsonObj.toString();
 	}
+	
+	
+	
+	 public String makePaymentResponseContext(MessageContext context, String jsonBody, String clientCorrelator, String requestResourceURL, String requestid) throws JSONException {
+ 
+         String jsonPayload = null;
+         FileReader fileReader = new FileReader();
+         String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
+ 				+ FileNames.MEDIATOR_CONF_FILE.getFileName();
+ 		Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
+ 
+         Gson gson = new GsonBuilder().serializeNulls().create();
+         org.json.JSONObject jsonObj = new org.json.JSONObject(jsonBody);
+         JSONObject objPay = jsonObj.getJSONObject("amountTransaction");
+ 
+         String endUserId = objPay.get("endUserId").toString();
+         log.debug("Creating payment charge response -> endUserId : " + endUserId);
+         String pluginResourceUrl = objPay.getString("resourceURL");
+         log.debug("Creating payment charge response -> pluginResourceUrl : " + pluginResourceUrl);
+         String pluginResourceUrlParts[] = pluginResourceUrl.split("/");
+         /*String hubResourceURL = Util.getApplicationProperty("hubGateway") + "/payment/v1/" + endUserId + "/transactions/amount/" + pluginResourceUrlParts[pluginResourceUrlParts.length - 1];*/
+         String hubResourceURL = mediatorConfMap.get("hubGateway") + requestResourceURL + "/" + pluginResourceUrlParts[pluginResourceUrlParts.length - 1];
+         log.debug("Creating payment charge response -> hubResourceURL : " + hubResourceURL);
+         log.debug("Creating payment charge response -> requestid : " + requestid);
+ 
+         try {
+             /*objPay.put("clientCorrelator", objPay.get("clientCorrelator").toString().split(":")[0]);*/
+             objPay.put("clientCorrelator", clientCorrelator);
+             objPay.remove("resourceURL");
+             objPay.put("resourceURL", UID.resourceURL(hubResourceURL, requestid));
+         } catch (Exception e) {
+             log.error("Error in creating payment charge response : " + e.getMessage());
+         }
+         
+         String RESPONSE_CODE=context.getProperty(DataPublisherConstants.RESPONSE_CODE).toString();
+         ((Axis2MessageContext) context).getAxis2MessageContext().setProperty("HTTP_SC", Integer.valueOf(RESPONSE_CODE));
+         
+         return jsonObj.toString();
+		     }
 
 	/**
 	 * Make query sms status response.
@@ -195,10 +236,8 @@ public class ResponseHandler {
 	 *            the response map
 	 * @return the string
 	 */
-	public String makeQuerySmsStatusResponse(MessageContext mc, String senderAddress, String requestid,
-			Map<String, QuerySMSStatusResponse> responseMap) {
-		log.debug("Building Query SMS Status Response");
-
+	public String makeQuerySmsStatusResponse(MessageContext mc, String senderAddress, String requestid, Map<String, QuerySMSStatusResponse> responseMap) {
+		log.info("Building Query SMS Status Response" + " Request ID: " + UID.getRequestID(mc));
 		Gson gson = new GsonBuilder().create();
 		QuerySMSStatusResponse finalResponse = new QuerySMSStatusResponse();
 
@@ -232,5 +271,59 @@ public class ResponseHandler {
 		((Axis2MessageContext) mc).getAxis2MessageContext().setProperty("messageType", "application/json");
 		return gson.toJson(finalResponse);
 	}
+	
+	public String walletPaymentResponseContext(MessageContext context, String jsonBody, String clientCorrelator, String requestResourceURL, String requestid) throws JSONException {
+		
+        org.json.JSONObject jsonObj = new org.json.JSONObject(jsonBody);
+        JSONObject objPay = jsonObj.getJSONObject("makePayment");
+        FileReader fileReader = new FileReader();
+        String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
+				+ FileNames.MEDIATOR_CONF_FILE.getFileName();
+		Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
+        String endUserId = objPay.get("endUserId").toString();
+        log.debug("Creating wallet payment charge response -> endUserId : " + endUserId);
+        String pluginResourceUrl = objPay.getString("notifyURL");
+        log.debug("Creating wallet payment charge response -> notifyURL : " + pluginResourceUrl);
+        String pluginResourceUrlParts[] = pluginResourceUrl.split("/");
+        String hubResourceURL = mediatorConfMap.get("hubGateway") + requestResourceURL + "/" + pluginResourceUrlParts[pluginResourceUrlParts.length - 1];
+        log.debug("Creating wallet payment charge response -> hubResourceURL : " + hubResourceURL);
+       log.debug("Creating wallet payment charge response -> requestid : " + requestid);
+
+        return jsonObj.toString();
+    }
+
+
+    public String walletRefundResponseContext(MessageContext context, String jsonBody, String clientCorrelator, String requestResourceURL, String requestid) throws JSONException {
+
+        org.json.JSONObject jsonObj = new org.json.JSONObject(jsonBody);
+        JSONObject objPay = jsonObj.getJSONObject("refundTransaction");
+
+        String endUserId = objPay.get("endUserId").toString();
+        log.debug("Creating refund response -> endUserId : " + endUserId);
+
+        return jsonObj.toString();
+    }
+    
+    public String creditApplyResponseContext(MessageContext context, String jsonBody, String clientCorrelator, String requestResourceURL, String requestid) throws JSONException {
+
+        org.json.JSONObject jsonObj = new org.json.JSONObject(jsonBody);
+        JSONObject objPay = jsonObj.getJSONObject("creditApplyResponse");
+        objPay.put("clientCorrelator", clientCorrelator);
+        log.debug("JSONObject credit apply response : " + objPay);
+
+        return jsonObj.toString();
+    	    }
+    	
+    public String creditRefundResponseContext(MessageContext context, String jsonBody, String clientCorrelator, String requestResourceURL, String requestid) throws JSONException {
+
+        org.json.JSONObject jsonObj = new org.json.JSONObject(jsonBody);
+        JSONObject objPay = jsonObj.getJSONObject("refundResponse");
+        objPay.put("clientCorrelator", clientCorrelator);
+        log.debug("JSONObject credit refund response  : " + objPay);
+
+        return jsonObj.toString();
+    }
+    	
+		
 
 }
