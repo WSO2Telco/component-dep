@@ -85,7 +85,7 @@
                         <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Export-Package>
-                            com.wso2telco.verificationhandler.verifier.*
+                            com.wso2telco.dep.verificationhandler.verifier.*
                         </Export-Package>
                         <Import-Package>
                             javax.servlet;version="2.4.0",
