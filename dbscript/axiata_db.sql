@@ -13,10 +13,13 @@
 CREATE TABLE IF NOT EXISTS `ussd_request_entry` (
   `ussd_request_did` int(20) NOT NULL AUTO_INCREMENT,
   `notifyurl` varchar(255) DEFAULT NULL,
+  `sp_consumerKey` varchar(100) DEFAULT NULL,
   `created` varchar(25) DEFAULT NULL,
   `created_date` timestamp NULL DEFAULT NULL,
   `lastupdated` varchar(25) DEFAULT NULL,
   `lastupdated_date` timestamp NULL DEFAULT NULL,
+  `operatorId` varchar(45) DEFAULT NULL,
+  `userId` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`ussd_request_did`)
 );
 
@@ -274,6 +277,19 @@ CREATE TABLE IF NOT EXISTS `provision_service_operator_endpoints` (
   `lastupdated_date` timestamp NULL DEFAULT NULL,
   PRIMARY KEY (`id`)
 );
+
+CREATE TABLE IF NOT EXISTS `mo_ussd_subscription` (
+  `mo_ussd_request_did` int(20) NOT NULL AUTO_INCREMENT,
+  `ussd_request_did` int(20) DEFAULT NULL,
+  `domainurl` varchar(255) DEFAULT NULL,
+  `operator` varchar(45) DEFAULT NULL,
+  `created` varchar(25) DEFAULT NULL,
+  `created_date` timestamp NULL DEFAULT NULL,
+  `lastupdated` varchar(25) DEFAULT NULL,
+  `lastupdated_date` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`mo_ussd_request_did`)
+) ENGINE=InnoDB;
+
 
 /*
 * Default validator types provided from mife-validator component
