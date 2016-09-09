@@ -1,0 +1,2 @@
+instructions.configure = \
+org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.sandbox.ui_${feature.version}/generated/sandbox.zip,target:${installFolder}/../../deployment/server/jaggeryapps/sandbox.zip,overwrite:true);
