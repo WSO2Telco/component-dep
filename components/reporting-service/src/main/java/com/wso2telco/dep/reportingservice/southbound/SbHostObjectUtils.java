@@ -62,6 +62,7 @@ import org.wso2.carbon.registry.core.Registry;
 import org.wso2.carbon.registry.core.Resource;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
 
+import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.dep.reportingservice.APIRequestDTO;
 import com.wso2telco.dep.reportingservice.APIResponseDTO;
 import com.wso2telco.dep.reportingservice.ApiTxCard;
@@ -86,7 +87,6 @@ import com.wso2telco.dep.reportingservice.util.RateType;
 import com.wso2telco.dep.reportingservice.util.SubCategory;
 import com.wso2telco.dep.reportingservice.util.SurchargeEntity;
 import com.wso2telco.dep.reportingservice.util.UsageTiers;
-import com.wso2telco.utils.exception.BusinessException;
 
 // TODO: Auto-generated Javadoc
 /**

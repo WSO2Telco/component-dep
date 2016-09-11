@@ -16,8 +16,6 @@
 package com.wso2telco.dep.publisheventsdata.handler;
 
 import java.util.Properties;
-
-import com.wso2telco.dbutils.AxataDBUtilException;
 import com.wso2telco.dep.publisheventsdata.PublishEventsConstants;
 import com.wso2telco.dep.publisheventsdata.internal.EventsDataHolder;
 import com.wso2telco.dep.publisheventsdata.service.SpendLimitService;

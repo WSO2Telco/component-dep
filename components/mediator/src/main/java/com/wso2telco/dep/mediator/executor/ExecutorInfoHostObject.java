@@ -1,14 +1,11 @@
 package com.wso2telco.dep.mediator.executor;
 
-
-import com.wso2telco.dep.mediator.dao.ExecutorDAO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.simple.JSONArray;
 import org.json.simple.JSONObject;
 import org.mozilla.javascript.*;
 import org.wso2.carbon.apimgt.api.APIManagementException;
-
 import java.util.*;
 
 public class ExecutorInfoHostObject extends ScriptableObject {
@@ -136,8 +133,8 @@ public class ExecutorInfoHostObject extends ScriptableObject {
     //TODO: bind these handlers in correct sequence. Sequence here is the same sequence that will  be added to the synapse configuration file.
     private void bindHandlers () {
 
-        handlers.put("DialogAPIRequestHandler", new HandlerObj("DialogAPIRequestHandler", "com.wso2telco.verificationhandler.verifier.DialogAPIRequestHandler"));
-        handlers.put("DialogBlacklistHandler", new HandlerObj("DialogBlacklistHandler", "com.wso2telco.verificationhandler.verifier.DialogBlacklistHandler"));
+        handlers.put("DialogAPIRequestHandler", new HandlerObj("DialogAPIRequestHandler", "com.wso2telco.dep.verificationhandler.verifier.DialogAPIRequestHandler"));
+        handlers.put("DialogBlacklistHandler", new HandlerObj("DialogBlacklistHandler", "com.wso2telco.dep.verificationhandler.verifier.DialogBlacklistHandler"));
     }
 
     public static NativeArray getHandlerObjects (Scriptable thisObj) {

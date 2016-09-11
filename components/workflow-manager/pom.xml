@@ -142,8 +142,8 @@
 				<extensions>true</extensions>
 				<configuration>
 					<instructions>
-						<Bundle-SymbolicName>WorkflowManager</Bundle-SymbolicName>
-						<Bundle-Name>WorkflowManager</Bundle-Name>
+						<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+						<Bundle-Name>${project.artifactId}</Bundle-Name>
 						<Export-Package>com.wso2telco.dep.workflow.*</Export-Package>
 						<Import-Package>
 							javax.xml.parsers; version="0.0.0",

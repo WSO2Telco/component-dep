@@ -22,12 +22,10 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
-import com.wso2telco.dbutils.DbUtils;
-import com.wso2telco.dbutils.util.DataSourceNames;
+import com.wso2telco.core.dbutils.DbUtils;
+import com.wso2telco.core.dbutils.util.DataSourceNames;
 import com.wso2telco.dep.mediator.util.DatabaseTables;
 import com.wso2telco.dep.operatorservice.model.OperatorSubscriptionDTO;
 
@@ -344,7 +342,7 @@ public class USSDDAO {
 
 			StringBuilder deleteSubscriptionsQueryString = new StringBuilder("DELETE FROM ")
 			.append(DatabaseTables.USSD_REQUEST_ENTRY.getTableName())
-			.append(" WHERE axiataid = ?");
+			.append(" WHERE ussd_request_did = ?");
 
 			deleteSubscriptionsStatement = con.prepareStatement(deleteSubscriptionsQueryString.toString());
 			deleteSubscriptionsStatement.setInt(1, moSubscriptionId);
@@ -355,7 +353,7 @@ public class USSDDAO {
 
 			StringBuilder deleteOperatorSubscriptionsQueryString = new StringBuilder("DELETE FROM ")
 			.append(DatabaseTables.MO_USSD_SUBSCRIPTIONS.getTableName())
-			.append(" WHERE axiataid = ?");
+			.append(" WHERE ussd_request_did = ?");
 
 			deleteOperatorSubscriptionsStatement = con.prepareStatement(deleteOperatorSubscriptionsQueryString.toString());
 
@@ -440,7 +438,7 @@ public class USSDDAO {
 				.append(" SET ")
 				.append(" operatorId= ? ")
 				.append(" WHERE ")
-				.append(" axiataid = ? ");
+				.append(" ussd_request_did = ? ");
 				
 				ps = con.prepareStatement(queryString.toString());	           
 				ps.setString(1, operatorId);

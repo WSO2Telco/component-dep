@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.wso2telco.dep.bw.model;
 
-import com.wso2telco.utils.exception.ThrowableError;
+import com.wso2telco.core.dbutils.exception.ThrowableError;
 
 // TODO: Auto-generated Javadoc
 /**

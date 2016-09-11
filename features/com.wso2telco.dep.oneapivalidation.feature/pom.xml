@@ -10,8 +10,8 @@
 
     <artifactId>com.wso2telco.dep.oneapivalidation.feature</artifactId>
     <packaging>pom</packaging>
-    <name>WSO2.Telco One API Validation Feature</name>
-    <description>This feature contains the server bundles required for One API Validation</description>
+    <name>WSO2.Telco One API Validation</name>
+    <description>This feature contains the server bundles required for one API validation</description>
     
     <build>
         <plugins>
