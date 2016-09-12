@@ -24,6 +24,14 @@
     %> 
 <script language="javascript">
     var VERBS = [ 'GET' , 'POST' , 'PUT' , 'DELETE', 'PATCH' , 'OPTIONS'];
+
+    <%
+    var executorService = jagg.module("manager").getExecutorService();
+    var helperList = executorService.getHandlers();
+
+    print('var HELPERS = ' + stringify(helperList) + ';');
+    %>
+
     var AUTH_TYPES = [
       { "value": "None", "text":"<%=i18n.localize("none")%>"} ,
       { "value": "Application", "text":"<%=i18n.localize("application")%>"},
@@ -447,7 +455,6 @@
 </div>  
 </script>
 
-
 <script id="designer-resources-template" type="text/x-handlebars-template">
 <br />
 <table style="width:100%">                       
@@ -466,6 +473,19 @@
     {{/each}}
 {{/each}}
 </table>                           
+</script>
+
+<script id="designer-resources-handlers" type="text/x-handlebars-template">
+    <div class="control-group">
+            <label class="control-label" for=""></label>
+            <div class="controls">
+                {{#each helpers}}
+                    <label class="checkbox">
+                    <input id="{{ . }}" type="checkbox" value="{{ . }}" class="http_verb_select" >  {{ . }}
+                    </label>
+                {{/each}}
+            </div>
+        </div>
 </script>
 
 <script id="scopes-template" type="text/x-handlebars-template">

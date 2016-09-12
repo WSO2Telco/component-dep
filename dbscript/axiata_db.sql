@@ -11,14 +11,16 @@
 --
 
 CREATE TABLE IF NOT EXISTS `ussd_request_entry` (
-  `ID` int(20) NOT NULL AUTO_INCREMENT,
-  `axiataid` int(11) DEFAULT NULL,
+  `ussd_request_did` int(20) NOT NULL AUTO_INCREMENT,
   `notifyurl` varchar(255) DEFAULT NULL,
+  `sp_consumerKey` varchar(100) DEFAULT NULL,
   `created` varchar(25) DEFAULT NULL,
   `created_date` timestamp NULL DEFAULT NULL,
   `lastupdated` varchar(25) DEFAULT NULL,
   `lastupdated_date` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`ID`)
+  `operatorId` varchar(45) DEFAULT NULL,
+  `userId` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`ussd_request_did`)
 );
 
 
@@ -101,15 +103,15 @@ CREATE TABLE IF NOT EXISTS `operators` (
 --
 
 CREATE TABLE IF NOT EXISTS `operatorsubs` (
-  `ID` int(20) NOT NULL AUTO_INCREMENT,
-  `axiataid` int(11) DEFAULT NULL,
+  `id` int(20) NOT NULL AUTO_INCREMENT,
+  `mo_subscription_did` int(20) DEFAULT NULL,
   `domainurl` varchar(255) DEFAULT NULL,
   `operator` varchar(45) DEFAULT NULL,
   `created` varchar(25) DEFAULT NULL,
   `created_date` timestamp NULL DEFAULT NULL,
   `lastupdated` varchar(25) DEFAULT NULL,
   `lastupdated_date` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`id`)
 );
 
 --
@@ -117,15 +119,15 @@ CREATE TABLE IF NOT EXISTS `operatorsubs` (
 --
 
 CREATE TABLE IF NOT EXISTS `subscriptions` (
-  `ID` int(20) NOT NULL AUTO_INCREMENT,
-  `axiataid` int(11) DEFAULT NULL,
+  `mo_subscription_did` int(20) NOT NULL AUTO_INCREMENT,
   `notifyurl` varchar(255) DEFAULT NULL,
+  `service_provider` varchar(255) DEFAULT NULL,
+  `is_active` int(10) DEFAULT NULL,
   `created` varchar(25) DEFAULT NULL,
   `created_date` timestamp NULL DEFAULT NULL,
   `lastupdated` varchar(25) DEFAULT NULL,
   `lastupdated_date` timestamp NULL DEFAULT NULL,
-  `service_provider` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`mo_subscription_did`)
 );
 
 /*
@@ -228,29 +230,66 @@ CREATE TABLE IF NOT EXISTS `sendsms_reqid` (
   PRIMARY KEY (`ID`)
 );
 
+CREATE TABLE IF NOT EXISTS `outbound_subscriptions` (
+  `dn_subscription_did` int(20) NOT NULL AUTO_INCREMENT,
+  `notifyurl` varchar(255) DEFAULT NULL,
+  `service_provider` varchar(255) DEFAULT NULL,
+  `is_active` int(10) DEFAULT NULL,
+  `created` varchar(25) DEFAULT NULL,
+  `created_date` timestamp NULL DEFAULT NULL,
+  `lastupdated` varchar(25) DEFAULT NULL,
+  `lastupdated_date` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`dn_subscription_did`)
+);
+
 CREATE TABLE IF NOT EXISTS `outbound_operatorsubs` (
-  `ID` int(20) NOT NULL AUTO_INCREMENT,
-  `axiataid` int(11) DEFAULT NULL,
+  `id` int(20) NOT NULL AUTO_INCREMENT,
+  `dn_subscription_did` int(20) DEFAULT NULL,
   `domainurl` varchar(255) DEFAULT NULL,
   `operator` varchar(45) DEFAULT NULL,
   `created` varchar(25) DEFAULT NULL,
   `created_date` timestamp NULL DEFAULT NULL,
   `lastupdated` varchar(25) DEFAULT NULL,
   `lastupdated_date` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`id`)
 );
 
-CREATE TABLE IF NOT EXISTS `outbound_subscriptions` (
-  `ID` int(20) NOT NULL AUTO_INCREMENT,
-  `axiataid` int(11) DEFAULT NULL,
+CREATE TABLE IF NOT EXISTS `provision_services` (
+  `provision_service_did` int(20) NOT NULL AUTO_INCREMENT,
   `notifyurl` varchar(255) DEFAULT NULL,
+  `service_provider` varchar(255) DEFAULT NULL,
+  `is_active` int(10) DEFAULT NULL,
   `created` varchar(25) DEFAULT NULL,
   `created_date` timestamp NULL DEFAULT NULL,
   `lastupdated` varchar(25) DEFAULT NULL,
   `lastupdated_date` timestamp NULL DEFAULT NULL,
-  `service_provider` varchar(255) DEFAULT NULL,
-  PRIMARY KEY (`ID`)
+  PRIMARY KEY (`provision_service_did`)
 );
+
+CREATE TABLE IF NOT EXISTS `provision_service_operator_endpoints` (
+  `id` int(20) NOT NULL AUTO_INCREMENT,
+  `provision_service_did` int(20) DEFAULT NULL,
+  `domainurl` varchar(255) DEFAULT NULL,
+  `operator` varchar(45) DEFAULT NULL,
+  `created` varchar(25) DEFAULT NULL,
+  `created_date` timestamp NULL DEFAULT NULL,
+  `lastupdated` varchar(25) DEFAULT NULL,
+  `lastupdated_date` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`)
+);
+
+CREATE TABLE IF NOT EXISTS `mo_ussd_subscription` (
+  `mo_ussd_request_did` int(20) NOT NULL AUTO_INCREMENT,
+  `ussd_request_did` int(20) DEFAULT NULL,
+  `domainurl` varchar(255) DEFAULT NULL,
+  `operator` varchar(45) DEFAULT NULL,
+  `created` varchar(25) DEFAULT NULL,
+  `created_date` timestamp NULL DEFAULT NULL,
+  `lastupdated` varchar(25) DEFAULT NULL,
+  `lastupdated_date` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`mo_ussd_request_did`)
+) ENGINE=InnoDB;
+
 
 /*
 * Default validator types provided from mife-validator component

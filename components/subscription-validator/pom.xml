@@ -21,7 +21,7 @@
 
     <parent>
     	<groupId>com.wso2telco.dep</groupId>
-    	<artifactId>component-dep</artifactId>
+    	<artifactId>component-dep-parent</artifactId>
     	<version>1.8.0-SNAPSHOT</version>
     	<relativePath>../../parent/pom.xml</relativePath>
     </parent>
@@ -45,10 +45,10 @@
                 <extensions>true</extensions>
                 <configuration>
                     <instructions>
-                        <Bundle-SymbolicName>${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Export-Package>
-                            com.wso2telco.subscriptionvalidator.*
+                            com.wso2telco.dep.subscriptionvalidator.*
                         </Export-Package>
                         <Import-Package>
                             javax.servlet;version="2.4.0",
@@ -80,7 +80,6 @@
         <dependency>
 			<groupId>com.wso2telco.core</groupId>
 			<artifactId>dbutils</artifactId>
-			<version>${com.wso2telco.core.version}</version>
 		</dependency>
     </dependencies>
 

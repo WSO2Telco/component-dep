@@ -6,13 +6,13 @@
      version-type="context">
    <resource methods="POST PATCH GET DELETE PUT"
              url-mapping="/*"
-             faultSequence="fault">
+             faultSequence="true">
       <inSequence>
          <class name="org.wso2.carbon.apimgt.gateway.mediators.TokenPasser"/>
          <filter source="$ctx:AM_KEY_TYPE" regex="PRODUCTION">
             <then>
-              <class name="com.wso2telco.mediator.HandlerMediator">
-                <property name="executorClass" value="com.wso2telco.mediator.impl.payment.PaymentExecutor"/>
+              <class name="com.wso2telco.dep.mediator.HandlerMediator">
+                <property name="executorClass" value="com.wso2telco.dep.mediator.impl.payment.PaymentExecutor"/>
               </class> 
               <loopback/>
             </then>
@@ -25,6 +25,10 @@
          <class name="org.wso2.carbon.apimgt.usage.publisher.APIMgtResponseHandler"/>
          <send/>
       </outSequence>
+      <faultSequence>
+        <property expression="$ctx:ERROR_CODE" name="ERROR_CODE" scope="default" type="STRING"/>
+        <sequence key="custom_fault"/>
+      </faultSequence>
    </resource>
    <handlers>
       <handler class="org.wso2.carbon.apimgt.gateway.handlers.security.CORSRequestHandler">

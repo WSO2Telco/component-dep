@@ -2,25 +2,17 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
     <parent>
        <groupId>com.wso2telco.dep</groupId>
-       <artifactId>component-dep</artifactId>
+       <artifactId>component-dep-feature</artifactId>
        <version>1.8.0-SNAPSHOT</version>
-       <relativePath>../parent/pom.xml</relativePath>
+       <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
     <artifactId>com.wso2telco.dep.workflowmanager.feature</artifactId>
     <packaging>pom</packaging>
-    <name>Workflow Manager Feature</name>
+    <name>WSO2.Telco Workflow Manager</name>
     <url>http://wso2.org</url>
-    <description>This feature contains the server bundles required for Workflow Manager</description>
-
-    <dependencies>
-        <!--dependency>
-            <groupId>com.wso2telco.ids</groupId>
-            <artifactId>authenticate-selector</artifactId>
-            <version>${com.wso2telco.ids.version}</version>
-        </dependency-->
-    </dependencies>
+    <description>This feature contains the server bundles required for workflow manager</description>
 
     <build>
         <plugins>
@@ -45,7 +37,7 @@
                                 </properties>
                             </adviceFile>
                             <bundles>
-                                <!--bundleDef>org.wso2.orbit.org.apache.httpcomponents:httpclient:${commons-httpclient.wso2.version}</bundleDef-->
+                               <bundleDef>com.wso2telco.dep:workflow-manager:${com.wso2telco.dep.version}</bundleDef>
                             </bundles>
                         </configuration>
                     </execution>

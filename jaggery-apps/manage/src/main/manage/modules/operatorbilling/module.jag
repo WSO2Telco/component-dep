@@ -1,0 +1,33 @@
+<%
+jagg.module("operatorbilling", {
+
+    testBillingHostObject:function () {
+        return jagg.require(jagg.getModulesDir() + "operatorbilling/operatorusage.jag").testBillingHostObject.apply(this, arguments);
+    },
+    getProviderAPIUsage:function () {
+        return jagg.require(jagg.getModulesDir() + "operatorbilling/operatorusage.jag").getProviderAPIUsage.apply(this, arguments);
+    },
+    getReportFileContent:function () {
+        return jagg.require(jagg.getModulesDir() + "operatorbilling/operatorusage.jag").getReportFileContent.apply(this, arguments);
+    },
+    executeDummyQuery:function () {
+        return jagg.require(jagg.getModulesDir() + "operatorbilling/operatorusage.jag").executeDummyQuery.apply(this, arguments);
+    },
+    getResponseTimes:function () {
+        return jagg.require(jagg.getModulesDir() + "operatorbilling/operatorusage.jag").getResponseTimes.apply(this, arguments);
+    },
+    getAllSubscribers:function () {
+        return jagg.require(jagg.getModulesDir() + "operatorbilling/operatorusage.jag").getAllSubscribers.apply(this, arguments);
+    },
+    getAllResponseTimes:function () {
+        return jagg.require(jagg.getModulesDir() + "operatorbilling/operatorusage.jag").getAllResponseTimes.apply(this, arguments);
+    },
+    getDashboardProviderAPIUsage: function () {
+        return jagg.require(jagg.getModulesDir() + "operatorbilling/operatorusage.jag").getDashboardProviderAPIUsage.apply(this, arguments);
+    },
+    getSubscribersByOperator: function () {
+        return jagg.require(jagg.getModulesDir() + "operatorbilling/operatorusage.jag").getSubscribersByOperator.apply(this, arguments);
+    }
+});
+%>
+

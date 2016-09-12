@@ -17,7 +17,7 @@ package org.wso2.carbon.apimgt.hostobjects;
 
 import java.util.HashMap;
 
-import com.wso2telco.custom.hostobjects.ApiTxCard;
+import com.wso2telco.dep.reportingservice.ApiTxCard;
 
 public class TxCardTest {
 	

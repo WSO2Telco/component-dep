@@ -1,83 +1,69 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
 	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
-	
 	<parent>
-                <groupId>org.wso2</groupId>
-                <artifactId>wso2</artifactId>
-                <version>1</version>
-        </parent>
-        
-	<groupId>com.wso2telco.services</groupId>
+		<groupId>com.wso2telco.dep</groupId>
+		<artifactId>component-dep-parent</artifactId>
+		<version>1.8.0-SNAPSHOT</version>
+		<relativePath>../../parent/pom.xml</relativePath>
+	</parent> 
+
 	<artifactId>blcklist-whitelist-service</artifactId>
-        <version>1.8.0-SNAPSHOT</version>
-        <name>WSO2Telco -Digital Enable Services</name>
-        <description>WSO2Telco DEP Aggregate Pom</description>
-        <url>http://wso2telco.com</url>
+	
+	<name>WSO2.Telco BlackList WhiteList Service</name>
+	<description>WSO2Telco DEP Aggregate Pom</description>
+	<url>http://wso2telco.com</url>
 
 	<packaging>war</packaging>
 
 	<dependencies>
 		<dependency>
-			<groupId>com.google.code.gson</groupId>
-			<artifactId>gson</artifactId>
-			<version>1.7.2</version>
+			<groupId>com.wso2telco.core</groupId>
+			<artifactId>msisdn-validator</artifactId>
 		</dependency>
 		<dependency>
-			<groupId>javax.ws.rs</groupId>
-			<artifactId>jsr311-api</artifactId>
-			<version>1.1.1</version>
+			<groupId>com.google.code.gson</groupId>
+			<artifactId>gson</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>org.codehaus.jettison</groupId>
 			<artifactId>jettison</artifactId>
-			<version>1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>log4j</groupId>
 			<artifactId>log4j</artifactId>
-			<version>1.2.16</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-logging</groupId>
 			<artifactId>commons-logging</artifactId>
-			<version>1.1.1</version>
 		</dependency>
 		<dependency>
 			<groupId>commons-fileupload</groupId>
 			<artifactId>commons-fileupload</artifactId>
-			<version>1.2.1</version>
-		</dependency>
-		<dependency>
-			<groupId>javax.servlet</groupId>
-			<artifactId>javax.servlet-api</artifactId>
-			<version>3.1.0</version>
-		</dependency>
-		<dependency>
-			<groupId>com.sun.jersey</groupId>
-			<artifactId>jersey-bundle</artifactId>
-			<version>1.17.1</version>
 		</dependency>
 		<dependency>
 			<groupId>asm</groupId>
 			<artifactId>asm-all</artifactId>
-			<version>3.3.1</version>
 		</dependency>
-
+		<dependency>
+			<groupId>com.wso2telco.dep</groupId>
+			<artifactId>operator-service</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>javax.servlet</groupId>
+			<artifactId>servlet-api</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.cxf</groupId>
+			<artifactId>cxf-bundle</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>com.wso2telco.core</groupId>
+			<artifactId>dbutils</artifactId>
+		</dependency>
 	</dependencies>
 
-	<build>
-		<finalName>locationrest</finalName>
-
-		<sourceDirectory>src</sourceDirectory>
-		<resources>
-			<resource>
-				<directory>src</directory>
-				<excludes>
-					<exclude>**/*.java</exclude>
-				</excludes>
-			</resource>
-		</resources>
+		<build>
 		<plugins>
 			<plugin>
 				<artifactId>maven-compiler-plugin</artifactId>
@@ -89,12 +75,27 @@
 			</plugin>
 			<plugin>
 				<artifactId>maven-war-plugin</artifactId>
-				<version>2.3</version>
+				<version>2.2</version>
 				<configuration>
-					<warSourceDirectory>WebContent</warSourceDirectory>
-					<failOnMissingWebXml>false</failOnMissingWebXml>
+					<webXml>${basedir}/src/main/webapp/WEB-INF/web.xml</webXml>
+					<warName>blcklist-whitelist-service</warName>
+				</configuration>
+			</plugin>
+			<plugin>
+				<artifactId>maven-eclipse-plugin</artifactId>
+				<version>2.9</version>
+				<configuration>
+					<buildcommands>
+						<buildcommand>org.eclipse.jdt.core.javabuilder</buildcommand>
+					</buildcommands>
+					<projectnatures>
+						<projectnature>org.wso2.developerstudio.eclipse.jaxrs.project.nature
+						</projectnature>
+						<projectnature>org.eclipse.jdt.core.javanature</projectnature>
+					</projectnatures>
 				</configuration>
 			</plugin>
 		</plugins>
 	</build>
+	
 </project>

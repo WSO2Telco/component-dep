@@ -321,6 +321,15 @@ include("/jagg/jagg.jag");
                     key:result.key
                 }
             }
+            
+            var site = require("/site/conf/site.json");
+                        var apiManagerServerUrl = site.AM_URL;    
+            
+                        var url  = apiManagerServerUrl + "manage/site/blocks/application-task/ajax/is.jag?action=createSpAppIs&appName="+application;
+                        var xhr = new XMLHttpRequest();
+                        xhr.open("GET", url);
+                        xhr.setRequestHeader("applicationCookie" , session.get("applicationCookie"));
+                        xhr.send();
         }
         print(obj);
      } else if (action == "updateAccessAllowDomains" && request.getMethod() == 'POST') {

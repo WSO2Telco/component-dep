@@ -29,8 +29,8 @@ include("/jagg/jagg.jag");
         if (user.isAdmin || user.operator != null) {
             username = selectedSubscriber;
         }
-		var dialogbillingModule = jagg.module("dialogbilling");
-        result = dialogbillingModule.getProviderAPIUsage(username,period,isNorthound,operatorName);
+		var operatorbillingModule = jagg.module("operatorbilling");
+        result = operatorbillingModule.getProviderAPIUsage(username,period,isNorthound,operatorName);
         
 		log.debug("::: Period result: >> "+ stringify(result));
 		
@@ -72,8 +72,8 @@ include("/jagg/jagg.jag");
         if (user.isAdmin || user.operator != null) {
             username = selectedSubscriber;
         }
-        var dialogbillingModule = jagg.module("dialogbilling");
-        result = dialogbillingModule.getReportFileContent(username,period,isNorthbound);
+        var operatorbillingModule = jagg.module("operatorbilling");
+        result = operatorbillingModule.getReportFileContent(username,period,isNorthbound);
         
         
         response.contentType = 'application/csv';
@@ -84,10 +84,10 @@ include("/jagg/jagg.jag");
         
     } else if (action == "getProviderResponseTimes"){
 		var respnseTimes;
-		var dialogbillingModule = jagg.module("dialogbilling");
+		var operatorbillingModule = jagg.module("operatorbilling");
 		
 		username = user.username;
-		respnseTimes = dialogbillingModule.getResponseTimes(username);
+		respnseTimes = operatorbillingModule.getResponseTimes(username);
 		log.debug("::: ResponseTimes: >> "+ stringify(respnseTimes));
 		
 		if (respnseTimes.error) {
@@ -115,8 +115,8 @@ include("/jagg/jagg.jag");
         }
         
         username = user.username;
-        var dialogbillingModule = jagg.module("dialogbilling");
-        result = dialogbillingModule.getAllSubscribers();
+        var operatorbillingModule = jagg.module("operatorbilling");
+        result = operatorbillingModule.getAllSubscribers();
         
         if (result.error) {
             obj = {
@@ -147,9 +147,9 @@ include("/jagg/jagg.jag");
             operator = user.operator
         }
  
-        var dialogbillingModule = jagg.module("manager").getCustomBilling(); //jagg.module("dialogbilling");     
+        var operatorbillingModule = jagg.module("manager").getCustomBilling(); //jagg.module("operatorbilling");     
         log.info(operator+" : "+subscriberName+" : "+appName+" : "+fromDate+" : "+toDate);
-        responseTimes = dialogbillingModule.getAllResponseTimes(operator, subscriberName, appName, fromDate, toDate);
+        responseTimes = operatorbillingModule.getAllResponseTimes(operator, subscriberName, appName, fromDate, toDate);
         log.info("::: ResponseTimes: >> "+ stringify(responseTimes));
         
         if (responseTimes.error) {
@@ -164,8 +164,7 @@ include("/jagg/jagg.jag");
             }
         }
         print(obj);
-                
-    }
+        	}
 	else{
         print({
             error:true,

@@ -7,17 +7,17 @@
 	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
 	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
 	the specific language governing permissions and limitations under the License.
-   folk test M	--><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   folk test M	-->
+   <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
-	<!--groupId>org.wso2.carbon.identity</groupId> <artifactId>carbon-identity</artifactId> 
-		<packaging>pom</packaging> <version>5.0.8-SNAPSHOT</version> <name>WSO2 Carbon 
-		- Platform Aggregator Pom</name> <url>http://wso2.org</url -->
+
 	<parent>
-       		<groupId>org.wso2</groupId>
-       		<artifactId>wso2</artifactId>
-       		<version>1</version>
+   		<groupId>org.wso2</groupId>
+   		<artifactId>wso2</artifactId>
+   		<version>1</version>
    	</parent>
+
 	<groupId>com.wso2telco.dep</groupId>
 	<artifactId>component-dep</artifactId>
 	<packaging>pom</packaging>
@@ -51,21 +51,27 @@
         </distributionManagement>
 
 	
-	<modules>
-		<!--module>components/authentication-endpoint</module>
-		<module>features</module-->
-	    <module>webapps/blacklist-whitelist-service</module>
-		<module>webapps/aggregator-blacklist</module> 
-		<module>components/oneapi-validation</module> 
+	<modules>       
+        <module>parent</module>		
+	    <module>components/oneapi-validation</module> 
 		<module>components/subscription-validator</module> 
-		<module>components/publish-events-data</module>
+		<!--module>components/publish-events-data</module-->
 		<module>components/data-publisher</module>
 		<module>components/reporting-service</module>
-		<module>components/operator-service</module>
-        <module>components/verification-handler</module>
+   		<module>components/verification-handler</module>
+        <module>components/operator-service</module>
+   		<module>components/workflow-manager</module>
         <module>components/mediator</module>
-        <module>components/workflow-manager</module>
-        <!--module>workflow/axis2services/AxiataWorkflowApprovalService</module-->
+		<module>components/publish-events/publish-events-data</module> 
+		<module>components/publish-events/publish-events-extensions</module>
+   		<module>workflow/axis2services/AxiataWorkflowApprovalService</module>
+        <module>webapps/blacklist-whitelist-service</module>
+        <module>webapps/aggregator-blacklist</module> 
+		<module>jaggery-apps/manage</module>
+		<module>jaggery-apps/publisher</module>
+		<module>jaggery-apps/sandbox</module>
+		<module>jaggery-apps/store</module>
+        <module>features</module>
 	</modules>
 
 	<scm>
