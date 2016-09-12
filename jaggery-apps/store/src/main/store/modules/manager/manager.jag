@@ -167,11 +167,11 @@ var getStoreHostObject = function() {
     var user = jagg.getUser();
     var operatorService;
     if (user == null) {
-        operatorService = require('opratorservice');
+        operatorService = require('operatorservice');
         var storeHostObject = new operatorService.StoreHostObject();
         return storeHostObject;
     } else {
-        operatorService = require('opratorservice');
+        operatorService = require('operatorservice');
         return new operatorService.StoreHostObject(user.username);
     }
 };
