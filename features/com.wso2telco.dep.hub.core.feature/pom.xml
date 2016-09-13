@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.wso2telco.dep</groupId>
+        <artifactId>component-dep-feature</artifactId>
+        <version>1.8.0-SNAPSHOT</version>
+        <relativePath>../pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+
+    <artifactId>com.wso2telco.dep.hub.core.feature</artifactId>
+    <packaging>pom</packaging>
+    <name>WSO2.Telco Hub Core</name>
+    <url>http://wso2.org</url>
+    <description>This feature contains the server bundles required for hub core</description>
+
+    <build>
+        <plugins>
+            <plugin>
+                <artifactId>maven-resources-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>copy-resources</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>copy-resources</goal>
+                        </goals>
+                        <configuration>
+                            <outputDirectory>src/main/resources</outputDirectory>
+                            <resources>
+                                <resource>
+                                    <directory>resources</directory>
+                                    <includes>
+                                        <include>conf/master-datasources.xml</include>
+                                        <include>config/api-manager.xml</include>
+                                        <include>config/axis2.xml</include>
+                                        <include>config/mediator-conf.properties</include>
+                                        <include>config/MobileCountryConfig.xml</include>
+                                        <include>config/oneapi-validation-conf.properties</include>
+                                        <include>config/publish-events-data-conf.properties</include>
+                                        <include>config/registry.xml</include>
+                                        <include>config/user-mgt.xml</include>
+                                        <include>modules/executorservice</include>
+                                        <include>modules/operatorservice</include>
+                                        <include>modules/reportservice</include>
+                                        <include>sql/*.sql</include>
+                                        <include>p2.inf</include>
+                                        <include>build.properties</include>
+                                    </includes>
+                                </resource>
+                            </resources>
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.wso2.maven</groupId>
+                <artifactId>carbon-p2-plugin</artifactId>
+                <version>${carbon.p2.plugin.version}</version>
+                <executions>
+                    <execution>
+                        <id>p2-feature-generation</id>
+                        <phase>package</phase>
+                        <goals>
+                            <goal>p2-feature-gen</goal>
+                        </goals>
+                        <configuration>
+                            <id>com.wso2telco.dep.hub.core</id>
+                            <propertiesFile>../feature.properties</propertiesFile>
+                            <adviceFile>
+                                <properties>
+                                    <propertyDef>org.wso2.carbon.p2.category.type:server</propertyDef>
+                                    <propertyDef>org.eclipse.equinox.p2.type.group:true</propertyDef>
+                                </properties>
+                            </adviceFile>     
+                        </configuration>
+                    </execution>
+                </executions>
+            </plugin> 
+        </plugins>
+    </build>
+
+</project>
