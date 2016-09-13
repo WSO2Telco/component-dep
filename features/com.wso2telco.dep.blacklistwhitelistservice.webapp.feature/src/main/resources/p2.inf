@@ -1,0 +1,2 @@
+instructions.configure = \
+org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.blacklistwhitelistservice.webapp_${feature.version}/generated/blacklist-whitelist-service.war,target:${installFolder}/../../deployment/server/webapps/blacklist-whitelist-service.war,overwrite:true);
