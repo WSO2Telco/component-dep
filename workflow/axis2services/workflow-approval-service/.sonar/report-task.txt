@@ -1,0 +1,5 @@
+projectKey=hello-sonar-example
+serverUrl=http://localhost:9000
+dashboardUrl=http://localhost:9000/dashboard/index/hello-sonar-example
+ceTaskId=AVZ3wDzPtp4P7E6koAJv
+ceTaskUrl=http://localhost:9000/api/ce/task?id=AVZ3wDzPtp4P7E6koAJv

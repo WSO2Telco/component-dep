@@ -1,0 +1,20 @@
+package com.wso2telco.workflow.in;
+
+import com.wso2telco.workflow.notify.AppApprovalStatusSPEmailNotificationRequestType;
+import com.wso2telco.workflow.notify.HUBAdminAppApprovalEmailNotificationRequestType;
+import com.wso2telco.workflow.notify.HUBAdminSubApprovalEmailNotificationRequestType;
+import com.wso2telco.workflow.notify.PLUGINAdminAppApprovalEmailNotificationRequestType;
+import com.wso2telco.workflow.notify.PLUGINAdminSubApprovalEmailNotificationRequestType;
+import com.wso2telco.workflow.notify.SubApprovalStatusSPEmailNotificationRequestType;
+
+public interface EmailNotification {
+
+	void sendHUBAdminAppApprovalEmailNotification(HUBAdminAppApprovalEmailNotificationRequestType request);
+	void sendHUBAdminSubrovalEmailNotification(HUBAdminSubApprovalEmailNotificationRequestType request);
+	void sendPLUGINAdminAppApprovalEmailNotification(PLUGINAdminAppApprovalEmailNotificationRequestType request);
+	void sendPLUGINAdminSubApprovalEmailNotification(PLUGINAdminSubApprovalEmailNotificationRequestType request);
+	void sendAppApprovalStatusSPEmailNotification(AppApprovalStatusSPEmailNotificationRequestType request);
+	void sendSubApprovalStatusSPEmailNotification(SubApprovalStatusSPEmailNotificationRequestType request);
+	void sendEmail(String emailAddress, String subject, String content);
+	
+}
