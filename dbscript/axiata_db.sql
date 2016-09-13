@@ -294,8 +294,8 @@ CREATE TABLE IF NOT EXISTS `mo_ussd_subscription` (
 /*
 * Default validator types provided from mife-validator component
 */
-insert into validator (name, class) values ('passthru','com.wso2telco.subscriptionvalidator.services.impl.PassThroughValidator');
-insert into validator (name, class) values ('msisdn','com.wso2telco.subscriptionvalidator.services.impl.MSISDNValidator');
+insert into validator (name, class) values ('passthru','com.wso2telco.dep.subscriptionvalidator.services.impl.PassThroughValidator');
+insert into validator (name, class) values ('msisdn','com.wso2telco.dep.subscriptionvalidator.services.impl.MSISDNValidator');
 
 /*
 * Default operators
