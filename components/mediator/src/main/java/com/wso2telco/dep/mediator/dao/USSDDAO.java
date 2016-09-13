@@ -342,7 +342,7 @@ public class USSDDAO {
 
 			StringBuilder deleteSubscriptionsQueryString = new StringBuilder("DELETE FROM ")
 			.append(DatabaseTables.USSD_REQUEST_ENTRY.getTableName())
-			.append(" WHERE axiataid = ?");
+			.append(" WHERE ussd_request_did = ?");
 
 			deleteSubscriptionsStatement = con.prepareStatement(deleteSubscriptionsQueryString.toString());
 			deleteSubscriptionsStatement.setInt(1, moSubscriptionId);
@@ -353,7 +353,7 @@ public class USSDDAO {
 
 			StringBuilder deleteOperatorSubscriptionsQueryString = new StringBuilder("DELETE FROM ")
 			.append(DatabaseTables.MO_USSD_SUBSCRIPTIONS.getTableName())
-			.append(" WHERE axiataid = ?");
+			.append(" WHERE ussd_request_did = ?");
 
 			deleteOperatorSubscriptionsStatement = con.prepareStatement(deleteOperatorSubscriptionsQueryString.toString());
 
@@ -438,7 +438,7 @@ public class USSDDAO {
 				.append(" SET ")
 				.append(" operatorId= ? ")
 				.append(" WHERE ")
-				.append(" axiataid = ? ");
+				.append(" ussd_request_did = ? ");
 				
 				ps = con.prepareStatement(queryString.toString());	           
 				ps.setString(1, operatorId);
