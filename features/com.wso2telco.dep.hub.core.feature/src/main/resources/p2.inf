@@ -1,15 +1,15 @@
 instructions.configure = \
-org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.hub.core_${feature.version}/sql/,target:${installFolder}/../../../dbscripts/dep-hub/,overwrite:true);\
-org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.hub.core_${feature.version}/modules/,target:${installFolder}/../../../modules/dep-hub/,overwrite:true);\
-org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.hub.core_${feature.version}/conf/master-datasources.xml/,target:${installFolder}/../../conf/dep-hub/datasources/master-datasources.xml,overwrite:true);\
-org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.hub.core_${feature.version}/config/api-manager.xml,target:${installFolder}/../../conf/dep-hub/api-manager.xml,overwrite:true);\
-org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.hub.core_${feature.version}/config/axis2.xml,target:${installFolder}/../../conf/dep-hub/axis2/axis2.xml,overwrite:true);\
-org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.hub.core_${feature.version}/config/mediator-conf.properties,target:${installFolder}/../../conf/dep-hub/mediator-conf.properties,overwrite:true);\
-org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.hub.core_${feature.version}/config/MobileCountryConfig.xml,target:${installFolder}/../../conf/dep-hub/MobileCountryConfig.xml,overwrite:true);\
-org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.hub.core_${feature.version}/config/oneapi-validation-conf.properties,target:${installFolder}/../../conf/dep-hub/oneapi-validation-conf.properties,overwrite:true);\
-org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.hub.core_${feature.version}/config/oneapi-validation-conf.properties,target:${installFolder}/../../conf/dep-hub/publish-events-data-conf.properties,overwrite:true);\
-org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.hub.core_${feature.version}/config/registry.xml,target:${installFolder}/../../conf/dep-hub/registry.xml,overwrite:true);\
-org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.hub.core_${feature.version}/config/user-mgt.xml,target:${installFolder}/../../conf/dep-hub/user-mgt.xml,overwrite:true);\
+org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.hub.core_${feature.version}/sql/,target:${installFolder}/../../../dep-hub/dbscripts/,overwrite:true);\
+org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.hub.core_${feature.version}/modules/,target:${installFolder}/../../../dep-hub/modules/,overwrite:true);\
+org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.hub.core_${feature.version}/conf/master-datasources.xml/,target:${installFolder}/../../../dep-hub/conf/datasources/master-datasources.xml,overwrite:true);\
+org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.hub.core_${feature.version}/config/api-manager.xml,target:${installFolder}/../../../dep-hub/conf/api-manager.xml,overwrite:true);\
+org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.hub.core_${feature.version}/config/axis2.xml,target:${installFolder}/../../../dep-hub/conf/axis2/axis2.xml,overwrite:true);\
+org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.hub.core_${feature.version}/config/mediator-conf.properties,target:${installFolder}/../../../dep-hub/conf/mediator-conf.properties,overwrite:true);\
+org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.hub.core_${feature.version}/config/MobileCountryConfig.xml,target:${installFolder}/../../../dep-hub/conf/MobileCountryConfig.xml,overwrite:true);\
+org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.hub.core_${feature.version}/config/oneapi-validation-conf.properties,target:${installFolder}/../../../dep-hub/conf/oneapi-validation-conf.properties,overwrite:true);\
+org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.hub.core_${feature.version}/config/oneapi-validation-conf.properties,target:${installFolder}/../../../dep-hub/conf/publish-events-data-conf.properties,overwrite:true);\
+org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.hub.core_${feature.version}/config/registry.xml,target:${installFolder}/../../../dep-hub/conf/registry.xml,overwrite:true);\
+org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.hub.core_${feature.version}/config/user-mgt.xml,target:${installFolder}/../../../dep-hub/conf/user-mgt.xml,overwrite:true);\
 
 
 
