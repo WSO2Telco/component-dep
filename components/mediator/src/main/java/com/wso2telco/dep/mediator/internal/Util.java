@@ -15,18 +15,7 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.internal;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Properties;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.user.core.service.RealmService;
-import org.wso2.carbon.utils.CarbonUtils;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -36,16 +25,6 @@ public class Util {
 
 	/** The realm service. */
 	private static RealmService realmService;
-
-	/** The props. */
-	private static Properties props = new Properties();
-
-	/** The log. */
-	private static Log log = LogFactory.getLog(Util.class);
-
-	/** The prop map. */
-	@Deprecated
-	public static Map<String, String> propMap = new HashMap<String, String>();
 
 	/**
 	 * Gets the realm service.
@@ -67,82 +46,6 @@ public class Util {
 		realmService = realmSer;
 
 	}
-
-	/**
-	 * Gets the application property.
-	 *
-	 * @param key
-	 *            the key
-	 * @return the application property
-	 */
-	
-	@Deprecated
-	public static String getApplicationProperty(String key) {
-		return props.getProperty(key);
-	}
-
-	/**
-	 * Gets the property file.
-	 *
-	 * @return the property file
-	 */
-	@Deprecated
-	public static void getPropertyFile() {
-		try {
-			//props.load(Util.class.getResourceAsStream("/application.properties"));
-			String configPath = CarbonUtils.getCarbonConfigDirPath() + File.separator + "axiataMediator_conf.properties";
-            FileInputStream in = new FileInputStream(configPath);
-            props.load(in);
-           // String carbonHome = System.getProperty("user.dir");
-           // log.debug("Carbon home : " + carbonHome);
-
-            //props.load(Util.class.getResourceAsStream( carbonHome + "/repository/conf/axiataMediator_conf.properties"));
-           //log.debug( Util.getApplicationProperty("sendSMSResourceURL"));
-           // log.debug (Util.getApplicationProperty("hubGateway"));
-            //log.debug(Util.getApplicationProperty("ussdGatewayEndpoint"));
-		} catch (FileNotFoundException e) {
-			// e.printStackTrace();
-			log.info("FileNotFound");
-			System.err.println("Check your Property file, it should be in application home dir, Error:" + e.getCause()
-					+ "Cant load APPLICATION.properties");
-
-			// System.exit(-1);
-		} catch (IOException e) {
-			log.info("IO Error");
-			System.err.println("Check your Property file, it should be in application home dir, Error:" + e.getCause()
-					+ "Cant load APPLICATION.properties");
-			// System.exit(-1);
-		}
-	}
-
-	/**
-	 * Gets the property file by path.
-	 *
-	 * @param path
-	 *            the path
-	 * @return the property file by path
-	 * @throws IOException
-	 *             Signals that an I/O exception has occurred.
-	 */
-	@Deprecated
-	public static void getPropertyFileByPath(String path) throws IOException {
-		Properties props = new Properties();
-		FileInputStream in = new FileInputStream(path);
-		try {
-			props.load(in);
-			propMap.put("ussdGatewayEndpoint", props.getProperty("ussdGatewayEndpoint"));
-			propMap.put("retry_on_fail", props.getProperty("retry_on_fail"));
-            propMap.put("retry_count", props.getProperty("retry_count"));
-           
-	} catch (FileNotFoundException e) {
-			log.debug("file not found !!! ");
-		} catch (IOException e) {
-			log.debug("file not found !!! ");
-		} finally {
-			in.close();
-		}
-	}
-
 	/**
 	 * Checks if is all null.
 	 *

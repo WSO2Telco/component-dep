@@ -49,13 +49,13 @@ import java.util.logging.Logger;
 // TODO: Auto-generated Javadoc
 //This is the Handler class for Blacklist Numbers Module
 /**
- * The Class DialogBlacklistHandler.
+ * The Class BlacklistHandler.
  */
 //Handlers should extend AbstractHandler Class
-public class DialogBlacklistHandler extends AbstractHandler implements ManagedLifecycle {
+public class BlacklistHandler extends AbstractHandler implements ManagedLifecycle {
 
     /** The Constant log. */
-    private static final Log log = LogFactory.getLog(DialogBlacklistHandler.class);
+    private static final Log log = LogFactory.getLog(BlacklistHandler.class);
     
     /** The is initialized. */
     private static boolean isInitialized = false;
@@ -128,9 +128,9 @@ public class DialogBlacklistHandler extends AbstractHandler implements ManagedLi
                 //This will let the request to go further down to backends
             }
         } catch (SQLException ex) {
-            Logger.getLogger(DialogBlacklistHandler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(BlacklistHandler.class.getName()).log(Level.SEVERE, null, ex);
         } catch (NamingException ex) {
-            Logger.getLogger(DialogBlacklistHandler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(BlacklistHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         return true;

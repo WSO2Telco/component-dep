@@ -25,7 +25,6 @@ public class SouthboundDataPublisherClient {
 
     private boolean enabled = SouthboundDataComponent.getApiMgtConfigReaderService().isEnabled();
     private volatile SouthboundDataPublisher publisher;
-    private String publisherClass = "com.axiata.dialog.mife.southbound.data.publisher.SouthboundDataPublisher";
 
     public void publishRequest(MessageContext mc, String jsonBody) {
 

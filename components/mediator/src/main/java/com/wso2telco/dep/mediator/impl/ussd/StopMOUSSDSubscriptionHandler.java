@@ -60,8 +60,8 @@ public class StopMOUSSDSubscriptionHandler implements USSDHandler  {
         String subid = requestPath.substring(requestPath.lastIndexOf("/") + 1);
 
 
-        Integer axiataid = Integer.parseInt(subid.replaceFirst("sub", ""));
-        List<OperatorSubscriptionDTO> domainsubs = (dbService.moUssdSubscriptionQuery(Integer.valueOf(axiataid)));
+        Integer operatorid = Integer.parseInt(subid.replaceFirst("sub", ""));
+        List<OperatorSubscriptionDTO> domainsubs = (dbService.moUssdSubscriptionQuery(Integer.valueOf(operatorid)));
 
         String resStr = "";
 
@@ -70,7 +70,7 @@ public class StopMOUSSDSubscriptionHandler implements USSDHandler  {
                  executor.makeDeleteRequest(new OperatorEndpoint(new EndpointReference(subs.getDomain()), subs
                         .getOperator()), subs.getDomain(), null, true, context, false);
             }
-            new USSDService().moUssdSubscriptionDelete(Integer.valueOf(axiataid));
+            new USSDService().moUssdSubscriptionDelete(Integer.valueOf(operatorid));
         }
 
 

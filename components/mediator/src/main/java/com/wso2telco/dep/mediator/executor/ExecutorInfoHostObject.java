@@ -133,8 +133,8 @@ public class ExecutorInfoHostObject extends ScriptableObject {
     //TODO: bind these handlers in correct sequence. Sequence here is the same sequence that will  be added to the synapse configuration file.
     private void bindHandlers () {
 
-        handlers.put("DialogAPIRequestHandler", new HandlerObj("DialogAPIRequestHandler", "com.wso2telco.dep.verificationhandler.verifier.DialogAPIRequestHandler"));
-        handlers.put("DialogBlacklistHandler", new HandlerObj("DialogBlacklistHandler", "com.wso2telco.dep.verificationhandler.verifier.DialogBlacklistHandler"));
+        handlers.put("APIRequestHandler", new HandlerObj("APIRequestHandler", "com.wso2telco.dep.verificationhandler.verifier.APIRequestHandler"));
+        handlers.put("BlacklistHandler", new HandlerObj("BlacklistHandler", "com.wso2telco.dep.verificationhandler.verifier.BlacklistHandler"));
     }
 
     public static NativeArray getHandlerObjects (Scriptable thisObj) {

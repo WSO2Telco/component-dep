@@ -53,12 +53,12 @@ import java.util.regex.Pattern;
  
 // TODO: Auto-generated Javadoc
 /**
- * The Class DialogWhitelistHandler.
+ * The Class WhitelistHandler.
  */
-public class DialogWhitelistHandler extends AbstractHandler implements ManagedLifecycle {
+public class WhitelistHandler extends AbstractHandler implements ManagedLifecycle {
     
     /** The Constant log. */
-    private static final Log log = LogFactory.getLog(DialogWhitelistHandler.class);
+    private static final Log log = LogFactory.getLog(WhitelistHandler.class);
     
     /** The whitelist numbers. */
     private List<String> whitelistNumbers;
@@ -245,9 +245,9 @@ public class DialogWhitelistHandler extends AbstractHandler implements ManagedLi
                 //Retrieving API ID
                 apiID = DatabaseUtils.getAPIId(api);
             } catch (NamingException ex) {
-                Logger.getLogger(DialogWhitelistHandler.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(WhitelistHandler.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex) {
-                Logger.getLogger(DialogWhitelistHandler.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(WhitelistHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
 
 
@@ -273,8 +273,8 @@ public class DialogWhitelistHandler extends AbstractHandler implements ManagedLi
             }
         } catch (Exception err) {
 
-            log.error("Dialog Whitelist error : " + err.getMessage());
-            log.error("Dialog Whitelist error : ", err);
+            log.error("Whitelist error : " + err.getMessage());
+            log.error("Whitelist error : ", err);
         }
         return true;
     }

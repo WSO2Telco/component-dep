@@ -29,12 +29,11 @@ import org.apache.synapse.rest.AbstractHandler;
  
 // TODO: Auto-generated Javadoc
 /**
- * The Class DialogAPIRequestHandler.
  */
-public class DialogAPIRequestHandler extends AbstractHandler {
+public class APIRequestHandler extends AbstractHandler {
 
     /** The Constant log. */
-    private static final Log log   = LogFactory.getLog(DialogAPIRequestHandler.class);
+    private static final Log log   = LogFactory.getLog(APIRequestHandler.class);
     
     /** The data publisher client. */
     private NorthboundDataPublisherClient dataPublisherClient;
