@@ -38,7 +38,7 @@
          <property name="apiImplementationType" value="ENDPOINT"/>
       </handler>
       <handler class="org.wso2.carbon.apimgt.gateway.handlers.security.APIAuthenticationHandler"/>
-      <handler class="com.wso2telco.verificationhandler.verifier.DialogAPIRequestHandler"/>
+      <handler class="com.wso2telco.verificationhandler.verifier.APIRequestHandler"/>
       <handler class="org.wso2.carbon.apimgt.gateway.handlers.throttling.APIThrottleHandler">
          <property name="id" value="A"/>
          <property name="policyKeyResource"

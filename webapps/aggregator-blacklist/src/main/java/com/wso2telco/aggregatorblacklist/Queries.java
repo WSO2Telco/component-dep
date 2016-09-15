@@ -22,11 +22,13 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
+
 import org.apache.log4j.Logger;
+
 import com.wso2telco.aggregatorblacklist.model.ErrorReturn;
 import com.wso2telco.aggregatorblacklist.model.ProvisionReq;
 import com.wso2telco.aggregatorblacklist.model.RequestError;
-import com.wso2telco.core.dbutils.AxataDBUtilException;
+import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.google.gson.Gson;
 
 
@@ -70,7 +72,7 @@ public class Queries {
                        
             new ProvisionService().provisionapp(provisionreq);
             
-        } catch (AxataDBUtilException e) {
+        } catch (BusinessException e) {
             jsonData = new Gson().toJson(new RequestError(new ErrorReturn("POL0299",new String[]{e.getMessage()})));
             return Response.status(400).entity(jsonData).build();
         } catch (Exception e) {

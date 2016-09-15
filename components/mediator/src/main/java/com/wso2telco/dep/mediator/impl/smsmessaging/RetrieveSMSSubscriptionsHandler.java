@@ -148,7 +148,6 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 
             Integer dnSubscriptionId = smsMessagingService.subscriptionEntry(subsrequst.getSubscription().getCallbackReference().getNotifyURL(), serviceProvider);
            
-            /*String subsEndpoint = Util.getApplicationProperty("hubSubsGatewayEndpoint") + "/" + axiataid;*/
             String subsEndpoint = hubMOSubsGatewayEndpoint + "/" + dnSubscriptionId;
             jsondstaddr.getJSONObject("callbackReference").put("notifyURL", subsEndpoint);
 
@@ -209,7 +208,6 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 
             Integer dnSubscriptionId = smsMessagingService.subscriptionEntry(nbSubsrequst.getSubscription().getCallbackReference()
                     .getNotifyURL(), serviceProvider);
-            /*String subsEndpoint = Util.getApplicationProperty("hubSubsGatewayEndpoint") + "/" + axiataid;*/
             String subsEndpoint = hubMOSubsGatewayEndpoint + "/" + dnSubscriptionId;
             jsondstaddr.getJSONObject("callbackReference").put("notifyURL", subsEndpoint);
 
@@ -310,13 +308,13 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
 
     private boolean deleteSubscriptions(MessageContext context) throws Exception {
         String requestPath = executor.getSubResourcePath();
-        String axiataid = requestPath.substring(requestPath.lastIndexOf("/") + 1);
+        String operatorid = requestPath.substring(requestPath.lastIndexOf("/") + 1);
 
         String requestid = UID.getUniqueID(Type.DELRETSUB.getCode(), context, executor.getApplicationid());
 
-        List<OperatorSubscriptionDTO> domainsubs = (smsMessagingService.subscriptionQuery(Integer.valueOf(axiataid)));
+        List<OperatorSubscriptionDTO> domainsubs = (smsMessagingService.subscriptionQuery(Integer.valueOf(operatorid)));
         if (domainsubs.isEmpty()) {
-            throw new CustomException("POL0001", "", new String[]{"SMS Receipt Subscription Not Found: " + axiataid});
+            throw new CustomException("POL0001", "", new String[]{"SMS Receipt Subscription Not Found: " + operatorid});
         }
 
         String resStr = "";
@@ -324,7 +322,7 @@ public class RetrieveSMSSubscriptionsHandler implements SMSHandler {
             resStr = executor.makeDeleteRequest(new OperatorEndpoint(new EndpointReference(subs.getDomain()), subs
                     .getOperator()), subs.getDomain(), null, true, context, false);
         }
-        new SMSMessagingService().subscriptionDelete(Integer.valueOf(axiataid));
+        new SMSMessagingService().subscriptionDelete(Integer.valueOf(operatorid));
 
         //JSONObject reply = new JSONObject();
         //reply.put("response", "No content");
