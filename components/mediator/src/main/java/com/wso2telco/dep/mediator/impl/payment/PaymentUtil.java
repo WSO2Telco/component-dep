@@ -20,7 +20,9 @@ import java.io.File;
 import java.io.IOException;
 import java.util.List;
 import java.util.Map;
+
 import javax.xml.bind.JAXBException;
+
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -31,8 +33,8 @@ import org.json.JSONObject;
 import org.wso2.carbon.apimgt.gateway.handlers.security.APISecurityUtils;
 import org.wso2.carbon.apimgt.gateway.handlers.security.AuthenticationContext;
 import org.wso2.carbon.utils.CarbonUtils;
-import com.wso2telco.core.dbutils.AxataDBUtilException;
-import com.wso2telco.core.dbutils.fileutils.FileReader;
+
+import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.dep.mediator.MSISDNConstants;
 import com.wso2telco.dep.mediator.entity.cep.ConsumerSecretWrapperDTO;
 import com.wso2telco.dep.mediator.internal.Base64Coder;
@@ -52,7 +54,7 @@ public class PaymentUtil {
 
 	public boolean checkSpendLimit(String msisdn, String operator,
 			MessageContext context, Double chargeAmount)
-			throws AxataDBUtilException, IOException, JAXBException, Exception {
+			throws BusinessException, IOException, JAXBException, Exception {
 
 		Double groupTotalDayAmount = 0.0;
 		Double groupTotalMonthAmount = 0.0;
@@ -60,9 +62,7 @@ public class PaymentUtil {
 		
 		AuthenticationContext authContext = APISecurityUtils
 				.getAuthenticationContext(context);
-		FileReader fileReader = new FileReader();
 		String file = CarbonUtils.getCarbonConfigDirPath() + File.separator + FileNames.MEDIATOR_CONF_FILE.getFileName();
-		Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
 		if (authContext != null) {
 			consumerKey = authContext.getConsumerKey();
 		}

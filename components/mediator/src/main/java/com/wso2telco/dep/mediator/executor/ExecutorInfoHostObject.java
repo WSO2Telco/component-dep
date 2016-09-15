@@ -138,11 +138,11 @@ public class ExecutorInfoHostObject extends ScriptableObject {
     //TODO: bind these handlers in correct sequence. Sequence here is the same sequence that will  be added to the synapse configuration file.
     private void bindHandlers () {
 
-        handlers.put("DialogAPIRequestHandler", new HandlerObj("DialogAPIRequestHandler", "com.wso2telco.dep.verificationhandler.verifier.DialogAPIRequestHandler"));
-        handlers.put("DialogBlacklistHandler", new HandlerObj("DialogBlacklistHandler", "com.wso2telco.dep.verificationhandler.verifier.DialogBlacklistHandler"));
-        handlers.put("DialogSubscriptionHandler", new HandlerObj("DialogSubscriptionHandler", "com.wso2telco.dep.verificationhandler.verifier.DialogSubscriptionHandler"));
-        handlers.put("DialogPaymentHandler", new HandlerObj("DialogPaymentHandler", "com.wso2telco.dep.verificationhandler.verifier.DialogPaymentHandler"));
-        handlers.put("DialogWhitelistHandler", new HandlerObj("DialogWhitelistHandler", "com.wso2telco.dep.verificationhandler.verifier.DialogWhitelistHandler"));
+        handlers.put("APIRequestHandler", new HandlerObj("APIRequestHandler", "com.wso2telco.dep.verificationhandler.verifier.APIRequestHandler"));
+        handlers.put("BlacklistHandler", new HandlerObj("BlacklistHandler", "com.wso2telco.dep.verificationhandler.verifier.BlacklistHandler"));
+        handlers.put("DialogSubscriptionHandler", new HandlerObj("DialogSubscriptionHandler", "com.wso2telco.dep.verificationhandler.verifier.SubscriptionHandler"));
+        handlers.put("DialogPaymentHandler", new HandlerObj("DialogPaymentHandler", "com.wso2telco.dep.verificationhandler.verifier.PaymentHandler"));
+        handlers.put("DialogWhitelistHandler", new HandlerObj("DialogWhitelistHandler", "com.wso2telco.dep.verificationhandler.verifier.WhitelistHandler"));
     }
 
     public static NativeArray getHandlerObjects (Scriptable thisObj) {

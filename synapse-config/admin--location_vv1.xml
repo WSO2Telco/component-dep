@@ -44,11 +44,11 @@
                    value="gov:/apimgt/applicationdata/app-tiers.xml"/>
       </handler>
       <handler class="org.wso2.carbon.apimgt.usage.publisher.APIMgtUsageHandler"/>
-      <handler class="com.wso2telco.verificationhandler.verifier.DialogAPIRequestHandler"/>
+      <handler class="com.wso2telco.verificationhandler.verifier.APIRequestHandler"/>
       <handler class="org.wso2.carbon.apimgt.usage.publisher.APIMgtGoogleAnalyticsTrackingHandler">
          <property name="configKey" value="gov:/apimgt/statistics/ga-config.xml"/>
       </handler>
       <handler class="org.wso2.carbon.apimgt.gateway.handlers.ext.APIManagerExtensionHandler"/>
-      <handler class="com.wso2telco.verificationhandler.verifier.DialogBlacklistHandler"/>
+      <handler class="com.wso2telco.verificationhandler.verifier.BlacklistHandler"/>
    </handlers>
 </api>

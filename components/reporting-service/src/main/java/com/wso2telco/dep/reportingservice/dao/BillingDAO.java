@@ -1738,7 +1738,7 @@ public class BillingDAO {
 
         StringBuilder sql = new StringBuilder(); 
         
-        sql.append("SELECT time, userId, operatorId, requestId, msisdn, response_count, responseCode, jsonBody, resourcePath, method, api, ussdAction, ussdSessionId, destinationAddress, senderAddress, message, date_Time, resourceURL, message_Id  FROM ")
+        sql.append("SELECT time, userId, operatorId, requestId, msisdn, response_count, responseCode, jsonBody, resourcePath, method, api, ussdAction, ussdSessionId, destinationAddress, senderAddress, message, date_Time, resourceURL, message_Id,spUserId,spOperatorId FROM ")
         .append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject()) 
         .append(" WHERE ")
         .append(responseStr)        
@@ -1804,6 +1804,7 @@ public class BillingDAO {
                 String requestUrl = results.getString(9);
                 String requestMethod = results.getString(10);
                 String requestapi = results.getString(11);
+                String operatorId=null;
                 
                 if(results.getString(2)!=null && results.getString(2).contains("@")){
 					userId = results.getString(2).split("@")[0];
@@ -1872,7 +1873,12 @@ public class BillingDAO {
                     }
                 }
 
-                String[] temp = {dateTime, userId, results.getString(3), event_type, results.getString(4), clientCorelator, results.getString(5), results.getString(6), results.getString(7) , results.getString(13), results.getString(14), results.getString(15), results.getString(16), results.getString(17), results.getString(18), results.getString(19)};
+                operatorId= results.getString(3);
+                if(operatorId==null) {
+                    operatorId = results.getString(21);
+                }
+
+                String[] temp = {dateTime, userId, operatorId, event_type, results.getString(4), clientCorelator, results.getString(5), results.getString(6), results.getString(7) , results.getString(13), results.getString(14), results.getString(15), results.getString(16), results.getString(17), results.getString(18), results.getString(19)};
                 api_request.add(temp);
             }
         } catch (Exception e) {
