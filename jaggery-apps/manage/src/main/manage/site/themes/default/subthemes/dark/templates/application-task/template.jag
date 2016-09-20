@@ -89,7 +89,7 @@ if(tasks.length==0){%>
 						<div>
 							<td id="desc<%=String(i)%>" style="width: 850px;">
 								<div>
-								<b>Name:</b><label style="display: inline;" id="desc_name_<%=tasks[i].id%>"/>
+								<b>Name:</b><label style="display: inline;" id="desc_name_<%=tasks[i].id%>"><%=tasks[i].applicationName%>-<%=tasks[i].name%></label>
 								</div>
 								<div>
 								<b>Description:</b><label style="display: inline;" id="desc_desc_<%=tasks[i].id%>"/>
@@ -106,7 +106,7 @@ if(tasks.length==0){%>
 								if(isAdmin == true){
 								%>
 								<label data-section="tiers-section" class="js_toggle" id="<%=tasks[i].id%>"><b>Application Details</b><i class="icon-chevron-right icon-keys"></i> </label>
-								<div style="display:none">
+								<!--div style="display:none">
 									<div id="tiersDiv_<%=tasks[i].id%>" style="display:block"
 										class="js_toggle">
 										<label><b>Tiers:</b> </label> <select
@@ -116,7 +116,7 @@ if(tasks.length==0){%>
 										<div id="tierAttributesDiv_<%=tasks[i].id%>" style="margin-left: 33%">								
 										</div>
 										</div>
-								</div>
+								</div-->
 								<%
 								}
 								%>
@@ -133,7 +133,7 @@ if(tasks.length==0){%>
 							</select>
 								<button class="btn js_completeBtn pull-left btn-primary"
 									id="js_completeBtn<%=String(i)%>" style="display: none"
-									data="<%=tasks[i].id%>" iteration="<%=String(i)%>">Complete</button>
+									data="<%=tasks[i].id%>" taskName="<%=tasks[i].name%>" iteration="<%=String(i)%>">Complete</button>
 							</td>
 							<%}else if (tasks[i].status=='COMPLETED'){%>
 							<label>Completed</label>
@@ -148,7 +148,7 @@ if(tasks.length==0){%>
 							<button class="btn js_completeBtn pull-left btn-primary"
 								id="js_completeBtn<%=String(i)%>" data="<%=tasks[i].id%>"
 								iteration="<%=String(i)%>">Complete</button>
-							<%}else if (tasks[i].status=='READY'){%>
+							<%}else if (tasks[i].status=='ACTIVE'){%>
 							<button class="btn js_assignBtn pull-left btn-primary"
 								id="js_assignBtn<%=String(i)%>" data="<%=tasks[i].id%>"
 								iteration="<%=String(i)%>">Assign To Me</button>

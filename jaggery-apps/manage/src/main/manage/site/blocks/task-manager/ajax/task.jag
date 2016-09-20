@@ -83,6 +83,7 @@ include("/jagg/jagg.jag");
          var taskId = request.getParameter("taskId");
          var taskType= request.getParameter("taskType");
          var status= request.getParameter("status");
+         var taskName = request.getParameter("taskName");
          var description= request.getParameter("description");
          var selectedTier= request.getParameter("selectedTier");
          username = jagg.getUser().username;
@@ -115,7 +116,7 @@ include("/jagg/jagg.jag");
          }
          var endpoint= prefixEndpoint+ "HumanTaskClientAPIAdmin/"
 			log.info('HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH  endpoint NEW URL  : ' + endpoint);
-         result = mod.completeTask(taskId,taskType,status,description,endpoint,username,currentDate,selectedTier);
+         result = mod.completeTask(taskId,taskType,taskName,status,description,endpoint,username,currentDate,selectedTier);
          if (result.error==true) {
          obj = {
                error:true,

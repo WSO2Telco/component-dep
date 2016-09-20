@@ -3,62 +3,89 @@ var ws = require("ws");
 var log=new Log();
 
 var getTasks = function (filterCategory,taskType) {
-	
-	var version = new ws.WSRequest();
-	var options = new Array();
-	options.useSOAP = 1.2;
-	options.action = "http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/simpleQuery";
-	var cookie=session.get("workflowCookie");
-	
+	var headers = {"Authorization":"Basic " + session.get("auth")};
 	var site = require("/site/conf/site.json");
-	options["HTTPHeaders"] = [
-	{name : "Cookie", value :cookie },
-		];
+    var businessProcessEngineUrl = site.workflows.businessProcessEngineBaseUrl;
+	var user = jagg.getUser().username;
+	var roleArray = session.get("roles");
+	var string = "";
+	for(var k=0; k<roleArray.length; k++){
+	    if (k == (roleArray.length-1)){
+	       string = string + roleArray[k];
+	    } else {
+	       string = string + roleArray[k] + ",";
+	    }
 
-		var searchBy='';
-		if(filterCategory==null||filterCategory=='ALL'){
-			searchBy='ALL_TASKS';
-		} else if(filterCategory=='userOnly'){
-			searchBy='ASSIGNED_TO_ME';
-		}else if(filterCategory=='claimable'){
-			searchBy='CLAIMABLE';
-		}
+	}
+	var task = [];
+	//Get claimable task list
+	//todo: get both claimable and assigned tasks from a sinple API call and assign status accordingly
+	var tasks = get(businessProcessEngineUrl + "runtime/tasks?candidateGroups=" + string,
+	null, headers,
+	"json" ).data;
+        if (log.isDebugEnabled()) {
+            log.debug("BPS BPMN REST API response: " + stringify(tasks));
+        }
 
-		var prefixEndpoint;
-		if(taskType=="ApproveSubscription"){
-			prefixEndpoint= site.workflows.subscriptionWorkFlowServerURL;
-		} else if(taskType=="ApproveUser"){
-			prefixEndpoint=site.workflows.signupWorkFlowServerURL;
-		} else if(taskType=="ApproveApplication"){
-			prefixEndpoint=site.workflows.applicationWorkFlowServerURL;
-		} else if(taskType=="ApplicationRegistration"){
-			prefixEndpoint=site.workflows.appRegistrationWorkFlowServerURL;
-		}
+        //Check for error response
+        if (tasks.errorMessage != undefined) {
+            throw "Error " + tasks.statusCode + " : " + tasks.errorMessage;
+        }
 
-		var payload = '<ns:simpleQuery xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803" xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">'+
-		'<ns:simpleQueryInput><ns1:pageSize>'+100000+'</ns1:pageSize><ns1:pageNumber>'+0+'</ns1:pageNumber><ns1:simpleQueryCategory>'+'ALL_TASKS'+'</ns1:simpleQueryCategory></ns:simpleQueryInput></ns:simpleQuery>';
-		var result;
-		var endpoint=prefixEndpoint+"HumanTaskClientAPIAdmin/";
-		
-		
-		
-		try {
-			version.open(options,endpoint, false);
-			
-			version.send(payload);
-			
-			
-			result = version.responseE4X;
-			
-			return parseResponse(result,taskType,endpoint);
+        for(var i=0; i < tasks.data.length; i++){
+            var dueDate = tasks.data[i].dueDate;
+            if(dueDate == null){ dueDate = "Not available"; }
+            var taskName = tasks.data[i].name;
+            var taskId = tasks.data[i].id;
+            var time = tasks.data[i].createTime;
+            var status = "ACTIVE";
+            //get required application details from process instance variables
+            var applicationNameVariable = get(businessProcessEngineUrl + "runtime/tasks/" +
+            taskId + "/variables/applicationName",null, headers,"json" ).data;
+            if(taskName == null){ taskName = "Not available"; }
+            task.push({
+                id:taskId,
+                name:taskName,
+                applicationName:applicationNameVariable.value,
+                status:status,
+                createdTime:time,
+                date:dueDate
+            });
+        }
 
-		} catch (e) {
-			
-			log.error(e.toString());
-			
-			session.put("showLogin", "true");
-			return null;
-		}
+        var assignedTasks = get(businessProcessEngineUrl + "runtime/tasks?assignee=" + user, null,
+        headers, "json" ).data;
+                if (log.isDebugEnabled()) {
+                    log.debug("BPS BPMN REST API response: " + stringify(assignedTasks));
+                }
+
+                //Check for error response
+                if (assignedTasks.errorMessage != undefined) {
+                    throw "Error " + assignedTasks.statusCode + " : " + assignedTasks.errorMessage;
+                }
+                for(var i=0; i < assignedTasks.data.length; i++){
+                    var dueDate = assignedTasks.data[i].dueDate;
+                    if(dueDate == null){ dueDate = "Not available"; }
+                    var taskName = assignedTasks.data[i].name;
+                    var taskId = tasks.data[i].id;
+                    var time = assignedTasks.data[i].createTime;
+                    var status = "RESERVED";
+                    if(taskName == null){ taskName = "Not available"; }
+                    //sample to get required application details from variables
+                    var applicationNameVariable = get(businessProcessEngineUrl + "runtime/tasks/" +
+                    taskId + "/variables/applicationName",null, headers,"json" ).data;
+                    task.push({
+                        id:assignedTasks.data[i].id,
+                        name:taskName,
+                        status:status,
+                        applicationName:applicationNameVariable.value,
+                        createdTime:time,
+                        date:dueDate
+                    });
+                }
+
+    return task;
+
 };
 
 var parseResponse=function parseResponse(response,taskType,endpoint){

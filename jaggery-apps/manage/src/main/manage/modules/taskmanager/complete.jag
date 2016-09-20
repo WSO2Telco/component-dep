@@ -3,7 +3,7 @@ include("/jagg/jagg.jag");
 var log=new Log();
 var ws = require("ws");
 
-var completeTask = function (taskId,taskType,status,description,endpoint,username,currentDate,selectedTier) {
+var completeTask = function (taskId,taskType,taskName,status,description,endpoint,username,currentDate,selectedTier) {
 
 
 
@@ -64,9 +64,20 @@ var result;
 
 
 try {
-version.open(options,endpoint, false);
-version.send(payload);
-result = version.responseE4X;
+var headers = {"Authorization":"Basic " + session.get("auth"),
+               "Content-Type": "application/json"};
+    var adminApprovalLevel = taskName=='Hub Admin Approval' ? "hubAdminApproval" : "operatorAdminApproval"
+	var body = {
+                "action" : "complete",
+                "variables" : [
+                    {
+                      "name" : adminApprovalLevel,
+                      "value" : status,
+                      "type" : "string"
+                    }
+                ]};
+	var result = post("http://localhost:9763/activiti-rest/service/runtime/tasks/"+taskId, JSON.stringify(body),
+	headers, "json").data;
 return {
 error:false
 }
