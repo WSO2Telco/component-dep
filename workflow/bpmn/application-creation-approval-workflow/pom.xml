@@ -213,6 +213,37 @@
 					</classpathContainers>
 				</configuration>
 			</plugin>
+            <plugin>
+                <artifactId>maven-antrun-plugin</artifactId>
+                <version>1.7</version>
+                <executions>
+                    <execution>
+                        <id>bar</id>
+                        <phase>package</phase>
+                        <configuration>
+                            <target>
+                                <echo message="Generating artifact ${project.artifactId}.bar" />
+                                <!-- copy and rename files -->
+                                <copy todir="${project.build.directory}/">
+                                    <fileset dir="${basedir}">
+                                        <include name="ApplicationCreationApprovalWorkflow.bpmn"/>
+                                    </fileset>
+                                    <mapper type="glob" from="*.bpmn" to="*.bpmn20.xml"/>
+                                </copy>
+                                <!-- Create a bar file. -->
+                                <zip destfile="${project.build.directory}/${project.artifactId}.bar">
+                                    <fileset dir="${project.build.directory}">
+                                        <include name="*.bpmn20.xml"/>
+                                    </fileset>
+                                </zip>
+                            </target>
+                        </configuration>
+                        <goals>
+                            <goal>run</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 		</plugins>
 	</build>
 	
