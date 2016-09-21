@@ -46,7 +46,9 @@ public enum Type {
 	
 	WALLET("WA"),
 	
-	CREDIT("CR");
+	CREDIT("CR"),
+
+	MC_REQ("MC");
         
         /** The code. */
         private String code;
