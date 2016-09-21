@@ -22,10 +22,8 @@ import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
 import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import com.wso2telco.core.dbutils.DbUtils;
 import com.wso2telco.core.dbutils.util.DataSourceNames;
 import com.wso2telco.dep.mediator.util.DatabaseTables;
@@ -48,10 +46,10 @@ public class USSDDAO {
 	public Integer ussdRequestEntry(String notifyURL , String consumerKey, String operatorId, String userId) throws SQLException, Exception {
 
 		Connection con = null;
-		PreparedStatement insert_statement=null;
-		PreparedStatement select_statement =null;
+		PreparedStatement ps = null;
 		ResultSet insert_result = null;
 		ResultSet select_result = null;
+		Statement st = null;
 		Integer selectId = 0;
 		Integer newId = 0;
 
@@ -63,15 +61,12 @@ public class USSDDAO {
 				throw new Exception("Connection not found");
 			}
 
-			con.setAutoCommit(false);
-			StringBuilder queryString = new StringBuilder(" SELECT MAX(ussd_request_did) maxid ");
-			queryString.append("FROM ");
-			queryString.append(DatabaseTables.USSD_REQUEST_ENTRY.getTableName());
-			
-			select_statement = con.prepareStatement(queryString.toString());
-			select_result = select_statement.executeQuery(queryString.toString());
-           
-			if (select_result.next()) {
+			st = con.createStatement();
+			StringBuilder queryString = new StringBuilder(" SELECT MAX(ussd_request_did) maxid ")
+            .append("FROM ")
+			.append(DatabaseTables.USSD_REQUEST_ENTRY.getTableName());
+            select_result = st.executeQuery(queryString.toString());
+            if (select_result.next()) {
             	selectId = select_result.getInt("maxid") + 1;
             }
             
@@ -79,26 +74,26 @@ public class USSDDAO {
 			StringBuilder insertQueryString = new StringBuilder(" INSERT INTO ");
 			insertQueryString.append(DatabaseTables.USSD_REQUEST_ENTRY.getTableName());
 			insertQueryString.append(" (ussd_request_did,notifyurl,sp_consumerKey,operatorId,userId) ");
-			insertQueryString.append("VALUES (?, ? ,? ,? ,? )");
+			insertQueryString.append("VALUES (?,?,?,?)");
 
-			insert_statement = con.prepareStatement(insertQueryString.toString(), Statement.RETURN_GENERATED_KEYS);
+			ps = con.prepareStatement(insertQueryString.toString(), Statement.RETURN_GENERATED_KEYS);
 
-			insert_statement.setInt(1, selectId);
-			insert_statement.setString(2, notifyURL);
-			insert_statement.setString(3, consumerKey);
-			insert_statement.setString(4, operatorId);
-			insert_statement.setString(5, userId);
+			ps.setInt(1, selectId);
+			ps.setString(2, notifyURL);
+			ps.setString(3, consumerKey);
+			ps.setString(4, operatorId);
+			ps.setString(5, userId);
 			
-			log.debug("sql query in ussdRequestEntry : " + insert_statement);
+			log.debug("sql query in ussdRequestEntry : " + ps);
 
-			insert_statement.executeUpdate();
+			ps.executeUpdate();
 
-			insert_result = insert_statement.getGeneratedKeys();
+			insert_result = ps.getGeneratedKeys();
 
 			while (insert_result.next()) {
+
 				newId = insert_result.getInt(1);
 			}
-			
 		} catch (SQLException e) {
 
 			log.error("database operation error in ussdRequestEntry : ", e);
@@ -109,8 +104,8 @@ public class USSDDAO {
 			throw e;
 		} finally {
 
-			DbUtils.closeAllConnections(insert_statement, con, insert_result);
-			DbUtils.closeAllConnections(select_statement, null, select_result);
+			DbUtils.closeAllConnections(ps, con, insert_result);
+			DbUtils.closeAllConnections(st, con, select_result);
 			
 		}
 
@@ -126,13 +121,12 @@ public class USSDDAO {
 	 * @throws Exception
 	 *             the exception
 	 */
-		public List<String> getUSSDNotifyURL(Integer subscriptionId) throws SQLException, Exception {
+	public String getUSSDNotifyURL(Integer subscriptionId) throws SQLException, Exception {
 
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		List<String> ussdSPDetails = new ArrayList<String>();
-
+		String notifyurls = "";
 
 		try {
 
@@ -141,7 +135,7 @@ public class USSDDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder queryString = new StringBuilder("SELECT notifyurl, sp_consumerKey, operatorId, userId ");
+			StringBuilder queryString = new StringBuilder("SELECT notifyurl ");
 			queryString.append("FROM ");
 			queryString.append(DatabaseTables.USSD_REQUEST_ENTRY.getTableName());
 			queryString.append(" WHERE ussd_request_did = ?");
@@ -156,12 +150,7 @@ public class USSDDAO {
 
 			if (rs.next()) {
 
-				//notifyurls = rs.getString("notifyurl");
-			    ussdSPDetails.add(rs.getString("notifyurl"));
-				ussdSPDetails.add(rs.getString("sp_consumerKey"));
-				ussdSPDetails.add(rs.getString("operatorId"));
-				ussdSPDetails.add(rs.getString("userId"));
-				
+				notifyurls = rs.getString("notifyurl");
 			}
 
 		} catch (SQLException e) {
@@ -177,7 +166,7 @@ public class USSDDAO {
 			DbUtils.closeAllConnections(ps, con, rs);
 		}
 
-		return ussdSPDetails;
+		return notifyurls;
 	}
 
 	/**
