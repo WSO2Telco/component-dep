@@ -83,7 +83,7 @@ public class USSDService {
 
 		try {
 
-			//notifyurls = ussdDAO.getUSSDNotifyURL(subscriptionId);
+			notifyurls = ussdDAO.getUSSDNotifyURL(subscriptionId);
 		} catch (Exception e) {
 
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);

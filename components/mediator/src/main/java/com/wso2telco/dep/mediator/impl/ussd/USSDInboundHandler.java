@@ -93,9 +93,8 @@ public class USSDInboundHandler implements USSDHandler {
 		
 		
 		List<String> ussdSPDetails = ussdService.getUSSDNotify(Integer.valueOf(subscriptionId));
-       // String notifyurl = dbservice.getUSSDNotify(Integer.valueOf(axiataid));
 		log.info("notifyUrl found -  " + ussdSPDetails.get(0) + " Request ID: " + UID.getRequestID(context));
-		log.info("consumerKey found - " + ussdSPDetails.get(1) + " Request ID: " + UID.getRequestID(context));
+		//log.info("consumerKey found - " + ussdSPDetails.get(1) + " Request ID: " + UID.getRequestID(context));
 		
 		
 
@@ -103,12 +102,15 @@ public class USSDInboundHandler implements USSDHandler {
 
 		JSONObject jsonBody = executor.getJsonBody();
 		jsonBody.getJSONObject("inboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL", ussdSPDetails.get(0));
+		
+		String msisdn = jsonBody.getJSONObject("inboundUSSDMessageRequest").getString("address").substring(5);
+		context.setProperty(DataPublisherConstants.MSISDN, msisdn);
         context.setProperty(DataPublisherConstants.SP_CONSUMER_KEY, ussdSPDetails.get(1));
         context.setProperty(DataPublisherConstants.SP_OPERATOR_ID, ussdSPDetails.get(2));
         context.setProperty(DataPublisherConstants.SP_USER_ID, ussdSPDetails.get(3));
-        
-        
-        log.info("01 SP_CONSUMER_KEY found - " + ussdSPDetails.get(1) + " Request ID: " + UID.getRequestID(context));
+        System.out.println(ussdSPDetails.get(1));
+
+        log.debug("01 SP_CONSUMER_KEY found - " + ussdSPDetails.get(1) + " Request ID: " + UID.getRequestID(context));
         log.info("01 SP_OPERATOR_ID found - " + ussdSPDetails.get(2) + " Request ID: " + UID.getRequestID(context));
         log.info("01 SP_USER_ID found - " + ussdSPDetails.get(3) + " Request ID: " + UID.getRequestID(context));
 
@@ -157,7 +159,6 @@ public class USSDInboundHandler implements USSDHandler {
             log.info("Subsendpoint - " +subsEndpoint + " Request ID: " + UID.getRequestID(context));
             replyobj.getJSONObject("outboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL", subsEndpoint);
 	
-	        //boolean deleted = dbservice.ussdEntryDelete(Integer.valueOf(axiataid));
 	        //log.info("Entry deleted after session expired" + deleted);
             
 		}
