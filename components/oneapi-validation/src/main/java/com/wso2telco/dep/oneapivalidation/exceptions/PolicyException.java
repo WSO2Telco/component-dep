@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.wso2telco.dep.oneapivalidation.exceptions;
 
- 
+import com.wso2telco.core.dbutils.exception.ThrowableError;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -34,6 +34,18 @@ public class PolicyException {
         this.messageId = messageId;
         this.text = text;
         this.variables = variables;
+    }
+    
+    /**
+     * Instantiates a new policy exception.
+     *
+     * @param ThrowableError the throwable error
+     * @param variables the variables
+     */
+    public PolicyException(ThrowableError error, String variables) {
+    	this.messageId = error.getCode();
+    	this.text = error.getMessage();
+    	this.variables = variables;
     }
     
     /** The message id. */
