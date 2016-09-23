@@ -27,9 +27,6 @@ public class PublishEventsConstants {
     
     /** The Constant SPEND_LIMIT_DATA_STREAM_VERSION. */
     public static final String SPEND_LIMIT_DATA_STREAM_VERSION = "1.0.0";
-
-    /** The Constant EVENTS_PROPERTIES_FILE. */
-    public static final String EVENTS_PROPERTIES_FILE = "publish-events.properties";
     
     /** The Constant CEP_SPEND_LIMIT_HANDLER_ENABLED_PROPERTY. */
     public static final String CEP_SPEND_LIMIT_HANDLER_ENABLED_PROPERTY = "com.wso2telco.events.spend.limit.handler.enabled";
