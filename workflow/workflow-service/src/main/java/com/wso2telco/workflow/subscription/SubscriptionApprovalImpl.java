@@ -4,7 +4,6 @@ package com.wso2telco.workflow.subscription;
 
 import com.wso2telco.core.dbutils.Operator;
 import com.wso2telco.core.dbutils.Operatorendpoint;
-import com.wso2telco.workflow.dao.WorkflowStatsDAO;
 import com.wso2telco.workflow.dao.WorkflowDbService;
 import com.wso2telco.workflow.model.Subscription;
 import com.wso2telco.workflow.model.SubscriptionValidation;
@@ -29,7 +28,7 @@ public class SubscriptionApprovalImpl implements SubscriptionApproval{
 
 
 	public void updateDBSubHubApproval(
-            Subscription subHUBApprovalDBUpdateRequest) {
+            Subscription subHUBApprovalDBUpdateRequest) throws Exception{
 		
 		Map<String , String> apiKeyMapping = null;
 		try {
@@ -87,12 +86,13 @@ public class SubscriptionApprovalImpl implements SubscriptionApproval{
 			
 		} catch (Exception e) {
 			log.error("ERROR: Error occurred while updating axiatadb for subscription HUB approval. " + e.getStackTrace());
+            throw new Exception();
 		}
 	}
 
 
 	public void updateDBSubOpApproval(
-            Subscription subOpApprovalDBUpdateRequest) {
+            Subscription subOpApprovalDBUpdateRequest) throws Exception{
 		
 		int appID = subOpApprovalDBUpdateRequest.getApplicationID();
 		String opID = subOpApprovalDBUpdateRequest.getOpID();
@@ -145,16 +145,18 @@ public class SubscriptionApprovalImpl implements SubscriptionApproval{
 			
 		} catch (NumberFormatException e) {
             log.error("ERROR: NumberFormatException. " + e.getStackTrace());
+            throw new NumberFormatException();
 			
 		} catch (Exception e) {
             log.error("ERROR: Exception. " + e.getStackTrace());
+            throw new Exception();
 		}
 	}
 
 
 
     public void insertValidatorForSubscription(
-            SubscriptionValidation hUBApprovalSubValidatorRequest) {
+            SubscriptionValidation hUBApprovalSubValidatorRequest) throws Exception{
 		
 		int appID = hUBApprovalSubValidatorRequest.getApplicationID();
 		int apiID = hUBApprovalSubValidatorRequest.getApiID();
@@ -165,6 +167,7 @@ public class SubscriptionApprovalImpl implements SubscriptionApproval{
 				
 			} catch (Exception e) {
                 log.error("ERROR: Exception. " + e.getStackTrace());
+                throw new Exception();
 			}
 
 		

@@ -382,4 +382,42 @@ public class WorkflowDbService {
         return operatorEndpoints;
     }
 
+
+    /**
+     * Gets the operator if by name.
+     *
+     * @return the operatorId
+     * @throws Exception the exception
+     */
+    public int getOperatorIdByName(String operatorName) throws Exception {
+
+        Connection con = null;
+        Statement st = null;
+        ResultSet rs = null;
+        int operatorId=0;
+
+
+        try {
+            con = dbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+
+            if (con == null) {
+                throw new Exception("Connection not found");
+            }
+
+            st = con.createStatement();
+            String sql = "SELECT ID, operatorname "
+                    + "FROM operators WHERE operatorname = '" + operatorName + " ' ";
+
+            rs = st.executeQuery(sql);
+            rs.next();
+            operatorId=rs.getInt("ID");
+
+        } catch (Exception e) {
+            DbUtils.handleException("Error while retrieving operators. ", e);
+        } finally {
+            DbUtils.closeAllConnections(st, con, rs);
+        }
+        return operatorId;
+    }
+
 }

@@ -1,5 +1,8 @@
 package com.wso2telco.workflow.model;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class ApplicationApprovalAuditRecord {
 
 	private String appName;

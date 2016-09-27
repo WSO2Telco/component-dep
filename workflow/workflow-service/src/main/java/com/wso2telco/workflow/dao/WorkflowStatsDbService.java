@@ -14,9 +14,9 @@ import java.sql.SQLException;
 /**
  * The DAO class to handle workflow related tasks.
  */
-public class WorkflowStatsDAO {
+public class WorkflowStatsDbService {
 
-	private static final Log log = LogFactory.getLog(WorkflowStatsDAO.class);
+	private static final Log log = LogFactory.getLog(WorkflowStatsDbService.class);
     DbUtils dbUtils=new DbUtils();
 
 	public void insertAppApprovalAuditRecord(

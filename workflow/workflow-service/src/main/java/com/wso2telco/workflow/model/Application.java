@@ -1,11 +1,24 @@
 package com.wso2telco.workflow.model;
 
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class Application {
 
     private int applicationID;
     private int operatorID;
+    private String operatorName;
     private String status;
+
+    public String getOperatorName() {
+        return operatorName;
+    }
+
+    public void setOperatorName(String operatorName) {
+        this.operatorName = operatorName;
+    }
+
 
     public String getStatus() {
         return status;

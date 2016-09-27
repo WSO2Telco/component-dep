@@ -20,17 +20,15 @@ public class ApplicationApprovalImpl implements ApplicationApproval{
     private WorkflowDbService dbservice = null;
 
 
-	public void updateDBAppHubApproval(
-            Application appHUBApprovalDBUpdateRequest) {
+	public void updateDBAppHubApproval (
+            Application appHUBApprovalDBUpdateRequest) throws Exception {
 		
 		int appID = appHUBApprovalDBUpdateRequest.getApplicationID();
         Integer[] opIDs = null;
         int counter = 0;
-        
-        try {
 
         	dbservice = new WorkflowDbService();
-        	
+
         	List<Operator> operatorList = dbservice.getOperators();
         	opIDs = new Integer[operatorList.size()];
         	for (Iterator<Operator> iterator = operatorList.iterator(); iterator.hasNext();) {
@@ -41,18 +39,16 @@ public class ApplicationApprovalImpl implements ApplicationApproval{
         	
 			dbservice.applicationEntry(new Integer(appID).intValue(), opIDs);
 			
-		} catch (Exception e) {
-			e.printStackTrace();
-		}
+
 		
 	}
 
 
 	public void updateDBAppOpApproval(
-            Application appOpApprovalDBUpdateRequest) {
+            Application appOpApprovalDBUpdateRequest) throws Exception{
 		
 		int appID = appOpApprovalDBUpdateRequest.getApplicationID();
-        int opID = appOpApprovalDBUpdateRequest.getOperatorID();
+        int opID;
         String statusStr = appOpApprovalDBUpdateRequest.getStatus();
         int status = -1;
         
@@ -69,13 +65,14 @@ public class ApplicationApprovalImpl implements ApplicationApproval{
         	
         	try {
         		dbservice = new WorkflowDbService();
+                opID=dbservice.getOperatorIdByName(appOpApprovalDBUpdateRequest.getOperatorName());
 				dbservice.updateAppApprovalStatusOp(new Integer(appID).intValue(), new Integer(opID).intValue(), status);
 				
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
         } else {
-        	//log.error("ERROR: 'status' is either null or empty.");
+        	throw new Exception("Approval state Null");
         }
 		
 	}

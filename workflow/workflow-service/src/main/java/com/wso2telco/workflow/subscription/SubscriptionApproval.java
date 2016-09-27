@@ -6,9 +6,9 @@ import com.wso2telco.workflow.model.SubscriptionValidation;
 
 public interface SubscriptionApproval {
 
-	void updateDBSubHubApproval(Subscription subHUBApprovalDBUpdateRequest);
+	void updateDBSubHubApproval(Subscription subHUBApprovalDBUpdateRequest) throws Exception;
 	
-	void updateDBSubOpApproval(Subscription subOpApprovalDBUpdateRequest);
+	void updateDBSubOpApproval(Subscription subOpApprovalDBUpdateRequest) throws Exception;
 	
-	void insertValidatorForSubscription(SubscriptionValidation hUBApprovalSubValidatorRequest);
+	void insertValidatorForSubscription(SubscriptionValidation hUBApprovalSubValidatorRequest)throws Exception;
 }
