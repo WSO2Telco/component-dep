@@ -64,8 +64,10 @@ var result;
 
 
 try {
-var headers = {"Authorization":"Basic " + session.get("auth"),
+    var headers = {"Authorization":"Basic " + session.get("auth"),
                "Content-Type": "application/json"};
+    var site = require("/site/conf/site.json");
+    var businessProcessEngineUrl = site.workflows.businessProcessEngineBaseUrl;
     var adminApprovalLevel = taskName=='Hub Admin Approval' ? "hubAdminApproval" : "operatorAdminApproval"
 	var body = {
                 "action" : "complete",
@@ -76,7 +78,8 @@ var headers = {"Authorization":"Basic " + session.get("auth"),
                       "type" : "string"
                     }
                 ]};
-	var result = post("http://localhost:9763/activiti-rest/service/runtime/tasks/"+taskId, JSON.stringify(body),
+	var result = post(businessProcessEngineUrl + "runtime/tasks/"+taskId,
+	JSON.stringify(body),
 	headers, "json").data;
 return {
 error:false

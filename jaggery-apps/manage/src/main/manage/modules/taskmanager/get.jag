@@ -17,6 +17,17 @@ var getTasks = function (filterCategory,taskType) {
 	    }
 
 	}
+	var processType = "";
+	//Get required process name corresponding to task type
+	if (taskType == "ApproveApplication") {
+	   processType = site.workflows.applicationCreationBusinessProcess;
+	} else if (taskType == "ApproveSubscription"){
+	   processType = site.workflows.subscriptionCreationBusinessProcess;
+	} else {
+	   processType = "Invalid Process Type";
+	}
+
+
 	var task = [];
 	//Get claimable task list
 	//todo: get both claimable and assigned tasks from a sinple API call and assign status accordingly
@@ -33,6 +44,8 @@ var getTasks = function (filterCategory,taskType) {
         }
 
         for(var i=0; i < tasks.data.length; i++){
+            var processDefinitionId = tasks.data[i].processDefinitionId;
+            if(processDefinitionId.search(processType) == 0) {
             var dueDate = tasks.data[i].dueDate;
             if(dueDate == null){ dueDate = "Not available"; }
             var taskName = tasks.data[i].name;
@@ -51,6 +64,7 @@ var getTasks = function (filterCategory,taskType) {
                 createdTime:time,
                 date:dueDate
             });
+            }
         }
 
         var assignedTasks = get(businessProcessEngineUrl + "runtime/tasks?assignee=" + user, null,
@@ -64,10 +78,12 @@ var getTasks = function (filterCategory,taskType) {
                     throw "Error " + assignedTasks.statusCode + " : " + assignedTasks.errorMessage;
                 }
                 for(var i=0; i < assignedTasks.data.length; i++){
+                    var processDefinitionId = assignedTasks.data[i].processDefinitionId;
+                    if(processDefinitionId.search(processType) == 0) {
                     var dueDate = assignedTasks.data[i].dueDate;
                     if(dueDate == null){ dueDate = "Not available"; }
                     var taskName = assignedTasks.data[i].name;
-                    var taskId = tasks.data[i].id;
+                    var taskId = assignedTasks.data[i].id;
                     var time = assignedTasks.data[i].createTime;
                     var status = "RESERVED";
                     if(taskName == null){ taskName = "Not available"; }
@@ -82,6 +98,7 @@ var getTasks = function (filterCategory,taskType) {
                         createdTime:time,
                         date:dueDate
                     });
+                    }
                 }
 
     return task;
@@ -348,6 +365,7 @@ function getSubscriptionDetails(taskId){
 		var prefixEndpoint = site.workflows.subscriptionWorkFlowServerURL;
 		var endpoint=prefixEndpoint+"HumanTaskClientAPIAdmin/";
 
+//GET runtime/tasks/{taskId}/variables?scope={scope} - call this
 		subscriptionDetails = getTaskDetails(taskId);
 		return parseSubscriptionDetailsResponse(subscriptionDetails, endpoint, taskId);
 	} catch (e) {

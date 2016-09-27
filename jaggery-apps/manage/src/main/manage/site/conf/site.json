@@ -14,7 +14,9 @@
      "subscriptionWorkFlowServerURL": "https://localhost:9445/services/",
      "signupWorkFlowServerURL": "https://localhost:9445/services/",
      "appRegistrationWorkFlowServerURL": "https://localhost:9445/services/",
-      "businessProcessEngineBaseUrl" : "http://localhost:9763/activiti-rest/service/"
+      "businessProcessEngineBaseUrl" : "http://localhost:9763/activiti-rest/service/",
+      "applicationCreationBusinessProcess" : "application_creation_approval_process",
+      "subscriptionCreationBusinessProcess" : "subscription_approval_process"
   },
     "operators":{
      "DIALOG": "dialog-admin-role",
