@@ -15,20 +15,22 @@
  ******************************************************************************/
 package com.wso2telco.dep.publisheventsdata.util;
 
-public enum DatabaseTables {
-	
-	DAY_SPEND_LIMIT_DATA("day_spendlimitdata"),
-	MONTH_SPEND_LIMIT_DATA("month_spendlimitdata");
-	
-	private String tableName;
+public enum FileNames {
 
-	DatabaseTables(String tableName) {
+	PUBLISH_EVENTS_DATA_CONF_FILE("publish-events-data-conf.properties");
+	
+	FileNames(String fileName) {
 
-		this.tableName = tableName;
+		this.fileName = fileName;
 	}
 
-	public String getTableName() {
+	private String fileName;
 
-		return this.tableName;
+	public String getFileName() {
+		return fileName;
+	}
+
+	public void setFileName(String fileName) {
+		this.fileName = fileName;
 	}
 }
