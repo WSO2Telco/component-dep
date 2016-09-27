@@ -89,7 +89,7 @@ if(tasks.length==0){%>
 						<div>
 							<td id="desc<%=String(i)%>" style="width: 850px;">
 								<div>
-								<b>Name:</b><label style="display: inline;" id="desc_name_<%=tasks[i].id%>"><%=tasks[i].applicationName%>-<%=tasks[i].name%></label>
+								<b>Name:</b><label style="display: inline;" id="desc_name_<%=tasks[i].id%>"/>
 								</div>
 								<div>
 								<b>Description:</b><label style="display: inline;" id="desc_desc_<%=tasks[i].id%>"/>
@@ -106,7 +106,7 @@ if(tasks.length==0){%>
 								if(isAdmin == true){
 								%>
 								<label data-section="tiers-section" class="js_toggle" id="<%=tasks[i].id%>"><b>Application Details</b><i class="icon-chevron-right icon-keys"></i> </label>
-								<!--div style="display:none">
+								<div style="display:none">
 									<div id="tiersDiv_<%=tasks[i].id%>" style="display:block"
 										class="js_toggle">
 										<label><b>Tiers:</b> </label> <select
@@ -116,7 +116,7 @@ if(tasks.length==0){%>
 										<div id="tierAttributesDiv_<%=tasks[i].id%>" style="margin-left: 33%">								
 										</div>
 										</div>
-								</div-->
+								</div>
 								<%
 								}
 								%>

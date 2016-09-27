@@ -289,21 +289,66 @@ function getTaskDetails(taskId) {
 };
 
 function getApplicationDetails(taskId){
-	var applicationDetails;
-	try {
-		var site = require("/site/conf/site.json");
-		var prefixEndpoint = site.workflows.subscriptionWorkFlowServerURL;
-		var endpoint=prefixEndpoint+"HumanTaskClientAPIAdmin/";
+    	try {
+    		var site = require("/site/conf/site.json");
+    		var businessProcessEngineUrl = site.workflows.businessProcessEngineBaseUrl;
+            var headers = {"Authorization":"Basic " + session.get("auth")};
+            var applicationData = get(businessProcessEngineUrl + "runtime/tasks/" +
+                        taskId + "/variables",null, headers,"json" ).data;
 
-		applicationDetails = getTaskDetails(taskId);
-		 	//	log.info("Application Details: " + stringify(applicationDetails));
-		 	//	log.info("============================================================================================================");
-		return parseApplicationDetailsResponse(applicationDetails, endpoint, taskId);
-	} catch (e) {
-		log.error(e.toString());
-		session.put("showLogin", "true");
-		return null;
-	}
+            var applicationName, applicationDescription, username,tiersList,appId;
+            var applicationDetails = new Object();
+            if (applicationData.length > 0) {
+                for (var k = 0; k < applicationData.length; k++) {
+                    var variable = applicationData[k];
+                    var varName = variable.name;
+                    switch (varName) {
+                        case "appTiers":
+                            //hard coded until tiers are sent from executor
+                            tiersList = "Gold,Unlimited";
+                            break;
+                        case "applicationName":
+                            applicationName = variable.value;
+                            break;
+                        case "applicationId":
+                            appId = variable.value;
+                            break;
+                        case "applicationDescription":
+                            applicationDescription = variable.value;
+                            break;
+                        case "username":
+                            username = variable.value;
+                            break;
+                    }
+                }
+
+                applicationDetails.applicationName = applicationName;
+                applicationDetails.applicationDescription = applicationDescription;
+                applicationDetails.username = username;
+                applicationDetails.taskId = taskId;
+
+                var listTiers = "Gold,Unlimited"
+                var tiers = listTiers.split(",");
+                var tiersObject=[];
+                for(var i = 0; i < tiers.length; i++) {
+                	if (tiers[i] != "") {
+                        var tier = {};
+                        tier.name = tiers[i];
+                        tier.displayName = tiers[i];
+                        tier.attributes = "";
+                        tiersObject.push(tier);
+                	}
+                }
+                applicationDetails.tiers = tiersObject;
+            }
+
+            return applicationDetails;
+
+    	} catch (e) {
+    		log.error(e.toString());
+    		session.put("showLogin", "true");
+    		return null;
+    	}
 };
 
 function parseApplicationDetailsResponse(response, endpoint, taskId){
@@ -362,18 +407,83 @@ function getSubscriptionDetails(taskId){
 	var subscriptionDetails;
 	try {
 		var site = require("/site/conf/site.json");
-		var prefixEndpoint = site.workflows.subscriptionWorkFlowServerURL;
-		var endpoint=prefixEndpoint+"HumanTaskClientAPIAdmin/";
+		var businessProcessEngineUrl = site.workflows.businessProcessEngineBaseUrl;
+		var headers = {"Authorization":"Basic " + session.get("auth")};
+        var subscriptionData = get(businessProcessEngineUrl + "runtime/tasks/" +
+                    taskId + "/variables",null, headers,"json" ).data;
 
-//GET runtime/tasks/{taskId}/variables?scope={scope} - call this
-		subscriptionDetails = getTaskDetails(taskId);
-		return parseSubscriptionDetailsResponse(subscriptionDetails, endpoint, taskId);
+        var applicationName, applicationDescription, subscriber,apiName, apiVersion, appId, apiId, operatorId,tiersList;
+        var subscriptionDetails = new Object();
+
+        if (subscriptionData.length > 0) {
+            for (var k = 0; k < subscriptionData.length; k++) {
+                var variable = subscriptionData[k];
+                var varName = variable.name;
+                switch (varName) {
+                    case "apiId":
+                        apiId = variable.value;
+                        break;
+                    case "apiVersion":
+                        apiVersion = variable.value;
+                        break;
+                    case "apiTiers":
+                        tiersList = variable.value;
+                        break;
+                    case "applicationName":
+                        applicationName = variable.value;
+                        break;
+                    case "applicationId":
+                        appId = variable.value;
+                        break;
+                    case "operator":
+                        operatorId = variable.value;
+                        break;
+                    case "apiName":
+                        apiName = variable.value;
+                        break;
+                    case "applicationDescription":
+                        applicationDescription = variable.value;
+                        break;
+                    case "subscriber":
+                        subscriber = variable.value;
+                        break;
+                }
+            }
+
+            subscriptionDetails.applicationName = applicationName;
+            subscriptionDetails.applicationDescription = applicationDescription;
+            subscriptionDetails.subscriber = subscriber;
+            subscriptionDetails.apiNameVersion = apiName + " - " + apiVersion;
+            subscriptionDetails.appId = appId;
+            subscriptionDetails.apiId = apiId;
+            subscriptionDetails.operatorId = operatorId;
+            subscriptionDetails.apiName = apiName;
+            subscriptionDetails.taskId = taskId;
+
+            var tiers = tiersList.split(",");
+            var tiersObject=[];
+            for(var i = 0; i < tiers.length; i++) {
+            	if (tiers[i] != "") {
+                    var tier = {};
+                    tier.name = tiers[i];
+                    tier.displayName = tiers[i];
+                    tier.attributes = "";
+                    tiersObject.push(tier);
+            	}
+            }
+            subscriptionDetails.tiers = tiersObject;
+        }
+
+        return subscriptionDetails;
+
 	} catch (e) {
 		log.error(e.toString());
 		session.put("showLogin", "true");
 		return null;
 	}
 };
+
+
 
 function parseSubscriptionDetailsResponse(response, endpoint, taskId){
 	var subscriptionDetails = new Object();

@@ -7,7 +7,7 @@ var completeTask = function (taskId,taskType,taskName,status,description,endpoin
 
 
 
-var version = new ws.WSRequest();
+/*var version = new ws.WSRequest();
 var options = new Array();
 options.useSOAP = 1.2;
 options.action = "http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/complete";
@@ -60,7 +60,7 @@ taskPayload="&lt;sch:ApplicationRegistrationResponse xmlns:sch=&quot;http://work
 var payload = '<ns:complete xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">'+
               '<ns:identifier>'+taskId+'</ns:identifier><ns:taskData>'+String(taskPayload)+'</ns:taskData></ns:complete>';
 var result;
-
+ */
 
 
 try {
@@ -75,6 +75,11 @@ try {
                     {
                       "name" : adminApprovalLevel,
                       "value" : status,
+                      "type" : "string"
+                    },
+                    {
+                      "name" : selectedTier,
+                      "value" : selectedTier,
                       "type" : "string"
                     }
                 ]};
