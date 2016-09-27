@@ -48,10 +48,10 @@ public class USSDService {
 
 			throw new BusinessException(ErrorType.INVALID_CONSUMER_KEY);
 		}
-		if (operatorId == null || operatorId.trim().length() <= 0) {
+	/**	if (operatorId == null || operatorId.trim().length() <= 0) {
 
 			throw new BusinessException(ErrorType.INVALID_OPERATOR_ID);
-		}
+		}**/
 		if (userId == null || userId.trim().length() <= 0) {
 
 			throw new BusinessException(ErrorType.INVALID_USER_ID);
@@ -83,7 +83,7 @@ public class USSDService {
 
 		try {
 
-			//notifyurls = ussdDAO.getUSSDNotifyURL(subscriptionId);
+			notifyurls = ussdDAO.getUSSDNotifyURL(subscriptionId);
 		} catch (Exception e) {
 
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
