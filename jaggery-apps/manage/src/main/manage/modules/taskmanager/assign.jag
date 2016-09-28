@@ -4,37 +4,19 @@ var log=new Log();
 var ws = require("ws");
 
 var assignTask = function (taskId,endpoint) {
+    var site = require("/site/conf/site.json");
+    var businessProcessEngineUrl = site.workflows.businessProcessEngineBaseUrl;
 
-var version = new ws.WSRequest();
-var options = new Array();
-options.useSOAP = 1.2;
-options.action = "http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/claim";
-var cookie=session.get("workflowCookie");
-
-options["HTTPHeaders"] = [
-                              { name : "Cookie", value :cookie },
-                        ];
-
-
-var payload = '<ns:claim xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">'+
-'<ns:identifier>'+parseInt(taskId)+'</ns:identifier></ns:claim>';
-var result;
-
-try {
-
-version.open(options,endpoint, false);
-version.send(payload);
-result = version.responseE4X;
-return {
-error:false
-};
-
-}catch (e) {
-log.error(e.toString());
-return {
-error:true
-};
-
-}
+    var headers = {"Authorization":"Basic " + session.get("auth"),
+                   "Content-Type": "application/json"
+                   };
+	var body = {
+                "action" : "claim",
+                "assignee" : jagg.getUser().username
+            };
+	var result = post(businessProcessEngineUrl + "runtime/tasks/"+taskId, JSON.stringify(body), headers, "json");
+    return {
+    error:false
+    };
 };
 %>

@@ -28,6 +28,7 @@ $(document).ready(function(){
     $('.js_completeBtn').click(function(){
         var btn = $(this);
         var taskId=btn.attr("data");
+        var taskName = btn.attr("taskName");
         var iteration=btn.attr("iteration");
         var description=$('#desc'+iteration).text();
         var status=$('.js_stateDropDown').val();
@@ -49,7 +50,7 @@ $(document).ready(function(){
 else{
         btn.attr("disabled","disabled");
         
-        jagg.post("/site/blocks/task-manager/ajax/task.jag?comment="+ result, { action:"completeTask",status:status,taskId:taskId,taskType:"subscription",description:description,selectedTier:tierId },
+        jagg.post("/site/blocks/task-manager/ajax/task.jag?comment="+ result, { action:"completeTask",status:status,taskId:taskId,taskName:taskName,taskType:"subscription",description:description,selectedTier:tierId },
             function (json) {
                 if (!json.error) {
                     btn.next().show();
