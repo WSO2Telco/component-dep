@@ -7,7 +7,6 @@ import com.wso2telco.workflow.dao.WorkflowStatsDbService;
 import com.wso2telco.workflow.model.ApplicationApprovalAuditRecord;
 import com.wso2telco.workflow.model.Subscription;
 import com.wso2telco.workflow.model.SubscriptionApprovalAuditRecord;
-import org.apache.commons.httpclient.HttpStatus;
 
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
@@ -26,9 +25,9 @@ public class WorkflowApprovalAuditService {
     public Response appApprovalAuditRecord(ApplicationApprovalAuditRecord applicationApprovalAuditRecord){
         try {
             workflowStatsDbService.insertAppApprovalAuditRecord(applicationApprovalAuditRecord);
-            return Response.status(HttpStatus.SC_CREATED).build();
+            return Response.status(Response.Status.CREATED).build();
         }catch(Exception ex){
-            return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -38,9 +37,9 @@ public class WorkflowApprovalAuditService {
     public Response subscriptionApprovalAuditRecord(SubscriptionApprovalAuditRecord subscriptionApprovalAuditRecord){
         try {
             workflowStatsDbService.insertSubApprovalAuditRecord(subscriptionApprovalAuditRecord);
-        return Response.status(HttpStatus.SC_CREATED).build();
+        return Response.status(Response.Status.CREATED).build();
         }catch(Exception ex){
-            return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
 

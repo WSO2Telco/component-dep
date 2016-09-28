@@ -2,11 +2,14 @@ package com.wso2telco.workflow.subscription;
 
 
 
-import com.wso2telco.core.dbutils.Operator;
-import com.wso2telco.core.dbutils.Operatorendpoint;
+import com.wso2telco.core.dbutils.exception.BusinessException;
+import com.wso2telco.core.dbutils.exception.GenaralError;
+import com.wso2telco.dep.operatorservice.model.Operator;
+import com.wso2telco.dep.operatorservice.model.OperatorEndPointDTO;
 import com.wso2telco.workflow.dao.WorkflowDbService;
 import com.wso2telco.workflow.model.Subscription;
 import com.wso2telco.workflow.model.SubscriptionValidation;
+import com.wso2telco.workflow.utils.ApprovelStatus;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -15,14 +18,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-//import org.wso2.carbon.apimgt.api.APIManagementException;
-
 
 public class SubscriptionApprovalImpl implements SubscriptionApproval{
-	
-	private static final String CONST_APPROVED = "APPROVED";
-	private static final String CONST_REJECTED = "REJECTED";
-	
+
     private static Log log = LogFactory.getLog(SubscriptionApprovalImpl.class);
     private WorkflowDbService dbservice = null;
 
@@ -45,12 +43,11 @@ public class SubscriptionApprovalImpl implements SubscriptionApproval{
 
 				
 				String apiKey = apiKeyMapping.get(apiName);
-				//log.info("apiKey : " + apiKey);
 				
 				if (apiKey != null && !apiKey.isEmpty()) {
 					dbservice = new WorkflowDbService();
 					List<Operator> operatorList = dbservice.getOperators();
-					List<Operatorendpoint> operatorEndpoints = dbservice.getOperatorEndpoints();
+					List<OperatorEndPointDTO> operatorEndpoints = dbservice.getOperatorEndpoints();
 				
 					log.info("operatorList.size() : " + operatorList.size());
 					
@@ -58,13 +55,13 @@ public class SubscriptionApprovalImpl implements SubscriptionApproval{
 				
 					for (Iterator iterator = operatorList.iterator(); iterator.hasNext();) {
 						Operator operator = (Operator) iterator.next();
-						log.info("operator name : " + operator.getOperatorname() + "| operator id : " + operator.getOperatorid());
+						log.info("operator name : " + operator.getOperatorName() + "| operator id : " + operator.getOperatorId());
 					
 						for (Iterator iterator2 = operatorEndpoints.iterator(); iterator2.hasNext();) {
-							Operatorendpoint operatorendpoint = (Operatorendpoint) iterator2.next();
+                            OperatorEndPointDTO operatorendpoint = (OperatorEndPointDTO) iterator2.next();
 							log.debug("operatorendpoint.getOperatorid : " + operatorendpoint.getOperatorid());
 						
-							if(operator.getOperatorid() == operatorendpoint.getOperatorid()
+							if(operator.getOperatorId() == operatorendpoint.getOperatorid()
 									&& apiKey.equals(operatorendpoint.getApi())) {
 								
 								log.info("operatorendpoint.getId : " + operatorendpoint.getId());
@@ -98,7 +95,6 @@ public class SubscriptionApprovalImpl implements SubscriptionApproval{
 		String opID = subOpApprovalDBUpdateRequest.getOpID();
 		String apiName = subOpApprovalDBUpdateRequest.getApiName();
 		String statusStr = subOpApprovalDBUpdateRequest.getStatus();
-		int status = -1;
 					
 		int operatorEndpointID = -1;
 		
@@ -108,11 +104,11 @@ public class SubscriptionApprovalImpl implements SubscriptionApproval{
 			String apiKey = apiKeyMapping.get(apiName);
 			
 			dbservice = new WorkflowDbService();
-			List<Operatorendpoint> operatorEndpoints = dbservice.getOperatorEndpoints();
+			List<OperatorEndPointDTO> operatorEndpoints = dbservice.getOperatorEndpoints();
 			
 			for (Iterator iterator = operatorEndpoints.iterator(); iterator
 					.hasNext();) {
-				Operatorendpoint operatorendpoint = (Operatorendpoint) iterator
+                OperatorEndPointDTO operatorendpoint = (OperatorEndPointDTO) iterator
 						.next();
 				
 				if(operatorendpoint.getOperatorid() == new Integer(opID).intValue() && apiKey.equals(operatorendpoint.getApi())) {
@@ -123,23 +119,9 @@ public class SubscriptionApprovalImpl implements SubscriptionApproval{
 			
 			if (operatorEndpointID > 0) {
 				if (statusStr != null && statusStr.length() > 0) {
-	            	if(statusStr.equalsIgnoreCase(CONST_APPROVED)) {
-	            		status = 1;
-	            		
-	            	} else if(statusStr.equalsIgnoreCase(CONST_REJECTED)) {
-	            		status = 2;
-	            		
-	            	} else {
-	            		status = 0;
-	            	}
-	            	
-	            	try {
-	            		dbservice.updateOperatorAppEndpointStatus(new Integer(appID).intValue(), operatorEndpointID, status);
-	    				
-	    			} catch (Exception e) {
-	    				e.printStackTrace();
-	    			}
+                   dbservice.updateOperatorAppEndpointStatus(new Integer(appID).intValue(), operatorEndpointID,ApprovelStatus.valueOf(statusStr).getValue());
 	            } else {
+                    throw new BusinessException(GenaralError.UNDEFINED);
 	            }
 			}				
 			

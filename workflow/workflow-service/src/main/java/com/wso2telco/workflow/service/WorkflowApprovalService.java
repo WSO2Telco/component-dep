@@ -7,7 +7,7 @@ import com.wso2telco.workflow.model.Subscription;
 import com.wso2telco.workflow.model.SubscriptionValidation;
 import com.wso2telco.workflow.subscription.SubscriptionApproval;
 import com.wso2telco.workflow.subscription.SubscriptionApprovalImpl;
-import org.apache.commons.httpclient.HttpStatus;
+
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
@@ -27,9 +27,9 @@ public class WorkflowApprovalService {
     public Response applicationApprovalHub(Application application){
         try {
             applicationApproval.updateDBAppHubApproval(application);
-            return Response.status(HttpStatus.SC_CREATED).build();
+            return Response.status(Response.Status.CREATED).build();
         } catch (Exception e) {
-            return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -39,9 +39,9 @@ public class WorkflowApprovalService {
     public Response subscriptionApprovalHub(Subscription subscription){
         try {
             subscriptionApproval.updateDBSubHubApproval(subscription);
-            return Response.status(HttpStatus.SC_CREATED).build();
+            return Response.status(Response.Status.CREATED).build();
         } catch (Exception e) {
-            return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
 
     }
@@ -53,9 +53,9 @@ public class WorkflowApprovalService {
     public Response applicationApprovalOperator(Application application){
         try {
             applicationApproval.updateDBAppOpApproval(application);
-            return Response.status(HttpStatus.SC_CREATED).build();
+            return Response.status(Response.Status.CREATED).build();
         } catch (Exception e) {
-            return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
 
     }
@@ -67,9 +67,9 @@ public class WorkflowApprovalService {
     public Response subscriptionApprovalOperator(Subscription subscription){
         try {
             subscriptionApproval.updateDBSubOpApproval(subscription);
-            return Response.status(HttpStatus.SC_CREATED).build();
+            return Response.status(Response.Status.CREATED).build();
         } catch (Exception e) {
-            return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
 
@@ -80,9 +80,9 @@ public class WorkflowApprovalService {
     public Response insertValidatorForSubscription(SubscriptionValidation subscriptionValidation){
         try {
             subscriptionApproval.insertValidatorForSubscription(subscriptionValidation);
-            return Response.status(HttpStatus.SC_CREATED).build();
+            return Response.status(Response.Status.CREATED).build();
         } catch (Exception e) {
-            return Response.status(HttpStatus.SC_INTERNAL_SERVER_ERROR).build();
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
     }
 }
