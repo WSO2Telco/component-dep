@@ -12,5 +12,5 @@
 		</jaxrs:serviceBeans>
 	</jaxrs:server>
 	
-	<bean id="queriesBean" class="com.wso2telco.services.bw.Queries"/> 
+	<bean id="queriesBean" class="com.wso2telco.aggregatorblacklist.Queries"/> 
 </beans>
