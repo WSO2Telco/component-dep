@@ -7,19 +7,19 @@
             <Code>413</Code>
             <CallingCode>+94</CallingCode>                
             <Stage>0</Stage>
-            <DefaultMnc>Dialog</DefaultMnc>                
+            <DefaultMnc>OPERATOR1</DefaultMnc>                
         </Mcc>
         <Mcc>
             <Code>502</Code>
             <CallingCode>+60</CallingCode>                
             <Stage>0</Stage>
-            <DefaultMnc>Celcom</DefaultMnc>                            
+            <DefaultMnc>OPERATOR2</DefaultMnc>                            
         </Mcc>
         <Mcc>
             <Code>470</Code>
             <CallingCode>+880</CallingCode>                
             <Stage>0</Stage>
-            <DefaultMnc>Robi</DefaultMnc>                            
+            <DefaultMnc>OPERATOR3</DefaultMnc>                            
         </Mcc>
     </MobileCountryCodes>	
 </MCCConfiguration>

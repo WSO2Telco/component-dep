@@ -8,13 +8,14 @@
         <activiti:formProperty id="workflowRefId" name="Workflow reference ID" type="string" variable="workflowRefId" required="true"></activiti:formProperty>
         <activiti:formProperty id="callBackUrl" name="Callback URL" type="string" variable="callBackUrl" required="true"></activiti:formProperty>
         <activiti:formProperty id="operators" name="Operator Names" type="string" variable="operators" required="true"></activiti:formProperty>
+        <activiti:formProperty id="applicationId" name="Application ID" type="string" variable="applicationId" required="true"></activiti:formProperty>
       </extensionElements>
     </startEvent>
     <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway" default="gatewayFlow"></exclusiveGateway>
     <sequenceFlow id="hubFlow" name="Hub Flow" sourceRef="exclusivegateway1" targetRef="hub_admin_approval_transaction">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${deployment_type.equals("hub")}]]></conditionExpression>
     </sequenceFlow>
-    <serviceTask id="servicetask2" name="Hub Callback" activiti:class="org.wso2telco.application.creation.approval.workflow.servicetask.HubWorkflowCallback"></serviceTask>
+    <serviceTask id="servicetask2" name="Hub Callback" activiti:class="com.wso2telco.application.creation.approval.workflow.servicetask.HubWorkflowCallback"></serviceTask>
     <endEvent id="endevent3" name="End"></endEvent>
     <sequenceFlow id="flow14" sourceRef="servicetask2" targetRef="endevent3"></sequenceFlow>
     <sequenceFlow id="flow21" sourceRef="operator_admin_approval_transaction" targetRef="endevent3"></sequenceFlow>
@@ -24,7 +25,7 @@
     </sequenceFlow>
     <sequenceFlow id="hubAdminRejectedFlow" name="Hub admin rejected flow" sourceRef="exclusivegateway2" targetRef="servicetask2"></sequenceFlow>
     <sequenceFlow id="gatewayFlow" name="Gateway Flow" sourceRef="exclusivegateway1" targetRef="operator_admin_approval_transaction"></sequenceFlow>
-    <serviceTask id="operators_converter" name="Operators Converter" activiti:class="org.wso2telco.application.creation.approval.workflow.servicetask.OperatorListConverter"></serviceTask>
+    <serviceTask id="operators_converter" name="Operators Converter" activiti:class="com.wso2telco.application.creation.approval.workflow.servicetask.OperatorListConverter"></serviceTask>
     <sequenceFlow id="flow26" sourceRef="startevent1" targetRef="operators_converter"></sequenceFlow>
     <sequenceFlow id="flow27" sourceRef="operators_converter" targetRef="exclusivegateway1"></sequenceFlow>
     <transaction id="hub_admin_approval_transaction" name="Hub Admin Approval Transaction">
@@ -37,7 +38,7 @@
         </extensionElements>
       </userTask>
       <sequenceFlow id="flow15" sourceRef="hub_admin_approval" targetRef="hub_admin_data_update"></sequenceFlow>
-      <serviceTask id="hub_admin_data_update" name="Hub Admin Data Update" activiti:class="org.wso2telco.application.creation.approval.workflow.servicetask.HubDataUpdater"></serviceTask>
+      <serviceTask id="hub_admin_data_update" name="Hub Admin Data Update" activiti:class="com.wso2telco.application.creation.approval.workflow.servicetask.HubDataUpdater"></serviceTask>
       <startEvent id="startevent3" name="Start"></startEvent>
       <endEvent id="endevent5" name="End"></endEvent>
       <sequenceFlow id="flow28" sourceRef="startevent3" targetRef="hub_admin_approval"></sequenceFlow>
@@ -48,7 +49,7 @@
       <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="${operatorList}" activiti:elementVariable="operator"></multiInstanceLoopCharacteristics>
       <startEvent id="startevent2" name="Start"></startEvent>
       <sequenceFlow id="flow18" sourceRef="startevent2" targetRef="usertask1"></sequenceFlow>
-      <userTask id="usertask1" name="Operator Admin Approval" activiti:candidateGroups="${operator .concat('_admin')}">
+      <userTask id="usertask1" name="Operator Admin Approval" activiti:candidateGroups="${operator .concat('-admin-role')}">
         <extensionElements>
           <activiti:formProperty id="operatorAdminApproval" name="Approve / Reject" type="enum" variable="operatorAdminApproval" required="true">
             <activiti:value id="APPROVED" name="Approve"></activiti:value>
@@ -57,9 +58,9 @@
         </extensionElements>
       </userTask>
       <sequenceFlow id="flow19" sourceRef="usertask1" targetRef="operator_admin_data_update"></sequenceFlow>
-      <serviceTask id="operator_admin_data_update" name="Operator Admin Data Update" activiti:class="org.wso2telco.application.creation.approval.workflow.servicetask.OperatorDataUpdater"></serviceTask>
+      <serviceTask id="operator_admin_data_update" name="Operator Admin Data Update" activiti:class="com.wso2telco.application.creation.approval.workflow.servicetask.OperatorDataUpdater"></serviceTask>
       <sequenceFlow id="flow25" sourceRef="operator_admin_data_update" targetRef="servicetask3"></sequenceFlow>
-      <serviceTask id="servicetask3" name="Operator Callback" activiti:class="org.wso2telco.application.creation.approval.workflow.servicetask.OperatorWorkflowCallback"></serviceTask>
+      <serviceTask id="servicetask3" name="Operator Callback" activiti:class="com.wso2telco.application.creation.approval.workflow.servicetask.OperatorWorkflowCallback"></serviceTask>
       <sequenceFlow id="flow20" sourceRef="servicetask3" targetRef="endevent4"></sequenceFlow>
       <endEvent id="endevent4" name="End"></endEvent>
     </transaction>
@@ -128,7 +129,7 @@
         <omgdi:waypoint x="108.0" y="400.0"></omgdi:waypoint>
         <omgdi:waypoint x="108.0" y="377.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="13.0" width="46.0" x="108.0" y="400.0"></omgdc:Bounds>
+          <omgdc:Bounds height="12.0" width="46.0" x="108.0" y="400.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
@@ -143,7 +144,7 @@
         <omgdi:waypoint x="349.0" y="211.0"></omgdi:waypoint>
         <omgdi:waypoint x="457.0" y="211.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="39.0" width="100.0" x="349.0" y="211.0"></omgdc:Bounds>
+          <omgdc:Bounds height="36.0" width="100.0" x="349.0" y="211.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="hubAdminRejectedFlow" id="BPMNEdge_hubAdminRejectedFlow">
@@ -151,7 +152,7 @@
         <omgdi:waypoint x="329.0" y="47.0"></omgdi:waypoint>
         <omgdi:waypoint x="472.0" y="47.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="39.0" width="100.0" x="330.0" y="150.0"></omgdc:Bounds>
+          <omgdc:Bounds height="36.0" width="100.0" x="330.0" y="150.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="gatewayFlow" id="BPMNEdge_gatewayFlow">
@@ -159,7 +160,7 @@
         <omgdi:waypoint x="762.0" y="420.0"></omgdi:waypoint>
         <omgdi:waypoint x="762.0" y="314.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="13.0" width="68.0" x="128.0" y="420.0"></omgdc:Bounds>
+          <omgdc:Bounds height="36.0" width="68.0" x="128.0" y="420.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow26" id="BPMNEdge_flow26">
@@ -207,7 +208,7 @@
         <omgdi:waypoint x="129.0" y="15.0"></omgdi:waypoint>
         <omgdi:waypoint x="108.0" y="47.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="39.0" width="100.0" x="291.0" y="-17.0"></omgdc:Bounds>
+          <omgdc:Bounds height="36.0" width="100.0" x="261.0" y="-47.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>

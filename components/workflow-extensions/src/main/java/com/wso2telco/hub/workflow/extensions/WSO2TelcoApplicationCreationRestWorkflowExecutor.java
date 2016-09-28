@@ -35,6 +35,7 @@ public class WSO2TelcoApplicationCreationRestWorkflowExecutor extends WorkflowEx
     private static final String TENANT_ID = "-1234";
     private static final String APPLICATION_CREATION_APPROVAL_PROCESS_NAME = "application_creation_approval_process";
     private static final String APPLICATION_NAME = "applicationName";
+    private static final String APPLICATION_ID = "applicationId";
     private static final String WORKFLOW_REF_ID = "workflowRefId";
     private static final String CALL_BACK_URL = "callBackUrl";
     private static final String OPERATORS = "operators";
@@ -77,6 +78,8 @@ public class WSO2TelcoApplicationCreationRestWorkflowExecutor extends WorkflowEx
         Variable applicationName = new Variable(APPLICATION_NAME, application.getName());
         Variable workflorRefId = new Variable(WORKFLOW_REF_ID, appWorkFlowDTO.getExternalWorkflowReference());
         Variable callBackUrl = new Variable(CALL_BACK_URL, callBackURL);
+        Variable applicationId = new Variable(APPLICATION_ID,String.valueOf(appWorkFlowDTO.getWorkflowReference()));
+
         // TODO: get operators via the osgi service
         // currently this is read from a java system parameter
         Variable operators = new Variable(OPERATORS, getOperators());
@@ -96,6 +99,7 @@ public class WSO2TelcoApplicationCreationRestWorkflowExecutor extends WorkflowEx
         variables.add(workflorRefId);
         variables.add(callBackUrl);
         variables.add(operators);
+        variables.add(applicationId);
 
         processInstanceRequest.setVariables(variables);
 

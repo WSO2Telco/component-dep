@@ -1,5 +1,7 @@
 package com.wso2telco.hub.workflow.extensions;
 
+import com.wso2telco.hub.workflow.extensions.impl.WorkflowAPIConsumerImpl;
+import com.wso2telco.hub.workflow.extensions.interfaces.WorkflowAPIConsumer;
 import feign.Feign;
 import feign.auth.BasicAuthRequestInterceptor;
 import feign.jackson.JacksonDecoder;
@@ -100,8 +102,8 @@ public class WSO2TelcoSubscriptionCreationRestWorkflowExecutor extends WorkflowE
 			APIIdentifier apiIdentifier = new APIIdentifier(providerName, apiName, version);
 			API api = consumer.getAPI(apiIdentifier);
 			//Why apiId is required,WorkflowAPIConsumer hasn't closed the db connections
-		/*WorkflowAPIConsumer workFlowAPIConsumer = new WorkflowAPIConsumerImpl();
-		int apiID = workFlowAPIConsumer.getAPIID(apiIdentifier);*/
+	    	WorkflowAPIConsumer workFlowAPIConsumer = new WorkflowAPIConsumerImpl();
+		    String apiID = String.valueOf(workFlowAPIConsumer.getAPIID(apiIdentifier));
 			Set<Tier> tierSet = api.getAvailableTiers();
 
 			StringBuilder tiersStr = new StringBuilder();
@@ -119,7 +121,7 @@ public class WSO2TelcoSubscriptionCreationRestWorkflowExecutor extends WorkflowE
 			// currently this is read from a java system parameter
 			Variable deploymentType = new Variable(DEPLOYMENT_TYPE, getDeploymentType());
 			Variable subscribedApiName = new Variable(API_NAME, apiName);
-			Variable subscribedApiId = new Variable(API_ID, "why need this");
+			Variable subscribedApiId = new Variable(API_ID, apiID);
 			Variable subscribedApiVersion = new Variable(API_VERSION, version);
 			Variable subscribedApiContext = new Variable(API_CONTEXT, api.getContext());
 			Variable apiProvider = new Variable(API_PROVIDER, providerName);
