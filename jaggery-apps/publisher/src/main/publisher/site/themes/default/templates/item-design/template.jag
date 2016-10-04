@@ -376,7 +376,7 @@
                         <label class="add-tags-error pull-left"></label>
                     </div>
                 </div>
-            <div id ="resource_handlers">
+            <div id ="resource_handlers"></div>
     </fieldset>
 
                 <% if(session.get("wsdl") || ( api && api.wsdl )) {
@@ -558,7 +558,7 @@
             <div class="controls">
                 {{#each helpers}}
                     <label class="checkbox">
-                    <input id="{{ . }}" type="checkbox" value="{{ . }}" class="http_verb_select" >  {{ . }}
+                    <input id="{{ . }}" type="checkbox" value="{{ . }}"  >  {{ . }}
                     </label>
                 {{/each}}
             </div>

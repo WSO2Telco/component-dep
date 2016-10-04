@@ -18,6 +18,7 @@ package com.wso2telco.dep.publisheventsdata.internal;
 
 import com.hazelcast.core.HazelcastInstance;
 
+import java.util.Map;
 import java.util.Properties;
 
 // TODO: Auto-generated Javadoc
@@ -31,6 +32,9 @@ public class EventsDataHolder {
     
     /** The hazelcast instance. */
     private static HazelcastInstance hazelcastInstance;
+
+    /** The publisherEventConfMap instance. */
+    private static Map<String, String> publisherEventConfMap;
 
     /**
      * Instantiates a new  events data holder.
@@ -72,5 +76,23 @@ public class EventsDataHolder {
      */
     public static HazelcastInstance getHazelcastInstance() {
         return hazelcastInstance;
+    }
+
+    /**
+     * Gets the Get Publisher Event ConfMap.
+     *
+     * @return the publisherEventConfMap
+     */
+    public static Map<String, String> getPublisherEventConfMap() {
+        return publisherEventConfMap;
+    }
+
+    /**
+     * Gets the Set Publisher Event ConfMap.
+     *
+     * @return the publisherEventConfMap
+     */
+    public static void setPublisherEventConfMap(Map<String, String> publisherEventConfMap) {
+        EventsDataHolder.publisherEventConfMap = publisherEventConfMap;
     }
 }

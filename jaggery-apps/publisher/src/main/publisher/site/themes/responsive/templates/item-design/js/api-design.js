@@ -74,8 +74,6 @@ function APIDesigner(){
     Handlebars.partials['designer-resources-template'] = Handlebars.compile(source);
     source   = $("#designer-resource-template").html();
     Handlebars.partials['designer-resource-template'] = Handlebars.compile(source);
-    source   = $("#designer-resource-template").html();
-    Handlebars.partials['designer-resource-template'] = Handlebars.compile(source);
     if($('#scopes-template').length){
         source   = $("#scopes-template").html();
         Handlebars.partials['scopes-template'] = Handlebars.compile(source);        
@@ -525,17 +523,17 @@ APIDesigner.prototype.render_resources = function(){
         "has_resources" : this.has_resources()
     }
 
-    context_handlers = {
+    /*context_handlers = {
         "doc" : this.transform(this.api_doc),
         "helpers" :HELPERS,
         "has_resources" : this.has_resources()
-    }
+    }*/
 
     var output = Handlebars.partials['designer-resources-template'](context);
     $('#resource_details').html(output);
 
-    var output_handlers = Handlebars.partials['designer-resources-handlers'](context_handlers);
-    $("#resource_handlers").html(output_handlers);
+   // var output_handlers = Handlebars.partials['designer-resources-handlers'](context_handlers);
+   // $("#resource_handlers").html(output_handlers);
 
     $('#resource_details').find('.scope_select').editable({
         emptytext: '+ Scope',

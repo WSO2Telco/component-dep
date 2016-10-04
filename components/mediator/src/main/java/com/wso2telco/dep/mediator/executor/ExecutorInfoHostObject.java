@@ -125,16 +125,24 @@ public class ExecutorInfoHostObject extends ScriptableObject {
     //TODO:use osgi service to bind data.
     private void bindExecutors () {
 
-        executors.put("payment_executor", new ExecutorObj("payment_executor","com.wso2telco.dep.mediator.impl.payment.PaymentExecutor", "Payment Executor Description"));
-        executors.put("location_executor", new ExecutorObj("location_executor","com.wso2telco.dep.mediator.impl.LocationExecutor", "Location Executor Description"));
-        //executors.put("wallet_executor", new ExecutorObj("wallet_executor","Wallet Executor", "Wallet Executor Description"));
+        executors.put("Default_Executor", new ExecutorObj("Default_executor","com.wso2telco.dep.mediator.impl.DefaultExecutor", "Default Executor Description"));
+        executors.put("Credit_Executor", new ExecutorObj("Credit_executor","com.wso2telco.dep.mediator.impl.credit.CreditExecutor", "Credit Executor Description"));
+        executors.put("Location_Executor", new ExecutorObj("Location_executor","com.wso2telco.dep.mediator.impl.LocationExecutor", "Location Executor Description"));
+        executors.put("Payment_Executor", new ExecutorObj("Payment_executor","com.wso2telco.dep.mediator.impl.payment.PaymentExecutor", "Payment Executor Description"));
+        executors.put("Provision_Executor", new ExecutorObj("Provision_executor","com.wso2telco.dep.mediator.impl.provision.ProvisionExecutor", "Provision Executor Description"));
+        executors.put("SMS_Executor", new ExecutorObj("SMS_executor","com.wso2telco.dep.mediator.impl.smsmessaging.SMSExecutor", "SMS Executor Description"));
+        executors.put("USSD_Executor", new ExecutorObj("USSD_executor","com.wso2telco.dep.mediator.impl.ussd.USSDExecutor", "USSD Executor Description"));
+        executors.put("Wallet_Executor", new ExecutorObj("Wallet_executor","com.wso2telco.dep.mediator.impl.wallet.WalletExecutor", "Wallet Executor Description"));
     }
 
     //TODO: bind these handlers in correct sequence. Sequence here is the same sequence that will  be added to the synapse configuration file.
     private void bindHandlers () {
 
-        handlers.put("DialogAPIRequestHandler", new HandlerObj("DialogAPIRequestHandler", "com.wso2telco.dep.verificationhandler.verifier.DialogAPIRequestHandler"));
-        handlers.put("DialogBlacklistHandler", new HandlerObj("DialogBlacklistHandler", "com.wso2telco.dep.verificationhandler.verifier.DialogBlacklistHandler"));
+        handlers.put("APIRequestHandler", new HandlerObj("APIRequestHandler", "com.wso2telco.dep.verificationhandler.verifier.APIRequestHandler"));
+        handlers.put("BlacklistHandler", new HandlerObj("BlacklistHandler", "com.wso2telco.dep.verificationhandler.verifier.BlacklistHandler"));
+        handlers.put("DialogSubscriptionHandler", new HandlerObj("DialogSubscriptionHandler", "com.wso2telco.dep.verificationhandler.verifier.SubscriptionHandler"));
+        handlers.put("DialogPaymentHandler", new HandlerObj("DialogPaymentHandler", "com.wso2telco.dep.verificationhandler.verifier.PaymentHandler"));
+        handlers.put("DialogWhitelistHandler", new HandlerObj("DialogWhitelistHandler", "com.wso2telco.dep.verificationhandler.verifier.WhitelistHandler"));
     }
 
     public static NativeArray getHandlerObjects (Scriptable thisObj) {

@@ -534,16 +534,16 @@ APIDesigner.prototype.render_resources = function(){
     }
 
     context_handlers = {
-        "doc" : this.transform(this.api_doc),
+        //"doc" : this.transform(this.api_doc),
         "helpers" :HELPERS,
-        "has_resources" : this.has_resources()
+        //"has_resources" : this.has_resources()
     }
 
     var output = Handlebars.partials['designer-resources-template'](context);
     $('#resource_details').html(output);
     
     var output_handlers = Handlebars.partials['designer-resources-handlers'](context_handlers);
-    $("#resource_handlers").html(output_handlers);
+    $('#resource_handlers').html(output_handlers);
     
     $('#resource_details').find('.scope_select').editable({
         emptytext: '+ Scope',

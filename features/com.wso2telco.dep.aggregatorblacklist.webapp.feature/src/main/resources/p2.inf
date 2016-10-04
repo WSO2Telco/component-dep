@@ -1,0 +1,2 @@
+instructions.configure = \
+org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.aggregatorblacklist.webapp_${feature.version}/generated/aggregator-blacklist.war,target:${installFolder}/../../deployment/server/webapps/aggregator-blacklist.war,overwrite:true);
