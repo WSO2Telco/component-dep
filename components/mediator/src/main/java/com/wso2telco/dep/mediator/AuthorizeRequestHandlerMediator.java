@@ -26,7 +26,7 @@ import org.json.JSONObject;
 import java.util.UUID;
 
 
-public class RequestHandlerMediator extends AbstractMediator {
+public class AuthorizeRequestHandlerMediator extends AbstractMediator {
 
     private DataPublisherClient publisherClient;
 

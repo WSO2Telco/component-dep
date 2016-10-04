@@ -33,15 +33,9 @@ import org.apache.synapse.commons.json.JsonUtil;
 import org.apache.synapse.core.SynapseEnvironment;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.apache.synapse.rest.AbstractHandler;
-import org.json.JSONException;
-import org.json.XML;
 import org.wso2.carbon.apimgt.gateway.handlers.Utils;
 import org.wso2.carbon.apimgt.gateway.handlers.security.APISecurityConstants;
 import javax.naming.NamingException;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,10 +49,10 @@ import java.util.regex.Pattern;
 /**
  * The Class DialogWhitelistHandler.
  */
-public class DialogWhitelistHandler extends AbstractHandler implements ManagedLifecycle {
+public class WhitelistHandler extends AbstractHandler implements ManagedLifecycle {
     
     /** The Constant log. */
-    private static final Log log = LogFactory.getLog(DialogWhitelistHandler.class);
+    private static final Log log = LogFactory.getLog(WhitelistHandler.class);
     
     /** The whitelist numbers. */
     private List<String> whitelistNumbers;
@@ -245,9 +239,9 @@ public class DialogWhitelistHandler extends AbstractHandler implements ManagedLi
                 //Retrieving API ID
                 apiID = DatabaseUtils.getAPIId(api);
             } catch (NamingException ex) {
-                Logger.getLogger(DialogWhitelistHandler.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(WhitelistHandler.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex) {
-                Logger.getLogger(DialogWhitelistHandler.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(WhitelistHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
 
 
