@@ -28,6 +28,7 @@ import org.apache.synapse.MessageContext;
 import org.apache.synapse.SynapseConstants;
 import org.apache.synapse.core.SynapseEnvironment;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
+import org.apache.synapse.mediators.AbstractMediator;
 import org.apache.synapse.rest.AbstractHandler;
 import org.apache.synapse.transport.passthru.util.RelayUtils;
 import org.json.JSONException;
@@ -52,7 +53,7 @@ import java.util.logging.Logger;
  * The Class BlacklistHandler.
  */
 //Handlers should extend AbstractHandler Class
-public class BlacklistHandler extends AbstractHandler implements ManagedLifecycle {
+public class BlacklistHandler extends AbstractMediator implements ManagedLifecycle {
 
     /** The Constant log. */
     private static final Log log = LogFactory.getLog(BlacklistHandler.class);
@@ -87,7 +88,7 @@ public class BlacklistHandler extends AbstractHandler implements ManagedLifecycl
      * @see org.apache.synapse.rest.Handler#handleRequest(org.apache.synapse.MessageContext)
      */
     //Entry point for the blacklist Module
-    public boolean handleRequest(MessageContext messageContext) {
+    public boolean mediate(MessageContext messageContext) {
         
         String resourceUrl=(String) messageContext.getProperty("REST_FULL_REQUEST_PATH");
         

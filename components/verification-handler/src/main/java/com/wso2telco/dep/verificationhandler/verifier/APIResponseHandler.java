@@ -15,41 +15,36 @@
  ******************************************************************************/
 package com.wso2telco.dep.verificationhandler.verifier;
 
-
 import com.wso2telco.dep.datapublisher.DataPublisherConstants;
 import com.wso2telco.dep.datapublisher.NorthboundDataPublisherClient;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.commons.json.JsonUtil;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.apache.synapse.mediators.AbstractMediator;
-import org.apache.synapse.rest.AbstractHandler;
 
- 
 // TODO: Auto-generated Javadoc
+
 /**
  */
-public class APIRequestHandler extends AbstractMediator {
+public class APIResponseHandler extends AbstractMediator {
 
     /** The Constant log. */
-    private static final Log log   = LogFactory.getLog(APIRequestHandler.class);
+    private static final Log log   = LogFactory.getLog(APIResponseHandler.class);
     
     /** The data publisher client. */
     private NorthboundDataPublisherClient dataPublisherClient;
 
     /* (non-Javadoc)
-     * @see org.apache.synapse.rest.Handler#handleRequest(org.apache.synapse.MessageContext)
+     * @see org.apache.synapse.rest.Handler#handleResponse(org.apache.synapse.MessageContext)
      */
     public boolean mediate(MessageContext messageContext) {
-
-        if (dataPublisherClient == null) {
-            dataPublisherClient = new NorthboundDataPublisherClient();
-        }
         String jsonBody = JsonUtil.jsonPayloadToString(((Axis2MessageContext) messageContext).getAxis2MessageContext());
-        dataPublisherClient.publishRequest(messageContext , jsonBody);
-        return true;
 
+        messageContext.setProperty(DataPublisherConstants.MSISDN, messageContext.getProperty("UserMSISDN"));
+        dataPublisherClient.publishResponse(messageContext, jsonBody);
+        return true; // Should never stop the message flow
     }
+
 }
