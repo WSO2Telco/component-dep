@@ -73,7 +73,7 @@ public class ACRHandler extends AbstractHandler implements ManagedLifecycle {
             //Initialization happens once only
             intialize();
         } catch (SQLException ex) {
-            Logger.getLogger(BlacklistHandler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DialogBlacklistHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         //Read resource URL from context

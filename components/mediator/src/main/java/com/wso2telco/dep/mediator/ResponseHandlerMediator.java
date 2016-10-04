@@ -38,7 +38,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.UUID;
 
-public class AuthorizeResponseHandlerMediator extends AbstractMediator {
+public class ResponseHandlerMediator extends AbstractMediator {
 
     private DataPublisherClient publisherClient;
 

@@ -24,9 +24,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.ManagedLifecycle;
 import org.apache.synapse.MessageContext;
+import org.apache.synapse.SynapseConstants;
 import org.apache.synapse.core.SynapseEnvironment;
+import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.apache.synapse.rest.AbstractHandler;
 import org.wso2.carbon.apimgt.api.APIManagementException;
+import org.wso2.carbon.apimgt.gateway.handlers.Utils;
+import org.wso2.carbon.apimgt.gateway.handlers.security.APISecurityConstants;
 
 // TODO: Auto-generated Javadoc
 //This is the Handler class for Blacklist Numbers Module
@@ -34,10 +38,10 @@ import org.wso2.carbon.apimgt.api.APIManagementException;
  * The Class DialogSubscriptionHandler.
  */
 //Handlers should extend AbstractHandler Class
-public class SubscriptionHandler extends AbstractHandler implements ManagedLifecycle {
+public class DialogSubscriptionHandler extends AbstractHandler implements ManagedLifecycle {
 
     /** The Constant log. */
-    private static final Log log = LogFactory.getLog(BlacklistHandler.class);
+    private static final Log log = LogFactory.getLog(DialogBlacklistHandler.class);
     
     /** The subscription list. */
     private List<String> subscriptionList;
@@ -66,7 +70,7 @@ public class SubscriptionHandler extends AbstractHandler implements ManagedLifec
         try {
              subscriptionList = DatabaseUtils.ReadSubscriptionNumbers(user,application,api);
         } catch (APIManagementException ex) {
-            Logger.getLogger(BlacklistHandler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DialogBlacklistHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         
@@ -84,7 +88,7 @@ public class SubscriptionHandler extends AbstractHandler implements ManagedLifec
                     subscriptionCount = DatabaseUtils.getSubscriptionCount(user,application,api);
 
                 } catch (SQLException ex) {
-                    Logger.getLogger(BlacklistHandler.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(DialogBlacklistHandler.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 
                 
@@ -100,9 +104,9 @@ public class SubscriptionHandler extends AbstractHandler implements ManagedLifec
                     try { 
                         DatabaseUtils.writeSubscription(user,application,api);
                     } catch (SQLException ex) {
-                        Logger.getLogger(SubscriptionHandler.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(DialogSubscriptionHandler.class.getName()).log(Level.SEVERE, null, ex);
                     } catch (NamingException ex) {
-                        Logger.getLogger(SubscriptionHandler.class.getName()).log(Level.SEVERE, null, ex);
+                        Logger.getLogger(DialogSubscriptionHandler.class.getName()).log(Level.SEVERE, null, ex);
                     }
                 }
 
@@ -111,7 +115,7 @@ public class SubscriptionHandler extends AbstractHandler implements ManagedLifec
 
 
             } catch (APIManagementException ex) {
-                Logger.getLogger(BlacklistHandler.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DialogBlacklistHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
         }
         return true;

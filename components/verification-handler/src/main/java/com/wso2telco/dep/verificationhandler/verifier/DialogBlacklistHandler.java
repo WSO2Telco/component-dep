@@ -28,15 +28,15 @@ import org.apache.synapse.MessageContext;
 import org.apache.synapse.SynapseConstants;
 import org.apache.synapse.core.SynapseEnvironment;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
-import org.apache.synapse.mediators.AbstractMediator;
+import org.apache.synapse.rest.AbstractHandler;
 import org.apache.synapse.transport.passthru.util.RelayUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 import org.json.XML;
 import org.wso2.carbon.apimgt.gateway.handlers.Utils;
 import org.wso2.carbon.apimgt.gateway.handlers.security.APISecurityConstants;
-//import com.wso2telco.dep.datapublisher.DataPublisherConstants;
-//import com.wso2telco.dep.datapublisher.NorthboundDataPublisherClient;
+import com.wso2telco.dep.datapublisher.DataPublisherConstants;
+import com.wso2telco.dep.datapublisher.NorthboundDataPublisherClient;
 import javax.naming.NamingException;
 import javax.xml.stream.XMLStreamException;
 import java.io.IOException;
@@ -52,10 +52,10 @@ import java.util.logging.Logger;
  * The Class DialogBlacklistHandler.
  */
 //Handlers should extend AbstractHandler Class
-public class BlacklistHandler extends AbstractMediator implements ManagedLifecycle {
+public class DialogBlacklistHandler extends AbstractHandler implements ManagedLifecycle {
 
     /** The Constant log. */
-    private static final Log log = LogFactory.getLog(BlacklistHandler.class);
+    private static final Log log = LogFactory.getLog(DialogBlacklistHandler.class);
     
     /** The is initialized. */
     private static boolean isInitialized = false;
@@ -67,7 +67,7 @@ public class BlacklistHandler extends AbstractMediator implements ManagedLifecyc
     private List<String> subscriptionList;
     
     /** The data publisher client. */
-//    private NorthboundDataPublisherClient dataPublisherClient;
+    private NorthboundDataPublisherClient dataPublisherClient;
     
    
     //Initialize BlackList Numbers
@@ -87,7 +87,7 @@ public class BlacklistHandler extends AbstractMediator implements ManagedLifecyc
      * @see org.apache.synapse.rest.Handler#handleRequest(org.apache.synapse.MessageContext)
      */
     //Entry point for the blacklist Module
-    public boolean mediate(MessageContext messageContext) {
+    public boolean handleRequest(MessageContext messageContext) {
         
         String resourceUrl=(String) messageContext.getProperty("REST_FULL_REQUEST_PATH");
         
@@ -128,9 +128,9 @@ public class BlacklistHandler extends AbstractMediator implements ManagedLifecyc
                 //This will let the request to go further down to backends
             }
         } catch (SQLException ex) {
-            Logger.getLogger(BlacklistHandler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DialogBlacklistHandler.class.getName()).log(Level.SEVERE, null, ex);
         } catch (NamingException ex) {
-            Logger.getLogger(BlacklistHandler.class.getName()).log(Level.SEVERE, null, ex);
+            Logger.getLogger(DialogBlacklistHandler.class.getName()).log(Level.SEVERE, null, ex);
         }
         
         return true;
@@ -254,9 +254,9 @@ public class BlacklistHandler extends AbstractMediator implements ManagedLifecyc
      * @param faultPayload the fault payload
      */
     private void publishResponseData(MessageContext messageContext, OMElement faultPayload) {
-//        if (dataPublisherClient == null) {
-//            dataPublisherClient = new NorthboundDataPublisherClient();
-//        }
+        if (dataPublisherClient == null) {
+            dataPublisherClient = new NorthboundDataPublisherClient();
+        }
         String xmlPayload = faultPayload.toString();
         String jsonBody = "";
         //convert xml response to json
@@ -267,8 +267,8 @@ public class BlacklistHandler extends AbstractMediator implements ManagedLifecyc
             log.info(je.toString());
         }
         //publish data to BAM
-//        messageContext.setProperty(DataPublisherConstants.MSISDN, messageContext.getProperty("UserMSISDN"));
-//        dataPublisherClient.publishResponse(messageContext, jsonBody);
+        messageContext.setProperty(DataPublisherConstants.MSISDN, messageContext.getProperty("UserMSISDN"));
+        dataPublisherClient.publishResponse(messageContext, jsonBody);
     }
     
 

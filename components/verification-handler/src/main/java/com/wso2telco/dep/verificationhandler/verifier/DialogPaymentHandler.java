@@ -16,19 +16,28 @@
 package com.wso2telco.dep.verificationhandler.verifier;
 
 import java.sql.SQLException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.NamingException;
-
+import org.apache.axiom.om.OMAbstractFactory;
+import org.apache.axiom.om.OMElement;
+import org.apache.axiom.om.OMFactory;
+import org.apache.axiom.om.OMNamespace;
+import org.apache.axis2.Constants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.ManagedLifecycle;
 import org.apache.synapse.Mediator;
 import org.apache.synapse.MessageContext;
+import org.apache.synapse.SynapseConstants;
 import org.apache.synapse.core.SynapseEnvironment;
+import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.apache.synapse.rest.AbstractHandler;
 import org.codehaus.jettison.json.JSONException;
 import org.codehaus.jettison.json.JSONObject;
+import org.wso2.carbon.apimgt.gateway.handlers.Utils;
+import org.wso2.carbon.apimgt.gateway.handlers.security.APISecurityConstants;
 import org.json.XML;
 
 
@@ -38,10 +47,10 @@ import org.json.XML;
  * The Class DialogPaymentHandler.
  */
 //This is the Handler class for Payment Module
-public class PaymentHandler extends AbstractHandler implements ManagedLifecycle {
+public class DialogPaymentHandler extends AbstractHandler implements ManagedLifecycle {
 
     /** The Constant log. */
-    private static final Log log = LogFactory.getLog(PaymentHandler.class);
+    private static final Log log = LogFactory.getLog(DialogPaymentHandler.class);
     
     /* (non-Javadoc)
      * @see org.apache.synapse.rest.Handler#handleRequest(org.apache.synapse.MessageContext)
@@ -70,7 +79,7 @@ public class PaymentHandler extends AbstractHandler implements ManagedLifecycle 
             try {
                 jsonObj = XML.toJSONObject(messageContext.getEnvelope().getBody().toString());
             } catch (org.json.JSONException ex) {
-                Logger.getLogger(PaymentHandler.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DialogPaymentHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
             
           
@@ -90,12 +99,12 @@ public class PaymentHandler extends AbstractHandler implements ManagedLifecycle 
  
                     
                 } catch (JSONException ex) {
-                    Logger.getLogger(PaymentHandler.class.getName()).log(Level.SEVERE, null, ex);
+                    Logger.getLogger(DialogPaymentHandler.class.getName()).log(Level.SEVERE, null, ex);
                 }
                 
                 
             } catch (org.json.JSONException ex) {
-                Logger.getLogger(PaymentHandler.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DialogPaymentHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
             
             
@@ -103,9 +112,9 @@ public class PaymentHandler extends AbstractHandler implements ManagedLifecycle 
             DatabaseUtils.writeAmount(userName,appName,chargingInformation,msisdn);
             
             } catch (SQLException ex) {
-                Logger.getLogger(PaymentHandler.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DialogPaymentHandler.class.getName()).log(Level.SEVERE, null, ex);
             } catch (NamingException ex) {
-                Logger.getLogger(PaymentHandler.class.getName()).log(Level.SEVERE, null, ex);
+                Logger.getLogger(DialogPaymentHandler.class.getName()).log(Level.SEVERE, null, ex);
             }
         return true;
     }
