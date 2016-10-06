@@ -114,7 +114,7 @@ public class EventsDataPublisherClient {
         dataPublisherDTO.setApplicationId(applicationId);
 
         dataPublisherDTO.setOperatorId((String) mc.getProperty(PublishEventsConstants.OPERATOR_ID));
-        dataPublisherDTO.setResponseCode((String) mc.getProperty(PublishEventsConstants.RESPONSE_CODE));
+        dataPublisherDTO.setResponseCode((Integer) mc.getProperty(PublishEventsConstants.RESPONSE_CODE));
         dataPublisherDTO.setMsisdn((String) mc.getProperty(PublishEventsConstants.MSISDN));
         String chargeAmountStr = (String) mc.getProperty(PublishEventsConstants.CHARGE_AMOUNT);
         dataPublisherDTO.setChargeAmount(Double.parseDouble(chargeAmountStr));

@@ -32,7 +32,7 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
     private String operatorId;
     
     /** The response code. */
-    private String responseCode;
+    private int responseCode;
     
     /** The msisdn. */
     private String msisdn;
@@ -195,7 +195,7 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
      *
      * @return the response code
      */
-    public String getResponseCode() {
+    public int getResponseCode() {
         return responseCode;
     }
 
@@ -204,7 +204,7 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
      *
      * @param responseCode the new response code
      */
-    public void setResponseCode(String responseCode) {
+    public void setResponseCode(int responseCode) {
         this.responseCode = responseCode;
     }
 
@@ -564,7 +564,7 @@ public class SouthboundResponsePublisherDTO extends ResponsePublisherDTO {
      * @return the object
      */
     public Object createPayload() {
-        return new Object[]{getConsumerKey(), getContext(), getApi_version(), getApi(), getResourcePath(), getMethod(),
+        return new Object[]{getConsumerKey(), getContext(), getApiVersion(), getApi(), getResourcePath(), getMethod(),
             getVersion(), this.getResponse(), getResponseTime(), getServiceTime(), getUsername(), getTenantDomain(), getHostName(),
             getApiPublisher(), getApplicationName(), getApplicationId(),
             getRequestId(), getOperatorId(), getResponseCode(), getMsisdn(), getChargeAmount(), getPurchaseCategoryCode(),

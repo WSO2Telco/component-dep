@@ -22,6 +22,7 @@ import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
+import org.apache.synapse.commons.json.JsonUtil;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.apache.synapse.mediators.AbstractMediator;
 import org.json.JSONException;
@@ -54,7 +55,6 @@ public class HandlerMediator extends AbstractMediator {
      */
     public boolean mediate(MessageContext context) {
 
-        
         String jsonBody = null;
         try {
             Class clazz = Class.forName(executorClass);

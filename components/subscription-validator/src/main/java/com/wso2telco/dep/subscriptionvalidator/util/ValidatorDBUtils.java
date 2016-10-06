@@ -63,7 +63,7 @@ public class ValidatorDBUtils {
         int apiId = -1;
         try {
             conn = getApiMgtDBConnection();
-            apiId = ApiMgtDAO.getAPIID(apiIdent, conn);
+            apiId = ApiMgtDAO.getInstance().getAPIID(apiIdent, conn);
         } catch (SQLException e) {
             handleException("Error occured while getting API ID of API: " + apiIdent + " from the database", e);
         } finally {

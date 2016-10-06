@@ -31,6 +31,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.axiom.core.Axis;
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -302,7 +303,7 @@ public abstract class RequestExecutor {
 		validoperators = validoperatorsDup;
 		subResourcePath = (String) context.getProperty("REST_SUB_REQUEST_PATH");
 		resourceUrl = (String) context.getProperty("REST_FULL_REQUEST_PATH");
-		httpMethod = (String) context.getProperty("REST_METHOD");
+		httpMethod = (String) context.getProperty("api.ut.HTTP_METHOD");
 
 
 		/*String jsonPayloadToString = JsonUtil
@@ -315,6 +316,8 @@ public abstract class RequestExecutor {
 					.jsonPayloadToString(((Axis2MessageContext) context)
 							.getAxis2MessageContext());
 			jsonBody = new JSONObject(jsonPayloadToString);
+
+
 		} catch (JSONException e) {
 			log.error(e.getMessage());
 			// ((Axis2MessageContext) context).setAxis2MessageContext("");
@@ -1108,14 +1111,14 @@ public abstract class RequestExecutor {
 
 			connection.setUseCaches(false);
 
-			log.info("Southbound Request URL: " + connection.getRequestMethod() + " " + connection.getURL() 
+			log.info("Southbound Request URL: " + connection.getRequestMethod() + " " + connection.getURL()
             		+ " Request ID: " + UID.getRequestID(messageContext));
             if (log.isDebugEnabled()) {
                 log.debug("Southbound Request Headers: " + connection.getRequestProperties());
             }
-            log.info("Southbound Request Body: " + requestStr 
+            log.info("Southbound Request Body: " + requestStr
             		+ " Request ID: " + UID.getRequestID(messageContext));
-            
+
 			statusCode = connection.getResponseCode();
 			if ((statusCode != 200) && (statusCode != 201) && (statusCode != 400) && (statusCode != 401)) {
 				throw new RuntimeException("Failed : HTTP error code : " + statusCode);
@@ -1142,10 +1145,10 @@ public abstract class RequestExecutor {
 	            }
 	            log.info("Southbound Response Body: " + retStr
 	            		+ " Request ID: " + UID.getRequestID(messageContext));
-			
+
 			SouthboundRetrieveResponse sbRetrieveResponse = gson.fromJson(retStr,SouthboundRetrieveResponse.class);
             if (sbRetrieveResponse!= null && sbRetrieveResponse.getInboundSMSMessageList() != null) {
-				
+
 				if (sbRetrieveResponse.getInboundSMSMessageList().getInboundSMSMessage()!=null && sbRetrieveResponse.getInboundSMSMessageList().getInboundSMSMessage().length!=0) {
            		InboundSMSMessage[] inboundSMSMessageResponses = sbRetrieveResponse.getInboundSMSMessageList().getInboundSMSMessage();
                     messageContext.setProperty(DataPublisherConstants.RESPONSE, String.valueOf(inboundSMSMessageResponses.length));
@@ -1157,10 +1160,10 @@ public abstract class RequestExecutor {
         			inboundSMSMessageList.setResourceURL("Not Available");
         			inboundSMSMessageList.setTotalNumberOfPendingMessages("0");
         			sbRetrieveResponse.setInboundSMSMessageList(inboundSMSMessageList);
-				
+
 				InboundSMSMessage[] inboundSMSMessageResponsesN = sbRetrieveResponse.getInboundSMSMessageList().getInboundSMSMessage();
 				messageContext.setProperty(DataPublisherConstants.RESPONSE,String.valueOf(inboundSMSMessageResponsesN.length));
-        		} 
+        		}
 			}else {
 				messageContext.setProperty(DataPublisherConstants.RESPONSE,String.valueOf(0));
 			}

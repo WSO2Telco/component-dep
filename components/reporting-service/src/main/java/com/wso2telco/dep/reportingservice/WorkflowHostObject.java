@@ -100,7 +100,7 @@ public class WorkflowHostObject extends ScriptableObject {
 		String tierId = (String) args[1];
 		
 		if(workflowReference != null) {
-			ApiMgtDAO apiMgtDAO = new ApiMgtDAO();
+			ApiMgtDAO apiMgtDAO = ApiMgtDAO.getInstance();
 			WorkflowDTO workflowDTO;
 			try {
 				workflowDTO = apiMgtDAO.retrieveWorkflow(workflowReference);
@@ -319,7 +319,7 @@ public class WorkflowHostObject extends ScriptableObject {
 		String tierId = (String) args[1];
 		
 		if(workflowReference != null) {
-			ApiMgtDAO apiMgtDAO = new ApiMgtDAO();
+			ApiMgtDAO apiMgtDAO = ApiMgtDAO.getInstance();
 			WorkflowDTO workflowDTO;
 			try {
 				workflowDTO = apiMgtDAO.retrieveWorkflow(workflowReference);
