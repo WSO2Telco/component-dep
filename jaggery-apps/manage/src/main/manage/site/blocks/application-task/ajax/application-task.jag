@@ -59,7 +59,6 @@ include("/jagg/jagg.jag");
 		taskId = request.getParameter("taskId");
 		taskManagerModule = jagg.module("taskmanager");
 		result = taskManagerModule.getApplicationDetails(taskId);
-
 		log.debug("::: Application details retrieval result: >> "+ stringify(result));
 		//log.info("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ: " + taskId);
 		// 		log.info("::: Application details retrieval result: >> "+ stringify(result));
