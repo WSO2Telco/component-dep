@@ -303,9 +303,9 @@ function getApplicationDetails(taskId){
                     var variable = applicationData[k];
                     var varName = variable.name;
                     switch (varName) {
-                        case "appTiers":
+                        case "tiersStr":
                             //hard coded until tiers are sent from executor
-                            tiersList = "Gold,Unlimited";
+                            tiersList = variable.value;
                             break;
                         case "applicationName":
                             applicationName = variable.value;
@@ -313,22 +313,23 @@ function getApplicationDetails(taskId){
                         case "applicationId":
                             appId = variable.value;
                             break;
-                        case "applicationDescription":
+                        case "description":
                             applicationDescription = variable.value;
                             break;
-                        case "username":
+                        case "userName":
                             username = variable.value;
                             break;
                     }
                 }
 
                 applicationDetails.applicationName = applicationName;
+                log.info("Application name" + applicationName);
                 applicationDetails.applicationDescription = applicationDescription;
-                applicationDetails.username = username;
+                applicationDetails.userName = username;
                 applicationDetails.taskId = taskId;
-
-                var listTiers = "Gold,Unlimited"
-                var tiers = listTiers.split(",");
+               // log.info("tiersList :"+tiersList +"userName"+username);
+               // var listTiers = "Gold,Unlimited"
+                var tiers = tiersList.split(",");
                 var tiersObject=[];
                 for(var i = 0; i < tiers.length; i++) {
                 	if (tiers[i] != "") {
