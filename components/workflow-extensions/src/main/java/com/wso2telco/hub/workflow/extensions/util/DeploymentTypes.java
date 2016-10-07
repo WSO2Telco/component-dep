@@ -1,7 +1,20 @@
 package com.wso2telco.hub.workflow.extensions.util;
 
-/**
- * Created by thilinicooray on 10/7/16.
- */
-public class DeploymentTypes {
+public enum DeploymentTypes
+{
+	HUB("hub"),
+	EXTERNAL_GATEWAY("external_gateway"),
+	INTERNAL_GATEWAY("internal_gateway");
+
+	private String deploymentType;
+
+	DeploymentTypes(String deploymentType) {
+
+		this.deploymentType = deploymentType;
+	}
+
+	public String getDeploymentType() {
+
+		return this.deploymentType;
+	}
 }
