@@ -32,6 +32,7 @@ $(document).ready(function() {
 	$('.js_completeBtn').click(function() {
 		var btn = $(this);
 		var taskId = btn.attr("data");
+		var taskName = btn.attr("taskName");
 		var iteration = btn.attr("iteration");
 		var description = $('#desc' + iteration).text();
 		var status = $('.js_stateDropDown').val();
@@ -56,6 +57,7 @@ else {
 			action : "completeTask",
 			status : status,
 			taskId : taskId,
+			taskName : taskName,
 			taskType : "application",
 			description : description,
 			selectedTier:tierId
@@ -224,7 +226,7 @@ function loadAllTaskTierDetails() {
 		}, function(result) {
 			if (!result.error) {
 				if (result.data != null) {
-					setTierDropDownDetails(result);	
+					setTierDropDownDetails(result);
 					setTaskDescriptions(result);
 				} else {
 					jagg.showLogin();

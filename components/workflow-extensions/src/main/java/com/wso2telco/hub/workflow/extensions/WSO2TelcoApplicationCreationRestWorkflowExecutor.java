@@ -6,10 +6,15 @@ import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.apimgt.api.APIConsumer;
 import org.wso2.carbon.apimgt.api.APIManagementException;
 import org.wso2.carbon.apimgt.api.WorkflowResponse;
+import org.wso2.carbon.apimgt.api.model.API;
+import org.wso2.carbon.apimgt.api.model.APIIdentifier;
 import org.wso2.carbon.apimgt.api.model.Application;
+import org.wso2.carbon.apimgt.api.model.Tier;
 import org.wso2.carbon.apimgt.impl.APIConstants;
+import org.wso2.carbon.apimgt.impl.APIManagerFactory;
 import org.wso2.carbon.apimgt.impl.dao.ApiMgtDAO;
 import org.wso2.carbon.apimgt.impl.dto.ApplicationWorkflowDTO;
 import org.wso2.carbon.apimgt.impl.dto.WorkflowDTO;
@@ -23,7 +28,9 @@ import com.wso2telco.hub.workflow.extensions.exceptions.WorkflowExtensionExcepti
 import com.wso2telco.hub.workflow.extensions.rest.client.BusinessProcessApi;
 
 import java.util.ArrayList;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 /**
  *
@@ -35,12 +42,20 @@ public class WSO2TelcoApplicationCreationRestWorkflowExecutor extends WorkflowEx
     private static final String TENANT_ID = "-1234";
     private static final String APPLICATION_CREATION_APPROVAL_PROCESS_NAME = "application_creation_approval_process";
     private static final String APPLICATION_NAME = "applicationName";
+    private static final String APPLICATION_ID = "applicationId";
     private static final String WORKFLOW_REF_ID = "workflowRefId";
     private static final String CALL_BACK_URL = "callBackUrl";
     private static final String OPERATORS = "operators";
     private static final String DEPLOYMENT_TYPE = "deployment_type";
     private static final String OPERATORS_SYSTEM_PARAM = "OPERATORS";
     private static final String DEPLOYMENT_TYPE_SYSTEM_PARAM = "DEPLOYMENT_TYPE";
+    private static final String TIER = "tier";
+    private static final String DESCRIPTION = "description";
+    private static final String TENANT_DOMAIN = "tenantDomain";
+    private static final String USER_NAME = "userName";
+    private static final String EXTERNAL_REFERENCE = "externalWorkflowReferenc";
+    private static final String TIERS_STR = "tiersStr";
+
 
     private String serviceEndpoint;
     private String username;
@@ -56,7 +71,7 @@ public class WSO2TelcoApplicationCreationRestWorkflowExecutor extends WorkflowEx
             log.debug("Service endpoint: " + serviceEndpoint + ", username: " + username);
         }
         super.execute(workflowDTO);
-
+        try{
         BusinessProcessApi api = Feign.builder()
                 .encoder(new JacksonEncoder())
                 .decoder(new JacksonDecoder())
@@ -73,10 +88,31 @@ public class WSO2TelcoApplicationCreationRestWorkflowExecutor extends WorkflowEx
         processInstanceRequest.setBusinessKey(appWorkFlowDTO.getExternalWorkflowReference());
         // TODO: how to read 'deployment_type' / how to check if hub flow or hub-as-a-gateway flow??
         // currently this is read from a java system parameter
+
+        APIConsumer   consumer = APIManagerFactory.getInstance().getAPIConsumer();
+        Set<Tier> tierSet= consumer.getTiers();
+
+
+         StringBuilder tiersStr = new StringBuilder();
+
+        for (Iterator iterator = tierSet.iterator(); iterator.hasNext(); ) {
+            Tier tier = (Tier) iterator.next();
+            String tierName = tier.getName();
+            tiersStr.append(tierName + ',');
+        }
+
         Variable deploymentType = new Variable(DEPLOYMENT_TYPE, getDeploymentType());
         Variable applicationName = new Variable(APPLICATION_NAME, application.getName());
         Variable workflorRefId = new Variable(WORKFLOW_REF_ID, appWorkFlowDTO.getExternalWorkflowReference());
         Variable callBackUrl = new Variable(CALL_BACK_URL, callBackURL);
+        Variable applicationId = new Variable(APPLICATION_ID,String.valueOf(appWorkFlowDTO.getWorkflowReference()));
+        Variable tier = new Variable(TIER,application.getTier());
+        Variable description = new Variable(DESCRIPTION,application.getDescription());
+        Variable tenantDomain = new Variable(TENANT_DOMAIN,appWorkFlowDTO.getTenantDomain());
+        Variable userName = new Variable(USER_NAME,appWorkFlowDTO.getUserName());
+        Variable externalWorkflowReference = new Variable(EXTERNAL_REFERENCE,appWorkFlowDTO.getExternalWorkflowReference());
+        Variable tiers = new Variable(TIERS_STR,tiersStr.toString());
+
         // TODO: get operators via the osgi service
         // currently this is read from a java system parameter
         Variable operators = new Variable(OPERATORS, getOperators());
@@ -86,7 +122,8 @@ public class WSO2TelcoApplicationCreationRestWorkflowExecutor extends WorkflowEx
 
         if (log.isDebugEnabled()) {
             log.debug("Application name: " + applicationName + ", deployment type: " + deploymentType + ", callback url: " + callBackURL +
-                    ", workflow reference id: " + workflorRefId + ", service endpoint: " + serviceEndpoint);
+                    ", workflow reference id: " + workflorRefId + ", service endpoint: " + serviceEndpoint + ", tier: " + tier + ", description: " + description +
+                    ", tenantDomain: " + tenantDomain + ", userName: " + userName +",externalWorkflowReference :"+externalWorkflowReference + ",tiers :"+tiers);
         }
 
         List<Variable> variables = new ArrayList<Variable>();
@@ -96,6 +133,13 @@ public class WSO2TelcoApplicationCreationRestWorkflowExecutor extends WorkflowEx
         variables.add(workflorRefId);
         variables.add(callBackUrl);
         variables.add(operators);
+        variables.add(applicationId);
+        variables.add(tier);
+        variables.add(description);
+        variables.add(tenantDomain);
+        variables.add(userName);
+        variables.add(externalWorkflowReference);
+        variables.add(tiers);
 
         processInstanceRequest.setVariables(variables);
 
@@ -112,7 +156,10 @@ public class WSO2TelcoApplicationCreationRestWorkflowExecutor extends WorkflowEx
 
         log.info("Application Creation approval process instance task with business key " +
                 appWorkFlowDTO.getExternalWorkflowReference() + " created successfully");
-
+        } catch (APIManagementException e) {
+            log.error("Error in obtaining APIConsumer", e);
+            throw new WorkflowException("Error in obtaining APIConsumer", e);
+        }
         return new GeneralWorkflowResponse();
     }
 

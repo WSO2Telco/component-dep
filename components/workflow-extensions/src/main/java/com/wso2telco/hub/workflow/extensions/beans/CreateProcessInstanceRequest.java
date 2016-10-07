@@ -27,7 +27,7 @@ public class CreateProcessInstanceRequest {
 
     private String businessKey;
 
-    private String tenantId;
+    //private String tenantId;
 
     private List<Variable> variables;
 
@@ -35,7 +35,7 @@ public class CreateProcessInstanceRequest {
 
     public CreateProcessInstanceRequest (String processDefinitionKey, String tenantId) {
         this.processDefinitionKey = processDefinitionKey;
-        this.tenantId = tenantId;
+        //this.tenantId = tenantId;
     }
 
 
@@ -55,13 +55,13 @@ public class CreateProcessInstanceRequest {
         this.businessKey = businessKey;
     }
 
-    public String getTenantId() {
+    /*public String getTenantId() {
         return tenantId;
-    }
+    }*/
 
-    public void setTenantId(String tenantId) {
+    /*public void setTenantId(String tenantId) {
         this.tenantId = tenantId;
-    }
+    }*/
 
     public List<Variable> getVariables() {
         return variables;
