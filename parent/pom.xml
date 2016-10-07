@@ -53,6 +53,16 @@
 
 
 	<repositories>
+		    <repository>
+                        <id>wso2-nexus</id>
+                        <name>WSO2  Repository</name>
+                        <url>https://maven.wso2.org/nexus/content/groups/wso2-public</url>
+                        <releases>
+                                <enabled>true</enabled>
+                                <updatePolicy>daily</updatePolicy>
+                                <checksumPolicy>ignore</checksumPolicy>
+                        </releases>
+                </repository>
 
 		<repository>
 			<id>wso2telco-nexus</id>
@@ -574,7 +584,7 @@
 					</execution>
 				</executions>
 			</plugin>
-			<plugin>
+			<!--plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-javadoc-plugin</artifactId>
 				<executions>
@@ -586,9 +596,9 @@
 					</execution>
 				</executions>
 				<configuration>
-					<!--additionalparam>-Xdoclint:none</additionalparam -->
+					<additionalparam>-Xdoclint:none</additionalparam>
 				</configuration>
-			</plugin>
+			</plugin-->
 		</plugins>
 	</build>
 	<profiles>
@@ -596,7 +606,7 @@
 			<id>release</id>
 			<build>
 				<plugins>
-					<plugin>
+					<!--plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-javadoc-plugin</artifactId>
 						<executions>
@@ -614,7 +624,7 @@
 								</goals>
 							</execution>
 						</executions>
-					</plugin>
+					</plugin-->
 					<plugin>
 						<groupId>org.apache.maven.plugins</groupId>
 						<artifactId>maven-source-plugin</artifactId>
