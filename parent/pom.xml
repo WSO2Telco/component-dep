@@ -462,9 +462,9 @@
 		<com.wso2telco.core.version>2.0.3-SNAPSHOT</com.wso2telco.core.version>
 		<org.json.wso2.version>3.0.0.wso2v1</org.json.wso2.version>
 		<junit.version>3.8.1</junit.version>
-		<org.apache.synapse.core.version>2.1.7-wso2v1</org.apache.synapse.core.version>
+		<org.apache.synapse.core.version>2.1.7-wso2v3</org.apache.synapse.core.version>
 		<org.wso2.carbon.commons.version>4.4.8</org.wso2.carbon.commons.version>
-		<org.wso2.carbon.apimgt.version>5.0.3</org.wso2.carbon.apimgt.version>
+		<org.wso2.carbon.apimgt.version>6.0.4</org.wso2.carbon.apimgt.version>
 		<org.wso2.hazelcast>3.5.2.wso2v1</org.wso2.hazelcast>
 		<rhino.wso2.version>1.7.0.R4.wso2v1</rhino.wso2.version>
 		<org.jaggeryjs.version>0.12.0</org.jaggeryjs.version>
@@ -473,7 +473,7 @@
 		<carbon.governance.version>4.5.8</carbon.governance.version>
 		<commons-httpclient.wso2.version>3.1.0.wso2v2</commons-httpclient.wso2.version>
 		<org.wso2.orbit.org.apache.httpcomponents.version>4.3.1.wso2v2</org.wso2.orbit.org.apache.httpcomponents.version>
-		<org.apache.synapse.version>2.1.5-wso2v2</org.apache.synapse.version>
+		<org.apache.synapse.version>2.1.7-wso2v3</org.apache.synapse.version>
 		<commons-codec.wso2.version>1.4.0.wso2v1</commons-codec.wso2.version>
 		<wsdl4j.wso2.version>1.6.2.wso2v4</wsdl4j.wso2.version>
 		<org.apache.axis2.wso2.version>1.6.1.wso2v16</org.apache.axis2.wso2.version>
@@ -486,9 +486,9 @@
 		<commons-logging.version>1.1.1</commons-logging.version>
 		<org.apache.ws.commons.axiom.wso2.version>1.2.11.wso2v9</org.apache.ws.commons.axiom.wso2.version>
 		<org.wso2.carbon.version>4.4.3</org.wso2.carbon.version>		
-		<synapse.version>2.1.7-wso2v1</synapse.version>
-		<carbon.apimgt.version>5.0.3</carbon.apimgt.version>
-		<carbon.platform.version>4.4.3</carbon.platform.version>
+		<synapse.version>2.1.7-wso2v3</synapse.version>
+		<carbon.apimgt.version>6.0.4</carbon.apimgt.version>
+		<carbon.platform.version>4.4.7</carbon.platform.version>
 		<com.h2database.wso2.version>1.2.140.wso2v3</com.h2database.wso2.version>
 		<org.apache.ws.commons.axiom.version>1.2.18</org.apache.ws.commons.axiom.version>
 		<com.sun.mail.version>1.5.5</com.sun.mail.version>

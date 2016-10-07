@@ -200,7 +200,7 @@ public class NorthboundRequestPublisherDTO extends RequestPublisherDTO {
      * @return the object
      */
     public Object createPayload(){
-        return new Object[]{getConsumerKey(),getContext(),getApi_version(),getApi(), getResourcePath(),getMethod(),
+        return new Object[]{getConsumerKey(),getContext(),getApiVersion(),getApi(), getResourcePath(),getMethod(),
                 getVersion(), getRequestCount(),getRequestTime(),getUsername(),getTenantDomain(),getHostName(),
                 getApiPublisher(), getApplicationName(), getApplicationId(),
 

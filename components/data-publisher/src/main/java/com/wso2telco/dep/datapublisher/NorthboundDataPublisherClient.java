@@ -118,7 +118,7 @@ public class NorthboundDataPublisherClient {
         NorthboundRequestPublisherDTO requestPublisherDTO = new NorthboundRequestPublisherDTO();
         requestPublisherDTO.setConsumerKey(consumerKey);
         requestPublisherDTO.setContext(context);
-        requestPublisherDTO.setApi_version(api_version);
+        requestPublisherDTO.setApiVersion(api_version);
         requestPublisherDTO.setApi(api);
         requestPublisherDTO.setVersion(version);
         requestPublisherDTO.setResourcePath(resource);
@@ -191,7 +191,7 @@ public class NorthboundDataPublisherClient {
         responsePublisherDTO.setUsername((String) mc.getProperty(APIMgtGatewayConstants.USER_ID));
         responsePublisherDTO.setTenantDomain(MultitenantUtils.getTenantDomain(responsePublisherDTO.getUsername()));
         responsePublisherDTO.setContext((String) mc.getProperty(APIMgtGatewayConstants.CONTEXT));
-        responsePublisherDTO.setApi_version((String) mc.getProperty(APIMgtGatewayConstants.API_VERSION));
+        responsePublisherDTO.setApiVersion((String) mc.getProperty(APIMgtGatewayConstants.API_VERSION));
         responsePublisherDTO.setApi((String) mc.getProperty(APIMgtGatewayConstants.API));
         responsePublisherDTO.setVersion((String) mc.getProperty(APIMgtGatewayConstants.VERSION));
         responsePublisherDTO.setResourcePath((String) mc.getProperty(APIMgtGatewayConstants.RESOURCE));
@@ -209,9 +209,9 @@ public class NorthboundDataPublisherClient {
         responsePublisherDTO.setPurchaseCategoryCode((String) mc.getProperty(DataPublisherConstants.PAY_CATEGORY));
         responsePublisherDTO.setOperatorRef((String) mc.getProperty(DataPublisherConstants.OPERATOR_REF));
 
-        responsePublisherDTO.setResponseCode("");
+        responsePublisherDTO.setResponseCode(0);
         if (mc.getProperty(DataPublisherConstants.RESPONSE_CODE)!=null) {
-        	String responseCode=(String) mc.getProperty(DataPublisherConstants.RESPONSE_CODE);
+        	int responseCode = (Integer) mc.getProperty(DataPublisherConstants.RESPONSE_CODE);
         	responsePublisherDTO.setResponseCode(responseCode);
 		}
         

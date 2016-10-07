@@ -148,7 +148,7 @@ public class SouthboundDataPublisherClient {
                 responsePublisherDTO.setUsername((String) mc.getProperty(APIMgtGatewayConstants.USER_ID));
                 responsePublisherDTO.setTenantDomain(MultitenantUtils.getTenantDomain(responsePublisherDTO.getUsername()));
                 responsePublisherDTO.setContext((String) mc.getProperty(APIMgtGatewayConstants.CONTEXT));
-                responsePublisherDTO.setApi_version((String) mc.getProperty(APIMgtGatewayConstants.API_VERSION));
+                responsePublisherDTO.setApiVersion((String) mc.getProperty(APIMgtGatewayConstants.API_VERSION));
                 responsePublisherDTO.setApi((String) mc.getProperty(APIMgtGatewayConstants.API));
                 responsePublisherDTO.setVersion((String) mc.getProperty(APIMgtGatewayConstants.VERSION));
                 responsePublisherDTO.setResourcePath((String) mc.getProperty(APIMgtGatewayConstants.RESOURCE));
@@ -162,7 +162,7 @@ public class SouthboundDataPublisherClient {
                 responsePublisherDTO.setApplicationId((String) mc.getProperty(APIMgtGatewayConstants.APPLICATION_ID));
                         responsePublisherDTO.setRequestId((String) mc.getProperty(DataPublisherConstants.REQUEST_ID));
                 //responsePublisherDTO.setOperatorId(DataPublisherConstants.MIFE_DEFAULT_OPERATOR);
-                responsePublisherDTO.setResponseCode((String) mc.getProperty(DataPublisherConstants.RESPONSE_CODE));
+                responsePublisherDTO.setResponseCode((Integer) mc.getProperty(DataPublisherConstants.RESPONSE_CODE));
                 responsePublisherDTO.setExceptionId((String) mc.getProperty(DataPublisherConstants.EXCEPTION_ID));
                 responsePublisherDTO.setExceptionMessage((String) mc.getProperty(DataPublisherConstants.EXCEPTION_MESSAGE));
                 if (mc.getProperty(DataPublisherConstants.RESPONSE) != null) {
