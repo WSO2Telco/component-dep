@@ -21,11 +21,13 @@ public class CallbackServiceInvokeTask implements JavaDelegate {
 
 		String refId = arg0.getVariable(WorkflowConstants.WORKFLOW_REF_ID).toString();
 		String activityName = arg0.getCurrentActivityName();
-		String ApprovalStatus;
+		String approvalStatus;
 		if (activityName.equalsIgnoreCase(WorkflowConstants.OPERATOR_CALLBACK_ACTIVITY)) {
-			ApprovalStatus = (String) arg0.getVariable(WorkflowConstants.OPERATOR_ADMIN_APPROVAL);
+			approvalStatus = (String) arg0.getVariable(WorkflowConstants.OPERATOR_ADMIN_APPROVAL);
+		} else if (activityName.equalsIgnoreCase(WorkflowConstants.PUBLISHER_CALLBACK_ACTIVITY)) {
+			approvalStatus = (String) arg0.getVariable(WorkflowConstants.API_PUBLISHER_APPROVAL);
 		} else {
-			ApprovalStatus = (String) arg0.getVariable(WorkflowConstants.HUB_ADMIN_APPROVAL);
+			approvalStatus = (String) arg0.getVariable(WorkflowConstants.HUB_ADMIN_APPROVAL);
 		}
 
 		String callbackUrl = (String) arg0.getVariable(WorkflowConstants.CALL_BACK_URL);
@@ -38,10 +40,10 @@ public class CallbackServiceInvokeTask implements JavaDelegate {
 		                                 .target(WorkflowHttpClient.class, callbackUrl);
 
 		log.info("Application creation workflow reference Id: " + refId + ", Hub Admin Approval Status: " +
-		         ApprovalStatus);
+				approvalStatus);
 
 		try {
-			client.invokeCallback(refId, ApprovalStatus);
+			client.invokeCallback(refId, approvalStatus);
 		} catch (SubscriptionApprovalWorkflowException e) {
 			throw new Exception(e);
 		}
