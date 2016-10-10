@@ -63,6 +63,8 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
 	private static final String DEPLOYMENT_TYPE = "deployment_type";
 	private static final String OPERATORS_SYSTEM_PARAM = "OPERATORS";
 	private static final String DEPLOYMENT_TYPE_SYSTEM_PARAM = "DEPLOYMENT_TYPE";
+    private static final String ADMIN_PASSWORD="adminPassword";
+    private static final String SERVICE_HOST="service.host";
 
 	private String serviceEndpoint;
 	private String username;
@@ -118,6 +120,10 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
 			CreateProcessInstanceRequest processInstanceRequest =
 					new CreateProcessInstanceRequest(SUBSCRIPTION_CREATION_APPROVAL_PROCESS_NAME, TENANT_ID);
 			processInstanceRequest.setBusinessKey(SUBSCRIPTION_CREATION_APPROVAL_PROCESS_NAME);
+
+            Properties workflowProperties = WorkflowProperties.loadWorkflowProperties();
+            String serviceURLString = workflowProperties.getProperty(SERVICE_HOST);
+
 			Variable deploymentType = new Variable(DEPLOYMENT_TYPE, getDeploymentType());
 			Variable subscribedApiName = new Variable(API_NAME, apiName);
 			Variable subscribedApiId = new Variable(API_ID, apiID);
@@ -133,6 +139,11 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
 			Variable workflowRefId =
 					new Variable(WORKFLOW_REF_ID, subscriptionWorkFlowDTO.getExternalWorkflowReference());
 			Variable callBackUrl = new Variable(CALL_BACK_URL, callBackURL);
+            Variable serviceURL = new Variable(SERVICE_URL,serviceURLString);
+            Variable adminPassword= new Variable(ADMIN_PASSWORD, CarbonContext
+                    .getThreadLocalCarbonContext()
+                    .getUserRealm()
+                    .getRealmConfiguration().getAdminPassword());
 			// TODO: get operators via the osgi service
 			// currently this is read from a java system parameter
 			Variable operators = new Variable(OPERATORS, getOperators());
@@ -165,6 +176,8 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
 			variables.add(workflowRefId);
 			variables.add(callBackUrl);
 			variables.add(operators);
+            variables.add(serviceURL);
+            variables.add(adminPassword);
 
 			processInstanceRequest.setVariables(variables);
 

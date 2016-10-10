@@ -1,4 +1,4 @@
-package com.wso2telco.application.creation.approval.workflow.model;
+package com.wso2telco.subscription.approval.workflow.model;
 
 
 public class SubscriptionValidation {

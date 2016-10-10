@@ -54,6 +54,8 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
 	private static final String USER_NAME = "userName";
 	private static final String EXTERNAL_REFERENCE = "externalWorkflowReferenc";
 	private static final String TIERS_STR = "tiersStr";
+    private static final String ADMIN_PASSWORD="adminPassword";
+    private static final String SERVICE_HOST="service.host";
 
 
 	private String serviceEndpoint;
@@ -101,6 +103,9 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
 				tiersStr.append(tierName + ',');
 			}
 
+            Properties workflowProperties = WorkflowProperties.loadWorkflowProperties();
+            String serviceURLString = workflowProperties.getProperty(SERVICE_HOST);
+
 			Variable deploymentType = new Variable(DEPLOYMENT_TYPE, getDeploymentType());
 			Variable applicationName = new Variable(APPLICATION_NAME, application.getName());
 			Variable workflorRefId = new Variable(WORKFLOW_REF_ID, appWorkFlowDTO.getExternalWorkflowReference());
@@ -112,6 +117,11 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
 			Variable userName = new Variable(USER_NAME,appWorkFlowDTO.getUserName());
 			Variable externalWorkflowReference = new Variable(EXTERNAL_REFERENCE,appWorkFlowDTO.getExternalWorkflowReference());
 			Variable tiers = new Variable(TIERS_STR,tiersStr.toString());
+            Variable serviceURL = new Variable(SERVICE_URL,serviceURLString);
+            Variable adminPassword= new Variable(ADMIN_PASSWORD, CarbonContext
+                    .getThreadLocalCarbonContext()
+                    .getUserRealm()
+                    .getRealmConfiguration().getAdminPassword());
 
 			// TODO: get operators via the osgi service
 			// currently this is read from a java system parameter
@@ -140,6 +150,8 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
 			variables.add(userName);
 			variables.add(externalWorkflowReference);
 			variables.add(tiers);
+            variables.add(serviceURL);
+            variables.add(adminPassword);
 
 			processInstanceRequest.setVariables(variables);
 

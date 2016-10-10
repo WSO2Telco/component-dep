@@ -1,6 +1,6 @@
 package com.wso2telco.workflow.dao;
 
-import com.wso2telco.core.dbutils.DbUtils;
+
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.exception.GenaralError;
 import com.wso2telco.core.dbutils.util.DataSourceNames;
@@ -19,7 +19,8 @@ import java.sql.SQLException;
 public class WorkflowStatsDbService {
 
     private static final Log log = LogFactory.getLog(WorkflowStatsDbService.class);
-    DbUtils dbUtils = new DbUtils();
+
+    com.wso2telco.core.dbutils.DbUtils dbUtils = new com.wso2telco.core.dbutils.DbUtils();
 
     public void insertAppApprovalAuditRecord(
             ApplicationApprovalAuditRecord record) throws SQLException, BusinessException {

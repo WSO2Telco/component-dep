@@ -92,7 +92,7 @@ public class SubscriptionApprovalImpl implements SubscriptionApproval{
             Subscription subOpApprovalDBUpdateRequest) throws Exception{
 		
 		int appID = subOpApprovalDBUpdateRequest.getApplicationID();
-		String opID = subOpApprovalDBUpdateRequest.getOpID();
+		int opID;
 		String apiName = subOpApprovalDBUpdateRequest.getApiName();
 		String statusStr = subOpApprovalDBUpdateRequest.getStatus();
 					
@@ -104,6 +104,7 @@ public class SubscriptionApprovalImpl implements SubscriptionApproval{
 			String apiKey = apiKeyMapping.get(apiName);
 			
 			dbservice = new WorkflowDbService();
+            opID = dbservice.getOperatorIdByName(subOpApprovalDBUpdateRequest.getOperatorName());
 			List<OperatorEndPointDTO> operatorEndpoints = dbservice.getOperatorEndpoints();
 			
 			for (Iterator iterator = operatorEndpoints.iterator(); iterator
