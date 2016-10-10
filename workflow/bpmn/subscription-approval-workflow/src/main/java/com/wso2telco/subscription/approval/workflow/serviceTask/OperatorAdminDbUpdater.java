@@ -28,28 +28,28 @@ public class OperatorAdminDbUpdater implements JavaDelegate {
         String serviceUrl = "https://localhost:9443/workflow-service/";
         String apiName=arg0.getVariable("apiName").toString();
         int apiID=Integer.parseInt(arg0.getVariable("apiId").toString());;
-        
+
 		String operatorAdminApprovalStatus = arg0.getVariable(WorkflowConstants.OPERATOR_ADMIN_APPROVAL).toString();
 		log.info("In OperatorDataUpdater, Operator admin approval status: " + operatorAdminApprovalStatus +
 		         " Operator: " + operatorName);
-		
+
         SubscriptionWorkflowApi api = Feign.builder()
                 .encoder(new JacksonEncoder())
                 .decoder(new JacksonDecoder())
                 .errorDecoder(new WorkflowCallbackErrorDecoder())
                 .requestInterceptor(getBasicAuthRequestInterceptor())
                 .target(SubscriptionWorkflowApi.class, serviceUrl);
-	
+
         Subscription subscription=new Subscription();
         subscription.setApiName(apiName);
         subscription.setApplicationID(applicationId);
         subscription.setOpID("1");
         subscription.setStatus(operatorAdminApprovalStatus);
-        
+
         SubscriptionValidation subscriptionValidation=new SubscriptionValidation();
         subscriptionValidation.setApiID(apiID);
         subscriptionValidation.setApplicationID(applicationId);
-    
+
         try {
             api.subscriptionApprovalHub(subscription);
             api.subscriptionApprovalOperator(subscription);
