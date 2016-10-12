@@ -27,8 +27,6 @@ public class CreateProcessInstanceRequest {
 
     private String businessKey;
 
-    //private String tenantId;
-
     private List<Variable> variables;
 
     public CreateProcessInstanceRequest () {}

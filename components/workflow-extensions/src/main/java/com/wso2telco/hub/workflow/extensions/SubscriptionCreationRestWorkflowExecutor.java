@@ -1,7 +1,15 @@
 package com.wso2telco.hub.workflow.extensions;
 
+import com.wso2telco.hub.workflow.extensions.beans.CreateProcessInstanceRequest;
+import com.wso2telco.hub.workflow.extensions.beans.CreateProcessInstanceResponse;
+import com.wso2telco.hub.workflow.extensions.beans.ProcessInstanceData;
+import com.wso2telco.hub.workflow.extensions.beans.Variable;
+import com.wso2telco.hub.workflow.extensions.exceptions.WorkflowErrorDecoder;
+import com.wso2telco.hub.workflow.extensions.exceptions.WorkflowExtensionException;
 import com.wso2telco.hub.workflow.extensions.impl.WorkflowAPIConsumerImpl;
 import com.wso2telco.hub.workflow.extensions.interfaces.WorkflowAPIConsumer;
+import com.wso2telco.hub.workflow.extensions.rest.client.BusinessProcessApi;
+import com.wso2telco.hub.workflow.extensions.util.DeploymentTypes;
 import feign.Feign;
 import feign.auth.BasicAuthRequestInterceptor;
 import feign.jackson.JacksonDecoder;
@@ -26,22 +34,15 @@ import org.wso2.carbon.apimgt.impl.workflow.WorkflowConstants;
 import org.wso2.carbon.apimgt.impl.workflow.WorkflowException;
 import org.wso2.carbon.apimgt.impl.workflow.WorkflowExecutor;
 import org.wso2.carbon.apimgt.impl.workflow.WorkflowStatus;
-import com.wso2telco.hub.workflow.extensions.beans.CreateProcessInstanceRequest;
-import com.wso2telco.hub.workflow.extensions.beans.CreateProcessInstanceResponse;
-import com.wso2telco.hub.workflow.extensions.beans.ProcessInstanceData;
-import com.wso2telco.hub.workflow.extensions.beans.Variable;
-import com.wso2telco.hub.workflow.extensions.rest.client.BusinessProcessApi;
-import com.wso2telco.hub.workflow.extensions.exceptions.WorkflowErrorDecoder;
-import com.wso2telco.hub.workflow.extensions.exceptions.WorkflowExtensionException;
 
 import java.util.ArrayList;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
-public class WSO2TelcoSubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
+public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
 
-	private static final Log log = LogFactory.getLog(WSO2TelcoSubscriptionCreationRestWorkflowExecutor.class);
+	private static final Log log = LogFactory.getLog(SubscriptionCreationRestWorkflowExecutor.class);
 
 	private static final String TENANT_ID = "-1234";
 	private static final String SUBSCRIPTION_CREATION_APPROVAL_PROCESS_NAME = "subscription_approval_process";
@@ -102,8 +103,8 @@ public class WSO2TelcoSubscriptionCreationRestWorkflowExecutor extends WorkflowE
 			APIIdentifier apiIdentifier = new APIIdentifier(providerName, apiName, version);
 			API api = consumer.getAPI(apiIdentifier);
 			//Why apiId is required,WorkflowAPIConsumer hasn't closed the db connections
-	    	WorkflowAPIConsumer workFlowAPIConsumer = new WorkflowAPIConsumerImpl();
-		    String apiID = String.valueOf(workFlowAPIConsumer.getAPIID(apiIdentifier));
+			WorkflowAPIConsumer workFlowAPIConsumer = new WorkflowAPIConsumerImpl();
+			String apiID = String.valueOf(workFlowAPIConsumer.getAPIID(apiIdentifier));
 			Set<Tier> tierSet = api.getAvailableTiers();
 
 			StringBuilder tiersStr = new StringBuilder();
@@ -117,8 +118,6 @@ public class WSO2TelcoSubscriptionCreationRestWorkflowExecutor extends WorkflowE
 			CreateProcessInstanceRequest processInstanceRequest =
 					new CreateProcessInstanceRequest(SUBSCRIPTION_CREATION_APPROVAL_PROCESS_NAME, TENANT_ID);
 			processInstanceRequest.setBusinessKey(SUBSCRIPTION_CREATION_APPROVAL_PROCESS_NAME);
-			// TODO: how to read 'deployment_type' / how to check if hub flow or hub-as-a-gateway flow??
-			// currently this is read from a java system parameter
 			Variable deploymentType = new Variable(DEPLOYMENT_TYPE, getDeploymentType());
 			Variable subscribedApiName = new Variable(API_NAME, apiName);
 			Variable subscribedApiId = new Variable(API_ID, apiID);
@@ -126,13 +125,10 @@ public class WSO2TelcoSubscriptionCreationRestWorkflowExecutor extends WorkflowE
 			Variable subscribedApiContext = new Variable(API_CONTEXT, api.getContext());
 			Variable apiProvider = new Variable(API_PROVIDER, providerName);
 			Variable subscriber = new Variable(SUBSCRIBER, subscriptionWorkFlowDTO.getSubscriber());
-			//why need this?
 			Variable appId = new Variable(APPLICATION_ID, applicationIdStr);
-			//why is this needed?
 			Variable tierName = new Variable(TIER_NAME, subscriptionWorkFlowDTO.getTierName());
 			Variable apiTierList = new Variable(API_TIERS, tiersStr.toString());
 			Variable applicationName = new Variable(APPLICATION_NAME, subscriptionWorkFlowDTO.getApplicationName());
-			//why need this?
 			Variable applicationDescription = new Variable(APPLICATION_DESCRIPTION, subscribedApp.getDescription());
 			Variable workflowRefId =
 					new Variable(WORKFLOW_REF_ID, subscriptionWorkFlowDTO.getExternalWorkflowReference());
@@ -250,7 +246,7 @@ public class WSO2TelcoSubscriptionCreationRestWorkflowExecutor extends WorkflowE
 	}
 
 	private String getDeploymentType() {
-		return System.getProperty(DEPLOYMENT_TYPE_SYSTEM_PARAM, "hub");
+		return System.getProperty(DEPLOYMENT_TYPE_SYSTEM_PARAM, DeploymentTypes.HUB.getDeploymentType());
 	}
 
 	private String getOperators() {
@@ -286,3 +282,4 @@ public class WSO2TelcoSubscriptionCreationRestWorkflowExecutor extends WorkflowE
 		this.password = password;
 	}
 }
+

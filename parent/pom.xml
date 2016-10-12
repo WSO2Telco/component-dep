@@ -450,6 +450,41 @@
 		        <artifactId>org.wso2.carbon.analytics.spark.core</artifactId>
 		        <version>${org.wso2.carbon.analytics.version}</version>
 		    </dependency>
+			<dependency>
+				<groupId>org.activiti</groupId>
+				<artifactId>activiti-engine</artifactId>
+				<version>${activiti-version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.activiti</groupId>
+				<artifactId>activiti-spring</artifactId>
+				<version>${activiti-version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.github.openfeign</groupId>
+				<artifactId>feign-core</artifactId>
+				<version>${feign.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.github.openfeign</groupId>
+				<artifactId>feign-jackson</artifactId>
+				<version>${feign.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-core</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-annotations</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
 		</dependencies>
 
 	</dependencyManagement>
@@ -499,6 +534,9 @@
 		<commons-fileupload.version>1.2.1</commons-fileupload.version>
 		<asm.version>3.3.1</asm.version>
 		<org.wso2.carbon.analytics.version>1.0.6-SNAPSHOT</org.wso2.carbon.analytics.version>
+		<activiti-version>5.18.0</activiti-version>
+		<feign.version>9.3.1</feign.version>
+		<jackson.version>2.5.4</jackson.version>
 	</properties>
 
 	<build>
