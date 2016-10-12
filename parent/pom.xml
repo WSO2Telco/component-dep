@@ -467,7 +467,7 @@
 		<org.wso2.carbon.apimgt.version>6.0.4</org.wso2.carbon.apimgt.version>
 		<org.wso2.hazelcast>3.5.2.wso2v1</org.wso2.hazelcast>
 		<rhino.wso2.version>1.7.0.R4.wso2v1</rhino.wso2.version>
-		<org.jaggeryjs.version>0.12.0</org.jaggeryjs.version>
+		<org.jaggeryjs.version>0.12.6</org.jaggeryjs.version>
 		<commons-io.wso2.version>2.4.0.wso2v1</commons-io.wso2.version>
 		<joda-time.wso2.version>1.6.0.wso2v1</joda-time.wso2.version>
 		<carbon.governance.version>4.5.8</carbon.governance.version>
