@@ -224,7 +224,7 @@ public class ApplicationCreationWSWorkflowExecutor extends WorkflowExecutor {
             }
 
             if(status != null || status.length() > 0) {
-                ApiMgtDAO dao = new ApiMgtDAO();
+                ApiMgtDAO dao = ApiMgtDAO.getInstance();
 
                 try {
                     dao.updateApplicationStatus(Integer.parseInt(workFlowDTO.getWorkflowReference()),

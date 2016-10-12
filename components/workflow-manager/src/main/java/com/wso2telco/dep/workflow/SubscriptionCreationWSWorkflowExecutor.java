@@ -234,7 +234,7 @@ public class SubscriptionCreationWSWorkflowExecutor extends WorkflowExecutor {
         	}
         	
         	if(status != null || status.length() > 0) {
-        		ApiMgtDAO apiMgtDAO = new ApiMgtDAO();
+        		ApiMgtDAO apiMgtDAO = ApiMgtDAO.getInstance();
                 try {
                     apiMgtDAO.updateSubscriptionStatus(Integer.parseInt(workflowDTO.getWorkflowReference()),
                             status);

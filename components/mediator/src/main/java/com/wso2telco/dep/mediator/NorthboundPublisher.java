@@ -205,7 +205,7 @@ public class NorthboundPublisher {
 		nbResponseDTO.setUsername((String) mc.getProperty(APIMgtGatewayConstants.USER_ID));
 		nbResponseDTO.setTenantDomain(MultitenantUtils.getTenantDomain(nbResponseDTO.getUsername()));
 		nbResponseDTO.setContext((String) mc.getProperty(APIMgtGatewayConstants.CONTEXT));
-		nbResponseDTO.setApi_version((String) mc.getProperty(APIMgtGatewayConstants.API_VERSION));
+		nbResponseDTO.setApiVersion((String) mc.getProperty(APIMgtGatewayConstants.API_VERSION));
 		nbResponseDTO.setApi((String) mc.getProperty(APIMgtGatewayConstants.API));
 		nbResponseDTO.setVersion((String) mc.getProperty(APIMgtGatewayConstants.VERSION));
 		nbResponseDTO.setResourcePath((String) mc.getProperty(APIMgtGatewayConstants.RESOURCE));
@@ -218,7 +218,7 @@ public class NorthboundPublisher {
 		nbResponseDTO.setApplicationId((String) mc.getProperty(APIMgtGatewayConstants.APPLICATION_ID));
 
 		nbResponseDTO.setRequestId((String) mc.getProperty(DataPublisherConstants.REQUEST_ID));
-		nbResponseDTO.setResponseCode((String) mc.getProperty(DataPublisherConstants.RESPONSE_CODE));
+		nbResponseDTO.setResponseCode((Integer) mc.getProperty(DataPublisherConstants.RESPONSE_CODE));
 		nbResponseDTO.setMsisdn((String) mc.getProperty(DataPublisherConstants.MSISDN));
 		nbResponseDTO.setChargeAmount((String) mc.getProperty(DataPublisherConstants.CHARGE_AMOUNT));
 		nbResponseDTO.setPurchaseCategoryCode((String) mc.getProperty(DataPublisherConstants.PAY_CATEGORY));

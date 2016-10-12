@@ -30,7 +30,7 @@ public class SpendLimitDataPublisherDTO extends ResponsePublisherDTO {
     private String operatorId;
     
     /** The response code. */
-    private String responseCode;
+    private int responseCode;
     
     /** The msisdn. */
     private String msisdn;
@@ -78,7 +78,7 @@ public class SpendLimitDataPublisherDTO extends ResponsePublisherDTO {
      *
      * @return the response code
      */
-    public String getResponseCode() {
+    public int getResponseCode() {
         return responseCode;
     }
 
@@ -87,7 +87,7 @@ public class SpendLimitDataPublisherDTO extends ResponsePublisherDTO {
      *
      * @param responseCode the new response code
      */
-    public void setResponseCode(String responseCode) {
+    public void setResponseCode(int responseCode) {
         this.responseCode = responseCode;
     }
 

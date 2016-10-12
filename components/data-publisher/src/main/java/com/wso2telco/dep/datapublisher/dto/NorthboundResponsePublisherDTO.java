@@ -29,7 +29,7 @@ public class NorthboundResponsePublisherDTO extends ResponsePublisherDTO {
     private String requestId;
     
     /** The response code. */
-    private String responseCode;
+    private int responseCode;
     
     /** The msisdn. */
     private String msisdn;
@@ -87,7 +87,7 @@ public class NorthboundResponsePublisherDTO extends ResponsePublisherDTO {
      *
      * @return the response code
      */
-    public String getResponseCode() {
+    public int getResponseCode() {
         return responseCode;
     }
 
@@ -96,7 +96,7 @@ public class NorthboundResponsePublisherDTO extends ResponsePublisherDTO {
      *
      * @param responseCode the new response code
      */
-    public void setResponseCode(String responseCode) {
+    public void setResponseCode(int responseCode) {
         this.responseCode = responseCode;
     }
 
@@ -352,7 +352,7 @@ public class NorthboundResponsePublisherDTO extends ResponsePublisherDTO {
      * @return the object
      */
     public Object createPayload(){
-        return new Object[]{getConsumerKey(),getContext(),getApi_version(),getApi(), getResourcePath(),getMethod(),
+        return new Object[]{getConsumerKey(),getContext(),getApiVersion(),getApi(), getResourcePath(),getMethod(),
                 getVersion(),getResponse(),getResponseTime(),getServiceTime(),getUsername(),getTenantDomain(),getHostName(),
                 getApiPublisher(), getApplicationName(), getApplicationId(),
 

@@ -138,7 +138,7 @@ public class SbHostObjectUtils {
 			String username, String year, String month)
 			throws Exception {
 		Subscriber subscriber = new Subscriber(username);
-		ApiMgtDAO apiMgtDAO = new ApiMgtDAO();
+		ApiMgtDAO apiMgtDAO = ApiMgtDAO.getInstance();
 		// Adding null as param
 		Set<SubscribedAPI> apis = apiMgtDAO.getSubscribedAPIs(subscriber, null);
 		Map<Application, Set<BillingSubscription>> billingDetails = null;
@@ -220,7 +220,7 @@ public class SbHostObjectUtils {
 			throws APIManagementException {
 		Subscriber subscriber = new Subscriber(username);
 		SubscribedAPI retSub = null;
-		ApiMgtDAO apiMgtDAO = new ApiMgtDAO();
+		ApiMgtDAO apiMgtDAO = ApiMgtDAO.getInstance();
 		Set<SubscribedAPI> apis = apiMgtDAO.getSubscribedAPIs(subscriber,
 				application);
 		if (apis != null) {
@@ -1016,7 +1016,7 @@ public class SbHostObjectUtils {
 				+ username);
 		Subscriber subscriber = new Subscriber(username);
 		Map<String, String> responseTimes = new HashMap<String, String>();
-		ApiMgtDAO apiMgtDAO = new ApiMgtDAO();
+		ApiMgtDAO apiMgtDAO = ApiMgtDAO.getInstance();
 		// Adding null for param
 		Set<SubscribedAPI> apis = apiMgtDAO.getSubscribedAPIs(subscriber, null);
 		log.debug("apis count, " + apis.size());
@@ -1060,7 +1060,7 @@ public class SbHostObjectUtils {
 				+ username + " for app " + application + " from " + fromDate
 				+ " to " + toDate);
 		Map<String, List<APIResponseDTO>> responseTimes = new HashMap<String, List<APIResponseDTO>>();
-		ApiMgtDAO apiMgtDAO = new ApiMgtDAO();
+		ApiMgtDAO apiMgtDAO = ApiMgtDAO.getInstance();
 		BillingDAO billingDAO = new BillingDAO();
 		if (username.equals(ALL_SUBSCRIBERS_KEYWORD)) {
 			List<API> allAPIs = APIManagerFactory.getInstance()
@@ -2349,7 +2349,7 @@ public class SbHostObjectUtils {
 		List<String> subscribers = new ArrayList<String>();
 		List<String> tempSubscribers = new ArrayList<String>();
 		for (Integer applicationId : applicationIds) {
-			ApiMgtDAO apiMgtDAO = new ApiMgtDAO();
+			ApiMgtDAO apiMgtDAO = ApiMgtDAO.getInstance();
 			try {
 				Application application = apiMgtDAO
 						.getApplicationById(applicationId);
@@ -2378,7 +2378,7 @@ public class SbHostObjectUtils {
 			String subscriberName) throws SQLException,
 			APIMgtUsageQueryServiceClientException, APIManagementException {
 		List<String[]> applicationsList = new ArrayList<String[]>();
-		ApiMgtDAO apiMgtDAO = new ApiMgtDAO();
+		ApiMgtDAO apiMgtDAO = ApiMgtDAO.getInstance();
 		// Adding null for param
 		Application[] applications = apiMgtDAO.getApplications(new Subscriber(
 				subscriberName), null);
@@ -2405,7 +2405,7 @@ public class SbHostObjectUtils {
 			APIManagementException {
 		List<String> operatorList = new ArrayList<String>();
 		List<String> tempOperatorList = new ArrayList<String>();
-		ApiMgtDAO apiMgtDAO = new ApiMgtDAO();
+		ApiMgtDAO apiMgtDAO = ApiMgtDAO.getInstance();
 		// Adding null for param
 		Application[] applications = apiMgtDAO.getApplications(new Subscriber(
 				subscriberName), null);
@@ -2462,7 +2462,7 @@ public class SbHostObjectUtils {
 			APIManagementException, IdentityException {
 		List<String> apiList = new ArrayList<String>();
 		List<String> tempAPIList = new ArrayList<String>();
-		ApiMgtDAO apiMgtDAO = new ApiMgtDAO();
+		ApiMgtDAO apiMgtDAO = ApiMgtDAO.getInstance();
 		APIInfoDTO[] subscribedAPIsOfUser = apiMgtDAO
 				.getSubscribedAPIsOfUser(subscriberName);
 		for (APIInfoDTO aPIInfoDTO : subscribedAPIsOfUser) {
