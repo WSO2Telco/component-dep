@@ -19,6 +19,8 @@
 
 package com.wso2telco.application.creation.approval.workflow.servicetask;
 
+import com.wso2telco.application.creation.approval.workflow.util.AuthRequestInterceptor;
+import com.wso2telco.application.creation.approval.workflow.util.Constants;
 import feign.Feign;
 import feign.auth.BasicAuthRequestInterceptor;
 import feign.jackson.JacksonDecoder;
@@ -37,15 +39,17 @@ public class OperatorWorkflowCallback implements JavaDelegate {
 
     public void execute(DelegateExecution arg0) throws Exception {
 
+        AuthRequestInterceptor authRequestInterceptor=new AuthRequestInterceptor();
         String refId = arg0.getVariable(Constants.WORKFLOW_REF_ID).toString();
         String opAdminApprovalStatus = (String) arg0.getVariable(Constants.OPERATOR_ADMIN_APPROVAL);
         String callbackUrl = (String) arg0.getVariable(Constants.CALL_BACK_URL);
+        String adminPassword= arg0.getVariable(Constants.ADMIN_PASSWORD).toString();
 
         HubWorkflowCallbackApi api = Feign.builder()
                 .encoder(new JacksonEncoder())
                 .decoder(new JacksonDecoder())
                 .errorDecoder(new HubWorkflowCallbackApiErrorDecoder())
-                .requestInterceptor(getBasicAuthRequestInterceptor())
+                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminPassword))
                 .target(HubWorkflowCallbackApi.class, callbackUrl);
 
         log.info("Application creation workflow reference Id: " + refId + ", Operator Admin Approval Status: " +
@@ -58,32 +62,5 @@ public class OperatorWorkflowCallback implements JavaDelegate {
         }
     }
 
-    private BasicAuthRequestInterceptor getBasicAuthRequestInterceptor () {
-        String username;
-        String password;
 
-        // check java system properties first
-        username = System.getProperty(Constants.HUB_WORKFLOW_CALLBACK_USERNAME_PROPERTY);
-        // if not found, check environment variables
-        if (username == null) {
-            username = System.getenv(Constants.HUB_WORKFLOW_CALLBACK_USERNAME_PROPERTY);
-        }
-        // if still not found, use 'admin' :D
-        if (username == null) {
-            username = "admin";
-        }
-
-        // check java system properties first
-        password = System.getProperty(Constants.HUB_WORKFLOW_CALLBACK_PASSWORD_PROPERTY);
-        // if not found, check environment variables
-        if (password == null) {
-            password = System.getenv(Constants.HUB_WORKFLOW_CALLBACK_PASSWORD_PROPERTY);
-        }
-        // if still not found, use 'admin' :D
-        if (password == null) {
-            password = "admin";
-        }
-
-        return new BasicAuthRequestInterceptor(username, password);
-    }
 }

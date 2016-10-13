@@ -6,9 +6,9 @@ var i, length, app, thumbURL, api = outputs.api, apps = outputs.applications, de
 var urlPrefix;
 var tenant=request_tenant;
 if(tenant!=null) {
-	urlPrefix="&tenant="+tenant;
+    urlPrefix="&tenant="+tenant;
 } else {
-	urlPrefix='';
+    urlPrefix='';
 }
 %>
 <%if(api!=null){
@@ -22,32 +22,32 @@ if(tenant!=null) {
 
    if(tenant!=null && user) {
     var userDomain=null;
-	if(user.username.indexOf("@")!=-1){
-		userDomain = user.username.split("@")[1];
-	}
+    if(user.username.indexOf("@")!=-1){
+        userDomain = user.username.split("@")[1];
+    }
     if(!(tenant=='carbon.super' && userDomain == null) && tenant != userDomain){
-    	var subscriptionAvailability = api.subscriptionAvailability;
-    	if (subscriptionAvailability == 'all_tenants') {
-    		subsPermitted = true;
-    	} else if (subscriptionAvailability == 'specific_tennats') {
-    		subsPermitted = false;
-    		var subscriptionAvailableTenants = api.subscriptionAvailableTenants;
-    		if (subscriptionAvailableTenants != null) {
-    			var allowedTenants = subscriptionAvailableTenants.split(",");
-    			for (var i = 0;i < allowedTenants.length; i++) {
-    				if (allowedTenants[i] != null && userDomain == allowedTenants[i].trim()) {
-    					subsPermitted = true;
-    				}
-    			}
-    		}
-    	} else {
-    		subsPermitted = false;
-    	}
+        var subscriptionAvailability = api.subscriptionAvailability;
+        if (subscriptionAvailability == 'all_tenants') {
+            subsPermitted = true;
+        } else if (subscriptionAvailability == 'specific_tennats') {
+            subsPermitted = false;
+            var subscriptionAvailableTenants = api.subscriptionAvailableTenants;
+            if (subscriptionAvailableTenants != null) {
+                var allowedTenants = subscriptionAvailableTenants.split(",");
+                for (var i = 0;i < allowedTenants.length; i++) {
+                    if (allowedTenants[i] != null && userDomain == allowedTenants[i].trim()) {
+                        subsPermitted = true;
+                    }
+                }
+            }
+        } else {
+            subsPermitted = false;
+        }
     }
   }
 
   if (api.isAdvertiseOnly) {
-  	subsPermitted = false;
+    subsPermitted = false;
   }
 
    var environments = api.serverURL.split("|");
@@ -91,9 +91,9 @@ if(tenant!=null) {
 <div class="content-section shadow-up">
     <div class="content-data">
         <%if(api.isAdvertiseOnly && api.apiOwner != null) {%>
-        	<h6><i class="icon-user"></i> <%=api.apiOwner%></h6>
+            <h6><i class="icon-user"></i> <%=api.apiOwner%></h6>
         <%}else {%>
-        	<h6><i class="icon-user"></i> <%=api.provider%></h6>
+            <h6><i class="icon-user"></i> <%=api.provider%></h6>
         <%}%>
         <div class="api-info">
             <div class="row-fluid">
@@ -176,21 +176,21 @@ if(tenant!=null) {
 
                            </select>
                         <% }if(user && api) { %>
-						<!-- ---------------------------------- -->
+                        <!-- ---------------------------------- -->
                         <!-- <Label><b><%=i18n.localize("tiers")%></b></Label>
                         <select id="tiers-list" name="tiers-list">
                             <%var tiersList = api.tiers, denied = false, tiersAvailable = false;
 
                             for(var j=0;j<tiersList.length;j++){
-                            	for (var k=0;k<deniedTiers.length;k++) {
-                            		if (tiersList[j].tierName == deniedTiers[k].tierName) {
-                            			denied = true;
-                            		}
-                            	}
-                            	if (!denied) {
-                            		var tier=tiersList[j].tierName;
-                            		var tierDisplayName=tiersList[j].tierDisplayName;
-                            		tiersAvailable = true;
+                                for (var k=0;k<deniedTiers.length;k++) {
+                                    if (tiersList[j].tierName == deniedTiers[k].tierName) {
+                                        denied = true;
+                                    }
+                                }
+                                if (!denied) {
+                                    var tier=tiersList[j].tierName;
+                                    var tierDisplayName=tiersList[j].tierDisplayName;
+                                    tiersAvailable = true;
                             %>
                             <option value="<%=tier%>"><%=tierDisplayName%></option>
                             <%}
@@ -229,16 +229,29 @@ if(tenant!=null) {
                         <!-- ---------------------------------- -->
                         <input type="hidden" id="tiers-list" value="Default" />
                         
-                        <Label><b><%=i18n.localize("operators")%></b></Label>
-                        <select id="operators" name="operators" multiple="multiple" class="required">
-							<%
-							for(i = 0; i < operators.size(); i++) {
-								operator = operators.get(i);
-							%>
-							<option value="<%=operator.operatorName%>"><%= operator.getOperatorName()%></option>
-							<%
-							}
-							%>
+                        <Label <%if(operators.size()==1){%> style="display: none;" <%}%> ><b><%=i18n.localize("operators")%></b></Label>
+                        <select id="operators" name="operators" multiple="multiple" class="required" <%
+                            if(operators.size()==1){%>
+                            style="display: none;"
+                            <%}%>
+                             >
+                            <%
+                            if(operators.size()==1){
+                                operator = operators.get(0);
+                            %>
+                                <option value="<%=operator.operatorName%>" selected><%= operator.getOperatorName()%></option>
+                            <%
+                            }
+                            else{
+                             for(i = 0; i < operators.size(); i++) {
+                                operator = operators.get(i);
+                            %>
+                                 <option value="<%=operator.operatorName%>"><%= operator.getOperatorName()%></option>
+                            <%
+                              }
+                            }
+                            %>
+
                         </select>
                         
                         <div class="simple-space-maker">
@@ -253,11 +266,11 @@ if(tenant!=null) {
                     <%if (api.isAdvertiseOnly && api.redirectURL != null) {
                         var tenantDomain = 'carbon.super';
                         if(api.redirectURL.indexOf("?")!=-1){
-							tenantDomain = api.redirectURL.split("?")[1];
-						}
-                    	var path = api.redirectURL + "/apis/info?name=" + api.name + "&version=" + api.version + "&provider=" + api.apiOwner +"&tenant=" + tenantDomain;
+                            tenantDomain = api.redirectURL.split("?")[1];
+                        }
+                        var path = api.redirectURL + "/apis/info?name=" + api.name + "&version=" + api.version + "&provider=" + api.apiOwner +"&tenant=" + tenantDomain;
                     %>
-                    	<div id="store-redirect-link" class="span4 title-section"><a class="btn btn-primary" href="<%=path%>" target="_"><%=i18n.localize("goToSubscribe")%></a></div>
+                        <div id="store-redirect-link" class="span4 title-section"><a class="btn btn-primary" href="<%=path%>" target="_"><%=i18n.localize("goToSubscribe")%></a></div>
                     <%}%>
                     <div class="span12 tabs-section">
                         <% jagg.includeBlock("ui/tab", outputs.tabs); %>

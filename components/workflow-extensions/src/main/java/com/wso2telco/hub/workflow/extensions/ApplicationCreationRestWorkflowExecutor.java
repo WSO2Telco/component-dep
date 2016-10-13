@@ -7,6 +7,7 @@ import com.wso2telco.hub.workflow.extensions.beans.Variable;
 import com.wso2telco.hub.workflow.extensions.exceptions.WorkflowErrorDecoder;
 import com.wso2telco.hub.workflow.extensions.exceptions.WorkflowExtensionException;
 import com.wso2telco.hub.workflow.extensions.rest.client.BusinessProcessApi;
+import com.wso2telco.hub.workflow.extensions.util.WorkflowProperties;
 import feign.Feign;
 import feign.auth.BasicAuthRequestInterceptor;
 import feign.jackson.JacksonDecoder;
@@ -28,11 +29,10 @@ import org.wso2.carbon.apimgt.impl.workflow.WorkflowConstants;
 import org.wso2.carbon.apimgt.impl.workflow.WorkflowException;
 import org.wso2.carbon.apimgt.impl.workflow.WorkflowExecutor;
 import org.wso2.carbon.apimgt.impl.workflow.WorkflowStatus;
+import org.wso2.carbon.context.CarbonContext;
+import org.wso2.carbon.user.api.UserStoreException;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
 
@@ -54,6 +54,9 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
 	private static final String USER_NAME = "userName";
 	private static final String EXTERNAL_REFERENCE = "externalWorkflowReferenc";
 	private static final String TIERS_STR = "tiersStr";
+    private static final String ADMIN_PASSWORD="adminPassword";
+    private static final String SERVICE_HOST="service.host";
+    private static final String SERVICE_URL="serviceURL";
 
 
 	private String serviceEndpoint;
@@ -101,6 +104,9 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
 				tiersStr.append(tierName + ',');
 			}
 
+            Properties workflowProperties = WorkflowProperties.loadWorkflowProperties();
+            String serviceURLString = workflowProperties.getProperty(SERVICE_HOST);
+
 			Variable deploymentType = new Variable(DEPLOYMENT_TYPE, getDeploymentType());
 			Variable applicationName = new Variable(APPLICATION_NAME, application.getName());
 			Variable workflorRefId = new Variable(WORKFLOW_REF_ID, appWorkFlowDTO.getExternalWorkflowReference());
@@ -112,6 +118,11 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
 			Variable userName = new Variable(USER_NAME,appWorkFlowDTO.getUserName());
 			Variable externalWorkflowReference = new Variable(EXTERNAL_REFERENCE,appWorkFlowDTO.getExternalWorkflowReference());
 			Variable tiers = new Variable(TIERS_STR,tiersStr.toString());
+            Variable serviceURL = new Variable(SERVICE_URL,serviceURLString);
+            Variable adminPassword= new Variable(ADMIN_PASSWORD, CarbonContext
+                    .getThreadLocalCarbonContext()
+                    .getUserRealm()
+                    .getRealmConfiguration().getAdminPassword());
 
 			// TODO: get operators via the osgi service
 			// currently this is read from a java system parameter
@@ -140,6 +151,8 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
 			variables.add(userName);
 			variables.add(externalWorkflowReference);
 			variables.add(tiers);
+            variables.add(serviceURL);
+            variables.add(adminPassword);
 
 			processInstanceRequest.setVariables(variables);
 
@@ -159,8 +172,11 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
 		} catch (APIManagementException e) {
 			log.error("Error in obtaining APIConsumer", e);
 			throw new WorkflowException("Error in obtaining APIConsumer", e);
-		}
-		return new GeneralWorkflowResponse();
+		} catch (UserStoreException e) {
+            log.error("Error in obtaining APIConsumer", e);
+            throw new WorkflowException("Error in obtaining APIConsumer", e);
+        }
+        return new GeneralWorkflowResponse();
 	}
 
 	public WorkflowResponse complete(WorkflowDTO workFlowDTO) throws WorkflowException {

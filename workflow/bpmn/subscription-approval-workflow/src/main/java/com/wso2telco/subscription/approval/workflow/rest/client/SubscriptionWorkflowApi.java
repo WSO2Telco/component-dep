@@ -1,9 +1,10 @@
 package com.wso2telco.subscription.approval.workflow.rest.client;
 
 
-import com.wso2telco.application.creation.approval.workflow.model.Subscription;
-import com.wso2telco.application.creation.approval.workflow.model.SubscriptionValidation;
+
 import com.wso2telco.subscription.approval.workflow.exception.SubscriptionApprovalWorkflowException;
+import com.wso2telco.subscription.approval.workflow.model.Subscription;
+import com.wso2telco.subscription.approval.workflow.model.SubscriptionValidation;
 import feign.Headers;
 import feign.Param;
 import feign.RequestLine;

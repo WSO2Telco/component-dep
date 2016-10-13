@@ -19,6 +19,8 @@
         <activiti:formProperty id="applicationDescription" name="applicationDescription" type="string" variable="applicationDescription" required="true"></activiti:formProperty>
         <activiti:formProperty id="apiTiers" name="apiTiers" type="string" variable="apiTiers" required="true"></activiti:formProperty>
         <activiti:formProperty id="api_publisher" name="API Publisher" type="string" variable="api_publisher" required="true"></activiti:formProperty>
+        <activiti:formProperty id="adminPassword" name="admin Password" variable="adminPassword"></activiti:formProperty>
+        <activiti:formProperty id="serviceURL" name="serviceURL" variable="serviceURL" writable="false"></activiti:formProperty>
       </extensionElements>
     </startEvent>
     <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway" default="gatewayFlow"></exclusiveGateway>
@@ -79,7 +81,7 @@
     <transaction id="api_publisher_approval_transaction" name="API Publisher Approval Transaction">
       <startEvent id="startevent4" name="Start"></startEvent>
       <endEvent id="endevent6" name="End"></endEvent>
-      <userTask id="api_publisher_approval" name="API Publisher Approval" activiti:assignee="admin">
+      <userTask id="api_publisher_approval" name="API Publisher Approval" activiti:assignee="${apiProvider}">
         <extensionElements>
           <activiti:formProperty id="apiPublisherApproval" name="Approve / Reject" type="enum" default="apiPublisherApproval" required="true">
             <activiti:value id="APPROVED" name="Approve"></activiti:value>
@@ -193,7 +195,7 @@
         <omgdi:waypoint x="108.0" y="400.0"></omgdi:waypoint>
         <omgdi:waypoint x="108.0" y="377.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="13.0" width="46.0" x="108.0" y="400.0"></omgdc:Bounds>
+          <omgdc:Bounds height="12.0" width="46.0" x="108.0" y="400.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
@@ -205,7 +207,7 @@
         <omgdi:waypoint x="349.0" y="211.0"></omgdi:waypoint>
         <omgdi:waypoint x="457.0" y="211.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="39.0" width="100.0" x="349.0" y="211.0"></omgdc:Bounds>
+          <omgdc:Bounds height="36.0" width="100.0" x="349.0" y="211.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="hubAdminRejectedFlow" id="BPMNEdge_hubAdminRejectedFlow">
@@ -213,7 +215,7 @@
         <omgdi:waypoint x="329.0" y="47.0"></omgdi:waypoint>
         <omgdi:waypoint x="472.0" y="47.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="39.0" width="100.0" x="330.0" y="150.0"></omgdc:Bounds>
+          <omgdc:Bounds height="36.0" width="100.0" x="330.0" y="150.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="gatewayFlow" id="BPMNEdge_gatewayFlow">
@@ -221,7 +223,7 @@
         <omgdi:waypoint x="699.0" y="420.0"></omgdi:waypoint>
         <omgdi:waypoint x="699.0" y="314.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="13.0" width="68.0" x="128.0" y="420.0"></omgdc:Bounds>
+          <omgdc:Bounds height="12.0" width="70.0" x="128.0" y="420.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow26" id="BPMNEdge_flow26">
@@ -265,7 +267,7 @@
         <omgdi:waypoint x="129.0" y="15.0"></omgdi:waypoint>
         <omgdi:waypoint x="108.0" y="47.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="39.0" width="100.0" x="167.0" y="-47.0"></omgdc:Bounds>
+          <omgdc:Bounds height="36.0" width="100.0" x="107.0" y="-107.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow33" id="BPMNEdge_flow33">
@@ -291,7 +293,7 @@
         <omgdi:waypoint x="730.0" y="99.0"></omgdi:waypoint>
         <omgdi:waypoint x="699.0" y="109.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="39.0" width="100.0" x="1117.0" y="-25.0"></omgdc:Bounds>
+          <omgdc:Bounds height="36.0" width="100.0" x="1117.0" y="-145.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow38" id="BPMNEdge_flow38">
@@ -313,14 +315,14 @@
         <omgdi:waypoint x="1100.0" y="452.0"></omgdi:waypoint>
         <omgdi:waypoint x="1160.0" y="452.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="39.0" width="100.0" x="1000.0" y="324.0"></omgdc:Bounds>
+          <omgdc:Bounds height="36.0" width="100.0" x="1000.0" y="324.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="external_gateway_flow" id="BPMNEdge_external_gateway_flow">
         <omgdi:waypoint x="1120.0" y="211.0"></omgdi:waypoint>
         <omgdi:waypoint x="1228.0" y="211.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="52.0" width="100.0" x="1119.0" y="164.0"></omgdc:Bounds>
+          <omgdc:Bounds height="48.0" width="100.0" x="1119.0" y="164.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>

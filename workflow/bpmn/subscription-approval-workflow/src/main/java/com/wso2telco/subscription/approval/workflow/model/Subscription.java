@@ -1,4 +1,4 @@
-package com.wso2telco.application.creation.approval.workflow.model;
+package com.wso2telco.subscription.approval.workflow.model;
 
 
 public class Subscription {
@@ -8,6 +8,15 @@ public class Subscription {
     private String status;
     private String ApiName;
     private String OpID;
+    private String operatorName;
+
+    public String getOperatorName() {
+        return operatorName;
+    }
+
+    public void setOperatorName(String operatorName) {
+        this.operatorName = operatorName;
+    }
 
     public String getOpID() {
         return OpID;

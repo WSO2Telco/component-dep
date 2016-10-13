@@ -21,7 +21,11 @@ package com.wso2telco.application.creation.approval.workflow.servicetask;
 
 import com.wso2telco.application.creation.approval.workflow.exception.HubWorkflowCallbackApiErrorDecoder;
 import com.wso2telco.application.creation.approval.workflow.model.Application;
+import com.wso2telco.application.creation.approval.workflow.model.ApplicationApprovalAuditRecord;
 import com.wso2telco.application.creation.approval.workflow.rest.client.HubWorkflowApi;
+import com.wso2telco.application.creation.approval.workflow.rest.client.WorkflowApprovalAuditApi;
+import com.wso2telco.application.creation.approval.workflow.util.AuthRequestInterceptor;
+import com.wso2telco.application.creation.approval.workflow.util.Constants;
 import feign.Feign;
 import feign.auth.BasicAuthRequestInterceptor;
 import feign.jackson.JacksonDecoder;
@@ -37,16 +41,31 @@ public class OperatorDataUpdater implements JavaDelegate {
 
 	public void execute(DelegateExecution arg0) throws Exception {
 
+        AuthRequestInterceptor authRequestInterceptor=new AuthRequestInterceptor();
 		String operatorName = arg0.getVariable(Constants.OPERATOR).toString();
-		String applicationId=arg0.getVariable("applicationId").toString();
-        String serviceUrl = "https://10.10.12.16:9443/workflow-service/";
+		String applicationId=arg0.getVariable(Constants.APPLICATION_ID).toString();
+        String serviceUrl = arg0.getVariable(Constants.SERVICE_URL).toString();
+        String deploymentType = arg0.getVariable(Constants.DEPLOYMENT_TYPE).toString();
+        String completedByUser= arg0.getVariable(Constants.COMPLETE_BY_USER).toString();
+        String completedOn= arg0.getVariable(Constants.COMPLETED_ON).toString();
+        String completedByRole=arg0.getVariable(Constants.OPERATOR).toString()+Constants.ADMIN_ROLE;
+        String applicationName= arg0.getVariable(Constants.APPLICATION_NAME).toString();
+        String userName= arg0.getVariable(Constants.USER_NAME).toString();
+        String adminPassword= arg0.getVariable(Constants.ADMIN_PASSWORD).toString();
 
         HubWorkflowApi api = Feign.builder()
                 .encoder(new JacksonEncoder())
                 .decoder(new JacksonDecoder())
                 .errorDecoder(new HubWorkflowCallbackApiErrorDecoder())
-                .requestInterceptor(getBasicAuthRequestInterceptor())
+                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminPassword))
                 .target(HubWorkflowApi.class, serviceUrl);
+
+        WorkflowApprovalAuditApi apiAudit = Feign.builder()
+                .encoder(new JacksonEncoder())
+                .decoder(new JacksonDecoder())
+                .errorDecoder(new HubWorkflowCallbackApiErrorDecoder())
+                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminPassword))
+                .target(WorkflowApprovalAuditApi.class, serviceUrl);
 		
 		String operatorAdminApprovalStatus = arg0.getVariable(Constants.OPERATOR_ADMIN_APPROVAL).toString();
 		log.info("In OperatorDataUpdater, Operator admin approval status: " + operatorAdminApprovalStatus +
@@ -57,43 +76,27 @@ public class OperatorDataUpdater implements JavaDelegate {
         application.setStatus(operatorAdminApprovalStatus);
         application.setOperatorID(1);
         application.setOperatorName(operatorName);
-
-
-        try {
+           try {
+            if(deploymentType.equalsIgnoreCase(Constants.GATEWAY)){
             api.applicationApprovalHub(application);
+            }
             api.applicationApprovalOperator(application);
+
+            ApplicationApprovalAuditRecord applicationApprovalAuditRecord=new ApplicationApprovalAuditRecord();
+            applicationApprovalAuditRecord.setAppApprovalType("ADMIN");
+            applicationApprovalAuditRecord.setAppCreator(userName);
+            applicationApprovalAuditRecord.setAppName(applicationName);
+            applicationApprovalAuditRecord.setAppStatus(operatorAdminApprovalStatus);
+            applicationApprovalAuditRecord.setCompletedByUser(completedByUser);
+            applicationApprovalAuditRecord.setCompletedByRole(completedByRole);
+            applicationApprovalAuditRecord.setCompletedOn(completedOn);
+
+            apiAudit.applicationApprovalAudit(applicationApprovalAuditRecord);
+
         } catch (Exception e) {
-           e.printStackTrace();
+               throw new Exception(e);
         }
 	}
 
-    private BasicAuthRequestInterceptor getBasicAuthRequestInterceptor () {
-        String username;
-        String password;
-
-        // check java system properties first
-        username = System.getProperty(Constants.HUB_WORKFLOW_CALLBACK_USERNAME_PROPERTY);
-        // if not found, check environment variables
-        if (username == null) {
-            username = System.getenv(Constants.HUB_WORKFLOW_CALLBACK_USERNAME_PROPERTY);
-        }
-        // if still not found, use 'admin' :D
-        if (username == null) {
-            username = "admin";
-        }
-
-        // check java system properties first
-        password = System.getProperty(Constants.HUB_WORKFLOW_CALLBACK_PASSWORD_PROPERTY);
-        // if not found, check environment variables
-        if (password == null) {
-            password = System.getenv(Constants.HUB_WORKFLOW_CALLBACK_PASSWORD_PROPERTY);
-        }
-        // if still not found, use 'admin' :D
-        if (password == null) {
-            password = "admin";
-        }
-
-        return new BasicAuthRequestInterceptor(username, password);
-    }
 
 }

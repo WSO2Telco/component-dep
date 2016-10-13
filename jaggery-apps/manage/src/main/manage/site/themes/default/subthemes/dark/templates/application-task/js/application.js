@@ -226,8 +226,9 @@ function loadAllTaskTierDetails() {
 		}, function(result) {
 			if (!result.error) {
 				if (result.data != null) {
-					setTierDropDownDetails(result);
 					setTaskDescriptions(result);
+					setTierDropDownDetails(result);
+					
 				} else {
 					jagg.showLogin();
 				}
