@@ -148,6 +148,16 @@
                                         <include name="db.properties" />
                                     </fileset>
                                 </copy>
+                                <copy todir="${tempdir}/activiti-rest/WEB-INF/classes" overwrite="true">
+                                    <fileset dir="${project.build.directory}/../src/main/resources">
+                                        <include name="log4j.properties" />
+                                    </fileset>
+                                </copy>
+                                <copy todir="${tempdir}/activiti-explorer/WEB-INF/classes" overwrite="true">
+                                    <fileset dir="${project.build.directory}/../src/main/resources">
+                                        <include name="log4j.properties" />
+                                    </fileset>
+                                </copy>
 				<!--copy todir="${tempdir}/activiti-explorer/WEB-INF/lib" overwrite="false">
                                     <fileset dir="${project.build.directory}/maven-shared-archive-resources/dependencies">
                                         <include name="com.wso2telco.application.creation.approval.workflow-${project.version}.jar" />
