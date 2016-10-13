@@ -57,10 +57,16 @@ var jagg = jagg || (function () {
     var setUser = function (user) {
         //if jaggery allow session reset
         if (typeof request.getSession == "function") {
+            var groupId = session.get("groupId");
             if (session && !session.isNew()) {
                    session.invalidate();
             }
             session = request.getSession(true);
+            if(groupId == null || groupId == "null"){
+              //Set group Id to empty string to avoid null value being passed to backend.
+              groupId="";
+            }
+            session.put("groupId", groupId);
         }
         session.put("logged.user", user);
     };
