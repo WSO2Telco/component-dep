@@ -8,7 +8,7 @@
     "tasksPerPage": 10,
     "allowedRole":"admin",
     "allowedRoles":"admin,subscriber,dialog-admin-role,celcom-admin-role,dialog-cc-role",
-    "adminRole":"admin",
+    "adminRole":"APICreate",
     "workflows":{
      "applicationWorkFlowServerURL": "https://localhost:9445/services/",
      "subscriptionWorkFlowServerURL": "https://localhost:9445/services/",

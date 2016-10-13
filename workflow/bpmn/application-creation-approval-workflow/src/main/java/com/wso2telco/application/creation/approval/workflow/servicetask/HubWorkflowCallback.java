@@ -21,6 +21,7 @@ package com.wso2telco.application.creation.approval.workflow.servicetask;
 
 import com.wso2telco.application.creation.approval.workflow.exception.HubWorkflowCallbackApiException;
 import com.wso2telco.application.creation.approval.workflow.rest.client.HubWorkflowCallbackApi;
+import com.wso2telco.application.creation.approval.workflow.util.AuthRequestInterceptor;
 import com.wso2telco.application.creation.approval.workflow.util.Constants;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
@@ -39,6 +40,7 @@ public class HubWorkflowCallback implements JavaDelegate {
 
 	public void execute(DelegateExecution arg0) throws Exception {
 
+        AuthRequestInterceptor authRequestInterceptor=new AuthRequestInterceptor();
         String refId = arg0.getVariable(Constants.WORKFLOW_REF_ID).toString();
         String hubAdminApprovalStatus = (String) arg0.getVariable(Constants.HUB_ADMIN_APPROVAL);
         String callbackUrl = (String) arg0.getVariable(Constants.CALL_BACK_URL);
@@ -48,7 +50,7 @@ public class HubWorkflowCallback implements JavaDelegate {
                 .encoder(new JacksonEncoder())
                 .decoder(new JacksonDecoder())
                 .errorDecoder(new HubWorkflowCallbackApiErrorDecoder())
-                .requestInterceptor(getBasicAuthRequestInterceptor())
+                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminPassword))
                 .target(HubWorkflowCallbackApi.class, callbackUrl);
 
         log.info("Application creation workflow reference Id: " + refId + ", Hub Admin Approval Status: " +
@@ -61,32 +63,5 @@ public class HubWorkflowCallback implements JavaDelegate {
         }
 	}
 
-    private BasicAuthRequestInterceptor getBasicAuthRequestInterceptor () {
-        String username;
-        String password;
 
-        // check java system properties first
-        username = System.getProperty(Constants.HUB_WORKFLOW_CALLBACK_USERNAME_PROPERTY);
-        // if not found, check environment variables
-        if (username == null) {
-            username = System.getenv(Constants.HUB_WORKFLOW_CALLBACK_USERNAME_PROPERTY);
-        }
-        // if still not found, use 'admin' :D
-        if (username == null) {
-            username = "admin";
-        }
-
-        // check java system properties first
-        password = System.getProperty(Constants.HUB_WORKFLOW_CALLBACK_PASSWORD_PROPERTY);
-        // if not found, check environment variables
-        if (password == null) {
-            password = System.getenv(Constants.HUB_WORKFLOW_CALLBACK_PASSWORD_PROPERTY);
-        }
-        // if still not found, use 'admin' :D
-        if (password == null) {
-            password = "admin";
-        }
-
-        return new BasicAuthRequestInterceptor(username, password);
-    }
 }

@@ -187,8 +187,9 @@ function loadAllTaskTierDetails() {
 		}, function(result) {
 			if (!result.error) {
 				if (result.data != null) {
+					setSubscriptionDescriptions(result);
 					setTierDropDownDetails(result);					
-					setSubscriptionDescriptions(result);					
+										
 				} else {
 					jagg.showLogin();
 				}
