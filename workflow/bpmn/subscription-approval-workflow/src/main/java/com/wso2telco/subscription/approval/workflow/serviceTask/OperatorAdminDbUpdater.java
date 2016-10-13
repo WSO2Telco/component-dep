@@ -28,10 +28,11 @@ public class OperatorAdminDbUpdater implements JavaDelegate {
 
 	public void execute(DelegateExecution arg0) throws Exception {
 
+
         AuthRequestInterceptor authRequestInterceptor=new AuthRequestInterceptor();
     	String operatorName = arg0.getVariable(WorkflowConstants.OPERATOR).toString();
 		int applicationId=Integer.parseInt(arg0.getVariable(WorkflowConstants.APPLICATION_ID).toString());
-        String serviceUrl =WorkflowConstants.SERVICE_URL;
+        String serviceUrl =arg0.getVariable(WorkflowConstants.SERVICE_URL).toString();
         String apiName=arg0.getVariable(WorkflowConstants.API_NAME).toString();
         int apiID=Integer.parseInt(arg0.getVariable(WorkflowConstants.API_ID).toString());
         String deploymentType = arg0.getVariable(WorkflowConstants.DEPLOYMENT_TYPE).toString();
@@ -43,24 +44,29 @@ public class OperatorAdminDbUpdater implements JavaDelegate {
         String applicationName= arg0.getVariable(WorkflowConstants.APPLICATION_NAME).toString();
         String description= arg0.getVariable(WorkflowConstants.DESCRIPTION).toString();
         String selectedTier= arg0.getVariable(WorkflowConstants.SELECTED_TIER).toString();
+        String adminPassword= arg0.getVariable(WorkflowConstants.ADMIN_PASSWORD).toString();
+        String apiContext= arg0.getVariable(WorkflowConstants.API_CONTEXT).toString();
+        String subscriber=  arg0.getVariable(WorkflowConstants.SUBSCRIBER).toString();
+
 
 		String operatorAdminApprovalStatus = arg0.getVariable(WorkflowConstants.OPERATOR_ADMIN_APPROVAL).toString();
 		log.info("In OperatorDataUpdater, Operator admin approval status: " + operatorAdminApprovalStatus +
 		         " Operator: " + operatorName);
 
-		
+
         SubscriptionWorkflowApi api = Feign.builder()
                 .encoder(new JacksonEncoder())
                 .decoder(new JacksonDecoder())
                 .errorDecoder(new WorkflowCallbackErrorDecoder())
-                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor())
+                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminPassword))
                 .target(SubscriptionWorkflowApi.class, serviceUrl);
+
 
         WorkflowApprovalAuditApi apiAudit = Feign.builder()
                 .encoder(new JacksonEncoder())
                 .decoder(new JacksonDecoder())
                 .errorDecoder(new WorkflowCallbackErrorDecoder())
-                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor())
+                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminPassword))
                 .target(WorkflowApprovalAuditApi.class, serviceUrl);
 
 
@@ -68,10 +74,8 @@ public class OperatorAdminDbUpdater implements JavaDelegate {
                 .encoder(new JacksonEncoder())
                 .decoder(new JacksonDecoder())
                 .errorDecoder(new WorkflowCallbackErrorDecoder())
-                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor())
+                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminPassword))
                 .target(NotificationApi.class, serviceUrl);
-
-
 
         Subscription subscription=new Subscription();
         subscription.setApiName(apiName);
@@ -83,7 +87,6 @@ public class OperatorAdminDbUpdater implements JavaDelegate {
         subscriptionValidation.setApiID(apiID);
         subscriptionValidation.setApplicationID(applicationId);
 
-
         SubscriptionApprovalAuditRecord subscriptionApprovalAuditRecord=new SubscriptionApprovalAuditRecord();
         subscriptionApprovalAuditRecord.setApiName(apiName);
         subscriptionApprovalAuditRecord.setApiProvider(apiProvider);
@@ -94,43 +97,51 @@ public class OperatorAdminDbUpdater implements JavaDelegate {
         subscriptionApprovalAuditRecord.setCompletedOn(completedOn);
         subscriptionApprovalAuditRecord.setSubApprovalType("OPERATOR_ADMIN_APPROVAL");
         subscriptionApprovalAuditRecord.setSubStatus(operatorAdminApprovalStatus);
+
         try {
+
+            apiAudit.subscriptionApprovalAudit(subscriptionApprovalAuditRecord);
+
             if(!deploymentType.equalsIgnoreCase(WorkflowConstants.HUB)) {
                 api.subscriptionApprovalHub(subscription);
             }
+
+            if(!deploymentType.equalsIgnoreCase(WorkflowConstants.INTERNAL_GATEWAY)){
             api.subscriptionApprovalOperator(subscription);
-            api.subscriptionApprovalValidator(subscriptionValidation);
-            apiAudit.subscriptionApprovalAudit(subscriptionApprovalAuditRecord);
+            api.subscriptionApprovalValidator(subscriptionValidation);}
 
             //send email notification
-            if(operatorAdminApprovalStatus.equalsIgnoreCase(WorkflowConstants.APPROVE)){
-                PLUGINAdminSubApprovalNotificationRequest pLUGINAdminSubApprovalNotificationRequest=new PLUGINAdminSubApprovalNotificationRequest();
-                pLUGINAdminSubApprovalNotificationRequest.setApiVersion(apiVersion);
-                pLUGINAdminSubApprovalNotificationRequest.setApiContext("");
-                pLUGINAdminSubApprovalNotificationRequest.setApiName(apiName);
-                pLUGINAdminSubApprovalNotificationRequest.setApiProvider(apiProvider);
-                pLUGINAdminSubApprovalNotificationRequest.setApiPublisher(apiProvider);
-                pLUGINAdminSubApprovalNotificationRequest.setApplicationName(applicationName);
-                pLUGINAdminSubApprovalNotificationRequest.setApplicationDescription(description);
-                pLUGINAdminSubApprovalNotificationRequest.setSubscriptionTier(selectedTier);
+            if(deploymentType.equalsIgnoreCase(WorkflowConstants.INTERNAL_GATEWAY)) {
 
-                apiNotification.subscriptionNotificationApiCreator(pLUGINAdminSubApprovalNotificationRequest);
+                if (operatorAdminApprovalStatus.equalsIgnoreCase(WorkflowConstants.APPROVE)) {
+                    PLUGINAdminSubApprovalNotificationRequest pLUGINAdminSubApprovalNotificationRequest = new PLUGINAdminSubApprovalNotificationRequest();
+                    pLUGINAdminSubApprovalNotificationRequest.setApiVersion(apiVersion);
+                    pLUGINAdminSubApprovalNotificationRequest.setApiContext(apiContext);
+                    pLUGINAdminSubApprovalNotificationRequest.setApiName(apiName);
+                    pLUGINAdminSubApprovalNotificationRequest.setApiProvider(apiProvider);
+                    pLUGINAdminSubApprovalNotificationRequest.setSubscriber(subscriber);
+                    pLUGINAdminSubApprovalNotificationRequest.setApiPublisher(apiProvider);
+                    pLUGINAdminSubApprovalNotificationRequest.setApplicationName(applicationName);
+                    pLUGINAdminSubApprovalNotificationRequest.setApplicationDescription(description);
+                    pLUGINAdminSubApprovalNotificationRequest.setSubscriptionTier(selectedTier);
 
+                    apiNotification.subscriptionNotificationApiCreator(pLUGINAdminSubApprovalNotificationRequest);
+
+                } else {
+                    SubApprovalStatusSPNotificationRequest subApprovalStatusSPNotificationRequest = new SubApprovalStatusSPNotificationRequest();
+                    subApprovalStatusSPNotificationRequest.setApprovalStatus(operatorAdminApprovalStatus);
+                    subApprovalStatusSPNotificationRequest.setApplicationName(applicationName);
+                    subApprovalStatusSPNotificationRequest.setApiProvider(apiProvider);
+                    subApprovalStatusSPNotificationRequest.setSubscriber(subscriber);
+                    subApprovalStatusSPNotificationRequest.setApiName(apiName);
+                    subApprovalStatusSPNotificationRequest.setSubscriptionTier(selectedTier);
+                    subApprovalStatusSPNotificationRequest.setApplicationDescription(description);
+                    subApprovalStatusSPNotificationRequest.setApiVersion(apiVersion);
+                    subApprovalStatusSPNotificationRequest.setApiContext(apiContext);
+
+                    apiNotification.subscriptionNotificationSp(subApprovalStatusSPNotificationRequest);
+                }
             }
-            else{
-                SubApprovalStatusSPNotificationRequest subApprovalStatusSPNotificationRequest=new SubApprovalStatusSPNotificationRequest();
-                subApprovalStatusSPNotificationRequest.setApprovalStatus(operatorAdminApprovalStatus);
-                subApprovalStatusSPNotificationRequest.setApplicationName(applicationName);
-                subApprovalStatusSPNotificationRequest.setApiProvider(apiProvider);
-                subApprovalStatusSPNotificationRequest.setApiName(apiName);
-                subApprovalStatusSPNotificationRequest.setSubscriptionTier(selectedTier);
-                subApprovalStatusSPNotificationRequest.setApplicationDescription(description);
-                subApprovalStatusSPNotificationRequest.setApiVersion(apiVersion);
-                subApprovalStatusSPNotificationRequest.setApiContext("");
-
-                apiNotification.subscriptionNotificationSp(subApprovalStatusSPNotificationRequest);
-            }
-
 
 
         } catch (Exception e) {

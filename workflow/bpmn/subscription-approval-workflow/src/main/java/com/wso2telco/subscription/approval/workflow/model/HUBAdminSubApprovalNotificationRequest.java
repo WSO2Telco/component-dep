@@ -11,212 +11,122 @@ public class HUBAdminSubApprovalNotificationRequest {
     /**
      * field for ReceiverRole
      */
-    protected String receiverRole;
+    private String receiverRole;
 
     /**
      * field for ApiName
      */
-    protected String apiName;
+    private String apiName;
 
     /**
      * field for ApiVersion
      */
-    protected String apiVersion;
+    private String apiVersion;
 
     /**
      * field for ApiContext
      */
-    protected String apiContext;
+    private String apiContext;
 
     /**
      * field for ApiProvider
      */
-    protected String apiProvider;
+    private String apiProvider;
 
     /**
      * field for Subscriber
      */
-    protected String subscriber;
+    private String subscriber;
 
     /**
      * field for SubscriptionTier
      */
-    protected String subscriptionTier;
+    private String subscriptionTier;
 
     /**
      * field for ApplicationName
      */
-    protected String applicationName;
+    private String applicationName;
 
     /**
      * field for ApplicationDescription
      */
-    protected String applicationDescription;
+    private String applicationDescription;
 
 
-    /**
-     *
-     * @return java.lang.String
-     */
     public String getReceiverRole() {
         return receiverRole;
     }
 
-
-    /**
-     * @param param ReceiverRole
-     */
-    public void setReceiverRole(String param) {
-
-        this.receiverRole = param;
-
-
+    public void setReceiverRole(String receiverRole) {
+        this.receiverRole = receiverRole;
     }
 
-    /**
-     * @return java.lang.String
-     */
     public String getApiName() {
         return apiName;
     }
 
-
-    /**
-     * @param param ApiName
-     */
-    public void setApiName(String param) {
-
-        this.apiName = param;
-
-
+    public void setApiName(String apiName) {
+        this.apiName = apiName;
     }
 
-    /**
-     * @return java.lang.String
-     */
     public String getApiVersion() {
         return apiVersion;
     }
 
-
-    /**
-     * @param param ApiVersion
-     */
-    public void setApiVersion(String param) {
-
-        this.apiVersion = param;
-
-
+    public void setApiVersion(String apiVersion) {
+        this.apiVersion = apiVersion;
     }
 
-    /**
-     * @return java.lang.String
-     */
     public String getApiContext() {
         return apiContext;
     }
 
-
-    /**
-     * @param param ApiContext
-     */
-    public void setApiContext(String param) {
-
-        this.apiContext = param;
-
-
+    public void setApiContext(String apiContext) {
+        this.apiContext = apiContext;
     }
 
-
-    /**
-     * @return java.lang.String
-     */
     public String getApiProvider() {
         return apiProvider;
     }
 
-
-    /**
-     * @param param ApiProvider
-     */
-    public void setApiProvider(String param) {
-
-        this.apiProvider = param;
-
-
+    public void setApiProvider(String apiProvider) {
+        this.apiProvider = apiProvider;
     }
 
-    /**
-     * @return java.lang.String
-     */
     public String getSubscriber() {
         return subscriber;
     }
 
-
-    /**
-     * @param param Subscriber
-     */
-    public void setSubscriber(String param) {
-
-        this.subscriber = param;
-
-
+    public void setSubscriber(String subscriber) {
+        this.subscriber = subscriber;
     }
 
-    /**
-     * @return java.lang.String
-     */
     public String getSubscriptionTier() {
         return subscriptionTier;
     }
 
-
-    /**
-     * @param param SubscriptionTier
-     */
-    public void setSubscriptionTier(String param) {
-
-        this.subscriptionTier = param;
-
-
+    public void setSubscriptionTier(String subscriptionTier) {
+        this.subscriptionTier = subscriptionTier;
     }
 
-    /**
-     * @return java.lang.String
-     */
     public String getApplicationName() {
         return applicationName;
     }
 
-
-    /**
-     * @param param ApplicationName
-     */
-    public void setApplicationName(String param) {
-
-        this.applicationName = param;
-
-
+    public void setApplicationName(String applicationName) {
+        this.applicationName = applicationName;
     }
 
-    /**
-     * @return java.lang.String
-     */
     public String getApplicationDescription() {
         return applicationDescription;
     }
 
-
-    /**
-     * @param param ApplicationDescription
-     */
-    public void setApplicationDescription(String param) {
-
-        this.applicationDescription = param;
-
-
+    public void setApplicationDescription(String applicationDescription) {
+        this.applicationDescription = applicationDescription;
     }
+
+
 
 
 }

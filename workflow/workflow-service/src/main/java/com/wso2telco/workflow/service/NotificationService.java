@@ -87,7 +87,6 @@ public class NotificationService {
         return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
     }}
 
-
     @POST
     @Path("subscription/gateway")
     @Consumes(MediaType.APPLICATION_JSON)

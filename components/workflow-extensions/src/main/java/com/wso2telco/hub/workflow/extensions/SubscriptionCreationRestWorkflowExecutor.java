@@ -10,6 +10,7 @@ import com.wso2telco.hub.workflow.extensions.impl.WorkflowAPIConsumerImpl;
 import com.wso2telco.hub.workflow.extensions.interfaces.WorkflowAPIConsumer;
 import com.wso2telco.hub.workflow.extensions.rest.client.BusinessProcessApi;
 import com.wso2telco.hub.workflow.extensions.util.DeploymentTypes;
+import com.wso2telco.hub.workflow.extensions.util.WorkflowProperties;
 import feign.Feign;
 import feign.auth.BasicAuthRequestInterceptor;
 import feign.jackson.JacksonDecoder;
@@ -34,11 +35,10 @@ import org.wso2.carbon.apimgt.impl.workflow.WorkflowConstants;
 import org.wso2.carbon.apimgt.impl.workflow.WorkflowException;
 import org.wso2.carbon.apimgt.impl.workflow.WorkflowExecutor;
 import org.wso2.carbon.apimgt.impl.workflow.WorkflowStatus;
+import org.wso2.carbon.context.CarbonContext;
+import org.wso2.carbon.user.api.UserStoreException;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
 
@@ -65,6 +65,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
 	private static final String DEPLOYMENT_TYPE_SYSTEM_PARAM = "DEPLOYMENT_TYPE";
     private static final String ADMIN_PASSWORD="adminPassword";
     private static final String SERVICE_HOST="service.host";
+    private static final String SERVICE_URL="serviceURL";
 
 	private String serviceEndpoint;
 	private String username;
@@ -124,6 +125,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
             Properties workflowProperties = WorkflowProperties.loadWorkflowProperties();
             String serviceURLString = workflowProperties.getProperty(SERVICE_HOST);
 
+
 			Variable deploymentType = new Variable(DEPLOYMENT_TYPE, getDeploymentType());
 			Variable subscribedApiName = new Variable(API_NAME, apiName);
 			Variable subscribedApiId = new Variable(API_ID, apiID);
@@ -170,8 +172,6 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
 			variables.add(apiTierList);
 			variables.add(applicationDescription);
 			variables.add(deploymentType);
-
-			variables.add(deploymentType);
 			variables.add(applicationName);
 			variables.add(workflowRefId);
 			variables.add(callBackUrl);
@@ -196,9 +196,12 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
 			         processInstanceResponse.getActivityId() + " created successfully");
 		} catch (APIManagementException e) {
 			throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
-		}
+		} catch (UserStoreException e) {
+            log.error("Error in obtaining APIConsumer", e);
+            throw new WorkflowException("Error in obtaining APIConsumer", e);
+        }
 
-		return new GeneralWorkflowResponse();
+        return new GeneralWorkflowResponse();
 	}
 
 	public WorkflowResponse complete(WorkflowDTO workFlowDTO) throws WorkflowException {

@@ -16,10 +16,14 @@ public interface NotificationApi {
 
     @RequestLine("POST workflow/notification/subscription/gateway")
     @Headers("Content-Type: application/json")
-    void subscriptionNotificationAdmin(HUBAdminSubApprovalNotificationRequest hUBAdminSubApprovalNotificationRequest) throws SubscriptionApprovalWorkflowException;
+    void subscriptionNotificationAdmin (HUBAdminSubApprovalNotificationRequest hUBAdminSubApprovalNotificationRequest) throws SubscriptionApprovalWorkflowException;
+
+    @RequestLine("POST workflow/notification/subscription/publisher")
+    @Headers("Content-Type: application/json")
+    void subscriptionNotificationApiCreator (PLUGINAdminSubApprovalNotificationRequest pLUGINAdminSubApprovalNotificationRequest) throws SubscriptionApprovalWorkflowException;
 
     @RequestLine("POST workflow/notification/subscription/gateway")
     @Headers("Content-Type: application/json")
-    void subscriptionNotificationApiCreator(PLUGINAdminSubApprovalNotificationRequest pLUGINAdminSubApprovalNotificationRequest) throws SubscriptionApprovalWorkflowException;
+    void subscriptionNotificationAdminService(HUBAdminSubApprovalNotificationRequest hUBAdminSubApprovalNotificationRequest) throws SubscriptionApprovalWorkflowException;
 
 }

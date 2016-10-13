@@ -41,29 +41,30 @@ public class OperatorDataUpdater implements JavaDelegate {
 
 	public void execute(DelegateExecution arg0) throws Exception {
 
+        AuthRequestInterceptor authRequestInterceptor=new AuthRequestInterceptor();
 		String operatorName = arg0.getVariable(Constants.OPERATOR).toString();
 		String applicationId=arg0.getVariable(Constants.APPLICATION_ID).toString();
-        String serviceUrl = Constants.SERVICE_URL;
+        String serviceUrl = arg0.getVariable(Constants.SERVICE_URL).toString();
         String deploymentType = arg0.getVariable(Constants.DEPLOYMENT_TYPE).toString();
-        AuthRequestInterceptor authRequestInterceptor=new AuthRequestInterceptor();
         String completedByUser= arg0.getVariable(Constants.COMPLETE_BY_USER).toString();
         String completedOn= arg0.getVariable(Constants.COMPLETED_ON).toString();
         String completedByRole=arg0.getVariable(Constants.OPERATOR).toString()+Constants.ADMIN_ROLE;
         String applicationName= arg0.getVariable(Constants.APPLICATION_NAME).toString();
         String userName= arg0.getVariable(Constants.USER_NAME).toString();
+        String adminPassword= arg0.getVariable(Constants.ADMIN_PASSWORD).toString();
 
         HubWorkflowApi api = Feign.builder()
                 .encoder(new JacksonEncoder())
                 .decoder(new JacksonDecoder())
                 .errorDecoder(new HubWorkflowCallbackApiErrorDecoder())
-                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor())
+                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminPassword))
                 .target(HubWorkflowApi.class, serviceUrl);
 
         WorkflowApprovalAuditApi apiAudit = Feign.builder()
                 .encoder(new JacksonEncoder())
                 .decoder(new JacksonDecoder())
                 .errorDecoder(new HubWorkflowCallbackApiErrorDecoder())
-                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor())
+                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminPassword))
                 .target(WorkflowApprovalAuditApi.class, serviceUrl);
 		
 		String operatorAdminApprovalStatus = arg0.getVariable(Constants.OPERATOR_ADMIN_APPROVAL).toString();

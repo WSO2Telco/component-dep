@@ -5,6 +5,11 @@ var ws = require("ws");
 
 var completeTask = function (taskId,taskType,taskName,status,description,endpoint,username,currentDate,selectedTier) {
 
+log.info("username Is " + username);
+log.info("status Is " + status);
+log.info("currentDate Is " + currentDate);
+
+
 
 
 /*var version = new ws.WSRequest();
@@ -68,7 +73,7 @@ try {
                "Content-Type": "application/json"};
     var site = require("/site/conf/site.json");
     var businessProcessEngineUrl = site.workflows.businessProcessEngineBaseUrl;
-    var adminApprovalLevel = taskName=='Hub Admin Approval' ? "hubAdminApproval" : "operatorAdminApproval"
+    var adminApprovalLevel = taskName=='Hub Admin Approval' ? "hubAdminApproval" : taskName=='API Publisher Approval' ? "apiPublisherApproval" : "operatorAdminApproval"
 	var body = {
                 "action" : "complete",
                 "variables" : [
@@ -79,6 +84,31 @@ try {
                     },
                     {
                       "name" : selectedTier,
+                      "value" : selectedTier,
+                      "type" : "string"
+                    },
+                    {
+                      "name" : 'completedByUser',
+                      "value" : username,
+                      "type" : "string"
+                    },
+                    {
+                      "name" : 'status',
+                      "value" : status,
+                      "type" : "string"
+                    },
+                    {
+                      "name" : 'completedOn',
+                      "value" : currentDate,
+                      "type" : "string"
+                    },
+                    {
+                      "name" : 'description',
+                      "value" : description,
+                      "type" : "string"
+                    },
+                    {
+                      "name" : 'selectedTier',
                       "value" : selectedTier,
                       "type" : "string"
                     }
@@ -219,10 +249,8 @@ var setApplicationTier = function (taskId, taskType, tierId, endpoint) {
 
 	var workflow, result;
 	workflow = jagg.module("manager").getWorkflowHostObject();
-	    log.info("refId"+refId+"tierId"+tierId);
 	   
 	try {
-		log.info("2refId"+refId+"tierId"+tierId);
 
 		result = workflow.setApplicationTier(refId,tierId);
 		log.info("refId"+refId+"tierId"+tierId);

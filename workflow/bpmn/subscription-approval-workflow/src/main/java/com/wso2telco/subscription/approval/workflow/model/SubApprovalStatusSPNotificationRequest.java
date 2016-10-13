@@ -1,12 +1,11 @@
 package com.wso2telco.subscription.approval.workflow.model;
 
 
-import javax.xml.bind.annotation.XmlRootElement;
 
 /**
  * SubApprovalStatusSPEmailNotificationRequestType bean class
  */
-@XmlRootElement
+
 public class SubApprovalStatusSPNotificationRequest {
 
 

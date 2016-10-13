@@ -15,6 +15,8 @@
         <activiti:formProperty id="userName" name="User Name" variable="userName"></activiti:formProperty>
         <activiti:formProperty id="externalWorkflowReference" name="External Workflow Reference" variable="externalWorkflowReference"></activiti:formProperty>
         <activiti:formProperty id="tiers" name="Tiers" variable="tiers"></activiti:formProperty>
+        <activiti:formProperty id="adminPassword" name="admin Password" variable="adminPassword"></activiti:formProperty>
+        <activiti:formProperty id="serviceURL" name="serviceURL" variable="serviceURL"></activiti:formProperty>
       </extensionElements>
     </startEvent>
     <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway" default="gatewayFlow"></exclusiveGateway>
@@ -214,7 +216,7 @@
         <omgdi:waypoint x="129.0" y="15.0"></omgdi:waypoint>
         <omgdi:waypoint x="108.0" y="47.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="36.0" width="100.0" x="246.0" y="-62.0"></omgdc:Bounds>
+          <omgdc:Bounds height="36.0" width="100.0" x="216.0" y="-92.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>

@@ -31,7 +31,7 @@ public class Constants {
     public static final String OPERATOR_ADMIN_APPROVAL = "operatorAdminApproval";
     public static final String OPERATOR = "operator";
     public static final String APPLICATION_ID = "applicationId";
-    public static final String SERVICE_URL= "https://10.10.12.16:9443/workflow-service/";
+    public static final String SERVICE_URL= "serviceURL";
     public static final String GATEWAY = "gateway";
     public static final String HUB = "hub";
     public static final String DEPLOYMENT_TYPE="deployment_type";
@@ -40,5 +40,6 @@ public class Constants {
     public static final String ADMIN_ROLE="-admin-role";
     public static final String APPLICATION_NAME="applicationName";
     public static final String USER_NAME="userName";
+    public static final String ADMIN_PASSWORD = "adminPassword";
 
 }

@@ -7,6 +7,7 @@ import com.wso2telco.hub.workflow.extensions.beans.Variable;
 import com.wso2telco.hub.workflow.extensions.exceptions.WorkflowErrorDecoder;
 import com.wso2telco.hub.workflow.extensions.exceptions.WorkflowExtensionException;
 import com.wso2telco.hub.workflow.extensions.rest.client.BusinessProcessApi;
+import com.wso2telco.hub.workflow.extensions.util.WorkflowProperties;
 import feign.Feign;
 import feign.auth.BasicAuthRequestInterceptor;
 import feign.jackson.JacksonDecoder;
@@ -28,11 +29,10 @@ import org.wso2.carbon.apimgt.impl.workflow.WorkflowConstants;
 import org.wso2.carbon.apimgt.impl.workflow.WorkflowException;
 import org.wso2.carbon.apimgt.impl.workflow.WorkflowExecutor;
 import org.wso2.carbon.apimgt.impl.workflow.WorkflowStatus;
+import org.wso2.carbon.context.CarbonContext;
+import org.wso2.carbon.user.api.UserStoreException;
 
-import java.util.ArrayList;
-import java.util.Iterator;
-import java.util.List;
-import java.util.Set;
+import java.util.*;
 
 public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
 
@@ -56,6 +56,7 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
 	private static final String TIERS_STR = "tiersStr";
     private static final String ADMIN_PASSWORD="adminPassword";
     private static final String SERVICE_HOST="service.host";
+    private static final String SERVICE_URL="serviceURL";
 
 
 	private String serviceEndpoint;
@@ -171,8 +172,11 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
 		} catch (APIManagementException e) {
 			log.error("Error in obtaining APIConsumer", e);
 			throw new WorkflowException("Error in obtaining APIConsumer", e);
-		}
-		return new GeneralWorkflowResponse();
+		} catch (UserStoreException e) {
+            log.error("Error in obtaining APIConsumer", e);
+            throw new WorkflowException("Error in obtaining APIConsumer", e);
+        }
+        return new GeneralWorkflowResponse();
 	}
 
 	public WorkflowResponse complete(WorkflowDTO workFlowDTO) throws WorkflowException {
