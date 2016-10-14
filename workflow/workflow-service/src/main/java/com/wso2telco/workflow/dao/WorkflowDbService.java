@@ -422,9 +422,15 @@ public class WorkflowDbService {
             query.append("FROM operators WHERE operatorname = '" + operatorName + " ' ");
             rs = st.executeQuery(query.toString());
 <<<<<<< HEAD
+<<<<<<< HEAD
             while (rs.next()) {
                 operatorId = rs.getInt("ID");
             }
+=======
+           while (rs.next()) {
+               operatorId = rs.getInt("ID");
+           }
+>>>>>>> b52bad2... workflow improvement
 =======
            while (rs.next()) {
                operatorId = rs.getInt("ID");

@@ -197,6 +197,7 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
                     .getUserRealm()
                     .getRealmConfiguration().getAdminPassword());
 <<<<<<< HEAD
+<<<<<<< HEAD
             Variable operators = new Variable(OPERATORS, operatorApi.getOperators());
             if (operators == null) {
                 throw new WorkflowException("No operator(s) defined!!");
@@ -222,6 +223,8 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
             variables.add(externalWorkflowReference);
             variables.add(tiers);
 =======
+=======
+>>>>>>> b52bad2... workflow improvement
 
 			Variable operators = new Variable(OPERATORS, operatorApi.getOperators());
 			if (operators == null) {

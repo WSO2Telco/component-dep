@@ -54,7 +54,12 @@ public class WSO2TelcoSTAdminUserRoleUpdaterComponent {
             UserRealm realm = realmService.getBootstrapRealm();
             UserStoreManager manager = realm.getUserStoreManager();
 <<<<<<< HEAD
+<<<<<<< HEAD
             manager.getRoleListOfUser();
+=======
+            manager.getRoleListOfUser()
+            manager.
+>>>>>>> b52bad2... workflow improvement
 =======
             manager.getRoleListOfUser()
             manager.

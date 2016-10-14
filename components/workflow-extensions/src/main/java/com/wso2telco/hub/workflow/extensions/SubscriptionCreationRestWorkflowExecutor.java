@@ -236,6 +236,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
                     .getRealmConfiguration().getAdminPassword());
 
 <<<<<<< HEAD
+<<<<<<< HEAD
             Variable operators = new Variable(OPERATORS, operatorApi.getOperators());
             if (operators == null) {
                 throw new WorkflowException("No operator(s) defined!!");
@@ -265,6 +266,8 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
             variables.add(callBackUrl);
             variables.add(operators);
 =======
+=======
+>>>>>>> b52bad2... workflow improvement
 			Variable operators = new Variable(OPERATORS, operatorApi.getOperators());
 			if (operators == null) {
 				throw new WorkflowException("No operator(s) defined!!");
