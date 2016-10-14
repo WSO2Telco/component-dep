@@ -21,7 +21,7 @@ var error = {
     },
 
     invalidAction:function(action) {
-        return "action is not supported";
+        return action + " is not supported";
     },
    pageNotFoundAction:function() {
         return {title:"The page cannot be found.",
@@ -56,6 +56,16 @@ var error = {
 
         return "Please provide valid credentials.";
 
-    }
+    },
+    csrfError: "Invalid CSRF Token please try refreshing the page.",
+    invalidInputs:function (errors) {
+        var params = stringify(errors);
+        return "Invalid inputs "+params;
+
+    },
+    appNameError:function(applicationName) {
+        return "Invalid application name '" + applicationName + "' specified";
+    },
+
 };
 %>

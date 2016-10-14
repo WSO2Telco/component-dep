@@ -3,20 +3,23 @@
         "appSelect": "Selecciona por favor una aplicaci�n antes de suscribirse",
         "wait": "Espera por favor..." ,
         "subscription": "Suscripci�n realizada con exito" ,
-        "subscriptionSuccess": "�Felicitaciones! Te has suscrito con exito a la API. Vaya por favor a la p�gina 'Mis suscripciones' para revisar su suscripci�n y generar los Access Key.",
+        "subscriptionSuccess": "�Felicitaciones! Te has suscrito con exito a la API.",
         "subscriptionPending": "Congratulations! Your subscription request has been submitted and is now awaiting approval.",
         "gotoSubsPage": "Ir a Mis Suscripciones",
         "stayPage": "Permanecer en esta p�gina",
+        "viewSubsPage": "ver suscripciones",
         "returntoAPIPage": "�Volver a la p�gina de la API?",
         "yes": "S�",
         "no": "No",
         "charsLeft": "Caracteres restantes",
-
+        "cancelSubs" : "Cancel Subscription"  
 
     },
     "confirm": {
         "delete": "Confirme borrado",
         "deleteMsg": "�Est�s seguro que deseas eliminar la aplicaci�n?",
+        "deleteSubsMsg1": "This application is subscribed to " ,
+        "deleteSubsMsg2": " APIs. " ,
         "deleteMsgPostfix": "Esto cancelar� todas las suscripciones y las claves existentes asociados con la aplicaci�n.",
         "unsubscribeMsg": "�Est�s seguro que deseas cancelar la suscripci�n a "
 

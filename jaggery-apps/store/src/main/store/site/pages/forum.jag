@@ -13,6 +13,13 @@ var uri = request.getRequestURI();
 var callPath=uri.replace(site.context,"");
 
 var action = "list"; // default action list the topics
+
+var mod = jagg.module("manager");
+var result = mod.isForumEnabled();
+if(!result) {
+    response.sendError(404);
+}
+
 if(uri != null) {
     var uriMatcher = new URIMatcher(callPath);
     if (uriMatcher.match("/forum") || uriMatcher.match("/forum/")) {
@@ -40,23 +47,17 @@ include("header.jag");
 (function () {
     var apis, site, tag, query, result, mod, user = jagg.getUser();
 
-    isTenantAllowed();
-
     jagg.render({
         "name":"page/base",
         "inputs":{
-            "title":"API Forum",
+            "title":i18n.localize("API Forum"),
             "pagePath":"/site/pages/forum.jag",
             "body":[
                 {
                     "name":"layout/base",
                     "inputs":{
-                        "title":"My Subscriptions",
-                        "top":[
-                            {
-                                "name":"banner/featured",
-                                "inputs":null
-                            },
+                        "title":i18n.localize("API Forum"),
+                        "top":[                            
                             {
                                 "name":"search/api-search",
                                 "inputs":null
