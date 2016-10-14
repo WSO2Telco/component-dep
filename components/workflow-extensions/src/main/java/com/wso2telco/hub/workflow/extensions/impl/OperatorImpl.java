@@ -18,7 +18,11 @@ public class OperatorImpl implements OperatorApi {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
         String operators="";
+=======
+        String operators="operator";
+>>>>>>> b52bad2... workflow improvement
 =======
         String operators="operator";
 >>>>>>> b52bad2... workflow improvement

@@ -424,9 +424,15 @@ public class WorkflowDbService {
 <<<<<<< HEAD
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             while (rs.next()) {
                 operatorId = rs.getInt("ID");
             }
+=======
+           while (rs.next()) {
+               operatorId = rs.getInt("ID");
+           }
+>>>>>>> b52bad2... workflow improvement
 =======
            while (rs.next()) {
                operatorId = rs.getInt("ID");
