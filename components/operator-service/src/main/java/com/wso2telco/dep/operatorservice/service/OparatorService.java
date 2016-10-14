@@ -1,5 +1,6 @@
 package com.wso2telco.dep.operatorservice.service;
 
+import java.sql.SQLException;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -225,4 +226,9 @@ public class OparatorService {
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
 	}
+
+    public List<Operator> retrieveOperatorList() throws Exception {
+          return dao.retrieveOperatorList();
+    }
+
 }

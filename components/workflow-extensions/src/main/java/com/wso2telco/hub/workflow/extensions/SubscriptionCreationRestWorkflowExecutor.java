@@ -6,7 +6,9 @@ import com.wso2telco.hub.workflow.extensions.beans.ProcessInstanceData;
 import com.wso2telco.hub.workflow.extensions.beans.Variable;
 import com.wso2telco.hub.workflow.extensions.exceptions.WorkflowErrorDecoder;
 import com.wso2telco.hub.workflow.extensions.exceptions.WorkflowExtensionException;
+import com.wso2telco.hub.workflow.extensions.impl.OperatorImpl;
 import com.wso2telco.hub.workflow.extensions.impl.WorkflowAPIConsumerImpl;
+import com.wso2telco.hub.workflow.extensions.interfaces.OperatorApi;
 import com.wso2telco.hub.workflow.extensions.interfaces.WorkflowAPIConsumer;
 import com.wso2telco.hub.workflow.extensions.rest.client.BusinessProcessApi;
 import com.wso2telco.hub.workflow.extensions.util.DeploymentTypes;
@@ -77,6 +79,8 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
 
 	public WorkflowResponse execute(WorkflowDTO workflowDTO) throws WorkflowException {
 
+        OperatorApi operatorApi=new OperatorImpl();
+
 		try {
 			if (log.isDebugEnabled()) {
 				log.debug("Service endpoint: " + serviceEndpoint + ", username: " + username);
@@ -146,9 +150,8 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
                     .getThreadLocalCarbonContext()
                     .getUserRealm()
                     .getRealmConfiguration().getAdminPassword());
-			// TODO: get operators via the osgi service
-			// currently this is read from a java system parameter
-			Variable operators = new Variable(OPERATORS, getOperators());
+
+			Variable operators = new Variable(OPERATORS, operatorApi.getOperators());
 			if (operators == null) {
 				throw new WorkflowException("No operator(s) defined!!");
 			}
@@ -265,9 +268,6 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
 		return System.getProperty(DEPLOYMENT_TYPE_SYSTEM_PARAM, DeploymentTypes.HUB.getDeploymentType());
 	}
 
-	private String getOperators() {
-		return System.getProperty(OPERATORS_SYSTEM_PARAM);
-	}
 
 	public List<WorkflowDTO> getWorkflowDetails(String s) throws WorkflowException {
 		// not implemented

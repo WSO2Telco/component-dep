@@ -424,8 +424,9 @@ public class WorkflowDbService {
             query.append("FROM operators WHERE operatorname = '" + operatorName + " ' ");
 
             rs = st.executeQuery(query.toString());
-            rs.next();
-            operatorId = rs.getInt("ID");
+           while (rs.next()) {
+               operatorId = rs.getInt("ID");
+           }
 
         } catch (SQLException e) {
             throw new SQLException();
