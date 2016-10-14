@@ -423,9 +423,15 @@ public class WorkflowDbService {
             rs = st.executeQuery(query.toString());
 <<<<<<< HEAD
 <<<<<<< HEAD
+<<<<<<< HEAD
             while (rs.next()) {
                 operatorId = rs.getInt("ID");
             }
+=======
+           while (rs.next()) {
+               operatorId = rs.getInt("ID");
+           }
+>>>>>>> b52bad2... workflow improvement
 =======
            while (rs.next()) {
                operatorId = rs.getInt("ID");

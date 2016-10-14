@@ -27,14 +27,10 @@
             <module>com.wso2telco.dep.sandbox.ui.feature</module>
             <module>com.wso2telco.dep.aggregatorblacklist.webapp.feature</module>
             <module>com.wso2telco.dep.blacklistwhitelistservice.webapp.feature</module>
-<<<<<<< HEAD
-	    <module>com.wso2telco.dep.activiti.feature</module>
+            <module>com.wso2telco.dep.activiti.feature</module>
             <module>com.wso2telco.dep.workflow.service.feature</module>
             <module>com.wso2telco.dep.workflow.extensions.feature</module>
-=======
-	        <module>com.wso2telco.dep.activiti.feature</module>
-            <module>com.wso2telco.dep.workflowapproval.feature</module>
->>>>>>> b0c15f1... HUBDEV-950:Merge Application and Subscription BPMN flows to a single component,workflow-approval feature,Remove BPEL
+
         </modules>
 </project>
 
