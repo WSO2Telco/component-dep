@@ -29,7 +29,6 @@ import org.apache.synapse.SynapseConstants;
 import org.apache.synapse.core.SynapseEnvironment;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.apache.synapse.mediators.AbstractMediator;
-import org.apache.synapse.rest.AbstractHandler;
 import org.apache.synapse.transport.passthru.util.RelayUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -48,11 +47,12 @@ import java.util.logging.Logger;
 
 
 // TODO: Auto-generated Javadoc
-//This is the Handler class for Blacklist Numbers Module
+//This is the Mediator class for Blacklist Numbers Module
 /**
  * The Class BlacklistHandler.
  */
-//Handlers should extend AbstractHandler Class
+
+
 public class BlacklistHandler extends AbstractMediator implements ManagedLifecycle {
 
     /** The Constant log. */
@@ -212,15 +212,7 @@ public class BlacklistHandler extends AbstractMediator implements ManagedLifecyc
         payload.addChild(errorDetail);
         return payload;
     }
-    
-    /* (non-Javadoc)
-     * @see org.apache.synapse.rest.Handler#handleResponse(org.apache.synapse.MessageContext)
-     */
-    public boolean handleResponse(MessageContext messageContext) {
-        
-        return true;
-    }
-    
+
     /**
      * Str_piece.
      *
