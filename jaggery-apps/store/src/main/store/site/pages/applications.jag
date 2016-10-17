@@ -5,12 +5,10 @@ var site = require("/site/conf/site.json");
 var i18n = require("i18n");
 var localeResourcesBasePath="/site/conf/locales/jaggery/";
 i18n.init(request,localeResourcesBasePath);
-var tenantDomain=getTenantDomain();
-
+var tenantDomain = jagg.getTenantDomain();
         
 (function () {
     var apis, site, tag, query, result, mod, user = jagg.getUser();
-    isTenantAllowed();
     if (!user) {
         response.sendRedirect(getRedirectPathForNonAuthenticatedUser());
         return;
@@ -19,18 +17,14 @@ var tenantDomain=getTenantDomain();
     jagg.render({
         "name":"page/base",
         "inputs":{
-            "title":"Applications",
+            "title":i18n.localize("Applications"),
             "pagePath":"/site/pages/applications.jag",
             "body":[
                 {
                     "name":"layout/base",
                     "inputs":{
-                        "title":"Applications",
-                        "top":[
-                            {
-                                "name":"banner/featured",
-                                "inputs":null
-                            },
+                        "title":i18n.localize("Applications"),
+                        "top":[                            
                             {
                                 "name":"search/api-search",
                                 "inputs":null
@@ -44,7 +38,7 @@ var tenantDomain=getTenantDomain();
                         ],
                         "middle":[
                             {
-                                "name":"application/application-add",
+                                "name":"application/application-list",
                                 "inputs":{
                                     "apis":apis,
                                     "user":user

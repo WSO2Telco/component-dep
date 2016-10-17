@@ -1,4 +1,0 @@
-<%
-    session.put("showLogin", "true");
-    response.sendRedirect("/store");
-%>

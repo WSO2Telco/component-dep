@@ -4,12 +4,11 @@ include("header.jag");
 var site = require("/site/conf/site.json");
 var site = require("/site/conf/site.json");
 var i18n = require("i18n");
-var tenantDomain=getTenantDomain();
+var tenantDomain = jagg.getTenantDomain();
 var localeResourcesBasePath="/site/conf/locales/jaggery/";
 i18n.init(request,localeResourcesBasePath);
 (function () {
     var usage, site,  result, mod, user = jagg.getUser();
-    isTenantAllowed();
 
     if (!user) {
         response.sendRedirect(getRedirectPathForNonAuthenticatedUser());
@@ -28,11 +27,7 @@ i18n.init(request,localeResourcesBasePath);
                     "name":"layout/base",
                     "inputs":{
                         "title":"My Billing Information",
-                        "top":[
-                            {
-                                "name":"banner/featured",
-                                "inputs":null
-                            },
+                        "top":[                            
                             {
                                 "name":"search/api-search",
                                 "inputs":null

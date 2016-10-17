@@ -62,10 +62,6 @@ var jagg = jagg || (function () {
                    session.invalidate();
             }
             session = request.getSession(true);
-            if(groupId == null || groupId == "null"){
-              //Set group Id to empty string to avoid null value being passed to backend.
-              groupId="";
-            }
             session.put("groupId", groupId);
         }
         session.put("logged.user", user);
@@ -704,22 +700,22 @@ var jagg = jagg || (function () {
     };
 
     var addHeaderCSS = function (template, key, css) {
-        css = '<link type="text/css" rel="stylesheet" href="' + url(getThemeFile(css)) + '"/>';
+        css = '    <link type="text/css" rel="stylesheet" href="' + url(getThemeFile(css)) + '"/>\n';
         insertData(this, template, "header", "css", key, css);
     };
 
     var addHeaderCSSCode = function (template, key, css) {
-        css = '<style type="text/css">' + css + '</style>';
+        css = '    <style type="text/css">' + css + '</style>\n';
         insertData(this, template, "header", "css", key, css);
     };
 
     var addHeaderJS = function (template, key, js) {
-        js = '<script type="text/javascript" src="' + url(getThemeFile(js)) + '"></script>\n';
+        js = '    <script type="text/javascript" src="' + url(getThemeFile(js)) + '"></script>\n';
         insertData(this, template, "header", "js", key, js);
     };
 
     var addHeaderJSCode = function (template, key, js) {
-        js = '<script type="text/javascript">' + js + '</script>';
+        js = '    <script type="text/javascript">' + js + '</script>\n';
         insertData(this, template, "header", "js", key, js);
     };
 
@@ -728,22 +724,22 @@ var jagg = jagg || (function () {
     };
 
     var addFooterCSS = function (template, key, css) {
-        css = '<link type="text/css" rel="stylesheet" href="' + url(getThemeFile(css)) + '"/>';
+        css = '    <link type="text/css" rel="stylesheet" href="' + url(getThemeFile(css)) + '"/>';
         insertData(this, template, "footer", "css", key, css);
     };
 
     var addFooterCSSCode = function (template, key, css) {
-        css = '<style type="text/css">' + css + '</style>';
+        css = '    <style type="text/css">' + css + '</style>\n';
         insertData(this, template, "footer", "css", key, css);
     };
 
     var addFooterJS = function (template, key, js) {
-        js = '\t<script type="text/javascript" src="' + url(getThemeFile(js)) + '"></script>\n';
+        js = '    <script type="text/javascript" src="' + url(getThemeFile(js)) + '"></script>\n';
         insertData(this, template, "footer", "js", key, js);
     };
 
     var addFooterJSCode = function (template, key, js) {
-        js = '<script type="text/javascript">' + js + '</script>';
+        js = '    <script type="text/javascript">' + js + '</script>\n';
         insertData(this, template, "footer", "js", key, js);
     };
 
@@ -778,10 +774,15 @@ var jagg = jagg || (function () {
             var BigInteger = Packages.java.math.BigInteger;
             var token = new BigInteger(130, random).toString(32);
 
-            var cookie= {'name':'csrftoken','value': token , 'maxAge': 86400, 'path':"/"};
+            var cookie= {'name':'csrftoken','value': token , 'maxAge': 86400, 'path':"/" , "secure": true};
             session.put('csrfuser',user);
             response.addCookie(cookie);
         }     
+    }
+
+    var log = function(message){
+        //var log = new Log();
+        //log.info(message);
     }
 
     var isCSRFTokenValid = function(){
@@ -896,7 +897,8 @@ var jagg = jagg || (function () {
         setCSRFToken:setCSRFToken,
         isCSRFTokenValid:isCSRFTokenValid,
         validateInputs:validateInputs,
-        getTenantURLPrefix:getTenantURLPrefix
+        getTenantURLPrefix:getTenantURLPrefix,
+        log:log
     };
 
 }());

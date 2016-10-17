@@ -1,7 +1,6 @@
 <%
 include("/jagg/jagg.jag");
 (function () {
-    var log = new Log();
     var site = require("/site/conf/site.json");
     var ssoEnabled = site.ssoConfiguration.enabled;
     response.contentType = "application/json; charset=UTF-8";
@@ -46,6 +45,7 @@ include("/jagg/jagg.jag");
         tier = request.getParameter("tier");
         applicationId = parseInt(request.getParameter("applicationId"), 10);
         username = user.username;
+
         mod = jagg.module("subscription");
         result = mod.addSubscription({
             name:name,
@@ -88,6 +88,7 @@ include("/jagg/jagg.jag");
         tier = request.getParameter("tier");
         applicationName = request.getParameter("applicationName");
         username = user.username;
+
         mod = jagg.module("subscription");
         result = mod.addAPISubscription({
             name:name,
@@ -321,15 +322,6 @@ include("/jagg/jagg.jag");
                     key:result.key
                 }
             }
-            
-            var site = require("/site/conf/site.json");
-                        var apiManagerServerUrl = site.AM_URL;    
-            
-                        var url  = apiManagerServerUrl + "manage/site/blocks/application-task/ajax/is.jag?action=createSpAppIs&appName="+application;
-                        var xhr = new XMLHttpRequest();
-                        xhr.open("GET", url);
-                        xhr.setRequestHeader("applicationCookie" , session.get("applicationCookie"));
-                        xhr.send();
         }
         print(obj);
      } else if (action == "updateAccessAllowDomains" && request.getMethod() == 'POST') {
@@ -375,14 +367,12 @@ include("/jagg/jagg.jag");
         keyType = request.getParameter("keytype");
         username = user.username;
         oldAccessToken = request.getParameter("oldAccessToken");
-        accessAllowDomains = request.getParameter("authorizedDomains");
-        accessAllowDomainsArr = accessAllowDomains.split(",");
         clientId = request.getParameter("clientId");
         clientSecret = request.getParameter("clientSecret");
         validityTime = request.getParameter("validityTime");
         tokenScope = request.getParameter("tokenScope");
         mod = jagg.module("subscription");
-        result = mod.refreshToken(username,application,keyType,oldAccessToken,accessAllowDomainsArr,clientId, clientSecret,validityTime,tokenScope);
+        result = mod.refreshToken(username,application,keyType,oldAccessToken,clientId, clientSecret,validityTime,tokenScope);
 
         if (result.error) {
             obj = {

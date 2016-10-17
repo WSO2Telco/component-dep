@@ -6,11 +6,11 @@ var addSubscription = function (api, tier, applicationId, username) {
 
     try {
         var groupingId = session.get("groupId");
-        var subscriptionResponse = Packages.org.wso2.carbon.apimgt.api.model.SubscriptionResponse;
+
+var subscriptionResponse = Packages.org.wso2.carbon.apimgt.api.model.SubscriptionResponse;
         subscriptionResponse = store.addSubscription(api.provider, api.name, api.version, tier, applicationId,  username);
         var workflowResponse = Packages.org.wso2.carbon.apimgt.api.WorkflowResponse;
         workflowResponse = subscriptionResponse.getWorkflowResponse();
-
         var jsonSubsResponse = {};
         jsonSubsResponse.subscriptionStatus = subscriptionResponse.subscriptionStatus;
         jsonSubsResponse.subscriptionUUID = subscriptionResponse.subscriptionUUID;
@@ -20,7 +20,6 @@ var addSubscription = function (api, tier, applicationId, username) {
         if (log.isDebugEnabled()) {
             log.debug("addAPISubscription");
         }
-
         return {
             error:false,
             status:jsonSubsResponse
@@ -28,7 +27,6 @@ var addSubscription = function (api, tier, applicationId, username) {
     } catch (e) {
         log.error(e.message);
         return {
-
             error:true,
             status:false,
             message:e.message

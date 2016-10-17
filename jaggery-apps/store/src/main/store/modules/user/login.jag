@@ -5,16 +5,13 @@ var login = function (username, password,tenantMode) {
             manager = jagg.module("manager"),
             store = manager.getAPIStoreObj();
     if(tenantMode!='null' && tenantMode!='' && tenantMode!=null){
-	var userDomain=null;
-	if (username.indexOf("@") != -1) {
-            userDomain=username.split("@")[1];
-        }
-    	
-    	if(!(tenantMode=='carbon.super' && userDomain == null) && tenantMode!=userDomain){
+		var MultitenantUtils = Packages.org.wso2.carbon.utils.multitenancy.MultitenantUtils;
+    var userDomain = MultitenantUtils.getTenantDomain(username);
+     if(!(tenantMode=='carbon.super' && userDomain == null) && tenantMode!=userDomain){
 	    	return {
 	            error:true,
 	            cookie:null,
-	            message:"Authentication failed. Not a valid tenant domain"
+	            message:"Authentication failed. "+MultitenantUtils.getTenantAwareUsername(username)+" is not from the tenant domain " + tenantMode
 	        };
     	}
     }
@@ -35,27 +32,21 @@ var login = function (username, password,tenantMode) {
             message:message
         };
     }
-
-   var groupId = store.getGroupIds(stringify(result));
+    var groupId = store.getGroupIds(stringify(result));
     if(groupId == null || groupId == "null"){
   //   Set group Id to empty string to avoid null value being passed to backend.
-        groupId="";
+    	groupId="";
    }
     session.put("groupId", groupId);
-
-
     var subscriber = store.getSubscriber(username);
-    //log.info("subscriber : "+ subscriber);
-    //log.info("username : "+ username);
-    if (!subscriber) {        
+    if (!subscriber) {
         store.addSubscriber(username, groupId);
         subscriber = store.getSubscriber(username);
     }
     cookie = result.sessionId;
     cookie = cookie.split(';')[0];
     isSuperTenant = result.isSuperTenant;
-    getApplicationCookie(username,password);  
-    
+
     return {
 	username:result.user,
         error:false,
@@ -64,24 +55,6 @@ var login = function (username, password,tenantMode) {
         hasPublisherAccess:result.hasPublisherAccess
     };
 };
-
-function getApplicationCookie(username,password){
-var log=new Log();
-try{
-var xhr = new XMLHttpRequest();
-var site = require("/site/conf/site.json");
-var endpoint =  site.application.IS_URL+"AuthenticationAdmin";
-xhr.open("POST", endpoint);
-var payload = '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:aut="http://authentication.services.core.carbon.wso2.org"><soap:Header/><soap:Body><aut:login><aut:username>' +  username + '</aut:username><aut:password>' + password + '</aut:password><aut:remoteAddress>localhost</aut:remoteAddress></aut:login></soap:Body></soap:Envelope>';
-xhr.send(payload);
-
-var cookie = xhr.getResponseHeader("Set-Cookie");
-session.put("applicationCookie",cookie);
-
-}catch (e) {
-        log.error(e.message);
-
-}};
 
 var loginWithSAMLToken = function (token) {
     var site = require("/site/conf/site.json");
@@ -105,13 +78,23 @@ var loginWithSAMLToken = function (token) {
     xhr.setRequestHeader('Content-Type','application/soap+xml');
     xhr.send(payload);
     var cookie = (xhr.getAllResponseHeaders());
-    session.put("applicationCookie", cookie);
 
     var cookieString = cookie.split(";")[0].split(":")[1];
     var userName = ssoRelyingParty.getSAMLResponseNameId(token);
+
+    var decodedSamlReponse = ssoRelyingParty.decode(token);
+    var groupId = store.getGroupIds(decodedSamlReponse);
+     //Store and empty string instead of null if no group Id is found. This is done so that when checking for a string array
+    //the null value returned would not cause any issue.
+    if(groupId == null){
+        groupId = "";
+    }
+
+    session.put("groupId", groupId);
+
     var subscriber = store.getSubscriber(userName);
     if (!subscriber) {
-        store.addSubscriber(userName);
+        store.addSubscriber(userName, groupId);
         subscriber = store.getSubscriber(userName);
     }
     return {

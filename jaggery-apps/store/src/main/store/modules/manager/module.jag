@@ -39,16 +39,14 @@ jagg.module("manager", {
      getActiveTenantDomains:function () {
        return jagg.require(jagg.getModulesDir() + "manager/manager.jag").getActiveTenantDomains.apply(this, arguments);
      },
-
-	 getStoreHostObject:function () {
-        return jagg.require(jagg.getModulesDir() + "manager/manager.jag").getStoreHostObject.apply(this, arguments);
-     },
-     getAPIConsumerObj:function () {
+    getAPIConsumerObj:function () {
         return jagg.require(jagg.getModulesDir() + "manager/manager.jag").getAPIConsumerObj.apply(this, arguments);
     },
     getUsageClient:function () {
         return jagg.require(jagg.getModulesDir() + "manager/manager.jag").getUsageClient.apply(this, arguments);
+    },
+    isForumEnabled:function () {
+        return jagg.require(jagg.getModulesDir() + "manager/manager.jag").isForumEnabled.apply(this, arguments);
     }
-
  });
  %>

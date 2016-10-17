@@ -1,8 +1,14 @@
 <%
 
-//response.contentType = 'text/rjavascript';
+response.addHeader('Cache-Control','no-cache, no-store, must-revalidate'); // HTTP 1.1.
+response.addHeader('Pragma','no-cache'); // HTTP 1.0.
+response.addHeader('Expires','0');
+response.contentType = "application/json; charset=UTF-8";
+
+
 include("/jagg/jagg.jag");
 var site = require("/site/conf/site.json");
+
 
 var verb = request.getMethod();
 var search = request.getParameter('search');
@@ -17,23 +23,33 @@ var user = null;
 
 var topicsPerPage = parseInt(site.forum.topicsPerPage);
 var repliesPerPage = parseInt(site.forum.repliesPerPage);
+var resourceIdentifier= site.forum.resourceIdentifier;
 var tenantDomain = "carbon.super";
 var date = new Date();
 
 var uri = request.getRequestURI();
-var callPath = uri.replace("/store/forum/api/topic", "");
+var callPath = uri.replace(site.context+"/forum/api", "");
+var action;
 
 if (uri != null) {
     var uriMatcher = new URIMatcher(callPath);
 
-    if (uriMatcher.match("/{topicId}/{page}")) {
+    if (uriMatcher.match("/topic") || uriMatcher.match("/topic/")) {
+        // create topic
+        topicId = null;
+    } else if (uriMatcher.match("/topic/{topicId}/{page}")) {
         topicId = uriMatcher.elements().topicId;
-    }
-    if (uriMatcher.match("/{topicId}/")) {
+    } else if (uriMatcher.match("/topic/{topicId}/")) {
         topicId = uriMatcher.elements().topicId;
+    } else {
+        //Invalid URL
+        action = "exit";
     }
 }
 
+if (action == "exit") {
+    response.sendError(404);
+} else {
 var storeForum = Packages.org.wso2.carbon.forum.registry.RegistryForumManager;
 var forum = new storeForum();
 
@@ -51,7 +67,21 @@ var message = { error : false };
 //Handle exceptions related to user checks
 try{
 
-if (verb == "DELETE" && topicId != null) {
+var validation = {
+    "page": { type: "number"}
+};
+
+var validation_errors = jagg.validateInputs(validation);
+
+if(validation_errors != true){
+    message.error = true;
+    message.message = msg.error.invalidInputs(validation_errors);
+}else if( ( request.getMethod() == 'POST' || 
+      request.getMethod() == 'DELETE' || 
+      request.getMethod() == 'PUT' ) && !jagg.isCSRFTokenValid()){
+    message.error = true;
+    message.message = msg.error.csrfError;
+}else if (verb == "DELETE" && topicId != null) {
 
     var user = getUser();
     forum.removeTopic(topicId, user.username, tenantDomain);
@@ -99,7 +129,9 @@ if (verb == "DELETE" && topicId != null) {
                 "date": getDate(item.getCreatedDate()),
                 "replyId": item.getReplyId(),
                 "createdBy": item.getCreatedBy(),
-                "timeStamp": getTime(item.getTimestamp())
+                "timeStamp": getTime(item.getTimestamp()),
+                "topicOwner" : topicWithReplies.getTopicOwner(),
+                "user" : username
             });
 
         }
@@ -146,7 +178,14 @@ if (verb == "DELETE" && topicId != null) {
         username = user.username;
     }catch(Err){}
 
-    var object = forum.searchTopicsBySubject(start, count,search, username, tenantDomain);
+    var parentId = request.getParameter('parentId');
+    // common forums
+    if(parentId == resourceIdentifier) {
+        var object = forum.searchTopicsBySubject(start, count,search, username, tenantDomain);
+    //particular api's forums
+    } else {
+        var object = forum.searchTopicsBySubjectForResourceId(start, count,search, parentId, username, tenantDomain);
+    }
 
 
     if (object != null) {
@@ -286,7 +325,8 @@ if (verb == "DELETE" && topicId != null) {
                 "description": item.getDescription(),
                 "topicOwner": item.getTopicOwner(),
                 "topicId": item.getTopicId(),
-                "replyCount": replyCount.toString()
+                "replyCount": replyCount.toString(),
+                "user" : username
 
             });
 
@@ -299,10 +339,11 @@ if (verb == "DELETE" && topicId != null) {
 }catch(err){
     message.error = true;
     message.message = err.message;
+    log.error(err.message);
 }
 
 print(message);
-
+}
 function getDate(date) {
     var dateStr = date.toString();
     var splitArray = dateStr.split(" ");

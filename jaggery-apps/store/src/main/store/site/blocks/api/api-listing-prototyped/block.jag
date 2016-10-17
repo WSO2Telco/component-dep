@@ -15,12 +15,12 @@ jagg.block("api/api-listing-prototyped", {
                 page = request.getParameter("page"),
                 apiStatus = request.getParameter("apiStatus");
         
-        tenantDomain = request.getParameter("tenant");
+        tenantDomain = jagg.getTenantDomain();
         if(page == null){
         	page = 1;
         }
-        var start = (page - 1)*10;
-        var end = 10;
+        var start = (page - 1)*12;
+        var end = 12;
 
         mod = jagg.module("api");
         response = mod.getAllPaginatedPrototypedAPIs(tenantDomain,start,end);
