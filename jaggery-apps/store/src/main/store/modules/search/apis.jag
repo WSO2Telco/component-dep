@@ -23,13 +23,13 @@ var searchAPIs = function (query,tenantDomain) {
         };
     }
 };
-var searchPaginatedAPIs = function (query,tenantDomain,start,end) {
+var searchPaginatedAPIs = function (query,tenantDomain,start,end,limitAttributes,state) {
     var list, i, length, api, result,
             log = new Log(),
             store = jagg.module("manager").getAPIStoreObj();
 
     try {
-        result = store.searchPaginatedAPIsByType(query,tenantDomain,String(start),String(end));
+	result = store.searchPaginatedAPIs(query,tenantDomain,String(start),String(end),limitAttributes,state);
         if (log.isDebugEnabled()) {
             log.debug("searchAPIs : " + stringify(result.apis));
         }
@@ -41,7 +41,7 @@ var searchPaginatedAPIs = function (query,tenantDomain,start,end) {
     } catch (e) {
         log.error(e.message);
         return {
-            error:e,
+            error:true,
             result:null,
             message:e.message.split(":")[1]
         };

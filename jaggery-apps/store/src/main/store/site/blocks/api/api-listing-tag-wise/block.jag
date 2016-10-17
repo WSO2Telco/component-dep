@@ -6,9 +6,10 @@ jagg.block("api/api-listing-tag-wise", {
     },
 
     getOutputs:function (inputs) {
-        var result, tags, mod = jagg.module("tag");
-        result = mod.getAllTags();
-        tags = result.tags;
+        var tags, mod = jagg.module("tag");
+        var tenantDomain = jagg.getTenantDomain();
+        tags = mod.getTagsWithAttributes(tenantDomain).tags;
+
         return {
             "tags":tags
         };

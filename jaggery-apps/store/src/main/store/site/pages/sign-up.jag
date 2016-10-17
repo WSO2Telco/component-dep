@@ -5,24 +5,20 @@ var i18n = require("i18n");
 var localeResourcesBasePath="/site/conf/locales/jaggery/";
 i18n.init(request,localeResourcesBasePath);
 include("header.jag");
-var tenantDomain=getTenantDomain();
+var tenantDomain = jagg.getTenantDomain();
         
 (function () {
    jagg.render({
         "name":"page/base",
         "inputs":{
-            "title":"Create New Account",
+            "title":"Sign Up",
             "pagePath":"/site/pages/sign-up.jag",
             "body":[
                 {
-                    "name":"layout/base",
+                    "name":"user/sign-up",
                     "inputs":{
                         "title":"Applications",
                         "top":[
-                            {
-                                "name":"banner/featured",
-                                "inputs":null
-                            },
                             {
                                 "name":"search/api-search",
                                 "inputs":null

@@ -16,16 +16,25 @@ log = new Log();
               });
     } else {
 
+    var validation = {
+        "action": { type: "safetext"},
+    };
 
-       
-
-
-if (action === "getTopAppUsers") {
+    var validation_errors = jagg.validateInputs(validation);
+           
+    if(validation_errors != true){
+        print({
+            error:true,
+            message: msg.error.invalidInputs(validation_errors)
+        });        
+    }
+    else if (action === "getTopAppUsers") {
         mod = jagg.module("statistics");
         var subscriber = jagg.getUser().username;
         var from = request.getParameter("fromDate");
         var to = request.getParameter("toDate");
-        result = mod.getTopAppUsers(subscriber,from,to);
+        var groupId = session.get("groupId");
+        result = mod.getTopAppUsers(subscriber,from,to,groupId);
 
         if (result.error == "true") {
             obj = {
@@ -46,7 +55,8 @@ if (action === "getTopAppUsers") {
         var subscriber = jagg.getUser().username;
         var from = request.getParameter("fromDate");
         var to = request.getParameter("toDate");
-        result = mod.getPerAppSubscribers(subscriber,from,to);
+        var groupId = session.get("groupId");
+        result = mod.getPerAppSubscribers(subscriber,from,to,groupId);
 
         if (result.error == "true") {
             obj = {
@@ -80,7 +90,24 @@ if (action === "getTopAppUsers") {
         }
         print(obj);
 
-    }
+    } else if (action === "isDataPublishingEnabled") {
+            mod = jagg.module("statistics");
+            result = mod.isDataPublishingEnabled();
+            
+            if (result.error == "true") {
+                obj = {
+                    error: result.error,
+                    message: msg.error.backendError(action)
+                };
+            } else {
+                obj = {
+                    error: false,
+                    usage: result.usage
+                }
+            }
+            print(obj);
+
+        }
     else {
         print({
                   error:true,

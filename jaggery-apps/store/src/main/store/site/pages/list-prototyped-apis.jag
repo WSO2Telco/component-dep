@@ -5,13 +5,10 @@ var site = require("/site/conf/site.json");
 var i18n = require("i18n");
 var localeResourcesBasePath="/site/conf/locales/jaggery/";
 i18n.init(request,localeResourcesBasePath);
-var tenantDomain=getTenantDomain();
-
+var tenantDomain = jagg.getTenantDomain();
         
 (function () {
     var apis, site, tag, query, result, mod, user = jagg.getUser();
-    isTenantAllowed();
-    
 
     jagg.render({
         "name":"page/base",
@@ -22,18 +19,9 @@ var tenantDomain=getTenantDomain();
                 {
                     "name":"layout/base",
                     "inputs":{
-                        "title":"Prototyped APIs",
+                        "title":"Prototyped APIs",                        
                         "top":[
-                            {
-                                "name":"banner/featured",
-                                "inputs":null
-                            }
-                        ],
-                        "top":[
-                            {
-                                "name":"banner/featured",
-                                "inputs":null
-                            },
+                            
                             {
                                 "name":"search/api-search",
                                 "inputs":null

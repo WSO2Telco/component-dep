@@ -61,8 +61,11 @@ var getAPI = function (api) {
             productionTps:result[46],
             sandboxTps:result[47],
             endpointAuthTypeDigest:result[48],
+            corsConfiguration:result[49],
             hasDefaultVersion:hasDefaultVersion,
-            currentDefaultVersion:defaultVersion
+            currentDefaultVersion:defaultVersion,
+            availableSubscriptionPolicy:result[50],
+            apiLevelPolicy:result[51]
         };
         return {
             error:false,
@@ -141,7 +144,7 @@ var getAllAPIDetails = function () {
             api = apis[i];
             resultAPI=getAPI({name:apiName, version:version, provider:provider});
 
-           
+
             result=resultAPI.api;
             list.push(result);
         }
@@ -155,6 +158,30 @@ var getAllAPIDetails = function () {
         return {
             error:e,
             apis:null,
+            message:e.message.split(":")[1]
+        };
+    }
+};
+var getAllPaginatedAPIs = function (tenantDomain,start,end) {
+    var api, result,
+            log = new Log(),
+            provider = jagg.module("manager").getAPIProviderObj();
+
+    try {
+        result = provider.getAllPaginatedAPIs(tenantDomain,start,end);
+        if (log.isDebugEnabled()) {
+            log.debug("getAllPaginatedAPIs : " + stringify(result.apis));
+        }
+        return {
+            error:false,
+            response:result,
+            totalLength:result.totalLength,
+        };
+    } catch (e) {
+        log.error(e.message);
+        return {
+            error:e,
+            response:null,
             message:e.message.split(":")[1]
         };
     }

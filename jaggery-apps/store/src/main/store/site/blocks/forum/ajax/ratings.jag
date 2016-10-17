@@ -3,7 +3,7 @@
 include("/jagg/jagg.jag");
 (function () {
 var site = require("/site/conf/site.json");
-
+response.contentType = "application/json; charset=UTF-8";
 var verb = request.getMethod();
 
 var user = jagg.getUser();
@@ -17,15 +17,30 @@ var time = date.getTime();
 
 var message = {error:false};
 
-var tenantDomain = request.getParameter("tenant");
+var tenantDomain = jagg.getTenantDomain();
 if (tenantDomain == null) {
     tenantDomain = "carbon.super";
 }
 
 var storeForum = Packages.org.wso2.carbon.forum.registry.RegistryForumManager;
 var forum = new storeForum();
+var msg = require("/site/conf/ui-messages.jag");
 
-if(action == "rateTopic"){
+var validation = {
+    "action": { type: "safetext"},
+    "rating": { type: "number"},
+    "topicId": { type:"uuid"},
+};
+
+var validation_errors = jagg.validateInputs(validation);
+
+if(validation_errors != true){
+    message.error = true;
+    message.message = msg.error.invalidInputs(validation_errors);
+}else if( request.getMethod() == 'POST' && !jagg.isCSRFTokenValid()){
+    message.error = true;
+    message.message = msg.error.csrfError;
+}else if(action == "rateTopic"){
 	var rating = parseInt(request.getParameter("rating"), 10);
 	var averageRating = forum.rateTopic(topicId, rating, user.username, tenantDomain);
     message.averageRating = averageRating;
