@@ -6,7 +6,9 @@ import com.wso2telco.hub.workflow.extensions.beans.ProcessInstanceData;
 import com.wso2telco.hub.workflow.extensions.beans.Variable;
 import com.wso2telco.hub.workflow.extensions.exceptions.WorkflowErrorDecoder;
 import com.wso2telco.hub.workflow.extensions.exceptions.WorkflowExtensionException;
+import com.wso2telco.hub.workflow.extensions.impl.OperatorImpl;
 import com.wso2telco.hub.workflow.extensions.impl.WorkflowAPIConsumerImpl;
+import com.wso2telco.hub.workflow.extensions.interfaces.OperatorApi;
 import com.wso2telco.hub.workflow.extensions.interfaces.WorkflowAPIConsumer;
 import com.wso2telco.hub.workflow.extensions.rest.client.BusinessProcessApi;
 import com.wso2telco.hub.workflow.extensions.util.DeploymentTypes;
@@ -42,260 +44,258 @@ import java.util.*;
 
 public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
 
-	private static final Log log = LogFactory.getLog(SubscriptionCreationRestWorkflowExecutor.class);
+    private static final Log log = LogFactory.getLog(SubscriptionCreationRestWorkflowExecutor.class);
 
-	private static final String TENANT_ID = "-1234";
-	private static final String SUBSCRIPTION_CREATION_APPROVAL_PROCESS_NAME = "subscription_approval_process";
-	private static final String API_NAME = "apiName";
-	private static final String API_ID = "apiId";
-	private static final String API_VERSION = "apiVersion";
-	private static final String API_CONTEXT = "apiContext";
-	private static final String API_PROVIDER = "apiProvider";
-	private static final String SUBSCRIBER = "subscriber";
-	private static final String APPLICATION_NAME = "applicationName";
-	private static final String TIER_NAME = "tierName";
-	private static final String APPLICATION_ID = "applicationId";
-	private static final String APPLICATION_DESCRIPTION = "applicationDescription";
-	private static final String API_TIERS = "apiTiers";
-	private static final String WORKFLOW_REF_ID = "workflowRefId";
-	private static final String CALL_BACK_URL = "callBackUrl";
-	private static final String OPERATORS = "operators";
-	private static final String DEPLOYMENT_TYPE = "deployment_type";
-	private static final String OPERATORS_SYSTEM_PARAM = "OPERATORS";
-	private static final String DEPLOYMENT_TYPE_SYSTEM_PARAM = "DEPLOYMENT_TYPE";
-    private static final String ADMIN_PASSWORD="adminPassword";
-    private static final String SERVICE_HOST="service.host";
-    private static final String SERVICE_URL="serviceURL";
+    private static final String TENANT_ID = "-1234";
+    private static final String SUBSCRIPTION_CREATION_APPROVAL_PROCESS_NAME = "subscription_approval_process";
+    private static final String API_NAME = "apiName";
+    private static final String API_ID = "apiId";
+    private static final String API_VERSION = "apiVersion";
+    private static final String API_CONTEXT = "apiContext";
+    private static final String API_PROVIDER = "apiProvider";
+    private static final String SUBSCRIBER = "subscriber";
+    private static final String APPLICATION_NAME = "applicationName";
+    private static final String TIER_NAME = "tierName";
+    private static final String APPLICATION_ID = "applicationId";
+    private static final String APPLICATION_DESCRIPTION = "applicationDescription";
+    private static final String API_TIERS = "apiTiers";
+    private static final String WORKFLOW_REF_ID = "workflowRefId";
+    private static final String CALL_BACK_URL = "callBackUrl";
+    private static final String OPERATORS = "operators";
+    private static final String DEPLOYMENT_TYPE = "deployment_type";
+    private static final String OPERATORS_SYSTEM_PARAM = "OPERATORS";
+    private static final String DEPLOYMENT_TYPE_SYSTEM_PARAM = "DEPLOYMENT_TYPE";
+    private static final String ADMIN_PASSWORD = "adminPassword";
+    private static final String SERVICE_HOST = "service.host";
+    private static final String SERVICE_URL = "serviceURL";
 
-	private String serviceEndpoint;
-	private String username;
-	private String password;
+    private String serviceEndpoint;
+    private String username;
+    private String password;
 
-	public String getWorkflowType() {
-		return WorkflowConstants.WF_TYPE_AM_SUBSCRIPTION_CREATION;
-	}
+    public String getWorkflowType() {
+        return WorkflowConstants.WF_TYPE_AM_SUBSCRIPTION_CREATION;
+    }
 
-	public WorkflowResponse execute(WorkflowDTO workflowDTO) throws WorkflowException {
+    public WorkflowResponse execute(WorkflowDTO workflowDTO) throws WorkflowException {
 
-		try {
-			if (log.isDebugEnabled()) {
-				log.debug("Service endpoint: " + serviceEndpoint + ", username: " + username);
-			}
-			super.execute(workflowDTO);
+        OperatorApi operatorApi = new OperatorImpl();
 
-			BusinessProcessApi httpClient = Feign.builder().encoder(new JacksonEncoder()).decoder(new JacksonDecoder())
-			                                     .errorDecoder(new WorkflowErrorDecoder()).requestInterceptor(
-							new BasicAuthRequestInterceptor(username, password))
-			                                     .target(BusinessProcessApi.class, serviceEndpoint);
+        try {
+            if (log.isDebugEnabled()) {
+                log.debug("Service endpoint: " + serviceEndpoint + ", username: " + username);
+            }
+            super.execute(workflowDTO);
 
-			SubscriptionWorkflowDTO subscriptionWorkFlowDTO = (SubscriptionWorkflowDTO) workflowDTO;
+            BusinessProcessApi httpClient = Feign.builder().encoder(new JacksonEncoder()).decoder(new JacksonDecoder())
+                    .errorDecoder(new WorkflowErrorDecoder()).requestInterceptor(
+                            new BasicAuthRequestInterceptor(username, password))
+                    .target(BusinessProcessApi.class, serviceEndpoint);
 
-			String callBackURL = subscriptionWorkFlowDTO.getCallbackUrl();
-			int applicationId = APIUtil.getApplicationId(subscriptionWorkFlowDTO.getApplicationName(),
-			                                             subscriptionWorkFlowDTO.getSubscriber());
-			String applicationIdStr = String.valueOf(applicationId);
+            SubscriptionWorkflowDTO subscriptionWorkFlowDTO = (SubscriptionWorkflowDTO) workflowDTO;
 
-			// Obtain application details.
-			APIConsumer consumer = APIManagerFactory.getInstance().getAPIConsumer(username);
+            String callBackURL = subscriptionWorkFlowDTO.getCallbackUrl();
+            int applicationId = APIUtil.getApplicationId(subscriptionWorkFlowDTO.getApplicationName(),
+                    subscriptionWorkFlowDTO.getSubscriber());
+            String applicationIdStr = String.valueOf(applicationId);
 
-			Application subscribedApp = consumer.getApplicationById(applicationId);
+            // Obtain application details.
+            APIConsumer consumer = APIManagerFactory.getInstance().getAPIConsumer(username);
 
-			String providerName = subscriptionWorkFlowDTO.getApiProvider();
-			String apiName = subscriptionWorkFlowDTO.getApiName();
-			String version = subscriptionWorkFlowDTO.getApiVersion();
-			APIIdentifier apiIdentifier = new APIIdentifier(providerName, apiName, version);
-			API api = consumer.getAPI(apiIdentifier);
-			//Why apiId is required,WorkflowAPIConsumer hasn't closed the db connections
-			WorkflowAPIConsumer workFlowAPIConsumer = new WorkflowAPIConsumerImpl();
-			String apiID = String.valueOf(workFlowAPIConsumer.getAPIID(apiIdentifier));
-			Set<Tier> tierSet = api.getAvailableTiers();
+            Application subscribedApp = consumer.getApplicationById(applicationId);
 
-			StringBuilder tiersStr = new StringBuilder();
+            String providerName = subscriptionWorkFlowDTO.getApiProvider();
+            String apiName = subscriptionWorkFlowDTO.getApiName();
+            String version = subscriptionWorkFlowDTO.getApiVersion();
+            APIIdentifier apiIdentifier = new APIIdentifier(providerName, apiName, version);
+            API api = consumer.getAPI(apiIdentifier);
+            //Why apiId is required,WorkflowAPIConsumer hasn't closed the db connections
+            WorkflowAPIConsumer workFlowAPIConsumer = new WorkflowAPIConsumerImpl();
+            String apiID = String.valueOf(workFlowAPIConsumer.getAPIID(apiIdentifier));
+            Set<Tier> tierSet = api.getAvailableTiers();
 
-			for (Iterator iterator = tierSet.iterator(); iterator.hasNext(); ) {
-				Tier tier = (Tier) iterator.next();
-				String tierName = tier.getName();
-				tiersStr.append(tierName + ',');
-			}
+            StringBuilder tiersStr = new StringBuilder();
 
-			CreateProcessInstanceRequest processInstanceRequest =
-					new CreateProcessInstanceRequest(SUBSCRIPTION_CREATION_APPROVAL_PROCESS_NAME, TENANT_ID);
-			processInstanceRequest.setBusinessKey(SUBSCRIPTION_CREATION_APPROVAL_PROCESS_NAME);
+            for (Iterator iterator = tierSet.iterator(); iterator.hasNext(); ) {
+                Tier tier = (Tier) iterator.next();
+                String tierName = tier.getName();
+                tiersStr.append(tierName + ',');
+            }
+
+            CreateProcessInstanceRequest processInstanceRequest =
+                    new CreateProcessInstanceRequest(SUBSCRIPTION_CREATION_APPROVAL_PROCESS_NAME, TENANT_ID);
+            processInstanceRequest.setBusinessKey(SUBSCRIPTION_CREATION_APPROVAL_PROCESS_NAME);
 
             Properties workflowProperties = WorkflowProperties.loadWorkflowProperties();
             String serviceURLString = workflowProperties.getProperty(SERVICE_HOST);
 
 
-			Variable deploymentType = new Variable(DEPLOYMENT_TYPE, getDeploymentType());
-			Variable subscribedApiName = new Variable(API_NAME, apiName);
-			Variable subscribedApiId = new Variable(API_ID, apiID);
-			Variable subscribedApiVersion = new Variable(API_VERSION, version);
-			Variable subscribedApiContext = new Variable(API_CONTEXT, api.getContext());
-			Variable apiProvider = new Variable(API_PROVIDER, providerName);
-			Variable subscriber = new Variable(SUBSCRIBER, subscriptionWorkFlowDTO.getSubscriber());
-			Variable appId = new Variable(APPLICATION_ID, applicationIdStr);
-			Variable tierName = new Variable(TIER_NAME, subscriptionWorkFlowDTO.getTierName());
-			Variable apiTierList = new Variable(API_TIERS, tiersStr.toString());
-			Variable applicationName = new Variable(APPLICATION_NAME, subscriptionWorkFlowDTO.getApplicationName());
-			Variable applicationDescription = new Variable(APPLICATION_DESCRIPTION, subscribedApp.getDescription());
-			Variable workflowRefId =
-					new Variable(WORKFLOW_REF_ID, subscriptionWorkFlowDTO.getExternalWorkflowReference());
-			Variable callBackUrl = new Variable(CALL_BACK_URL, callBackURL);
-            Variable serviceURL = new Variable(SERVICE_URL,serviceURLString);
-            Variable adminPassword= new Variable(ADMIN_PASSWORD, CarbonContext
+            Variable deploymentType = new Variable(DEPLOYMENT_TYPE, getDeploymentType());
+            Variable subscribedApiName = new Variable(API_NAME, apiName);
+            Variable subscribedApiId = new Variable(API_ID, apiID);
+            Variable subscribedApiVersion = new Variable(API_VERSION, version);
+            Variable subscribedApiContext = new Variable(API_CONTEXT, api.getContext());
+            Variable apiProvider = new Variable(API_PROVIDER, providerName);
+            Variable subscriber = new Variable(SUBSCRIBER, subscriptionWorkFlowDTO.getSubscriber());
+            Variable appId = new Variable(APPLICATION_ID, applicationIdStr);
+            Variable tierName = new Variable(TIER_NAME, subscriptionWorkFlowDTO.getTierName());
+            Variable apiTierList = new Variable(API_TIERS, tiersStr.toString());
+            Variable applicationName = new Variable(APPLICATION_NAME, subscriptionWorkFlowDTO.getApplicationName());
+            Variable applicationDescription = new Variable(APPLICATION_DESCRIPTION, subscribedApp.getDescription());
+            Variable workflowRefId =
+                    new Variable(WORKFLOW_REF_ID, subscriptionWorkFlowDTO.getExternalWorkflowReference());
+            Variable callBackUrl = new Variable(CALL_BACK_URL, callBackURL);
+            Variable serviceURL = new Variable(SERVICE_URL, serviceURLString);
+            Variable adminPassword = new Variable(ADMIN_PASSWORD, CarbonContext
                     .getThreadLocalCarbonContext()
                     .getUserRealm()
                     .getRealmConfiguration().getAdminPassword());
-			// TODO: get operators via the osgi service
-			// currently this is read from a java system parameter
-			Variable operators = new Variable(OPERATORS, getOperators());
-			if (operators == null) {
-				throw new WorkflowException("No operator(s) defined!!");
-			}
 
-			if (log.isDebugEnabled()) {
-				log.debug("Application name: " + applicationName + ", deployment type: " + deploymentType +
-				          ", callback url: " + callBackURL +
-				          ", workflow reference id: " + workflowRefId + ", service endpoint: " + serviceEndpoint);
-			}
+            Variable operators = new Variable(OPERATORS, operatorApi.getOperators());
+            if (operators == null) {
+                throw new WorkflowException("No operator(s) defined!!");
+            }
 
-			List<Variable> variables = new ArrayList<Variable>();
+            if (log.isDebugEnabled()) {
+                log.debug("Application name: " + applicationName + ", deployment type: " + deploymentType +
+                        ", callback url: " + callBackURL +
+                        ", workflow reference id: " + workflowRefId + ", service endpoint: " + serviceEndpoint);
+            }
 
-			variables.add(subscribedApiName);
-			variables.add(subscribedApiId);
-			variables.add(subscribedApiVersion);
-			variables.add(subscribedApiContext);
-			variables.add(apiProvider);
-			variables.add(subscriber);
-			variables.add(appId);
-			variables.add(tierName);
-			variables.add(apiTierList);
-			variables.add(applicationDescription);
-			variables.add(deploymentType);
-			variables.add(applicationName);
-			variables.add(workflowRefId);
-			variables.add(callBackUrl);
-			variables.add(operators);
+            List<Variable> variables = new ArrayList<Variable>();
+
+            variables.add(subscribedApiName);
+            variables.add(subscribedApiId);
+            variables.add(subscribedApiVersion);
+            variables.add(subscribedApiContext);
+            variables.add(apiProvider);
+            variables.add(subscriber);
+            variables.add(appId);
+            variables.add(tierName);
+            variables.add(apiTierList);
+            variables.add(applicationDescription);
+            variables.add(deploymentType);
+            variables.add(applicationName);
+            variables.add(workflowRefId);
+            variables.add(callBackUrl);
+            variables.add(operators);
             variables.add(serviceURL);
             variables.add(adminPassword);
 
-			processInstanceRequest.setVariables(variables);
+            processInstanceRequest.setVariables(variables);
 
-			CreateProcessInstanceResponse processInstanceResponse;
-			try {
-				processInstanceResponse = httpClient.createProcessInstance(processInstanceRequest);
-			} catch (WorkflowExtensionException e) {
-				throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
-			}
+            CreateProcessInstanceResponse processInstanceResponse;
+            try {
+                processInstanceResponse = httpClient.createProcessInstance(processInstanceRequest);
+            } catch (WorkflowExtensionException e) {
+                throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
+            }
 
-			if (log.isDebugEnabled()) {
-				log.debug("Process definition url: " + processInstanceResponse.getProcessDefinitionUrl());
-			}
+            if (log.isDebugEnabled()) {
+                log.debug("Process definition url: " + processInstanceResponse.getProcessDefinitionUrl());
+            }
 
-			log.info("Subscription Creation approval process instance task with Id " +
-			         processInstanceResponse.getActivityId() + " created successfully");
-		} catch (APIManagementException e) {
-			throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
-		} catch (UserStoreException e) {
+            log.info("Subscription Creation approval process instance task with Id " +
+                    processInstanceResponse.getActivityId() + " created successfully");
+        } catch (APIManagementException e) {
+            throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
+        } catch (UserStoreException e) {
             log.error("Error in obtaining APIConsumer", e);
             throw new WorkflowException("Error in obtaining APIConsumer", e);
         }
 
         return new GeneralWorkflowResponse();
-	}
+    }
 
-	public WorkflowResponse complete(WorkflowDTO workFlowDTO) throws WorkflowException {
-		workFlowDTO.setUpdatedTime(System.currentTimeMillis());
-		super.complete(workFlowDTO);
-		log.info("Subscription Creation [Complete] Workflow Invoked. Workflow ID : " +
-		         workFlowDTO.getExternalWorkflowReference() + "Workflow State : " + workFlowDTO.getStatus());
+    public WorkflowResponse complete(WorkflowDTO workFlowDTO) throws WorkflowException {
+        workFlowDTO.setUpdatedTime(System.currentTimeMillis());
+        super.complete(workFlowDTO);
+        log.info("Subscription Creation [Complete] Workflow Invoked. Workflow ID : " +
+                workFlowDTO.getExternalWorkflowReference() + "Workflow State : " + workFlowDTO.getStatus());
 
-		if (WorkflowStatus.APPROVED.equals(workFlowDTO.getStatus()) ||
-		    WorkflowStatus.REJECTED.equals(workFlowDTO.getStatus())) {
-			String status = null;
+        if (WorkflowStatus.APPROVED.equals(workFlowDTO.getStatus()) ||
+                WorkflowStatus.REJECTED.equals(workFlowDTO.getStatus())) {
+            String status = null;
 
-			if ("APPROVED".equals(workFlowDTO.getStatus().toString())) {
-				status = APIConstants.SubscriptionStatus.UNBLOCKED;
+            if ("APPROVED".equals(workFlowDTO.getStatus().toString())) {
+                status = APIConstants.SubscriptionStatus.UNBLOCKED;
 
-			} else if ("REJECTED".equals(workFlowDTO.getStatus().toString())) {
-				status = APIConstants.SubscriptionStatus.REJECTED;
-			}
+            } else if ("REJECTED".equals(workFlowDTO.getStatus().toString())) {
+                status = APIConstants.SubscriptionStatus.REJECTED;
+            }
 
-			if (status != null || status.length() > 0) {
-				ApiMgtDAO apiMgtDAO = new ApiMgtDAO();
-				try {
-					apiMgtDAO.updateSubscriptionStatus(Integer.parseInt(workFlowDTO.getWorkflowReference()), status);
-				} catch (APIManagementException e) {
-					log.error("Could not complete subscription creation workflow", e);
-					throw new WorkflowException("Could not complete subscription creation workflow", e);
-				}
+            if (status != null || status.length() > 0) {
+                ApiMgtDAO apiMgtDAO = new ApiMgtDAO();
+                try {
+                    apiMgtDAO.updateSubscriptionStatus(Integer.parseInt(workFlowDTO.getWorkflowReference()), status);
+                } catch (APIManagementException e) {
+                    log.error("Could not complete subscription creation workflow", e);
+                    throw new WorkflowException("Could not complete subscription creation workflow", e);
+                }
 
-			} else {
-				log.error("Could not complete subscription creation workflow. Approval status is invalid.");
-			}
-		}
-		return null;
-	}
+            } else {
+                log.error("Could not complete subscription creation workflow. Approval status is invalid.");
+            }
+        }
+        return null;
+    }
 
-	public void cleanUpPendingTask(String workflowExtRef) throws WorkflowException {
-		BusinessProcessApi api = Feign.builder().encoder(new JacksonEncoder()).decoder(new JacksonDecoder())
-		                              .errorDecoder(new WorkflowErrorDecoder())
-		                              .requestInterceptor(new BasicAuthRequestInterceptor(username, password))
-		                              .target(BusinessProcessApi.class, serviceEndpoint);
+    public void cleanUpPendingTask(String workflowExtRef) throws WorkflowException {
+        BusinessProcessApi api = Feign.builder().encoder(new JacksonEncoder()).decoder(new JacksonDecoder())
+                .errorDecoder(new WorkflowErrorDecoder())
+                .requestInterceptor(new BasicAuthRequestInterceptor(username, password))
+                .target(BusinessProcessApi.class, serviceEndpoint);
 
-		ProcessInstanceData instanceData = null;
-		try {
-			instanceData = api.getProcessInstances(workflowExtRef);
-		} catch (WorkflowExtensionException e) {
-			throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
-		}
+        ProcessInstanceData instanceData = null;
+        try {
+            instanceData = api.getProcessInstances(workflowExtRef);
+        } catch (WorkflowExtensionException e) {
+            throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
+        }
 
-		// should be only one process instance for this business key, hence get the 0th element
-		try {
-			api.deleteProcessInstance(Integer.toString(instanceData.getData().get(0).getId()));
-		} catch (WorkflowExtensionException e) {
-			throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
-		}
+        // should be only one process instance for this business key, hence get the 0th element
+        try {
+            api.deleteProcessInstance(Integer.toString(instanceData.getData().get(0).getId()));
+        } catch (WorkflowExtensionException e) {
+            throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
+        }
 
-		log.info("Application Creation approval process instance task with business key " +
-		         workflowExtRef + " deleted successfully");
-	}
+        log.info("Application Creation approval process instance task with business key " +
+                workflowExtRef + " deleted successfully");
+    }
 
-	private String getDeploymentType() {
-		return System.getProperty(DEPLOYMENT_TYPE_SYSTEM_PARAM, DeploymentTypes.HUB.getDeploymentType());
-	}
+    private String getDeploymentType() {
+        return System.getProperty(DEPLOYMENT_TYPE_SYSTEM_PARAM, DeploymentTypes.HUB.getDeploymentType());
+    }
 
-	private String getOperators() {
-		return System.getProperty(OPERATORS_SYSTEM_PARAM);
-	}
 
-	public List<WorkflowDTO> getWorkflowDetails(String s) throws WorkflowException {
-		// not implemented
-		return null;
-	}
+    public List<WorkflowDTO> getWorkflowDetails(String s) throws WorkflowException {
+        // not implemented
+        return null;
+    }
 
-	public String getServiceEndpoint() {
-		return serviceEndpoint;
-	}
+    public String getServiceEndpoint() {
+        return serviceEndpoint;
+    }
 
-	public void setServiceEndpoint(String serviceEndpoint) {
-		this.serviceEndpoint = serviceEndpoint;
-	}
+    public void setServiceEndpoint(String serviceEndpoint) {
+        this.serviceEndpoint = serviceEndpoint;
+    }
 
-	public String getUsername() {
-		return username;
-	}
+    public String getUsername() {
+        return username;
+    }
 
-	public void setUsername(String username) {
-		this.username = username;
-	}
+    public void setUsername(String username) {
+        this.username = username;
+    }
 
-	public String getPassword() {
-		return password;
-	}
+    public String getPassword() {
+        return password;
+    }
 
-	public void setPassword(String password) {
-		this.password = password;
-	}
+    public void setPassword(String password) {
+        this.password = password;
+    }
 }
 
