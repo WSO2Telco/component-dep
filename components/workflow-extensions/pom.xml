@@ -54,55 +54,6 @@
         </dependency>
     </dependencies>
 
-    <repositories>
-        <repository>
-            <id>wso2-nexus</id>
-            <name>WSO2 internal Repository</name>
-            <url>http://maven.wso2.org/nexus/content/groups/wso2-public/</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-                <checksumPolicy>ignore</checksumPolicy>
-            </releases>
-        </repository>
-
-        <repository>
-            <id>wso2.releases</id>
-            <name>WSO2 internal Repository</name>
-            <url>http://maven.wso2.org/nexus/content/repositories/releases/</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-                <checksumPolicy>ignore</checksumPolicy>
-            </releases>
-        </repository>
-
-        <repository>
-            <id>wso2.snapshots</id>
-            <name>Apache Snapshot Repository</name>
-            <url>http://maven.wso2.org/nexus/content/repositories/snapshots/</url>
-            <snapshots>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-            </snapshots>
-            <releases>
-                <enabled>false</enabled>
-            </releases>
-        </repository>
-
-        <repository>
-            <id>central</id>
-            <name>Maven Central Repository</name>
-            <layout>default</layout>
-            <url>http://repo1.maven.org/maven2</url>
-            <releases>
-                <enabled>true</enabled>
-                <updatePolicy>daily</updatePolicy>
-                <checksumPolicy>ignore</checksumPolicy>
-            </releases>
-        </repository>
-    </repositories>
-
     <build>
         <plugins>
             <plugin>
@@ -120,7 +71,8 @@
                         <Export-Package>
                             com.wso2telco.hub.workflow.extensions.*,
                         </Export-Package>
-                        <!--Import-Package>
+                        <Import-Package>
+			    !com.wso2telco.hub.workflow.extensions.*,
 			    feign.*; version="0.0.0",
                             org.apache.commons.logging.*; version="0.0.0",
                             org.wso2.carbon.apimgt.api.*; version="[6.0.4, 7.0.0)",
@@ -130,11 +82,6 @@
                             org.wso2.carbon.context.*; version="[4.4.7, 5.0.0)",
                             com.fasterxml.jackson.*; version="[2.5.4, 3.0.0)",
                             com.wso2telco.core.dbutils.*; version="[2.0.3, 3.0.0)",
-                            *;resolution:=optional
-                        </Import-Package-->
-			<Import-Package>
-			    !com.wso2telco.hub.workflow.extensions.*,
-                            org.apache.commons.logging.*; version="0.0.0",
                             *;resolution:=optional
                         </Import-Package>
                         <DynamicImport-Package>*</DynamicImport-Package>
