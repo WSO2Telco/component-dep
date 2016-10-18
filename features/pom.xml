@@ -34,6 +34,9 @@
 
 =======
 	        <module>com.wso2telco.dep.activiti.feature</module>
+<<<<<<< HEAD
+>>>>>>> bc269bd... remove workflow-approval features
+=======
 >>>>>>> bc269bd... remove workflow-approval features
         </modules>
 </project>
