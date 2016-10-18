@@ -5,13 +5,13 @@
 	<parent>
         <groupId>com.wso2telco.dep</groupId>
         <artifactId>component-dep-parent</artifactId>
-        <version>1.8.0-M4</version>
+        <version>1.8.0-SNAPSHOT</version>
         <relativePath>../../../parent/pom.xml</relativePath>
     </parent>
 
 	<groupId>org.wso2.carbon.axiata.workflow</groupId>
 	<artifactId>AxiataWorkflowApprovalService</artifactId>
-	<version>1.8.0-M4</version>
+	<version>1.0.0</version>
 
 	<packaging>service/axis2</packaging>
 	<name>AxiataWorkflowApprovalService</name>
