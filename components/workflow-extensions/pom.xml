@@ -8,60 +8,6 @@
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
-<<<<<<< HEAD
-=======
-    <name>WSO2 Telco Workflow Extensions</name>
-  <url>http://maven.apache.org</url>
-
-  <dependencies>
-     <dependency>
-         <groupId>org.wso2.carbon.apimgt</groupId>
-         <artifactId>org.wso2.carbon.apimgt.impl</artifactId>
-         <version>${carbon.apimgt.impl.version}</version>
-         <scope>provided</scope>
-     </dependency>
-      <dependency>
-          <groupId>commons-logging</groupId>
-          <artifactId>commons-logging</artifactId>
-          <version>${commons.logging.version}</version>
-          <scope>provided</scope>
-      </dependency>
-      <dependency>
-          <groupId>io.github.openfeign</groupId>
-          <artifactId>feign-core</artifactId>
-          <version>${feign.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>io.github.openfeign</groupId>
-          <artifactId>feign-jackson</artifactId>
-          <version>${feign.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>com.fasterxml.jackson.core</groupId>
-          <artifactId>jackson-core</artifactId>
-          <version>${jackson.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>com.fasterxml.jackson.core</groupId>
-          <artifactId>jackson-databind</artifactId>
-          <version>${jackson.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>com.fasterxml.jackson.core</groupId>
-          <artifactId>jackson-annotations</artifactId>
-          <version>${jackson.version}</version>
-      </dependency>
-      <dependency>
-          <groupId>com.wso2telco.core</groupId>
-          <artifactId>dbutils</artifactId>
-      </dependency>
-      <dependency>
-          <groupId>com.wso2telco.dep</groupId>
-          <artifactId>operator-service</artifactId>
-      </dependency>
-  </dependencies>
->>>>>>> b52bad2... workflow improvement
-
     <artifactId>com.wso2telco.dep.workflow.extensions</artifactId>
     <packaging>bundle</packaging>
 
