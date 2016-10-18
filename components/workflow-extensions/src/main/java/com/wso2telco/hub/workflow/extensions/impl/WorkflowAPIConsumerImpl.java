@@ -37,7 +37,7 @@ public class WorkflowAPIConsumerImpl implements WorkflowAPIConsumer {
 		
 		try {
 			connection = APIMgtDBUtil.getConnection();
-			id = ApiMgtDAO.getAPIID(apiId, connection);
+			id = ApiMgtDAO.getInstance().getAPIID(apiId, connection);
 
 		} catch (SQLException e) {
 			handleException("Failed to retrieve api id. ", e);

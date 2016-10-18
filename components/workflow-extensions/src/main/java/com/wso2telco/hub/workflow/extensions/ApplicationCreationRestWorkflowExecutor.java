@@ -32,6 +32,7 @@ import org.wso2.carbon.apimgt.impl.workflow.WorkflowException;
 import org.wso2.carbon.apimgt.impl.workflow.WorkflowExecutor;
 import org.wso2.carbon.apimgt.impl.workflow.WorkflowStatus;
 import org.wso2.carbon.context.CarbonContext;
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.user.api.UserStoreException;
 
 import java.util.*;
@@ -95,7 +96,7 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
             // TODO: how to read 'deployment_type' / how to check if hub flow or hub-as-a-gateway flow??
             // currently this is read from a java system parameter
             APIConsumer consumer = APIManagerFactory.getInstance().getAPIConsumer();
-            Set<Tier> tierSet = consumer.getTiers();
+            Set<Tier> tierSet = consumer.getTiers(APIConstants.TIER_APPLICATION_TYPE, PrivilegedCarbonContext.getThreadLocalCarbonContext().getTenantDomain(true));
             StringBuilder tiersStr = new StringBuilder();
 
             for (Iterator iterator = tierSet.iterator(); iterator.hasNext(); ) {
@@ -175,7 +176,7 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
 
     public WorkflowResponse complete(WorkflowDTO workFlowDTO) throws WorkflowException {
         workFlowDTO.setUpdatedTime(System.currentTimeMillis());
-        ApiMgtDAO dao = new ApiMgtDAO();
+        ApiMgtDAO dao = ApiMgtDAO.getInstance();
         try {
             if (dao.getApplicationById(Integer.parseInt(workFlowDTO.getWorkflowReference())) != null) {
                 super.complete(workFlowDTO);
