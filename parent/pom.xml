@@ -469,7 +469,7 @@
 		<log4j.version>1.2.13</log4j.version>
 		<com.google.code.gson.version>2.3.1</com.google.code.gson.version>
 		<org.glassfish.jersey.core.version>2.4</org.glassfish.jersey.core.version>
-		<com.wso2telco.core.version>2.0.3-SNAPSHOT</com.wso2telco.core.version>
+		<com.wso2telco.core.version>2.0.3-M4</com.wso2telco.core.version>
 		<org.json.wso2.version>3.0.0.wso2v1</org.json.wso2.version>
 		<junit.version>3.8.1</junit.version>
 		<org.apache.synapse.core.version>2.1.7-wso2v1</org.apache.synapse.core.version>
