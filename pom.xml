@@ -21,7 +21,7 @@
 	<groupId>com.wso2telco.dep</groupId>
 	<artifactId>component-dep</artifactId>
 	<packaging>pom</packaging>
-	<version>1.8.0-SNAPSHOT</version>
+	<version>1.8.0-M2</version>
 	<name>WSO2Telco -Digital Enable Platform Component</name>
 	<description>WSO2Telco DEP Aggregate Pom</description>
 	<url>http://wso2telco.com</url>
@@ -78,7 +78,7 @@
 		<url>https://github.com/WSO2Telco/component-dep.git</url>
 		<developerConnection>scm:git:https://github.com/WSO2Telco/component-dep.git</developerConnection>
 		<connection>scm:git:https://github.com/WSO2Telco/component-dep.git</connection>
-		<tag>HEAD</tag>
+		<tag>v1_8_0-M2</tag>
 	</scm>
 
 
