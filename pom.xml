@@ -64,6 +64,7 @@
         <module>components/mediator</module>
 		<module>components/publish-events/publish-events-data</module> 
 		<module>components/publish-events/publish-events-extensions</module>
+        <module>components/workflow-extensions</module>
    		<module>workflow/axis2services/AxiataWorkflowApprovalService</module>
         <module>webapps/blacklist-whitelist-service</module>
         <module>webapps/aggregator-blacklist</module> 

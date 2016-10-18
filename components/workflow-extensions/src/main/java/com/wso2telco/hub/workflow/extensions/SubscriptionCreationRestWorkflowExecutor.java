@@ -225,7 +225,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
             }
 
             if (status != null || status.length() > 0) {
-                ApiMgtDAO apiMgtDAO = new ApiMgtDAO();
+                ApiMgtDAO apiMgtDAO = ApiMgtDAO.getInstance();
                 try {
                     apiMgtDAO.updateSubscriptionStatus(Integer.parseInt(workFlowDTO.getWorkflowReference()), status);
                 } catch (APIManagementException e) {

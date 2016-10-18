@@ -175,7 +175,7 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
 
     public WorkflowResponse complete(WorkflowDTO workFlowDTO) throws WorkflowException {
         workFlowDTO.setUpdatedTime(System.currentTimeMillis());
-        ApiMgtDAO dao = new ApiMgtDAO();
+        ApiMgtDAO dao = ApiMgtDAO.getInstance();
         try {
             if (dao.getApplicationById(Integer.parseInt(workFlowDTO.getWorkflowReference())) != null) {
                 super.complete(workFlowDTO);

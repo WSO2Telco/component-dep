@@ -529,10 +529,9 @@
 		<org.apache.woden.wso2.version>1.0.0.M9-wso2v1</org.apache.woden.wso2.version>
 		<commons-logging.version>1.1.1</commons-logging.version>
 		<org.apache.ws.commons.axiom.wso2.version>1.2.11.wso2v9</org.apache.ws.commons.axiom.wso2.version>
-		<org.wso2.carbon.version>4.4.3</org.wso2.carbon.version>		
+		<org.wso2.carbon.version>4.4.7</org.wso2.carbon.version>
 		<synapse.version>2.1.7-wso2v3</synapse.version>
 		<carbon.apimgt.version>6.0.4</carbon.apimgt.version>
-		<carbon.platform.version>4.4.7</carbon.platform.version>
 		<com.h2database.wso2.version>1.2.140.wso2v3</com.h2database.wso2.version>
 		<org.apache.ws.commons.axiom.version>1.2.18</org.apache.ws.commons.axiom.version>
 		<com.sun.mail.version>1.5.5</com.sun.mail.version>
