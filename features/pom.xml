@@ -27,8 +27,9 @@
             <module>com.wso2telco.dep.sandbox.ui.feature</module>
             <module>com.wso2telco.dep.aggregatorblacklist.webapp.feature</module>
             <module>com.wso2telco.dep.blacklistwhitelistservice.webapp.feature</module>
-	        <module>com.wso2telco.dep.activiti.feature</module>
-        </modules>
+            <module>com.wso2telco.dep.activiti.feature</module>
+            <module>com.wso2telco.dep.workflow.extensions.feature</module>
+         </modules>
 </project>
 
 
