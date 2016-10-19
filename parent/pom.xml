@@ -584,7 +584,7 @@
         <activiti.version>5.21.0</activiti.version>
 	</properties>
 
-	<build>
+	<!--build>
 		<pluginManagement>
 			<plugins>
 				<plugin>
@@ -627,5 +627,5 @@
 			</plugins>
 		</pluginManagement>
 
-	</build>
+	</build-->
 </project>

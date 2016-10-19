@@ -35,6 +35,10 @@
 	<prerequisites>
 		<maven>3.0.0</maven>
 	</prerequisites>
+	<properties>
+		 <maven-scr-plugin.version>1.7.2</maven-scr-plugin.version>
+                <maven-bundle-plugin.version>2.5.3</maven-bundle-plugin.version>
+        </properties>
 	
 	<distributionManagement>
                 <snapshotRepository>
@@ -81,5 +85,49 @@
 		<connection>scm:git:https://github.com/WSO2Telco/component-dep.git</connection>
 		<tag>HEAD</tag>
 	</scm>
+	<build>
+                <pluginManagement>
+                        <plugins>
+                                <plugin>
+                                        <groupId>org.apache.felix</groupId>
+                                        <artifactId>maven-scr-plugin</artifactId>
+                                        <version>${maven-scr-plugin.version}</version>
+                                        <executions>
+                                                <execution>
+                                                        <id>generate-scr-scrdescriptor</id>
+                                                        <goals>
+                                                                <goal>scr</goal>
+                                                        </goals>
+                                                </execution>
+                                        </executions>
+                                </plugin>
+
+                                <plugin>
+                                        <groupId>org.apache.felix</groupId>
+                                        <artifactId>maven-bundle-plugin</artifactId>
+                                        <version>${maven-bundle-plugin.version}</version>
+                                        <extensions>true</extensions>
+                                        <configuration>
+                                                <obrRepository>NONE</obrRepository>
+                                        </configuration>
+                                </plugin>
+
+                                  <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <configuration>
+                        <preparationGoals>clean install</preparationGoals>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                </plugin>
+
+                        </plugins>
+                </pluginManagement>
+
+        </build>
 
 </project>
