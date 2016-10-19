@@ -36,13 +36,11 @@
         <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-webapp-explorer2</artifactId>
-            <version>5.21.0</version>
             <type>war</type>
         </dependency>
         <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-webapp-rest2</artifactId>
-            <version>5.21.0</version>
             <type>war</type>
         </dependency>
         <!--dependency>
@@ -173,7 +171,7 @@
                                 </copy>
                                 <copy todir="${tempdir}/activiti-rest/WEB-INF/lib" overwrite="true">
                                     <fileset dir="${project.build.directory}/../../../workflow/workflow-approval/target">
-                                        <include name="workflow-approval-2.0.0-SNAPSHOT.jar"/>
+                                        <include name="workflow-approval-${project.version}.jar"/>
                                     </fileset>
                                 </copy>
                                 <!--copy todir="${tempdir}/activiti-explorer/WEB-INF/lib" overwrite="false">
