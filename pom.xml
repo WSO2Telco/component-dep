@@ -35,6 +35,10 @@
 	<prerequisites>
 		<maven>3.0.0</maven>
 	</prerequisites>
+	<properties>
+		 <maven-scr-plugin.version>1.7.2</maven-scr-plugin.version>
+                <maven-bundle-plugin.version>2.5.3</maven-bundle-plugin.version>
+        </properties>
 	
 	<distributionManagement>
                 <snapshotRepository>
@@ -60,12 +64,12 @@
 		<module>components/reporting-service</module>
    		<module>components/verification-handler</module>
         <module>components/operator-service</module>
-   		<module>components/workflow-manager</module>
         <module>components/mediator</module>
 		<module>components/publish-events/publish-events-data</module> 
 		<module>components/publish-events/publish-events-extensions</module>
+     	<module>workflow/workflow-approval</module>
         <module>components/workflow-extensions</module>
-   		<module>workflow/axis2services/AxiataWorkflowApprovalService</module>
+        <module>workflow/workflow-service</module>
         <module>webapps/blacklist-whitelist-service</module>
         <module>webapps/aggregator-blacklist</module> 
 		<module>jaggery-apps/manage</module>
@@ -81,56 +85,49 @@
 		<connection>scm:git:https://github.com/WSO2Telco/component-dep.git</connection>
 		<tag>HEAD</tag>
 	</scm>
+	<build>
+                <pluginManagement>
+                        <plugins>
+                                <plugin>
+                                        <groupId>org.apache.felix</groupId>
+                                        <artifactId>maven-scr-plugin</artifactId>
+                                        <version>${maven-scr-plugin.version}</version>
+                                        <executions>
+                                                <execution>
+                                                        <id>generate-scr-scrdescriptor</id>
+                                                        <goals>
+                                                                <goal>scr</goal>
+                                                        </goals>
+                                                </execution>
+                                        </executions>
+                                </plugin>
 
+                                <plugin>
+                                        <groupId>org.apache.felix</groupId>
+                                        <artifactId>maven-bundle-plugin</artifactId>
+                                        <version>${maven-bundle-plugin.version}</version>
+                                        <extensions>true</extensions>
+                                        <configuration>
+                                                <obrRepository>NONE</obrRepository>
+                                        </configuration>
+                                </plugin>
 
+                                  <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <configuration>
+                        <preparationGoals>clean install</preparationGoals>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                </plugin>
 
-    <build>
-     
-        <plugins>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-compiler-plugin</artifactId>
-                <configuration>
-                    <source>1.7</source>
-                    <target>1.7</target>
-                </configuration>
-            </plugin>
-          
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-release-plugin</artifactId>
-                <configuration>
-                    <preparationGoals>clean install</preparationGoals>
-                    <autoVersionSubmodules>true</autoVersionSubmodules>
-                </configuration>
-		<dependencies>
-                <dependency>
-                    <groupId>org.apache.maven.scm</groupId>
-                    <artifactId>maven-scm-provider-gitexe</artifactId>
-                    <version>1.9</version>
-                </dependency>
-            </dependencies>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-deploy-plugin</artifactId>
-            </plugin>
-            <plugin>
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-javadoc-plugin</artifactId>
-                <executions>
-                    <execution>
-                        <id>docs</id>
-                        <phase>compile</phase>
-                        <goals>
-                            <goal>javadoc</goal>
-                        </goals>
-                    </execution>
-                </executions>
-            </plugin>
+                        </plugins>
+                </pluginManagement>
 
-        </plugins>
-    </build>
-
+        </build>
 
 </project>

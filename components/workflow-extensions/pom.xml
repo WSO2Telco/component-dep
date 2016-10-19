@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.wso2telco.dep</groupId>
@@ -72,8 +71,8 @@
                             com.wso2telco.hub.workflow.extensions.*,
                         </Export-Package>
                         <Import-Package>
-			    !com.wso2telco.hub.workflow.extensions.*,
-			    feign.*; version="0.0.0",
+                            !com.wso2telco.hub.workflow.extensions.*,
+                            feign.*; version="0.0.0",
                             org.apache.commons.logging.*; version="0.0.0",
                             org.wso2.carbon.apimgt.api.*; version="[6.0.4, 7.0.0)",
                             org.wso2.carbon.apimgt.impl.*; version="[6.0.4, 7.0.0)",
