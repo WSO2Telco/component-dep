@@ -7,7 +7,8 @@
 	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
 	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
 	the specific language governing permissions and limitations under the License. -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -15,7 +16,7 @@
 		<groupId>org.wso2</groupId>
 		<artifactId>wso2</artifactId>
 		<version>1</version>
-	</parent> 
+	</parent>
 
 	<groupId>com.wso2telco.dep</groupId>
 	<artifactId>component-dep-parent</artifactId>
@@ -52,16 +53,16 @@
 
 
 	<repositories>
-		    <repository>
-                        <id>wso2-nexus</id>
-                        <name>WSO2  Repository</name>
-                        <url>https://maven.wso2.org/nexus/content/groups/wso2-public</url>
-                        <releases>
-                                <enabled>true</enabled>
-                                <updatePolicy>daily</updatePolicy>
-                                <checksumPolicy>ignore</checksumPolicy>
-                        </releases>
-                </repository>
+		<repository>
+			<id>wso2-nexus</id>
+			<name>WSO2  Repository</name>
+			<url>https://maven.wso2.org/nexus/content/groups/wso2-public</url>
+			<releases>
+				<enabled>true</enabled>
+				<updatePolicy>daily</updatePolicy>
+				<checksumPolicy>ignore</checksumPolicy>
+			</releases>
+		</repository>
 
 		<repository>
 			<id>wso2telco-nexus</id>
@@ -133,7 +134,7 @@
 				<enabled>false</enabled>
 			</releases>
 		</pluginRepository>
-	</pluginRepositories>	
+	</pluginRepositories>
 
 	<dependencyManagement>
 
@@ -142,11 +143,11 @@
 				<groupId>javax.servlet</groupId>
 				<artifactId>servlet-api</artifactId>
 				<version>${servlet.api.version}</version>
-			</dependency>		
+			</dependency>
 			<dependency>
 				<groupId>com.wso2telco.dep</groupId>
 				<artifactId>operator-service</artifactId>
-				<version>${com.wso2telco.dep.version}</version> 
+				<version>${com.wso2telco.dep.version}</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
@@ -175,7 +176,7 @@
 				<artifactId>msisdn-validator</artifactId>
 				<version>${com.wso2telco.core.version}</version>
 				<scope>provided</scope>
-			</dependency>			
+			</dependency>
 			<dependency>
 				<groupId>org.json.wso2</groupId>
 				<artifactId>json</artifactId>
@@ -455,10 +456,10 @@
 				<version>${com.wso2telco.core.version}</version>
 			</dependency>
 			<dependency>
-		        <groupId>org.wso2.carbon.analytics</groupId>
-		        <artifactId>org.wso2.carbon.analytics.spark.core</artifactId>
-		        <version>${org.wso2.carbon.analytics.version}</version>
-		    </dependency>
+				<groupId>org.wso2.carbon.analytics</groupId>
+				<artifactId>org.wso2.carbon.analytics.spark.core</artifactId>
+				<version>${org.wso2.carbon.analytics.version}</version>
+			</dependency>
 			<dependency>
 				<groupId>org.activiti</groupId>
 				<artifactId>activiti-engine</artifactId>
@@ -586,17 +587,10 @@
 	<build>
 		<pluginManagement>
 			<plugins>
-				<!--plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-checkstyle-plugin</artifactId> 
-					<version>2.17</version> <executions> <execution> <id>validate</id> <phase>validate</phase> 
-					<configuration> <configLocation>sun_checks.xml</configLocation> <encoding>UTF-8</encoding> 
-					<consoleOutput>true</consoleOutput> <failsOnError>false</failsOnError> <failOnViolation>false</failOnViolation> 
-					<outputFile>../Checkstyle-result.xml</outputFile> <outputFileFormat>xml</outputFileFormat> 
-					<linkXRef>false</linkXRef> </configuration> <goals> <goal>check</goal> </goals> 
-					</execution> </executions> </plugin -->
 				<plugin>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>maven-scr-plugin</artifactId>
-					<version>1.7.2</version>
+					<version>${maven-scr-plugin.version}</version>
 					<executions>
 						<execution>
 							<id>generate-scr-scrdescriptor</id>
@@ -606,111 +600,32 @@
 						</execution>
 					</executions>
 				</plugin>
+
 				<plugin>
 					<groupId>org.apache.felix</groupId>
 					<artifactId>maven-bundle-plugin</artifactId>
-					<version>2.4.0</version>
+					<version>${maven-bundle-plugin.version}</version>
 					<extensions>true</extensions>
 					<configuration>
 						<obrRepository>NONE</obrRepository>
 					</configuration>
 				</plugin>
+				
+				  <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-release-plugin</artifactId>
+                    <configuration>
+                        <preparationGoals>clean install</preparationGoals>
+                        <autoVersionSubmodules>true</autoVersionSubmodules>
+                    </configuration>
+                </plugin>
+                <plugin>
+                    <groupId>org.apache.maven.plugins</groupId>
+                    <artifactId>maven-deploy-plugin</artifactId>
+                </plugin>
+                
 			</plugins>
 		</pluginManagement>
 
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-scr-plugin</artifactId>
-				<version>1.7.2</version>
-				<executions>
-					<execution>
-						<id>generate-scr-scrdescriptor</id>
-						<goals>
-							<goal>scr</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-
-			<plugin>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>2.3.1</version>
-				<inherited>true</inherited>
-				<configuration>
-					<encoding>UTF-8</encoding>
-					<source>1.7</source>
-					<target>1.7</target>
-				</configuration>
-			</plugin>
-
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-source-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-sources</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
-			<!--plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-javadoc-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>attach-javadocs</id>
-						<goals>
-							<goal>jar</goal>
-						</goals>
-					</execution>
-				</executions>
-				<configuration>
-					<additionalparam>-Xdoclint:none</additionalparam>
-				</configuration>
-			</plugin-->
-		</plugins>
 	</build>
-	<profiles>
-		<profile>
-			<id>release</id>
-			<build>
-				<plugins>
-					<!--plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-javadoc-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>docs</id>
-								<phase>compile</phase>
-								<goals>
-									<goal>javadoc</goal>
-								</goals>
-							</execution>
-							<execution>
-								<id>attach-javadocs</id>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin-->
-					<plugin>
-						<groupId>org.apache.maven.plugins</groupId>
-						<artifactId>maven-source-plugin</artifactId>
-						<executions>
-							<execution>
-								<id>attach-sources</id>
-								<goals>
-									<goal>jar</goal>
-								</goals>
-							</execution>
-						</executions>
-					</plugin>					
-				</plugins>
-			</build>
-		</profile>
-	</profiles>
 </project>
