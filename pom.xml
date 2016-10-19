@@ -60,13 +60,12 @@
 		<module>components/reporting-service</module>
    		<module>components/verification-handler</module>
         <module>components/operator-service</module>
-   		<module>components/workflow-manager</module>
         <module>components/mediator</module>
 		<module>components/publish-events/publish-events-data</module> 
 		<module>components/publish-events/publish-events-extensions</module>
+     	<module>workflow/workflow-approval</module>
         <module>components/workflow-extensions</module>
-   		<module>workflow/axis2services/AxiataWorkflowApprovalService</module>
-   		<module>workflow/workflow-service</module>
+        <module>workflow/workflow-service</module>
         <module>webapps/blacklist-whitelist-service</module>
         <module>webapps/aggregator-blacklist</module> 
 		<module>jaggery-apps/manage</module>

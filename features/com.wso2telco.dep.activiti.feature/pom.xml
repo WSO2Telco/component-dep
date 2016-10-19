@@ -15,11 +15,12 @@
 ~ "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY
 ~ KIND, either express or implied.  See the License for the
   -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <parent>
         <groupId>com.wso2telco.dep</groupId>
         <artifactId>component-dep-feature</artifactId>
-	<version>2.0.0-SNAPSHOT</version>
+        <version>2.0.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -33,22 +34,20 @@
 
     <dependencies>
         <dependency>
-           <groupId>org.activiti</groupId>
-    	   <artifactId>activiti-webapp-explorer2</artifactId>
-    	   <version>5.21.0</version>
-	   <type>war</type>
-	</dependency>
+            <groupId>org.activiti</groupId>
+            <artifactId>activiti-webapp-explorer2</artifactId>
+            <type>war</type>
+        </dependency>
         <dependency>
             <groupId>org.activiti</groupId>
             <artifactId>activiti-webapp-rest2</artifactId>
-	    <version>5.21.0</version>
-	    <type>war</type>
+            <type>war</type>
         </dependency>
-	<!--dependency>
-            <groupId>com.wso2telco</groupId>
-            <artifactId>com.wso2telco.application.creation.approval.workflow</artifactId>
-            <version>${project.version}</version>
-	</dependency-->
+        <!--dependency>
+                <groupId>com.wso2telco</groupId>
+                <artifactId>com.wso2telco.application.creation.approval.workflow</artifactId>
+                <version>${project.version}</version>
+        </dependency-->
     </dependencies>
 
     <build>
@@ -67,19 +66,21 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>org.activiti</groupId>
-         			    <artifactId>activiti-webapp-explorer2</artifactId>
-				    <type>war</type>
+                                    <artifactId>activiti-webapp-explorer2</artifactId>
+                                    <type>war</type>
                                     <overWrite>true</overWrite>
-                                    <outputDirectory>${basedir}/target/maven-shared-archive-resources/webapps</outputDirectory>
-				    <destFileName>activiti-explorer.war</destFileName>
+                                    <outputDirectory>${basedir}/target/maven-shared-archive-resources/webapps
+                                    </outputDirectory>
+                                    <destFileName>activiti-explorer.war</destFileName>
                                 </artifactItem>
                                 <artifactItem>
                                     <groupId>org.activiti</groupId>
                                     <artifactId>activiti-webapp-rest2</artifactId>
                                     <type>war</type>
                                     <overWrite>true</overWrite>
-                                    <outputDirectory>${basedir}/target/maven-shared-archive-resources/webapps</outputDirectory>
-				    <destFileName>activiti-rest.war</destFileName>
+                                    <outputDirectory>${basedir}/target/maven-shared-archive-resources/webapps
+                                    </outputDirectory>
+                                    <destFileName>activiti-rest.war</destFileName>
                                 </artifactItem>
                                 <!--artifactItem>
                                     <groupId>com.wso2telco</groupId>
@@ -122,60 +123,99 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <property name="tempdir" value="target/tmp" />
+                                <property name="tempdir" value="target/tmp"/>
                                 <!-- extract the webapps -->
-				<unzip dest="${tempdir}/activiti-explorer">
+                                <unzip dest="${tempdir}/activiti-explorer">
                                     <fileset dir="${project.build.directory}/maven-shared-archive-resources/webapps">
-                                        <include name="activiti-explorer.war" />
+                                        <include name="activiti-explorer.war"/>
                                     </fileset>
                                 </unzip>
                                 <unzip dest="${tempdir}/activiti-rest">
                                     <fileset dir="${project.build.directory}/maven-shared-archive-resources/webapps">
-                                        <include name="activiti-rest.war" />
+                                        <include name="activiti-rest.war"/>
                                     </fileset>
                                 </unzip>
-				<!-- delete the existint war fles -->
-                                <delete file="${project.build.directory}/maven-shared-archive-resources/webapps/activiti-explorer.war" />
-                                <delete file="${project.build.directory}/maven-shared-archive-resources/webapps/activiti-rest.war" />
-			        <!-- copy relevant files -->
-				<copy todir="${tempdir}/activiti-explorer/WEB-INF/classes" overwrite="true">
+                                <!-- delete the existint war fles -->
+                                <delete file="${project.build.directory}/maven-shared-archive-resources/webapps/activiti-explorer.war"/>
+                                <delete file="${project.build.directory}/maven-shared-archive-resources/webapps/activiti-rest.war"/>
+                                <!-- copy relevant files -->
+                                <copy todir="${tempdir}/activiti-explorer/WEB-INF/classes" overwrite="true">
                                     <fileset dir="${project.build.directory}/../src/main/resources">
-                                        <include name="db.properties" />
-                                    </fileset>
-                                </copy>
-				<copy todir="${tempdir}/activiti-rest/WEB-INF/classes" overwrite="true">
-                                    <fileset dir="${project.build.directory}/../src/main/resources">
-                                        <include name="db.properties" />
+                                        <include name="db.properties"/>
                                     </fileset>
                                 </copy>
                                 <copy todir="${tempdir}/activiti-rest/WEB-INF/classes" overwrite="true">
                                     <fileset dir="${project.build.directory}/../src/main/resources">
-                                        <include name="log4j.properties" />
+                                        <include name="db.properties"/>
+                                    </fileset>
+                                </copy>
+                                <copy todir="${tempdir}/activiti-rest/WEB-INF/classes" overwrite="true">
+                                    <fileset dir="${project.build.directory}/../src/main/resources">
+                                        <include name="log4j.properties"/>
                                     </fileset>
                                 </copy>
                                 <copy todir="${tempdir}/activiti-explorer/WEB-INF/classes" overwrite="true">
                                     <fileset dir="${project.build.directory}/../src/main/resources">
-                                        <include name="log4j.properties" />
+                                        <include name="log4j.properties"/>
                                     </fileset>
                                 </copy>
                                 <copy todir="${tempdir}/activiti-explorer/WEB-INF/classes" overwrite="true">
                                     <fileset dir="${project.build.directory}/../src/main/resources/activiti-explorer">
-                                        <include name="engine.properties" />
+                                        <include name="engine.properties"/>
                                     </fileset>
                                 </copy>
                                 <copy todir="${tempdir}/activiti-rest/WEB-INF/classes" overwrite="true">
                                     <fileset dir="${project.build.directory}/../src/main/resources/activiti-rest">
-                                        <include name="engine.properties" />
+                                        <include name="engine.properties"/>
                                     </fileset>
                                 </copy>
-				<!--copy todir="${tempdir}/activiti-explorer/WEB-INF/lib" overwrite="false">
-                                    <fileset dir="${project.build.directory}/maven-shared-archive-resources/dependencies">
-                                        <include name="com.wso2telco.application.creation.approval.workflow-${project.version}.jar" />
+
+                                <copy todir="${tempdir}/activiti-rest/WEB-INF/lib" overwrite="true">
+                                    <fileset dir="${project.build.directory}/../../../workflow/workflow-approval/target">
+                                        <include name="workflow-approval-${project.version}.jar"/>
                                     </fileset>
-                                </copy-->
-				<!-- re-create the war files -->
-                                <zip destfile="${project.build.directory}/maven-shared-archive-resources/webapps/activiti-explorer.war" basedir="${tempdir}/activiti-explorer" />
-				<zip destfile="${project.build.directory}/maven-shared-archive-resources/webapps/activiti-rest.war" basedir="${tempdir}/activiti-rest" />
+                                </copy>
+                                 <copy todir="${tempdir}/activiti-rest/WEB-INF/lib" overwrite="true">
+                                    <fileset dir="${project.build.directory}/../../../workflow/workflow-approval/target/dependencies">
+                                        <include name="feign-core-${feign.version}.jar"/>
+                                    </fileset>
+                                </copy>
+                                <copy todir="${tempdir}/activiti-rest/WEB-INF/lib" overwrite="true">
+                                    <fileset dir="${project.build.directory}/../../../workflow/workflow-approval/target/dependencies">
+                                        <include name="feign-jackson-${feign.version}.jar"/>
+                                    </fileset>
+                                </copy>
+                                <copy todir="${tempdir}/activiti-rest/WEB-INF/lib" overwrite="true">
+                                    <fileset dir="${project.build.directory}/../../../workflow/workflow-approval/target/dependencies">
+                                        <include name="jackson-annotations-${jackson.version}.jar"/>
+                                    </fileset>
+                                </copy>
+                                <copy todir="${tempdir}/activiti-rest/WEB-INF/lib" overwrite="true">
+                                    <fileset dir="${project.build.directory}/../../../workflow/workflow-approval/target/dependencies">
+                                        <include name="jackson-core-${jackson.version}.jar"/>
+                                    </fileset>
+                                </copy>
+                                <copy todir="${tempdir}/activiti-rest/WEB-INF/lib" overwrite="true">
+                                    <fileset dir="${project.build.directory}/../../../workflow/workflow-approval/target/dependencies">
+                                        <include name="fjackson-databind-${jackson.version}.jar"/>
+                                    </fileset>
+                                </copy>
+                                <copy todir="${tempdir}/activiti-rest/WEB-INF/lib" overwrite="true">
+                                    <fileset dir="${project.build.directory}/../../../workflow/workflow-approval/target/dependencies">
+                                        <include name="groovy-all-${groovy.version}.jar"/>
+                                    </fileset>
+                                </copy>
+
+                                <!--copy todir="${tempdir}/activiti-explorer/WEB-INF/lib" overwrite="false">
+                                                    <fileset dir="${project.build.directory}/maven-shared-archive-resources/dependencies">
+                                                        <include name="com.wso2telco.application.creation.approval.workflow-${project.version}.jar" />
+                                                    </fileset>
+                                                </copy-->
+                                <!-- re-create the war files -->
+                                <zip destfile="${project.build.directory}/maven-shared-archive-resources/webapps/activiti-explorer.war"
+                                     basedir="${tempdir}/activiti-explorer"/>
+                                <zip destfile="${project.build.directory}/maven-shared-archive-resources/webapps/activiti-rest.war"
+                                     basedir="${tempdir}/activiti-rest"/>
                                 <delete dir="${tempdir}"/>
                             </tasks>
                         </configuration>
@@ -219,9 +259,9 @@
                         <configuration>
                             <id>com.wso2telco.dep.activiti</id>
                             <propertiesFile>../feature.properties</propertiesFile>
-		            <!--bundles>
-         			<bundleDef>com.wso2telco:com.wso2telco.application.creation.approval.workflow:${project.version}</bundleDef>
-      			    </bundles-->
+                            <!--bundles>
+                             <bundleDef>com.wso2telco:com.wso2telco.application.creation.approval.workflow:${project.version}</bundleDef>
+                              </bundles-->
                             <adviceFile>
                                 <properties>
                                     <propertyDef>org.wso2.carbon.p2.category.type:server</propertyDef>

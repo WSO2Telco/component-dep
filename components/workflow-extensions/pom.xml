@@ -72,8 +72,8 @@
                             com.wso2telco.hub.workflow.extensions.*,
                         </Export-Package>
                         <Import-Package>
-			    !com.wso2telco.hub.workflow.extensions.*,
-			    feign.*; version="0.0.0",
+                            !com.wso2telco.hub.workflow.extensions.*,
+                            feign.*; version="0.0.0",
                             org.apache.commons.logging.*; version="0.0.0",
                             org.wso2.carbon.apimgt.api.*; version="[6.0.4, 7.0.0)",
                             org.wso2.carbon.apimgt.impl.*; version="[6.0.4, 7.0.0)",
