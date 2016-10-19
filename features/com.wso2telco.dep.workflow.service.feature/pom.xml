@@ -8,11 +8,11 @@
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
-    <artifactId>com.wso2telco.dep.aggregatorblacklist.webapp.feature</artifactId>
+    <artifactId>com.wso2telco.dep.workflow.service.feature</artifactId>
     <packaging>pom</packaging>
-    <name>WSO2.Telco Manage</name>
+    <name>WSO2.Telco Workflow service feature</name>
     <url>http://wso2.org</url>
-    <description>This feature contains the server bundles required for aggregator-blacklist web application</description>
+    <description>This feature contains the server bundles required for workflow service web application</description>
 
 
     <build>
@@ -76,10 +76,10 @@
                             <artifactItems>
                                 <artifactItem>
                                     <groupId>com.wso2telco.dep</groupId>
-                                    <artifactId>aggregator-blacklist</artifactId>
+                                    <artifactId>workflow-service</artifactId>
                                     <version>${com.wso2telco.dep.version}</version>
                                     <type>war</type>
-		                            <destFileName>aggregator-blacklist.war</destFileName>
+		                            <destFileName>workflow-service.war</destFileName>
                                 </artifactItem>
                             </artifactItems>
                             <outputDirectory>${project.basedir}/src/main/resources/generated</outputDirectory>
@@ -101,7 +101,7 @@
                             <goal>p2-feature-gen</goal>
                         </goals>
                         <configuration>
-                            <id>com.wso2telco.dep.aggregatorblacklist.webapp</id>
+                            <id>com.wso2telco.dep.workflow.service</id>
                             <propertiesFile>../feature.properties</propertiesFile>
                             <adviceFile>
                                 <properties>
