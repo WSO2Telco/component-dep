@@ -17,10 +17,10 @@
             <module>com.wso2telco.dep.mediator.feature</module>
             <module>com.wso2telco.dep.publisheventsdata.feature</module>
             <module>com.wso2telco.dep.subscriptionvalidator.feature</module>
-		    <module>com.wso2telco.dep.reportingservice.feature</module>
-		    <module>com.wso2telco.dep.verificationhandler.feature</module>
-		    <module>com.wso2telco.dep.store.ui.feature</module>
-		    <module>com.wso2telco.dep.datapublisher.feature</module>
+	    <module>com.wso2telco.dep.reportingservice.feature</module>
+	    <module>com.wso2telco.dep.verificationhandler.feature</module>
+	    <module>com.wso2telco.dep.store.ui.feature</module>
+	    <module>com.wso2telco.dep.datapublisher.feature</module>
             <module>com.wso2telco.dep.oneapivalidation.feature</module>
             <module>com.wso2telco.dep.manage.ui.feature</module>
             <module>com.wso2telco.dep.publisher.ui.feature</module>
@@ -30,6 +30,7 @@
             <module>com.wso2telco.dep.activiti.feature</module>
             <module>com.wso2telco.dep.workflow.service.feature</module>
             <module>com.wso2telco.dep.workflow.extensions.feature</module>
+	    <module>com.wso2telco.dep.workflowmanager.feature</module>
             <module>com.wso2telco.dep.server.startup.observer.feature</module>
         </modules>
 </project>
