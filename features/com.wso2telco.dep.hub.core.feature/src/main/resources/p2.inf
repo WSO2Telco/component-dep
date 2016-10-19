@@ -10,6 +10,7 @@ org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../featur
 org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.hub.core_${feature.version}/config/oneapi-validation-conf.properties,target:${installFolder}/../../../dep-hub/conf/publish-events-data-conf.properties,overwrite:true);\
 org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.hub.core_${feature.version}/config/registry.xml,target:${installFolder}/../../../dep-hub/conf/registry.xml,overwrite:true);\
 org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.hub.core_${feature.version}/config/user-mgt.xml,target:${installFolder}/../../../dep-hub/conf/user-mgt.xml,overwrite:true);\
+org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.hub.core_${feature.version}/config/workflow-extensions.xml,target:${installFolder}/../../../dep-hub/conf/workflow-extensions.xml,overwrite:true);\
 
 
 
