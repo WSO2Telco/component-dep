@@ -65,6 +65,7 @@
 		<module>components/publish-events/publish-events-data</module> 
 		<module>components/publish-events/publish-events-extensions</module>
         <module>components/workflow-extensions</module>
+		<module>components/server-startup-observer</module>
    		<module>workflow/axis2services/AxiataWorkflowApprovalService</module>
    		<module>workflow/workflow-service</module>
         <module>webapps/blacklist-whitelist-service</module>
