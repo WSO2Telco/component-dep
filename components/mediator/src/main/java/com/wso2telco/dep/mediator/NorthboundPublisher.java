@@ -16,22 +16,18 @@
 package com.wso2telco.dep.mediator;
 
 import java.util.Arrays;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.wso2.carbon.apimgt.gateway.APIMgtGatewayConstants;
-import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 
-import com.wso2telco.dep.datapublisher.DataPublisherConstants;
-import com.wso2telco.dep.datapublisher.SouthboundDataPublisher;
-import com.wso2telco.dep.datapublisher.dto.NorthboundResponsePublisherDTO;
+import com.wso2telco.dep.mediator.util.DataPublisherConstants;
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.dep.oneapivalidation.exceptions.PolicyException;
 import com.wso2telco.dep.oneapivalidation.exceptions.RequestError;
 import com.wso2telco.dep.oneapivalidation.exceptions.ServiceException;
-import com.wso2telco.dep.publisheventsdata.publisher.EventsDataPublisherClient;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -45,14 +41,8 @@ public class NorthboundPublisher {
 	/** The enabled. */
 	private boolean enabled = true;// SouthboundDataComponent.getApiMgtConfigReaderService().isEnabled();
 
-	/** The publisher. */
-	private volatile SouthboundDataPublisher publisher;
-
 	/** The publisher class. */
 	private String publisherClass = "com.wso2telco.datapublisher.SouthboundDataPublisher";
-
-	/** The events publisher client. */
-	private EventsDataPublisherClient eventsPublisherClient;
 
 	/**
 	 * Publish nb error response data.
@@ -107,10 +97,8 @@ public class NorthboundPublisher {
 		messageContext.setProperty(DataPublisherConstants.EXCEPTION_ID, ax.getErrcode());
 		messageContext.setProperty(DataPublisherConstants.EXCEPTION_MESSAGE, exMsg);
 
-		String buildedExeption = buildErrorResponse(ax);
+		buildErrorResponse(ax);
 
-		// publish data to BAM
-		publishNBResponse(messageContext, buildedExeption);
 
 	}
 
@@ -174,85 +162,4 @@ public class NorthboundPublisher {
 		return errorObjectString;
 	}
 
-	/**
-	 * Publish nb response.
-	 *
-	 * @param mc
-	 *            the mc
-	 * @param jsonBody
-	 *            the json body
-	 */
-	private void publishNBResponse(MessageContext mc, String jsonBody) {
-		if (!enabled) {
-			return;
-		}
-
-		if (publisher == null) {
-			synchronized (this) {
-				if (publisher == null) {
-					log.debug("Instantiating Data Publisher");
-					publisher = new SouthboundDataPublisher();
-					publisher.init();
-				}
-			}
-		}
-
-		Long currentTime = System.currentTimeMillis();
-		Long serviceTime = currentTime - (Long) mc.getProperty(DataPublisherConstants.REQUEST_TIME);
-
-		NorthboundResponsePublisherDTO nbResponseDTO = new NorthboundResponsePublisherDTO();
-		nbResponseDTO.setConsumerKey((String) mc.getProperty(APIMgtGatewayConstants.CONSUMER_KEY));
-		nbResponseDTO.setUsername((String) mc.getProperty(APIMgtGatewayConstants.USER_ID));
-		nbResponseDTO.setTenantDomain(MultitenantUtils.getTenantDomain(nbResponseDTO.getUsername()));
-		nbResponseDTO.setContext((String) mc.getProperty(APIMgtGatewayConstants.CONTEXT));
-		nbResponseDTO.setApiVersion((String) mc.getProperty(APIMgtGatewayConstants.API_VERSION));
-		nbResponseDTO.setApi((String) mc.getProperty(APIMgtGatewayConstants.API));
-		nbResponseDTO.setVersion((String) mc.getProperty(APIMgtGatewayConstants.VERSION));
-		nbResponseDTO.setResourcePath((String) mc.getProperty(APIMgtGatewayConstants.RESOURCE));
-		nbResponseDTO.setMethod((String) mc.getProperty(APIMgtGatewayConstants.HTTP_METHOD));
-		nbResponseDTO.setResponseTime(currentTime);
-		nbResponseDTO.setServiceTime(serviceTime);
-		nbResponseDTO.setHostName((String) mc.getProperty(APIMgtGatewayConstants.HOST_NAME));
-		nbResponseDTO.setApiPublisher((String) mc.getProperty(APIMgtGatewayConstants.API_PUBLISHER));
-		nbResponseDTO.setApplicationName((String) mc.getProperty(APIMgtGatewayConstants.APPLICATION_NAME));
-		nbResponseDTO.setApplicationId((String) mc.getProperty(APIMgtGatewayConstants.APPLICATION_ID));
-
-		nbResponseDTO.setRequestId((String) mc.getProperty(DataPublisherConstants.REQUEST_ID));
-		nbResponseDTO.setResponseCode((Integer) mc.getProperty(DataPublisherConstants.RESPONSE_CODE));
-		nbResponseDTO.setMsisdn((String) mc.getProperty(DataPublisherConstants.MSISDN));
-		nbResponseDTO.setChargeAmount((String) mc.getProperty(DataPublisherConstants.CHARGE_AMOUNT));
-		nbResponseDTO.setPurchaseCategoryCode((String) mc.getProperty(DataPublisherConstants.PAY_CATEGORY));
-		nbResponseDTO.setOperatorRef((String) mc.getProperty(DataPublisherConstants.OPERATOR_REF));
-		nbResponseDTO.setExceptionId((String) mc.getProperty(DataPublisherConstants.EXCEPTION_ID));
-		nbResponseDTO.setExceptionMessage((String) mc.getProperty(DataPublisherConstants.EXCEPTION_MESSAGE));
-		nbResponseDTO.setJsonBody(jsonBody);
-
-		nbResponseDTO.setOperationType((Integer) mc.getProperty(DataPublisherConstants.OPERATION_TYPE));
-		nbResponseDTO.setMerchantId((String) mc.getProperty(DataPublisherConstants.MERCHANT_ID));
-		nbResponseDTO.setCategory((String) mc.getProperty(DataPublisherConstants.CATEGORY));
-		nbResponseDTO.setSubCategory((String) mc.getProperty(DataPublisherConstants.SUB_CATEGORY));
-
-		// Hira added to get Subscriber in end User request scienario
-		String userIdToPublish = nbResponseDTO.getUsername();
-		if (userIdToPublish != null && userIdToPublish.contains("@")) {
-			String[] userIdArray = userIdToPublish.split("@");
-			userIdToPublish = userIdArray[0];
-			nbResponseDTO.setUsername(userIdToPublish);
-		}
-
-		publisher.publishEvent(nbResponseDTO);
-	}
-
-	/**
-	 * Publish to cep.
-	 *
-	 * @param messageContext
-	 *            the message context
-	 */
-	private void publishToCEP(MessageContext messageContext) {
-		if (eventsPublisherClient == null) {
-			eventsPublisherClient = new EventsDataPublisherClient();
-		}
-		eventsPublisherClient.publishEvent(messageContext);
-	}
 }

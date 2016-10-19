@@ -17,7 +17,8 @@ package com.wso2telco.dep.mediator.internal;
 
 import org.apache.synapse.MessageContext;
 
-import com.wso2telco.dep.datapublisher.DataPublisherConstants;
+import com.wso2telco.dep.mediator.util.DataPublisherConstants;
+
 
 // TODO: Auto-generated Javadoc
 /**

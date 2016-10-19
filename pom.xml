@@ -60,13 +60,13 @@
 	    <module>components/oneapi-validation</module> 
 	    <module>components/subscription-validator</module> 
 	    <!--module>components/publish-events-data</module-->
-	    <module>components/data-publisher</module>
+	    <!--module>components/data-publisher</module-->
 	    <module>components/reporting-service</module>
    	    <module>components/verification-handler</module>
             <module>components/operator-service</module>
             <module>components/mediator</module>
-	    <module>components/publish-events/publish-events-data</module> 
-  	    <module>components/publish-events/publish-events-extensions</module>
+	    <!--module>components/publish-events/publish-events-data</module> 
+  	    <module>components/publish-events/publish-events-extensions</module-->
      	    <module>workflow/workflow-approval</module>
             <module>components/workflow-extensions</module>
             <module>workflow/workflow-service</module>
@@ -77,7 +77,7 @@
 	    <module>jaggery-apps/publisher</module>
 	    <module>jaggery-apps/sandbox</module>
 	    <module>jaggery-apps/store</module>
-        <module>features</module>
+            <module>features</module>
 	</modules>
 
 	<scm>

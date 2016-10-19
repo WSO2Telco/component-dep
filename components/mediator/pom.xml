@@ -125,10 +125,10 @@
 			<groupId>com.wso2telco.dep</groupId>
 			<artifactId>subscription-validator</artifactId>
 		</dependency>
-		<dependency>
+		<!--dependency>
 			<groupId>com.wso2telco.dep</groupId>
 			<artifactId>data-publisher</artifactId>
-		</dependency>
+		</dependency-->
 		<dependency>
 			<groupId>com.wso2telco.core</groupId>
 			<artifactId>mnc-resolver</artifactId>
@@ -137,10 +137,10 @@
 			<groupId>com.wso2telco.core</groupId>
 			<artifactId>msisdn-validator</artifactId>
 		</dependency>
-		<dependency>
+		<!--dependency>
 			<groupId>com.wso2telco.dep</groupId>
 			<artifactId>publish-events-data</artifactId>
-		</dependency>
+		</dependency-->
 		<dependency>
 			<groupId>com.wso2telco.dep</groupId>
 			<artifactId>operator-service</artifactId>
