@@ -16,6 +16,15 @@
 package com.wso2telco.dep.verificationhandler.verifier;
 
 
+import java.io.IOException;
+import java.sql.SQLException;
+import java.util.List;
+import java.util.logging.Level;
+import java.util.logging.Logger;
+
+import javax.naming.NamingException;
+import javax.xml.stream.XMLStreamException;
+
 import org.apache.axiom.om.OMAbstractFactory;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
@@ -29,22 +38,9 @@ import org.apache.synapse.SynapseConstants;
 import org.apache.synapse.core.SynapseEnvironment;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.apache.synapse.mediators.AbstractMediator;
-import org.apache.synapse.rest.AbstractHandler;
 import org.apache.synapse.transport.passthru.util.RelayUtils;
-import org.json.JSONException;
-import org.json.JSONObject;
-import org.json.XML;
 import org.wso2.carbon.apimgt.gateway.handlers.Utils;
 import org.wso2.carbon.apimgt.gateway.handlers.security.APISecurityConstants;
-import com.wso2telco.dep.datapublisher.DataPublisherConstants;
-import com.wso2telco.dep.datapublisher.NorthboundDataPublisherClient;
-import javax.naming.NamingException;
-import javax.xml.stream.XMLStreamException;
-import java.io.IOException;
-import java.sql.SQLException;
-import java.util.List;
-import java.util.logging.Level;
-import java.util.logging.Logger;
 
 
 // TODO: Auto-generated Javadoc
@@ -67,10 +63,6 @@ public class BlacklistHandler extends AbstractMediator implements ManagedLifecyc
     /** The subscription list. */
     private List<String> subscriptionList;
     
-    /** The data publisher client. */
-    private NorthboundDataPublisherClient dataPublisherClient;
-    
-   
     //Initialize BlackList Numbers
     //Read Blacklist Numbers from database and store in memory
     /**
@@ -165,7 +157,6 @@ public class BlacklistHandler extends AbstractMediator implements ManagedLifecyc
         }
 
         messageContext.setProperty("error_message_type", "application/json");
-        publishResponseData(messageContext, faultPayload);
         Utils.sendFault(messageContext, status);
     }
 
@@ -248,29 +239,6 @@ public class BlacklistHandler extends AbstractMediator implements ManagedLifecyc
         return str_result;
     }
 
-    /**
-     * Publish response data.
-     *
-     * @param messageContext the message context
-     * @param faultPayload the fault payload
-     */
-    private void publishResponseData(MessageContext messageContext, OMElement faultPayload) {
-        if (dataPublisherClient == null) {
-            dataPublisherClient = new NorthboundDataPublisherClient();
-        }
-        String xmlPayload = faultPayload.toString();
-        String jsonBody = "";
-        //convert xml response to json
-        try {
-            JSONObject xmlJSONObj = XML.toJSONObject(xmlPayload);
-            jsonBody = xmlJSONObj.toString(2);
-        } catch (JSONException je) {
-            log.info(je.toString());
-        }
-        //publish data to BAM
-        messageContext.setProperty(DataPublisherConstants.MSISDN, messageContext.getProperty("UserMSISDN"));
-        dataPublisherClient.publishResponse(messageContext, jsonBody);
-    }
     
 
     /* (non-Javadoc)

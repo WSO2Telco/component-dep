@@ -62,10 +62,6 @@
             <groupId>org.wso2.carbon.commons</groupId>
             <artifactId>org.wso2.carbon.databridge.agent.thrift</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.wso2telco.dep</groupId>
-            <artifactId>data-publisher</artifactId>
-        </dependency>
     </dependencies>
 
     <build>
