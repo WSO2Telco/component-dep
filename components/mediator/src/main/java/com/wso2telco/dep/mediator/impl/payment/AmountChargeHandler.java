@@ -131,11 +131,6 @@ public class AmountChargeHandler implements PaymentHandler {
 		String sending_add = endpoint.getEndpointref().getAddress();
 		log.info("sending endpoint found: " + sending_add + " Request ID: " + UID.getRequestID(context));
 
-		// Check if Spend Limits are exceeded
-		//checkSpendLimit(msisdn, endpoint.getOperator(), context);
-		paymentUtil.checkSpendLimit(msisdn, endpoint.getOperator(), context, chargeamount);
-		// routeToEndpoint(endpoint, mc, sending_add);
-		// apend request id to client co-relator
 
 		/*JSONObject clientclr = jsonBody.getJSONObject("amountTransaction");
 		clientclr.put("clientCorrelator", clientclr.getString("clientCorrelator") + ":" + requestid);*/
