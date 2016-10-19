@@ -1,7 +1,6 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
-    <groupId>workflow-service</groupId>
+
     <parent>
         <groupId>com.wso2telco.dep</groupId>
         <artifactId>component-dep-parent</artifactId>
@@ -54,8 +53,40 @@
         </dependency>
 
     </dependencies>
+
     <build>
-        <finalName>workflow-service</finalName>
+        <plugins>
+            <plugin>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.7</source>
+                    <target>1.7</target>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-war-plugin</artifactId>
+                <version>2.2</version>
+                <configuration>
+                    <webXml>${basedir}/src/main/webapp/WEB-INF/web.xml</webXml>
+                    <warName>workflow-service</warName>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <buildcommands>
+                        <buildcommand>org.eclipse.jdt.core.javabuilder</buildcommand>
+                    </buildcommands>
+                    <projectnatures>
+                        <projectnature>org.wso2.developerstudio.eclipse.jaxrs.project.nature
+                        </projectnature>
+                        <projectnature>org.eclipse.jdt.core.javanature</projectnature>
+                    </projectnatures>
+                </configuration>
+            </plugin>
+        </plugins>
     </build>
 
     <properties>

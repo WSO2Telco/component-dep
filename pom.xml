@@ -66,6 +66,7 @@
 		<module>components/publish-events/publish-events-extensions</module>
         <module>components/workflow-extensions</module>
    		<module>workflow/axis2services/AxiataWorkflowApprovalService</module>
+   		<module>workflow/workflow-service</module>
         <module>webapps/blacklist-whitelist-service</module>
         <module>webapps/aggregator-blacklist</module> 
 		<module>jaggery-apps/manage</module>
