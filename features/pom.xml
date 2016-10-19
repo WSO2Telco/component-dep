@@ -30,7 +30,8 @@
             <module>com.wso2telco.dep.activiti.feature</module>
             <module>com.wso2telco.dep.workflow.service.feature</module>
             <module>com.wso2telco.dep.workflow.extensions.feature</module>
-         </modules>
+            <module>com.wso2telco.dep.server.startup.observer.feature</module>
+        </modules>
 </project>
 
 
