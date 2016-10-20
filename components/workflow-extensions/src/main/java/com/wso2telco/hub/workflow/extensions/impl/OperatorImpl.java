@@ -15,7 +15,11 @@ public class OperatorImpl implements OperatorApi {
 
     @Override
     public String getOperators(){
+<<<<<<< HEAD
         String operators="";
+=======
+        String operators="operator";
+>>>>>>> b52bad2... workflow improvement
         try {
             OparatorService operatorService = new OparatorService();
             List<Operator> operatorList = operatorService.retrieveOperatorList();

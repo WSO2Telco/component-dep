@@ -8,8 +8,10 @@
         <relativePath>../../parent/pom.xml</relativePath>
     </parent>
 
+
     <artifactId>com.wso2telco.dep.workflow.extensions</artifactId>
     <packaging>bundle</packaging>
+
 
     <name>WSO2 Telco Workflow Extensions</name>
 

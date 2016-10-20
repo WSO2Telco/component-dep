@@ -53,7 +53,12 @@ public class WSO2TelcoSTAdminUserRoleUpdaterComponent {
             RealmService realmService = ServiceReferenceHolder.getInstance().getRealmService();
             UserRealm realm = realmService.getBootstrapRealm();
             UserStoreManager manager = realm.getUserStoreManager();
+<<<<<<< HEAD
             manager.getRoleListOfUser();
+=======
+            manager.getRoleListOfUser()
+            manager.
+>>>>>>> b52bad2... workflow improvement
             if (!manager.isExistingRole(role)) {
                 if (log.isDebugEnabled()) {
                     log.debug("Creating subscriber role: " + role);
