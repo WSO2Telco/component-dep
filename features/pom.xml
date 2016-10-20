@@ -1,35 +1,36 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-        <parent>
-                <groupId>com.wso2telco.dep</groupId>
-                <artifactId>component-dep</artifactId>
-                <version>2.0.0-SNAPSHOT</version>
-                <relativePath>../parent/pom.xml</relativePath>
-        </parent>
-        <modelVersion>4.0.0</modelVersion>
-        <artifactId>component-dep-feature</artifactId>
-        <packaging>pom</packaging>
-        <name>Component Dep Aggregated Features</name>
-        <url>http://wso2telco.com</url>
-        <modules>
-            <module>com.wso2telco.dep.hub.core.feature</module>
-            <module>com.wso2telco.dep.operatorservice.feature</module>
-            <module>com.wso2telco.dep.mediator.feature</module>
-            <module>com.wso2telco.dep.subscriptionvalidator.feature</module>
-	    <module>com.wso2telco.dep.reportingservice.feature</module>
-	    <module>com.wso2telco.dep.verificationhandler.feature</module>
-	    <module>com.wso2telco.dep.store.ui.feature</module>
-            <module>com.wso2telco.dep.oneapivalidation.feature</module>
-            <module>com.wso2telco.dep.manage.ui.feature</module>
-            <module>com.wso2telco.dep.publisher.ui.feature</module>
-            <module>com.wso2telco.dep.sandbox.ui.feature</module>
-            <module>com.wso2telco.dep.aggregatorblacklist.webapp.feature</module>
-            <module>com.wso2telco.dep.blacklistwhitelistservice.webapp.feature</module>
-            <module>com.wso2telco.dep.activiti.feature</module>
-            <module>com.wso2telco.dep.workflow.service.feature</module>
-            <module>com.wso2telco.dep.workflow.extensions.feature</module>
-            <module>com.wso2telco.dep.server.startup.observer.feature</module>
-        </modules>
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+    <parent>
+        <groupId>com.wso2telco.dep</groupId>
+        <artifactId>component-dep</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+        <relativePath>../parent/pom.xml</relativePath>
+    </parent>
+    <modelVersion>4.0.0</modelVersion>
+    <artifactId>component-dep-feature</artifactId>
+    <packaging>pom</packaging>
+    <name>Component Dep Aggregated Features</name>
+    <url>http://wso2telco.com</url>
+    <modules>
+        <module>com.wso2telco.dep.hub.core.feature</module>
+        <module>com.wso2telco.dep.operatorservice.feature</module>
+        <module>com.wso2telco.dep.mediator.feature</module>
+        <module>com.wso2telco.dep.subscriptionvalidator.feature</module>
+        <module>com.wso2telco.dep.reportingservice.feature</module>
+        <module>com.wso2telco.dep.verificationhandler.feature</module>
+        <module>com.wso2telco.dep.store.ui.feature</module>
+        <module>com.wso2telco.dep.oneapivalidation.feature</module>
+        <module>com.wso2telco.dep.manage.ui.feature</module>
+        <module>com.wso2telco.dep.publisher.ui.feature</module>
+        <module>com.wso2telco.dep.sandbox.ui.feature</module>
+        <module>com.wso2telco.dep.aggregatorblacklist.webapp.feature</module>
+        <module>com.wso2telco.dep.blacklistwhitelistservice.webapp.feature</module>
+        <module>com.wso2telco.dep.activiti.feature</module>
+        <module>com.wso2telco.dep.workflow.service.feature</module>
+        <module>com.wso2telco.dep.workflow.extensions.feature</module>
+        <module>com.wso2telco.dep.server.startup.observer.feature</module>
+    </modules>
 </project>
 
 

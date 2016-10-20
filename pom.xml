@@ -8,108 +8,109 @@
 	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
 	the specific language governing permissions and limitations under the License.
    folk test M	-->
-   <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
+    <parent>
         <groupId>com.wso2telco.dep</groupId>
         <artifactId>component-dep-parent</artifactId>
         <version>2.0.0-SNAPSHOT</version>
-   	</parent>
+    </parent>
 
-	<groupId>com.wso2telco.dep</groupId>
-	<artifactId>component-dep</artifactId>
-	<packaging>pom</packaging>
-	<version>2.0.0-SNAPSHOT</version>
-	<name>WSO2Telco -Digital Enable Platform Component</name>
-	<description>WSO2Telco DEP Aggregate Pom</description>
-	<url>http://wso2telco.com</url>
-	<developers>
-		<developer>
-			<name>WSO2Telco</name>
-			<email>core-product-tech@wso2telco.com</email>
-		</developer>
-	</developers>
+    <groupId>com.wso2telco.dep</groupId>
+    <artifactId>component-dep</artifactId>
+    <packaging>pom</packaging>
+    <version>2.0.0-SNAPSHOT</version>
+    <name>WSO2Telco -Digital Enable Platform Component</name>
+    <description>WSO2Telco DEP Aggregate Pom</description>
+    <url>http://wso2telco.com</url>
+    <developers>
+        <developer>
+            <name>WSO2Telco</name>
+            <email>core-product-tech@wso2telco.com</email>
+        </developer>
+    </developers>
 
-	<prerequisites>
-		<maven>3.0.0</maven>
-	</prerequisites>
-	
-	<distributionManagement>
-                <snapshotRepository>
-                        <id>wso2Telco.snapshots</id>
-                        <name>Snapshot repo</name>
-                        <url>http://maven.wso2telco.com/nexus/content/repositories/snapshots</url>
-                </snapshotRepository>
-                <!-- Publish the versioned releases here -->
-                <repository>
-                        <id>wso2telco.releases</id>
-                        <name>release repo</name>
-                        <url>http://maven.wso2telco.com/nexus/content/repositories/releases/</url>
-                </repository>
-        </distributionManagement>
+    <prerequisites>
+        <maven>3.0.0</maven>
+    </prerequisites>
 
-	
-	<modules>       
-        <module>parent</module>		
-	    <module>components/oneapi-validation</module> 
-	    <module>components/subscription-validator</module> 
-	    <!--module>components/publish-events-data</module-->
-	    <!--module>components/data-publisher</module-->
-	    <module>components/reporting-service</module>
-   	    <module>components/verification-handler</module>
-            <module>components/operator-service</module>
-            <module>components/mediator</module>
-	    <!--module>components/publish-events/publish-events-data</module> 
-  	    <module>components/publish-events/publish-events-extensions</module-->
-     	    <module>workflow/workflow-approval</module>
-            <module>components/workflow-extensions</module>
-            <module>workflow/workflow-service</module>
-	    <module>components/server-startup-observer</module>
-            <module>webapps/blacklist-whitelist-service</module>
-            <module>webapps/aggregator-blacklist</module> 
-	    <module>jaggery-apps/manage</module>
-	    <module>jaggery-apps/publisher</module>
-	    <module>jaggery-apps/sandbox</module>
-	    <module>jaggery-apps/store</module>
-            <module>features</module>
-	</modules>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>wso2Telco.snapshots</id>
+            <name>Snapshot repo</name>
+            <url>http://maven.wso2telco.com/nexus/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <!-- Publish the versioned releases here -->
+        <repository>
+            <id>wso2telco.releases</id>
+            <name>release repo</name>
+            <url>http://maven.wso2telco.com/nexus/content/repositories/releases/</url>
+        </repository>
+    </distributionManagement>
 
-	<scm>
-		<url>https://github.com/WSO2Telco/component-dep.git</url>
-		<developerConnection>scm:git:https://github.com/WSO2Telco/component-dep.git</developerConnection>
-		<connection>scm:git:https://github.com/WSO2Telco/component-dep.git</connection>
-		<tag>HEAD</tag>
-	</scm>
-	<build>
-                <pluginManagement>
-                        <plugins>
-                                <plugin>
-                                        <groupId>org.apache.felix</groupId>
-                                        <artifactId>maven-scr-plugin</artifactId>
-                                        <version>${maven-scr-plugin.version}</version>
-                                        <executions>
-                                                <execution>
-                                                        <id>generate-scr-scrdescriptor</id>
-                                                        <goals>
-                                                                <goal>scr</goal>
-                                                        </goals>
-                                                </execution>
-                                        </executions>
-                                </plugin>
 
-                                <plugin>
-                                        <groupId>org.apache.felix</groupId>
-                                        <artifactId>maven-bundle-plugin</artifactId>
-                                        <version>${maven-bundle-plugin.version}</version>
-                                        <extensions>true</extensions>
-                                        <configuration>
-                                                <obrRepository>NONE</obrRepository>
-                                        </configuration>
-                                </plugin>
+    <modules>
+        <module>parent</module>
+        <module>components/oneapi-validation</module>
+        <module>components/subscription-validator</module>
+        <!--module>components/publish-events-data</module-->
+        <!--module>components/data-publisher</module-->
+        <module>components/reporting-service</module>
+        <module>components/verification-handler</module>
+        <module>components/operator-service</module>
+        <module>components/mediator</module>
+        <!--module>components/publish-events/publish-events-data</module>
+          <module>components/publish-events/publish-events-extensions</module-->
+        <module>workflow/workflow-approval</module>
+        <module>components/workflow-extensions</module>
+        <module>workflow/workflow-service</module>
+        <module>components/server-startup-observer</module>
+        <module>webapps/blacklist-whitelist-service</module>
+        <module>webapps/aggregator-blacklist</module>
+        <module>jaggery-apps/manage</module>
+        <module>jaggery-apps/publisher</module>
+        <module>jaggery-apps/sandbox</module>
+        <module>jaggery-apps/store</module>
+        <module>features</module>
+    </modules>
 
-                                  <plugin>
+    <scm>
+        <url>https://github.com/WSO2Telco/component-dep.git</url>
+        <developerConnection>scm:git:https://github.com/WSO2Telco/component-dep.git</developerConnection>
+        <connection>scm:git:https://github.com/WSO2Telco/component-dep.git</connection>
+        <tag>HEAD</tag>
+    </scm>
+    <build>
+        <pluginManagement>
+            <plugins>
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-scr-plugin</artifactId>
+                    <version>${maven-scr-plugin.version}</version>
+                    <executions>
+                        <execution>
+                            <id>generate-scr-scrdescriptor</id>
+                            <goals>
+                                <goal>scr</goal>
+                            </goals>
+                        </execution>
+                    </executions>
+                </plugin>
+
+                <plugin>
+                    <groupId>org.apache.felix</groupId>
+                    <artifactId>maven-bundle-plugin</artifactId>
+                    <version>${maven-bundle-plugin.version}</version>
+                    <extensions>true</extensions>
+                    <configuration>
+                        <obrRepository>NONE</obrRepository>
+                    </configuration>
+                </plugin>
+
+                <plugin>
                     <groupId>org.apache.maven.plugins</groupId>
                     <artifactId>maven-release-plugin</artifactId>
                     <configuration>
@@ -122,10 +123,10 @@
                     <artifactId>maven-deploy-plugin</artifactId>
                 </plugin>
 
-                        </plugins>
-                </pluginManagement>
+            </plugins>
+        </pluginManagement>
 
-        </build>
+    </build>
 
 
     <properties>
@@ -146,7 +147,8 @@
         <joda-time.wso2.version>1.6.0.wso2v1</joda-time.wso2.version>
         <carbon.governance.version>4.5.8</carbon.governance.version>
         <commons-httpclient.wso2.version>3.1.0.wso2v2</commons-httpclient.wso2.version>
-        <org.wso2.orbit.org.apache.httpcomponents.version>4.3.1.wso2v2</org.wso2.orbit.org.apache.httpcomponents.version>
+        <org.wso2.orbit.org.apache.httpcomponents.version>4.3.1.wso2v2
+        </org.wso2.orbit.org.apache.httpcomponents.version>
         <org.apache.synapse.version>2.1.7-wso2v3</org.apache.synapse.version>
         <commons-codec.wso2.version>1.4.0.wso2v1</commons-codec.wso2.version>
         <wsdl4j.wso2.version>1.6.2.wso2v4</wsdl4j.wso2.version>
