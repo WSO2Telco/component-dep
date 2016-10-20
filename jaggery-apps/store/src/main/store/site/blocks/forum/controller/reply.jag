@@ -1,14 +1,19 @@
 <%
 
-//response.contentType = 'text/rjavascript';
+response.addHeader('Cache-Control','no-cache, no-store, must-revalidate'); // HTTP 1.1.
+response.addHeader('Pragma','no-cache'); // HTTP 1.0.
+response.addHeader('Expires','0');
+response.contentType = "application/json; charset=UTF-8";
+
 include("/jagg/jagg.jag");
 var site = require("/site/conf/site.json");
+var msg = require("/site/conf/ui-messages.jag");
+
 
 var verb = request.getMethod();
 
 var topic = request.getParameter('topic');
 var data = request.getContent();
-var user = jagg.getUser();
 var log = new Log();
 var topicId;
 var replyId;
@@ -20,22 +25,33 @@ var resourceIdentifier = site.forum.resourceIdentifier;
 var tenantDomain = "carbon.super";
 
 var uri = request.getRequestURI();
-var callPath = uri.replace("/store/forum/api/reply", "");
+var callPath = uri.replace(site.context+"/forum/api", "");
+var action;
 
 
 
 if (uri != null) {
     var uriMatcher = new URIMatcher(callPath);
 
-    if (uriMatcher.match("/{replyId}/")) {
+    if (uriMatcher.match("/reply") || uriMatcher.match("/reply/")) {
+        // new reply
+        replyId = null;
+    } else if (uriMatcher.match("/reply/{replyId}/")) {
         replyId = uriMatcher.elements().replyId;
-    }
-    if (uriMatcher.match("/{replyId}/{page}")) {
+    } else if (uriMatcher.match("/reply/{replyId}/{page}")) {
         replyId = uriMatcher.elements().replyId;
 
+    } else {
+        //Invalid URL
+        action = "exit";
     }
 }
 
+if (action == "exit") {
+    response.sendError(404);
+}
+else {
+var user = jagg.getUser();
 var storeForum = Packages.org.wso2.carbon.forum.registry.RegistryForumManager;
 var forum = new storeForum();
 
@@ -50,7 +66,12 @@ var message = {error:false};
 
 try{
 
-if (verb == "DELETE" && replyId != null) {
+if( ( request.getMethod() == 'POST' || 
+      request.getMethod() == 'DELETE' || 
+      request.getMethod() == 'PUT' ) && !jagg.isCSRFTokenValid()){
+    message.error = true;
+    message.message = msg.error.csrfError;
+}else if (verb == "DELETE" && replyId != null) {
 
     forum.removeReply(replyId, user.username, tenantDomain);
 
@@ -86,7 +107,7 @@ if (verb == "DELETE" && replyId != null) {
 }
 print(message);
 
-
+}
 
 
 %>

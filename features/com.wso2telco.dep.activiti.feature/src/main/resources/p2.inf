@@ -1,0 +1,8 @@
+instructions.configure = \
+org.eclipse.equinox.p2.touchpoint.natives.mkdir(path:${installFolder}/../../deployment/server/webapps/);\
+org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.activiti_${feature.version}/webapps/activiti-explorer.war,target:${installFolder}/../../deployment/server/webapps/activiti-explorer.war,overwrite:true);\
+org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.activiti_${feature.version}/webapps/activiti-rest.war,target:${installFolder}/../../deployment/server/webapps/activiti-rest.war,overwrite:true);\
+org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.activiti_${feature.version}/workflow/ApplicationCreationApprovalWorkflow-2.0.0-SNAPSHOT.bar,target:${installFolder}/../../resources/ApplicationCreationApprovalWorkflow-2.0.0-SNAPSHOT.bar,overwrite:true);\
+org.eclipse.equinox.p2.touchpoint.natives.copy(source:${installFolder}/../features/com.wso2telco.dep.activiti_${feature.version}/workflow/SubscriptionCreationApprovalWorkflow-2.0.0-SNAPSHOT.bar,target:${installFolder}/../../resources/SubscriptionCreationApprovalWorkflow-2.0.0-SNAPSHOT.bar,overwrite:true);\
+
+

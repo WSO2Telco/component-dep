@@ -909,7 +909,7 @@ public class BillingDAO {
         int apiId = -1;
         try {
             conn =DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
-            apiId = ApiMgtDAO.getAPIID(apiIdent, conn);
+            apiId = ApiMgtDAO.getInstance().getAPIID(apiIdent, conn);
         } catch (Exception e) {
             handleException("getApiId", e);
         } finally {
@@ -940,7 +940,7 @@ public class BillingDAO {
         int subscriptionId = -1;
         try {
             conn =DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
-            int apiId = ApiMgtDAO.getAPIID(apiIdent, conn);
+            int apiId = ApiMgtDAO.getInstance().getAPIID(apiIdent, conn);
             ps = conn.prepareStatement(sql.toString());
             ps.setInt(1, appId);
             ps.setInt(2, apiId);
@@ -1272,7 +1272,7 @@ public class BillingDAO {
         try {
 
             //populate application
-            ApiMgtDAO apiMgtDAO = new ApiMgtDAO();
+            ApiMgtDAO apiMgtDAO = ApiMgtDAO.getInstance();
             Application application = apiMgtDAO.getApplicationById(applicationId);
             
             String appstatus = application.getStatus();
@@ -2881,7 +2881,7 @@ public class BillingDAO {
 
         try {
             connection =DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
-            int apiId = ApiMgtDAO.getAPIID(apiIdent, connection);
+            int apiId = ApiMgtDAO.getInstance().getAPIID(apiIdent, connection);
 
             ps = connection.prepareStatement(sql.toString());
             ps.setInt(1, appId);

@@ -19,6 +19,10 @@ jagg.module("user", {
 
     loginToBPSWithSAMLToken:function () {
         return jagg.require(jagg.getModulesDir() + "user/login.jag").loginToBPSWithSAMLToken.apply(this, arguments);
+    },
+
+    getUserRoles:function () {
+     return jagg.require(jagg.getModulesDir() + "user/login.jag").getUserRoles.apply(this, arguments);
     }
 });
 %>

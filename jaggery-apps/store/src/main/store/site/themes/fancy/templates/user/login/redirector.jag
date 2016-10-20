@@ -1,5 +1,0 @@
-<%
-    session.put("showLogin", "true");
-    session.put("redirectToHTTPS", "/store");
-    response.sendRedirect("/store");
-%>

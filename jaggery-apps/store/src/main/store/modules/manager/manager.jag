@@ -140,8 +140,7 @@ var getActiveTenantDomains=function(){
 
 	try {
 		tenantDomains = store.getActiveTenantDomains();
-		tenantDomains = parse(stringify(tenantDomains));
-
+        tenantDomains = parse(stringify(tenantDomains));
         if (log.isDebugEnabled()) {
             log.debug("isTenantMode : " + stringify(api));
         }
@@ -161,23 +160,13 @@ var getActiveTenantDomains=function(){
 
 };
 
-var getStoreHostObject = function() {
-
-    var tenantDomain = request.getParameter("tenant");
-    var user = jagg.getUser();
-    var operatorService;
-    if (user == null) {
-        operatorService = require('operatorservice');
-        var storeHostObject = new operatorService.StoreHostObject();
-        return storeHostObject;
-    } else {
-        operatorService = require('operatorservice');
-        return new operatorService.StoreHostObject(user.username);
-    }
-};
-
-var getUsageClient = function(){
+var getUsageClient = function() {
     var user = jagg.getUser();
     return org.wso2.carbon.apimgt.usage.client.UsageClient.getClient(user);
-};
+}
+
+var isForumEnabled = function() {
+    return org.wso2.carbon.apimgt.impl.utils.APIUtil.isStoreForumEnabled();
+}
+
 %>

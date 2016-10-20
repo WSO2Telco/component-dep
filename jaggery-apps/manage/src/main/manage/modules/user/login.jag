@@ -345,5 +345,17 @@ var loginToBPSWithSAMLToken = function (token) {
 	session.put("workflowCookie", cookie);
 };
 
+//This function is used to retrieve logged in user's roles
+function getUserRoles(username, password){
+    var carbon = require('carbon'),
+    process = require('process'),
+	srv = new carbon.server.Server({url: manager.getHTTPsURL()}),
+	tenantId = carbon.server.tenantId(),
+	userManager = new carbon.user.UserManager(srv, tenantId),
+	user = new carbon.user.User(userManager, username),
+	roles = user.getRoles();
+	return roles;
+}
+
 %>
 

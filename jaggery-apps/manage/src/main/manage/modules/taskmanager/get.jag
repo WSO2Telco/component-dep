@@ -3,62 +3,106 @@ var ws = require("ws");
 var log=new Log();
 
 var getTasks = function (filterCategory,taskType) {
-	
-	var version = new ws.WSRequest();
-	var options = new Array();
-	options.useSOAP = 1.2;
-	options.action = "http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/simpleQuery";
-	var cookie=session.get("workflowCookie");
-	
+	var headers = {"Authorization":"Basic " + session.get("auth")};
 	var site = require("/site/conf/site.json");
-	options["HTTPHeaders"] = [
-	{name : "Cookie", value :cookie },
-		];
+    var businessProcessEngineUrl = site.workflows.businessProcessEngineBaseUrl;
+	var user = jagg.getUser().username;
+	var roleArray = session.get("roles");
+	var string = "";
+	for(var k=0; k<roleArray.length; k++){
+	    if (k == (roleArray.length-1)){
+	       string = string + roleArray[k];
+	    } else {
+	       string = string + roleArray[k] + ",";
+	    }
 
-		var searchBy='';
-		if(filterCategory==null||filterCategory=='ALL'){
-			searchBy='ALL_TASKS';
-		} else if(filterCategory=='userOnly'){
-			searchBy='ASSIGNED_TO_ME';
-		}else if(filterCategory=='claimable'){
-			searchBy='CLAIMABLE';
-		}
+	}
+	var processType = "";
+	//Get required process name corresponding to task type
+	if (taskType == "ApproveApplication") {
+	   processType = site.workflows.applicationCreationBusinessProcess;
+	} else if (taskType == "ApproveSubscription"){
+	   processType = site.workflows.subscriptionCreationBusinessProcess;
+	} else {
+	   processType = "Invalid Process Type";
+	}
 
-		var prefixEndpoint;
-		if(taskType=="ApproveSubscription"){
-			prefixEndpoint= site.workflows.subscriptionWorkFlowServerURL;
-		} else if(taskType=="ApproveUser"){
-			prefixEndpoint=site.workflows.signupWorkFlowServerURL;
-		} else if(taskType=="ApproveApplication"){
-			prefixEndpoint=site.workflows.applicationWorkFlowServerURL;
-		} else if(taskType=="ApplicationRegistration"){
-			prefixEndpoint=site.workflows.appRegistrationWorkFlowServerURL;
-		}
 
-		var payload = '<ns:simpleQuery xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803" xmlns:ns1="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/types/200803">'+
-		'<ns:simpleQueryInput><ns1:pageSize>'+100000+'</ns1:pageSize><ns1:pageNumber>'+0+'</ns1:pageNumber><ns1:simpleQueryCategory>'+'ALL_TASKS'+'</ns1:simpleQueryCategory></ns:simpleQueryInput></ns:simpleQuery>';
-		var result;
-		var endpoint=prefixEndpoint+"HumanTaskClientAPIAdmin/";
-		
-		
-		
-		try {
-			version.open(options,endpoint, false);
-			
-			version.send(payload);
-			
-			
-			result = version.responseE4X;
-			
-			return parseResponse(result,taskType,endpoint);
+	var task = [];
+	//Get claimable task list
+	//todo: get both claimable and assigned tasks from a sinple API call and assign status accordingly
+	var tasks = get(businessProcessEngineUrl + "runtime/tasks?candidateGroups=" + string,
+	null, headers,
+	"json" ).data;
+        if (log.isDebugEnabled()) {
+            log.debug("BPS BPMN REST API response: " + stringify(tasks));
+        }
 
-		} catch (e) {
-			
-			log.error(e.toString());
-			
-			session.put("showLogin", "true");
-			return null;
-		}
+        //Check for error response
+        if (tasks.errorMessage != undefined) {
+            throw "Error " + tasks.statusCode + " : " + tasks.errorMessage;
+        }
+
+        for(var i=0; i < tasks.data.length; i++){
+            var processDefinitionId = tasks.data[i].processDefinitionId;
+            if(processDefinitionId.search(processType) == 0) {
+            var dueDate = tasks.data[i].dueDate;
+            if(dueDate == null){ dueDate = "Not available"; }
+            var taskName = tasks.data[i].name;
+            var taskId = tasks.data[i].id;
+            var time = tasks.data[i].createTime;
+            var status = "ACTIVE";
+            //get required application details from process instance variables
+            var applicationNameVariable = get(businessProcessEngineUrl + "runtime/tasks/" +
+            taskId + "/variables/applicationName",null, headers,"json" ).data;
+            if(taskName == null){ taskName = "Not available"; }
+            task.push({
+                id:taskId,
+                name:taskName,
+                applicationName:applicationNameVariable.value,
+                status:status,
+                createdTime:time,
+                date:dueDate
+            });
+            }
+        }
+
+        var assignedTasks = get(businessProcessEngineUrl + "runtime/tasks?assignee=" + user, null,
+        headers, "json" ).data;
+                if (log.isDebugEnabled()) {
+                    log.debug("BPS BPMN REST API response: " + stringify(assignedTasks));
+                }
+
+                //Check for error response
+                if (assignedTasks.errorMessage != undefined) {
+                    throw "Error " + assignedTasks.statusCode + " : " + assignedTasks.errorMessage;
+                }
+                for(var i=0; i < assignedTasks.data.length; i++){
+                    var processDefinitionId = assignedTasks.data[i].processDefinitionId;
+                    if(processDefinitionId.search(processType) == 0) {
+                    var dueDate = assignedTasks.data[i].dueDate;
+                    if(dueDate == null){ dueDate = "Not available"; }
+                    var taskName = assignedTasks.data[i].name;
+                    var taskId = assignedTasks.data[i].id;
+                    var time = assignedTasks.data[i].createTime;
+                    var status = "RESERVED";
+                    if(taskName == null){ taskName = "Not available"; }
+                    //sample to get required application details from variables
+                    var applicationNameVariable = get(businessProcessEngineUrl + "runtime/tasks/" +
+                    taskId + "/variables/applicationName",null, headers,"json" ).data;
+                    task.push({
+                        id:assignedTasks.data[i].id,
+                        name:taskName,
+                        status:status,
+                        applicationName:applicationNameVariable.value,
+                        createdTime:time,
+                        date:dueDate
+                    });
+                    }
+                }
+
+    return task;
+
 };
 
 var parseResponse=function parseResponse(response,taskType,endpoint){
@@ -245,21 +289,67 @@ function getTaskDetails(taskId) {
 };
 
 function getApplicationDetails(taskId){
-	var applicationDetails;
-	try {
-		var site = require("/site/conf/site.json");
-		var prefixEndpoint = site.workflows.subscriptionWorkFlowServerURL;
-		var endpoint=prefixEndpoint+"HumanTaskClientAPIAdmin/";
+    	try {
+    		var site = require("/site/conf/site.json");
+    		var businessProcessEngineUrl = site.workflows.businessProcessEngineBaseUrl;
+            var headers = {"Authorization":"Basic " + session.get("auth")};
+            var applicationData = get(businessProcessEngineUrl + "runtime/tasks/" +
+                        taskId + "/variables",null, headers,"json" ).data;
 
-		applicationDetails = getTaskDetails(taskId);
-		 	//	log.info("Application Details: " + stringify(applicationDetails));
-		 	//	log.info("============================================================================================================");
-		return parseApplicationDetailsResponse(applicationDetails, endpoint, taskId);
-	} catch (e) {
-		log.error(e.toString());
-		session.put("showLogin", "true");
-		return null;
-	}
+            var applicationName, applicationDescription, username,tiersList,appId;
+            var applicationDetails = new Object();
+            if (applicationData.length > 0) {
+                for (var k = 0; k < applicationData.length; k++) {
+                    var variable = applicationData[k];
+                    var varName = variable.name;
+                    switch (varName) {
+                        case "tiersStr":
+                            //hard coded until tiers are sent from executor
+                            tiersList = variable.value;
+                            break;
+                        case "applicationName":
+                            applicationName = variable.value;
+                            break;
+                        case "applicationId":
+                            appId = variable.value;
+                            break;
+                        case "description":
+                            applicationDescription = variable.value;
+                            break;
+                        case "userName":
+                            username = variable.value;
+                            break;
+                    }
+                }
+
+                applicationDetails.applicationName = applicationName;
+                log.info("Application name" + applicationName);
+                applicationDetails.applicationDescription = applicationDescription;
+                applicationDetails.userName = username;
+                applicationDetails.taskId = taskId;
+               // log.info("tiersList :"+tiersList +"userName"+username);
+               // var listTiers = "Gold,Unlimited"
+                var tiers = tiersList.split(",");
+                var tiersObject=[];
+                for(var i = 0; i < tiers.length; i++) {
+                	if (tiers[i] != "") {
+                        var tier = {};
+                        tier.name = tiers[i];
+                        tier.displayName = tiers[i];
+                        tier.attributes = "";
+                        tiersObject.push(tier);
+                	}
+                }
+                applicationDetails.tiers = tiersObject;
+            }
+
+            return applicationDetails;
+
+    	} catch (e) {
+    		log.error(e.toString());
+    		session.put("showLogin", "true");
+    		return null;
+    	}
 };
 
 function parseApplicationDetailsResponse(response, endpoint, taskId){
@@ -318,17 +408,83 @@ function getSubscriptionDetails(taskId){
 	var subscriptionDetails;
 	try {
 		var site = require("/site/conf/site.json");
-		var prefixEndpoint = site.workflows.subscriptionWorkFlowServerURL;
-		var endpoint=prefixEndpoint+"HumanTaskClientAPIAdmin/";
+		var businessProcessEngineUrl = site.workflows.businessProcessEngineBaseUrl;
+		var headers = {"Authorization":"Basic " + session.get("auth")};
+        var subscriptionData = get(businessProcessEngineUrl + "runtime/tasks/" +
+                    taskId + "/variables",null, headers,"json" ).data;
 
-		subscriptionDetails = getTaskDetails(taskId);
-		return parseSubscriptionDetailsResponse(subscriptionDetails, endpoint, taskId);
+        var applicationName, applicationDescription, subscriber,apiName, apiVersion, appId, apiId, operatorId,tiersList;
+        var subscriptionDetails = new Object();
+
+        if (subscriptionData.length > 0) {
+            for (var k = 0; k < subscriptionData.length; k++) {
+                var variable = subscriptionData[k];
+                var varName = variable.name;
+                switch (varName) {
+                    case "apiId":
+                        apiId = variable.value;
+                        break;
+                    case "apiVersion":
+                        apiVersion = variable.value;
+                        break;
+                    case "apiTiers":
+                        tiersList = variable.value;
+                        break;
+                    case "applicationName":
+                        applicationName = variable.value;
+                        break;
+                    case "applicationId":
+                        appId = variable.value;
+                        break;
+                    case "operator":
+                        operatorId = variable.value;
+                        break;
+                    case "apiName":
+                        apiName = variable.value;
+                        break;
+                    case "applicationDescription":
+                        applicationDescription = variable.value;
+                        break;
+                    case "subscriber":
+                        subscriber = variable.value;
+                        break;
+                }
+            }
+
+            subscriptionDetails.applicationName = applicationName;
+            subscriptionDetails.applicationDescription = applicationDescription;
+            subscriptionDetails.subscriber = subscriber;
+            subscriptionDetails.apiNameVersion = apiName + " - " + apiVersion;
+            subscriptionDetails.appId = appId;
+            subscriptionDetails.apiId = apiId;
+            subscriptionDetails.operatorId = operatorId;
+            subscriptionDetails.apiName = apiName;
+            subscriptionDetails.taskId = taskId;
+
+            var tiers = tiersList.split(",");
+            var tiersObject=[];
+            for(var i = 0; i < tiers.length; i++) {
+            	if (tiers[i] != "") {
+                    var tier = {};
+                    tier.name = tiers[i];
+                    tier.displayName = tiers[i];
+                    tier.attributes = "";
+                    tiersObject.push(tier);
+            	}
+            }
+            subscriptionDetails.tiers = tiersObject;
+        }
+
+        return subscriptionDetails;
+
 	} catch (e) {
 		log.error(e.toString());
 		session.put("showLogin", "true");
 		return null;
 	}
 };
+
+
 
 function parseSubscriptionDetailsResponse(response, endpoint, taskId){
 	var subscriptionDetails = new Object();

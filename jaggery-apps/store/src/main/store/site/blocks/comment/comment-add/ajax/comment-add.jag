@@ -10,13 +10,33 @@ include("/jagg/jagg.jag");
             msg = require("/site/conf/ui-messages.jag"),
             action = request.getParameter("action"),
             user = jagg.getUser();
-    if (action == "addComment" && request.getMethod() == 'POST') {
-        if (!user) {
+
+    var validation = {
+        "action": { type: "safetext"},
+    };
+
+    var validation_errors = jagg.validateInputs(validation);
+
+    if(validation_errors != true){
             print({
                 error:true,
-                message:msg.error.loginRequired(action)
-            });
-            return;
+                message: msg.error.invalidInputs(validation_errors)
+            });        
+    }else if( request.getMethod() == 'POST' && !jagg.isCSRFTokenValid()){
+        print({
+            error:true,
+            message: msg.error.csrfError
+        });
+    }            
+    else if (action == "addComment" && request.getMethod() == 'POST') {
+        if (!user) {
+            if(!ssoEnabled){
+		print({
+		    error:true,
+                    message:msg.error.loginRequired(action)
+            	});
+	    }
+	    return;
         }
         name = request.getParameter("name");
         version = request.getParameter("version");
@@ -43,7 +63,7 @@ include("/jagg/jagg.jag");
         if (result.error) {
             obj = {
                 error:result.error,
-                message:msg.error.authError(action, username)
+                message:msg.error.authError(action, name)
             };
         } else {
             obj = {

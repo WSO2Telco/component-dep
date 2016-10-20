@@ -1,11 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<!-- Copyright (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) 
-	All Rights Reserved. WSO2.Telco Inc. licences this file to you under the 
-	Apache License, Version 2.0 (the "License"); you may not use this file except 
-	in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
-	Unless required by applicable law or agreed to in writing, software distributed 
-	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
-	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
+<!-- Copyright (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com)
+	All Rights Reserved. WSO2.Telco Inc. licences this file to you under the
+	Apache License, Version 2.0 (the "License"); you may not use this file except
+	in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0
+	Unless required by applicable law or agreed to in writing, software distributed
+	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES
+	OR CONDITIONS OF ANY KIND, either express or implied. See the License for
 	the specific language governing permissions and limitations under the License. -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
@@ -15,13 +15,13 @@
 		<groupId>org.wso2</groupId>
 		<artifactId>wso2</artifactId>
 		<version>1</version>
-	</parent> 
+	</parent>
 
 	<groupId>com.wso2telco.dep</groupId>
 	<artifactId>component-dep-parent</artifactId>
 	<packaging>pom</packaging>
 	<url>http://wso2telco.com</url>
-	<version>1.8.0-SNAPSHOT</version>
+	<version>2.0.0-SNAPSHOT</version>
 	<name>WSO2Telco -Digital Enable Platform Component</name>
 	<description>WSO2Telco DEP Aggregate Pom</description>
 
@@ -133,7 +133,7 @@
 				<enabled>false</enabled>
 			</releases>
 		</pluginRepository>
-	</pluginRepositories>	
+	</pluginRepositories>
 
 	<dependencyManagement>
 
@@ -142,11 +142,11 @@
 				<groupId>javax.servlet</groupId>
 				<artifactId>servlet-api</artifactId>
 				<version>${servlet.api.version}</version>
-			</dependency>		
+			</dependency>
 			<dependency>
 				<groupId>com.wso2telco.dep</groupId>
 				<artifactId>operator-service</artifactId>
-				<version>${com.wso2telco.dep.version}</version> 
+				<version>${com.wso2telco.dep.version}</version>
 				<scope>provided</scope>
 			</dependency>
 			<dependency>
@@ -175,7 +175,7 @@
 				<artifactId>msisdn-validator</artifactId>
 				<version>${com.wso2telco.core.version}</version>
 				<scope>provided</scope>
-			</dependency>			
+			</dependency>
 			<dependency>
 				<groupId>org.json.wso2</groupId>
 				<artifactId>json</artifactId>
@@ -458,39 +458,109 @@
 		        <groupId>org.wso2.carbon.analytics</groupId>
 		        <artifactId>org.wso2.carbon.analytics.spark.core</artifactId>
 		        <version>${org.wso2.carbon.analytics.version}</version>
-				    </dependency>
-		
+
+		    </dependency>
+			<dependency>
+				<groupId>org.activiti</groupId>
+				<artifactId>activiti-engine</artifactId>
+				<version>${activiti-version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.activiti</groupId>
+				<artifactId>activiti-spring</artifactId>
+				<version>${activiti-version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.github.openfeign</groupId>
+				<artifactId>feign-core</artifactId>
+				<version>${feign.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>io.github.openfeign</groupId>
+				<artifactId>feign-jackson</artifactId>
+				<version>${feign.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-core</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-databind</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>com.fasterxml.jackson.core</groupId>
+				<artifactId>jackson-annotations</artifactId>
+				<version>${jackson.version}</version>
+			</dependency>
+            <dependency>
+                <groupId>org.codehaus.groovy</groupId>
+                <artifactId>groovy-all</artifactId>
+                <version>${groovy.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.h2database</groupId>
+                <artifactId>h2</artifactId>
+                <version>${h2.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-api</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-jdk14</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+
+
 			<dependency>
 				<groupId>org.apache.felix</groupId>
 				<artifactId>org.apache.felix.scr.annotations</artifactId>
 				<version>${org.apache.felix.scr.annotations.version}</version>
 			</dependency>
-				
-		</dependencies>
 
+
+            <dependency>
+                <groupId>org.activiti</groupId>
+                <artifactId>activiti-webapp-explorer2</artifactId>
+                <version>${activiti.version}</version>
+                <type>war</type>
+            </dependency>
+            <dependency>
+                <groupId>org.activiti</groupId>
+                <artifactId>activiti-webapp-rest2</artifactId>
+                <version>${activiti.version}</version>
+                <type>war</type>
+            </dependency>
+		</dependencies>
 	</dependencyManagement>
 
 	<properties>
-		<org.apache.felix.scr.annotations.version>1.9.6</org.apache.felix.scr.annotations.version>
-		<com.wso2telco.dep.version>1.8.0-SNAPSHOT</com.wso2telco.dep.version>
-		<log4j.version>1.2.13</log4j.version>
+	<com.wso2telco.dep.version>2.0.0-SNAPSHOT</com.wso2telco.dep.version>
+<org.apache.felix.scr.annotations.version>1.9.6</org.apache.felix.scr.annotations.version>
+		<com.wso2telco.dep.version>2.0.0-SNAPSHOT</com.wso2telco.dep.version>
+	<log4j.version>1.2.13</log4j.version>
 		<com.google.code.gson.version>2.3.1</com.google.code.gson.version>
 		<org.glassfish.jersey.core.version>2.4</org.glassfish.jersey.core.version>
 		<com.wso2telco.core.version>2.0.3-M4</com.wso2telco.core.version>
 		<org.json.wso2.version>3.0.0.wso2v1</org.json.wso2.version>
 		<junit.version>3.8.1</junit.version>
-		<org.apache.synapse.core.version>2.1.7-wso2v1</org.apache.synapse.core.version>
+		<org.apache.synapse.core.version>2.1.7-wso2v3</org.apache.synapse.core.version>
 		<org.wso2.carbon.commons.version>4.4.8</org.wso2.carbon.commons.version>
-		<org.wso2.carbon.apimgt.version>5.0.3</org.wso2.carbon.apimgt.version>
+		<org.wso2.carbon.apimgt.version>6.0.4</org.wso2.carbon.apimgt.version>
 		<org.wso2.hazelcast>3.5.2.wso2v1</org.wso2.hazelcast>
 		<rhino.wso2.version>1.7.0.R4.wso2v1</rhino.wso2.version>
-		<org.jaggeryjs.version>0.12.0</org.jaggeryjs.version>
+		<org.jaggeryjs.version>0.12.6</org.jaggeryjs.version>
 		<commons-io.wso2.version>2.4.0.wso2v1</commons-io.wso2.version>
 		<joda-time.wso2.version>1.6.0.wso2v1</joda-time.wso2.version>
 		<carbon.governance.version>4.5.8</carbon.governance.version>
 		<commons-httpclient.wso2.version>3.1.0.wso2v2</commons-httpclient.wso2.version>
 		<org.wso2.orbit.org.apache.httpcomponents.version>4.3.1.wso2v2</org.wso2.orbit.org.apache.httpcomponents.version>
-		<org.apache.synapse.version>2.1.5-wso2v2</org.apache.synapse.version>
+		<org.apache.synapse.version>2.1.7-wso2v3</org.apache.synapse.version>
 		<commons-codec.wso2.version>1.4.0.wso2v1</commons-codec.wso2.version>
 		<wsdl4j.wso2.version>1.6.2.wso2v4</wsdl4j.wso2.version>
 		<org.apache.axis2.wso2.version>1.6.1.wso2v16</org.apache.axis2.wso2.version>
@@ -502,10 +572,9 @@
 		<org.apache.woden.wso2.version>1.0.0.M9-wso2v1</org.apache.woden.wso2.version>
 		<commons-logging.version>1.1.1</commons-logging.version>
 		<org.apache.ws.commons.axiom.wso2.version>1.2.11.wso2v9</org.apache.ws.commons.axiom.wso2.version>
-		<org.wso2.carbon.version>4.4.3</org.wso2.carbon.version>		
-		<synapse.version>2.1.7-wso2v1</synapse.version>
-		<carbon.apimgt.version>5.0.3</carbon.apimgt.version>
-		<carbon.platform.version>4.4.3</carbon.platform.version>
+		<org.wso2.carbon.version>4.4.7</org.wso2.carbon.version>
+		<synapse.version>2.1.7-wso2v3</synapse.version>
+		<carbon.apimgt.version>6.0.4</carbon.apimgt.version>
 		<com.h2database.wso2.version>1.2.140.wso2v3</com.h2database.wso2.version>
 		<org.apache.ws.commons.axiom.version>1.2.18</org.apache.ws.commons.axiom.version>
 		<com.sun.mail.version>1.5.5</com.sun.mail.version>
@@ -516,17 +585,24 @@
 		<commons-fileupload.version>1.2.1</commons-fileupload.version>
 		<asm.version>3.3.1</asm.version>
 		<org.wso2.carbon.analytics.version>1.0.6-SNAPSHOT</org.wso2.carbon.analytics.version>
+		<activiti-version>5.18.0</activiti-version>
+		<feign.version>9.3.1</feign.version>
+		<jackson.version>2.5.4</jackson.version>
+        <groovy.version>2.4.3</groovy.version>
+        <h2.version>1.3.168</h2.version>
+        <slf4j.version>1.7.6</slf4j.version>
+        <activiti.version>5.21.0</activiti.version>
 	</properties>
 
 	<build>
 		<pluginManagement>
 			<plugins>
-				<!--plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-checkstyle-plugin</artifactId> 
-					<version>2.17</version> <executions> <execution> <id>validate</id> <phase>validate</phase> 
-					<configuration> <configLocation>sun_checks.xml</configLocation> <encoding>UTF-8</encoding> 
-					<consoleOutput>true</consoleOutput> <failsOnError>false</failsOnError> <failOnViolation>false</failOnViolation> 
-					<outputFile>../Checkstyle-result.xml</outputFile> <outputFileFormat>xml</outputFileFormat> 
-					<linkXRef>false</linkXRef> </configuration> <goals> <goal>check</goal> </goals> 
+				<!--plugin> <groupId>org.apache.maven.plugins</groupId> <artifactId>maven-checkstyle-plugin</artifactId>
+					<version>2.17</version> <executions> <execution> <id>validate</id> <phase>validate</phase>
+					<configuration> <configLocation>sun_checks.xml</configLocation> <encoding>UTF-8</encoding>
+					<consoleOutput>true</consoleOutput> <failsOnError>false</failsOnError> <failOnViolation>false</failOnViolation>
+					<outputFile>../Checkstyle-result.xml</outputFile> <outputFileFormat>xml</outputFileFormat>
+					<linkXRef>false</linkXRef> </configuration> <goals> <goal>check</goal> </goals>
 					</execution> </executions> </plugin -->
 				<plugin>
 					<groupId>org.apache.felix</groupId>
@@ -643,7 +719,7 @@
 								</goals>
 							</execution>
 						</executions>
-					</plugin>					
+					</plugin>
 				</plugins>
 			</build>
 		</profile>

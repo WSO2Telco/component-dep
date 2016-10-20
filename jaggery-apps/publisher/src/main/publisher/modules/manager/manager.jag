@@ -99,16 +99,9 @@ var getAPIStoreObj = function() {
     return new store.APIStore();
 };
 
-var getUsageClient = function(){
+var getUsageClient = function() {
     var user = jagg.getUser();
     return org.wso2.carbon.apimgt.usage.client.UsageClient.getClient(user.username);
-}
-
-
-var getExecutorObj = function (){
-    var executor = require("executorservice");
-    var executorHostObj = new executor.Executor();
-    return executorHostObj;
 }
 
 %>

@@ -3,11 +3,16 @@ include("/jagg/jagg.jag");
 var log=new Log();
 var ws = require("ws");
 
-var completeTask = function (taskId,taskType,status,description,endpoint,username,currentDate,selectedTier) {
+var completeTask = function (taskId,taskType,taskName,status,description,endpoint,username,currentDate,selectedTier) {
+
+log.info("username Is " + username);
+log.info("status Is " + status);
+log.info("currentDate Is " + currentDate);
 
 
 
-var version = new ws.WSRequest();
+
+/*var version = new ws.WSRequest();
 var options = new Array();
 options.useSOAP = 1.2;
 options.action = "http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/complete";
@@ -60,19 +65,63 @@ taskPayload="&lt;sch:ApplicationRegistrationResponse xmlns:sch=&quot;http://work
 var payload = '<ns:complete xmlns:ns="http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803">'+
               '<ns:identifier>'+taskId+'</ns:identifier><ns:taskData>'+String(taskPayload)+'</ns:taskData></ns:complete>';
 var result;
-
+ */
 
 
 try {
-version.open(options,endpoint, false);
-version.send(payload);
-result = version.responseE4X;
+    var headers = {"Authorization":"Basic " + session.get("auth"),
+               "Content-Type": "application/json"};
+    var site = require("/site/conf/site.json");
+    var businessProcessEngineUrl = site.workflows.businessProcessEngineBaseUrl;
+    var adminApprovalLevel = taskName=='Hub Admin Approval' ? "hubAdminApproval" : taskName=='API Publisher Approval' ? "apiPublisherApproval" : "operatorAdminApproval"
+	var body = {
+                "action" : "complete",
+                "variables" : [
+                    {
+                      "name" : adminApprovalLevel,
+                      "value" : status,
+                      "type" : "string"
+                    },
+                    {
+                      "name" : selectedTier,
+                      "value" : selectedTier,
+                      "type" : "string"
+                    },
+                    {
+                      "name" : 'completedByUser',
+                      "value" : username,
+                      "type" : "string"
+                    },
+                    {
+                      "name" : 'status',
+                      "value" : status,
+                      "type" : "string"
+                    },
+                    {
+                      "name" : 'completedOn',
+                      "value" : currentDate,
+                      "type" : "string"
+                    },
+                    {
+                      "name" : 'description',
+                      "value" : description,
+                      "type" : "string"
+                    },
+                    {
+                      "name" : 'selectedTier',
+                      "value" : selectedTier,
+                      "type" : "string"
+                    }
+                ]};
+	var result = post(businessProcessEngineUrl + "runtime/tasks/"+taskId,
+	JSON.stringify(body),
+	headers, "json").data;
 return {
 error:false
 }
 
 } catch (e) {
-log.error(e.toString());
+log.error("1"+e.toString());
 return {
 error:true
 }
@@ -81,7 +130,8 @@ error:true
 
 var getRefId = function (taskId,endpoint,taskType) {
 var refId;
-var version = new ws.WSRequest();
+try {
+/*var version = new ws.WSRequest();
 var options = new Array();
 options.useSOAP = 1.2;
 options.action = "http://docs.oasis-open.org/ns/bpel4people/ws-humantask/api/200803/getInput";
@@ -114,12 +164,19 @@ splitVal="&gt;";
 splitVal="&gt;";
 }
 
-refId=result.toString().substring(start,end).split(splitVal)[1] ;
+refId=result.toString().substring(start,end).split(splitVal)[1] ;*/
+var site = require("/site/conf/site.json");
+    		var businessProcessEngineUrl = site.workflows.businessProcessEngineBaseUrl;
+            var headers = {"Authorization":"Basic " + session.get("auth")};
+var workflowRefVariable = get(businessProcessEngineUrl + "runtime/tasks/" +
+                    taskId + "/variables/workflowRefId",null, headers,"json" ).data;
 
+refId = workflowRefVariable.value;
+log.info("Reference Is" + refId);
 return refId;
 
 } catch (e) {
-log.error(e.toString());
+log.error("2"+e.toString());
 return 0;
 }
 };
@@ -144,7 +201,7 @@ var setSubscriptionTier = function (taskId, taskType, tierId, endpoint) {
 			return {error:false,result:result};
 		}
 	} catch (e) {
-		log.error(e.message);
+		log.error("3"+e.message);
 		return { error:e,result:null};
 	}
 };
@@ -163,7 +220,7 @@ var setSubscriptionChargeRate = function (appId, apiId, opName, rateNameNB,opera
 			return {error:false,result:result};
 		}
 	} catch (e) {
-		log.error(e.message);
+		log.error("4"+e.message);
 		return { error:e,result:null};
 	}
 };
@@ -181,7 +238,7 @@ var setSubscriptionChargeRateNB = function (appId, apiId) {
 			return {error:false,result:result};
 		}
 	} catch (e) {
-		log.error(e.message);
+		log.error("5"+e.message);
 		return { error:e,result:null};
 	}
 };
@@ -192,10 +249,12 @@ var setApplicationTier = function (taskId, taskType, tierId, endpoint) {
 
 	var workflow, result;
 	workflow = jagg.module("manager").getWorkflowHostObject();
-	
+	   
 	try {
+
 		result = workflow.setApplicationTier(refId,tierId);
-		if (log.isDebugEnabled()) {
+		log.info("refId"+refId+"tierId"+tierId);
+		if (log.isDebugEnabled()) {tierId
 			log.debug("setApplicationTier for APPLICATION_ID : " + refId);
 		}
 				
@@ -205,7 +264,7 @@ var setApplicationTier = function (taskId, taskType, tierId, endpoint) {
 			return {error:false,result:result};
 		}
 	} catch (e) {
-		log.error(e.message);
+		log.error("6"+e.message);
 		return { error:e,result:null};
 	}
 };

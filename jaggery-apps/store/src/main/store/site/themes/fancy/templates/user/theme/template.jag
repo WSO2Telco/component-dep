@@ -1,9 +1,0 @@
-<%
-        var subtheme = request.getParameter("subthemeToApply");
-        session.put("theme", {
-            "base" : request.getParameter("themeToApply"),
-            "subtheme" : (subtheme && subtheme != "") ? subtheme : null
-        });
-        response.sendRedirect(request.getParameter("pathToSend"));
-
-%>

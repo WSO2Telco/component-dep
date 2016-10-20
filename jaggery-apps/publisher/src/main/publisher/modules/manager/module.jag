@@ -31,10 +31,7 @@ jagg.module("manager", {
      },
      getUsageClient:function () {
        return jagg.require(jagg.getModulesDir() + "manager/manager.jag").getUsageClient.apply(this, arguments);
-     },
-    getExecutorService:function () {
-        return jagg.require(jagg.getModulesDir() + "manager/manager.jag").getExecutorObj.apply(this, arguments);
-    }
+     }
 
  });
  %>

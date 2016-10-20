@@ -8,13 +8,12 @@ i18n.init(request,localeResourcesBasePath);
 
 (function () {
 
-    var result, api, title, mod, links,error,message,discoveryURL,swaggerString,uriTemplates
+    var result, api, title, mod, links,error,message,swaggerString,uriTemplates
             name = request.getParameter("name"),
             version = request.getParameter("version"),
             provider = request.getParameter("provider"),
             user = jagg.getUser();
    var username=null;
-   isTenantAllowed();
     result = jagg.module("api").getAPIDescription({
         name:name,
         version:version,
@@ -23,17 +22,21 @@ i18n.init(request,localeResourcesBasePath);
     api = result.api;
     error = result.error;
     message = result.message;
-    discoveryURL = result.discoveryURL;
-    swaggerString=result.swaggerString;
+    //swaggerString=result.swaggerString;
     uriTemplates = result.uriTemplates;
     var apiName="";
     var apiVersion=null;
     var apiProvider="Provider";
+    var apiOwner="";
+    var apiBizOwner="";
 
     if(!error){
     apiName=api.name;
     apiVersion=api.version;
     apiProvider=api.provider;
+    apiOwner=api.apiOwner;
+    apiBizOwner=api.bizOwner;
+
     }
     title = "API Store - " + apiName;
 
@@ -55,6 +58,8 @@ i18n.init(request,localeResourcesBasePath);
                             "name":"api/provider-apis",
                             "inputs":{
                                      "providerId":apiProvider,
+                                     "apiOwner":apiOwner,
+                                     "apiBizOwner":apiBizOwner,
                                      "currentApi":apiName,
                                      "currentApiVersion":apiVersion,
                                      "uriTemplates":uriTemplates,
@@ -66,8 +71,6 @@ i18n.init(request,localeResourcesBasePath);
                             "name":"api/api-info",
                             "inputs":{
                                      "api":api,
-                                     "discoveryURL":discoveryURL,
-                                     "swaggerString":swaggerString,
                                      "uriTemplates":uriTemplates,
                                      "error":error,
                                      "message":message

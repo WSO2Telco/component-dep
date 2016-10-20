@@ -10,6 +10,15 @@ public class Subscription {
     private String status;
     private String ApiName;
     private String OpID;
+    private String operatorName;
+
+    public String getOperatorName() {
+        return operatorName;
+    }
+
+    public void setOperatorName(String operatorName) {
+        this.operatorName = operatorName;
+    }
 
     public String getOpID() {
         return OpID;

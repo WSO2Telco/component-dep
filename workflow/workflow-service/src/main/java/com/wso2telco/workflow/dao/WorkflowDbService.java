@@ -104,7 +104,7 @@ public class WorkflowDbService {
             con = dbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
             log.debug("opEndpointIDList.length : " + opEndpointIDList.length);
             con.setAutoCommit(false);
-            st=con.createStatement();
+            st = con.createStatement();
             for (int i = 0; i < opEndpointIDList.length; i++) {
                 if (opEndpointIDList[i] > 0) {
                     StringBuilder query = new StringBuilder();
@@ -163,14 +163,14 @@ public class WorkflowDbService {
     /**
      * Update app approval status op.
      *
-     * @param axiataId   the axiata id
+     * @param applicationId   the applicationId
      * @param operatorId the operator id
      * @param status     the status
      * @return true, if successful
      * @throws Exception the exception
      */
 
-    public boolean updateAppApprovalStatusOp(int axiataId, int operatorId, int status) throws SQLException, BusinessException {
+    public boolean updateAppApprovalStatusOp(int applicationId, int operatorId, int status) throws SQLException, BusinessException {
 
         Connection con = null;
         Statement st = null;
@@ -185,7 +185,7 @@ public class WorkflowDbService {
             StringBuilder query = new StringBuilder();
             query.append("UPDATE operatorapps ");
             query.append("SET isactive=" + status + " ");
-            query.append("WHERE applicationid =" + axiataId + " ");
+            query.append("WHERE applicationid =" + applicationId + " ");
             query.append("AND operatorid = " + operatorId + "");
 
             st.executeUpdate(query.toString());
@@ -409,8 +409,6 @@ public class WorkflowDbService {
         Statement st = null;
         ResultSet rs = null;
         int operatorId = 0;
-
-
         try {
             con = dbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 
@@ -422,10 +420,10 @@ public class WorkflowDbService {
             StringBuilder query = new StringBuilder();
             query.append("SELECT ID, operatorname ");
             query.append("FROM operators WHERE operatorname = '" + operatorName + " ' ");
-
             rs = st.executeQuery(query.toString());
-            rs.next();
-            operatorId = rs.getInt("ID");
+            while (rs.next()) {
+                operatorId = rs.getInt("ID");
+            }
 
         } catch (SQLException e) {
             throw new SQLException();

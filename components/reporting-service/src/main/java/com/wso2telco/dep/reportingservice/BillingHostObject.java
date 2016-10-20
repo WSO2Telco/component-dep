@@ -688,7 +688,7 @@ public class BillingHostObject extends ScriptableObject {
             appName = "__ALL__";
         } else {
             try {
-                Application application = new ApiMgtDAO().getApplicationById(Integer.parseInt(appId));
+                Application application = ApiMgtDAO.getInstance().getApplicationById(Integer.parseInt(appId));
                 appName = application.getName();//HostObjectUtils.getApplicationNameById(appId);
             } catch (Exception e) {
             	log.error("jsFunction_getAllResponseTimes",e);

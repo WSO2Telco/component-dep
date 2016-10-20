@@ -1,6 +1,0 @@
-<%
-jagg.initializer("branding/about-us", {
-
-});
-%>
-

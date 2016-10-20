@@ -261,7 +261,7 @@ public class SouthboundRequestPublisherDTO extends RequestPublisherDTO {
      * @return the object
      */
     public Object createPayload(){
-        return new Object[]{getConsumerKey(),getContext(),getApi_version(),getApi(), getResourcePath(),getMethod(),
+        return new Object[]{getConsumerKey(),getContext(),getApiVersion(),getApi(), getResourcePath(),getMethod(),
                             getVersion(), getRequestCount(),getRequestTime(),getUsername(),getTenantDomain(),getHostName(),
                             getApiPublisher(), getApplicationName(), getApplicationId(),
                             getRequestId(), getOperatorId(), getSbEndpoint(), getChargeAmount(), getPurchaseCategoryCode(), getJsonBody(), getTaxAmount() ,getChannel(), getOnBehalfOf(), getDescription(),getTransactionOperationStatus(),getReferenceCode()};

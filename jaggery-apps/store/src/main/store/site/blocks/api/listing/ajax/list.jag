@@ -1,21 +1,40 @@
 <%
 include("/jagg/jagg.jag");
 (function () {
+    var site = require("/site/conf/site.json");
+    var ssoEnabled = site.ssoConfiguration.enabled;
     response.contentType = "application/json; charset=UTF-8";
     var mod, obj, tenant, result, username,
             user = jagg.getUser(),
             msg = require("/site/conf/ui-messages.jag"),
             action = request.getParameter("action");
-    if (action == "getAllPublishedAPIs") {
-        if (!user) {
+
+    var validation = {
+        "action": { type: "safetext"},
+        "limit": { type:"number" },
+        "start": { type:"number" },
+        "end": { type:"number" },        
+    };
+
+    var validation_errors = jagg.validateInputs(validation);
+
+    if(validation_errors != true){
             print({
                 error:true,
-                message:msg.error.loginRequired(action)
-            });
-            return;
+                message: msg.error.invalidInputs(validation_errors)
+            });        
+    }else if (action == "getAllPublishedAPIs") {
+        if (!user) {
+           if(!ssoEnabled){
+		print({
+		    error:true,
+                    message:msg.error.loginRequired(action)
+            	});
+	    }
+	    return;
         }
 	username = user.username;
-        tenant = request.getParameter("tenant");
+        tenant = jagg.getTenantDomain();
 
         mod = jagg.module("api");
         result = mod.getAllPublishedAPIs(tenant);
@@ -35,11 +54,13 @@ include("/jagg/jagg.jag");
         print(obj);
     } else if (action == "getAllDocumentationOfApi") { 
 	if (!user) {
-            print({
-                error:true,
-                message:msg.error.loginRequired(action)
-            });
-            return;
+            if(!ssoEnabled){
+		print({
+		    error:true,
+                    message:msg.error.loginRequired(action)
+            	});
+	    }
+	    return;
         }
 	username = user.username;
         mod = jagg.module("documentation");
@@ -57,18 +78,21 @@ include("/jagg/jagg.jag");
 	print(result);
     } else if (action == "getAllPaginatedPublishedAPIs") {
               if (!user) {
-                  print({
-                      error:true,
-                      message:msg.error.loginRequired(action)
-                  });
-                  return;
+                  if(!ssoEnabled){
+			print({
+			    error:true,
+		            message:msg.error.loginRequired(action)
+		    	});
+		  }
+		  return;
               }
       	      username = user.username;
-              tenant = request.getParameter("tenant");
+              tenant = jagg.getTenantDomain();
               var start=request.getParameter("start");
               var end=request.getParameter("end");
+              var returnAPITags = request.getParameter("returnAPITags");
               mod = jagg.module("api");
-              result = mod.getAllPaginatedPublishedAPIs(tenant,start,end);
+              result = mod.getAllPaginatedPublishedAPIs(tenant, start, end, returnAPITags);
 
               if (result.error) {
                   obj = {

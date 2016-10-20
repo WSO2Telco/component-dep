@@ -17,13 +17,21 @@ jagg.block("application/application-list", {
         applications = result.applications;
 
         var tiers, tierResults;
-        tierResults = jagg.module("tiers").getTiers();
+        tierResults = jagg.module("tiers").getApplicationTiers();
         tiers = tierResults.tiers;
 
-        return {
-            "applications":applications,
-            "tiers":tiers
-        };
+        if (result.error) {
+            return  {
+                error:true,
+                message:result.error
+            };
+        } else {
+            return {
+                "applications":applications,
+                "tiers":tiers
+            };
+        }
+
     }
 
 });
