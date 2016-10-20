@@ -205,6 +205,14 @@
                                         <include name="groovy-all-${groovy.version}.jar"/>
                                     </fileset>
                                 </copy>
+                                <copy todir="${project.build.directory}/maven-shared-archive-resources/workflow" overwrite="true">
+                                    <fileset dir="${project.build.directory}/../../../workflow/workflow-approval/target">
+                                        <include name="ApplicationCreationApprovalWorkflow-${project.version}.bar"/>
+                                    </fileset>
+                                    <fileset dir="${project.build.directory}/../../../workflow/workflow-approval/target">
+                                        <include name="SubscriptionCreationApprovalWorkflow-${project.version}.bar"/>
+                                    </fileset>
+                                </copy>
 
                                 <!--copy todir="${tempdir}/activiti-explorer/WEB-INF/lib" overwrite="false">
                                                     <fileset dir="${project.build.directory}/maven-shared-archive-resources/dependencies">
@@ -216,6 +224,8 @@
                                      basedir="${tempdir}/activiti-explorer"/>
                                 <zip destfile="${project.build.directory}/maven-shared-archive-resources/webapps/activiti-rest.war"
                                      basedir="${tempdir}/activiti-rest"/>
+
+
                                 <delete dir="${tempdir}"/>
                             </tasks>
                         </configuration>
