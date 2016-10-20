@@ -458,6 +458,7 @@
 		        <groupId>org.wso2.carbon.analytics</groupId>
 		        <artifactId>org.wso2.carbon.analytics.spark.core</artifactId>
 		        <version>${org.wso2.carbon.analytics.version}</version>
+<<<<<<< HEAD
 		    </dependency>
 			<dependency>
 				<groupId>org.activiti</groupId>
@@ -514,6 +515,17 @@
                 <artifactId>slf4j-jdk14</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
+=======
+				    </dependency>
+		
+			<dependency>
+				<groupId>org.apache.felix</groupId>
+				<artifactId>org.apache.felix.scr.annotations</artifactId>
+				<version>${org.apache.felix.scr.annotations.version}</version>
+			</dependency>
+				
+		</dependencies>
+>>>>>>> 6f1c1edeb0a175e4bc8e5a5cc65f38580c64fa24
 
             <dependency>
                 <groupId>org.activiti</groupId>
@@ -531,11 +543,16 @@
 	</dependencyManagement>
 
 	<properties>
+<<<<<<< HEAD
 		<com.wso2telco.dep.version>2.0.0-SNAPSHOT</com.wso2telco.dep.version>
+=======
+		<org.apache.felix.scr.annotations.version>1.9.6</org.apache.felix.scr.annotations.version>
+		<com.wso2telco.dep.version>1.8.0-SNAPSHOT</com.wso2telco.dep.version>
+>>>>>>> 6f1c1edeb0a175e4bc8e5a5cc65f38580c64fa24
 		<log4j.version>1.2.13</log4j.version>
 		<com.google.code.gson.version>2.3.1</com.google.code.gson.version>
 		<org.glassfish.jersey.core.version>2.4</org.glassfish.jersey.core.version>
-		<com.wso2telco.core.version>2.0.3-SNAPSHOT</com.wso2telco.core.version>
+		<com.wso2telco.core.version>2.0.3-M4</com.wso2telco.core.version>
 		<org.json.wso2.version>3.0.0.wso2v1</org.json.wso2.version>
 		<junit.version>3.8.1</junit.version>
 		<org.apache.synapse.core.version>2.1.7-wso2v3</org.apache.synapse.core.version>
