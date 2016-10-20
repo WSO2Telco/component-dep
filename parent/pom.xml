@@ -143,7 +143,6 @@
         </pluginRepository>
     </pluginRepositories>
 
-<<<<<<< HEAD
     <profiles>
         <profile>
             <!-- pedantic profile to run RAT plugin -->
@@ -225,11 +224,7 @@
         </profile>
     </profiles>
 
-	<dependencyManagement>
-=======
     <dependencyManagement>
->>>>>>> d74d2178d7c8a66fe0171c24f809f61544b208d4
-
         <dependencies>
             <dependency>
                 <groupId>javax.servlet</groupId>
