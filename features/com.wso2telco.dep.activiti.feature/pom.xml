@@ -175,7 +175,7 @@
                                         <include name="workflow-approval-${project.version}.jar"/>
                                     </fileset>
                                 </copy>
-                                 <copy todir="${tempdir}/activiti-rest/WEB-INF/lib" overwrite="true">
+                                <copy todir="${tempdir}/activiti-rest/WEB-INF/lib" overwrite="true">
                                     <fileset dir="${project.build.directory}/../../../workflow/workflow-approval/target/dependencies">
                                         <include name="feign-core-${feign.version}.jar"/>
                                     </fileset>

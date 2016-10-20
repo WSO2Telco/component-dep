@@ -8,85 +8,83 @@
 	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
 	the specific language governing permissions and limitations under the License.
    folk test M	-->
-   <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-   		<groupId>org.wso2</groupId>
-   		<artifactId>wso2</artifactId>
-   		<version>1</version>
-   	</parent>
+    <parent>
+        <groupId>org.wso2</groupId>
+        <artifactId>wso2</artifactId>
+        <version>1</version>
+    </parent>
 
-	<groupId>com.wso2telco.dep</groupId>
-	<artifactId>component-dep</artifactId>
-	<packaging>pom</packaging>
-	<version>2.0.0-SNAPSHOT</version>
-	<name>WSO2Telco -Digital Enable Platform Component</name>
-	<description>WSO2Telco DEP Aggregate Pom</description>
-	<url>http://wso2telco.com</url>
-	<developers>
-		<developer>
-			<name>WSO2Telco</name>
-			<email>core-product-tech@wso2telco.com</email>
-		</developer>
-	</developers>
+    <groupId>com.wso2telco.dep</groupId>
+    <artifactId>component-dep</artifactId>
+    <packaging>pom</packaging>
+    <version>2.0.0-SNAPSHOT</version>
+    <name>WSO2Telco -Digital Enable Platform Component</name>
+    <description>WSO2Telco DEP Aggregate Pom</description>
+    <url>http://wso2telco.com</url>
+    <developers>
+        <developer>
+            <name>WSO2Telco</name>
+            <email>core-product-tech@wso2telco.com</email>
+        </developer>
+    </developers>
 
-	<prerequisites>
-		<maven>3.0.0</maven>
-	</prerequisites>
-	
-	<distributionManagement>
-                <snapshotRepository>
-                        <id>wso2Telco.snapshots</id>
-                        <name>Snapshot repo</name>
-                        <url>http://maven.wso2telco.com/nexus/content/repositories/snapshots</url>
-                </snapshotRepository>
-                <!-- Publish the versioned releases here -->
-                <repository>
-                        <id>wso2telco.releases</id>
-                        <name>release repo</name>
-                        <url>http://maven.wso2telco.com/nexus/content/repositories/releases/</url>
-                </repository>
-        </distributionManagement>
+    <prerequisites>
+        <maven>3.0.0</maven>
+    </prerequisites>
 
-	
-	<modules>       
-        <module>parent</module>		
-	    <module>components/oneapi-validation</module> 
-		<module>components/subscription-validator</module> 
-		<!--module>components/publish-events-data</module-->
-		<module>components/data-publisher</module>
-		<module>components/reporting-service</module>
-   		<module>components/verification-handler</module>
+    <distributionManagement>
+        <snapshotRepository>
+            <id>wso2Telco.snapshots</id>
+            <name>Snapshot repo</name>
+            <url>http://maven.wso2telco.com/nexus/content/repositories/snapshots</url>
+        </snapshotRepository>
+        <!-- Publish the versioned releases here -->
+        <repository>
+            <id>wso2telco.releases</id>
+            <name>release repo</name>
+            <url>http://maven.wso2telco.com/nexus/content/repositories/releases/</url>
+        </repository>
+    </distributionManagement>
+
+
+    <modules>
+        <module>parent</module>
+        <module>components/oneapi-validation</module>
+        <module>components/subscription-validator</module>
+        <!--module>components/publish-events-data</module-->
+        <module>components/data-publisher</module>
+        <module>components/reporting-service</module>
+        <module>components/verification-handler</module>
         <module>components/operator-service</module>
-   		<module>components/workflow-manager</module>
         <module>components/mediator</module>
-		<module>components/publish-events/publish-events-data</module> 
-		<module>components/publish-events/publish-events-extensions</module>
+        <module>components/publish-events/publish-events-data</module>
+        <module>components/publish-events/publish-events-extensions</module>
         <module>components/workflow-extensions</module>
-   		<module>workflow/axis2services/AxiataWorkflowApprovalService</module>
-   		<module>workflow/workflow-service</module>
+        <module>workflow/workflow-service</module>
+        <module>workflow/workflow-approval</module>
         <module>webapps/blacklist-whitelist-service</module>
-        <module>webapps/aggregator-blacklist</module> 
-		<module>jaggery-apps/manage</module>
-		<module>jaggery-apps/publisher</module>
-		<module>jaggery-apps/sandbox</module>
-		<module>jaggery-apps/store</module>
+        <module>webapps/aggregator-blacklist</module>
+        <module>jaggery-apps/manage</module>
+        <module>jaggery-apps/publisher</module>
+        <module>jaggery-apps/sandbox</module>
+        <module>jaggery-apps/store</module>
         <module>features</module>
-	</modules>
+    </modules>
 
-	<scm>
-		<url>https://github.com/WSO2Telco/component-dep.git</url>
-		<developerConnection>scm:git:https://github.com/WSO2Telco/component-dep.git</developerConnection>
-		<connection>scm:git:https://github.com/WSO2Telco/component-dep.git</connection>
-		<tag>HEAD</tag>
-	</scm>
-
+    <scm>
+        <url>https://github.com/WSO2Telco/component-dep.git</url>
+        <developerConnection>scm:git:https://github.com/WSO2Telco/component-dep.git</developerConnection>
+        <connection>scm:git:https://github.com/WSO2Telco/component-dep.git</connection>
+        <tag>HEAD</tag>
+    </scm>
 
 
     <build>
-     
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -96,7 +94,7 @@
                     <target>1.7</target>
                 </configuration>
             </plugin>
-          
+
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
                 <artifactId>maven-release-plugin</artifactId>
@@ -104,13 +102,13 @@
                     <preparationGoals>clean install</preparationGoals>
                     <autoVersionSubmodules>true</autoVersionSubmodules>
                 </configuration>
-		<dependencies>
-                <dependency>
-                    <groupId>org.apache.maven.scm</groupId>
-                    <artifactId>maven-scm-provider-gitexe</artifactId>
-                    <version>1.9</version>
-                </dependency>
-            </dependencies>
+                <dependencies>
+                    <dependency>
+                        <groupId>org.apache.maven.scm</groupId>
+                        <artifactId>maven-scm-provider-gitexe</artifactId>
+                        <version>1.9</version>
+                    </dependency>
+                </dependencies>
             </plugin>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
