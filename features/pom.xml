@@ -13,7 +13,7 @@
         <url>http://wso2telco.com</url>
         <modules>
             <module>com.wso2telco.dep.hub.core.feature</module>
-            <module>com.wso2telco.dep.workflowmanager.feature</module>
+            <!--module>com.wso2telco.dep.workflowmanager.feature</module-->
             <module>com.wso2telco.dep.operatorservice.feature</module>
             <module>com.wso2telco.dep.mediator.feature</module>
             <module>com.wso2telco.dep.publisheventsdata.feature</module>

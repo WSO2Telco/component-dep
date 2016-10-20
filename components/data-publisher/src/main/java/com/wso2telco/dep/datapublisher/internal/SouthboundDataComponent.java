@@ -15,29 +15,37 @@
  ******************************************************************************/
 package com.wso2telco.dep.datapublisher.internal;
 
+import java.util.Map;
+import java.util.concurrent.ConcurrentHashMap;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.apache.felix.scr.annotations.Component;
+import org.apache.felix.scr.annotations.Reference;
+import org.apache.felix.scr.annotations.ReferencePolicy;
+import org.apache.felix.scr.annotations.References;
 import org.osgi.service.component.ComponentContext;
 import org.wso2.carbon.apimgt.impl.APIManagerConfigurationService;
 import org.wso2.carbon.databridge.agent.thrift.lb.LoadBalancingDataPublisher;
 import org.wso2.carbon.user.core.service.RealmService;
-import java.util.Map;
-import java.util.concurrent.ConcurrentHashMap;
 
 
-/**
- * @scr.component name="mife.southbound.data.component" immediate="true"
- * @scr.reference name="api.manager.config.service"
- * interface="org.wso2.carbon.apimgt.impl.APIManagerConfigurationService"
- * cardinality="1..1"
- * policy="dynamic" bind="setAPIManagerConfigurationService"
- * unbind="unsetAPIManagerConfigurationService"
- * @scr.reference name="user.realm.service"
- * interface="org.wso2.carbon.user.core.service.RealmService"
- * cardinality="1..1" policy="dynamic" bind="setRealmService"
- * unbind="unsetRealmService"
- */
+@Component(name="mife.southbound.data.component",immediate=true)
 
+@References({@Reference(name="api.manager.config.service",
+			referenceInterface=org.wso2.carbon.apimgt.impl.APIManagerConfigurationService.class,
+			cardinality=org.apache.felix.scr.annotations.ReferenceCardinality.MANDATORY_UNARY,
+			policy=ReferencePolicy.DYNAMIC,
+			bind="setAPIManagerConfigurationService",
+			unbind="unsetAPIManagerConfigurationService"),
+             @Reference(name="user.realm.service",
+             referenceInterface=org.wso2.carbon.user.core.service.RealmService.class,
+             cardinality=org.apache.felix.scr.annotations.ReferenceCardinality.MANDATORY_UNARY,
+             policy=ReferencePolicy.DYNAMIC,
+             bind="setRealmService",
+             unbind="unsetRealmService")})
+
+  
 public class SouthboundDataComponent {
 
     /** The Constant log. */
