@@ -16,6 +16,7 @@
 ~
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
     <parent>
         <groupId>com.wso2telco.dep</groupId>
         <artifactId>component-dep-feature</artifactId>
@@ -28,8 +29,8 @@
     <packaging>pom</packaging>
     <name>WSO2.Telco Manage</name>
     <url>http://wso2.org</url>
-    <description>This feature contains the server bundles required for blacklistwhitelistservice web application</description>
-
+    <description>This feature contains the server bundles required for blacklistwhitelistservice web application
+    </description>
 
     <build>
         <plugins>
@@ -105,8 +106,6 @@
                 </executions>
             </plugin>
             <plugin>
-
-
                 <groupId>org.wso2.maven</groupId>
                 <artifactId>carbon-p2-plugin</artifactId>
                 <version>${carbon.p2.plugin.version}</version>
@@ -126,7 +125,6 @@
                                     <propertyDef>org.eclipse.equinox.p2.type.group:true</propertyDef>
                                 </properties>
                             </adviceFile>
-
                         </configuration>
                     </execution>
                 </executions>

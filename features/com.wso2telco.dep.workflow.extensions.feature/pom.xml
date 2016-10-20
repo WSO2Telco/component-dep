@@ -19,7 +19,7 @@
     <parent>
         <groupId>com.wso2telco.dep</groupId>
         <artifactId>component-dep-feature</artifactId>
-	<version>2.0.0-SNAPSHOT</version>
+        <version>2.0.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -43,11 +43,12 @@
                         <configuration>
                             <id>com.wso2telco.dep.workflow.extensions</id>
                             <propertiesFile>../feature.properties</propertiesFile>
-		            <bundles>
-         			<bundleDef>com.wso2telco.dep:com.wso2telco.dep.workflow.extensions:${project.version}</bundleDef>
-				<bundleDef>io.github.openfeign:feign-jackson:${feign.version}</bundleDef>
-				<bundleDef>io.github.openfeign:feign-core:${feign.version}</bundleDef>
-      			    </bundles>
+                            <bundles>
+                                <bundleDef>com.wso2telco.dep:com.wso2telco.dep.workflow.extensions:${project.version}
+                                </bundleDef>
+                                <bundleDef>io.github.openfeign:feign-jackson:${feign.version}</bundleDef>
+                                <bundleDef>io.github.openfeign:feign-core:${feign.version}</bundleDef>
+                            </bundles>
                             <adviceFile>
                                 <properties>
                                     <propertyDef>org.wso2.carbon.p2.category.type:server</propertyDef>
