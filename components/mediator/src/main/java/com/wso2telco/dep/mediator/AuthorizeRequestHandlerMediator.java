@@ -16,19 +16,18 @@
 
 package com.wso2telco.dep.mediator;
 
-import com.wso2telco.dep.datapublisher.DataPublisherClient;
-import com.wso2telco.dep.datapublisher.DataPublisherConstants;
+import java.util.UUID;
+
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.mediators.AbstractMediator;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.util.UUID;
+import com.wso2telco.dep.mediator.util.DataPublisherConstants;
 
 
 public class AuthorizeRequestHandlerMediator extends AbstractMediator {
 
-    private DataPublisherClient publisherClient;
 
     /* (non-Javadoc)
      * @see org.apache.synapse.Mediator#mediate(org.apache.synapse.MessageContext)
@@ -95,11 +94,6 @@ public class AuthorizeRequestHandlerMediator extends AbstractMediator {
             }
         }
 
-        // publish data
-        if (publisherClient == null) {
-            publisherClient = new DataPublisherClient();
-        }
-        publisherClient.publishRequest(messageContext, requestStr);
     }
 
 }

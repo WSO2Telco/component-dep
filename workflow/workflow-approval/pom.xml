@@ -1,5 +1,4 @@
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
     <parent>
@@ -156,15 +155,15 @@
                         </goals>
                         <configuration>
                             <tasks>
-                                <echo message="Creating bar: ${project.build.directory}/ApplicationCreationApprovalWorkflow-${project.version}.bar,SubscriptionCreationApprovalWorkflow-${project.version}.bar"/>
+                                <echo message="Creating bar: ${project.build.directory}/ApplicationCreationApprovalWorkflow-${project.version}.bar,SubscriptionCreationApprovalWorkflow-${project.version}.bar" />
                                 <zip destfile="${project.build.directory}/ApplicationCreationApprovalWorkflow-${project.version}.bar">
                                     <fileset dir="src/main/resources/bpmn">
-                                        <include name="ApplicationCreationApprovalWorkflow.bpmn"/>
+                                        <include name="ApplicationCreationApprovalWorkflow.bpmn" />
                                     </fileset>
                                 </zip>
                                 <zip destfile="${project.build.directory}/SubscriptionCreationApprovalWorkflow-${project.version}.bar">
                                     <fileset dir="src/main/resources/bpmn">
-                                        <include name="SubscriptionCreationApprovalWorkflow.bpmn"/>
+                                        <include name="SubscriptionCreationApprovalWorkflow.bpmn" />
                                     </fileset>
                                 </zip>
                             </tasks>

@@ -16,12 +16,8 @@
 
 package com.wso2telco.dep.mediator.impl.payment;
 
-import java.io.File;
-import java.io.IOException;
 import java.util.List;
 import java.util.Map;
-
-import javax.xml.bind.JAXBException;
 
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
@@ -30,19 +26,10 @@ import org.apache.synapse.MessageContext;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.wso2.carbon.apimgt.gateway.handlers.security.APISecurityUtils;
-import org.wso2.carbon.apimgt.gateway.handlers.security.AuthenticationContext;
-import org.wso2.carbon.utils.CarbonUtils;
 
-import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.dep.mediator.MSISDNConstants;
-import com.wso2telco.dep.mediator.entity.cep.ConsumerSecretWrapperDTO;
 import com.wso2telco.dep.mediator.internal.Base64Coder;
-import com.wso2telco.dep.mediator.unmarshaler.GroupDTO;
-import com.wso2telco.dep.mediator.unmarshaler.GroupEventUnmarshaller;
-import com.wso2telco.dep.mediator.util.FileNames;
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
-import com.wso2telco.dep.publisheventsdata.handler.SpendLimitHandler;
 
 /**
  *
@@ -52,73 +39,6 @@ import com.wso2telco.dep.publisheventsdata.handler.SpendLimitHandler;
 public class PaymentUtil {
 	private static Log log = LogFactory.getLog(PaymentUtil.class);
 
-	public boolean checkSpendLimit(String msisdn, String operator,
-			MessageContext context, Double chargeAmount)
-			throws BusinessException, IOException, JAXBException, Exception {
-
-		Double groupTotalDayAmount = 0.0;
-		Double groupTotalMonthAmount = 0.0;
-		String consumerKey = null;
-		
-		AuthenticationContext authContext = APISecurityUtils
-				.getAuthenticationContext(context);
-		String file = CarbonUtils.getCarbonConfigDirPath() + File.separator + FileNames.MEDIATOR_CONF_FILE.getFileName();
-		if (authContext != null) {
-			consumerKey = authContext.getConsumerKey();
-		}
-
-		GroupEventUnmarshaller groupEventUnmarshaller = GroupEventUnmarshaller
-				.getInstance();
-		ConsumerSecretWrapperDTO consumerSecretWrapperDTO = groupEventUnmarshaller
-				.getGroupEventDetailDTO(consumerKey);
-		List<GroupDTO> groupDTOList = consumerSecretWrapperDTO
-				.getConsumerKeyVsGroup();
-
-		if (groupDTOList != null) {
-			for (GroupDTO groupDTO : groupDTOList) {
-
-				Double groupdailyLimit = Double.parseDouble(groupDTO
-						.getDayAmount());
-				Double groupMonlthlyLimit = Double.parseDouble(groupDTO
-						.getMonthAmount());
-				SpendLimitHandler spendLimitHandler = new SpendLimitHandler();
-				groupTotalDayAmount = spendLimitHandler
-						.getGroupTotalDayAmount(groupDTO.getGroupName(),
-								groupDTO.getOperator(), msisdn);
-				groupTotalMonthAmount = spendLimitHandler
-						.getGroupTotalMonthAmount(groupDTO.getGroupName(),
-								groupDTO.getOperator(), msisdn);
-
-				if ((groupdailyLimit > 0.0)
-						&& ((groupTotalDayAmount >= groupdailyLimit)
-								|| (groupTotalDayAmount + chargeAmount) > groupdailyLimit || chargeAmount > groupdailyLimit)) {
-					log.debug("group daily limit exceeded");
-					throw new CustomException(
-							"POL1001",
-							"The %1 charging limit for this user has been exceeded",
-							new String[] { "daily" });
-
-				}
-
-				if ((groupMonlthlyLimit) > 0.0
-						&& ((groupTotalMonthAmount >= groupMonlthlyLimit)
-								|| (groupTotalMonthAmount + chargeAmount) > groupMonlthlyLimit || chargeAmount > groupMonlthlyLimit)) {
-					log.debug("group monthly limit exceeded");
-					throw new CustomException(
-							"POL1001",
-							"The %1 charging limit for this user has been exceeded",
-							new String[] { "monthly" });
-
-				}
-			}
-
-		}
-
-		return true;
-
-	}
-
-	
 	
 	
 	public static String storeSubscription(MessageContext context)
