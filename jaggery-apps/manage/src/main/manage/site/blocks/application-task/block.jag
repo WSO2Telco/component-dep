@@ -1,6 +1,5 @@
 <%
 include("/jagg/jagg.jag");
-
 jagg.block("application-task", {
     initializer:function (data) {
 

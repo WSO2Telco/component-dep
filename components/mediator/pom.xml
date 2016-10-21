@@ -1,204 +1,213 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<!-- Copyright (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) 
-	All Rights Reserved. WSO2.Telco Inc. licences this file to you under the 
-	Apache License, Version 2.0 (the "License"); you may not use this file except 
-	in compliance with the License. You may obtain a copy of the License at http://www.apache.org/licenses/LICENSE-2.0 
-	Unless required by applicable law or agreed to in writing, software distributed 
-	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
-	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
-	the specific language governing permissions and limitations under the License. -->
+<!--
+~ Copyright (c) 2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+~
+~ WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
+~ you may not use this file except in compliance with the License.
+~ You may obtain a copy of the License at
+~
+~ http://www.apache.org/licenses/LICENSE-2.0
+~
+~ Unless required by applicable law or agreed to in writing, software
+~ distributed under the License is distributed on an "AS IS" BASIS,
+~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+~ See the License for the specific language governing permissions and
+~ limitations under the License.
+~
+-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	<modelVersion>4.0.0</modelVersion>
+    <modelVersion>4.0.0</modelVersion>
 
-	<parent>
-		<groupId>com.wso2telco.dep</groupId>
-		<artifactId>component-dep-parent</artifactId>
-		<version>2.0.0-SNAPSHOT</version>
-		<relativePath>../../parent/pom.xml</relativePath>
-	</parent>
+    <parent>
+        <groupId>com.wso2telco.dep</groupId>
+        <artifactId>component-dep</artifactId>
+        <version>2.0.0-SNAPSHOT</version>
+        <relativePath>../../pom.xml</relativePath>
+    </parent>
 
 
-	<artifactId>mediator</artifactId>
+    <artifactId>mediator</artifactId>
 
-	<packaging>bundle</packaging>
-	<name>WSO2.Telco Mediator Module</name>
-	<description>WSO2.Telco Mediator Module</description>
+    <packaging>bundle</packaging>
+    <name>WSO2.Telco Mediator Module</name>
+    <description>WSO2.Telco Mediator Module</description>
 
-	<dependencies>
-		<dependency>
-			<groupId>commons-httpclient.wso2</groupId>
-			<artifactId>commons-httpclient</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.json.wso2</groupId>
-			<artifactId>json</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.wso2.orbit.org.apache.httpcomponents</groupId>
-			<artifactId>httpclient</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.synapse</groupId>
-			<artifactId>synapse-core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.synapse</groupId>
-			<artifactId>synapse-commons</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-codec.wso2</groupId>
-			<artifactId>commons-codec</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>wsdl4j.wso2</groupId>
-			<artifactId>wsdl4j</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.axis2.wso2</groupId>
-			<artifactId>axis2</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.abdera.wso2</groupId>
-			<artifactId>abdera</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.geronimo.specs.wso2</groupId>
-			<artifactId>geronimo-stax-api_1.0_spec</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.ws.commons.schema.wso2</groupId>
-			<artifactId>XmlSchema</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.httpcomponents.wso2</groupId>
-			<artifactId>httpcore</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.wso2.orbit.org.apache.neethi</groupId>
-			<artifactId>neethi</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.woden.wso2</groupId>
-			<artifactId>woden</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.wso2.carbon.apimgt</groupId>
-			<artifactId>org.wso2.carbon.apimgt.usage.publisher</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-logging</groupId>
-			<artifactId>commons-logging</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.apache.ws.commons.axiom.wso2</groupId>
-			<artifactId>axiom</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>commons-io.wso2</groupId>
-			<artifactId>commons-io</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.h2database.wso2</groupId>
-			<artifactId>h2-database-engine</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.wso2.carbon</groupId>
-			<artifactId>org.wso2.carbon.user.api</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.wso2.carbon</groupId>
-			<artifactId>org.wso2.carbon.core</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>org.wso2.carbon.apimgt</groupId>
-			<artifactId>org.wso2.carbon.apimgt.gateway</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.wso2telco.core</groupId>
-			<artifactId>dbutils</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.wso2telco.dep</groupId>
-			<artifactId>oneapi-validation</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.wso2telco.dep</groupId>
-			<artifactId>subscription-validator</artifactId>
-		</dependency>
-		<!--dependency>
-			<groupId>com.wso2telco.dep</groupId>
-			<artifactId>data-publisher</artifactId>
-		</dependency-->
-		<dependency>
-			<groupId>com.wso2telco.core</groupId>
-			<artifactId>mnc-resolver</artifactId>
-		</dependency>
-		<dependency>
-			<groupId>com.wso2telco.core</groupId>
-			<artifactId>msisdn-validator</artifactId>
-		</dependency>
-		<!--dependency>
-			<groupId>com.wso2telco.dep</groupId>
-			<artifactId>publish-events-data</artifactId>
-		</dependency-->
-		<dependency>
-			<groupId>com.wso2telco.dep</groupId>
-			<artifactId>operator-service</artifactId>
-		</dependency>
-	</dependencies>
+    <dependencies>
+        <dependency>
+            <groupId>commons-httpclient.wso2</groupId>
+            <artifactId>commons-httpclient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.json.wso2</groupId>
+            <artifactId>json</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.orbit.org.apache.httpcomponents</groupId>
+            <artifactId>httpclient</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.synapse</groupId>
+            <artifactId>synapse-core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.synapse</groupId>
+            <artifactId>synapse-commons</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-codec.wso2</groupId>
+            <artifactId>commons-codec</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>wsdl4j.wso2</groupId>
+            <artifactId>wsdl4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.axis2.wso2</groupId>
+            <artifactId>axis2</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.abdera.wso2</groupId>
+            <artifactId>abdera</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.geronimo.specs.wso2</groupId>
+            <artifactId>geronimo-stax-api_1.0_spec</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ws.commons.schema.wso2</groupId>
+            <artifactId>XmlSchema</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.httpcomponents.wso2</groupId>
+            <artifactId>httpcore</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.orbit.org.apache.neethi</groupId>
+            <artifactId>neethi</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.woden.wso2</groupId>
+            <artifactId>woden</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.apimgt</groupId>
+            <artifactId>org.wso2.carbon.apimgt.usage.publisher</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.apache.ws.commons.axiom.wso2</groupId>
+            <artifactId>axiom</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-io.wso2</groupId>
+            <artifactId>commons-io</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.h2database.wso2</groupId>
+            <artifactId>h2-database-engine</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon</groupId>
+            <artifactId>org.wso2.carbon.user.api</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon</groupId>
+            <artifactId>org.wso2.carbon.core</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.apimgt</groupId>
+            <artifactId>org.wso2.carbon.apimgt.gateway</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.wso2telco.core</groupId>
+            <artifactId>dbutils</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.wso2telco.dep</groupId>
+            <artifactId>oneapi-validation</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.wso2telco.dep</groupId>
+            <artifactId>subscription-validator</artifactId>
+        </dependency>
+        <!--dependency>
+            <groupId>com.wso2telco.dep</groupId>
+            <artifactId>data-publisher</artifactId>
+        </dependency-->
+        <dependency>
+            <groupId>com.wso2telco.core</groupId>
+            <artifactId>mnc-resolver</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.wso2telco.core</groupId>
+            <artifactId>msisdn-validator</artifactId>
+        </dependency>
+        <!--dependency>
+            <groupId>com.wso2telco.dep</groupId>
+            <artifactId>publish-events-data</artifactId>
+        </dependency-->
+        <dependency>
+            <groupId>com.wso2telco.dep</groupId>
+            <artifactId>operator-service</artifactId>
+        </dependency>
+    </dependencies>
 
-	<build>
-		<plugins>
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-scr-plugin</artifactId>
-				<executions>
-					<execution>
-						<id>generate-scr-scrdescriptor</id>
-						<goals>
-							<goal>scr</goal>
-						</goals>
-					</execution>
-				</executions>
-			</plugin>
+    <build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-scr-plugin</artifactId>
+                <executions>
+                    <execution>
+                        <id>generate-scr-scrdescriptor</id>
+                        <goals>
+                            <goal>scr</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
 
-			<plugin>
-				<groupId>org.apache.felix</groupId>
-				<artifactId>maven-bundle-plugin</artifactId>
-				<extensions>true</extensions>
-				<configuration>
-					<instructions>
-						<Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
-						<Bundle-Name>${project.artifactId}</Bundle-Name>
-						<Export-Package>!com.wso2telco.dep.mediator.internal,com.wso2telco.dep.mediator.*</Export-Package>
-						<Import-Package>javax.xml.parsers; version="0.0.0"</Import-Package>
-						<DynamicImport-Package>*</DynamicImport-Package>
-						<Private-Package>com.wso2telco.dep.mediator.internal</Private-Package>
-					</instructions>
-				</configuration>
-			</plugin>
-			<plugin>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.9</version>
-				<configuration>
-					<buildcommands>
-						<buildcommand>org.eclipse.jdt.core.javabuilder</buildcommand>
-					</buildcommands>
-					<projectnatures>
-						<projectnature>org.wso2.developerstudio.eclipse.artifact.mediator.project.nature</projectnature>
-						<projectnature>org.eclipse.jdt.core.javanature</projectnature>
-					</projectnatures>
-				</configuration>
-			</plugin>
-			<plugin>
-				<groupId>org.apache.maven.plugins</groupId>
-				<artifactId>maven-compiler-plugin</artifactId>
-				<version>3.1</version>
-				<configuration>
-					<source>1.6</source>
-					<target>1.6</target>
-				</configuration>
-			</plugin>
-		</plugins>
-	</build>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <configuration>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Name>${project.artifactId}</Bundle-Name>
+                        <Export-Package>!com.wso2telco.dep.mediator.internal,com.wso2telco.dep.mediator.*
+                        </Export-Package>
+                        <Import-Package>javax.xml.parsers; version="0.0.0"</Import-Package>
+                        <DynamicImport-Package>*</DynamicImport-Package>
+                        <Private-Package>com.wso2telco.dep.mediator.internal</Private-Package>
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <artifactId>maven-eclipse-plugin</artifactId>
+                <version>2.9</version>
+                <configuration>
+                    <buildcommands>
+                        <buildcommand>org.eclipse.jdt.core.javabuilder</buildcommand>
+                    </buildcommands>
+                    <projectnatures>
+                        <projectnature>org.wso2.developerstudio.eclipse.artifact.mediator.project.nature</projectnature>
+                        <projectnature>org.eclipse.jdt.core.javanature</projectnature>
+                    </projectnatures>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <version>3.1</version>
+                <configuration>
+                    <source>1.6</source>
+                    <target>1.6</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
 </project>
