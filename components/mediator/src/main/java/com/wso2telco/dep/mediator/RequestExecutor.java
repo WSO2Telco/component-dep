@@ -23,46 +23,33 @@ import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.nio.charset.StandardCharsets;
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.axiom.core.Axis;
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.http.HttpStatus;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.commons.json.JsonUtil;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.wso2.carbon.apimgt.gateway.handlers.security.APISecurityUtils;
-import org.wso2.carbon.apimgt.gateway.handlers.security.AuthenticationContext;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
-import com.wso2telco.dep.datapublisher.DataPublisherClient;
-import com.wso2telco.dep.datapublisher.DataPublisherConstants;
-import com.wso2telco.dep.mediator.entity.cep.ConsumerSecretWrapperDTO;
 import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.InboundSMSMessage;
 import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.InboundSMSMessageList;
 import com.wso2telco.dep.mediator.entity.smsmessaging.southbound.SouthboundRetrieveResponse;
-import com.wso2telco.dep.mediator.internal.PaymentType;
 import com.wso2telco.dep.mediator.internal.UID;
-import com.wso2telco.dep.mediator.unmarshaler.GroupDTO;
-import com.wso2telco.dep.mediator.unmarshaler.GroupEventUnmarshaller;
+import com.wso2telco.dep.mediator.util.DataPublisherConstants;
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.dep.oneapivalidation.exceptions.RequestError;
 import com.wso2telco.dep.oneapivalidation.exceptions.ResponseError;
 import com.wso2telco.dep.operatorservice.model.OperatorApplicationDTO;
 import com.wso2telco.dep.operatorservice.service.OparatorService;
-import com.wso2telco.dep.publisheventsdata.PublishEventsConstants;
-import com.wso2telco.dep.publisheventsdata.publisher.EventsDataPublisherClient;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -88,12 +75,6 @@ public abstract class RequestExecutor {
 	/** The str err. */
 	// <TO-DO>
 	private String strErr;
-
-	/** The publisher client. */
-	private DataPublisherClient publisherClient;
-
-	/** The events publisher client. */
-	private EventsDataPublisherClient eventsPublisherClient;
 
 	/**
 	 * Gets the str err.
@@ -456,7 +437,6 @@ public abstract class RequestExecutor {
 	 */
 	public String makeRequest(OperatorEndpoint operatorendpoint, String url, String requestStr, boolean auth, MessageContext messageContext , boolean inclueHeaders) {
 
-		publishRequestData(operatorendpoint, url, requestStr, messageContext);
 
 		 //MO Callback
         boolean isMoCallBack=false;
@@ -587,18 +567,16 @@ public abstract class RequestExecutor {
 				connection.disconnect();
 			}
 			 
-			log.info("HHHHHHHHHHHHHHHHHHHHHHHH            Mo OR DN CallBack : " + isMoCallBack);
-			log.info("HHHHHHHHHHHHHHHHHHHHHHHH            requestStr : " + requestStr);
-			log.info("HHHHHHHHHHHHHHHHHHHHHHHH            retStr : " + retStr);
+			log.debug("Mo OR DN CallBack : " + isMoCallBack +" requestStr : " + requestStr+" retStr : " + retStr);
 			 
 			messageContext.setProperty(DataPublisherConstants.RESPONSE_CODE, Integer.toString(statusCode));
             messageContext.setProperty(DataPublisherConstants.MSISDN, messageContext.getProperty(MSISDNConstants.USER_MSISDN));
-			
+		/*	TODO:This need to consider when publishing request data
 			  if (isMoCallBack) {
               	publishResponseData(statusCode, requestStr, messageContext);
   			}else {
   				publishResponseData(statusCode, retStr, messageContext);
-  			}
+  			}*/
 		}
 		return retStr;
 	}
@@ -701,7 +679,6 @@ public abstract class RequestExecutor {
 	public String makeGetRequest(OperatorEndpoint operatorendpoint, String url, String requestStr, boolean auth,
 			MessageContext messageContext, boolean inclueHeaders) {
 
-		publishRequestData(operatorendpoint, url, null, messageContext);
 		int statusCode = 0;
 		String retStr = "";
 		URL neturl;
@@ -797,7 +774,6 @@ public abstract class RequestExecutor {
 			if (connection != null) {
 				connection.disconnect();
 			}
-			publishResponseData(statusCode, retStr, messageContext);
 		}
 		return retStr;
 	}
@@ -820,7 +796,6 @@ public abstract class RequestExecutor {
 	public String makeDeleteRequest(OperatorEndpoint operatorendpoint, String url, String requestStr, boolean auth,
 			MessageContext messageContext , boolean inclueHeaders) {
 
-		publishRequestData(operatorendpoint, url, requestStr, messageContext);
 		int statusCode = 0;
 		String retStr = "";
 		URL neturl;
@@ -928,7 +903,6 @@ public abstract class RequestExecutor {
 			if (connection != null) {
 				connection.disconnect();
 			}
-			publishResponseData(statusCode, retStr, messageContext);
 		}
 		return retStr;
 	}
@@ -953,7 +927,6 @@ public abstract class RequestExecutor {
 	public int makeNorthBoundRequest(OperatorEndpoint operatorendpoint, String url, String requestStr, boolean auth,
 			MessageContext messageContext, boolean inclueHeaders) {
 
-		publishRequestData(operatorendpoint, url, requestStr, messageContext);
 
 		ICallresponse icallresponse = null;
 		String retStr = "";
@@ -1045,7 +1018,6 @@ public abstract class RequestExecutor {
 			if (connection != null) {
 				connection.disconnect();
 			}
-			publishResponseData(statusCode, retStr, messageContext);
 		}
 
 		return statusCode;
@@ -1056,7 +1028,6 @@ public abstract class RequestExecutor {
 			MessageContext messageContext, boolean inclueHeaders) {
 
 		Gson gson = new GsonBuilder().serializeNulls().create();
-		publishRequestData(operatorendpoint, url, null, messageContext);
 		int statusCode = 0;
 		String retStr = "";
 		URL neturl;
@@ -1175,186 +1146,20 @@ public abstract class RequestExecutor {
 			if (connection != null) {
 				connection.disconnect();
 			}
-			publishResponseData(statusCode, retStr, messageContext);
 		}
 
 		return retStr;
 	}
 
-	/**
-	 * Publish request data.
-	 *
-	 * @param operatorendpoint
-	 *            the operatorendpoint
-	 * @param url
-	 *            the url
-	 * @param requestStr
-	 *            the request str
-	 * @param messageContext
-	 *            the message context
-	 */
-	private void publishRequestData(OperatorEndpoint operatorendpoint, String url, String requestStr,
-			MessageContext messageContext) {
-		// set properties for request data publisher
-		messageContext.setProperty(DataPublisherConstants.OPERATOR_ID, operatorendpoint.getOperator());
-		messageContext.setProperty(DataPublisherConstants.SB_ENDPOINT, url);
+	
+
 		
-		if (requestStr != null) {
-			// get chargeAmount property for payment API request
-			JSONObject paymentReq = null;
-			try {
-				paymentReq = new JSONObject(requestStr).optJSONObject("amountTransaction");
-				if (paymentReq != null) {
-					String chargeAmount = paymentReq.getJSONObject("paymentAmount").getJSONObject("chargingInformation")
-							.optString("amount");
-					messageContext.setProperty(DataPublisherConstants.CHARGE_AMOUNT, chargeAmount);
-					String payCategory = paymentReq.getJSONObject("paymentAmount").getJSONObject("chargingMetaData")
-							.optString("purchaseCategoryCode");
-					messageContext.setProperty(DataPublisherConstants.PAY_CATEGORY, payCategory);
-				}
-			} catch (JSONException e) {
-				log.error("Error in converting request to json. " + e.getMessage(), e);
-			}
-		}
-
-		// publish data
-		if (publisherClient == null) {
-			publisherClient = new DataPublisherClient();
-		}
-		publisherClient.publishRequest(messageContext, requestStr);
-	}
-
-	/**
-	 * Publish response data.
-	 *
-	 * @param statusCode
-	 *            the status code
-	 * @param retStr
-	 *            the ret str
-	 * @param messageContext
-	 *            the message context
-	 */
-	private void publishResponseData(int statusCode, String retStr, MessageContext messageContext) {
-		// set properties for response data publisher
-		messageContext.setProperty(DataPublisherConstants.RESPONSE_CODE, Integer.toString(statusCode));
-		messageContext.setProperty(DataPublisherConstants.MSISDN,
-				messageContext.getProperty(MSISDNConstants.USER_MSISDN));
-
-		boolean isPaymentReq = false;
-		String paymentType=null;
-
-
-		if (retStr != null && !retStr.isEmpty()) {
-			// get serverReferenceCode property for payment API response
-			JSONObject paymentRes = null;
-			// get exception property for exception response
-			JSONObject exception = null;
-			JSONObject response = null;
-			try {
-				//JSONObject response = new JSONObject(retStr);
-				response  = new JSONObject(retStr);
-				paymentRes = response.optJSONObject("amountTransaction");
-				if (paymentRes != null && !response.optJSONObject("amountTransaction").isNull("originalServerReferenceCode")) {
-					 paymentType = PaymentType.REFUND.getType();
-				} else {
-					 paymentType =PaymentType.CHARGED.getType();
-                }
-				messageContext.setProperty(PublishEventsConstants.PAYMENT_TYPE,paymentType);
-				if (paymentRes != null) {
-					if (paymentRes.has("serverReferenceCode")) {
-						messageContext.setProperty(DataPublisherConstants.OPERATOR_REF,
-								paymentRes.optString("serverReferenceCode"));
-					} else if (paymentRes.has("originalServerReferenceCode")) {
-						messageContext.setProperty(DataPublisherConstants.OPERATOR_REF,
-								paymentRes.optString("originalServerReferenceCode"));
-					}
-					isPaymentReq = true;
-				}
-
-				exception = response.optJSONObject("requestError");
-				if (exception != null) {
-					JSONObject exception_body = exception.optJSONObject("serviceException");
-					if (exception_body == null) {
-						exception_body = exception.optJSONObject("policyException");
-					}
-
-					if (exception_body != null) {
-						log.info("exception id: " + exception_body.optString("messageId"));
-						log.info("exception message: " + exception_body.optString("text"));
-						messageContext.setProperty(DataPublisherConstants.EXCEPTION_ID,
-								exception_body.optString("messageId"));
-						messageContext.setProperty(DataPublisherConstants.EXCEPTION_MESSAGE,
-								exception_body.optString("text"));
-						messageContext.setProperty(DataPublisherConstants.RESPONSE, "1");
-					}
-				}
-			} catch (JSONException e) {
-				log.error("Error in converting response to json. " + e.getMessage(), e);
-			}
-		}
-
-		// publish data to BAM
-		publisherClient.publishResponse(messageContext, retStr);
-		//Response.Status.BAD_REQUEST.getStatusCode();
-		// publish to CEP only the successful payment requests
-	
-		 if (isPaymentReq && statusCode >= HttpStatus.SC_OK && statusCode < HttpStatus.SC_MULTIPLE_CHOICES ) {
-            log.debug("Publish to CEP");
-			publishToCEP(messageContext);
-		}
-	}
-
-	/**
-	 * Publish to cep.
-	 *
-	 * @param messageContext
-	 *            the message context
-	 */
-	private void publishToCEP(MessageContext messageContext) {
-		if (eventsPublisherClient == null) {
-			eventsPublisherClient = new EventsDataPublisherClient();
-		}
-		try {
-	        AuthenticationContext authContext = APISecurityUtils.getAuthenticationContext(messageContext);
-	        String consumerKey = "";
-	        if (authContext != null) {
-	            consumerKey = authContext.getConsumerKey();
-	
-	        }
-	        log.debug("Publish Group data into CEP ");
-	        GroupEventUnmarshaller unmarshaller = GroupEventUnmarshaller.getInstance();
-	        ConsumerSecretWrapperDTO consumerSecretWrapperDTO = unmarshaller.getGroupEventDetailDTO(consumerKey);
-	        List<GroupDTO> groupDTOList = consumerSecretWrapperDTO.getConsumerKeyVsGroup();
-	
-	        if (groupDTOList.size() > 0) {
-	            for (GroupDTO groupDTO : groupDTOList) {
-	            	
-	            	DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-                    Date date = new Date();
-                    String currentDate =  dateFormat.format(date);
-                    messageContext.setProperty(PublishEventsConstants.CURRENT_DATE_TIME,currentDate);
-	                messageContext.setProperty(PublishEventsConstants.GROUP_NAME, groupDTO.getGroupName());
-	                eventsPublisherClient.publishEvent(messageContext);
-	            }
-        }
-    } catch (Exception e) {
-        log.error("error occurred when Unmarshaling ");
-    }
-	}
-	
 	private void publishWalletPaymentData(int statusCode, String retStr, MessageContext messageContext) {
 		        //set properties for response data publisher
 		        messageContext.setProperty(DataPublisherConstants.RESPONSE_CODE, Integer.toString(statusCode));
 		        messageContext.setProperty(DataPublisherConstants.MSISDN, messageContext.getProperty(MSISDNConstants.USER_MSISDN));
 		
-		        boolean isPaymentReq = true;
-		
-		        //publish data to BAM
-		        publisherClient.publishResponse(messageContext, retStr);
-				        //publish to CEP only the successful payment requests
-		        if (isPaymentReq && statusCode >= 200 && statusCode < 300) {
-		          // publishToCEP(messageContext);
-		        }
+		       
 		    }
 		
 		
@@ -1368,7 +1173,6 @@ public abstract class RequestExecutor {
 		    public String makeWalletRequest(OperatorEndpoint operatorendpoint, String url, String requestStr, boolean auth,
 		                              MessageContext messageContext, boolean inclueHeaders) {
 		
-		        publishRequestData(operatorendpoint, url, requestStr, messageContext);
 		
 		        String retStr = "";
 		        int statusCode = 0;
@@ -1483,7 +1287,6 @@ public abstract class RequestExecutor {
         public String makeCreditRequest(OperatorEndpoint operatorendpoint, String url, String requestStr, boolean auth,
                                         MessageContext messageContext, boolean inclueHeaders) {
     
-            publishRequestData(operatorendpoint, url, requestStr, messageContext);
     
             String retStr = "";
             int statusCode = 0;
