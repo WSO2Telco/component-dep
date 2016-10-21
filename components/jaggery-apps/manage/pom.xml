@@ -18,17 +18,21 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
     <groupId>com.wso2telco.dep</groupId>
+    <modelVersion>4.0.0</modelVersion>
+
     <parent>
         <groupId>com.wso2telco.dep</groupId>
         <artifactId>component-dep</artifactId>
         <version>2.0.0-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
+        <relativePath>../../../pom.xml</relativePath>
     </parent>
 
-    <modelVersion>4.0.0</modelVersion>
-    <artifactId>store</artifactId>
+    <artifactId>manage</artifactId>
     <packaging>pom</packaging>
-    <name>WSO2.Telco Store</name>
+
+
+    <name>WSO2.Telco manage</name>
+    <description>manage jageryapp</description>
     <properties>
         <CApp.type>jaggery/app</CApp.type>
     </properties>
@@ -54,7 +58,7 @@
                 <artifactId>maven-assembly-plugin</artifactId>
                 <executions>
                     <execution>
-                        <id>store</id>
+                        <id>manage</id>
                         <phase>package</phase>
                         <goals>
                             <goal>single</goal>
@@ -68,6 +72,6 @@
                 </configuration>
             </plugin>
         </plugins>
-        <finalName>store</finalName>
+        <finalName>manage</finalName>
     </build>
 </project>
