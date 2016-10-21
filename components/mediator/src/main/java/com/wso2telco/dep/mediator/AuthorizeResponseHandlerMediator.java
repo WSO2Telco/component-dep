@@ -16,34 +16,15 @@
 
 package com.wso2telco.dep.mediator;
 
-import com.wso2telco.dep.datapublisher.DataPublisherClient;
-import com.wso2telco.dep.datapublisher.DataPublisherConstants;
-import com.wso2telco.dep.mediator.entity.cep.ConsumerSecretWrapperDTO;
-import com.wso2telco.dep.mediator.internal.PaymentType;
-import com.wso2telco.dep.mediator.unmarshaler.GroupDTO;
-import com.wso2telco.dep.mediator.unmarshaler.GroupEventUnmarshaller;
-import com.wso2telco.dep.publisheventsdata.PublishEventsConstants;
-import com.wso2telco.dep.publisheventsdata.publisher.EventsDataPublisherClient;
-import org.apache.http.HttpStatus;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.mediators.AbstractMediator;
 import org.json.JSONException;
 import org.json.JSONObject;
-import org.wso2.carbon.apimgt.gateway.handlers.security.APISecurityUtils;
-import org.wso2.carbon.apimgt.gateway.handlers.security.AuthenticationContext;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.List;
-import java.util.UUID;
+import com.wso2telco.dep.mediator.util.DataPublisherConstants;
 
 public class AuthorizeResponseHandlerMediator extends AbstractMediator {
 
-    private DataPublisherClient publisherClient;
-
-    /** The events publisher client. */
-    private EventsDataPublisherClient eventsPublisherClient;
 
     /* (non-Javadoc)
      * @see org.apache.synapse.Mediator#mediate(org.apache.synapse.MessageContext)
@@ -87,12 +68,7 @@ public class AuthorizeResponseHandlerMediator extends AbstractMediator {
                 //JSONObject response = new JSONObject(retStr);
                 response  = new JSONObject(retStr);
                 paymentRes = response.optJSONObject("amountTransaction");
-                if (paymentRes != null && !response.optJSONObject("amountTransaction").isNull("originalServerReferenceCode")) {
-                    paymentType = PaymentType.REFUND.getType();
-                } else {
-                    paymentType =PaymentType.CHARGED.getType();
-                }
-                messageContext.setProperty(PublishEventsConstants.PAYMENT_TYPE,paymentType);
+                
                 if (paymentRes != null) {
                     if (paymentRes.has("serverReferenceCode")) {
                         messageContext.setProperty(DataPublisherConstants.OPERATOR_REF,
@@ -126,53 +102,6 @@ public class AuthorizeResponseHandlerMediator extends AbstractMediator {
             }
         }
 
-        // publish data to BAM
-        publisherClient.publishResponse(messageContext, retStr);
-        //Response.Status.BAD_REQUEST.getStatusCode();
-        // publish to CEP only the successful payment requests
-
-        if (isPaymentReq && statusCode >= HttpStatus.SC_OK && statusCode < HttpStatus.SC_MULTIPLE_CHOICES ) {
-            log.debug("Publish to CEP");
-            publishToCEP(messageContext);
-        }
-    }
-
-    /**
-     * Publish to cep.
-     *
-     * @param messageContext
-     *            the message context
-     */
-    private void publishToCEP(MessageContext messageContext) {
-        if (eventsPublisherClient == null) {
-            eventsPublisherClient = new EventsDataPublisherClient();
-        }
-        try {
-            AuthenticationContext authContext = APISecurityUtils.getAuthenticationContext(messageContext);
-            String consumerKey = "";
-            if (authContext != null) {
-                consumerKey = authContext.getConsumerKey();
-
-            }
-            log.debug("Publish Group data into CEP ");
-            GroupEventUnmarshaller unmarshaller = GroupEventUnmarshaller.getInstance();
-            ConsumerSecretWrapperDTO consumerSecretWrapperDTO = unmarshaller.getGroupEventDetailDTO(consumerKey);
-            List<GroupDTO> groupDTOList = consumerSecretWrapperDTO.getConsumerKeyVsGroup();
-
-            if (groupDTOList.size() > 0) {
-                for (GroupDTO groupDTO : groupDTOList) {
-
-                    DateFormat dateFormat = new SimpleDateFormat("yyyy/MM/dd HH:mm:ss");
-                    Date date = new Date();
-                    String currentDate =  dateFormat.format(date);
-                    messageContext.setProperty(PublishEventsConstants.CURRENT_DATE_TIME,currentDate);
-                    messageContext.setProperty(PublishEventsConstants.GROUP_NAME, groupDTO.getGroupName());
-                    eventsPublisherClient.publishEvent(messageContext);
-                }
-            }
-        } catch (Exception e) {
-            log.error("error occurred when Unmarshaling ");
-        }
     }
 
 

@@ -32,16 +32,10 @@ import org.apache.synapse.SynapseConstants;
 import org.apache.synapse.commons.json.JsonUtil;
 import org.apache.synapse.core.SynapseEnvironment;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
-import org.apache.synapse.rest.AbstractHandler;
-import org.json.JSONException;
-import org.json.XML;
+import org.apache.synapse.mediators.AbstractMediator;
 import org.wso2.carbon.apimgt.gateway.handlers.Utils;
 import org.wso2.carbon.apimgt.gateway.handlers.security.APISecurityConstants;
 import javax.naming.NamingException;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -55,7 +49,7 @@ import java.util.regex.Pattern;
 /**
  * The Class WhitelistHandler.
  */
-public class WhitelistHandler extends AbstractHandler implements ManagedLifecycle {
+public class WhitelistHandler extends AbstractMediator implements ManagedLifecycle {
     
     /** The Constant log. */
     private static final Log log = LogFactory.getLog(WhitelistHandler.class);
@@ -67,11 +61,8 @@ public class WhitelistHandler extends AbstractHandler implements ManagedLifecycl
     private List<String> subscriptionList;
 
 
-    /* (non-Javadoc)
-     * @see org.apache.synapse.rest.Handler#handleRequest(org.apache.synapse.MessageContext)
-     */
-    //Entry point to the White list Module
-    public boolean handleRequest(MessageContext messageContext) {
+    //Entry point to the White list Mediator
+    public boolean mediate(MessageContext messageContext) {
 
 
         try {
@@ -230,7 +221,7 @@ public class WhitelistHandler extends AbstractHandler implements ManagedLifecycl
             } else {
                 //nop
             }
-            log.info("MSISDN:" + msisdn);
+            log.info("MSISDN : " + msisdn);
 
             String userMSISDN = ACRModule.getMSISDNFromACR(msisdn);
             String appID = messageContext.getProperty("api.ut.application.id").toString();
@@ -394,13 +385,6 @@ public class WhitelistHandler extends AbstractHandler implements ManagedLifecycl
         payload.addChild(errorMessage);
         payload.addChild(errorDetail);
         return payload;
-    }
-
-    /* (non-Javadoc)
-     * @see org.apache.synapse.rest.Handler#handleResponse(org.apache.synapse.MessageContext)
-     */
-    public boolean handleResponse(MessageContext messageContext) {
-        return true;
     }
 
     /**
