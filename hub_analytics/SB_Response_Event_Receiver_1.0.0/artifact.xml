@@ -1,6 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?> 
-
-<artifact name="Hub_Southbound_Response_Receiver" version="1.0.0" type="event/receiver" serverRole="DataAnalyticsServer">     
-    <file>hub_statistics_southbound_response_receiver.xml</file> 
-</artifact>
-

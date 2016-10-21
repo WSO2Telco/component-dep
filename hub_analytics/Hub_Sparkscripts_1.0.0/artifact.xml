@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?> 
-<artifact name="Hub_Analytics_Script" version="1.0.0" type="analytics/spark" serverRole="DataAnalyticsServer">
-	<file>hub.analytics.spark.xml</file> 
-</artifact> 

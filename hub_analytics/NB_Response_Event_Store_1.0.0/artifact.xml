@@ -1,5 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?> 
-
-<artifact name="Hub_Northbound_Response_Store" version="1.0.0" type="analytics/eventstore" serverRole="DataAnalyticsServer">     
-    <file>COM_WSO2TELCO_STATISTICS_NORTHBOUND_RESPONSE.xml</file> 
-</artifact> 
