@@ -14,33 +14,56 @@
 ~ limitations under the License.
 ~
 -->
+
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
 	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.wso2telco.dep</groupId>
+		<artifactId>component-dep</artifactId>
+		<version>2.0.0-SNAPSHOT</version>
+		<relativePath>../../../pom.xml</relativePath>
+	</parent>
 
-    <parent>
-        <groupId>com.wso2telco.dep</groupId>
-        <artifactId>component-dep</artifactId>
-        <version>2.0.0-SNAPSHOT</version>
-        <relativePath>../../pom.xml</relativePath>
-    </parent>
+    <artifactId>blacklist-whitelist-service</artifactId>
 
-    <artifactId>aggregator-blacklist</artifactId>
+    <name>WSO2.Telco BlackList WhiteList Service</name>
+    <description>WSO2Telco DEP Aggregate Pom</description>
+    <url>http://wso2telco.com</url>
+
     <packaging>war</packaging>
-    <name>WSO2.Telco Aggregator Blacklist Module</name>
-    <description>WSO2.Telco Aggregator Blacklist Module</description>
 
     <dependencies>
         <dependency>
-            <groupId>log4j</groupId>
-            <artifactId>log4j</artifactId>
+            <groupId>com.wso2telco.core</groupId>
+            <artifactId>msisdn-validator</artifactId>
         </dependency>
         <dependency>
             <groupId>com.google.code.gson</groupId>
             <artifactId>gson</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.wso2telco.core</groupId>
-            <artifactId>dbutils</artifactId>
+            <groupId>org.codehaus.jettison</groupId>
+            <artifactId>jettison</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>log4j</groupId>
+            <artifactId>log4j</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-logging</groupId>
+            <artifactId>commons-logging</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>commons-fileupload</groupId>
+            <artifactId>commons-fileupload</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>asm</groupId>
+            <artifactId>asm-all</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>com.wso2telco.dep</groupId>
+            <artifactId>operator-service</artifactId>
         </dependency>
         <dependency>
             <groupId>javax.servlet</groupId>
@@ -51,11 +74,10 @@
             <artifactId>cxf-bundle</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.wso2telco.dep</groupId>
-            <artifactId>operator-service</artifactId>
+            <groupId>com.wso2telco.core</groupId>
+            <artifactId>dbutils</artifactId>
         </dependency>
     </dependencies>
-
 
     <build>
         <plugins>
@@ -72,7 +94,7 @@
                 <version>2.2</version>
                 <configuration>
                     <webXml>${basedir}/src/main/webapp/WEB-INF/web.xml</webXml>
-                    <warName>aggregator-blacklist</warName>
+                    <warName>blacklist-whitelist-service</warName>
                 </configuration>
             </plugin>
             <plugin>

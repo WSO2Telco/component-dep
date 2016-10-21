@@ -63,16 +63,16 @@
         <module>components/mediator</module>
         <!--module>components/publish-events/publish-events-data</module>
           <module>components/publish-events/publish-events-extensions</module-->
-        <module>workflow/workflow-approval</module>
+        <module>components/workflow/workflow-approval</module>
         <module>components/workflow-extensions</module>
-        <module>workflow/workflow-service</module>
+        <module>components/workflow/workflow-service</module>
         <module>components/server-startup-observer</module>
-        <module>webapps/blacklist-whitelist-service</module>
-        <module>webapps/aggregator-blacklist</module>
-        <module>jaggery-apps/manage</module>
-        <module>jaggery-apps/publisher</module>
-        <module>jaggery-apps/sandbox</module>
-        <module>jaggery-apps/store</module>
+        <module>components/webapps/blacklist-whitelist-service</module>
+        <module>components/webapps/aggregator-blacklist</module>
+        <module>components/jaggery-apps/manage</module>
+        <module>components/jaggery-apps/publisher</module>
+        <module>components/jaggery-apps/sandbox</module>
+        <module>components/jaggery-apps/store</module>
         <module>features</module>
     </modules>
 
