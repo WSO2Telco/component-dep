@@ -1,4 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?> 
-<artifact name="Hub_Northbound_Request_Receiver" version="1.0.0" type="event/receiver" serverRole="DataAnalyticsServer">     
-    <file>hub_statistics_northbound_request_receiver.xml</file> 
-</artifact> 
