@@ -171,54 +171,54 @@
 
                                 <copy todir="${tempdir}/activiti-rest/WEB-INF/lib" overwrite="true">
                                     <fileset
-                                            dir="${project.build.directory}/../../../workflow/workflow-approval/target">
+                                            dir="${project.build.directory}/../../../components/workflow/workflow-approval/target">
                                         <include name="workflow-approval-${project.version}.jar"/>
                                     </fileset>
                                 </copy>
                                 <copy todir="${tempdir}/activiti-rest/WEB-INF/lib" overwrite="true">
                                     <fileset
-                                            dir="${project.build.directory}/../../../workflow/workflow-approval/target/dependencies">
+                                            dir="${project.build.directory}/../../../components/workflow/workflow-approval/target/dependencies">
                                         <include name="feign-core-${feign.version}.jar"/>
                                     </fileset>
                                 </copy>
                                 <copy todir="${tempdir}/activiti-rest/WEB-INF/lib" overwrite="true">
                                     <fileset
-                                            dir="${project.build.directory}/../../../workflow/workflow-approval/target/dependencies">
+                                            dir="${project.build.directory}/../../../components/workflow/workflow-approval/target/dependencies">
                                         <include name="feign-jackson-${feign.version}.jar"/>
                                     </fileset>
                                 </copy>
                                 <copy todir="${tempdir}/activiti-rest/WEB-INF/lib" overwrite="true">
                                     <fileset
-                                            dir="${project.build.directory}/../../../workflow/workflow-approval/target/dependencies">
+                                            dir="${project.build.directory}/../../../components/workflow/workflow-approval/target/dependencies">
                                         <include name="jackson-annotations-${jackson.version}.jar"/>
                                     </fileset>
                                 </copy>
                                 <copy todir="${tempdir}/activiti-rest/WEB-INF/lib" overwrite="true">
                                     <fileset
-                                            dir="${project.build.directory}/../../../workflow/workflow-approval/target/dependencies">
+                                            dir="${project.build.directory}/../../../components/workflow/workflow-approval/target/dependencies">
                                         <include name="jackson-core-${jackson.version}.jar"/>
                                     </fileset>
                                 </copy>
                                 <copy todir="${tempdir}/activiti-rest/WEB-INF/lib" overwrite="true">
                                     <fileset
-                                            dir="${project.build.directory}/../../../workflow/workflow-approval/target/dependencies">
+                                            dir="${project.build.directory}/../../../components/workflow/workflow-approval/target/dependencies">
                                         <include name="fjackson-databind-${jackson.version}.jar"/>
                                     </fileset>
                                 </copy>
                                 <copy todir="${tempdir}/activiti-rest/WEB-INF/lib" overwrite="true">
                                     <fileset
-                                            dir="${project.build.directory}/../../../workflow/workflow-approval/target/dependencies">
+                                            dir="${project.build.directory}/../../../components/workflow/workflow-approval/target/dependencies">
                                         <include name="groovy-all-${groovy.version}.jar"/>
                                     </fileset>
                                 </copy>
                                 <copy todir="${project.build.directory}/maven-shared-archive-resources/workflow"
                                       overwrite="true">
                                     <fileset
-                                            dir="${project.build.directory}/../../../workflow/workflow-approval/target">
+                                            dir="${project.build.directory}/../../../components/workflow/workflow-approval/target">
                                         <include name="ApplicationCreationApprovalWorkflow-${project.version}.bar"/>
                                     </fileset>
                                     <fileset
-                                            dir="${project.build.directory}/../../../workflow/workflow-approval/target">
+                                            dir="${project.build.directory}/../../../components/workflow/workflow-approval/target">
                                         <include name="SubscriptionCreationApprovalWorkflow-${project.version}.bar"/>
                                     </fileset>
                                 </copy>
