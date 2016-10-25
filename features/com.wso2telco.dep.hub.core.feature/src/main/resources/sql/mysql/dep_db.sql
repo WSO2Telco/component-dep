@@ -314,12 +314,10 @@ insert into validator (name, class) values ('passthru','com.wso2telco.dep.subscr
 insert into validator (name, class) values ('msisdn','com.wso2telco.dep.subscriptionvalidator.services.impl.MSISDNValidator');
 
 /*
-* Default operators
+* Default operator
 */
 INSERT INTO `operators` (`ID`, `operatorname`, `description`, `created`, `created_date`, `lastupdated`, `lastupdated_date`, `refreshtoken`, `tokenvalidity`, `tokentime`, `token`, `tokenurl`, `tokenauth`) VALUES
-  (1, 'OPERATOR1', 'Opearator 1', 'depuser', NULL, 'depuser', NULL, 'gGgvUANAGhRUzWTyXwYoGuk3WzQa', 157680000, 1395135145139, '4fb164d70def9f37b2f8e2f1daf467', 'http://localhost:8281/token', 'Basic U1JObDQzXzRTVks5MjZaVnNteXExOU1JNVFRYTpEV1Flb2NDeUVyN0lHYk8zRHJxRDc5SmtzVFVh'),
-  (2, 'OPERATOR2', 'Opearator 2', 'depuser', NULL, 'depuser', NULL, 'gGgvUANAGhRUzWTyXwYoGuk3WzQa', 157680000, 1395135145139, '4fb164d70def9f37b2f8e2f1daf467', 'http://localhost:8281/token', 'Basic U1JObDQzXzRTVks5MjZaVnNteXExOU1JNVFRYTpEV1Flb2NDeUVyN0lHYk8zRHJxRDc5SmtzVFVh'),
-  (3, 'OPERATOR3', 'Opearator 3', 'depuser', NULL, 'depuser', NULL, 'gGgvUANAGhRUzWTyXwYoGuk3WzQa', 157680000, 1395135145139, '4fb164d70def9f37b2f8e2f1daf467', 'http://localhost:8281/token', 'Basic U1JObDQzXzRTVks5MjZaVnNteXExOU1JNVFRYTpEV1Flb2NDeUVyN0lHYk8zRHJxRDc5SmtzVFVh');
+  (1, 'OPERATOR1', 'Opearator 1', 'depuser', NULL, 'depuser', NULL, 'gGgvUANAGhRUzWTyXwYoGuk3WzQa', 157680000, 1395135145139, '4fb164d70def9f37b2f8e2f1daf467', 'http://localhost:8281/token', 'Basic U1JObDQzXzRTVks5MjZaVnNteXExOU1JNVFRYTpEV1Flb2NDeUVyN0lHYk8zRHJxRDc5SmtzVFVh');
 
 /*
 * Default operator endpoints point to the sandbox
