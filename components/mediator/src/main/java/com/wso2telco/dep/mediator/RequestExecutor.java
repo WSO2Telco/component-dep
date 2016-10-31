@@ -35,6 +35,7 @@ import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.commons.json.JsonUtil;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
+import org.apache.synapse.transport.passthru.util.RelayUtils;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -293,9 +294,12 @@ public abstract class RequestExecutor {
 		jsonBody = new JSONObject(jsonPayloadToString);
 */
 		try {
-			String jsonPayloadToString = JsonUtil
-					.jsonPayloadToString(((Axis2MessageContext) context)
-							.getAxis2MessageContext());
+
+			org.apache.axis2.context.MessageContext a2mc = ((Axis2MessageContext) context)
+					.getAxis2MessageContext();
+			RelayUtils.buildMessage(a2mc);
+			String jsonPayloadToString = JsonUtil.jsonPayloadToString(a2mc);
+
 			jsonBody = new JSONObject(jsonPayloadToString);
 
 
