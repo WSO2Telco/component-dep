@@ -33,141 +33,116 @@ import java.util.List;
 import java.util.Map;
 
 
-public class SubscriptionApprovalImpl implements SubscriptionApproval{
+public class SubscriptionApprovalImpl implements SubscriptionApproval {
 
     private static Log log = LogFactory.getLog(SubscriptionApprovalImpl.class);
     private WorkflowDbService dbservice = null;
 
 
-	public void updateDBSubHubApproval(
-            Subscription subHUBApprovalDBUpdateRequest) throws Exception{
-		
-		Map<String , String> apiKeyMapping = null;
-		try {
-            WorkflowDbService workflowDbService =new WorkflowDbService();
-			apiKeyMapping = workflowDbService.getWorkflowAPIKeyMappings();
-			
-			int appID = subHUBApprovalDBUpdateRequest.getApplicationID();
-			String apiName = subHUBApprovalDBUpdateRequest.getApiName();
-			int[] idList = null;
-			int counter = 0;
-			
-			log.info("appID : " + appID + " | apiName : " + apiName);
-			
+    public void updateDBSubHubApproval(
+            Subscription subHUBApprovalDBUpdateRequest) throws Exception {
 
-				
-				String apiKey = apiKeyMapping.get(apiName);
-				
-				if (apiKey != null && !apiKey.isEmpty()) {
-					dbservice = new WorkflowDbService();
-					List<Operator> operatorList = dbservice.getOperators();
-					List<OperatorEndPointDTO> operatorEndpoints = dbservice.getOperatorEndpoints();
-				
-					log.info("operatorList.size() : " + operatorList.size());
-					
-					idList = new int[operatorList.size()];
-				
-					for (Iterator iterator = operatorList.iterator(); iterator.hasNext();) {
-						Operator operator = (Operator) iterator.next();
-						log.info("operator name : " + operator.getOperatorName() + "| operator id : " + operator.getOperatorId());
-					
-						for (Iterator iterator2 = operatorEndpoints.iterator(); iterator2.hasNext();) {
-                            OperatorEndPointDTO operatorendpoint = (OperatorEndPointDTO) iterator2.next();
-							log.debug("operatorendpoint.getOperatorid : " + operatorendpoint.getOperatorid());
-						
-							if(operator.getOperatorId() == operatorendpoint.getOperatorid()
-									&& apiKey.equals(operatorendpoint.getApi())) {
-								
-								log.info("operatorendpoint.getId : " + operatorendpoint.getId());
-								idList[counter] = operatorendpoint.getId(); 
-								break;
-							}
-						}
-						counter++;
-					}
-				
-					log.info("idList : " + idList);
-					
-					dbservice.insertOperatorAppEndpoints(new Integer(appID).intValue(), idList);
-				}else {
-					log.error("Please insert API Name into workflow_api_key_mappings table in axiatadb. ");
-				}
-				
+        try {
 
-			
-		} catch (Exception e) {
-			log.error("ERROR: Error occurred while updating axiatadb for subscription HUB approval. " + e.getStackTrace());
+            int appID = subHUBApprovalDBUpdateRequest.getApplicationID();
+            String apiName = subHUBApprovalDBUpdateRequest.getApiName();
+            int[] idList = null;
+            int counter = 0;
+
+            log.info("appID : " + appID + " | apiName : " + apiName);
+
+            dbservice = new WorkflowDbService();
+            List<Operator> operatorList = dbservice.getOperators();
+            List<OperatorEndPointDTO> operatorEndpoints = dbservice.getOperatorEndpoints();
+
+            log.info("operatorList.size() : " + operatorList.size());
+
+            idList = new int[operatorList.size()];
+
+            for (Iterator iterator = operatorList.iterator(); iterator.hasNext(); ) {
+                Operator operator = (Operator) iterator.next();
+                log.info("operator name : " + operator.getOperatorName() + "| operator id : " + operator.getOperatorId());
+
+                for (Iterator iterator2 = operatorEndpoints.iterator(); iterator2.hasNext(); ) {
+                    OperatorEndPointDTO operatorendpoint = (OperatorEndPointDTO) iterator2.next();
+                    log.debug("operatorendpoint.getOperatorid : " + operatorendpoint.getOperatorid());
+
+                    if (operator.getOperatorId() == operatorendpoint.getOperatorid()) {
+                        log.info("operatorendpoint.getId : " + operatorendpoint.getId());
+                        idList[counter] = operatorendpoint.getId();
+                        break;
+                    }
+                }
+                counter++;
+            }
+
+            log.info("idList : " + idList);
+
+            dbservice.insertOperatorAppEndpoints(new Integer(appID).intValue(), idList);
+
+        } catch (Exception e) {
+            log.error("ERROR: Error occurred while updating axiatadb for subscription HUB approval. " + e.getStackTrace());
             throw new Exception();
-		}
-	}
+        }
+    }
 
 
-	public void updateDBSubOpApproval(
-            Subscription subOpApprovalDBUpdateRequest) throws Exception{
-		
-		int appID = subOpApprovalDBUpdateRequest.getApplicationID();
-		int opID;
-		String apiName = subOpApprovalDBUpdateRequest.getApiName();
-		String statusStr = subOpApprovalDBUpdateRequest.getStatus();
-					
-		int operatorEndpointID = -1;
-		
-		try {
-            WorkflowDbService workflowDbService =new WorkflowDbService();
-			Map<String , String> apiKeyMapping = workflowDbService.getWorkflowAPIKeyMappings();
-			String apiKey = apiKeyMapping.get(apiName);
-			
-			dbservice = new WorkflowDbService();
+    public void updateDBSubOpApproval(
+            Subscription subOpApprovalDBUpdateRequest) throws Exception {
+
+        int appID = subOpApprovalDBUpdateRequest.getApplicationID();
+        int opID;
+        String statusStr = subOpApprovalDBUpdateRequest.getStatus();
+        int operatorEndpointID = -1;
+
+        try {
+            dbservice = new WorkflowDbService();
             opID = dbservice.getOperatorIdByName(subOpApprovalDBUpdateRequest.getOperatorName());
-			List<OperatorEndPointDTO> operatorEndpoints = dbservice.getOperatorEndpoints();
-			
-			for (Iterator iterator = operatorEndpoints.iterator(); iterator
-					.hasNext();) {
-                OperatorEndPointDTO operatorendpoint = (OperatorEndPointDTO) iterator
-						.next();
-				
-				if(operatorendpoint.getOperatorid() == new Integer(opID).intValue() && apiKey.equals(operatorendpoint.getApi())) {
-					operatorEndpointID = operatorendpoint.getId();
-					break;
-				}
-			}
-			
-			if (operatorEndpointID > 0) {
-				if (statusStr != null && statusStr.length() > 0) {
-                   dbservice.updateOperatorAppEndpointStatus(new Integer(appID).intValue(), operatorEndpointID,ApprovelStatus.valueOf(statusStr).getValue());
-	            } else {
+            List<OperatorEndPointDTO> operatorEndpoints = dbservice.getOperatorEndpoints();
+
+            for (Iterator iterator = operatorEndpoints.iterator(); iterator.hasNext(); ) {
+                OperatorEndPointDTO operatorendpoint = (OperatorEndPointDTO) iterator.next();
+                if (operatorendpoint.getOperatorid() == new Integer(opID).intValue()) {
+                    operatorEndpointID = operatorendpoint.getId();
+                    break;
+                }
+            }
+
+            if (operatorEndpointID > 0) {
+                if (statusStr != null && statusStr.length() > 0) {
+                    dbservice.updateOperatorAppEndpointStatus(new Integer(appID).intValue(), operatorEndpointID, ApprovelStatus.valueOf(statusStr).getValue());
+                } else {
                     throw new BusinessException(GenaralError.UNDEFINED);
-	            }
-			}				
-			
-		} catch (NumberFormatException e) {
+                }
+            }
+
+        } catch (NumberFormatException e) {
             log.error("ERROR: NumberFormatException. " + e.getStackTrace());
             throw new NumberFormatException();
-			
-		} catch (Exception e) {
+
+        } catch (Exception e) {
             log.error("ERROR: Exception. " + e.getStackTrace());
             throw new Exception();
-		}
-	}
-
+        }
+    }
 
 
     public void insertValidatorForSubscription(
-            SubscriptionValidation hUBApprovalSubValidatorRequest) throws Exception{
-		
-		int appID = hUBApprovalSubValidatorRequest.getApplicationID();
-		int apiID = hUBApprovalSubValidatorRequest.getApiID();
+            SubscriptionValidation hUBApprovalSubValidatorRequest) throws Exception {
 
-			try {
-				dbservice = new WorkflowDbService();
-				dbservice.insertValidatorForSubscription(appID,apiID, 1);
-				
-			} catch (Exception e) {
-                log.error("ERROR: Exception. " + e.getStackTrace());
-                throw new Exception();
-			}
+        int appID = hUBApprovalSubValidatorRequest.getApplicationID();
+        int apiID = hUBApprovalSubValidatorRequest.getApiID();
 
-		
-	}
+        try {
+            dbservice = new WorkflowDbService();
+            dbservice.insertValidatorForSubscription(appID, apiID, 1);
+
+        } catch (Exception e) {
+            log.error("ERROR: Exception. " + e.getStackTrace());
+            throw new Exception();
+        }
+
+
+    }
 
 }
