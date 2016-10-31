@@ -171,6 +171,16 @@
                                         <include name="engine.properties" />
                                     </fileset>
                                 </copy>
+                                <copy todir="${tempdir}/activiti-rest/WEB-INF/classes" overwrite="true">
+                                    <fileset dir="${project.build.directory}/../src/main/resources">
+                                        <include name="activiti-custom-context.xml" />
+                                    </fileset>
+                                </copy>
+                                <copy todir="${tempdir}/activiti-explorer/WEB-INF/classes" overwrite="true">
+                                    <fileset dir="${project.build.directory}/../src/main/resources">
+                                        <include name="activiti-custom-context.xml" />
+                                    </fileset>
+                                </copy>
 
                                 <copy todir="${tempdir}/activiti-rest/WEB-INF/lib" overwrite="true">
                                     <fileset dir="${project.build.directory}/../../../components/workflow/workflow-approval/target">
