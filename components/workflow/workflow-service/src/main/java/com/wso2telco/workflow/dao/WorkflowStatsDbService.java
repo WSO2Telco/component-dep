@@ -57,7 +57,7 @@ public class WorkflowStatsDbService {
             ps.execute();
 
         } catch (SQLException e) {
-            throw new SQLException();
+            log.error("Workflow Stats Db Service error"+e);
         } catch (Exception e) {
             throw new BusinessException(GenaralError.UNDEFINED);
         } finally {
@@ -88,7 +88,7 @@ public class WorkflowStatsDbService {
             ps.execute();
 
         } catch (SQLException e) {
-            throw new SQLException();
+            log.error("Workflow Stats Db Service error"+e);
         } catch (Exception e) {
             throw new BusinessException(GenaralError.UNDEFINED);
         } finally {

@@ -41,25 +41,17 @@ public class SubscriptionApprovalImpl implements SubscriptionApproval{
 
 	public void updateDBSubHubApproval(
             Subscription subHUBApprovalDBUpdateRequest) throws Exception{
-		
-		Map<String , String> apiKeyMapping = null;
+
 		try {
-            WorkflowDbService workflowDbService =new WorkflowDbService();
-			apiKeyMapping = workflowDbService.getWorkflowAPIKeyMappings();
-			
+
 			int appID = subHUBApprovalDBUpdateRequest.getApplicationID();
 			String apiName = subHUBApprovalDBUpdateRequest.getApiName();
 			int[] idList = null;
 			int counter = 0;
-			
-			log.info("appID : " + appID + " | apiName : " + apiName);
-			
 
-				
-				String apiKey = apiKeyMapping.get(apiName);
-				
-				if (apiKey != null && !apiKey.isEmpty()) {
-					dbservice = new WorkflowDbService();
+			log.info("appID : " + appID + " | apiName : " + apiName);
+
+                	dbservice = new WorkflowDbService();
 					List<Operator> operatorList = dbservice.getOperators();
 					List<OperatorEndPointDTO> operatorEndpoints = dbservice.getOperatorEndpoints();
 				
@@ -75,9 +67,7 @@ public class SubscriptionApprovalImpl implements SubscriptionApproval{
                             OperatorEndPointDTO operatorendpoint = (OperatorEndPointDTO) iterator2.next();
 							log.debug("operatorendpoint.getOperatorid : " + operatorendpoint.getOperatorid());
 						
-							if(operator.getOperatorId() == operatorendpoint.getOperatorid()
-									&& apiKey.equals(operatorendpoint.getApi())) {
-								
+							if(operator.getOperatorId() == operatorendpoint.getOperatorid()) {
 								log.info("operatorendpoint.getId : " + operatorendpoint.getId());
 								idList[counter] = operatorendpoint.getId(); 
 								break;
@@ -89,12 +79,7 @@ public class SubscriptionApprovalImpl implements SubscriptionApproval{
 					log.info("idList : " + idList);
 					
 					dbservice.insertOperatorAppEndpoints(new Integer(appID).intValue(), idList);
-				}else {
-					log.error("Please insert API Name into workflow_api_key_mappings table in axiatadb. ");
-				}
-				
 
-			
 		} catch (Exception e) {
 			log.error("ERROR: Error occurred while updating axiatadb for subscription HUB approval. " + e.getStackTrace());
             throw new Exception();
@@ -107,17 +92,11 @@ public class SubscriptionApprovalImpl implements SubscriptionApproval{
 		
 		int appID = subOpApprovalDBUpdateRequest.getApplicationID();
 		int opID;
-		String apiName = subOpApprovalDBUpdateRequest.getApiName();
-		String statusStr = subOpApprovalDBUpdateRequest.getStatus();
-					
-		int operatorEndpointID = -1;
+    	String statusStr = subOpApprovalDBUpdateRequest.getStatus();
+        int operatorEndpointID = -1;
 		
 		try {
-            WorkflowDbService workflowDbService =new WorkflowDbService();
-			Map<String , String> apiKeyMapping = workflowDbService.getWorkflowAPIKeyMappings();
-			String apiKey = apiKeyMapping.get(apiName);
-			
-			dbservice = new WorkflowDbService();
+    		dbservice = new WorkflowDbService();
             opID = dbservice.getOperatorIdByName(subOpApprovalDBUpdateRequest.getOperatorName());
 			List<OperatorEndPointDTO> operatorEndpoints = dbservice.getOperatorEndpoints();
 			
@@ -126,7 +105,7 @@ public class SubscriptionApprovalImpl implements SubscriptionApproval{
                 OperatorEndPointDTO operatorendpoint = (OperatorEndPointDTO) iterator
 						.next();
 				
-				if(operatorendpoint.getOperatorid() == new Integer(opID).intValue() && apiKey.equals(operatorendpoint.getApi())) {
+				if(operatorendpoint.getOperatorid() == new Integer(opID).intValue()) {
 					operatorEndpointID = operatorendpoint.getId();
 					break;
 				}
