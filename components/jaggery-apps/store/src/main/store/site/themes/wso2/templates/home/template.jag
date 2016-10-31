@@ -117,9 +117,9 @@
             <!-- Arrow Left -->
 
      <!-- Arrow Left -->
-            <span u="arrowleft" class="jssora12l" style="width: 41px; height: 229px; top: 270px; left: 0px;"></span>
+            <span u="arrowleft" class="jssora12l" style="width: 41px; height: 229px; top: 110px; left: 0px;"></span>
             <!-- Arrow Right -->
-            <span u="arrowright" class="jssora12r" style="width: 41px; height: 229px; top: 270px; left: 915px;"></span>
+            <span u="arrowright" class="jssora12r" style="width: 41px; height: 229px; top: 110px; left: 554px;"></span>
         <!-- iArrow Navigator Skin End -->
        </div>
        </div>
