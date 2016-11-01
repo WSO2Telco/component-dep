@@ -24,8 +24,7 @@ jagg.block("menu/primary", {
         	"tooltip":"",
         	"active":(path == "/site/pages/home.jag")
 		});
-        
-        //links.push({
+	//		links.push({
 	//		"title":"Billing & Metering",
 	//		"url":jagg.getMappedUrl("/site/pages/billing-metering.jag"),
 	//		"classes":"link-home",
@@ -44,8 +43,7 @@ jagg.block("menu/primary", {
         	"tooltip":"",
         	"active":(path == "/site/pages/home.jag")
 		});
-        
-        //links.push({
+	//		links.push({
 	//		"title":"Billing & Metering",
 	//		"url":jagg.getMappedUrl("/site/pages/billing-metering.jag"),
 	//		"classes":"link-home",
@@ -64,17 +62,17 @@ jagg.block("menu/primary", {
 			});
         }
 
-        //if(isAdmin == true || isOperator != null) {
-        //links.push({
-        //    "title":"Blacklist",
-        //    "url":jagg.getMappedUrl("/site/pages/blacklist.jag"),
-        //    "classes":"link-home",
-        //    "classIcon":"icon-blacklist",
-        //    "tooltip":"",
-        //    "active":(path == "/site/pages/blacklist.jag")
-        //});
-        //}
-        //if(isAdmin == true || isOperator != null) {
+	//if(isAdmin == true || isOperator != null) {
+    //  links.push({
+    //     "title":"Blacklist",
+    //     "url":jagg.getMappedUrl("/site/pages/blacklist.jag"),
+    //     "classes":"link-home",
+    //     "classIcon":"icon-blacklist",
+    //     "tooltip":"",
+    //     "active":(path == "/site/pages/blacklist.jag")
+    //});
+    //}
+    //if(isAdmin == true || isOperator != null) {
 	//	links.push({
 	//		"title":"Whitelist",
 	//		"url":jagg.getMappedUrl("/site/pages/whitelist.jag"),
@@ -83,7 +81,7 @@ jagg.block("menu/primary", {
 	//		"tooltip":"",
 	//		"active":(path == "/site/pages/whitelist.jag")
 	//	});
-        //}
+    //}
 
 		}
 		
