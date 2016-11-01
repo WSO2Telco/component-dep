@@ -1,7 +1,7 @@
 $(window).load(function() {
 
     if($('.affix').length > 0){
-        $('.media').prepend('<div class="affix-spacer hidden-xs" style="width:' + $('.sidebar-wrapper').width() + 'px;float:left;height: 100vh"></div>');
+        $('.media').prepend('<div class="affix-spacer hidden-xs" style="width:' + $('.sidebar-wrapper').width() + 'px;float:left;height: 75vh"></div>');
     }
 
     $(".search-wrap .dropdown-menu li a").click(function() {
@@ -57,7 +57,7 @@ $(window).load(function() {
      */
     $('.sidebar-wrapper').on('affix.bs.affix', function() {
         var sidebarWidth = $(this).width();
-        $('.media').prepend('<div class="affix-spacer hidden-xs" style="width:' + sidebarWidth + 'px;float:left;height: 100vh"></div>');
+        $('.media').prepend('<div class="affix-spacer hidden-xs" style="width:' + sidebarWidth + 'px;float:left;height: 75vh"></div>');
         $('.media .media-left').css({'width': sidebarWidth});
     }).on('affixed-top.bs.affix', function() {
         $('.affix-spacer').remove();
