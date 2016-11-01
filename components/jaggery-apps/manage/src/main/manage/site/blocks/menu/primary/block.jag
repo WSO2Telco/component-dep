@@ -24,15 +24,14 @@ jagg.block("menu/primary", {
         	"tooltip":"",
         	"active":(path == "/site/pages/home.jag")
 		});
-        
-        links.push({
-			"title":"Billing & Metering",
-			"url":jagg.getMappedUrl("/site/pages/billing-metering.jag"),
-			"classes":"link-home",
-			"classIcon":"icon-billing",
-			"tooltip":"",
-			"active":(path == "/site/pages/billing-metering.jag")
-		});
+	//		links.push({
+	//		"title":"Billing & Metering",
+	//		"url":jagg.getMappedUrl("/site/pages/billing-metering.jag"),
+	//		"classes":"link-home",
+	//		"classIcon":"icon-billing",
+	//		"tooltip":"",
+	//		"active":(path == "/site/pages/billing-metering.jag")
+	//	});
 		
 		} else {
         
@@ -44,15 +43,14 @@ jagg.block("menu/primary", {
         	"tooltip":"",
         	"active":(path == "/site/pages/home.jag")
 		});
-        
-        links.push({
-			"title":"Billing & Metering",
-			"url":jagg.getMappedUrl("/site/pages/billing-metering.jag"),
-			"classes":"link-home",
-			"classIcon":"icon-billing",
-			"tooltip":"",
-			"active":(path == "/site/pages/billing-metering.jag")
-		});
+	//		links.push({
+	//		"title":"Billing & Metering",
+	//		"url":jagg.getMappedUrl("/site/pages/billing-metering.jag"),
+	//		"classes":"link-home",
+	//		"classIcon":"icon-billing",
+	//		"tooltip":"",
+	//		"active":(path == "/site/pages/billing-metering.jag")
+	//	});
         if(isAdmin == true || isOperator != null) {
         	links.push({
         				"title":"Workflow",
@@ -64,26 +62,26 @@ jagg.block("menu/primary", {
 			});
         }
 
-        if(isAdmin == true || isOperator != null) {
-        links.push({
-            "title":"Blacklist",
-            "url":jagg.getMappedUrl("/site/pages/blacklist.jag"),
-            "classes":"link-home",
-            "classIcon":"icon-blacklist",
-            "tooltip":"",
-            "active":(path == "/site/pages/blacklist.jag")
-        });
-        }
-        if(isAdmin == true || isOperator != null) {
-		links.push({
-			"title":"Whitelist",
-			"url":jagg.getMappedUrl("/site/pages/whitelist.jag"),
-			"classes":"link-home",
-			"classIcon":"icon-blacklist",
-			"tooltip":"",
-			"active":(path == "/site/pages/whitelist.jag")
-		});
-        }
+	//if(isAdmin == true || isOperator != null) {
+    //  links.push({
+    //     "title":"Blacklist",
+    //     "url":jagg.getMappedUrl("/site/pages/blacklist.jag"),
+    //     "classes":"link-home",
+    //     "classIcon":"icon-blacklist",
+    //     "tooltip":"",
+    //     "active":(path == "/site/pages/blacklist.jag")
+    //});
+    //}
+    //if(isAdmin == true || isOperator != null) {
+	//	links.push({
+	//		"title":"Whitelist",
+	//		"url":jagg.getMappedUrl("/site/pages/whitelist.jag"),
+	//		"classes":"link-home",
+	//		"classIcon":"icon-blacklist",
+	//		"tooltip":"",
+	//		"active":(path == "/site/pages/whitelist.jag")
+	//	});
+    //}
 
 		}
 		
