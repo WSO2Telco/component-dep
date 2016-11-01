@@ -27,7 +27,7 @@ var MultitenantUtils = Packages.org.wso2.carbon.utils.multitenancy.MultitenantUt
 <header class="header header-default">
     <div class="container-fluid">
        <div class="pull-left brand float-remove-xs text-center-xs">
-          <a href="<%=jagg.getMappedUrl("/site/pages/index.jag")%>" title="API Store">
+          <a href="<%=jagg.getMappedUrl("")%>" title="API Store">
               <img src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("libs/theme-wso2_1.0/images/logo-inverse.svg"))%>" class="logo" alt="<%=i18n.localize("APIStore Home")%>"/>
               <h1 class="display-block-xs"><%=i18n.localize("API Store")%></h1>
           </a>
