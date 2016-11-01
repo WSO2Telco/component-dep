@@ -22,6 +22,7 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.core.ServerStartupObserver;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.osgi.service.component.ComponentContext;
+import org.wso2.carbon.user.core.service.RealmService;
 
 /**
  * @scr.component name="hub.startup.observer.component" immediate="true"
@@ -30,6 +31,9 @@ import org.osgi.service.component.ComponentContext;
  * cardinality="1..1"
  * policy="dynamic" bind="setRegistryService"
  * unbind="unsetRegistryService"
+ * @scr.reference name="user.realm.service"
+ * interface="org.wso2.carbon.user.core.service.RealmService"
+ * cardinality="1..1" policy="dynamic" bind="setRealmService" unbind="unsetRealmService"
  */
 public class HubStartupObserverComponent {
 
@@ -60,6 +64,14 @@ public class HubStartupObserverComponent {
 
     protected void unsetRegistryService(RegistryService registryService) {
         ServiceReferenceHolder.getInstance().setRegistryService(null);
+    }
+
+    protected void setRealmService(RealmService realmService) {
+        ServiceReferenceHolder.getInstance().setRealmService(realmService);
+    }
+
+    protected void unsetRealmService(RealmService realmService) {
+        ServiceReferenceHolder.getInstance().setRealmService(null);
     }
 
 }

@@ -24,6 +24,10 @@ import org.wso2.carbon.registry.core.Resource;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.registry.core.session.UserRegistry;
+import org.wso2.carbon.user.api.Permission;
+import org.wso2.carbon.user.api.UserStoreManager;
+import org.wso2.carbon.user.core.UserRealm;
+import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.File;
@@ -42,6 +46,7 @@ public class HubStartupObserver implements ServerStartupObserver {
     private static final String WORKFLOW_MEDIA_TYPE = "workflow-config";
     private static final String WORKFLOW_EXTENSIONS_FILE = "workflow-extensions.xml";
     private static final String WORKFLOW_EXECUTOR_LOCATION = API_APPLICATION_DATA_LOCATION + "/" + WORKFLOW_EXTENSIONS_FILE;
+    private static final String MANAGE_APP_ADMIN_ROLE = "manage-app-admin";
 
     private static final Log log = LogFactory.getLog(HubStartupObserver.class);
 
@@ -53,6 +58,7 @@ public class HubStartupObserver implements ServerStartupObserver {
         }
 
         updateWorkflowConfigsInRegistry();
+        createDefaultRolesAndAssignToSuperAdmin();
     }
 
     /**
@@ -155,6 +161,33 @@ public class HubStartupObserver implements ServerStartupObserver {
             }
         } catch (RegistryException e) {
             handleError("Error checking existence of Workflow extensions at " + WORKFLOW_EXECUTOR_LOCATION, e);
+        }
+    }
+
+    /**
+     * Assign the relevant roles to super tenant to use workflows with manage jaggery app
+     * The role name is hard coded to 'manage-app-admin'. This role should be the same as
+     * 'adminRole' of manage/src/main/manage/site/conf/site.json
+     */
+    private void createDefaultRolesAndAssignToSuperAdmin () {
+
+        String role = MANAGE_APP_ADMIN_ROLE;
+
+        try {
+            RealmService realmService = ServiceReferenceHolder.getInstance().getRealmService();
+            UserRealm realm = realmService.getBootstrapRealm();
+            UserStoreManager manager = realm.getUserStoreManager();
+            if (!manager.isExistingRole(role)) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Creating " + MANAGE_APP_ADMIN_ROLE + " role: " + role);
+                }
+                Permission[] loginPermission = new Permission[]{new Permission("/permission/admin/login", "ui.execute")};
+                String superTenantName = ServiceReferenceHolder.getInstance().getRealmService().getBootstrapRealmConfiguration().getAdminUserName();
+                String[] userList = new String[]{superTenantName};
+                manager.addRole(role, userList, loginPermission);
+            }
+        } catch (Exception e) {
+            log.error("Error in assigning 'manage-app-admin' role to super tenant", e);
         }
     }
 
