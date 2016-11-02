@@ -59,7 +59,7 @@ public class OperatorAdminDbUpdater implements JavaDelegate {
         String completedOn= arg0.getVariable(Constants.COMPLETED_ON).toString();
         String completedByRole=arg0.getVariable(Constants.OPERATOR).toString()+Constants.ADMIN_ROLE;
         String applicationName= arg0.getVariable(Constants.APPLICATION_NAME).toString();
-        String description= arg0.getVariable(Constants.DESCRIPTION).toString();
+        String description= arg0.getVariable(Constants.APPLICATION_DESCRIPTION).toString();
         String selectedTier= arg0.getVariable(Constants.SELECTED_TIER).toString();
         String adminPassword= arg0.getVariable(Constants.ADMIN_PASSWORD).toString();
         String apiContext= arg0.getVariable(Constants.API_CONTEXT).toString();
