@@ -57,5 +57,6 @@ public class Constants {
     public static final String WORKFLOW_ADMIN_ROLE="admin";
     public static final String APPLICATION_DESCRIPTION="applicationDescription";
     public static final String API_TIERS="apiTiers";
+    public static final String OPERATORS="operators";
 
 }

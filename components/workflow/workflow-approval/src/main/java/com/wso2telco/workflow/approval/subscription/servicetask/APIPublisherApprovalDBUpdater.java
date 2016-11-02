@@ -38,25 +38,26 @@ public class APIPublisherApprovalDBUpdater implements JavaDelegate {
 
     public void execute(DelegateExecution arg0) throws Exception {
 
-        AuthRequestInterceptor authRequestInterceptor=new AuthRequestInterceptor();
-        String operatorName = arg0.getVariable("operators").toString();
-        int applicationId=Integer.parseInt(arg0.getVariable(Constants.APPLICATION_ID).toString());
-        String serviceUrl =arg0.getVariable(Constants.SERVICE_URL).toString();
-        String apiName=arg0.getVariable(Constants.API_NAME).toString();
-        int apiID=Integer.parseInt(arg0.getVariable(Constants.API_ID).toString());
+        AuthRequestInterceptor authRequestInterceptor = new AuthRequestInterceptor();
+        String operatorNames[] = arg0.getVariable(Constants.OPERATORS).toString().split(",");
+        String operatorName = operatorNames[0];
+        int applicationId = Integer.parseInt(arg0.getVariable(Constants.APPLICATION_ID).toString());
+        String serviceUrl = arg0.getVariable(Constants.SERVICE_URL).toString();
+        String apiName = arg0.getVariable(Constants.API_NAME).toString();
+        int apiID = Integer.parseInt(arg0.getVariable(Constants.API_ID).toString());
         String deploymentType = arg0.getVariable(Constants.DEPLOYMENT_TYPE).toString();
         String apiVersion = arg0.getVariable(Constants.API_VERSION).toString();
-        String apiProvider= arg0.getVariable(Constants.API_PROVIDER).toString();
-        String completedByUser= arg0.getVariable(Constants.COMPLETE_BY_USER).toString();
-        String completedOn= arg0.getVariable(Constants.COMPLETED_ON).toString();
-        String completedByRole=operatorName+Constants.ADMIN_ROLE;
-        String applicationName= arg0.getVariable(Constants.APPLICATION_NAME).toString();
-        String description= arg0.getVariable(Constants.DESCRIPTION).toString();
-        String selectedTier= arg0.getVariable(Constants.SELECTED_TIER).toString();
-        String operatorAdminApprovalStatus = arg0.getVariable(Constants.OPERATOR_ADMIN_APPROVAL).toString();
-        String adminPassword= arg0.getVariable(Constants.ADMIN_PASSWORD).toString();
-        String apiContext= arg0.getVariable(Constants.API_CONTEXT).toString();
-        String subscriber=  arg0.getVariable(Constants.SUBSCRIBER).toString();
+        String apiProvider = arg0.getVariable(Constants.API_PROVIDER).toString();
+        String completedByUser = arg0.getVariable(Constants.COMPLETE_BY_USER).toString();
+        String completedOn = arg0.getVariable(Constants.COMPLETED_ON).toString();
+        String completedByRole = operatorName + Constants.ADMIN_ROLE;
+        String applicationName = arg0.getVariable(Constants.APPLICATION_NAME).toString();
+        String description = arg0.getVariable(Constants.APPLICATION_DESCRIPTION).toString();
+        String selectedTier = arg0.getVariable(Constants.SELECTED_TIER).toString();
+        String operatorAdminApprovalStatus = arg0.getVariable(Constants.API_PUBLISHER_APPROVAL).toString();
+        String adminPassword = arg0.getVariable(Constants.ADMIN_PASSWORD).toString();
+        String apiContext = arg0.getVariable(Constants.API_CONTEXT).toString();
+        String subscriber = arg0.getVariable(Constants.SUBSCRIBER).toString();
 
         SubscriptionWorkflowApi api = Feign.builder()
                 .encoder(new JacksonEncoder())
@@ -72,18 +73,17 @@ public class APIPublisherApprovalDBUpdater implements JavaDelegate {
                 .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminPassword))
                 .target(NotificationApi.class, serviceUrl);
 
-
-        Subscription subscription=new Subscription();
+        Subscription subscription = new Subscription();
         subscription.setApiName(apiName);
         subscription.setApplicationID(applicationId);
         subscription.setStatus(operatorAdminApprovalStatus);
         subscription.setOperatorName(operatorName);
 
-        SubscriptionValidation subscriptionValidation=new SubscriptionValidation();
+        SubscriptionValidation subscriptionValidation = new SubscriptionValidation();
         subscriptionValidation.setApiID(apiID);
         subscriptionValidation.setApplicationID(applicationId);
 
-        SubscriptionApprovalAuditRecord subscriptionApprovalAuditRecord=new SubscriptionApprovalAuditRecord();
+        SubscriptionApprovalAuditRecord subscriptionApprovalAuditRecord = new SubscriptionApprovalAuditRecord();
         subscriptionApprovalAuditRecord.setApiName(apiName);
         subscriptionApprovalAuditRecord.setApiProvider(apiProvider);
         subscriptionApprovalAuditRecord.setApiVersion(apiVersion);
@@ -94,7 +94,7 @@ public class APIPublisherApprovalDBUpdater implements JavaDelegate {
         subscriptionApprovalAuditRecord.setSubApprovalType("PUBLISHER_APPROVAL");
         subscriptionApprovalAuditRecord.setSubStatus(operatorAdminApprovalStatus);
 
-        SubApprovalStatusSPNotificationRequest subApprovalStatusSPNotificationRequest=new SubApprovalStatusSPNotificationRequest();
+        SubApprovalStatusSPNotificationRequest subApprovalStatusSPNotificationRequest = new SubApprovalStatusSPNotificationRequest();
         subApprovalStatusSPNotificationRequest.setApprovalStatus(operatorAdminApprovalStatus);
         subApprovalStatusSPNotificationRequest.setApplicationName(applicationName);
         subApprovalStatusSPNotificationRequest.setApiProvider(apiProvider);
