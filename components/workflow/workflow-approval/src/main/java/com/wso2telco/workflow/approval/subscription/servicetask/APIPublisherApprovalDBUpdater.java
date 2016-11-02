@@ -39,7 +39,8 @@ public class APIPublisherApprovalDBUpdater implements JavaDelegate {
     public void execute(DelegateExecution arg0) throws Exception {
 
         AuthRequestInterceptor authRequestInterceptor=new AuthRequestInterceptor();
-        String operatorName = arg0.getVariable("operators").toString();
+        String operatorNames[] = arg0.getVariable(Constants.OPERATORS).toString().split(",");
+        String operatorName = operatorNames[0];
         int applicationId=Integer.parseInt(arg0.getVariable(Constants.APPLICATION_ID).toString());
         String serviceUrl =arg0.getVariable(Constants.SERVICE_URL).toString();
         String apiName=arg0.getVariable(Constants.API_NAME).toString();
@@ -51,9 +52,9 @@ public class APIPublisherApprovalDBUpdater implements JavaDelegate {
         String completedOn= arg0.getVariable(Constants.COMPLETED_ON).toString();
         String completedByRole=operatorName+Constants.ADMIN_ROLE;
         String applicationName= arg0.getVariable(Constants.APPLICATION_NAME).toString();
-        String description= arg0.getVariable(Constants.DESCRIPTION).toString();
+        String description= arg0.getVariable(Constants.APPLICATION_DESCRIPTION).toString();
         String selectedTier= arg0.getVariable(Constants.SELECTED_TIER).toString();
-        String operatorAdminApprovalStatus = arg0.getVariable(Constants.OPERATOR_ADMIN_APPROVAL).toString();
+        String operatorAdminApprovalStatus = arg0.getVariable(Constants.API_PUBLISHER_APPROVAL).toString();
         String adminPassword= arg0.getVariable(Constants.ADMIN_PASSWORD).toString();
         String apiContext= arg0.getVariable(Constants.API_CONTEXT).toString();
         String subscriber=  arg0.getVariable(Constants.SUBSCRIBER).toString();
