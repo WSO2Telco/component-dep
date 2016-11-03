@@ -45,8 +45,6 @@ var getCustomBilling = function() {
         return billingHostObj;
     } else {
         billing = require('reportservice');
-	var log = new Log();
-	log.info("**** billing : "+billing);
         return new billing.BillingHostObject(user.username);
     }
 };
