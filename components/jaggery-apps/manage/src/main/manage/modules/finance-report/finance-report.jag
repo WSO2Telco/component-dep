@@ -146,7 +146,6 @@ function getSubscribersByOperator(operatorName){
 
 function getRevenueChartData(subscriber, period, operator, app, user, isNorthbound){
 	var log = new Log();
-	//log.info("*****************************************");
 	
 	/*Identify the Subscriber*/
 	if (isAdmin != true && isOperator == null) {

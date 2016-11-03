@@ -104,7 +104,6 @@ function getOperatorsBySubscriber(subscriberName){
 
 function getErrorResponseCodes(fromDate, toDate, subscriber, application, operator, api){
 	var log = new Log();
-	log.info("*****************************************");
 
 	/*Identify the Operator*/
 	if(isAdmin != true && isOperator != null){

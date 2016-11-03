@@ -56,7 +56,9 @@ public class StoreHostObject extends ScriptableObject {
 	 * Instantiates a new axiata store host object.
 	 */
 	public StoreHostObject() {
-		log.info("::: Initialized HostObject ");
+		if (log.isDebugEnabled()) {
+			log.debug("Initialized HostObject StoreHostObject");
+		}
 	}
 
 /**

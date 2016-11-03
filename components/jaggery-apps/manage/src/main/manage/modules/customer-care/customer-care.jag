@@ -8,7 +8,6 @@ var isOperator = jagg.getUser().operator;
 function getCustomerCareData(fromDate, toDate, msisdn, selectedSubscriber, selectedOperator, app, api, username, stLimit, endLimit,timeOffset){
 
 	var log = new Log();
-	log.info("*****************************************");
 
 	/*Identify the Subscriber*/
 	if (isAdmin != true && isOperator == null) {
@@ -54,7 +53,6 @@ function getCustomerCareData(fromDate, toDate, msisdn, selectedSubscriber, selec
 function getCustomerCareDataCount(fromDate, toDate, msisdn, selectedSubscriber, selectedOperator, app, api, username){
 
 	var log = new Log();
-	log.info("*****************************************");
 
 	/*Identify the Subscriber*/
 	if (isAdmin != true && isOperator == null) {

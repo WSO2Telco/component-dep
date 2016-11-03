@@ -133,7 +133,9 @@ public class BillingHostObject extends ScriptableObject {
      * @throws APIManagementException the API management exception
      */
     public BillingHostObject(String username) throws BusinessException{
-        log.info("::: Initialized HostObject for : " + username);
+        if (log.isDebugEnabled()) {
+            log.debug("Initialized HostObject BillingHostObject for : " + username);
+        }
         try {
 			if (username != null) {
 			    this.username = username;
@@ -151,7 +153,9 @@ public class BillingHostObject extends ScriptableObject {
      * Instantiates a new billing host object.
      */
     public BillingHostObject() {
-        log.info("::: Initialized HostObject ");
+        if (log.isDebugEnabled()) {
+            log.debug("Initialized HostObject BillingHostObject");
+        }
     }
 
     /**
