@@ -69,17 +69,15 @@ public class OperatorDataUpdater implements JavaDelegate {
 		log.info("In OperatorDataUpdater, Operator admin approval status: " + operatorAdminApprovalStatus +
 				" Operator: " + operatorName +"applicationId :"+applicationId);
 
-        Application application=new Application();
-        application.setApplicationID(Integer.parseInt(applicationId));
-        application.setStatus(operatorAdminApprovalStatus);
-        application.setOperatorID(1);
-        application.setOperatorName(operatorName);
            try {
-            if(deploymentType.equalsIgnoreCase(Constants.GATEWAY)){
+            if(deploymentType.equalsIgnoreCase(Constants.HUB)){
+                Application application=new Application();
+                application.setApplicationID(Integer.parseInt(applicationId));
+                application.setStatus(operatorAdminApprovalStatus);
+                application.setOperatorID(1);
+                application.setOperatorName(operatorName);
             api.applicationApprovalHub(application);
             }
-            api.applicationApprovalOperator(application);
-
             ApplicationApprovalAuditRecord applicationApprovalAuditRecord=new ApplicationApprovalAuditRecord();
             applicationApprovalAuditRecord.setAppApprovalType("ADMIN");
             applicationApprovalAuditRecord.setAppCreator(userName);
