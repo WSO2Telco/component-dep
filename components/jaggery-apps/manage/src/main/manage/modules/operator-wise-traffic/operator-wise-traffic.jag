@@ -42,7 +42,9 @@ function getAppsBySubscriber(selectedSubscriber){
 	var apps = [];
 	try {
 		apps = store.getApplications(selectedSubscriber);
+		if (log.isDebugEnabeld()) {
 			log.debug("Application List: " + stringify(apps));
+		}
 		return {error:false, data : apps};
 
 	} catch (e) {
