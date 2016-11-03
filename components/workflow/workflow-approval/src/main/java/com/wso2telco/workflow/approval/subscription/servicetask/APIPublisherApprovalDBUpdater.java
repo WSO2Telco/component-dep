@@ -40,24 +40,24 @@ public class APIPublisherApprovalDBUpdater implements JavaDelegate {
 
         AuthRequestInterceptor authRequestInterceptor = new AuthRequestInterceptor();
         String operatorNames[] = arg0.getVariable(Constants.OPERATORS).toString().split(",");
+        //this logic only for internal gateway and only expect one operator
         String operatorName = operatorNames[0];
-        int applicationId = Integer.parseInt(arg0.getVariable(Constants.APPLICATION_ID).toString());
-        String serviceUrl = arg0.getVariable(Constants.SERVICE_URL).toString();
-        String apiName = arg0.getVariable(Constants.API_NAME).toString();
-        int apiID = Integer.parseInt(arg0.getVariable(Constants.API_ID).toString());
-        String deploymentType = arg0.getVariable(Constants.DEPLOYMENT_TYPE).toString();
-        String apiVersion = arg0.getVariable(Constants.API_VERSION).toString();
-        String apiProvider = arg0.getVariable(Constants.API_PROVIDER).toString();
-        String completedByUser = arg0.getVariable(Constants.COMPLETE_BY_USER).toString();
-        String completedOn = arg0.getVariable(Constants.COMPLETED_ON).toString();
-        String completedByRole = operatorName + Constants.ADMIN_ROLE;
-        String applicationName = arg0.getVariable(Constants.APPLICATION_NAME).toString();
-        String description = arg0.getVariable(Constants.APPLICATION_DESCRIPTION).toString();
-        String selectedTier = arg0.getVariable(Constants.SELECTED_TIER).toString();
-        String operatorAdminApprovalStatus = arg0.getVariable(Constants.API_PUBLISHER_APPROVAL).toString();
-        String adminPassword = arg0.getVariable(Constants.ADMIN_PASSWORD).toString();
-        String apiContext = arg0.getVariable(Constants.API_CONTEXT).toString();
-        String subscriber = arg0.getVariable(Constants.SUBSCRIBER).toString();
+        int applicationId = arg0.getVariable(Constants.APPLICATION_ID)!=null?Integer.parseInt(arg0.getVariable(Constants.APPLICATION_ID).toString()):0;
+        String serviceUrl = arg0.getVariable(Constants.SERVICE_URL)!=null?arg0.getVariable(Constants.SERVICE_URL).toString():null;
+        String apiName = arg0.getVariable(Constants.API_NAME)!=null?arg0.getVariable(Constants.API_NAME).toString():null;
+        int apiID = arg0.getVariable(Constants.API_ID)!=null?Integer.parseInt(arg0.getVariable(Constants.API_ID).toString()):0;
+        String apiVersion = arg0.getVariable(Constants.API_VERSION)!=null?arg0.getVariable(Constants.API_VERSION).toString():null;
+        String apiProvider = arg0.getVariable(Constants.API_PROVIDER)!=null?arg0.getVariable(Constants.API_PROVIDER).toString():null;
+        String completedByUser = arg0.getVariable(Constants.COMPLETE_BY_USER)!=null?arg0.getVariable(Constants.COMPLETE_BY_USER).toString():null;
+        String completedOn = arg0.getVariable(Constants.COMPLETED_ON)!=null?arg0.getVariable(Constants.COMPLETED_ON).toString():null;
+        String completedByRole = operatorName + Constants.ADMIN_ROLE!=null?Constants.ADMIN_ROLE:null;
+        String applicationName =  arg0.getVariable(Constants.APPLICATION_NAME)!=null?arg0.getVariable(Constants.APPLICATION_NAME).toString():null;
+        String description = arg0.getVariable(Constants.APPLICATION_DESCRIPTION)!=null?arg0.getVariable(Constants.APPLICATION_DESCRIPTION).toString():null;
+        String selectedTier = arg0.getVariable(Constants.SELECTED_TIER)!=null?arg0.getVariable(Constants.SELECTED_TIER).toString():null;
+        String operatorAdminApprovalStatus = arg0.getVariable(Constants.API_PUBLISHER_APPROVAL)!=null?arg0.getVariable(Constants.API_PUBLISHER_APPROVAL).toString():null;
+        String adminPassword = arg0.getVariable(Constants.ADMIN_PASSWORD)!=null?arg0.getVariable(Constants.ADMIN_PASSWORD).toString():null;
+        String apiContext = arg0.getVariable(Constants.API_CONTEXT)!=null?arg0.getVariable(Constants.API_CONTEXT).toString():null;
+        String subscriber = arg0.getVariable(Constants.SUBSCRIBER)!=null?arg0.getVariable(Constants.SUBSCRIBER).toString():null;
 
         SubscriptionWorkflowApi api = Feign.builder()
                 .encoder(new JacksonEncoder())

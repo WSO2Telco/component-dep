@@ -72,8 +72,8 @@ public class SubscriptionApprovalImpl implements SubscriptionApproval {
                 dbservice.insertOperatorAppEndpoints(new Integer(appID).intValue(), idList);
             }
         } catch (Exception e) {
-            log.error("ERROR: Error occurred while updating axiatadb for subscription HUB approval. " + e.getStackTrace());
-            throw new Exception();
+            log.error("ERROR: Error occurred while updating axiatadb for subscription HUB approval. " + e);
+            throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -102,12 +102,12 @@ public class SubscriptionApprovalImpl implements SubscriptionApproval {
                 }
             }
         } catch (NumberFormatException e) {
-            log.error("ERROR: NumberFormatException. " + e.getStackTrace());
+            log.error("ERROR: NumberFormatException. " + e);
             throw new NumberFormatException();
 
         } catch (Exception e) {
-            log.error("ERROR: Exception. " + e.getStackTrace());
-            throw new Exception();
+            log.error("ERROR: Exception. " + e);
+            throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
         }
     }
 
@@ -121,8 +121,8 @@ public class SubscriptionApprovalImpl implements SubscriptionApproval {
             dbservice.insertValidatorForSubscription(appID, apiID, 1);
 
         } catch (Exception e) {
-            log.error("ERROR: Exception. " + e.getStackTrace());
-            throw new Exception();
+            log.error("ERROR: Exception. " + e);
+            throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
         }
 
 
