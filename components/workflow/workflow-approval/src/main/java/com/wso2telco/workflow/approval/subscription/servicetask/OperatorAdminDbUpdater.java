@@ -45,24 +45,24 @@ public class OperatorAdminDbUpdater implements JavaDelegate {
 
     public void execute(DelegateExecution arg0) throws Exception {
         AuthRequestInterceptor authRequestInterceptor = new AuthRequestInterceptor();
-        String operatorName =arg0.getVariable(Constants.OPERATOR)!=null? arg0.getVariable(Constants.OPERATOR).toString():null;
-        int applicationId =arg0.getVariable(Constants.APPLICATION_ID)!=null?Integer.parseInt(arg0.getVariable(Constants.APPLICATION_ID).toString()):0;
-        String serviceUrl =arg0.getVariable(Constants.SERVICE_URL)!=null?arg0.getVariable(Constants.SERVICE_URL).toString():null;
-        String apiName = arg0.getVariable(Constants.API_NAME)!=null?arg0.getVariable(Constants.API_NAME).toString():null;
-        int apiID = arg0.getVariable(Constants.API_ID)!=null?Integer.parseInt(arg0.getVariable(Constants.API_ID).toString()):0;
-        String deploymentType = arg0.getVariable(Constants.DEPLOYMENT_TYPE)!=null?arg0.getVariable(Constants.DEPLOYMENT_TYPE).toString():null;
-        String apiVersion = arg0.getVariable(Constants.API_VERSION)!=null?arg0.getVariable(Constants.API_VERSION).toString():null;
-        String apiProvider =  arg0.getVariable(Constants.API_PROVIDER)!=null?arg0.getVariable(Constants.API_PROVIDER).toString():null;
-        String completedByUser = arg0.getVariable(Constants.COMPLETE_BY_USER)!=null?arg0.getVariable(Constants.COMPLETE_BY_USER).toString():null;
-        String completedOn = arg0.getVariable(Constants.COMPLETED_ON)!=null?arg0.getVariable(Constants.COMPLETED_ON).toString():null;
-        String completedByRole =arg0.getVariable(Constants.OPERATOR)!=null?arg0.getVariable(Constants.OPERATOR).toString() + Constants.ADMIN_ROLE:null;
-        String applicationName =arg0.getVariable(Constants.APPLICATION_NAME)!=null ? arg0.getVariable(Constants.APPLICATION_NAME).toString():null;
-        String description =arg0.getVariable(Constants.APPLICATION_DESCRIPTION)!=null? arg0.getVariable(Constants.APPLICATION_DESCRIPTION).toString():null;
-        String selectedTier =arg0.getVariable(Constants.SELECTED_TIER)!=null ? arg0.getVariable(Constants.SELECTED_TIER).toString():null;
-        String adminPassword =arg0.getVariable(Constants.ADMIN_PASSWORD)!=null?arg0.getVariable(Constants.ADMIN_PASSWORD).toString():null;
-        String apiContext = arg0.getVariable(Constants.API_CONTEXT)!=null?arg0.getVariable(Constants.API_CONTEXT).toString():null;
-        String subscriber = arg0.getVariable(Constants.SUBSCRIBER)!=null? arg0.getVariable(Constants.SUBSCRIBER).toString():null;
-        String operatorAdminApprovalStatus = arg0.getVariable(Constants.OPERATOR_ADMIN_APPROVAL)!=null ? arg0.getVariable(Constants.OPERATOR_ADMIN_APPROVAL).toString():null;
+        String operatorName = arg0.getVariable(Constants.OPERATOR) != null ? arg0.getVariable(Constants.OPERATOR).toString() : null;
+        int applicationId = arg0.getVariable(Constants.APPLICATION_ID) != null ? Integer.parseInt(arg0.getVariable(Constants.APPLICATION_ID).toString()) : 0;
+        String serviceUrl = arg0.getVariable(Constants.SERVICE_URL) != null ? arg0.getVariable(Constants.SERVICE_URL).toString() : null;
+        String apiName = arg0.getVariable(Constants.API_NAME) != null ? arg0.getVariable(Constants.API_NAME).toString() : null;
+        int apiID = arg0.getVariable(Constants.API_ID) != null ? Integer.parseInt(arg0.getVariable(Constants.API_ID).toString()) : 0;
+        String deploymentType = arg0.getVariable(Constants.DEPLOYMENT_TYPE) != null ? arg0.getVariable(Constants.DEPLOYMENT_TYPE).toString() : null;
+        String apiVersion = arg0.getVariable(Constants.API_VERSION) != null ? arg0.getVariable(Constants.API_VERSION).toString() : null;
+        String apiProvider = arg0.getVariable(Constants.API_PROVIDER) != null ? arg0.getVariable(Constants.API_PROVIDER).toString() : null;
+        String completedByUser = arg0.getVariable(Constants.COMPLETE_BY_USER) != null ? arg0.getVariable(Constants.COMPLETE_BY_USER).toString() : null;
+        String completedOn = arg0.getVariable(Constants.COMPLETED_ON) != null ? arg0.getVariable(Constants.COMPLETED_ON).toString() : null;
+        String completedByRole = arg0.getVariable(Constants.OPERATOR) != null ? arg0.getVariable(Constants.OPERATOR).toString() + Constants.ADMIN_ROLE : null;
+        String applicationName = arg0.getVariable(Constants.APPLICATION_NAME) != null ? arg0.getVariable(Constants.APPLICATION_NAME).toString() : null;
+        String description = arg0.getVariable(Constants.APPLICATION_DESCRIPTION) != null ? arg0.getVariable(Constants.APPLICATION_DESCRIPTION).toString() : null;
+        String selectedTier = arg0.getVariable(Constants.SELECTED_TIER) != null ? arg0.getVariable(Constants.SELECTED_TIER).toString() : null;
+        String adminPassword = arg0.getVariable(Constants.ADMIN_PASSWORD) != null ? arg0.getVariable(Constants.ADMIN_PASSWORD).toString() : null;
+        String apiContext = arg0.getVariable(Constants.API_CONTEXT) != null ? arg0.getVariable(Constants.API_CONTEXT).toString() : null;
+        String subscriber = arg0.getVariable(Constants.SUBSCRIBER) != null ? arg0.getVariable(Constants.SUBSCRIBER).toString() : null;
+        String operatorAdminApprovalStatus = arg0.getVariable(Constants.OPERATOR_ADMIN_APPROVAL) != null ? arg0.getVariable(Constants.OPERATOR_ADMIN_APPROVAL).toString() : null;
 
         log.info("In OperatorDataUpdater, Operator admin approval status: " + operatorAdminApprovalStatus +
                 " Operator: " + operatorName);
@@ -88,16 +88,6 @@ public class OperatorAdminDbUpdater implements JavaDelegate {
                 .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminPassword))
                 .target(NotificationApi.class, serviceUrl);
 
-        Subscription subscription = new Subscription();
-        subscription.setApiName(apiName);
-        subscription.setApplicationID(applicationId);
-        subscription.setStatus(operatorAdminApprovalStatus);
-        subscription.setOperatorName(operatorName);
-
-        SubscriptionValidation subscriptionValidation = new SubscriptionValidation();
-        subscriptionValidation.setApiID(apiID);
-        subscriptionValidation.setApplicationID(applicationId);
-
         SubscriptionApprovalAuditRecord subscriptionApprovalAuditRecord = new SubscriptionApprovalAuditRecord();
         subscriptionApprovalAuditRecord.setApiName(apiName);
         subscriptionApprovalAuditRecord.setApiProvider(apiProvider);
@@ -111,10 +101,16 @@ public class OperatorAdminDbUpdater implements JavaDelegate {
 
         try {
             apiAudit.subscriptionApprovalAudit(subscriptionApprovalAuditRecord);
-            if (!deploymentType.equalsIgnoreCase(Constants.HUB)) {
-                api.subscriptionApprovalHub(subscription);
-            }
-            if (!deploymentType.equalsIgnoreCase(Constants.INTERNAL_GATEWAY)) {
+            if (deploymentType.equalsIgnoreCase(Constants.HUB)) {
+                Subscription subscription = new Subscription();
+                subscription.setApiName(apiName);
+                subscription.setApplicationID(applicationId);
+                subscription.setStatus(operatorAdminApprovalStatus);
+                subscription.setOperatorName(operatorName);
+
+                SubscriptionValidation subscriptionValidation = new SubscriptionValidation();
+                subscriptionValidation.setApiID(apiID);
+                subscriptionValidation.setApplicationID(applicationId);
                 api.subscriptionApprovalOperator(subscription);
                 api.subscriptionApprovalValidator(subscriptionValidation);
             }
