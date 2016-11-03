@@ -1181,12 +1181,12 @@ public class BillingDAO {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        StringBuilder sql = new StringBuilder(); 
-        
+        StringBuilder sql = new StringBuilder();
+
         sql.append("select application_id,name,if(description is null,'Not Specified',description) as description,")
-        .append("ELT(FIELD(application_status,'CREATED','APPROVED','REJECTED'),'PENDING APPROVE','APPROVED','REJECTED') as app_status ")
-        .append(ReportingTable.AM_APPLICATION.getTObject())
-        .append(" where application_id like ? and subscriber_id like ?");
+                .append("ELT(FIELD(application_status,'CREATED','APPROVED','REJECTED'),'PENDING APPROVE','APPROVED','REJECTED') as app_status from ")
+                .append(ReportingTable.AM_APPLICATION.getTObject())
+                .append(" where application_id like ? and subscriber_id like ?");
 
         List<String[]> applist = new ArrayList<String[]>();
 
