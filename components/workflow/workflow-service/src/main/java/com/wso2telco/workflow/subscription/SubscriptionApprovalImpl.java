@@ -72,7 +72,7 @@ public class SubscriptionApprovalImpl implements SubscriptionApproval {
                 dbservice.insertOperatorAppEndpoints(new Integer(appID).intValue(), idList);
             }
         } catch (Exception e) {
-            log.error("ERROR: Error occurred while updating axiatadb for subscription HUB approval. " + e);
+            log.error("ERROR: Error occurred while updating  hub dep db for subscription HUB approval. " + e);
             throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
         }
     }
