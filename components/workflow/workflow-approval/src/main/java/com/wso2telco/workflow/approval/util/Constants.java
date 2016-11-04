@@ -58,5 +58,6 @@ public class Constants {
     public static final String APPLICATION_DESCRIPTION="applicationDescription";
     public static final String API_TIERS="apiTiers";
     public static final String OPERATORS="operators";
+    public static final String PUBLISHER_APPROVAL="PUBLISHER_APPROVAL";
 
 }
