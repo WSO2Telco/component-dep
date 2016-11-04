@@ -163,14 +163,14 @@ public class WorkflowDbService {
     /**
      * Update app approval status op.
      *
-     * @param axiataId   the axiata id
+     * @param applicationid   the application id
      * @param operatorId the operator id
      * @param status     the status
      * @return true, if successful
      * @throws Exception the exception
      */
 
-    public boolean updateAppApprovalStatusOp(int axiataId, int operatorId, int status) throws SQLException, BusinessException {
+    public boolean updateAppApprovalStatusOp(int applicationid, int operatorId, int status) throws SQLException, BusinessException {
 
         Connection con = null;
         Statement st = null;
@@ -185,7 +185,7 @@ public class WorkflowDbService {
             StringBuilder query = new StringBuilder();
             query.append("UPDATE operatorapps ");
             query.append("SET isactive=" + status + " ");
-            query.append("WHERE applicationid =" + axiataId + " ");
+            query.append("WHERE applicationid =" + applicationid + " ");
             query.append("AND operatorid = " + operatorId + "");
 
             st.executeUpdate(query.toString());

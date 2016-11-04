@@ -1,6 +1,5 @@
 <%
 include("/jagg/jagg.jag");
-//var operators = ["Dialog","Celcom"];
 var operators = [];
 var operatorList = this.subscribeOperators;//Object.keys(site.operators);
 var op;

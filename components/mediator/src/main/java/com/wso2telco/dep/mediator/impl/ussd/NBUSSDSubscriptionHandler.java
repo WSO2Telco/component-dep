@@ -87,7 +87,7 @@ public class NBUSSDSubscriptionHandler implements USSDHandler {
         //Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl,consumerKey);
         String operatorId="";
         Integer subscriptionId = ussdService.ussdRequestEntry(notifyUrl,consumerKey,operatorId,userId);
-        log.info("created axiataId  -  " + subscriptionId);
+        log.info("created subscription Id  -  " + subscriptionId);
 
         String subsEndpoint = mediatorConfMap.get("ussdGatewayEndpoint")+subscriptionId;
         log.info("Subsendpoint - " +subsEndpoint);
