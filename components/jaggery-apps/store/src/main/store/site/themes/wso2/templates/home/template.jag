@@ -51,24 +51,11 @@
                 };
                 var jssor_slider1 = new $JssorSlider$("slider1_container", options);
 
-                //responsive code begin
-               function ScaleSlider() {
-                    var parentWidth = jssor_slider1.$Elmt.parentNode.clientWidth;
-                    if (parentWidth)
-                        jssor_slider1.$ScaleWidth(Math.min(parentWidth,1020));
-                    else
-                        window.setTimeout(ScaleSlider, 30);
-                }
-                ScaleSlider();
-
-                $(window).bind("load", ScaleSlider);
-                $(window).bind("resize", ScaleSlider);
-                $(window).bind("orientationchange", ScaleSlider);
-                //responsive code end
+               
             });
         </script>
 
-        <div id="slider1_container" style="position: relative; top: 0px; left: 0px; height:364px; overflow: hidden;">
+        <div id="slider1_container" style="position: relative; top: 0px; left: 0px; height:364px; width: 600px; overflow: hidden;">
         <!-- Slides Container -->
             <div u="slides" style="cursor: move; position: absolute; left: 0px; top: 0px; width: 600px; height: 364px; overflow: hidden;">
                 <div>
