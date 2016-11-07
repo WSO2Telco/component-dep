@@ -73,6 +73,7 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
     private static final String USER_NAME = "userName";
     private static final String EXTERNAL_REFERENCE = "externalWorkflowReferenc";
     private static final String TIERS_STR = "tiersStr";
+    private static final String ADMIN_USER = "adminUserName";
     private static final String ADMIN_PASSWORD = "adminPassword";
     private static final String SERVICE_HOST = "service.host";
     private static final String SERVICE_URL = "serviceURL";
@@ -136,6 +137,10 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
             Variable externalWorkflowReference = new Variable(EXTERNAL_REFERENCE, appWorkFlowDTO.getExternalWorkflowReference());
             Variable tiers = new Variable(TIERS_STR, tiersStr.toString());
             Variable serviceURL = new Variable(SERVICE_URL, serviceURLString);
+            Variable adminUserName = new Variable(ADMIN_USER, CarbonContext
+                    .getThreadLocalCarbonContext()
+                    .getUserRealm()
+                    .getRealmConfiguration().getAdminUserName());
             Variable adminPassword = new Variable(ADMIN_PASSWORD, CarbonContext
                     .getThreadLocalCarbonContext()
                     .getUserRealm()
@@ -165,6 +170,7 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
             variables.add(externalWorkflowReference);
             variables.add(tiers);
             variables.add(serviceURL);
+            variables.add(adminUserName);
             variables.add(adminPassword);
             processInstanceRequest.setVariables(variables);
             CreateProcessInstanceResponse processInstanceResponse;

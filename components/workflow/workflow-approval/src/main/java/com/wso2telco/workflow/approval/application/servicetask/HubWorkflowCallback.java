@@ -42,13 +42,14 @@ public class HubWorkflowCallback implements JavaDelegate {
         String refId = arg0.getVariable(Constants.WORKFLOW_REF_ID).toString();
         String hubAdminApprovalStatus = (String) arg0.getVariable(Constants.HUB_ADMIN_APPROVAL);
         String callbackUrl = (String) arg0.getVariable(Constants.CALL_BACK_URL);
+        String adminUserName = arg0.getVariable(Constants.ADMIN_USER_NAME) != null ? arg0.getVariable(Constants.ADMIN_USER_NAME).toString() : null;
         String adminPassword= arg0.getVariable(Constants.ADMIN_PASSWORD).toString();
 		
         HubWorkflowCallbackApi api = Feign.builder()
                 .encoder(new JacksonEncoder())
                 .decoder(new JacksonDecoder())
                 .errorDecoder(new HubWorkflowCallbackApiErrorDecoder())
-                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminPassword))
+                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminUserName,adminPassword))
                 .target(HubWorkflowCallbackApi.class, callbackUrl);
 
         log.info("Application creation workflow reference Id: " + refId + ", Hub Admin Approval Status: " +

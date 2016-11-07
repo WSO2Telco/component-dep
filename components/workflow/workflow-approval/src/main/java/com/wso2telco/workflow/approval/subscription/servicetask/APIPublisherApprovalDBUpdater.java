@@ -51,6 +51,7 @@ public class APIPublisherApprovalDBUpdater implements JavaDelegate {
         String description = arg0.getVariable(Constants.APPLICATION_DESCRIPTION)!=null?arg0.getVariable(Constants.APPLICATION_DESCRIPTION).toString():null;
         String selectedTier = arg0.getVariable(Constants.SELECTED_TIER)!=null?arg0.getVariable(Constants.SELECTED_TIER).toString():null;
         String operatorAdminApprovalStatus = arg0.getVariable(Constants.API_PUBLISHER_APPROVAL)!=null?arg0.getVariable(Constants.API_PUBLISHER_APPROVAL).toString():null;
+        String adminUserName = arg0.getVariable(Constants.ADMIN_USER_NAME) != null ? arg0.getVariable(Constants.ADMIN_USER_NAME).toString() : null;
         String adminPassword = arg0.getVariable(Constants.ADMIN_PASSWORD)!=null?arg0.getVariable(Constants.ADMIN_PASSWORD).toString():null;
         String apiContext = arg0.getVariable(Constants.API_CONTEXT)!=null?arg0.getVariable(Constants.API_CONTEXT).toString():null;
         String subscriber = arg0.getVariable(Constants.SUBSCRIBER)!=null?arg0.getVariable(Constants.SUBSCRIBER).toString():null;
@@ -59,14 +60,14 @@ public class APIPublisherApprovalDBUpdater implements JavaDelegate {
                 .encoder(new JacksonEncoder())
                 .decoder(new JacksonDecoder())
                 .errorDecoder(new WorkflowCallbackErrorDecoder())
-                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminPassword))
+                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminUserName,adminPassword))
                 .target(NotificationApi.class, serviceUrl);
 
         WorkflowApprovalAuditApi apiAudit = Feign.builder()
                 .encoder(new JacksonEncoder())
                 .decoder(new JacksonDecoder())
                 .errorDecoder(new WorkflowCallbackErrorDecoder())
-                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminPassword))
+                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminUserName,adminPassword))
                 .target(WorkflowApprovalAuditApi.class, serviceUrl);
 
         SubscriptionApprovalAuditRecord subscriptionApprovalAuditRecord = new SubscriptionApprovalAuditRecord();
