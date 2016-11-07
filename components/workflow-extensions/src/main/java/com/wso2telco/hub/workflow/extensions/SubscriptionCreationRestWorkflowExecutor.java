@@ -79,6 +79,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
     private static final String DEPLOYMENT_TYPE = "deployment_type";
     private static final String OPERATORS_SYSTEM_PARAM = "OPERATORS";
     private static final String DEPLOYMENT_TYPE_SYSTEM_PARAM = "DEPLOYMENT_TYPE";
+    private static final String ADMIN_USER = "adminUserName";
     private static final String ADMIN_PASSWORD = "adminPassword";
     private static final String SERVICE_HOST = "service.host";
     private static final String SERVICE_URL = "serviceURL";
@@ -187,6 +188,10 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
                     new Variable(WORKFLOW_REF_ID, subscriptionWorkFlowDTO.getExternalWorkflowReference());
             Variable callBackUrl = new Variable(CALL_BACK_URL, callBackURL);
             Variable serviceURL = new Variable(SERVICE_URL, serviceURLString);
+            Variable adminUserName = new Variable(ADMIN_USER, CarbonContext
+                    .getThreadLocalCarbonContext()
+                    .getUserRealm()
+                    .getRealmConfiguration().getAdminUserName());
             Variable adminPassword = new Variable(ADMIN_PASSWORD, CarbonContext
                     .getThreadLocalCarbonContext()
                     .getUserRealm()
@@ -221,6 +226,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
             variables.add(callBackUrl);
             variables.add(operators);
             variables.add(serviceURL);
+            variables.add(adminUserName);
             variables.add(adminPassword);
 
             processInstanceRequest.setVariables(variables);

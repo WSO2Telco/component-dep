@@ -49,20 +49,21 @@ public class OperatorDataUpdater implements JavaDelegate {
         String completedByRole=arg0.getVariable(Constants.OPERATOR).toString()+Constants.ADMIN_ROLE;
         String applicationName= arg0.getVariable(Constants.APPLICATION_NAME).toString();
         String userName= arg0.getVariable(Constants.USER_NAME).toString();
+        String adminUserName = arg0.getVariable(Constants.ADMIN_USER_NAME) != null ? arg0.getVariable(Constants.ADMIN_USER_NAME).toString() : null;
         String adminPassword= arg0.getVariable(Constants.ADMIN_PASSWORD).toString();
 
         HubWorkflowApi api = Feign.builder()
                 .encoder(new JacksonEncoder())
                 .decoder(new JacksonDecoder())
                 .errorDecoder(new HubWorkflowCallbackApiErrorDecoder())
-                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminPassword))
+                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminUserName,adminPassword))
                 .target(HubWorkflowApi.class, serviceUrl);
 
         WorkflowApprovalAuditApi apiAudit = Feign.builder()
                 .encoder(new JacksonEncoder())
                 .decoder(new JacksonDecoder())
                 .errorDecoder(new HubWorkflowCallbackApiErrorDecoder())
-                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminPassword))
+                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminUserName,adminPassword))
                 .target(WorkflowApprovalAuditApi.class, serviceUrl);
 		
 		String operatorAdminApprovalStatus = arg0.getVariable(Constants.OPERATOR_ADMIN_APPROVAL).toString();

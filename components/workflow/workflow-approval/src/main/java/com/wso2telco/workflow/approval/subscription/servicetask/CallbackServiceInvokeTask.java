@@ -36,7 +36,8 @@ public class CallbackServiceInvokeTask implements JavaDelegate {
 	private static final Log log = LogFactory.getLog(CallbackServiceInvokeTask.class);
 
 	public void execute(DelegateExecution arg0) throws Exception {
-
+        
+		String adminUserName = arg0.getVariable(Constants.ADMIN_USER_NAME) != null ? arg0.getVariable(Constants.ADMIN_USER_NAME).toString() : null;
         String adminPassword= arg0.getVariable(Constants.ADMIN_PASSWORD).toString();
         AuthRequestInterceptor authRequestInterceptor=new AuthRequestInterceptor();
 
@@ -57,7 +58,7 @@ public class CallbackServiceInvokeTask implements JavaDelegate {
 		                                 .encoder(new JacksonEncoder())
 		                                 .decoder(new JacksonDecoder())
 		                                 .errorDecoder(new WorkflowCallbackErrorDecoder())
-		                                 .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminPassword))
+		                                 .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminUserName,adminPassword))
 		                                 .target(WorkflowHttpClient.class, callbackUrl);
 
 		log.info("Application creation workflow reference Id: " + refId + ", Hub Admin Approval Status: " +
