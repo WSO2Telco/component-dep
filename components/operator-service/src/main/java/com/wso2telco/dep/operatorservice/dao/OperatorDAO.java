@@ -565,4 +565,120 @@ public class OperatorDAO {
 			DbUtils.closeAllConnections(ps, con, null);
 		}
 	}
+
+
+
+    /**
+     * Update Operator.
+     *
+     * @throws Exception
+     *             the exception
+     */
+    public void updateOperator(List<OperatorApplicationDTO> operators)
+            throws SQLException, Exception {
+
+        Connection con = null;
+        PreparedStatement ps = null;
+
+        try {
+
+            con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+
+            if (con == null) {
+
+                throw new Exception("Connection not found");
+            }
+            for(OperatorApplicationDTO operator:operators) {
+
+                StringBuilder queryString = new StringBuilder("UPDATE ");
+                queryString.append(OparatorTable.OPERATORS);
+                queryString.append(" SET operatorname = ?");
+                queryString.append(" ,description = ?");
+                queryString.append(" ,lastupdated = ?");
+                queryString.append(" ,lastupdated_date = ?");
+                queryString.append(" ,tokenurl = ?");
+                queryString.append(" ,tokenauth = ?");
+                queryString.append(" WHERE id = ?");
+
+                ps = con.prepareStatement(queryString.toString());
+
+                ps.setString(1, operator.getOperatorname());
+                ps.setString(2, operator.getOperatorname());
+                ps.setString(3, operator.getLastupdated());
+                ps.setString(4, operator.getLastupdated_date());
+                ps.setString(5, operator.getTokenurl());
+                ps.setString(6, operator.getTokenauth());
+                ps.setInt(7, operator.getId());
+
+                log.debug("sql query in updateOperatorToken : " + ps);
+
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+
+            log.error("database operation error in updateOperatorToken : ", e);
+            throw e;
+        } catch (Exception e) {
+
+            log.error("error in updateOperatorToken : ", e);
+            throw e;
+        } finally {
+
+            DbUtils.closeAllConnections(ps, con, null);
+        }
+    }
+
+    /**
+     * Add Operator.
+     *
+     * @throws Exception
+     *             the exception
+     */
+    public void addOperator(List<OperatorApplicationDTO> operators)
+            throws SQLException, Exception {
+
+        Connection con = null;
+        PreparedStatement ps = null;
+
+        try {
+
+            con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+
+            if (con == null) {
+                throw new Exception("Connection not found");
+            }
+            for(OperatorApplicationDTO operator:operators) {
+
+                StringBuilder queryString = new StringBuilder("INSERT INTO ");
+                queryString.append(OparatorTable.OPERATORS);
+                queryString.append(" (operatorname,description,created,created_date,tokenurl,tokenauth)");
+                queryString.append(" VALUES (?,?,?,?,?,?)");
+
+                ps = con.prepareStatement(queryString.toString());
+
+                ps.setString(1, operator.getOperatorname());
+                ps.setString(2, operator.getOperatorname());
+                ps.setString(3, operator.getCreated());
+                ps.setString(4, operator.getCreated_date());
+                ps.setString(5, operator.getTokenurl());
+                ps.setString(6, operator.getTokenauth());
+
+                log.debug("sql query in updateOperatorToken : " + ps);
+
+                ps.executeUpdate();
+            }
+        } catch (SQLException e) {
+
+            log.error("database operation error in updateOperatorToken : ", e);
+            throw e;
+        } catch (Exception e) {
+
+            log.error("error in updateOperatorToken : ", e);
+            throw e;
+        } finally {
+
+            DbUtils.closeAllConnections(ps, con, null);
+        }
+    }
+
 }

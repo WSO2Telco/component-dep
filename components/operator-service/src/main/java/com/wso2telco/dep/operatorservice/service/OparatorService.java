@@ -247,4 +247,13 @@ public class OparatorService {
           return dao.retrieveOperatorList();
     }
 
+    public void updateOperator(List<OperatorApplicationDTO> operators) throws Exception {
+        dao.updateOperator(operators);
+    }
+
+    public void addOperator(List<OperatorApplicationDTO>operators) throws Exception {
+        dao.addOperator(operators);
+    }
+
+
 }

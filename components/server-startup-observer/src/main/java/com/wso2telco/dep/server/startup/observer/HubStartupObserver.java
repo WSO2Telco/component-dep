@@ -16,7 +16,10 @@
 
 package com.wso2telco.dep.server.startup.observer;
 
+import com.wso2telco.dep.operatorservice.model.OperatorApplicationDTO;
+import com.wso2telco.dep.operatorservice.service.OparatorService;
 import com.wso2telco.dep.server.startup.observer.internal.ServiceReferenceHolder;
+import com.wso2telco.dep.server.startup.observer.user.role.updater.ReadMobileOperator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.core.ServerStartupObserver;
@@ -28,6 +31,7 @@ import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import static java.nio.file.Files.readAllBytes;
 import static java.nio.file.Paths.get;
@@ -53,6 +57,7 @@ public class HubStartupObserver implements ServerStartupObserver {
         }
 
         updateWorkflowConfigsInRegistry();
+        userRoleUpdater();
     }
 
     /**
@@ -155,6 +160,33 @@ public class HubStartupObserver implements ServerStartupObserver {
             }
         } catch (RegistryException e) {
             handleError("Error checking existence of Workflow extensions at " + WORKFLOW_EXECUTOR_LOCATION, e);
+        }
+    }
+
+    /**
+     * add user role base on operators.xml file
+     */
+    private void userRoleUpdater() {
+        ReadMobileOperator readMobileConnectConfig = new ReadMobileOperator();
+        List<OperatorApplicationDTO> updateOperatorList;
+        List<OperatorApplicationDTO> addOperatorList;
+        OparatorService oparatorService = new OparatorService();
+        //check from xml file true or false
+        try {
+            String readOption = readMobileConnectConfig.query("/operatorsConfig/read").item(0).getTextContent();
+            if (Boolean.parseBoolean(readOption)) {
+                readMobileConnectConfig.setOperators();
+                updateOperatorList = readMobileConnectConfig.getUpdateOperators();
+                addOperatorList = readMobileConnectConfig.getAddOperators();
+                if (!updateOperatorList.isEmpty()) {
+                    oparatorService.updateOperator(updateOperatorList);
+                }
+                if (!addOperatorList.isEmpty()) {
+                    oparatorService.addOperator(addOperatorList);
+                }
+            }
+        } catch (Exception e) {
+           log.error(e);
         }
     }
 

@@ -17,11 +17,13 @@
 package com.wso2telco.dep.server.startup.observer.internal;
 
 import org.wso2.carbon.registry.core.service.RegistryService;
+import org.wso2.carbon.user.core.service.RealmService;
 
 public class ServiceReferenceHolder {
 
     private static volatile ServiceReferenceHolder serviceReferenceHolder = new ServiceReferenceHolder();
     private RegistryService registryService;
+    private RealmService realmService;
 
     private ServiceReferenceHolder () {
     }
@@ -36,5 +38,13 @@ public class ServiceReferenceHolder {
 
     public RegistryService getRegistryService() {
         return registryService;
+    }
+
+    public RealmService getRealmService() {
+        return realmService;
+    }
+
+    public void setRealmService(RealmService realmService) {
+        this.realmService = realmService;
     }
 }
