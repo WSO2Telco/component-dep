@@ -27,6 +27,10 @@ import org.wso2.carbon.registry.core.Resource;
 import org.wso2.carbon.registry.core.exceptions.RegistryException;
 import org.wso2.carbon.registry.core.service.RegistryService;
 import org.wso2.carbon.registry.core.session.UserRegistry;
+import org.wso2.carbon.user.api.Permission;
+import org.wso2.carbon.user.api.UserStoreManager;
+import org.wso2.carbon.user.core.UserRealm;
+import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.File;
@@ -46,6 +50,7 @@ public class HubStartupObserver implements ServerStartupObserver {
     private static final String WORKFLOW_MEDIA_TYPE = "workflow-config";
     private static final String WORKFLOW_EXTENSIONS_FILE = "workflow-extensions.xml";
     private static final String WORKFLOW_EXECUTOR_LOCATION = API_APPLICATION_DATA_LOCATION + "/" + WORKFLOW_EXTENSIONS_FILE;
+    private static final String MANAGE_APP_ADMIN_ROLE = "manage-app-admin";
 
     private static final Log log = LogFactory.getLog(HubStartupObserver.class);
 
@@ -55,16 +60,16 @@ public class HubStartupObserver implements ServerStartupObserver {
         if (log.isDebugEnabled()) {
             log.debug("Completing Server Startup");
         }
-
         updateWorkflowConfigsInRegistry();
         userRoleUpdater();
+        createDefaultRolesAndAssignToSuperAdmin();
     }
 
     /**
-     *  Update workflow extension configurations in the registry. Will always give preference to
-     *  a custom workflow-extensions.xml file available at <CARBON_HOME>/repository/resources folder.
-     *  Whatever is existing in the registry will be overwritten by the content of the
-     *  workflow-extensions.xml file in the file system, if such a file is available.
+     * Update workflow extension configurations in the registry. Will always give preference to
+     * a custom workflow-extensions.xml file available at <CARBON_HOME>/repository/resources folder.
+     * Whatever is existing in the registry will be overwritten by the content of the
+     * workflow-extensions.xml file in the file system, if such a file is available.
      */
     private void updateWorkflowConfigsInRegistry() {
 
@@ -120,7 +125,7 @@ public class HubStartupObserver implements ServerStartupObserver {
      * Update the workflow configurations with new settings
      *
      * @param govRegistry Governance Registry object
-     * @param data new content to be updated
+     * @param data        new content to be updated
      */
     private void updateWorkflowConfigs(UserRegistry govRegistry, byte[] data) {
         Resource resource = null;
@@ -186,7 +191,33 @@ public class HubStartupObserver implements ServerStartupObserver {
                 }
             }
         } catch (Exception e) {
-           log.error(e);
+            log.error(e);
+        }
+    }
+
+    /* Assign the relevant roles to super tenant to use workflows with manage jaggery app
+    * The role name is hard coded to 'manage-app-admin'. This role should be the same as
+    * 'adminRole' of manage/src/main/manage/site/conf/site.json
+    */
+    private void createDefaultRolesAndAssignToSuperAdmin() {
+
+        String role = MANAGE_APP_ADMIN_ROLE;
+
+        try {
+            RealmService realmService = ServiceReferenceHolder.getInstance().getRealmService();
+            UserRealm realm = realmService.getBootstrapRealm();
+            UserStoreManager manager = realm.getUserStoreManager();
+            if (!manager.isExistingRole(role)) {
+                if (log.isDebugEnabled()) {
+                    log.debug("Creating " + MANAGE_APP_ADMIN_ROLE + " role: " + role);
+                }
+                Permission[] loginPermission = new Permission[]{new Permission("/permission/admin/login", "ui.execute")};
+                String superTenantName = ServiceReferenceHolder.getInstance().getRealmService().getBootstrapRealmConfiguration().getAdminUserName();
+                String[] userList = new String[]{superTenantName};
+                manager.addRole(role, userList, loginPermission);
+            }
+        } catch (Exception e) {
+            log.error("Error in assigning 'manage-app-admin' role to super tenant", e);
         }
     }
 
@@ -198,12 +229,12 @@ public class HubStartupObserver implements ServerStartupObserver {
         }
     }
 
-    private void handleError (String errorMsg, RegistryException e) {
+    private void handleError(String errorMsg, RegistryException e) {
         log.error(errorMsg, e);
         throw new RuntimeException(errorMsg, e);
     }
 
-    private void handleError (String errorMsg, IOException e) {
+    private void handleError(String errorMsg, IOException e) {
         log.error(errorMsg, e);
         throw new RuntimeException(errorMsg, e);
     }

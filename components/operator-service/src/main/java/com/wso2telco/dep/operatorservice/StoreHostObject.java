@@ -53,10 +53,12 @@ public class StoreHostObject extends ScriptableObject {
 		return hostobjectName;
 	}
 	/**
-	 * Instantiates a new axiata store host object.
+	 * Instantiates a new api store host object.
 	 */
 	public StoreHostObject() {
-		log.info("::: Initialized HostObject ");
+		if (log.isDebugEnabled()) {
+			log.debug("Initialized HostObject StoreHostObject");
+		}
 	}
 
 /**

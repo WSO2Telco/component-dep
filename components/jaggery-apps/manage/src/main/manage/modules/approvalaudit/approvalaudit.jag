@@ -108,7 +108,6 @@ function getAllOperator(){
 
 function getApprovalHistory(fromDate, toDate, subscriber, application, operator, api){
 	var log = new Log();
-	log.info("*****************************************");
 	
 	/*Identify the Subscriber*/
 	if (isAdmin != true && isOperator == null) {

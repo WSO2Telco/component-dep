@@ -15,7 +15,7 @@
 -->
 <RateCard>
 	<Operators>
-		<Operator name="DIALOG">
+		<Operator name="OPERATOR1">
 			<API name="smsmessaging">
 				<Operation name="200">
 					<Rate default="true">

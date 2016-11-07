@@ -20,7 +20,6 @@ function getAllSubscribers(){
 
 function getAllAPIs(){
 	var log = new Log();
-	//log.info("*************************Get All APIs from Host Object***************************");
 
 	var store = jagg.module("manager").getAPIStoreObj();
 	var apis = [];
@@ -38,13 +37,14 @@ function getAllAPIs(){
 function getAppsBySubscriber(selectedSubscriber){
 	var log = new Log();
 	log.info("Selected Subscriber: " + stringify(selectedSubscriber));
-	//log.info("*************************Get All Apps from Host Object***************************");
 
 	var store = jagg.module("manager").getAPIStoreObj();
 	var apps = [];
 	try {
 		apps = store.getApplications(selectedSubscriber);
-		log.info("Application List: " + stringify(apps));
+		if (log.isDebugEnabeld()) {
+			log.debug("Application List: " + stringify(apps));
+		}
 		return {error:false, data : apps};
 
 	} catch (e) {
@@ -71,7 +71,6 @@ function getAPIsBySubscriber(subscriberName){
 }
 function getOperatorWiseAPITraffic(fromDate, toDate, subscriber, application, api){
 	var log = new Log();
-	log.info("*****************************************");
 	
 	/*Identify the Subscriber*/
 	if (isAdmin != true && isOperator == null) {

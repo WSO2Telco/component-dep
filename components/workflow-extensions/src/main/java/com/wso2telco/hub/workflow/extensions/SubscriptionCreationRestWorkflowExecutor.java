@@ -37,11 +37,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.apimgt.api.APIConsumer;
 import org.wso2.carbon.apimgt.api.APIManagementException;
+import org.wso2.carbon.apimgt.api.APIProvider;
 import org.wso2.carbon.apimgt.api.WorkflowResponse;
-import org.wso2.carbon.apimgt.api.model.API;
-import org.wso2.carbon.apimgt.api.model.APIIdentifier;
-import org.wso2.carbon.apimgt.api.model.Application;
-import org.wso2.carbon.apimgt.api.model.Tier;
+import org.wso2.carbon.apimgt.api.model.*;
 import org.wso2.carbon.apimgt.impl.APIConstants;
 import org.wso2.carbon.apimgt.impl.APIManagerFactory;
 import org.wso2.carbon.apimgt.impl.dao.ApiMgtDAO;
@@ -84,6 +82,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
     private static final String ADMIN_PASSWORD = "adminPassword";
     private static final String SERVICE_HOST = "service.host";
     private static final String SERVICE_URL = "serviceURL";
+    private static final String PUBLISHED_STATE = "PUBLISHED";
 
     private String serviceEndpoint;
     private String username;
@@ -120,7 +119,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
 
             Application subscribedApp = consumer.getApplicationById(applicationId);
 
-            String providerName = subscriptionWorkFlowDTO.getApiProvider();
+            String providerName = subscriptionWorkFlowDTO.getApiProvider().toLowerCase();
             String apiName = subscriptionWorkFlowDTO.getApiName();
             String version = subscriptionWorkFlowDTO.getApiVersion();
             APIIdentifier apiIdentifier = new APIIdentifier(providerName, apiName, version);
@@ -138,9 +137,35 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
                 tiersStr.append(tierName + ',');
             }
 
+            // get API Publisher
+            String publisherName;
+
+            APIProvider apiProvider = null;
+            try {
+                apiProvider = APIManagerFactory.getInstance().getAPIProvider(providerName);
+            } catch (APIManagementException e) {
+                throw new WorkflowException("Unable to get API Provider for API provider " + providerName, e);
+            }
+
+            List<LifeCycleEvent> lifeCycleEvents = null;
+            try {
+                lifeCycleEvents = apiProvider.getLifeCycleEvents(new APIIdentifier(providerName, apiName, version));
+            } catch (APIManagementException e) {
+                throw new WorkflowException("Unable to get Lifecycle events for API: " +
+                        apiName + ", version: " + version, e);
+            }
+
+            // get the final life cycle change
+            int lastLCEventNumber = lifeCycleEvents.size() - 1;
+            // check if last state is published
+            if (!PUBLISHED_STATE.equalsIgnoreCase(lifeCycleEvents.get(lastLCEventNumber).getNewStatus())) {
+                throw new WorkflowException("API: " + apiName + ", version: " + version + " is not in published state");
+            }
+            publisherName = lifeCycleEvents.get(lastLCEventNumber).getUserId();
+
             CreateProcessInstanceRequest processInstanceRequest =
                     new CreateProcessInstanceRequest(SUBSCRIPTION_CREATION_APPROVAL_PROCESS_NAME, TENANT_ID);
-            processInstanceRequest.setBusinessKey(SUBSCRIPTION_CREATION_APPROVAL_PROCESS_NAME);
+            processInstanceRequest.setBusinessKey(subscriptionWorkFlowDTO.getExternalWorkflowReference());
 
             Properties workflowProperties = WorkflowProperties.loadWorkflowProperties();
             String serviceURLString = workflowProperties.getProperty(SERVICE_HOST);
@@ -151,7 +176,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
             Variable subscribedApiId = new Variable(API_ID, apiID);
             Variable subscribedApiVersion = new Variable(API_VERSION, version);
             Variable subscribedApiContext = new Variable(API_CONTEXT, api.getContext());
-            Variable apiProvider = new Variable(API_PROVIDER, providerName);
+            Variable apiPublisher = new Variable(API_PROVIDER, publisherName);
             Variable subscriber = new Variable(SUBSCRIBER, subscriptionWorkFlowDTO.getSubscriber());
             Variable appId = new Variable(APPLICATION_ID, applicationIdStr);
             Variable tierName = new Variable(TIER_NAME, subscriptionWorkFlowDTO.getTierName());
@@ -184,7 +209,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
             variables.add(subscribedApiId);
             variables.add(subscribedApiVersion);
             variables.add(subscribedApiContext);
-            variables.add(apiProvider);
+            variables.add(apiPublisher);
             variables.add(subscriber);
             variables.add(appId);
             variables.add(tierName);

@@ -41,35 +41,31 @@ import org.apache.commons.logging.LogFactory;
 
 public class OperatorAdminDbUpdater implements JavaDelegate {
 
-	private static final Log log = LogFactory.getLog(OperatorAdminDbUpdater.class);
+    private static final Log log = LogFactory.getLog(OperatorAdminDbUpdater.class);
 
-	public void execute(DelegateExecution arg0) throws Exception {
+    public void execute(DelegateExecution arg0) throws Exception {
+        AuthRequestInterceptor authRequestInterceptor = new AuthRequestInterceptor();
+        String operatorName = arg0.getVariable(Constants.OPERATOR) != null ? arg0.getVariable(Constants.OPERATOR).toString() : null;
+        int applicationId = arg0.getVariable(Constants.APPLICATION_ID) != null ? Integer.parseInt(arg0.getVariable(Constants.APPLICATION_ID).toString()) : 0;
+        String serviceUrl = arg0.getVariable(Constants.SERVICE_URL) != null ? arg0.getVariable(Constants.SERVICE_URL).toString() : null;
+        String apiName = arg0.getVariable(Constants.API_NAME) != null ? arg0.getVariable(Constants.API_NAME).toString() : null;
+        int apiID = arg0.getVariable(Constants.API_ID) != null ? Integer.parseInt(arg0.getVariable(Constants.API_ID).toString()) : 0;
+        String deploymentType = arg0.getVariable(Constants.DEPLOYMENT_TYPE) != null ? arg0.getVariable(Constants.DEPLOYMENT_TYPE).toString() : null;
+        String apiVersion = arg0.getVariable(Constants.API_VERSION) != null ? arg0.getVariable(Constants.API_VERSION).toString() : null;
+        String apiProvider = arg0.getVariable(Constants.API_PROVIDER) != null ? arg0.getVariable(Constants.API_PROVIDER).toString() : null;
+        String completedByUser = arg0.getVariable(Constants.COMPLETE_BY_USER) != null ? arg0.getVariable(Constants.COMPLETE_BY_USER).toString() : null;
+        String completedOn = arg0.getVariable(Constants.COMPLETED_ON) != null ? arg0.getVariable(Constants.COMPLETED_ON).toString() : null;
+        String completedByRole = arg0.getVariable(Constants.OPERATOR) != null ? arg0.getVariable(Constants.OPERATOR).toString() + Constants.ADMIN_ROLE : null;
+        String applicationName = arg0.getVariable(Constants.APPLICATION_NAME) != null ? arg0.getVariable(Constants.APPLICATION_NAME).toString() : null;
+        String description = arg0.getVariable(Constants.APPLICATION_DESCRIPTION) != null ? arg0.getVariable(Constants.APPLICATION_DESCRIPTION).toString() : null;
+        String selectedTier = arg0.getVariable(Constants.SELECTED_TIER) != null ? arg0.getVariable(Constants.SELECTED_TIER).toString() : null;
+        String adminPassword = arg0.getVariable(Constants.ADMIN_PASSWORD) != null ? arg0.getVariable(Constants.ADMIN_PASSWORD).toString() : null;
+        String apiContext = arg0.getVariable(Constants.API_CONTEXT) != null ? arg0.getVariable(Constants.API_CONTEXT).toString() : null;
+        String subscriber = arg0.getVariable(Constants.SUBSCRIBER) != null ? arg0.getVariable(Constants.SUBSCRIBER).toString() : null;
+        String operatorAdminApprovalStatus = arg0.getVariable(Constants.OPERATOR_ADMIN_APPROVAL) != null ? arg0.getVariable(Constants.OPERATOR_ADMIN_APPROVAL).toString() : null;
 
-
-        AuthRequestInterceptor authRequestInterceptor=new AuthRequestInterceptor();
-    	String operatorName = arg0.getVariable(Constants.OPERATOR).toString();
-		int applicationId=Integer.parseInt(arg0.getVariable(Constants.APPLICATION_ID).toString());
-        String serviceUrl =arg0.getVariable(Constants.SERVICE_URL).toString();
-        String apiName=arg0.getVariable(Constants.API_NAME).toString();
-        int apiID=Integer.parseInt(arg0.getVariable(Constants.API_ID).toString());
-        String deploymentType = arg0.getVariable(Constants.DEPLOYMENT_TYPE).toString();
-        String apiVersion = arg0.getVariable(Constants.API_VERSION).toString();
-        String apiProvider= arg0.getVariable(Constants.API_PROVIDER).toString();
-        String completedByUser= arg0.getVariable(Constants.COMPLETE_BY_USER).toString();
-        String completedOn= arg0.getVariable(Constants.COMPLETED_ON).toString();
-        String completedByRole=arg0.getVariable(Constants.OPERATOR).toString()+Constants.ADMIN_ROLE;
-        String applicationName= arg0.getVariable(Constants.APPLICATION_NAME).toString();
-        String description= arg0.getVariable(Constants.DESCRIPTION).toString();
-        String selectedTier= arg0.getVariable(Constants.SELECTED_TIER).toString();
-        String adminPassword= arg0.getVariable(Constants.ADMIN_PASSWORD).toString();
-        String apiContext= arg0.getVariable(Constants.API_CONTEXT).toString();
-        String subscriber=  arg0.getVariable(Constants.SUBSCRIBER).toString();
-
-
-		String operatorAdminApprovalStatus = arg0.getVariable(Constants.OPERATOR_ADMIN_APPROVAL).toString();
-		log.info("In OperatorDataUpdater, Operator admin approval status: " + operatorAdminApprovalStatus +
-		         " Operator: " + operatorName);
-
+        log.info("In OperatorDataUpdater, Operator admin approval status: " + operatorAdminApprovalStatus +
+                " Operator: " + operatorName);
 
         SubscriptionWorkflowApi api = Feign.builder()
                 .encoder(new JacksonEncoder())
@@ -78,14 +74,12 @@ public class OperatorAdminDbUpdater implements JavaDelegate {
                 .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminPassword))
                 .target(SubscriptionWorkflowApi.class, serviceUrl);
 
-
         WorkflowApprovalAuditApi apiAudit = Feign.builder()
                 .encoder(new JacksonEncoder())
                 .decoder(new JacksonDecoder())
                 .errorDecoder(new WorkflowCallbackErrorDecoder())
                 .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminPassword))
                 .target(WorkflowApprovalAuditApi.class, serviceUrl);
-
 
         NotificationApi apiNotification = Feign.builder()
                 .encoder(new JacksonEncoder())
@@ -94,17 +88,7 @@ public class OperatorAdminDbUpdater implements JavaDelegate {
                 .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminPassword))
                 .target(NotificationApi.class, serviceUrl);
 
-        Subscription subscription=new Subscription();
-        subscription.setApiName(apiName);
-        subscription.setApplicationID(applicationId);
-        subscription.setStatus(operatorAdminApprovalStatus);
-        subscription.setOperatorName(operatorName);
-        
-        SubscriptionValidation subscriptionValidation=new SubscriptionValidation();
-        subscriptionValidation.setApiID(apiID);
-        subscriptionValidation.setApplicationID(applicationId);
-
-        SubscriptionApprovalAuditRecord subscriptionApprovalAuditRecord=new SubscriptionApprovalAuditRecord();
+        SubscriptionApprovalAuditRecord subscriptionApprovalAuditRecord = new SubscriptionApprovalAuditRecord();
         subscriptionApprovalAuditRecord.setApiName(apiName);
         subscriptionApprovalAuditRecord.setApiProvider(apiProvider);
         subscriptionApprovalAuditRecord.setApiVersion(apiVersion);
@@ -116,20 +100,22 @@ public class OperatorAdminDbUpdater implements JavaDelegate {
         subscriptionApprovalAuditRecord.setSubStatus(operatorAdminApprovalStatus);
 
         try {
-
             apiAudit.subscriptionApprovalAudit(subscriptionApprovalAuditRecord);
+            if (deploymentType.equalsIgnoreCase(Constants.HUB)) {
+                Subscription subscription = new Subscription();
+                subscription.setApiName(apiName);
+                subscription.setApplicationID(applicationId);
+                subscription.setStatus(operatorAdminApprovalStatus);
+                subscription.setOperatorName(operatorName);
 
-            if(!deploymentType.equalsIgnoreCase(Constants.HUB)) {
-                api.subscriptionApprovalHub(subscription);
+                SubscriptionValidation subscriptionValidation = new SubscriptionValidation();
+                subscriptionValidation.setApiID(apiID);
+                subscriptionValidation.setApplicationID(applicationId);
+                api.subscriptionApprovalOperator(subscription);
+                api.subscriptionApprovalValidator(subscriptionValidation);
             }
-
-            if(!deploymentType.equalsIgnoreCase(Constants.INTERNAL_GATEWAY)){
-            api.subscriptionApprovalOperator(subscription);
-            api.subscriptionApprovalValidator(subscriptionValidation);}
-
             //send email notification
-            if(deploymentType.equalsIgnoreCase(Constants.INTERNAL_GATEWAY)) {
-
+            if (deploymentType.equalsIgnoreCase(Constants.INTERNAL_GATEWAY)) {
                 if (operatorAdminApprovalStatus.equalsIgnoreCase(Constants.APPROVE)) {
                     PLUGINAdminSubApprovalNotificationRequest pLUGINAdminSubApprovalNotificationRequest = new PLUGINAdminSubApprovalNotificationRequest();
                     pLUGINAdminSubApprovalNotificationRequest.setApiVersion(apiVersion);
@@ -141,9 +127,7 @@ public class OperatorAdminDbUpdater implements JavaDelegate {
                     pLUGINAdminSubApprovalNotificationRequest.setApplicationName(applicationName);
                     pLUGINAdminSubApprovalNotificationRequest.setApplicationDescription(description);
                     pLUGINAdminSubApprovalNotificationRequest.setSubscriptionTier(selectedTier);
-
                     apiNotification.subscriptionNotificationApiCreator(pLUGINAdminSubApprovalNotificationRequest);
-
                 } else {
                     SubApprovalStatusSPNotificationRequest subApprovalStatusSPNotificationRequest = new SubApprovalStatusSPNotificationRequest();
                     subApprovalStatusSPNotificationRequest.setApprovalStatus(operatorAdminApprovalStatus);
@@ -155,20 +139,12 @@ public class OperatorAdminDbUpdater implements JavaDelegate {
                     subApprovalStatusSPNotificationRequest.setApplicationDescription(description);
                     subApprovalStatusSPNotificationRequest.setApiVersion(apiVersion);
                     subApprovalStatusSPNotificationRequest.setApiContext(apiContext);
-
                     apiNotification.subscriptionNotificationSp(subApprovalStatusSPNotificationRequest);
                 }
             }
-
-
         } catch (Exception e) {
             throw new Exception(e);
         }
-		
-		
-		
-		
-	}
-
+    }
 }
 

@@ -71,7 +71,9 @@ public class WorkflowHostObject extends ScriptableObject {
 	 * Instantiates a new workflow host object.
 	 */
 	public WorkflowHostObject() {
-		log.info("::: Initialized HostObject ");
+		if (log.isDebugEnabled()) {
+			log.debug("Initialized HostObject WorkflowHostObject");
+		}
 	}
 
 	 

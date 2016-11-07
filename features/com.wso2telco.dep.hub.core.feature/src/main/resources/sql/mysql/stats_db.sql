@@ -116,10 +116,10 @@ CREATE TABLE IF NOT EXISTS `API_THROTTLED_OUT_SUMMARY` (
   `apiPublisher` varchar(100) NOT NULL DEFAULT '',
   `applicationName` varchar(100) NOT NULL DEFAULT '',
   `tenantDomain` varchar(100) NOT NULL DEFAULT '',
-  `year` smallint(6) DEFAULT NULL,
-  `month` smallint(6) DEFAULT NULL,
-  `day` smallint(6) DEFAULT NULL,
-  `week` int(11) DEFAULT NULL,
+  `year` smallint(6),
+  `month` smallint(6),
+  `day` smallint(6),
+  `week` int(11),
   `time` varchar(30) NOT NULL DEFAULT '',
   `success_request_count` int(11) DEFAULT NULL,
   `throttleout_count` int(11) DEFAULT NULL,
@@ -288,17 +288,19 @@ DROP TABLE IF EXISTS `sub_approval_audit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sub_approval_audit` (
+  `SUB_APPROVAL_ID` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `API_PROVIDER` varchar(200) NOT NULL DEFAULT '',
   `API_NAME` varchar(200) NOT NULL DEFAULT '',
   `API_VERSION` varchar(30) NOT NULL DEFAULT '',
-  `APP_ID` int(11) NOT NULL,
+  `APP_ID` int(11) DEFAULT NULL,
   `SUB_STATUS` varchar(50) DEFAULT 'ON_HOLD',
   `SUB_APPROVAL_TYPE` varchar(50) DEFAULT NULL,
   `COMPLETED_BY_ROLE` varchar(50) NOT NULL DEFAULT '',
   `COMPLETED_BY_USER` varchar(50) DEFAULT NULL,
   `COMPLETED_ON` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  PRIMARY KEY (`APP_ID`,`API_PROVIDER`,`API_NAME`,`API_VERSION`,`COMPLETED_BY_ROLE`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+  PRIMARY KEY (`SUB_APPROVAL_ID`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+
 
 DROP TABLE IF EXISTS `app_approval_audit`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;

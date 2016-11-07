@@ -16,7 +16,7 @@
 -->
 <RateCard>
 	<Operators>
-		<Operator name="DIALOG">
+		<Operator name="OPERATOR1">
 			<API name="USSD">
 				<Rate default="true">
 					<Name>one</Name>
@@ -118,7 +118,7 @@
 				</Rate>
 			</API>
 		</Operator>
-		<Operator name="ROBI">
+		<Operator name="OPERATOR2">
 			<API name="USSD">
 				<Rate default="true">
 					<Name>one</Name>
@@ -220,7 +220,7 @@
 				</Rate>
 			</API>
 		</Operator>
-               <Operator name="CELCOM">
+               <Operator name="OPERATOR3">
 			   <API name="USSD">
 				<Rate default="true">
 					<Name>one</Name>
@@ -323,7 +323,7 @@
 			</API>
 		</Operator>
 
-		<!-- <Operator name="DIALOG">
+		<!-- <Operator name="OPERATOR1">
 			<API name="smsmessaging">
 				<Rate default="true">
 					<!- Name of the Rate ->

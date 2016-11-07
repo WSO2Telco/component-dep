@@ -77,11 +77,11 @@
 								<%} else {for (var i = 0; i < opcoapps.length; i++){%>
 								<tr>
 									<%if (opcoapps[i].operatorid==1) {%>
-									<th>Dialog:</th>
+									<th>Operator1:</th>
 									<%} else if (opcoapps[i].operatorid==2) {%>
-									<th>Celcom:</th>
+									<th>Operator2:</th>
 									<%} else if (opcoapps[i].operatorid==3) {%>
-									<th>Robi:</th>
+									<th>Operator3:</th>
                                  <%}%>
 									<td colspan="2"><%=opcoapps[i].status%></td>
 								</tr>
@@ -166,11 +166,11 @@
 														<tr>
 
 															<%if (opcosubs[j].operatorid==1) {%>
-															<td>Dialog:</td>
+															<td>Operator1:</td>
 															<%} else if (opcosubs[j].operatorid==2) {%>
-															<td>Celcom:</td>
+															<td>Operator2:</td>
 															<%} else if (opcosubs[j].operatorid==3) {%>
-															<td>Robi:</td>
+															<td>Operator3:</td>
                                  <%}%>
                                  
 							<td id="status0"><%=opcosubs[j].status%></td>
@@ -202,7 +202,7 @@
 
 										<div id="comment-add">
 											<!--   <div style="display:none" id="commentAdd-error" class="alert alert-error">
-        <button data-dismiss="alert" class="close" type="button">×</button>
+        <button data-dismiss="alert" class="close" type="button">ï¿½</button>
         <strong>Comment exceeds character limit</strong>
       </div>
     <span class="counter">Characters left: 450</span><textarea class="span12 comment-box" id="comment-text"></textarea>

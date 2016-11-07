@@ -59,11 +59,11 @@ public class OperatorListConverter implements JavaDelegate {
             String serviceUrl = arg0.getVariable(Constants.SERVICE_URL).toString();
             String apiVersion = arg0.getVariable(Constants.API_VERSION).toString();
             String apiProvider = arg0.getVariable(Constants.API_PROVIDER).toString();
-            String completedByRole = operatorList[0] + Constants.ADMIN_ROLE;
+            String completedByRole = Constants.WORKFLOW_ADMIN_ROLE;
             String applicationName = arg0.getVariable(Constants.APPLICATION_NAME).toString();
             String apiContext = arg0.getVariable(Constants.API_CONTEXT).toString();
-            String apiTiers = arg0.getVariable("apiTiers").toString();
-            String applicationDescription = arg0.getVariable("applicationDescription").toString();
+            String apiTiers = arg0.getVariable(Constants.API_TIERS).toString();
+            String applicationDescription = arg0.getVariable(Constants.APPLICATION_DESCRIPTION).toString();
 
             NotificationApi apiNotification = Feign.builder()
                     .encoder(new JacksonEncoder())

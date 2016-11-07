@@ -1,95 +1,93 @@
 <%
 jagg.block("menu/primary", {
-    initializer:function (data) {
+    initializer: function (data) {
 
     },
 
-    getOutputs:function (inputs) {
+    getOutputs: function (inputs) {
 
-        var user =jagg.getUser();
+        var user = jagg.getUser();
         var links = [], path = inputs.pagePath;
-        if(user != null) {
-        	var isAdmin = user.isAdmin;
-			var isOperator = user.operator;
-			var isCustomerCare = user.isCustomerCare;
-        }
-		
-		if(isCustomerCare != null){
-		
-        links.push({
-			"title":"Home",
-        	"url":jagg.getMappedUrl("/"),
-        	"classes":"link-home",
-        	"classIcon":"icon-billing",
-        	"tooltip":"",
-        	"active":(path == "/site/pages/home.jag")
-		});
-        
-        links.push({
-			"title":"Billing & Metering",
-			"url":jagg.getMappedUrl("/site/pages/billing-metering.jag"),
-			"classes":"link-home",
-			"classIcon":"icon-billing",
-			"tooltip":"",
-			"active":(path == "/site/pages/billing-metering.jag")
-		});
-		
-		} else {
-        
-        links.push({
-			"title":"Home",
-        	"url":jagg.getMappedUrl("/"),
-        	"classes":"link-home",
-        	"classIcon":"icon-billing",
-        	"tooltip":"",
-        	"active":(path == "/site/pages/home.jag")
-		});
-        
-        links.push({
-			"title":"Billing & Metering",
-			"url":jagg.getMappedUrl("/site/pages/billing-metering.jag"),
-			"classes":"link-home",
-			"classIcon":"icon-billing",
-			"tooltip":"",
-			"active":(path == "/site/pages/billing-metering.jag")
-		});
-        if(isAdmin == true || isOperator != null) {
-        	links.push({
-        				"title":"Workflow",
-        				"url":jagg.getMappedUrl("/site/pages/workflow.jag"),
-        				"classes":"link-home",
-        				"classIcon":"icon-workflow",
-        				"tooltip":"",
-        				"active":(path == "/site/pages/workflow.jag")
-			});
+        if (user != null) {
+            var isAdmin = user.isAdmin;
+            var isOperator = user.operator;
+            var isCustomerCare = user.isCustomerCare;
         }
 
-        if(isAdmin == true || isOperator != null) {
-        links.push({
-            "title":"Blacklist",
-            "url":jagg.getMappedUrl("/site/pages/blacklist.jag"),
-            "classes":"link-home",
-            "classIcon":"icon-blacklist",
-            "tooltip":"",
-            "active":(path == "/site/pages/blacklist.jag")
-        });
-        }
-        if(isAdmin == true || isOperator != null) {
-		links.push({
-			"title":"Whitelist",
-			"url":jagg.getMappedUrl("/site/pages/whitelist.jag"),
-			"classes":"link-home",
-			"classIcon":"icon-blacklist",
-			"tooltip":"",
-			"active":(path == "/site/pages/whitelist.jag")
-		});
+        if (isCustomerCare != null) {
+
+            links.push({
+                "title": "Home",
+                "url": jagg.getMappedUrl("/"),
+                "classes": "link-home",
+                "classIcon": "icon-billing",
+                "tooltip": "",
+                "active": (path == "/site/pages/home.jag")
+            });
+            //		links.push({
+            //		"title":"Billing & Metering",
+            //		"url":jagg.getMappedUrl("/site/pages/billing-metering.jag"),
+            //		"classes":"link-home",
+            //		"classIcon":"icon-billing",
+            //		"tooltip":"",
+            //		"active":(path == "/site/pages/billing-metering.jag")
+            //	});
+
+        } else {
+
+            links.push({
+                "title": "Home",
+                "url": jagg.getMappedUrl("/"),
+                "classes": "link-home",
+                "classIcon": "icon-billing",
+                "tooltip": "",
+                "active": (path == "/site/pages/home.jag")
+            });
+            //		links.push({
+            //		"title":"Billing & Metering",
+            //		"url":jagg.getMappedUrl("/site/pages/billing-metering.jag"),
+            //		"classes":"link-home",
+            //		"classIcon":"icon-billing",
+            //		"tooltip":"",
+            //		"active":(path == "/site/pages/billing-metering.jag")
+            //	});
+            if (isAdmin == true || isOperator != null) {
+                links.push({
+                    "title": "Workflow",
+                    "url": jagg.getMappedUrl("/site/pages/workflow.jag"),
+                    "classes": "link-home",
+                    "classIcon": "icon-workflow",
+                    "tooltip": "",
+                    "active": (path == "/site/pages/workflow.jag")
+                });
+            }
+
+            //if(isAdmin == true || isOperator != null) {
+            //  links.push({
+            //     "title":"Blacklist",
+            //     "url":jagg.getMappedUrl("/site/pages/blacklist.jag"),
+            //     "classes":"link-home",
+            //     "classIcon":"icon-blacklist",
+            //     "tooltip":"",
+            //     "active":(path == "/site/pages/blacklist.jag")
+            //});
+            //}
+            //if(isAdmin == true || isOperator != null) {
+            //	links.push({
+            //		"title":"Whitelist",
+            //		"url":jagg.getMappedUrl("/site/pages/whitelist.jag"),
+            //		"classes":"link-home",
+            //		"classIcon":"icon-blacklist",
+            //		"tooltip":"",
+            //		"active":(path == "/site/pages/whitelist.jag")
+            //	});
+            //}
+
         }
 
-		}
-		
         return {
             "user": user,
-        	"links":links
+            "links": links
         };
     }
 

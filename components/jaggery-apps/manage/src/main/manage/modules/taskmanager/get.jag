@@ -6,7 +6,7 @@ var getTasks = function (filterCategory,taskType) {
 	var headers = {"Authorization":"Basic " + session.get("auth")};
 	var site = require("/site/conf/site.json");
     var businessProcessEngineUrl = site.workflows.businessProcessEngineBaseUrl;
-	var user = jagg.getUser().username;
+	var user = jagg.getUser().username.toLowerCase();
 	var roleArray = session.get("roles");
 	var string = "";
 	for(var k=0; k<roleArray.length; k++){
@@ -51,7 +51,7 @@ var getTasks = function (filterCategory,taskType) {
             var taskName = tasks.data[i].name;
             var taskId = tasks.data[i].id;
             var time = tasks.data[i].createTime;
-            var status = "ACTIVE";
+            var status = "READY";
             //get required application details from process instance variables
             var applicationNameVariable = get(businessProcessEngineUrl + "runtime/tasks/" +
             taskId + "/variables/applicationName",null, headers,"json" ).data;

@@ -54,5 +54,10 @@ public class Constants {
     public static final String PUBLISHER_CALLBACK_ACTIVITY = "Publisher Callback";
     public static final String API_CONTEXT = "apiContext";
     public static final String SUBSCRIBER = "subscriber";
+    public static final String WORKFLOW_ADMIN_ROLE="admin";
+    public static final String APPLICATION_DESCRIPTION="applicationDescription";
+    public static final String API_TIERS="apiTiers";
+    public static final String OPERATORS="operators";
+    public static final String PUBLISHER_APPROVAL="PUBLISHER_APPROVAL";
 
 }
