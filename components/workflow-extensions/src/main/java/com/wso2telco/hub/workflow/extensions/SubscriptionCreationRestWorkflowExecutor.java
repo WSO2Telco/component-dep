@@ -165,7 +165,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
 
             CreateProcessInstanceRequest processInstanceRequest =
                     new CreateProcessInstanceRequest(SUBSCRIPTION_CREATION_APPROVAL_PROCESS_NAME, TENANT_ID);
-            processInstanceRequest.setBusinessKey(SUBSCRIPTION_CREATION_APPROVAL_PROCESS_NAME);
+            processInstanceRequest.setBusinessKey(subscriptionWorkFlowDTO.getExternalWorkflowReference());
 
             Properties workflowProperties = WorkflowProperties.loadWorkflowProperties();
             String serviceURLString = workflowProperties.getProperty(SERVICE_HOST);
