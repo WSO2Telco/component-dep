@@ -36,35 +36,14 @@ include("/jagg/jagg.jag");
               }
               print(obj);
 
-
         }else if (action === "startTask") {
         	
         	
          var mod = jagg.module("taskmanager");
          var taskId = request.getParameter("taskId");
          var taskType = request.getParameter("taskType");
-	
-         
-         
-         var prefixEndpoint;
-         if(taskType=="subscription"){
-         prefixEndpoint= site.workflows.subscriptionWorkFlowServerURL;
-         } else if(taskType=="signup"){
-         prefixEndpoint=site.workflows.signupWorkFlowServerURL;
-         } else if(taskType=="application"){
-         prefixEndpoint=site.workflows.applicationWorkFlowServerURL;
-         }else if(taskType=="appRegistration"){
-         prefixEndpoint=site.workflows.appRegistrationWorkFlowServerURL;
-         }
-         var endpoint= prefixEndpoint+ "HumanTaskClientAPIAdmin/"
-		
-         
-         
-         
-         result = mod.startTask(taskId,endpoint);
-         
-         
-         
+         result = mod.startTask(taskId);
+
          if (result.error==true) {
                  obj = {
                                error:true,
@@ -89,12 +68,9 @@ include("/jagg/jagg.jag");
          username = jagg.getUser().username;
          var currentDate = new Date();
 		 var webAppURL = site.webapp_URL;
-         var prefixEndpoint;
+
          if(taskType=="subscription"){
-         prefixEndpoint= site.workflows.subscriptionWorkFlowServerURL;
-		 
-		 
-		 var strBackend = webAppURL + "WorkFlowComments/AdminComments/workflow/subscription/comments?taskID=" + taskId + "&comments=" + encodeURIComponent(adminComment) + "&status=" + status + "&description=" + encodeURIComponent(description);
+     	 var strBackend = webAppURL + "WorkFlowComments/AdminComments/workflow/subscription/comments?taskID=" + taskId + "&comments=" + encodeURIComponent(adminComment) + "&status=" + status + "&description=" + encodeURIComponent(description);
 		 
 		 log.info("Subscription URL: " + strBackend);
 	     var xhrd = new XMLHttpRequest();
@@ -102,9 +78,8 @@ include("/jagg/jagg.jag");
 		 xhrd.send();
 
          } else if(taskType=="user-signup"){
-         prefixEndpoint=site.workflows.signupWorkFlowServerURL;
+
          } else if(taskType=="application"){
-            prefixEndpoint=site.workflows.applicationWorkFlowServerURL;
  			var strBackendApp = webAppURL + "WorkFlowComments/AdminComments/workflow/application/comments?taskID=" + taskId + "&comments=" + encodeURIComponent(adminComment) + "&status=" + status + "&description=" + encodeURIComponent(description);
 		
             log.info("Application URL: " + strBackendApp);
@@ -112,11 +87,10 @@ include("/jagg/jagg.jag");
 		    xhr.open("GET", strBackendApp, true);//async=true
 		    xhr.send();
          }else if(taskType=="appRegistration"){
-         prefixEndpoint=site.workflows.appRegistrationWorkFlowServerURL;
+
          }
-         var endpoint= prefixEndpoint+ "HumanTaskClientAPIAdmin/"
-			log.info('HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH  endpoint NEW URL  : ' + endpoint);
-         result = mod.completeTask(taskId,taskType,taskName,status,description,endpoint,username,currentDate,selectedTier);
+
+         result = mod.completeTask(taskId,taskType,taskName,status,description,username,currentDate,selectedTier);
          if (result.error==true) {
          obj = {
                error:true,
@@ -130,25 +104,11 @@ include("/jagg/jagg.jag");
                                }
                  print(obj);
 
-
-
-        }else if (action === "assignTask") {
+     }else if (action === "assignTask") {
                  var mod = jagg.module("taskmanager");
                  var taskId = request.getParameter("taskId");
                  var taskType = request.getParameter("taskType");
-
-                 var prefixEndpoint;
-                 if(taskType=="subscription"){
-                 prefixEndpoint= site.workflows.subscriptionWorkFlowServerURL;
-                 } else if(taskType=="signup"){
-                 prefixEndpoint=site.workflows.signupWorkFlowServerURL;
-                 } else if(taskType=="application"){
-                 prefixEndpoint=site.workflows.applicationWorkFlowServerURL;
-                 }else if(taskType=="appRegistration"){
-		         prefixEndpoint=site.workflows.appRegistrationWorkFlowServerURL;
-		         }
-                 var endpoint= prefixEndpoint+ "HumanTaskClientAPIAdmin/"
-                 result = mod.assignTask(taskId,endpoint);
+                 result = mod.assignTask(taskId);
                  if (result.error==true) {
                          obj = {
                                        error:true,
