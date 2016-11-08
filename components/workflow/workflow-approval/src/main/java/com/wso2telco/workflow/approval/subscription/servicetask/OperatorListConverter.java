@@ -65,6 +65,7 @@ public class OperatorListConverter implements JavaDelegate {
             String apiContext = arg0.getVariable(Constants.API_CONTEXT).toString();
             String apiTiers = arg0.getVariable(Constants.API_TIERS).toString();
             String applicationDescription = arg0.getVariable(Constants.APPLICATION_DESCRIPTION).toString();
+            String subscriber=arg0.getVariable(Constants.SUBSCRIBER).toString();
 
             NotificationApi apiNotification = Feign.builder()
                     .encoder(new JacksonEncoder())
@@ -76,7 +77,7 @@ public class OperatorListConverter implements JavaDelegate {
             HUBAdminSubApprovalNotificationRequest hUBAdminSubApprovalNotificationRequest = new HUBAdminSubApprovalNotificationRequest();
             hUBAdminSubApprovalNotificationRequest.setApiContext(apiContext);
             hUBAdminSubApprovalNotificationRequest.setApiName(apiName);
-            hUBAdminSubApprovalNotificationRequest.setSubscriber(applicationName);
+            hUBAdminSubApprovalNotificationRequest.setSubscriber(subscriber);
             hUBAdminSubApprovalNotificationRequest.setSubscriptionTier(apiTiers);
             hUBAdminSubApprovalNotificationRequest.setReceiverRole(completedByRole);
             hUBAdminSubApprovalNotificationRequest.setApiVersion(apiVersion);
