@@ -248,21 +248,29 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
                 .target(BusinessProcessApi.class, serviceEndpoint);
 
         ProcessInstanceData instanceData = null;
+        ApiMgtDAO dao = ApiMgtDAO.getInstance();
+        WorkflowDTO workflowDTO = null;
         try {
-            instanceData = api.getProcessInstances(workflowExtRef);
-        } catch (WorkflowExtensionException e) {
+            workflowDTO = dao.retrieveWorkflow(workflowExtRef);
+        } catch (APIManagementException e) {
             throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
         }
+        if (WorkflowStatus.CREATED.equals(workflowDTO.getStatus())) {
+            try {
+                instanceData = api.getProcessInstances(workflowExtRef);
+            } catch (WorkflowExtensionException e) {
+                throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
+            }
+            // should be only one process instance for this business key, hence get the 0th element
+            try {
+                api.deleteProcessInstance(Integer.toString(instanceData.getData().get(0).getId()));
+            } catch (WorkflowExtensionException e) {
+                throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
+            }
 
-        // should be only one process instance for this business key, hence get the 0th element
-        try {
-            api.deleteProcessInstance(Integer.toString(instanceData.getData().get(0).getId()));
-        } catch (WorkflowExtensionException e) {
-            throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
+            log.info("Application Creation approval process instance task with business key " +
+                    workflowExtRef + " deleted successfully");
         }
-
-        log.info("Application Creation approval process instance task with business key " +
-                workflowExtRef + " deleted successfully");
     }
 
     private String getDeploymentType() {
