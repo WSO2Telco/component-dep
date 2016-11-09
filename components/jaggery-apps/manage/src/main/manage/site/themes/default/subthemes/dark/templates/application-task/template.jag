@@ -126,7 +126,7 @@ if(tasks.length==0){%>
 							<td><%if((tasks[i].status=="RESERVED")){%>
 								<button class="btn js_startBtn btn-primary"
 									data="<%=tasks[i].id%>" iteration="<%=String(i)%>">Start</button>
-								<select class="js_stateDropDown pull-left"
+								<select class="js_stateDropDown pull-left"  id="<%='stateDropDown'+String(i)%>"
 								style="display: none; margin-right: 6px; width: 150px;">
 									<option value="APPROVED">Approve</option>
 									<option value="REJECTED">Reject</option>
@@ -140,7 +140,7 @@ if(tasks.length==0){%>
 							<%}else if(tasks[i].status=='IN_PROGRESS'){%>
 							<input type="hidden" id="<%=tasks[i].id%>"
 								name="in_progress_task" value="<%=tasks[i].id%>" /> <select
-								class="js_stateDropDown pull-left"
+								class="js_stateDropDown pull-left"  id="<%='stateDropDown'+String(i)%>"
 								style="margin-right: 6px; width: 150px;">
 								<option value="APPROVED">Approve</option>
 								<option value="REJECTED">Reject</option>
@@ -155,7 +155,7 @@ if(tasks.length==0){%>
 							<button class="btn js_startBtn pull-left btn-primary"
 								id="js_startBtn<%=String(i)%>" style="display: none"
 								data="<%=tasks[i].id%>" iteration="<%=String(i)%>">Start</button>
-							<select class="js_stateDropDown pull-left"
+							<select class="js_stateDropDown pull-left"  id="<%='stateDropDown'+String(i)%>"
 								style="display: none; margin-right: 6px; width: 150px;">
 								<option value="APPROVED">Approve</option>
 								<option value="REJECTED">Reject</option>

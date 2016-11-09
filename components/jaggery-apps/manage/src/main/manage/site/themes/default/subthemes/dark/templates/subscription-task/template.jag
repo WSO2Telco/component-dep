@@ -129,7 +129,7 @@ else{
 							<td><%=tasks[i].createdTime%></td>
  							<td><%if((tasks[i].status=="RESERVED")){%>
                               <button class="btn js_startBtn btn-primary" id="js_startBtn<%=String(i)%>" data="<%=tasks[i].id%>" iteration="<%=String(i)%>">Start</button>
-                              <select class="js_stateDropDown pull-left" style="display: none; margin-right: 6px; width :150px;">
+                              <select class="js_stateDropDown pull-left" id="<%='stateDropDown'+String(i)%>" style="display: none; margin-right: 6px; width :150px;">
                                   <option value="APPROVED">Approve</option>
                                   <option value="REJECTED">Reject</option>
                               </select>
@@ -140,7 +140,7 @@ else{
                               <label>Completed</label>
                               <%}else if(tasks[i].status=='IN_PROGRESS'){%>
                                <input type="hidden" id="<%=tasks[i].id%>" name="in_progress_task" value="<%=tasks[i].id%>" />
-                               <select class="js_stateDropDown pull-left" style="margin-right: 6px; width :150px;">
+                               <select class="js_stateDropDown pull-left"  id="<%='stateDropDown'+String(i)%>" style="margin-right: 6px; width :150px;">
                                 <option value="APPROVED">Approve</option>
                                 <option value="REJECTED">Reject</option>
                                </select>
@@ -148,7 +148,7 @@ else{
                               <%}else if (tasks[i].status=='READY'){%>
                               <button class="btn js_assignBtn pull-left btn-primary" id="js_assignBtn<%=String(i)%>" data="<%=tasks[i].id%>" iteration="<%=String(i)%>">Assign To Me</button>
                               <button class="btn js_startBtn pull-left btn-primary" id="js_startBtn<%=String(i)%>" style="display: none" data="<%=tasks[i].id%>" iteration="<%=String(i)%>">Start</button>
-                              <select class="js_stateDropDown pull-left" style="display: none; margin-right: 6px; width :150px;">
+                              <select class="js_stateDropDown pull-left"  id="<%='stateDropDown'+String(i)%>" style="display: none; margin-right: 6px; width :150px;">
                               <option value="APPROVED">Approve</option>
                               <option value="REJECTED">Reject</option>
                               </select>
