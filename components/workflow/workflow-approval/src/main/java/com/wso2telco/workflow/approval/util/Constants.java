@@ -37,6 +37,7 @@ public class Constants {
     public static final String ADMIN_ROLE="-admin-role";
     public static final String APPLICATION_NAME="applicationName";
     public static final String USER_NAME="userName";
+    public static final String ADMIN_USER_NAME = "adminUserName";
     public static final String ADMIN_PASSWORD = "adminPassword";
     public static final String API_PUBLISHER_APPROVAL = "apiPublisherApproval";
     public static final String WORKFLOW_CALLBACK_USERNAME_PROPERTY = "WORKFLOW_CALLBACK_USERNAME";

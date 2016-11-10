@@ -20,7 +20,7 @@ import feign.auth.BasicAuthRequestInterceptor;
 
 public class AuthRequestInterceptor {
 
-    public BasicAuthRequestInterceptor getBasicAuthRequestInterceptor (String adminPassword) {
+    public BasicAuthRequestInterceptor getBasicAuthRequestInterceptor (String adminUserName ,String adminPassword) {
         String username;
         String password;
 
@@ -32,7 +32,7 @@ public class AuthRequestInterceptor {
         }
         // if still not found, use 'admin' :D
         if (username == null) {
-            username = "admin";
+            username = adminUserName;
         }
 
         // check java system properties first

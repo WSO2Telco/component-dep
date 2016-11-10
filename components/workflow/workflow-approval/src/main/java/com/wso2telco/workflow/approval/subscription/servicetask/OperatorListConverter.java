@@ -42,6 +42,7 @@ public class OperatorListConverter implements JavaDelegate {
 	public void execute(DelegateExecution arg0) throws Exception {
 
 		String[] operatorList = arg0.getVariable("operators").toString().split(",");
+		String adminUserName = arg0.getVariable(Constants.ADMIN_USER_NAME) != null ? arg0.getVariable(Constants.ADMIN_USER_NAME).toString() : null;
         String adminPassword= arg0.getVariable(Constants.ADMIN_PASSWORD).toString();
         String apiName=arg0.getVariable(Constants.API_NAME).toString();
         String deploymentType = arg0.getVariable(Constants.DEPLOYMENT_TYPE).toString();
@@ -64,18 +65,19 @@ public class OperatorListConverter implements JavaDelegate {
             String apiContext = arg0.getVariable(Constants.API_CONTEXT).toString();
             String apiTiers = arg0.getVariable(Constants.API_TIERS).toString();
             String applicationDescription = arg0.getVariable(Constants.APPLICATION_DESCRIPTION).toString();
+            String subscriber=arg0.getVariable(Constants.SUBSCRIBER).toString();
 
             NotificationApi apiNotification = Feign.builder()
                     .encoder(new JacksonEncoder())
                     .decoder(new JacksonDecoder())
                     .errorDecoder(new WorkflowCallbackErrorDecoder())
-                    .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminPassword))
+                    .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminUserName,adminPassword))
                     .target(NotificationApi.class, serviceUrl);
 
             HUBAdminSubApprovalNotificationRequest hUBAdminSubApprovalNotificationRequest = new HUBAdminSubApprovalNotificationRequest();
             hUBAdminSubApprovalNotificationRequest.setApiContext(apiContext);
             hUBAdminSubApprovalNotificationRequest.setApiName(apiName);
-            hUBAdminSubApprovalNotificationRequest.setSubscriber(applicationName);
+            hUBAdminSubApprovalNotificationRequest.setSubscriber(subscriber);
             hUBAdminSubApprovalNotificationRequest.setSubscriptionTier(apiTiers);
             hUBAdminSubApprovalNotificationRequest.setReceiverRole(completedByRole);
             hUBAdminSubApprovalNotificationRequest.setApiVersion(apiVersion);

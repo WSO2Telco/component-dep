@@ -3,7 +3,7 @@ include("/jagg/jagg.jag");
 var log=new Log();
 var ws = require("ws");
 
-var assignTask = function (taskId,endpoint) {
+var assignTask = function (taskId) {
     var site = require("/site/conf/site.json");
     var businessProcessEngineUrl = site.workflows.businessProcessEngineBaseUrl;
 

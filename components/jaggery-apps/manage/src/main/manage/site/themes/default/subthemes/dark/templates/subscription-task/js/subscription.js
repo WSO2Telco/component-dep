@@ -31,7 +31,7 @@ $(document).ready(function(){
         var taskName = btn.attr("taskName");
         var iteration=btn.attr("iteration");
         var description=$('#desc'+iteration).text();
-        var status=$('.js_stateDropDown').val();
+        var status=$('#stateDropDown'+iteration).val();
         var tierId = $("#tiers_list_" + taskId).val();
         
          var rateName = null; //Replace this with selected rate value

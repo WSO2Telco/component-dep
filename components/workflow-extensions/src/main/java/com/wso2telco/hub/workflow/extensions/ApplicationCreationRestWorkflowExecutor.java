@@ -73,6 +73,7 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
     private static final String USER_NAME = "userName";
     private static final String EXTERNAL_REFERENCE = "externalWorkflowReferenc";
     private static final String TIERS_STR = "tiersStr";
+    private static final String ADMIN_USER = "adminUserName";
     private static final String ADMIN_PASSWORD = "adminPassword";
     private static final String SERVICE_HOST = "service.host";
     private static final String SERVICE_URL = "serviceURL";
@@ -136,6 +137,10 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
             Variable externalWorkflowReference = new Variable(EXTERNAL_REFERENCE, appWorkFlowDTO.getExternalWorkflowReference());
             Variable tiers = new Variable(TIERS_STR, tiersStr.toString());
             Variable serviceURL = new Variable(SERVICE_URL, serviceURLString);
+            Variable adminUserName = new Variable(ADMIN_USER, CarbonContext
+                    .getThreadLocalCarbonContext()
+                    .getUserRealm()
+                    .getRealmConfiguration().getAdminUserName());
             Variable adminPassword = new Variable(ADMIN_PASSWORD, CarbonContext
                     .getThreadLocalCarbonContext()
                     .getUserRealm()
@@ -165,6 +170,7 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
             variables.add(externalWorkflowReference);
             variables.add(tiers);
             variables.add(serviceURL);
+            variables.add(adminUserName);
             variables.add(adminPassword);
             processInstanceRequest.setVariables(variables);
             CreateProcessInstanceResponse processInstanceResponse;
@@ -242,21 +248,29 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
                 .target(BusinessProcessApi.class, serviceEndpoint);
 
         ProcessInstanceData instanceData = null;
+        ApiMgtDAO dao = ApiMgtDAO.getInstance();
+        WorkflowDTO workflowDTO = null;
         try {
-            instanceData = api.getProcessInstances(workflowExtRef);
-        } catch (WorkflowExtensionException e) {
+            workflowDTO = dao.retrieveWorkflow(workflowExtRef);
+        } catch (APIManagementException e) {
             throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
         }
+        if (WorkflowStatus.CREATED.equals(workflowDTO.getStatus())) {
+            try {
+                instanceData = api.getProcessInstances(workflowExtRef);
+            } catch (WorkflowExtensionException e) {
+                throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
+            }
+            // should be only one process instance for this business key, hence get the 0th element
+            try {
+                api.deleteProcessInstance(Integer.toString(instanceData.getData().get(0).getId()));
+            } catch (WorkflowExtensionException e) {
+                throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
+            }
 
-        // should be only one process instance for this business key, hence get the 0th element
-        try {
-            api.deleteProcessInstance(Integer.toString(instanceData.getData().get(0).getId()));
-        } catch (WorkflowExtensionException e) {
-            throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
+            log.info("Application Creation approval process instance task with business key " +
+                    workflowExtRef + " deleted successfully");
         }
-
-        log.info("Application Creation approval process instance task with business key " +
-                workflowExtRef + " deleted successfully");
     }
 
     private String getDeploymentType() {

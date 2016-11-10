@@ -6,7 +6,6 @@ var log = new Log();
     var appName = request.getParameter("appName");
     var appDescription = request.getParameter("appDesc");
     var cookievalue = request.getHeader("applicationCookie");
-    log.info("HHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHHH");
 
     if (action == "createSpAppIs") {
         var oauthData = getOAuthConsumerKeyOfApp(appName, cookievalue);
