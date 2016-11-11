@@ -102,7 +102,7 @@ public class OperatorAdminDbUpdater implements JavaDelegate {
         try {
             apiAudit.subscriptionApprovalAudit(subscriptionApprovalAuditRecord);
             if (deploymentType.equalsIgnoreCase(Constants.HUB)) {
-                Subscription subscription = new Subscription();
+              /*  Subscription subscription = new Subscription();
                 subscription.setApiName(apiName);
                 subscription.setApplicationID(applicationId);
                 subscription.setStatus(operatorAdminApprovalStatus);
@@ -112,7 +112,7 @@ public class OperatorAdminDbUpdater implements JavaDelegate {
                 subscriptionValidation.setApiID(apiID);
                 subscriptionValidation.setApplicationID(applicationId);
                 api.subscriptionApprovalOperator(subscription);
-                api.subscriptionApprovalValidator(subscriptionValidation);
+                api.subscriptionApprovalValidator(subscriptionValidation);*/
             }
             //send email notification
             if (deploymentType.equalsIgnoreCase(Constants.INTERNAL_GATEWAY)) {

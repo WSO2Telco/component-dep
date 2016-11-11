@@ -53,8 +53,7 @@ CREATE TABLE IF NOT EXISTS `endpointapps` (
   `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `lastupdated` varchar(25) DEFAULT NULL,
   `lastupdated_date` timestamp NULL DEFAULT NULL,
-  PRIMARY KEY (`ID`),
-  UNIQUE KEY `uk_apps_endpoint` (`endpointid`,`applicationid`)
+  PRIMARY KEY (`ID`)
 );
 
 --

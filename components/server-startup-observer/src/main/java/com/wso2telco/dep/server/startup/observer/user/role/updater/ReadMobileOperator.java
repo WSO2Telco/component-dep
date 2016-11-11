@@ -64,7 +64,7 @@ public class ReadMobileOperator {
         Document doc = null;
         XPathExpression expr = null;
         builder = factory.newDocumentBuilder();
-        doc = builder.parse(CarbonUtils.getCarbonConfigDirPath() + File.separator + "operator.xml");
+        doc = builder.parse(CarbonUtils.getCarbonConfigDirPath() + File.separator + "operators.xml");
         // create an XPathFactory
         XPathFactory xFactory = XPathFactory.newInstance();
         // create an XPath object

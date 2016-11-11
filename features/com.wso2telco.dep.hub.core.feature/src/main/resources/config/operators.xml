@@ -7,7 +7,7 @@
 <url>http://localhost:8281/token</url>
 <userName>admin</userName>
 <password>admin</password>
-<useTokenPool>false</useTokenPool>1
+<useTokenPool>false</useTokenPool>
 </token>
 <operation>add</operation>
 </operator>
@@ -17,7 +17,7 @@
 <url>http://localhost:8281/token</url>
 <userName>admin</userName>
 <password>admin</password>
-<useTokenPool>false</useTokenPool>1
+<useTokenPool>false</useTokenPool>
 </token>
 <operation>add</operation>
 </operator>
@@ -27,7 +27,7 @@
 <url>http://localhost:8281/token</url>
 <userName>admin</userName>
 <password>admin</password>
-<useTokenPool>false</useTokenPool>1
+<useTokenPool>false</useTokenPool>
 </token>
 <operation>add</operation>
 </operator>
@@ -37,7 +37,7 @@
 <url>http://localhost:8281/token</url>
 <userName>admin</userName>
 <password>admin</password>
-<useTokenPool>false</useTokenPool>1
+<useTokenPool>false</useTokenPool>
 </token>
 <operation>add</operation>
 </operator>
