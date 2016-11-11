@@ -177,7 +177,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
             Variable subscribedApiId = new Variable(API_ID, apiID);
             Variable subscribedApiVersion = new Variable(API_VERSION, version);
             Variable subscribedApiContext = new Variable(API_CONTEXT, api.getContext());
-            Variable apiPublisher = new Variable(API_PROVIDER, publisherName);
+            Variable apiPublisher = new Variable(API_PROVIDER, publisherName.toLowerCase());
             Variable subscriber = new Variable(SUBSCRIBER, subscriptionWorkFlowDTO.getSubscriber());
             Variable appId = new Variable(APPLICATION_ID, applicationIdStr);
             Variable tierName = new Variable(TIER_NAME, subscriptionWorkFlowDTO.getTierName());
