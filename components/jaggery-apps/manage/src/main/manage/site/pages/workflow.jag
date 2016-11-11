@@ -22,27 +22,25 @@ middlePage="app-registration-task";
 middlePage="approvalaudit";
 }
 
-var log = new Log();
-//log.info(stringify(outputs));
-var isAdmin = jagg.getUser().isAdmin;
-var isOperator = jagg.getUser().operator;
-var isCustomerCare = jagg.getUser().isCustomerCare;
-
-if(isAdmin == false && isOperator == null){
-    middlePage="errors";
-}
-if(isCustomerCare != null){
-    middlePage="errors";
-}
-
-
-var usage, user = jagg.getUser();
+var usage;
 
 (function () {
     var user = jagg.getUser();
     if (!user) {
         response.sendRedirect(getRedirectPathForNonAuthenticatedUser());
         return;
+    }
+
+    var log = new Log();
+    var isAdmin = user.isAdmin;
+    var isOperator = user.operator;
+    var isCustomerCare = user.isCustomerCare;
+
+    if(isAdmin == false && isOperator == null) {
+        middlePage="errors";
+    }
+    if(isCustomerCare != null) {
+        middlePage="errors";
     }
 
     jagg.render({
