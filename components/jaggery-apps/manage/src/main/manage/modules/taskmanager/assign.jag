@@ -12,7 +12,7 @@ var assignTask = function (taskId) {
                    };
 	var body = {
                 "action" : "claim",
-                "assignee" : jagg.getUser().username
+                "assignee" : jagg.getUser().username.toLowerCase()
             };
 	var result = post(businessProcessEngineUrl + "runtime/tasks/"+taskId, JSON.stringify(body), headers, "json");
     return {
