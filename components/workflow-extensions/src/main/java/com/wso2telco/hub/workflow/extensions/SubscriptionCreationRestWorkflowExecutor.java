@@ -302,7 +302,9 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
 
         // should be only one process instance for this business key, hence get the 0th element
         try {
-            api.deleteProcessInstance(Integer.toString(instanceData.getData().get(0).getId()));
+            if(instanceData.getData().size()!=0) {
+                api.deleteProcessInstance(Integer.toString(instanceData.getData().get(0).getId()));
+            }
         } catch (WorkflowExtensionException e) {
             throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
         }
