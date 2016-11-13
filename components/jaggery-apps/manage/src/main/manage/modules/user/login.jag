@@ -18,7 +18,7 @@ try{
     var xhr = new XMLHttpRequest();
     var store = jagg.module("manager").getAPIStoreObj();
     manager = jagg.module("manager");
-    var endpoint =  manager.getHTTPsURL()+"/services/AuthenticationAdmin";
+    var endpoint =  manager.getAuthServerURL()+"/services/AuthenticationAdmin";
     log.info("Admin Service url :"+endpoint);
     xhr.open("POST", endpoint);
     var payload = '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:aut="http://authentication.services.core.carbon.wso2.org"><soap:Header/><soap:Body><aut:login><aut:username>' +  username + '</aut:username><aut:password>' + password + '</aut:password><aut:remoteAddress>localhost</aut:remoteAddress></aut:login></soap:Body></soap:Envelope>';
@@ -176,20 +176,11 @@ var getRoles=function(username,password){
     checkedUserName=username.split("@")[0];
     }
     var manager = jagg.module("manager");
-    var endpoint =  manager.getHTTPsURL()+"/services/RemoteUserStoreManagerService/";
+    var endpoint =  manager.getAuthServerURL()+"/services/RemoteUserStoreManagerService/";
 
     var payload = '<ser:getRoleListOfUser xmlns:ser="http://service.ws.um.carbon.wso2.org">'+
                   '<ser:userName>'+checkedUserName+'</ser:userName></ser:getRoleListOfUser>';
 
-    //get AuthManager admin credentials from api-manager.xml
-    //var configPath = "file://" + Packages.java.lang.System.getProperty("carbon.config.dir.path");
-    //var amConfigPath = configPath + "/api-manager.xml";
-    //var file = new File(amConfigPath);
-    //file.open("r");
-    //var amConfig = new XML(file.readAll());
-    //file.close();
-    //var adminUsername = String(amConfig.AuthManager.Username.text());
-    //var adminPassword = String(amConfig.AuthManager.Password.text());
     var APIUtil = Packages.org.wso2.carbon.apimgt.impl.utils.APIUtil;
     var adminUsername = APIUtil.replaceSystemProperty("${admin.username}");
     var adminPassword = APIUtil.replaceSystemProperty("${admin.password}");
