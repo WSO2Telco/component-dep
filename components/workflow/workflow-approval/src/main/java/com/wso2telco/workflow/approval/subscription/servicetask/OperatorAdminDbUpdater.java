@@ -130,6 +130,7 @@ public class OperatorAdminDbUpdater implements JavaDelegate {
                     pLUGINAdminSubApprovalNotificationRequest.setSubscriptionTier(selectedTier);
                     apiNotification.subscriptionNotificationApiCreator(pLUGINAdminSubApprovalNotificationRequest);
                 } else {
+                    selectedTier=Constants.REJECTED_TIER;
                     SubApprovalStatusSPNotificationRequest subApprovalStatusSPNotificationRequest = new SubApprovalStatusSPNotificationRequest();
                     subApprovalStatusSPNotificationRequest.setApprovalStatus(operatorAdminApprovalStatus);
                     subApprovalStatusSPNotificationRequest.setApplicationName(applicationName);

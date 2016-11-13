@@ -60,5 +60,6 @@ public class Constants {
     public static final String API_TIERS="apiTiers";
     public static final String OPERATORS="operators";
     public static final String PUBLISHER_APPROVAL="PUBLISHER_APPROVAL";
+    public static final String REJECTED_TIER="N/A";
 
 }
