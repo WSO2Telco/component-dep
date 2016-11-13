@@ -49,6 +49,7 @@ public class HubStartupObserver implements ServerStartupObserver {
     private static final String MANAGE_APP_ADMIN_ROLE = "manage-app-admin";
     private static final String PRODUCT_PROFILE = "profile";
     private static final String PRODUCT_PROFILE_API_STORE = "api-store";
+    private static final String PRODUCT_PROFILE_DEFAULT = "default";
     private static final Log log = LogFactory.getLog(HubStartupObserver.class);
 
     @Override
@@ -73,10 +74,10 @@ public class HubStartupObserver implements ServerStartupObserver {
         // if the server profile neither api-store or empty (default), should not update the
         // registry with workflow-extensions.xml configuration
         String productProfile = System.getProperty(PRODUCT_PROFILE);
-        if (productProfile != null && !PRODUCT_PROFILE_API_STORE.equals(productProfile.trim())) {
+        if (!PRODUCT_PROFILE_DEFAULT.equals(productProfile.trim()) && !PRODUCT_PROFILE_API_STORE.equals(productProfile.trim())) {
             // return
             if (log.isDebugEnabled()) {
-                log.debug("Detected product profile=[" + productProfile + "], skipping the workflow configuration update in registry");
+                log.debug("Detected product profile: [" + productProfile + "], skipping the workflow configuration update in registry");
             }
             return;
         }
