@@ -76,7 +76,7 @@ public class HubStartupObserver implements ServerStartupObserver {
         if (productProfile != null && !PRODUCT_PROFILE_API_STORE.equals(productProfile.trim())) {
             // return
             if (log.isDebugEnabled()) {
-                log.info("Detected product profile=[" + productProfile + "], skipping the workflow configuration update in registry");
+                log.debug("Detected product profile=[" + productProfile + "], skipping the workflow configuration update in registry");
             }
             return;
         }
