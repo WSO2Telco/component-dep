@@ -36,12 +36,12 @@ h1,h2,h3,h4,h5{
     display: none;
 }
 div#footer{
-    background: none repeat scroll 0 0 #e6e7e8;
+    background: none repeat scroll 0 0 #222222;
 }
 ul.help-links li a{
-    color: #007abc;
-    font-size: 12px;
-    font-weight: normal;
+    color: #cbcbcb;
+    font-size: 13px;
+
 }
 ul.help-links li{
     padding-top: 5px;
@@ -150,6 +150,7 @@ div.main-menu-navbar{
         margin:-20px 0 20px 0;
     }
     div#footer{
+        margin-top: 18px;
         margin-left: 0;
     }
     div.footer-main ul.footer-left-most{
@@ -174,7 +175,7 @@ div.main-menu-navbar{
     margin-top: 20px;
 }
 #push, #footer {
-    height: 180px;
+    height: 140px;
 }
 #wrap{
     margin-bottom: -180px;
@@ -293,3 +294,126 @@ div#loader {
   background: url(../images/ajax_loader_gray_48.gif) no-repeat center center;
  
 }
+
+
+/* =============================================================================
+ * Wso2.telco styles
+ * ============================================================================= */
+
+
+.footer-main {
+    padding: 10px 0;
+    width: 100%;
+    z-index: -1;
+    min-height: 68px;
+    color: #9f9f9f;
+    border-top: solid 1px #ccc;
+}
+
+
+.powered-by-logo {
+    background: transparent url(../images/poweredBy.png) no-repeat scroll 0px 0px;
+    display: block;
+    width: 100px;
+    height: 40px;
+    cursor: pointer;
+    padding-right: 10px;
+}
+
+
+.help-links {
+    border-left: solid 1px #fff;
+    padding-left: 10px !important;
+    /* height: 90px; */
+}
+
+.help-links li {
+    list-style-type: none;
+}
+
+/*.first-link{ border: none;} */
+
+.share-pane a.facebook{
+    background:transparent url(../images/facebook_16.png) no-repeat left top;
+    display: block;
+    width: 16px;
+    margin-right: 3px;
+    height: 16px;
+    margin-bottom:6px;
+}
+.share-pane a.linkedin{
+    background:transparent url(../images/linkedin_16.png) no-repeat left top;
+    display: block;
+    width: 16px;
+    margin-right: 3px;
+    height: 16px;
+    margin-bottom:6px;
+}
+.share-pane a.twitter{
+    background:transparent url(../images/twitter_16.png) no-repeat left top;
+    display: block;
+    width: 16px;
+    margin-right: 3px;
+    height: 16px;
+    margin-bottom:6px;
+}
+
+
+.copyright_logo {
+    background: transparent url("../images/logo-inverse.svg") no-repeat scroll left bottom;
+    display: inline-block;
+    height: 17px;
+    margin-bottom: 6px;
+    vertical-align: middle;
+    width: 65px;
+}
+
+.custom_hr {
+    margin-top: 7px;
+    margin-bottom: 7px;
+    border: 0;
+    border-top: 1px solid #F47B20 !important;
+}
+
+.footer p{ margin: 0px !important;}
+
+body.sticky-footer {
+    padding-bottom: 140px;
+}
+
+.btn-home {
+    background: transparent url("../images/home-btn-back.png") no-repeat scroll left top;
+    border: medium none;
+    color: #f7941e;
+    font-size: 18px;
+    height: 53px;
+    text-align: center;
+    text-shadow: none;
+    width: 182px;
+}
+
+p.intro_text {
+    margin-bottom: 10px;
+    margin-top: 10px;
+    text-align: justify;
+}
+
+.title-section h2 {
+    border: medium none;
+    color: #666666;
+    font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 36px;
+    font-weight: 200;
+    line-height: 30px;
+    margin: 0 0 10px;
+    padding: 0 0 10px;
+}
+
+.content_underline{border-color: #ffffff; border-width: thin;}
+
+
+.page-content-wrapper, .page-content-wrapper[data-container-behaviour=static] {
+    margin-bottom: 2%;
+}
+
+.hm-btn-container{ padding-left:0px !important;}

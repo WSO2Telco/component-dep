@@ -70,7 +70,7 @@ p{
 }
 a{
     cursor:pointer;
-    color:#444;
+    color:#cbcbcb;
 }
 a.link-to-api, a.title{
     font-weight: bold;
@@ -265,7 +265,7 @@ a.link-to-api, a.title{
     border-top:solid 1px #ccc ;
 }
 .footer-main hr{
-    border: dotted 1px #777;
+   /* border: dotted 1px #777; */
 }
 div.footer-main h5, div.footer-main ul{
     margin-left:10px;
