@@ -136,16 +136,16 @@ var validateUser=function(username,password){
 		var result = getRoles(username, password);
 		
 		var isAllowed = parseRolesResponse(result);
-		log.info("isAllowed : " + isAllowed);
+		log.debug("isAllowed : " + isAllowed);
 		
 		var isAdmin = isAdminUser(result, username);
-		log.info("isAdmin : " + isAdmin);
+		log.debug("isAdmin : " + isAdmin);
 		
 		var operator = parseRolesOperator(result);
-		log.info("operator : " + operator);
+		log.debug("operator : " + operator);
 		
 		var customerCare = parseRoleCustomerCare(result);
-		log.info("customerCare : " + customerCare);
+		log.debug("customerCare : " + customerCare);
 
 		return {
 			isAllowed:isAllowed,
