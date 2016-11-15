@@ -33,8 +33,8 @@ var getTasks = function (filterCategory,taskType) {
 	//todo: get both claimable and assigned tasks from a sinple API call and assign status accordingly
 	//size is hard coded to '25' to stop UI loading issues. the proper fix is to implement pagination correctly by
 	//first getting the count of tasks, and then doing activiti API calls to get relevant portion for that particular page
-	var tasks = get(businessProcessEngineUrl + "runtime/tasks?candidateGroups=" + string + "&size=25",
-	null, headers,
+	var tasks = get(businessProcessEngineUrl + "runtime/tasks?candidateGroups=" + string + "&size=25" +
+	"&processDefinitionKey=" + processType, null, headers,
 	"json" ).data;
         if (log.isDebugEnabled()) {
             log.debug("BPS BPMN REST API response: " + stringify(tasks));
@@ -47,7 +47,6 @@ var getTasks = function (filterCategory,taskType) {
 
         for(var i=0; i < tasks.data.length; i++){
             var processDefinitionId = tasks.data[i].processDefinitionId;
-            if(processDefinitionId.search(processType) == 0) {
             var dueDate = tasks.data[i].dueDate;
             if(dueDate == null){ dueDate = "Not available"; }
             var taskName = tasks.data[i].name;
@@ -66,12 +65,12 @@ var getTasks = function (filterCategory,taskType) {
                 createdTime:time,
                 date:dueDate
             });
-            }
         }
 
 		//size is hard coded to '25' to stop UI loading issues. the proper fix is to implement pagination correctly by
 		//first getting the count of tasks, and then doing activiti API calls to get relevant portion for that particular page
-        var assignedTasks = get(businessProcessEngineUrl + "runtime/tasks?assignee=" + user + "&size=25", null,
+        var assignedTasks = get(businessProcessEngineUrl + "runtime/tasks?assignee=" + user + "&size=25" +
+        "&processDefinitionKey=" + processType, null,
         headers, "json" ).data;
                 if (log.isDebugEnabled()) {
                     log.debug("BPS BPMN REST API response: " + stringify(assignedTasks));
@@ -83,7 +82,6 @@ var getTasks = function (filterCategory,taskType) {
                 }
                 for(var i=0; i < assignedTasks.data.length; i++){
                     var processDefinitionId = assignedTasks.data[i].processDefinitionId;
-                    if(processDefinitionId.search(processType) == 0) {
                     var dueDate = assignedTasks.data[i].dueDate;
                     if(dueDate == null){ dueDate = "Not available"; }
                     var taskName = assignedTasks.data[i].name;
@@ -102,7 +100,6 @@ var getTasks = function (filterCategory,taskType) {
                         createdTime:time,
                         date:dueDate
                     });
-                    }
                 }
 
     return task;
