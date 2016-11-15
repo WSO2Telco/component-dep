@@ -3,8 +3,8 @@
 	var log = new Log();
 	var isAdmin = jagg.getUser().isAdmin;
 	var isOperator = jagg.getUser().operator;
-	log.info("Is Admin: " + stringify(isAdmin));
-	log.info("Operator: " + stringify(isOperator));
+	log.debug("Is Admin: " + stringify(isAdmin));
+	log.debug("Operator: " + stringify(isOperator));
 %>
 <div id="listing">
     <div class="title-section">
