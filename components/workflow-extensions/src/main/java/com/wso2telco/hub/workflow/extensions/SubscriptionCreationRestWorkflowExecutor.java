@@ -243,7 +243,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
             }
 
             log.info("Subscription Creation approval process instance task with Id " +
-                    processInstanceResponse.getActivityId() + " created successfully");
+                    processInstanceResponse.getId() + " created successfully");
         } catch (APIManagementException e) {
             throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
         } catch (UserStoreException e) {
