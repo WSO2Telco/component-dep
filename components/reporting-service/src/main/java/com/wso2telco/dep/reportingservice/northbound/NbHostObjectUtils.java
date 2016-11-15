@@ -2198,11 +2198,11 @@ public class NbHostObjectUtils {
 	 */
 	public static List<String[]> getApprovalHistory(String fromDate,
 			String toDate, String subscriber, String api, int applicationId,
-			String operator) throws Exception {
+			String operator, int offset, int count) throws Exception {
 		BillingDAO billingDAO = new BillingDAO();
 		List<String[]> api_request = billingDAO
 				.getApprovalHistory(fromDate, toDate, subscriber, api,
-						applicationId, operator);
+						applicationId, operator, offset, count);
 		return api_request;
 	}
 
