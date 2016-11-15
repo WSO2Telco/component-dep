@@ -47,7 +47,9 @@ public class HubStartupObserver implements ServerStartupObserver {
     private static final String WORKFLOW_EXTENSIONS_FILE = "workflow-extensions.xml";
     private static final String WORKFLOW_EXECUTOR_LOCATION = API_APPLICATION_DATA_LOCATION + "/" + WORKFLOW_EXTENSIONS_FILE;
     private static final String MANAGE_APP_ADMIN_ROLE = "manage-app-admin";
-
+    private static final String PRODUCT_PROFILE = "profile";
+    private static final String PRODUCT_PROFILE_API_STORE = "api-store";
+    private static final String PRODUCT_PROFILE_DEFAULT = "default";
     private static final Log log = LogFactory.getLog(HubStartupObserver.class);
 
     @Override
@@ -68,6 +70,17 @@ public class HubStartupObserver implements ServerStartupObserver {
      *  workflow-extensions.xml file in the file system, if such a file is available.
      */
     private void updateWorkflowConfigsInRegistry() {
+
+        // if the server profile neither api-store or empty (default), should not update the
+        // registry with workflow-extensions.xml configuration
+        String productProfile = System.getProperty(PRODUCT_PROFILE);
+        if (!PRODUCT_PROFILE_DEFAULT.equals(productProfile.trim()) && !PRODUCT_PROFILE_API_STORE.equals(productProfile.trim())) {
+            // return
+            if (log.isDebugEnabled()) {
+                log.debug("Detected product profile: [" + productProfile + "], skipping the workflow configuration update in registry");
+            }
+            return;
+        }
 
         RegistryService registryService = ServiceReferenceHolder.getInstance().getRegistryService();
 

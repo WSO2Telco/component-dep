@@ -177,7 +177,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
             Variable subscribedApiId = new Variable(API_ID, apiID);
             Variable subscribedApiVersion = new Variable(API_VERSION, version);
             Variable subscribedApiContext = new Variable(API_CONTEXT, api.getContext());
-            Variable apiPublisher = new Variable(API_PROVIDER, publisherName);
+            Variable apiPublisher = new Variable(API_PROVIDER, publisherName.toLowerCase());
             Variable subscriber = new Variable(SUBSCRIBER, subscriptionWorkFlowDTO.getSubscriber());
             Variable appId = new Variable(APPLICATION_ID, applicationIdStr);
             Variable tierName = new Variable(TIER_NAME, subscriptionWorkFlowDTO.getTierName());
@@ -302,7 +302,9 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
 
         // should be only one process instance for this business key, hence get the 0th element
         try {
-            api.deleteProcessInstance(Integer.toString(instanceData.getData().get(0).getId()));
+            if(instanceData.getData().size()!=0) {
+                api.deleteProcessInstance(Integer.toString(instanceData.getData().get(0).getId()));
+            }
         } catch (WorkflowExtensionException e) {
             throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
         }

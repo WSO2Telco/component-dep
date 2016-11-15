@@ -69,7 +69,7 @@ include("/jagg/jagg.jag");
          var currentDate = new Date();
 		 var webAppURL = site.webapp_URL;
 
-         if(taskType=="subscription"){
+       /* if(taskType=="subscription"){
      	 var strBackend = webAppURL + "WorkFlowComments/AdminComments/workflow/subscription/comments?taskID=" + taskId + "&comments=" + encodeURIComponent(adminComment) + "&status=" + status + "&description=" + encodeURIComponent(description);
 		 
 		 log.info("Subscription URL: " + strBackend);
@@ -88,7 +88,7 @@ include("/jagg/jagg.jag");
 		    xhr.send();
          }else if(taskType=="appRegistration"){
 
-         }
+         }*/
 
          result = mod.completeTask(taskId,taskType,taskName,status,description,username,currentDate,selectedTier);
          if (result.error==true) {
