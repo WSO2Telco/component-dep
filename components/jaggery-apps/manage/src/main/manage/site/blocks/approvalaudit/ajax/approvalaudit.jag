@@ -11,7 +11,7 @@ include("/jagg/jagg.jag");
 
 	if(action == "getAppsBySubscriber"){
 		var selectedSubscriber = request.getParameter("subscriber");
-			
+
 		//log.info("getAppsBySubscriber");
 		var mod = jagg.module("approvalaudit");
 		var result = mod.getAppsBySubscriber(selectedSubscriber);
@@ -35,7 +35,14 @@ include("/jagg/jagg.jag");
 		var application = request.getParameter("application");
 		var api = request.getParameter("api");
 		var operator = request.getParameter("operator");
-
+		var offset = request.getParameter("offset");
+		var count = request.getParameter("count");
+		if (!offset) {
+			offset = 0;
+		}
+		if (!count) {
+			count = 0;
+		}
 // 		log.info("From: " + stringify(fromDate));
 // 		log.info("To: " + stringify(toDate));
 // 		log.info("Subscriber: " + stringify(subscriber));
@@ -43,7 +50,7 @@ include("/jagg/jagg.jag");
 // 		log.info("API: " + stringify(api));
 
 		var mod = jagg.module("approvalaudit");
-		var result = mod.getApprovalHistory(null, null, subscriber, application, operator, api);
+		var result = mod.getApprovalHistory(null, null, subscriber, application, operator, api, offset, count);
 		//log.info(result.data);
 		if (result.error) {
 			obj = {
