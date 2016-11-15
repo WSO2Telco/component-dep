@@ -49,8 +49,8 @@ public class APIPublisherApprovalDBUpdater implements JavaDelegate {
         String completedByRole = Constants.API_PUBLISHER_APPROVAL;
         String applicationName =  arg0.getVariable(Constants.APPLICATION_NAME)!=null?arg0.getVariable(Constants.APPLICATION_NAME).toString():null;
         String description = arg0.getVariable(Constants.APPLICATION_DESCRIPTION)!=null?arg0.getVariable(Constants.APPLICATION_DESCRIPTION).toString():null;
-        String selectedTier = arg0.getVariable(Constants.SELECTED_TIER)!=null?arg0.getVariable(Constants.SELECTED_TIER).toString():null;
-        String operatorAdminApprovalStatus = arg0.getVariable(Constants.API_PUBLISHER_APPROVAL)!=null?arg0.getVariable(Constants.API_PUBLISHER_APPROVAL).toString():null;
+        String publisherApprovalStatus = arg0.getVariable(Constants.API_PUBLISHER_APPROVAL)!=null?(arg0.getVariable(Constants.API_PUBLISHER_APPROVAL).toString()):null;
+        String selectedTier = arg0.getVariable(Constants.SELECTED_TIER)!=null? publisherApprovalStatus.equalsIgnoreCase(Constants.APPROVE)?arg0.getVariable(Constants.SELECTED_TIER).toString():Constants.REJECTED_TIER:null;
         String adminUserName = arg0.getVariable(Constants.ADMIN_USER_NAME) != null ? arg0.getVariable(Constants.ADMIN_USER_NAME).toString() : null;
         String adminPassword = arg0.getVariable(Constants.ADMIN_PASSWORD)!=null?arg0.getVariable(Constants.ADMIN_PASSWORD).toString():null;
         String apiContext = arg0.getVariable(Constants.API_CONTEXT)!=null?arg0.getVariable(Constants.API_CONTEXT).toString():null;
@@ -79,10 +79,10 @@ public class APIPublisherApprovalDBUpdater implements JavaDelegate {
         subscriptionApprovalAuditRecord.setCompletedByUser(completedByUser);
         subscriptionApprovalAuditRecord.setCompletedOn(completedOn);
         subscriptionApprovalAuditRecord.setSubApprovalType(Constants.PUBLISHER_APPROVAL);
-        subscriptionApprovalAuditRecord.setSubStatus(operatorAdminApprovalStatus);
+        subscriptionApprovalAuditRecord.setSubStatus(publisherApprovalStatus);
 
         SubApprovalStatusSPNotificationRequest subApprovalStatusSPNotificationRequest = new SubApprovalStatusSPNotificationRequest();
-        subApprovalStatusSPNotificationRequest.setApprovalStatus(operatorAdminApprovalStatus);
+        subApprovalStatusSPNotificationRequest.setApprovalStatus(publisherApprovalStatus);
         subApprovalStatusSPNotificationRequest.setApplicationName(applicationName);
         subApprovalStatusSPNotificationRequest.setApiProvider(apiProvider);
         subApprovalStatusSPNotificationRequest.setApiName(apiName);
