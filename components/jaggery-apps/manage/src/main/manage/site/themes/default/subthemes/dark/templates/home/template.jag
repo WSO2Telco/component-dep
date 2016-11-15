@@ -15,18 +15,7 @@
 		isCustomerCare =true;
 	}
 %>
-<script type="text/javascript">
-    $(document).addClass("tundra");
-</script>
-  <script type="text/javascript" src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("lib//d3/d3.min.js"))%>"></script>
-  <script type="text/javascript" src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("lib//d3/radialProgress.js"))%>"></script>
-  <link type="text/css" rel="stylesheet" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("lib//d3/radialProgress.css"))%>">
 
-
-<link rel="stylesheet"  href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("templates/utils/dojo-release-1.8.3/dijit/themes/tundra/tundra.css"))%>"  />
-<script type="text/javascript" src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("templates/utils/dojo-release-1.8.3/dojo/dojo.js"))%>" data-dojo-config="isDebug: true,parseOnLoad: true"></script>
-<script type="text/javascript" src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("lib/amplify/amplify.min.js"))%>"></script>
-<script type="text/javascript" src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("templates/home/js/home.js"))%>"></script>
 
 
 
@@ -37,47 +26,194 @@
     <div class="title-section">
         <h2>Home</h2>
     </div>
-	<% if (!isCustomerCare) { %>
-      <div class="container-fluid chart-container">
-     <div class="row-fluid">
-        <% if(chart1 == "true"){ %>
-            <div class="span6 diagram-wrappers" id="r1_c1_wrapper">
-                <% include(jagg.getThemeFile("templates/home/chart_r1_c1/chart_r1_c1.jag")); %>
-            </div>
-          <% } %>
-             <% if(chart2 == "true"){ %>
-             <div class="span6 diagram-wrappers" id="r1_c2_wrapper">
-                <% include(jagg.getThemeFile("templates/home/chart_r1_c2/chart_r1_c2.jag"));%>
-            </div>
-           <% } %>
-        </div>
-     <%if(user.operator == null){%>
-        <div class="row-fluid">
-          <% if(chart3 == "true"){ %>
-            <div class="span6 diagram-wrappers" id="r2_c1_wrapper">
-                <% include(jagg.getThemeFile("templates/home/chart_r2_c1/chart_r2_c1.jag"));%>
-            </div>
-             <% } if(chart4 == "true"){ %>
-            <div class="span6 diagram-wrappers" id="r2_c2_wrapper">
-                <% include(jagg.getThemeFile("templates/home/chart_r2_c2/chart_r2_c2.jag"));%>
-            </div>
-            <% } %>
-        </div>
-        <%}%>
-        <div class="row-fluid">
-         <% if(chart5 == "true"){ %>
-            <div class="span6 diagram-wrappers" id="r3_c1_wrapper">
-                <% include(jagg.getThemeFile("templates/home/chart_r3_c1/chart_r3_c1.jag"));%>
-            </div>
-         <% } if(chart6 == "true"){ %>
-            <div class="span6 diagram-wrappers" id="r3_c2_wrapper">
-                <% include(jagg.getThemeFile("templates/home/chart_r3_c2/chart_r3_c2.jag"));%>
-            </div>
-           <% } %>
-        </div>
 
-        </div>
-		<% } %>
-    </div>
+    <style>
+	a {
+    color: #0088cc;
+    text-decoration: none;
+}
+    .iconbox{ min-height:40px; background:rgb(245, 0, 87); width:100%; display:block;}
+    .api-name-icon {
+    color: #fff;
+    width: 100%;
+    font-size: 4em;
+    text-align: center;
+    font-weight: 200;
+    text-transform: capitalize;
+}
+
+.api-wrapper {
+    background-color: #EFEFEF;
+    position: relative;
+}
+
+.thumbnail.icon {
+    position: relative;
+}
+.thumbnail.icon {
+    border: none;
+    margin: 0;
+    background: #004675;
+    color: #fff;
+    text-align: center;
+    overflow: hidden;
+    position: relative;
+}
+.thumbnail {
+    display: block;
+    padding: 4px;
+    margin-bottom: 20px;
+    line-height: 1.42857;
+    background-color: #fff;
+    border: 1px solid #ddd;
+    border-radius: 0;
+    -webkit-transition: border 0.2s ease-in-out;
+    -o-transition: border 0.2s ease-in-out;
+    transition: border 0.2s ease-in-out;
+}
+
+
+.api-name-icon {
+    color: #fff;
+    width: 100%;
+    font-size: 3em;
+    text-align: center;
+    font-weight: 200;
+    text-transform: capitalize;
+}
+
+.add-padding-2x {
+    padding: 10px !important;
+}
+
+.truncate {
+    max-width: none;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.tree {
+    min-height:20px;
+    padding:19px;
+    margin-bottom:20px;
+    background-color:#ffffff;
+    -webkit-border-radius:4px;
+    -moz-border-radius:4px;
+    border-radius:4px;
+    -webkit-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    -moz-box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05);
+    box-shadow:inset 0 1px 1px rgba(0, 0, 0, 0.05)
+}
+.tree li {
+    list-style-type:none;
+    margin:0;
+    padding:10px 5px 0 5px;
+    position:relative
+}
+.tree li::before, .tree li::after {
+    content:'';
+    left:-20px;
+    position:absolute;
+    right:auto
+}
+.tree li::before {
+    border-left:1px solid #999;
+    bottom:50px;
+    height:100%;
+    top:0;
+    width:1px
+}
+.tree li::after {
+    border-top:1px solid #999;
+    height:20px;
+    top:25px;
+    width:25px
+}
+.tree li span {
+    -moz-border-radius:5px;
+    -webkit-border-radius:5px;
+    border:1px solid #999;
+    border-radius:5px;
+    display:inline-block;
+    padding:3px 8px;
+    text-decoration:none
+}
+.tree li.parent_li>span {
+    cursor:pointer
+}
+.tree>ul>li::before, .tree>ul>li::after {
+    border:0
+}
+.tree li:last-child::before {
+    height:30px
+}
+.tree li.parent_li>span:hover, .tree li.parent_li>span:hover+ul li span {
+    background:#eee;
+    border:1px solid #94a0b4;
+    color:#000
+}
+    </style>
+
+
+
+
+    <div class="span3">
+                            <div class="api-wrapper add-margin-bottom-4x">
+                                <div class="thumbnail icon">
+                                    	<div class="square-element setbgcolor" style="background: rgb(245, 0, 87);">
+											<div class="api-name-icon"><i class="fa fa-list-alt" aria-hidden="true"></i></div>
+								</div>
+                            </div>
+                                <div class="add-padding-2x app-data ">
+                                    <h4 class="truncate" align="center"><a class="fade-out" href="<%=jagg.getAbsoluteUrl("/site/pages/workflow.jag")%>">Work flow list</a></h4>
+                                    <div class="tree well">
+      <ul>
+        <li>
+            <span><h4>Workflow</h4></span> 
+            <ul>
+                <li>
+                	<span><h4>Tasks</h4></span>
+                    <ul>
+                        <li>
+	                        <span><i class="icon-leaf"></i></span><a href="<%=jagg.getAbsoluteUrl("/site/pages/workflow.jag?task=application")%>"> Application creation</a>
+                        </li>
+						<li>
+	                        <span><i class="icon-leaf"></i></span>
+							<a href="<%=jagg.getAbsoluteUrl("/site/pages/workflow.jag?task=subscription")%>"> Subscription creation</a>
+                        </li>
+                    </ul>
+                </li>
+				<li>
+                	<span><h4>Approval history</h4></span> 
+                    <ul>
+                        <li>
+	                        <span><i class="icon-leaf"></i></span><a href="<%=jagg.getAbsoluteUrl("/site/pages/workflow.jag?task=workflowaudit")%>"> Approvals</a>
+                        </li>
+						
+                    </ul>
+                </li>
+            </ul>
 </div>
+
+                                </div>
+                            </div>
+                        </div>
+
+  <script>
+    $(function () {
+    $('.tree li:has(ul)').addClass('parent_li').find(' > span').attr('title', 'Collapse this branch');
+    $('.tree li.parent_li > span').on('click', function (e) {
+        var children = $(this).parent('li.parent_li').find(' > ul > li');
+        if (children.is(":visible")) {
+            children.hide('fast');
+            $(this).attr('title', 'Expand this branch').find(' > i').addClass('icon-plus-sign').removeClass('icon-minus-sign');
+        } else {
+            children.show('fast');
+            $(this).attr('title', 'Collapse this branch').find(' > i').addClass('icon-minus-sign').removeClass('icon-plus-sign');
+        }
+        e.stopPropagation();
+    });
+});
+    </script>
 <% }); %>

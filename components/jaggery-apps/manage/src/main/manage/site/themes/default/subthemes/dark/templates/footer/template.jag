@@ -12,24 +12,22 @@
 
                        <div class="span2 offset2 footer-left-most">
                                              <ul class="help-links first-link">
-                                                  <li><h5><a href="<%=jagg.getAbsoluteUrl("/../store/footer/about-us")%>" target="_blank">About Us</a></h5></li>
+                                                  <li><h5><a href="http://wso2telco.com/about/" target="_blank">About Us</a></h5></li>
                                           </ul>
                                        </div>
 
 
                         <div class="span2">
                                               <ul class="help-links">
-                                                    <li><h5><a href="<%=jagg.getAbsoluteUrl("/../store/footer/privacy-policy")%>" target="_blank">Privacy Policy</a></h5></li>
-                                                    <li><h5><a href="<%=jagg.getAbsoluteUrl("/../store/footer/terms-of-use")%>" target="_blank">Terms and Conditions</a></h5></li>
-
+                                                    <li><h5><a href="<%=jagg.getAbsoluteUrl("/site/pages/branding.jag?pageId=privacy-policy")%>" target="_blank">Privacy Policy</a></h5></li>
+                                                    <li><h5><a href="<%=jagg.getAbsoluteUrl("/site/pages/branding.jag?pageId=terms-conditions")%>" target="_blank">Terms and Conditions</a></h5></li>
                                               </ul>
                                             </div>
 
                        <div class="span2">
                                               <ul class="help-links">
-                                                    <li><h5><a href="<%=jagg.getAbsoluteUrl("/../store/footer/Contact")%>" target="_blank">Contact Us</a></h5></li>
-                                                    <li><h5><a href="<%=jagg.getAbsoluteUrl("/../store/footer/Support")%>" target="_blank">Support</a></h5></li>
-
+                                                    <li><h5><a href="http://wso2telco.com/contact/" target="_blank">Contact Us</a></h5></li>
+                                                    <li><h5><a href="http://wso2telco.com/services" target="_blank">Support</a></h5></li>
                                               </ul>
                                             </div>
                        <div class="span2">
