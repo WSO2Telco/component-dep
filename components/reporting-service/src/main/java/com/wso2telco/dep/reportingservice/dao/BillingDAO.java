@@ -622,8 +622,8 @@ public class BillingDAO {
             rs = ps.executeQuery();
             while (rs.next()) {
                 System.out.println("=== Results for SUBSCRIBER_ID  :" + rs.getInt("SUBSCRIBER_ID")
-                        + " , USER_ID :  " + rs.getString("USER_ID")
-                        + " , DATE_SUBSCRIBED : " + rs.getDate("DATE_SUBSCRIBED"));
+                                           + " , USER_ID :  " + rs.getString("USER_ID")
+                                           + " , DATE_SUBSCRIBED : " + rs.getDate("DATE_SUBSCRIBED"));
             }
 
         } catch (Exception e) {
@@ -1176,7 +1176,7 @@ public class BillingDAO {
      * @return the approval history
      * @throws Exception the exception
      */
-    public List<String[]> getApprovalHistory(String fromDate, String toDate, String subscriber, String api, int applicationId, String operator) throws Exception {
+    public List<String[]> getApprovalHistory(String fromDate, String toDate, String subscriber, String api, int applicationId, String operator, int offset, int count) throws Exception {
 
         Connection conn = null;
         PreparedStatement ps = null;
@@ -1187,7 +1187,9 @@ public class BillingDAO {
                 .append("ELT(FIELD(application_status,'CREATED','APPROVED','REJECTED'),'PENDING APPROVE','APPROVED','REJECTED') as app_status from ")
                 .append(ReportingTable.AM_APPLICATION.getTObject())
                 .append(" where application_id like ? and subscriber_id like ?");
-
+        if (count > 0) {
+            sql.append(" order by application_id LIMIT ?,?");
+        }
         List<String[]> applist = new ArrayList<String[]>();
 
         if (!subscriber.equals("__ALL__")) {
@@ -1213,6 +1215,11 @@ public class BillingDAO {
                 ps.setInt(2, Integer.parseInt(subscriber));
             }
 
+            if (count > 0) {
+                ps.setInt(3, offset);
+                ps.setInt(4, count);
+            }
+
             log.debug("getOperarorWiseAPITrafficForPieChart");
             rs = ps.executeQuery();
             while (rs.next()) {
@@ -1232,6 +1239,29 @@ public class BillingDAO {
                     }
                 }
             }
+            if (offset == 0 & count > 0) {
+                String sqlquery = "select count(*) as count from AM_APPLICATION where application_id like ? and subscriber_id like ?";
+                ps.close();
+                rs.close();
+                ps = conn.prepareStatement(sqlquery);
+                if (applicationId == 0) {
+                    ps.setString(1, "%");
+                } else {
+                    ps.setInt(1, applicationId);
+                }
+
+                if (subscriber.equals("__ALL__")) {
+                    ps.setString(2, "%");
+                } else {
+                    ps.setInt(2, Integer.parseInt(subscriber));
+                }
+                rs = ps.executeQuery();
+                if (rs.next()) {
+                    String counts[] = {rs.getString(1)};
+                    applist.add(counts);
+                }
+            }
+
         } catch (Exception e) {
             handleException("getApprovalHistory", e);
         } finally {
@@ -1369,10 +1399,10 @@ public class BillingDAO {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet results = null;
-        StringBuilder sql = new StringBuilder(); 
-        
+        StringBuilder sql = new StringBuilder();
+
         sql.append("SELECT DISTINCT api FROM ")
-        .append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject())
+                .append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject())
         .append(" WHERE userId LIKE ? AND consumerKey LIKE ? AND operatorId LIKE ? AND api LIKE ? AND (STR_TO_DATE(")
         .append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject())
         .append(".time, '%Y-%m-%d') BETWEEN  STR_TO_DATE(?, '%Y-%m-%d') AND STR_TO_DATE(?, '%Y-%m-%d'))");
@@ -1434,8 +1464,8 @@ public class BillingDAO {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet results = null;
-        StringBuilder sql = new StringBuilder(); 
-        
+        StringBuilder sql = new StringBuilder();
+
         sql.append("SELECT DISTINCT IFNULL(exceptionId, 'SVC1000') AS exceptionId FROM ")
         .append(ReportingTable.SB_API_RESPONSE_SUMMARY.getTObject())
         .append(" WHERE userId LIKE ? AND consumerKey LIKE ? AND operatorId LIKE ? AND api LIKE ? AND (STR_TO_DATE(")
