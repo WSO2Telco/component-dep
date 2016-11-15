@@ -57,15 +57,15 @@ public class OperatorListConverter implements JavaDelegate {
         if(deploymentType.equalsIgnoreCase(Constants.INTERNAL_GATEWAY)) {
 
             AuthRequestInterceptor authRequestInterceptor = new AuthRequestInterceptor();
-            String serviceUrl = arg0.getVariable(Constants.SERVICE_URL).toString();
-            String apiVersion = arg0.getVariable(Constants.API_VERSION).toString();
-            String apiProvider = arg0.getVariable(Constants.API_PROVIDER).toString();
-            String completedByRole = Constants.WORKFLOW_ADMIN_ROLE;
-            String applicationName = arg0.getVariable(Constants.APPLICATION_NAME).toString();
-            String apiContext = arg0.getVariable(Constants.API_CONTEXT).toString();
-            String apiTiers = arg0.getVariable(Constants.API_TIERS).toString();
-            String applicationDescription = arg0.getVariable(Constants.APPLICATION_DESCRIPTION).toString();
-            String subscriber=arg0.getVariable(Constants.SUBSCRIBER).toString();
+            String serviceUrl = arg0.getVariable(Constants.SERVICE_URL)!=null?arg0.getVariable(Constants.SERVICE_URL).toString():null;
+            String apiVersion = arg0.getVariable(Constants.API_VERSION)!=null?arg0.getVariable(Constants.API_VERSION).toString():null;
+            String apiProvider = arg0.getVariable(Constants.API_PROVIDER)!=null?arg0.getVariable(Constants.API_PROVIDER).toString():null;
+            String completedByRole =Constants.WORKFLOW_ADMIN_ROLE;
+            String applicationName = arg0.getVariable(Constants.APPLICATION_NAME)!=null?arg0.getVariable(Constants.APPLICATION_NAME).toString():null;
+            String apiContext = arg0.getVariable(Constants.API_CONTEXT)!=null?arg0.getVariable(Constants.API_CONTEXT).toString():null;
+            String apiTiers = arg0.getVariable(Constants.API_TIERS)!=null?arg0.getVariable(Constants.API_TIERS).toString():null;
+            String applicationDescription =arg0.getVariable(Constants.APPLICATION_DESCRIPTION)!=null? arg0.getVariable(Constants.APPLICATION_DESCRIPTION).toString():null;
+            String subscriber=arg0.getVariable(Constants.SUBSCRIBER)!=null?arg0.getVariable(Constants.SUBSCRIBER).toString():null;
 
             NotificationApi apiNotification = Feign.builder()
                     .encoder(new JacksonEncoder())
