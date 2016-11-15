@@ -72,7 +72,7 @@ function getAPIsBySubscriber(subscriberName){
 
 function getApprovalHistoryApp(applicationid,operator){
 	var log = new Log();
-	
+
 	var billing = jagg.module("manager").getCustomBilling();
 	var apis = [];
 	try {
@@ -91,7 +91,7 @@ function getApprovalHistoryApp(applicationid,operator){
 
 function getAllOperator(){
 	var log = new Log();
-	
+
 	var billing = jagg.module("manager").getCustomBilling();
 	var apis = [];
 	try {
@@ -106,25 +106,25 @@ function getAllOperator(){
 }
 
 
-function getApprovalHistory(fromDate, toDate, subscriber, application, operator, api){
+function getApprovalHistory(fromDate, toDate, subscriber, application, operator, api, offset, count){
 	var log = new Log();
-	
+
 	/*Identify the Subscriber*/
 	if (isAdmin != true && isOperator == null) {
 		subscriber = jagg.getUser().username;
 	}
-	
+
 	log.info("Subscriber: " + stringify(subscriber));
 	log.info("Application: " + stringify(application));
-	
+
 
 	var billing = jagg.module("manager").getCustomBilling();
 	var api_requests_for_pieChart = [];
 	var api_requests_for_histogram = [];
 	try {
-		applist = billing.getApprovalHistory(fromDate, toDate, subscriber, application, operator, api);
+		applist = billing.getApprovalHistory(fromDate, toDate, subscriber, application, operator, api, offset, count);
 		log.info("API history: " + stringify(api_requests_for_pieChart));
-			
+
 		return {error:false, applist : applist};
 	} catch (e) {
 		log.error(e.message);
