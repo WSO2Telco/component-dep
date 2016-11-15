@@ -327,7 +327,7 @@ function getApplicationDetails(taskId){
                 }
 
                 applicationDetails.applicationName = applicationName;
-                log.info("Application name" + applicationName);
+                log.debug("Application name" + applicationName);
                 applicationDetails.applicationDescription = applicationDescription;
                 applicationDetails.userName = username;
                 applicationDetails.taskId = taskId;
