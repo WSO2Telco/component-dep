@@ -740,6 +740,7 @@
         <carbon.p2.plugin.version>1.5.3</carbon.p2.plugin.version>
         <maven-scr-plugin.version>1.7.2</maven-scr-plugin.version>
         <maven-bundle-plugin.version>2.5.3</maven-bundle-plugin.version>
-    </properties>
+   	<component.dep.version>2.0.0-rc1</component.dep.version>
+   </properties>
 
 </project>
