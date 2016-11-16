@@ -219,10 +219,10 @@
                                 </copy>
                                 <copy todir="${project.build.directory}/maven-shared-archive-resources/workflow" overwrite="true">
                                     <fileset dir="${project.build.directory}/../../../components/workflow/workflow-approval/target">
-                                        <include name="ApplicationCreationApprovalWorkflow-${project.version}.bar" />
+                                        <include name="ApplicationCreationApprovalWorkflow.bar" />
                                     </fileset>
                                     <fileset dir="${project.build.directory}/../../../components/workflow/workflow-approval/target">
-                                        <include name="SubscriptionCreationApprovalWorkflow-${project.version}.bar" />
+                                        <include name="SubscriptionCreationApprovalWorkflow.bar" />
                                     </fileset>
                                 </copy>
 
