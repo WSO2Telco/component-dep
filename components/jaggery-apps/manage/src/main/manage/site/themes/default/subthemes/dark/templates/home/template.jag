@@ -158,10 +158,10 @@
 
 
 
-    <div class="span3">
+    <div style="width: 350px;">
                             <div class="api-wrapper add-margin-bottom-4x">
                                 <div class="thumbnail icon">
-                                    	<div class="square-element setbgcolor" style="background: rgb(245, 0, 87);">
+                                    	<div class="square-element setbgcolor" style="background:#F58020;">
 											<div class="api-name-icon"><i class="fa fa-list-alt" aria-hidden="true"></i></div>
 								</div>
                             </div>

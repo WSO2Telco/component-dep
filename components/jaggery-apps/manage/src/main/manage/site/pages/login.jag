@@ -11,7 +11,7 @@ i18n.init(request,localeResourcesBasePath);
     jagg.render({
         "name":"page/base",
         "inputs":{
-            "title":"APIManager Billing - Login",
+            "title":"Workflow - Login",
             "header":{
                 "name":"menu/login"
             },
