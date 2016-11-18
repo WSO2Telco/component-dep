@@ -19,6 +19,11 @@ import java.io.File;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import com.wso2telco.dep.mediator.internal.messageenum.ClientReference;
+import com.wso2telco.dep.mediator.model.MessageDTO;
+import com.wso2telco.dep.mediator.util.DataPublisherConstants;
+import com.wso2telco.dep.mediator.util.MessagePersistor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
@@ -38,6 +43,7 @@ import com.wso2telco.dep.mediator.mediationrule.OriginatingCountryCalculatorIDD;
 import com.wso2telco.dep.mediator.service.PaymentService;
 import com.wso2telco.dep.mediator.util.APIType;
 import com.wso2telco.dep.mediator.util.FileNames;
+import com.wso2telco.dep.mediator.internal.messageenum.MessageType;
 import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.dep.oneapivalidation.service.impl.payment.ValidatePaymentCharge;
 import com.wso2telco.dep.subscriptionvalidator.util.ValidatorUtils;
@@ -177,6 +183,16 @@ public class AmountChargeHandler implements PaymentHandler {
 		List<String> validCategoris = paymentService.getValidPayCategories();
 		//validatePaymentCategory(chargingdmeta, validCategoris);
 		paymentUtil.validatePaymentCategory(chargingdmeta, validCategoris);
+
+		//This persiste messages into Axiatadb database table
+        MessageDTO messageDTO = new MessageDTO();
+        messageDTO.setMsgId(MessageType.PAYMENT_REQUEST.getMessageDid());
+        messageDTO.setMdtrequestId(requestid);
+        messageDTO.setRefcode(ClientReference.PAYMENT_REQUEST_REFCODE);
+        messageDTO.setRefval(jsonBody.getJSONObject("amountTransaction").getString("referenceCode"));
+        messageDTO.setMessage(jsonBody.toString());
+        messageDTO.setReportedTime(System.currentTimeMillis());
+        MessagePersistor.getInstance().publishMessage(messageDTO);
 		
 		String responseStr = executor.makeRequest(endpoint, sending_add, jsonBody.toString(), true, context, false);
 		// Payment Error Exception Correction
@@ -185,9 +201,9 @@ public class AmountChargeHandler implements PaymentHandler {
 		String errorReturn = "\"" + "requestError" + "\"";
 
 		executor.removeHeaders(context);
-		if (base.equals(errorReturn)) {
-			executor.handlePluginException(responseStr);
-		}
+		if (base.equals(errorReturn) ||"400".equals(context.getProperty(DataPublisherConstants.RESPONSE_CODE))) {
+            executor.handlePluginException(responseStr);
+        }
 
 		//responseStr = responseHandler.makePaymentResponse(responseStr, clientCorrelator, requestResourceURL, requestid);
 		responseStr = responseHandler.makePaymentResponseContext(context, responseStr, clientCorrelator, requestResourceURL, requestid);
