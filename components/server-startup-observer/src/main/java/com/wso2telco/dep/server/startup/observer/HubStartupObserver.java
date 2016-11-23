@@ -16,7 +16,10 @@
 
 package com.wso2telco.dep.server.startup.observer;
 
+import com.wso2telco.dep.operatorservice.model.OperatorApplicationDTO;
+import com.wso2telco.dep.operatorservice.service.OparatorService;
 import com.wso2telco.dep.server.startup.observer.internal.ServiceReferenceHolder;
+import com.wso2telco.dep.server.startup.observer.user.role.updater.ReadMobileOperator;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.core.ServerStartupObserver;
@@ -32,6 +35,7 @@ import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.List;
 
 import static java.nio.file.Files.readAllBytes;
 import static java.nio.file.Paths.get;
@@ -58,16 +62,16 @@ public class HubStartupObserver implements ServerStartupObserver {
         if (log.isDebugEnabled()) {
             log.debug("Completing Server Startup");
         }
-
         updateWorkflowConfigsInRegistry();
+        userRoleUpdater();
         createDefaultRolesAndAssignToSuperAdmin();
     }
 
     /**
-     *  Update workflow extension configurations in the registry. Will always give preference to
-     *  a custom workflow-extensions.xml file available at <CARBON_HOME>/repository/resources folder.
-     *  Whatever is existing in the registry will be overwritten by the content of the
-     *  workflow-extensions.xml file in the file system, if such a file is available.
+     * Update workflow extension configurations in the registry. Will always give preference to
+     * a custom workflow-extensions.xml file available at <CARBON_HOME>/repository/resources folder.
+     * Whatever is existing in the registry will be overwritten by the content of the
+     * workflow-extensions.xml file in the file system, if such a file is available.
      */
     private void updateWorkflowConfigsInRegistry() {
 
@@ -134,7 +138,7 @@ public class HubStartupObserver implements ServerStartupObserver {
      * Update the workflow configurations with new settings
      *
      * @param govRegistry Governance Registry object
-     * @param data new content to be updated
+     * @param data        new content to be updated
      */
     private void updateWorkflowConfigs(UserRegistry govRegistry, byte[] data) {
         Resource resource = null;
@@ -178,11 +182,37 @@ public class HubStartupObserver implements ServerStartupObserver {
     }
 
     /**
-     * Assign the relevant roles to super tenant to use workflows with manage jaggery app
-     * The role name is hard coded to 'manage-app-admin'. This role should be the same as
-     * 'adminRole' of manage/src/main/manage/site/conf/site.json
+     * add user role base on operators.xml file
      */
-    private void createDefaultRolesAndAssignToSuperAdmin () {
+    private void userRoleUpdater() {
+        ReadMobileOperator readMobileConnectConfig = new ReadMobileOperator();
+        List<OperatorApplicationDTO> updateOperatorList;
+        List<OperatorApplicationDTO> addOperatorList;
+        OparatorService oparatorService = new OparatorService();
+        //check from xml file true or false
+        try {
+            String readOption = readMobileConnectConfig.query("/operatorsConfig/read").item(0).getTextContent();
+            if (Boolean.parseBoolean(readOption)) {
+                readMobileConnectConfig.setOperators();
+                updateOperatorList = readMobileConnectConfig.getUpdateOperators();
+                addOperatorList = readMobileConnectConfig.getAddOperators();
+                if (!updateOperatorList.isEmpty()) {
+                    oparatorService.updateOperator(updateOperatorList);
+                }
+                if (!addOperatorList.isEmpty()) {
+                    oparatorService.addOperator(addOperatorList);
+                }
+            }
+        } catch (Exception e) {
+            log.error(e);
+        }
+    }
+
+    /* Assign the relevant roles to super tenant to use workflows with manage jaggery app
+    * The role name is hard coded to 'manage-app-admin'. This role should be the same as
+    * 'adminRole' of manage/src/main/manage/site/conf/site.json
+    */
+    private void createDefaultRolesAndAssignToSuperAdmin() {
 
         String role = MANAGE_APP_ADMIN_ROLE;
 
@@ -212,12 +242,12 @@ public class HubStartupObserver implements ServerStartupObserver {
         }
     }
 
-    private void handleError (String errorMsg, RegistryException e) {
+    private void handleError(String errorMsg, RegistryException e) {
         log.error(errorMsg, e);
         throw new RuntimeException(errorMsg, e);
     }
 
-    private void handleError (String errorMsg, IOException e) {
+    private void handleError(String errorMsg, IOException e) {
         log.error(errorMsg, e);
         throw new RuntimeException(errorMsg, e);
     }
