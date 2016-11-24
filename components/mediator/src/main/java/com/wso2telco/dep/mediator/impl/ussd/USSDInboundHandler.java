@@ -19,6 +19,7 @@ import java.io.File;
 import java.util.List;
 import java.util.Map;
 
+import com.wso2telco.dep.mediator.MediatorConstants;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.commons.logging.Log;
@@ -106,6 +107,8 @@ public class USSDInboundHandler implements USSDHandler {
 		jsonBody.getJSONObject("inboundUSSDMessageRequest").getJSONObject("responseRequest").put("notifyURL", ussdSPDetails.get(0));
 		
 		String msisdn = jsonBody.getJSONObject("inboundUSSDMessageRequest").getString("address").substring(5);
+		context.setProperty(MediatorConstants.USER_MSISDN, msisdn);
+
 		context.setProperty(DataPublisherConstants.MSISDN, msisdn);
         context.setProperty(DataPublisherConstants.SP_CONSUMER_KEY, ussdSPDetails.get(1));
         context.setProperty(DataPublisherConstants.SP_OPERATOR_ID, ussdSPDetails.get(2));

@@ -28,7 +28,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.apimgt.api.APIManagementException;
 import org.wso2.carbon.apimgt.usage.client.exception.APIMgtUsageQueryServiceClientException;
-import com.wso2telco.core.dbutils.AxataDBUtilException;
+import com.wso2telco.core.dbutils.DBUtilException;
 import com.wso2telco.core.dbutils.DbUtils;
 import com.wso2telco.core.dbutils.util.DataSourceNames;
 import com.wso2telco.dep.operatorservice.model.Operator;
@@ -444,7 +444,7 @@ public class OperatorDAO {
 	 * @return the list
 	 * @throws SQLException
 	 *             the SQL exception
-	 * @throws AxataDBUtilException
+	 * @throws Exception
 	 *             the AxataDBUtilException
 	 */
 	public List<Integer> getActiveApplicationOperators(Integer appId, String apiType) throws SQLException, Exception {
