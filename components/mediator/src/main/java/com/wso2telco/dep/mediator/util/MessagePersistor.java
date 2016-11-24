@@ -1,11 +1,15 @@
 package com.wso2telco.dep.mediator.util;
 
+import com.wso2telco.core.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.mediator.dao.RequestDAO;
 import com.wso2telco.dep.mediator.model.MessageDTO;
 import com.wso2telco.dep.mediator.model.SpendChargeDTO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.utils.CarbonUtils;
 
+import java.io.File;
+import java.util.Map;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 
@@ -21,7 +25,13 @@ public class MessagePersistor {
 
     private MessagePersistor() {
 
-        executorService = Executors.newFixedThreadPool(Integer.parseInt(Util.getApplicationProperty("numberOfThreads")));
+        FileReader fileReader = new FileReader();
+        String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
+                      + FileNames.MEDIATOR_CONF_FILE.getFileName();
+        Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
+        String noOfThreads = mediatorConfMap.get("numberOfThreads");
+
+        executorService = Executors.newFixedThreadPool(Integer.parseInt(noOfThreads));
         dbservice = new RequestDAO();
 
     }

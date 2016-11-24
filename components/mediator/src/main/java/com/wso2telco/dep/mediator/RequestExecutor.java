@@ -33,6 +33,9 @@ import java.util.Map;
 
 import com.wso2telco.core.dbutils.fileutils.FileReader;
 
+import com.wso2telco.dep.mediator.unmarshaler.GroupDTO;
+import com.wso2telco.dep.mediator.unmarshaler.GroupEventUnmarshaller;
+import com.wso2telco.dep.mediator.unmarshaler.OparatorNotinListException;
 import com.wso2telco.dep.mediator.util.FileNames;
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
@@ -56,6 +59,8 @@ import com.wso2telco.dep.oneapivalidation.exceptions.RequestError;
 import com.wso2telco.dep.oneapivalidation.exceptions.ResponseError;
 import com.wso2telco.dep.operatorservice.model.OperatorApplicationDTO;
 import com.wso2telco.dep.operatorservice.service.OparatorService;
+import org.wso2.carbon.apimgt.gateway.handlers.security.APISecurityUtils;
+import org.wso2.carbon.apimgt.gateway.handlers.security.AuthenticationContext;
 import org.wso2.carbon.utils.CarbonUtils;
 
 // TODO: Auto-generated Javadoc
@@ -395,6 +400,18 @@ public abstract class RequestExecutor {
 		   isMoCallBack=true;
 	   }		   
 		}
+
+		try {// check for charge operation. if true append ESB url
+			JSONObject jsonObj = new JSONObject(requestStr);
+			String transactionOperationStatus = jsonObj.getJSONObject("amountTransaction").getString("transactionOperationStatus");
+			String status = "Charged";
+			if (status.equals(transactionOperationStatus)) {
+				url = modifyEndpoint(url, operatorendpoint.getOperator(), messageContext);
+			}
+		} catch (JSONException ignore) {
+		}
+
+
 		ICallresponse icallresponse = null;
 		String retStr = "";
 		int statusCode = 0;
@@ -1477,5 +1494,41 @@ public abstract class RequestExecutor {
 
         return token;
     }
+
+	private String modifyEndpoint(String sendingAdd, String operator, MessageContext context){
+
+		FileReader fileReader = new FileReader();
+		String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
+		              + FileNames.MEDIATOR_CONF_FILE.getFileName();
+		Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
+		String esbEndpoint = mediatorConfMap.get("esbEndpoint");
+		String isUserInfoEnabled = "false";
+		String operatorEndpoint = sendingAdd;
+		String consumerKey = "";
+
+		AuthenticationContext authContext = APISecurityUtils.getAuthenticationContext(context);
+		if (authContext != null) {
+			consumerKey = authContext.getConsumerKey();
+		}
+
+		GroupEventUnmarshaller unmarshaller = GroupEventUnmarshaller.getInstance();
+		try {
+			GroupDTO groupDTO = unmarshaller.getGroupDTO(operator, consumerKey);
+			isUserInfoEnabled = groupDTO.getUserInfoEnabled() + "";
+		} catch (OparatorNotinListException e) {
+			e.printStackTrace();
+		}
+
+		String isUserinfoEnabledQueryParam = "isUserInfoEnabled=" + isUserInfoEnabled;
+		String operatorEndpointQueryParam = "oprendpoint=" + operatorEndpoint;
+		String operatorQueryParam = "operator=" + operator;
+		String consumerKeyQueryParam = "consumerKey=" + consumerKey;
+
+		String modifiedEndpoint =
+				esbEndpoint + "?" + operatorEndpointQueryParam + "&" + operatorQueryParam + "&" + consumerKeyQueryParam
+				+ "&" + isUserinfoEnabledQueryParam;
+
+		return modifiedEndpoint;
+	}
 
 }

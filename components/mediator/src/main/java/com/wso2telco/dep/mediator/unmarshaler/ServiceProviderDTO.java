@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.wso2telco.dep.mediator.unmarshaler;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import com.wso2telco.dep.mediator.entity.cep.Application;
@@ -22,7 +23,14 @@ import com.wso2telco.dep.mediator.entity.cep.Application;
 public class ServiceProviderDTO {
 
     private String spName;
-    private List<Application> applicationList;
+    private List<Application> applicationList =new ArrayList<Application>();
+
+    ServiceProviderDTO(){}
+
+    private ServiceProviderDTO(String spName){
+        this.spName = spName;
+
+    }
 
     public String getSpName() {
         return spName;
@@ -38,5 +46,9 @@ public class ServiceProviderDTO {
 
     public void setApplicationList(List<Application> applicationList) {
         this.applicationList = applicationList;
+    }
+
+    public ServiceProviderDTO clone(){
+        return new ServiceProviderDTO(this.spName);
     }
 }
