@@ -25,6 +25,13 @@ public class Application {
     private String applicationName;
     private String consumerKey;
 
+    Application(){}
+
+    private  Application(String applicationName,String consumerKey){
+        this.applicationName=applicationName;
+        this.consumerKey =consumerKey;
+    }
+
     public String getApplicationName() {
        return applicationName;
     }
@@ -40,5 +47,9 @@ public class Application {
     @XmlElement(name="ConsumerKey")
     public void setConsumerKey(String consumerKey) {
         this.consumerKey = consumerKey;
+    }
+
+    public Application clone(){
+        return  new Application(this.applicationName,this.consumerKey);
     }
 }

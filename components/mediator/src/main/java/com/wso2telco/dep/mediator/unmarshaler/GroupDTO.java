@@ -25,7 +25,19 @@ public class GroupDTO {
     private String operator;
    private String dayAmount;
     private String monthAmount;
+    private String userInfoEnabled;
     private List<ServiceProviderDTO> serviceProviderList =new ArrayList<ServiceProviderDTO>();
+
+    GroupDTO(){
+    }
+
+    private  GroupDTO( String groupName,String operator, String dayAmount,String monthAmount, String useInfoEnabled){
+        this.groupName=groupName;
+        this.operator =operator;
+        this.dayAmount=dayAmount;
+        this.monthAmount=monthAmount;
+        this.userInfoEnabled=useInfoEnabled;
+    }
 
     public String getGroupName() {
        return groupName;
@@ -62,5 +74,17 @@ public class GroupDTO {
    }
     public void setServiceProviderList(List<ServiceProviderDTO> serviceProviderList) {
         this.serviceProviderList = serviceProviderList;
+    }
+
+    public String getUserInfoEnabled() {
+        return userInfoEnabled;
+    }
+
+    public void setUserInfoEnabled(String userInfoEnabled) {
+        this.userInfoEnabled = userInfoEnabled;
+    }
+
+    public GroupDTO clone(){
+        return new GroupDTO(this.groupName,this.operator, this.dayAmount,this.monthAmount, this.userInfoEnabled);
     }
 }
