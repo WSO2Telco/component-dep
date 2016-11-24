@@ -1,8 +1,5 @@
 package com.wso2telco.dep.mediator.model;
 
-/**
- * Created by sasikala on 11/24/16.
- */
 public class SpendChargeDTO {
 
     private String groupName;
