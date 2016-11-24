@@ -18,10 +18,12 @@ package com.wso2telco.dep.mediator;
 import java.io.BufferedOutputStream;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
+import java.io.File;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,6 +31,9 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.wso2telco.core.dbutils.fileutils.FileReader;
+
+import com.wso2telco.dep.mediator.util.FileNames;
 import org.apache.axis2.AxisFault;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -51,6 +56,7 @@ import com.wso2telco.dep.oneapivalidation.exceptions.RequestError;
 import com.wso2telco.dep.oneapivalidation.exceptions.ResponseError;
 import com.wso2telco.dep.operatorservice.model.OperatorApplicationDTO;
 import com.wso2telco.dep.operatorservice.service.OparatorService;
+import org.wso2.carbon.utils.CarbonUtils;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -94,74 +100,6 @@ public abstract class RequestExecutor {
 	 */
 	public void setStrErr(String strErr) {
 		this.strErr = strErr;
-	}
-
-	/**
-	 * Gets the access token.
-	 *
-	 * @param operator
-	 *            the operator
-	 * @return the access token
-	 * @throws Exception
-	 *             the exception
-	 */
-	protected String getAccessToken(String operator, MessageContext messageContext) throws Exception {
-		OperatorApplicationDTO op = null;
-		String token = null;
-
-		if (operator == null) {
-			return token;
-		}
-
-		String applicationid = getApplicationid();
-		OparatorService dbservice = new OparatorService();
-		if (applicationid == null) {
-			throw new CustomException("SVC0001", "",new String[] { "Requested service is not provisioned" });
-		}
-		validoperators = dbservice.getApplicationOperators(Integer.valueOf(applicationid));
-		if (validoperators.isEmpty()) {
-			throw new CustomException("SVC0001", "",new String[] { "Requested service is not provisioned" });
-		}
-		for (OperatorApplicationDTO d : validoperators) {
-			if (d.getOperatorname() != null && d.getOperatorname().contains(operator)) {
-				op = d;
-				break;
-			}
-		}
-		//
-		
-		log.info("Token time : " + op.getTokentime() + " Request ID: " + UID.getRequestID(messageContext));
-		log.info("Token validity : " + op.getTokenvalidity() + " Request ID: " + UID.getRequestID(messageContext));
-		
-		long timeexpires = (long) (op.getTokentime() + (op.getTokenvalidity() * 1000));
-		 log.info("Expire time : " + timeexpires + " Request ID: " + UID.getRequestID(messageContext));
-		
-		long currtime = new Date().getTime();
-		log.info("Current time : " + currtime + " Request ID: " + UID.getRequestID(messageContext));
-		
-		if (timeexpires > currtime) {
-			token = op.getToken();
-			 log.info("Token of " + op.getOperatorname() + " operator is active"
-					 + " Request ID: " + UID.getRequestID(messageContext));
-		} else {
-			log.info("Regenerating the token of " + op.getOperatorname() + " operator"
-					+ " Request ID: " + UID.getRequestID(messageContext));
-			String Strtoken = makeTokenrequest(op.getTokenurl(), "grant_type=refresh_token&refresh_token=" + op.getRefreshtoken(), ("" + op.getTokenauth()), messageContext);			
-			
-			if (Strtoken != null && Strtoken.length() > 0) {
-				log.info("Token regeneration response of " + op.getOperatorname() + " operator : " + Strtoken
-						+ " Request ID: " + UID.getRequestID(messageContext));
-				JSONObject jsontoken = new JSONObject(Strtoken);
-				token = jsontoken.getString("access_token");
-				new OparatorService().updateOperatorToken(op.getOperatorid(), jsontoken.getString("refresh_token"),
-						Long.parseLong(jsontoken.getString("expires_in")), new Date().getTime(), token);
-
-			} else {
-				log.error("Token regeneration response of " + op.getOperatorname() + " operator is invalid.");
-			}
-		}
-
-		return token;
 	}
 
 	/** The resource url. */
@@ -1389,6 +1327,155 @@ public abstract class RequestExecutor {
     
             return retStr;
         }
-    
+
+    /**
+     * Retrieves the access token using either token pool service or the default flow is done
+     *
+     * @param operator the name of the operator
+     * @return the string representation of the access token
+     * @throws Exception
+     */
+    protected String getAccessToken(String operator, MessageContext messageContext) throws Exception {
+        String response = "";
+        FileReader fileReader = new FileReader();
+        String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
+                      + FileNames.MEDIATOR_CONF_FILE.getFileName();
+        Map<String, String> mediatorConfMap = fileReader.readPropertyFile(file);
+
+        String tokenPoolService = mediatorConfMap.get("tokenpoolservice");
+        String resourceURL = mediatorConfMap.get("tokenpoolResourceURL");
+        log.info("tokenPoolService Enabled: " + tokenPoolService + "with tokenPoolService URL: " + resourceURL);
+
+        if (tokenPoolService != null && resourceURL != null && tokenPoolService.equals("true")) {
+            log.info("Token Pool Service getPoolAccessToken() Flow ");
+            response = getPoolAccessToken(operator, resourceURL);
+        } else {
+            log.info("Axiata Mediator getDefaultAccessToken() Flow ");
+            response = getDefaultAccessToken(operator, messageContext);
+        }
+        return response;
+    }
+
+    /**
+     * Retrieves the token from the token pool service.
+     *
+     * @param owner_id which is operator in Token Pool service
+     * @return access token
+     * @throws Exception
+     */
+    private String getPoolAccessToken(String owner_id, String resourceURL) throws Exception {
+        StringBuffer result = new StringBuffer();
+        HttpURLConnection poolConnection = null;
+        URL requestUrl;
+
+        try {
+
+            requestUrl = new URL(resourceURL + URLEncoder.encode(owner_id, "UTF-8"));
+            poolConnection = (HttpURLConnection) requestUrl.openConnection();
+            poolConnection.setDoOutput(true);
+            poolConnection.setInstanceFollowRedirects(false);
+            poolConnection.setRequestMethod("GET");
+            poolConnection.setRequestProperty("Accept", "application/json");
+            poolConnection.setUseCaches(false);
+
+            InputStream input = null;
+            if (poolConnection.getResponseCode() == 200) {
+                input = poolConnection.getInputStream();
+            } else {
+                input = poolConnection.getErrorStream();
+            }
+
+            BufferedReader br = new BufferedReader(new InputStreamReader(input));
+            String output;
+            while ((output = br.readLine()) != null) {
+                result.append(output);
+            }
+            br.close();
+        } catch (Exception e) {
+            log.error("[TokenPoolRequestService ], getPoolAccessToken, " + e.getMessage());
+            return null;
+        } finally {
+            if (poolConnection != null) {
+                poolConnection.disconnect();
+            }
+        }
+        return result.toString();
+    }
+
+    /**
+     * Retieves the access token using the default flow.
+     *
+     * @param operator the name of the operator
+     * @return
+     * @throws Exception
+     */
+    protected String getDefaultAccessToken(String operator, MessageContext messageContext) throws Exception {
+        OperatorApplicationDTO op = null;
+        String token = null;
+
+        if (operator == null) {
+            return token;
+        }
+
+        String applicationid = getApplicationid();
+        if (applicationid == null) {
+            throw new CustomException("SVC0001", "", new String[]{"Requested service is not provisioned"});
+        }
+        OparatorService operatorService = new OparatorService();
+        validoperators = operatorService.getApplicationOperators(Integer.valueOf(applicationid));
+
+        if (validoperators.isEmpty()) {
+            throw new CustomException("SVC0001", "", new String[]{"Requested service is not provisioned"});
+        }
+
+        for (OperatorApplicationDTO d : validoperators) {
+            if (d.getOperatorname() != null && d.getOperatorname().contains(operator)) {
+                op = d;
+                break;
+            }
+        }
+        //
+        log.info("Token time : " + op.getTokentime() + " Request ID: " + UID.getRequestID(messageContext));
+        log.info("Token validity : " + op.getTokenvalidity() + " Request ID: " + UID.getRequestID(messageContext));
+
+        long timeexpires = (long) (op.getTokentime() + (op.getTokenvalidity() * 1000));
+
+        log.info("Expire time : " + timeexpires + " Request ID: " + UID.getRequestID(messageContext));
+
+        long currtime = new Date().getTime();
+
+        log.info("Current time : " + currtime + " Request ID: " + UID.getRequestID(messageContext));
+
+        if (timeexpires > currtime) {
+            token = op.getToken();
+            log.info("Token of " + op.getOperatorname() + " operator is active"
+                     + " Request ID: " + UID.getRequestID(messageContext));
+        } else {
+
+            log.info("Regenerating the token of " + op.getOperatorname() + " operator"
+                     + " Request ID: " + UID.getRequestID(messageContext));
+            String Strtoken = makeTokenrequest(op.getTokenurl(),
+                                               "grant_type=refresh_token&refresh_token=" + op.getRefreshtoken(),
+                                               ("" + op.getTokenauth()),
+                    messageContext);
+            if (Strtoken != null && Strtoken.length() > 0) {
+                log.info("Token regeneration response of " + op.getOperatorname() + " operator : " + Strtoken
+                         + " Request ID: " + UID.getRequestID(messageContext));
+
+                JSONObject jsontoken = new JSONObject(Strtoken);
+                token = jsontoken.getString("access_token");
+                operatorService.updateOperatorToken(op.getOperatorid(),
+                                                    jsontoken.getString("refresh_token"),
+                                                    Long.parseLong(jsontoken.getString("expires_in")),
+                                                    new Date().getTime(), token);
+
+            } else {
+                log.error("Token regeneration response of " + op.getOperatorname() + " operator is invalid.");
+            }
+        }
+        //something here
+
+        return token;
+    }
 
 }
