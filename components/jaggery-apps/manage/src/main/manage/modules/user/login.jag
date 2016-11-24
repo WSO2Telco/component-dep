@@ -18,7 +18,7 @@ try{
     var xhr = new XMLHttpRequest();
     var store = jagg.module("manager").getAPIStoreObj();
     manager = jagg.module("manager");
-    var endpoint =  manager.getAuthServerURL()+"/services/AuthenticationAdmin";
+    var endpoint =  manager.getAuthServerURL()+"AuthenticationAdmin";
     log.info("Admin Service url :"+endpoint);
     xhr.open("POST", endpoint);
     var payload = '<soap:Envelope xmlns:soap="http://www.w3.org/2003/05/soap-envelope" xmlns:aut="http://authentication.services.core.carbon.wso2.org"><soap:Header/><soap:Body><aut:login><aut:username>' +  username + '</aut:username><aut:password>' + password + '</aut:password><aut:remoteAddress>localhost</aut:remoteAddress></aut:login></soap:Body></soap:Envelope>';
@@ -136,16 +136,16 @@ var validateUser=function(username,password){
 		var result = getRoles(username, password);
 		
 		var isAllowed = parseRolesResponse(result);
-		log.info("isAllowed : " + isAllowed);
+		log.debug("isAllowed : " + isAllowed);
 		
 		var isAdmin = isAdminUser(result, username);
-		log.info("isAdmin : " + isAdmin);
+		log.debug("isAdmin : " + isAdmin);
 		
 		var operator = parseRolesOperator(result);
-		log.info("operator : " + operator);
+		log.debug("operator : " + operator);
 		
 		var customerCare = parseRoleCustomerCare(result);
-		log.info("customerCare : " + customerCare);
+		log.debug("customerCare : " + customerCare);
 
 		return {
 			isAllowed:isAllowed,
@@ -176,7 +176,7 @@ var getRoles=function(username,password){
     checkedUserName=username.split("@")[0];
     }
     var manager = jagg.module("manager");
-    var endpoint =  manager.getAuthServerURL()+"/services/RemoteUserStoreManagerService/";
+    var endpoint =  manager.getAuthServerURL()+"RemoteUserStoreManagerService/";
 
     var payload = '<ser:getRoleListOfUser xmlns:ser="http://service.ws.um.carbon.wso2.org">'+
                   '<ser:userName>'+checkedUserName+'</ser:userName></ser:getRoleListOfUser>';

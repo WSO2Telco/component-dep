@@ -242,7 +242,8 @@ public class BillingHostObject extends ScriptableObject {
 
         NativeArray dataArray = new NativeArray(0);
 
-        dataArray = getCustomCareDataReport(fromDate, toDate, msisdn, subscriberName, operator, app, api, limitStart, limitEnd, timeOffset);
+        dataArray = getCustomCareDataReport(fromDate, toDate, msisdn, subscriberName, operator, app, api, limitStart,
+                                            limitEnd, timeOffset);
 
         return dataArray;
     }
@@ -570,7 +571,8 @@ public class BillingHostObject extends ScriptableObject {
 
         NativeArray ret = null;
         try {
-            ret = SbHostObjectUtils.generateCustomrCareDataReport(true, fromDate, toDate, msisdn, subscriberName, operator, app, api, stLimit, endLimit, timeOffset);
+            ret = SbHostObjectUtils.generateCustomrCareDataReport(true, fromDate, toDate, msisdn, subscriberName,
+                                                                  operator, app, api, stLimit, endLimit, timeOffset);
         } catch (Exception e) {
             log.error("getCustomCareDataReport Error occurred while retrieving data.", e);
         	throw new BusinessException(ReportingServiceError.INPUT_ERROR);
@@ -596,7 +598,8 @@ public class BillingHostObject extends ScriptableObject {
 
         String ret = null;
         try {
-            ret = SbHostObjectUtils.generateCustomrCareDataRecordCount(true, fromDate, toDate, msisdn, subscriberName, operator, app, api);
+            ret = SbHostObjectUtils.generateCustomrCareDataRecordCount(true, fromDate, toDate, msisdn, subscriberName,
+                                                                       operator, app, api);
         } catch (Exception e) {
         	log.error("Error occurred while generating report",e);
         	throw new BusinessException(ReportingServiceError.INTERNAL_SERVER_ERROR);
@@ -703,8 +706,10 @@ public class BillingHostObject extends ScriptableObject {
         NativeArray apis = new NativeArray(0);
         log.debug("Starting getAllResponseTimes function for user- " + subscriberName + " app- " + appName);
         try {
-            Map<String, List<APIResponseDTO>> responseMap = SbHostObjectUtils.getAllResponseTimes(operatorName, subscriberName,
-                    appName, appId, fromDate, toDate);
+            Map<String, List<APIResponseDTO>> responseMap = SbHostObjectUtils.getAllResponseTimes(operatorName,
+                                                                                                  subscriberName,
+                                                                                                  appName, appId,
+                                                                                                  fromDate, toDate);
             short i = 0;
             log.debug(subscriberName + ", responseMap " + responseMap);
 
@@ -942,7 +947,9 @@ public class BillingHostObject extends ScriptableObject {
         String api = args[4].toString();
 
         try {
-            List<String[]> api_requests = SbHostObjectUtils.getOperatorWiseAPITrafficForPieChart(fromDate, toDate, subscriber, api, applicationId);
+            List<String[]> api_requests = SbHostObjectUtils.getOperatorWiseAPITrafficForPieChart(fromDate, toDate,
+                                                                                                 subscriber, api,
+                                                                                                 applicationId);
 
             if (api_requests != null) {
                 int i = 0;
@@ -1143,9 +1150,23 @@ public class BillingHostObject extends ScriptableObject {
         int applicationId = Integer.parseInt(args[3].toString());
         String operator = (String) args[4];
         String api = null;
+        int offset = 0;
+        int count = 0;
+        try {
+            if (args.length >= 8) {
+                Object offsetObject = args[6];
+                Object countObject = args[7];
+                if (offsetObject != null && countObject != null) {
+                    offset = Integer.parseInt(offsetObject.toString());
+                    count = Integer.parseInt(countObject.toString());
+                }
+            }
+        } catch (NumberFormatException e) {
+            //ignore
+        }
 
         try {
-            List<String[]> api_requests = SbHostObjectUtils.getApprovalHistory(fromDate, toDate, subscriber, api, applicationId, operator);
+            List<String[]> api_requests = SbHostObjectUtils.getApprovalHistory(fromDate, toDate, subscriber, api, applicationId, operator, offset, count);
 
             if (api_requests != null) {
                 int i = 0;

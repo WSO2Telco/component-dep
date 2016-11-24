@@ -19,7 +19,7 @@
     <parent>
         <groupId>com.wso2telco.dep</groupId>
         <artifactId>component-dep-feature</artifactId>
-        <version>2.0.0-SNAPSHOT</version>
+        <version>3.0.0-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -219,10 +219,10 @@
                                 </copy>
                                 <copy todir="${project.build.directory}/maven-shared-archive-resources/workflow" overwrite="true">
                                     <fileset dir="${project.build.directory}/../../../components/workflow/workflow-approval/target">
-                                        <include name="ApplicationCreationApprovalWorkflow-${project.version}.bar" />
+                                        <include name="ApplicationCreationApprovalWorkflow.bar" />
                                     </fileset>
                                     <fileset dir="${project.build.directory}/../../../components/workflow/workflow-approval/target">
-                                        <include name="SubscriptionCreationApprovalWorkflow-${project.version}.bar" />
+                                        <include name="SubscriptionCreationApprovalWorkflow.bar" />
                                     </fileset>
                                 </copy>
 

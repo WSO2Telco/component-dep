@@ -81,9 +81,7 @@
 
                        <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 col-lg-offset-2 col-md-offset-2 footer-left-most">
                                              <ul class="help-links first-link">
-                                                 <li><h5><a href="<%=jagg.urlTenanted("/footer/about-us")%>" target="_blank">About Us</a></h5></li>
-                                                 <li><h5><a href="<%=jagg.urlTenanted("/footer/store")%>" target="_blank">Our APIs</a></h5></li>
-                                          	<li><h5><a href="<%=jagg.urlTenanted("/footer/Documentation")%>" target="_blank">Documentation</a></h5></li>
+                                                 <li><h5><a href="http://wso2telco.com/about/" target="_blank">About Us</a></h5></li>
                                           </ul>
                                        </div>
 
@@ -91,15 +89,12 @@
                                               <ul class="help-links">
                                                   <li><h5><a href="<%=jagg.urlTenanted("/footer/privacy-policy")%>" target="_blank">Privacy Policy</a></h5></li>
                                                   <li><h5><a href="<%=jagg.urlTenanted("/footer/terms-of-use")%>" target="_blank">Terms and Conditions</a></h5></li>
-                                                  <li><h5><a href="<%=jagg.urlTenanted("/footer/terms-of-service")%>" target="_blank">Terms of Service</a></h5></li>
-
                                               </ul>
                                            </div>
                          <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2">
                                               <ul class="help-links">
-                                                    <li><h5><a href="<%=jagg.urlTenanted("/footer/Contact")%>" target="_blank">Contact Us</a></h5></li>
-                                                    <li><h5><a href="<%=jagg.urlTenanted("/footer/Support")%>" target="_blank">Support</a></h5></li>
-                                                    <li><h5><a href="<%=jagg.urlTenanted("/footer/terms-of-use")%>" target="_blank">Applications for Use</a></h5></li>
+                                                    <li><h5><a href="http://wso2telco.com/contact/" target="_blank">Contact Us</a></h5></li>
+                                                    <li><h5><a href="http://wso2telco.com/services" target="_blank">Support</a></h5></li>
                                               </ul>
                                             </div>
   <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2">
