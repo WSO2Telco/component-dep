@@ -19,10 +19,9 @@ package com.wso2telco.workflow.userstore;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.apimgt.impl.internal.ServiceReferenceHolder;
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.user.api.UserStoreManager;
-import org.wso2.carbon.user.core.UserRealm;
-import org.wso2.carbon.user.core.service.RealmService;
+import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 public class RemoteUserStoreManagerImpl implements RemoteUserStoreManager {
 	
@@ -30,34 +29,51 @@ public class RemoteUserStoreManagerImpl implements RemoteUserStoreManager {
 
 	@Override
 	public String[] getUserListOfRole(String role) {
+
         String[] userList = null;
+
 		try {
-           log.info("Getting users for the role : " + role);
-            RealmService realmService = ServiceReferenceHolder.getInstance().getRealmService();
-            UserRealm realm = realmService.getBootstrapRealm();
-            UserStoreManager manager = realm.getUserStoreManager();
-            userList = manager.getUserListOfRole(role);
-        }catch(Exception ex){
-            ex.printStackTrace();
+            PrivilegedCarbonContext.startTenantFlow();
+            PrivilegedCarbonContext privilegedCarbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+            privilegedCarbonContext.setTenantId(MultitenantConstants.SUPER_TENANT_ID);
+            privilegedCarbonContext.setTenantDomain(MultitenantConstants.SUPER_TENANT_DOMAIN_NAME);
+            log.info("Getting users for the role : " + role);
+            UserStoreManager userstoremanager = privilegedCarbonContext.getUserRealm().getUserStoreManager();
+            userList = userstoremanager.getUserListOfRole(role);
+
+        } catch (Exception ex){
+            log.error(ex);
+            throw new RuntimeException(ex);
+
+        } finally {
+            PrivilegedCarbonContext.endTenantFlow();
         }
-		return userList;
+
+        return userList;
 	}
 
 	@Override
 	public String getUserClaimValue(String userName, String claim) {
+
         String claimValue = "";
         log.info("Getting claim value for the userName : " + userName + " and claim : " + claim);
-         try {
-            RealmService realmService = ServiceReferenceHolder.getInstance().getRealmService();
-            UserRealm realm = realmService.getBootstrapRealm();
-            UserStoreManager manager = realm.getUserStoreManager();
-            claimValue = manager.getUserClaimValue(userName,claim,null);
+
+        try {
+            PrivilegedCarbonContext.startTenantFlow();
+            PrivilegedCarbonContext privilegedCarbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+            privilegedCarbonContext.setTenantId(MultitenantConstants.SUPER_TENANT_ID);
+            privilegedCarbonContext.setTenantDomain(MultitenantConstants.SUPER_TENANT_DOMAIN_NAME);
+            UserStoreManager userstoremanager = privilegedCarbonContext.getUserRealm().getUserStoreManager();
+            claimValue = userstoremanager.getUserClaimValue(userName, claim, null);
             log.info("Claim value : " + claimValue);
-            } catch (Exception e) {
-		 	log.error("Error while getting claim value for the userName : " + userName + " and claim : " + claim);
-			log.error(e.getMessage());
-	    	}
-		
+
+        } catch (Exception e) {
+            throw new RuntimeException(e);
+
+        } finally {
+            PrivilegedCarbonContext.endTenantFlow();
+        }
+
 		return claimValue;
 	}
 	
