@@ -1367,7 +1367,7 @@ public abstract class RequestExecutor {
             log.info("Token Pool Service getPoolAccessToken() Flow ");
             response = getPoolAccessToken(operator, resourceURL);
         } else {
-            log.info("Axiata Mediator getDefaultAccessToken() Flow ");
+            log.info("Hub Mediator getDefaultAccessToken() Flow ");
             response = getDefaultAccessToken(operator, messageContext);
         }
         return response;

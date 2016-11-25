@@ -60,6 +60,9 @@ public final class DataPublisherConstants {
     
     /** The Constant OPERATOR_ID. */
     public static final String OPERATOR_ID = "com.wso2telco.prop.operatorId";
+
+    /** The Constant PAYMENT_TYPE. */
+    public static final String PAYMENT_TYPE = "com.wso2telco.prop.paymentType";
     
     /** The Constant MSISDN. */
     public static final String MSISDN = "com.wso2telco.prop.msisdn";

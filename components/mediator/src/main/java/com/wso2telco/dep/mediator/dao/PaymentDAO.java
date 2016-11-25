@@ -82,4 +82,50 @@ public class PaymentDAO {
 
 		return categories;
 	}
+
+	/**
+	 * Get details about payment refunds
+	 *
+	 * @param messageDid  messageId
+	 * @param orginalServerReferanceCode server reference code
+	 * @return client reference code
+	 * @throws Exception If an error occurs while processing the operation
+	 */
+	public String getRefundDetails(int messageDid, String orginalServerReferanceCode) throws Exception{
+
+
+		Connection  con = null;
+		PreparedStatement  ps = null;
+		ResultSet rs = null;
+		String internalclientrefcode = null;
+
+		try {
+
+			con = DbUtils.getDBConnection();
+
+			if (con == null) {
+				throw new Exception("Connection not found");
+			}
+
+
+			String sql = "select internalclientrefcode from mdtrequestmessage where  clientrefval=? and msgtypeId=? ";
+			ps = con.prepareStatement(sql);
+			ps.setString(1, orginalServerReferanceCode);
+			ps.setInt(2, messageDid);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+				internalclientrefcode =  rs.getString("internalclientrefcode");
+			}
+
+		} catch (SQLException e) {
+			DbUtils.handleException("Error occurred while getting payment Details", e);
+
+		} finally {
+			DbUtils.closeAllConnections(ps, con, rs);
+		}
+		return internalclientrefcode;
+
+	}
 }
