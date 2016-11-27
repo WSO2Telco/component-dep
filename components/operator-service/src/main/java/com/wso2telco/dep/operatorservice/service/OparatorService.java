@@ -16,7 +16,7 @@
 
 package com.wso2telco.dep.operatorservice.service;
 
-import java.sql.SQLException;
+import java.util.Collections;
 import java.util.List;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -36,7 +36,6 @@ import com.wso2telco.dep.operatorservice.model.OperatorSearchDTO;
 import com.wso2telco.dep.operatorservice.model.ProvisionReq;
 import com.wso2telco.dep.operatorservice.util.OparatorError;
 
-import edu.emory.mathcs.backport.java.util.Collections;
 import com.wso2telco.dep.operatorservice.model.OperatorEndPointDTO;
 import com.wso2telco.dep.operatorservice.model.OperatorApplicationDTO;
 

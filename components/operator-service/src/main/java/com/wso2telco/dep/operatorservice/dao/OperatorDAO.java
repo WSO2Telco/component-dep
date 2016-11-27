@@ -26,9 +26,6 @@ import javax.cache.Cache;
 import javax.cache.Caching;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.apimgt.api.APIManagementException;
-import org.wso2.carbon.apimgt.usage.client.exception.APIMgtUsageQueryServiceClientException;
-import com.wso2telco.core.dbutils.DBUtilException;
 import com.wso2telco.core.dbutils.DbUtils;
 import com.wso2telco.core.dbutils.util.DataSourceNames;
 import com.wso2telco.dep.operatorservice.model.Operator;
@@ -52,10 +49,10 @@ public class OperatorDAO {
 	 * Retrieve operator list.
 	 *
 	 * @return the list
-	 * @throws APIManagementException
-	 *             the API management exception
-	 * @throws APIMgtUsageQueryServiceClientException
-	 *             the API mgt usage query service client exception
+	 * @throws SQLException
+	 *             the SQLException
+	 * @throws Exception
+	 *             the Exception
 	 */
 	public List<Operator> retrieveOperatorList() throws SQLException, Exception {
 
@@ -116,10 +113,10 @@ public class OperatorDAO {
 	 *            the app id
 	 * @param operatorList
 	 *            the operator list
-	 * @throws APIManagementException
-	 *             the API management exception
-	 * @throws APIMgtUsageQueryServiceClientException
-	 *             the API mgt usage query service client exception
+	 * @throws SQLException
+	 *             SQLException
+	 * @throws Exception
+	 *             Exception
 	 */
 	public void persistOperators(String apiName, String apiVersion, String apiProvider, int appId, String operatorList)
 			throws SQLException, Exception {
@@ -504,8 +501,8 @@ public class OperatorDAO {
 	/**
 	 * Token update.
 	 *
-	 * @param id
-	 *            the id
+	 * @param operatorId
+	 *            the operatorId
 	 * @param refreshToken
 	 *            the refreshToken
 	 * @param tokenValidity
