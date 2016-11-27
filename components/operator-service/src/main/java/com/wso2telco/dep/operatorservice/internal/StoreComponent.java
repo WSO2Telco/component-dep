@@ -17,8 +17,6 @@ package com.wso2telco.dep.operatorservice.internal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.apimgt.impl.APIManagerConfiguration;
-import org.wso2.carbon.apimgt.impl.APIManagerConfigurationService;
 import org.wso2.carbon.utils.ConfigurationContextService;
 
  
@@ -30,21 +28,12 @@ import org.wso2.carbon.utils.ConfigurationContextService;
  * 				  policy="dynamic"  
  * 				  bind="setConfigurationContextService"
  * 				  unbind="unsetConfigurationContextService"
- * @scr.reference name="api.manager.config.service"
- *                interface=
- *                "org.wso2.carbon.apimgt.impl.APIManagerConfigurationService"
- *                cardinality="1..1"
- *                policy="dynamic" bind="setAPIManagerConfigurationService"
- *                unbind="unsetAPIManagerConfigurationService"
  *
  */
 public class StoreComponent {
 	
 	/** The Constant log. */
 	private static final Log log = LogFactory.getLog(StoreComponent.class);
-	
-	/** The configuration. */
-	private static APIManagerConfiguration configuration = null;
 	
     /**
      * Sets the configuration context service.
@@ -63,33 +52,4 @@ public class StoreComponent {
     protected void unsetConfigurationContextService(ConfigurationContextService contextService) {
         ServiceReferenceHolder.setContextService(null);
     }
-    
-	/**
-	 * Sets the API manager configuration service.
-	 *
-	 * @param amcService the new API manager configuration service
-	 */
-	protected void setAPIManagerConfigurationService(APIManagerConfigurationService amcService) {
-		log.debug("API manager configuration service bound to store host objects.");
-		configuration = amcService.getAPIManagerConfiguration();
-	}
-
-	/**
-	 * Unset api manager configuration service.
-	 *
-	 * @param amcService the amc service
-	 */
-	protected void unsetAPIManagerConfigurationService(APIManagerConfigurationService amcService) {
-		log.debug("API manager configuration service unbound from store host objects.");
-		configuration = null;
-	}
-	
-	/**
-	 * Gets the API manager configuration.
-	 *
-	 * @return the API manager configuration
-	 */
-	public static APIManagerConfiguration getAPIManagerConfiguration() {
-		return configuration;
-	}
 }

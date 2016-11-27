@@ -47,14 +47,14 @@
             <groupId>org.jaggeryjs</groupId>
             <artifactId>org.jaggeryjs.scriptengine</artifactId>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>org.wso2.carbon.apimgt</groupId>
             <artifactId>org.wso2.carbon.apimgt.api</artifactId>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon.apimgt</groupId>
             <artifactId>org.wso2.carbon.apimgt.impl</artifactId>
-        </dependency>
+        </dependency-->
         <dependency>
             <groupId>org.jaggeryjs</groupId>
             <artifactId>org.jaggeryjs.hostobjects.web</artifactId>
@@ -63,10 +63,10 @@
             <groupId>org.jaggeryjs</groupId>
             <artifactId>org.jaggeryjs.hostobjects.file</artifactId>
         </dependency>
-        <dependency>
+        <!--dependency>
             <groupId>org.wso2.carbon.apimgt</groupId>
             <artifactId>org.wso2.carbon.apimgt.usage.client</artifactId>
-        </dependency>
+        </dependency-->
         <dependency>
             <groupId>commons-io.wso2</groupId>
             <artifactId>commons-io</artifactId>
@@ -117,10 +117,7 @@
                             com.wso2telco.dep.operatorservice.*
                         </Export-Package>
                         <Import-Package>
-                            org.wso2.carbon.apimgt.api.*,
-                            org.wso2.carbon.apimgt.impl.*,
-                            org.wso2.carbon.apimgt.keymgt.client.*;
-                            resolution:=optional
+                            *;resolution:=optional
                         </Import-Package>
                         <Embed-Dependency>
                             scribe;scope=compile|runtime;inline=false;

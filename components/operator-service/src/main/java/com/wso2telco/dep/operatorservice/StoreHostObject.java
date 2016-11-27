@@ -17,13 +17,13 @@ package com.wso2telco.dep.operatorservice;
 
 import java.util.List;
 
+import com.wso2telco.dep.operatorservice.exception.StoreHostObjectException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
-import org.wso2.carbon.apimgt.api.APIManagementException;
 
 import com.wso2telco.dep.operatorservice.dao.OperatorDAO;
 import com.wso2telco.dep.operatorservice.model.Operator;
@@ -68,12 +68,12 @@ public class StoreHostObject extends ScriptableObject {
  * @param args
  * @param funObj
  * @return
- * @throws APIManagementException
+ * @throws StoreHostObjectException
  */
 	public static List<Operator> jsFunction_retrieveOperatorList(Context cx, 
 																Scriptable thisObj, 
 																Object[] args,
-																Function funObj) throws APIManagementException {
+																Function funObj) throws StoreHostObjectException {
 
 		List<Operator> operatorList = null;
 
@@ -95,12 +95,12 @@ public class StoreHostObject extends ScriptableObject {
  * @param args
  * @param funObj
  * @return
- * @throws APIManagementException
+ * @throws StoreHostObjectException
  */
 	public static boolean jsFunction_persistSubOperatorList(Context cx, 
 															Scriptable thisObj, 
 															Object[] args,
-															Function funObj) throws APIManagementException {
+															Function funObj) throws StoreHostObjectException {
 
 		boolean status = false;
 
@@ -126,12 +126,12 @@ public class StoreHostObject extends ScriptableObject {
 	 *
 	 * @param msg
 	 *            the msg
-	 * @throws APIManagementException
+	 * @throws StoreHostObjectException
 	 *             the API management exception
 	 */
-	private static void handleException(String msg) throws APIManagementException {
+	private static void handleException(String msg) throws StoreHostObjectException {
 		log.error(msg);
-		throw new APIManagementException(msg);
+		throw new StoreHostObjectException(msg);
 	}
 
 	/**
@@ -141,11 +141,11 @@ public class StoreHostObject extends ScriptableObject {
 	 *            the msg
 	 * @param t
 	 *            the t
-	 * @throws APIManagementException
+	 * @throws StoreHostObjectException
 	 *             the API management exception
 	 */
-	private static void handleException(String msg, Throwable t) throws APIManagementException {
+	private static void handleException(String msg, Throwable t) throws StoreHostObjectException {
 		log.error(msg, t);
-		throw new APIManagementException(msg, t);
+		throw new StoreHostObjectException(msg, t);
 	}
 }
