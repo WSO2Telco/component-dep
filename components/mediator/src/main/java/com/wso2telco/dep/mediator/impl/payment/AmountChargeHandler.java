@@ -112,6 +112,7 @@ public class AmountChargeHandler implements PaymentHandler {
 		if (ValidatorUtils.getValidatorForSubscription(context).validate(context)) {
 			OparatorEndPointSearchDTO searchDTO = new OparatorEndPointSearchDTO();
 			searchDTO.setApi(APIType.PAYMENT);
+			searchDTO.setApiName((String) context.getProperty("API_NAME"));
 			searchDTO.setContext(context);
 			searchDTO.setIsredirect(false);
 			searchDTO.setMSISDN(endUserId);
