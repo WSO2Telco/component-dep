@@ -80,7 +80,6 @@ public class StoreHostObject extends ScriptableObject {
 
         try {
             OperatorSearchDTO searchDTO = new OperatorSearchDTO();
-
             operatorList = new OparatorService().loadOperators(searchDTO);
 
         } catch (Exception e) {
@@ -109,7 +108,6 @@ public class StoreHostObject extends ScriptableObject {
         String apiName = (String) args[0];
         String apiVersion = (String) args[1];
         String apiProvider = (String) args[2];
-        ;
         int appId = ((Double) args[3]).intValue();
         String operatorList = (String) args[4];
 
