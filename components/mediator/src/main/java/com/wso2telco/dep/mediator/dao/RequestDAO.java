@@ -16,7 +16,8 @@
 
 package com.wso2telco.dep.mediator.dao;
 
-import com.wso2telco.dbutils.DbUtils;
+import com.wso2telco.core.dbutils.util.DataSourceNames;
+import com.wso2telco.core.dbutils.DbUtils;
 import com.wso2telco.dep.mediator.model.MessageDTO;
 import com.wso2telco.dep.mediator.model.SpendChargeDTO;
 
@@ -33,9 +34,18 @@ public class RequestDAO {
 
         try {
 
-            con = DbUtils.getAxiataDBConnection();
+            con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 
-            String sql = "INSERT INTO mdtrequestmessage (msgtypeId,mdtrequestId,internalclientrefcode,message,clientrefcode,clientrefval,reportedtime) VALUES (?,?,?,?,?,?,?) ";
+            String sql = "INSERT INTO mdtrequestmessage ("
+                         + "msgtypeId,"
+                         + "mdtrequestId,"
+                         + "internalclientrefcode,"
+                         + "message,"
+                         + "clientrefcode,"
+                         + "clientrefval,"
+                         + "reportedtime"
+                         + ") "
+                         + "VALUES (?,?,?,?,?,?,?) ";
 
             ps = con.prepareStatement(sql);
             ps.setInt(1, messageDAO.getMsgId());
@@ -61,9 +71,18 @@ public class RequestDAO {
         ResultSet rs = null;
 
         try {
-            con = DbUtils.getAxiataDBConnection();
+            con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 
-            String sql = "INSERT INTO spendlimitdata (msgtype,groupName,consumerKey,operatorId,msisdn,amount,currentDateTime, effectiveTime) VALUES (?,?,?,?,?,?,?,?) ";
+            String sql = "INSERT INTO spendlimitdata ("
+                         + "msgtype,"
+                         + "groupName,"
+                         + "consumerKey,"
+                         + "operatorId,"
+                         + "msisdn,amount,"
+                         + "currentDateTime, "
+                         + "effectiveTime"
+                         + ") "
+                         + "VALUES (?,?,?,?,?,?,?,?) ";
 
             ps = con.prepareStatement(sql);
             ps.setInt(1,spendChargeDTO.getMessageType());
