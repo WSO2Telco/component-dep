@@ -40,7 +40,7 @@ import com.wso2telco.dep.mediator.entity.cep.ServiceProvider;
 
 public class GroupEventUnmarshaller {
 
-    Log log = LogFactory.getLog(GroupEventUnmarshaller.class);
+    private static final Log log = LogFactory.getLog(GroupEventUnmarshaller.class);
     String configPath ;
     File file ;
     JAXBContext jaxbContext;
@@ -50,7 +50,6 @@ public class GroupEventUnmarshaller {
    private Map<String ,  Set<ServiceProviderDTO>> consumerKeyVsSp = new HashMap<String,  Set<ServiceProviderDTO>>();
     private Map<String ,  GroupDTO> oparatorGP = new HashMap<String,  GroupDTO>();
 
-
     public static GroupEventUnmarshaller getInstance(){
         return instance;
     }
@@ -59,11 +58,16 @@ public class GroupEventUnmarshaller {
         init();
         unmarshall();
     }
-    public  static void startGroupEventUnmarshaller() throws JAXBException{
-        if(instance==null){
-           instance = new GroupEventUnmarshaller();
-        }
 
+    public static void startGroupEventUnmarshaller() throws JAXBException {
+        try {
+            if (null == instance) {
+                instance = new GroupEventUnmarshaller();
+            }
+        } catch (JAXBException e) {
+            log.error("Error initializing GroupEventUnmarshaller", e);
+            throw e;
+        }
     }
 
 private  void init() throws JAXBException {
