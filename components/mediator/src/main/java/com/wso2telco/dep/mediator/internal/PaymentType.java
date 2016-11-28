@@ -16,10 +16,14 @@
 
 package com.wso2telco.dep.mediator.internal;
 
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Iterator;
+import java.util.Map;
 
 public enum PaymentType {
 
-    REFUND("Refund"),CHARGED("Charged");
+    REFUND("Refunded"),CHARGED("Charged"),UNDEFINED("undefined");
 
     private String type;
     private PaymentType(String code){
@@ -28,6 +32,23 @@ public enum PaymentType {
 
     public String getType() {
         return type;
+    }
+
+    static Map<String,PaymentType> valueMap= new HashMap<String,PaymentType>();
+    static {
+        Iterator<PaymentType> enumTy = EnumSet.allOf(PaymentType.class).iterator();
+        while(enumTy.hasNext()){
+            PaymentType paymentType = enumTy.next();
+            valueMap.put(paymentType.getType(), paymentType);
+        }
+    }
+
+    public static PaymentType get(final String code){
+        PaymentType retType =valueMap.get(code);
+        if(retType==null){
+            retType =PaymentType.UNDEFINED;
+        }
+        return retType;
     }
 
 }

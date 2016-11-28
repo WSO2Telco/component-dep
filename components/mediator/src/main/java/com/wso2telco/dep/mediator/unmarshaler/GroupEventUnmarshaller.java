@@ -48,7 +48,7 @@ public class GroupEventUnmarshaller {
     private static GroupEventUnmarshaller instance;
     private Map<String , Set<GroupDTO>> consumerKeyVsGroup = new HashMap<String, Set<GroupDTO>>() ;
    private Map<String ,  Set<ServiceProviderDTO>> consumerKeyVsSp = new HashMap<String,  Set<ServiceProviderDTO>>();
-
+    private Map<String ,  GroupDTO> oparatorGP = new HashMap<String,  GroupDTO>();
 
 
     public static GroupEventUnmarshaller getInstance(){
@@ -67,7 +67,7 @@ public class GroupEventUnmarshaller {
     }
 
 private  void init() throws JAXBException {
-	configPath =  CarbonUtils.getCarbonConfigDirPath() + File.separator + "mifeEventSpendLimit.xml";
+	configPath =  CarbonUtils.getCarbonConfigDirPath() + File.separator + "spendLimit.xml";
     file = new File(configPath);
     jaxbContext = JAXBContext.newInstance(GroupList.class);
   jaxbUnmarshaller = jaxbContext.createUnmarshaller();
@@ -84,12 +84,16 @@ private  void init() throws JAXBException {
            gpDTO.setGroupName(group.getGroupName());
             gpDTO.setMonthAmount(group.getMonthAmount());
             gpDTO.setOperator(group.getOperator());
+            gpDTO.setUserInfoEnabled(group.getUserInfoEnabled());
+            oparatorGP.put(group.getOperator(),gpDTO);
+
             for(ServiceProvider sp : group.getServiceProviderList()){
                 ServiceProviderDTO serviceProviderDTO = new ServiceProviderDTO();
                 serviceProviderDTO.setSpName(sp.getSpName());
 
 
                 for (Application app : sp.getApplicationList()){
+                    serviceProviderDTO.getApplicationList().add(app);
                     if(consumerKeyVsGroup.containsKey(app.getConsumerKey())){
                        consumerKeyVsGroup.get(app.getConsumerKey()).add(gpDTO);
                     }else{
@@ -129,5 +133,50 @@ public ConsumerSecretWrapperDTO getGroupEventDetailDTO(final String consumerKey)
     }
     return  dto;
 }
+    public GroupDTO getGroupDTO(final String oparator, final String consumerKey) throws OparatorNotinListException {
+
+        if (oparator == null || oparator.trim().length() <= 0) {
+            throw new OparatorNotinListException(OparatorNotinListException.ErrorHolder.INVALID_OPRATOR_ID);
+        }
+        if (consumerKey == null || consumerKey.trim().length() <= 0) {
+            throw new OparatorNotinListException(OparatorNotinListException.ErrorHolder.INVALID_CONSUMER_KEY);
+        }
+
+        if (!oparatorGP.containsKey(oparator.trim())) {
+            throw new OparatorNotinListException(OparatorNotinListException.ErrorHolder.OPRATOR_NOT_DEFINED);
+        }
+
+        GroupDTO groupDTO = oparatorGP.get(oparator.trim());
+
+        if (groupDTO.getServiceProviderList() == null || groupDTO.getServiceProviderList().isEmpty()) {
+            throw new OparatorNotinListException(OparatorNotinListException.ErrorHolder.NO_SP_DEFINED);
+        }
+
+        for (ServiceProviderDTO sp : groupDTO.getServiceProviderList()) {
+
+            if (sp.getApplicationList() == null || sp.getApplicationList().isEmpty()) {
+                throw new OparatorNotinListException(OparatorNotinListException.ErrorHolder.APPS_NOT_DEFIED);
+            }
+
+            for (Application app : sp.getApplicationList()) {
+                if (app.getConsumerKey().equalsIgnoreCase(consumerKey.trim())) {
+
+
+                    ServiceProviderDTO retunSP = sp.clone();
+                    retunSP.getApplicationList().add(app.clone());
+
+                    GroupDTO returnDTOGP = groupDTO.clone();
+
+                    returnDTOGP.getServiceProviderList().add(retunSP);
+                    return returnDTOGP;
+
+                }
+            }
+
+        }
+        throw new OparatorNotinListException(OparatorNotinListException.ErrorHolder.OPRATOR_NOT_DEFINED);
+
+
+    }
 
 }

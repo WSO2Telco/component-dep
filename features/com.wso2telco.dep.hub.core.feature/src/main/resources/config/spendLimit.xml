@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<GroupList>
+    <Group>
+        <GroupName>G1112</GroupName>
+        <Operator>DIALOG</Operator>
+        <DayAmount>1000</DayAmount>
+        <MonthAmount>2000</MonthAmount>
+        <IsUserInfoEnabled>true</IsUserInfoEnabled>
+        <ServiceProvider>
+            <SPName>Google2</SPName>
+            <Application>
+                <ApplicationName>sp2test3</ApplicationName>
+                <ConsumerKey>1yQ9EpCFlqCMeaBeynMBIFIKkVIa</ConsumerKey>
+            </Application>
+        </ServiceProvider>
+        <ServiceProvider>
+            <SPName>Google1</SPName>
+            <Application>
+                <ApplicationName>app1</ApplicationName>
+                <ConsumerKey>o4SJH4QkdI5Abjyyj9dO45CNEZIa</ConsumerKey>
+            </Application>
+        </ServiceProvider>
+    </Group>
+</GroupList>
