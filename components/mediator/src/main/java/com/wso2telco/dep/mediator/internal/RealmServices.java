@@ -25,11 +25,14 @@ import org.wso2.carbon.utils.ConfigurationContextService;
 
 import com.wso2telco.dep.mediator.unmarshaler.GroupEventUnmarshaller;
 
- 
-// TODO: Auto-generated Javadoc
+
 /**
- * The Class RealmServices.
- */
+ * @scr.component name="org.wso2.carbon.am" immediate="true"
+ * @scr.reference name="user.realmservice.default"
+ * interface="org.wso2.carbon.user.core.service.RealmService"
+ * cardinality="1..1" policy="dynamic" bind="setRealmService"
+ * unbind="unsetRealmService"
+ **/
 public class RealmServices {
     
     /** The config context service. */
