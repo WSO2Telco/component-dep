@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
- *  
- *  WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
+ * <p>
+ * WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
- *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -32,120 +32,122 @@ import com.wso2telco.dep.operatorservice.service.OparatorService;
 
 public class StoreHostObject extends ScriptableObject {
 
-	/**
-	 * 
-	 */
-	private static final long serialVersionUID = 3642128192613608256L;
+    /**
+     *
+     */
+    private static final long serialVersionUID = 3642128192613608256L;
 
-	/** The Constant log. */
-	private static final Log log = LogFactory.getLog(StoreHostObject.class);
+    /** The Constant log. */
+    private static final Log log = LogFactory.getLog(StoreHostObject.class);
 
-	/** The hostobject name. */
-	private String hostobjectName = "StoreHostObject";
+    /** The hostobject name. */
+    private String hostobjectName = "StoreHostObject";
 
-	/*
-	 * (non-Javadoc)
-	 * 
-	 * @see org.mozilla.javascript.ScriptableObject#getClassName()
-	 */
-	@Override
-	public String getClassName() {
-		return hostobjectName;
-	}
-	/**
-	 * Instantiates a new api store host object.
-	 */
-	public StoreHostObject() {
-		if (log.isDebugEnabled()) {
-			log.debug("Initialized HostObject StoreHostObject");
-		}
-	}
+    /*
+     * (non-Javadoc)
+     *
+     * @see org.mozilla.javascript.ScriptableObject#getClassName()
+     */
+    @Override
+    public String getClassName() {
+        return hostobjectName;
+    }
 
-/**
- * 
- * @param cx
- * @param thisObj
- * @param args
- * @param funObj
- * @return
- * @throws StoreHostObjectException
- */
-	public static List<Operator> jsFunction_retrieveOperatorList(Context cx, 
-																Scriptable thisObj, 
-																Object[] args,
-																Function funObj) throws StoreHostObjectException {
+    /**
+     * Instantiates a new api store host object.
+     */
+    public StoreHostObject() {
+        if (log.isDebugEnabled()) {
+            log.debug("Initialized HostObject StoreHostObject");
+        }
+    }
 
-		List<Operator> operatorList = null;
+    /**
+     *
+     * @param cx
+     * @param thisObj
+     * @param args
+     * @param funObj
+     * @return
+     * @throws StoreHostObjectException
+     */
+    public static List<Operator> jsFunction_retrieveOperatorList(Context cx,
+                                                                 Scriptable thisObj,
+                                                                 Object[] args,
+                                                                 Function funObj) throws StoreHostObjectException {
 
-		try {
-			OperatorSearchDTO searchDTO =new OperatorSearchDTO(); 
-			
-			operatorList = new OparatorService ().loadOperators(searchDTO);
+        List<Operator> operatorList = null;
 
-		} catch (Exception e) {
-			handleException("Error occured while retrieving operator list. ", e);
-		}
+        try {
+            OperatorSearchDTO searchDTO = new OperatorSearchDTO();
 
-		return operatorList;
-	}
-/**
- * 
- * @param cx
- * @param thisObj
- * @param args
- * @param funObj
- * @return
- * @throws StoreHostObjectException
- */
-	public static boolean jsFunction_persistSubOperatorList(Context cx, 
-															Scriptable thisObj, 
-															Object[] args,
-															Function funObj) throws StoreHostObjectException {
+            operatorList = new OparatorService().loadOperators(searchDTO);
 
-		boolean status = false;
+        } catch (Exception e) {
+            handleException("Error occured while retrieving operator list. ", e);
+        }
 
-		String apiName = (String) args[0];
-		String apiVersion = (String) args[1];
-		String apiProvider = (String) args[2];
-		;
-		int appId = ((Double) args[3]).intValue();
-		String operatorList = (String) args[4];
+        return operatorList;
+    }
 
-		try {
-			new OperatorDAO().persistOperators(apiName, apiVersion, apiProvider, appId, operatorList);
+    /**
+     *
+     * @param cx
+     * @param thisObj
+     * @param args
+     * @param funObj
+     * @return
+     * @throws StoreHostObjectException
+     */
+    public static boolean jsFunction_persistSubOperatorList(Context cx,
+                                                            Scriptable thisObj,
+                                                            Object[] args,
+                                                            Function funObj) throws StoreHostObjectException {
 
-		} catch (Exception e) {
-			handleException("Error occured while retrieving operator list. ", e);
-		}
+        boolean status = false;
 
-		return status;
-	}
+        String apiName = (String) args[0];
+        String apiVersion = (String) args[1];
+        String apiProvider = (String) args[2];
+        ;
+        int appId = ((Double) args[3]).intValue();
+        String operatorList = (String) args[4];
 
-	/**
-	 * Handle exception.
-	 *
-	 * @param msg
-	 *            the msg
-	 * @throws StoreHostObjectException
-	 *             the API management exception
-	 */
-	private static void handleException(String msg) throws StoreHostObjectException {
-		log.error(msg);
-		throw new StoreHostObjectException(msg);
-	}
+        try {
+            new OperatorDAO().persistOperators(apiName, apiVersion, apiProvider, appId, operatorList);
 
-	/**
-	 * Handle exception.
-	 *
-	 * @param msg
-	 *            the msg
-	 * @param t
-	 *            the t
-	 * @throws StoreHostObjectException
-	 *             the API management exception
-	 */
-	private static void handleException(String msg, Throwable t) throws StoreHostObjectException {
-		log.error(msg, t);
-		throw new StoreHostObjectException(msg, t);
-	}
+        } catch (Exception e) {
+            handleException("Error occured while retrieving operator list. ", e);
+        }
+
+        return status;
+    }
+
+    /**
+     * Handle exception.
+     *
+     * @param msg
+     *            the msg
+     * @throws StoreHostObjectException
+     *             the API management exception
+     */
+    private static void handleException(String msg) throws StoreHostObjectException {
+        log.error(msg);
+        throw new StoreHostObjectException(msg);
+    }
+
+    /**
+     * Handle exception.
+     *
+     * @param msg
+     *            the msg
+     * @param t
+     *            the t
+     * @throws StoreHostObjectException
+     *             the API management exception
+     */
+    private static void handleException(String msg, Throwable t) throws StoreHostObjectException {
+        log.error(msg, t);
+        throw new StoreHostObjectException(msg, t);
+    }
 }
