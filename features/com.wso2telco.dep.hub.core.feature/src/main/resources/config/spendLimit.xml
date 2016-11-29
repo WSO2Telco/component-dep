@@ -2,21 +2,21 @@
 <GroupList>
     <Group>
         <GroupName>G1112</GroupName>
-        <Operator>DIALOG</Operator>
+        <Operator>OPERATOR1</Operator>
         <DayAmount>1000</DayAmount>
         <MonthAmount>2000</MonthAmount>
         <IsUserInfoEnabled>true</IsUserInfoEnabled>
         <ServiceProvider>
-            <SPName>Google2</SPName>
+            <SPName>SP1</SPName>
             <Application>
-                <ApplicationName>sp2test3</ApplicationName>
+                <ApplicationName>app1</ApplicationName>
                 <ConsumerKey>1yQ9EpCFlqCMeaBeynMBIFIKkVIa</ConsumerKey>
             </Application>
         </ServiceProvider>
         <ServiceProvider>
-            <SPName>Google1</SPName>
+            <SPName>SP2</SPName>
             <Application>
-                <ApplicationName>app1</ApplicationName>
+                <ApplicationName>app2</ApplicationName>
                 <ConsumerKey>o4SJH4QkdI5Abjyyj9dO45CNEZIa</ConsumerKey>
             </Application>
         </ServiceProvider>
