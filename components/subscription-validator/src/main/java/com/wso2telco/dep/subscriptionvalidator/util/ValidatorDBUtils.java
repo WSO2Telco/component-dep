@@ -102,7 +102,7 @@ public class ValidatorDBUtils {
             handleException("Error occured while getting Validator Class for App: " + applicationId + " API: " +
                     apiId + " from the database", e);
         } finally {
-            APIMgtDBUtil.closeAllConnections(ps, conn, results);
+            closeAllConnections(ps, conn, results);
         }
         return validatorClass;
     }
@@ -117,6 +117,45 @@ public class ValidatorDBUtils {
     private static void handleException(String msg, Throwable t) throws ValidatorException {
         log.error(msg, t);
         throw new ValidatorException(msg, t);
+    }
+
+    public static void closeAllConnections(PreparedStatement preparedStatement, Connection connection, ResultSet resultSet) {
+        closeConnection(connection);
+        closeResultSet(resultSet);
+        closeStatement(preparedStatement);
+    }
+
+    private static void closeConnection(Connection dbConnection) {
+        if(dbConnection != null) {
+            try {
+                dbConnection.close();
+            } catch (SQLException var2) {
+                log.warn("Database error. Could not close database connection. Continuing with others. - " + var2.getMessage(), var2);
+            }
+        }
+
+    }
+
+    private static void closeResultSet(ResultSet resultSet) {
+        if(resultSet != null) {
+            try {
+                resultSet.close();
+            } catch (SQLException var2) {
+                log.warn("Database error. Could not close ResultSet  - " + var2.getMessage(), var2);
+            }
+        }
+
+    }
+
+    public static void closeStatement(PreparedStatement preparedStatement) {
+        if(preparedStatement != null) {
+            try {
+                preparedStatement.close();
+            } catch (SQLException var2) {
+                log.warn("Database error. Could not close PreparedStatement. Continuing with others. - " + var2.getMessage(), var2);
+            }
+        }
+
     }
 
 }

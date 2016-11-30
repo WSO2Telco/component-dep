@@ -84,4 +84,21 @@ public class ValidatorUtils {
         return getValidatorForSubscription(applicationId, apiId);
     }
 
+
+    /**
+     * Gets the validator for subscription using properties in the message context.
+     *
+     * @param mc the mc
+     * @return the validator for subscription
+     * @throws ValidatorException the validator exception
+     */
+    public static MifeValidator getValidatorForSubscriptionFromMessageContext(MessageContext mc) throws
+            ValidatorException {
+
+        int applicationId = Integer.parseInt((String)mc.getProperty("APPLICATION_ID"));
+        int apiId = Integer.parseInt((String)mc.getProperty("API_ID"));
+
+        return getValidatorForSubscription(applicationId, apiId);
+    }
+
 }

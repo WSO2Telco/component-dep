@@ -1,7 +1,7 @@
 package com.wso2telco.dep.mediator.unmarshaler;
 
 /**
- * An OparatorNotinListException represents exceptions generated due to inconsistencies in functionalities related to
+ * An OparatorNotinListException represents exceptions generated due to inconsistencies in functionality related to
  * operators, service providers,etc.
  */
 public class OparatorNotinListException extends Exception {
