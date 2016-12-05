@@ -214,15 +214,19 @@ public class WorkflowDbService {
     public boolean insertValidatorForSubscription(int appID, int apiID, int validatorID) throws SQLException, BusinessException {
         Connection con = null;
         Statement st = null;
+        PreparedStatement ps = null;
         try {
-           if(!subscriptionIsExist(appID,apiID)) {
-               con = dbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
-               StringBuilder query = new StringBuilder();
-               query.append("INSERT INTO subscription_validator (application_id, api_id, validator_id) VALUES ");
-               query.append("(" + appID + "," + apiID + "," + validatorID + ")");
-               st = con.createStatement();
-               st.executeUpdate(query.toString());
-           }
+            if (!subscriptionIsExist(appID, apiID)) {
+                con = dbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+                StringBuilder query = new StringBuilder();
+                query.append("INSERT INTO subscription_validator (application_id, api_id, validator_id) VALUES ");
+                query.append("(?,?,?)");
+                ps = con.prepareStatement(query.toString());
+                ps.setInt(1, appID);
+                ps.setInt(2, apiID);
+                ps.setInt(3, validatorID);
+                ps.executeUpdate();
+            }
         } catch (SQLException e) {
             throw new SQLException();
         } catch (Exception e) {
@@ -447,7 +451,7 @@ public class WorkflowDbService {
         try {
             conn = dbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
             StringBuilder query = new StringBuilder();
-            query.append("SELECT * FROM endpointapps ");
+            query.append("SELECT id FROM endpointapps ");
             query.append("WHERE endpointid=? and applicationid=?");
             ps = conn.prepareStatement(query.toString());
             ps.setInt(1, endpointId);
@@ -485,7 +489,7 @@ public class WorkflowDbService {
         try {
             conn = dbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
             StringBuilder query = new StringBuilder();
-            query.append("SELECT * FROM subscription_validator ");
+            query.append("SELECT application_id FROM subscription_validator ");
             query.append("WHERE application_id=? and api_id=?");
             ps = conn.prepareStatement(query.toString());
             ps.setInt(1, applicationId);
@@ -521,7 +525,7 @@ public class WorkflowDbService {
         try {
             conn = dbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
             StringBuilder query = new StringBuilder();
-            query.append("SELECT * FROM operatorapps ");
+            query.append("SELECT applicationid FROM operatorapps ");
             query.append("WHERE applicationid=? and operatorid=?");
             ps = conn.prepareStatement(query.toString());
             ps.setInt(1, applicationId);
