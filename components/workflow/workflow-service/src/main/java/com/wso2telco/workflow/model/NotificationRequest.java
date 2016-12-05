@@ -18,13 +18,14 @@ package com.wso2telco.workflow.model;
 
 
 import javax.xml.bind.annotation.XmlRootElement;
+import java.util.Collection;
 
 /**
  * PLUGINAdminSubApprovalEmailNotificationRequestType bean class
  */
 
 @XmlRootElement
-public class PLUGINAdminSubApprovalNotificationRequest {
+public class NotificationRequest {
 
     /**
      * field for ReceiverRole
@@ -75,6 +76,63 @@ public class PLUGINAdminSubApprovalNotificationRequest {
      * field for apiPublisher
      */
     protected String apiPublisher;
+
+    /**
+     * field for ApprovalStatus
+     */
+    protected String approvalStatus;
+
+    /**
+     * field for ApplicationTier
+     */
+    protected String applicationTier;
+
+    /**
+     * field for UserName
+     */
+    protected String userName;
+
+    /**
+     * field for ReceiverRole
+     */
+    protected Collection<String> operatorsRoles;
+
+
+    public Collection<String> getOperatorsRoles() {
+        return operatorsRoles;
+    }
+
+    public void setOperatorsRoles(Collection<String> operatorsRoles) {
+        this.operatorsRoles = operatorsRoles;
+    }
+
+    public String getUserName() {
+        return userName;
+    }
+
+    public void setUserName(String userName) {
+        this.userName = userName;
+    }
+
+
+    public String getApplicationTier() {
+        return applicationTier;
+    }
+
+    public void setApplicationTier(String applicationTier) {
+        this.applicationTier = applicationTier;
+    }
+
+
+
+    public String getApprovalStatus() {
+        return approvalStatus;
+    }
+
+    public void setApprovalStatus(String approvalStatus) {
+        this.approvalStatus = approvalStatus;
+    }
+
 
 
     public String getApiPublisher() {

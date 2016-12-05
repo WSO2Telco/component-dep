@@ -68,10 +68,11 @@ public class WorkflowDbService {
             con.setAutoCommit(false);
             st = con.createStatement();
             for (Integer d : operators) {
+                if(!operatorAppsIsExist(applicationid,d)){
                 StringBuilder query = new StringBuilder();
                 query.append("INSERT INTO operatorapps (applicationid,operatorid) ");
                 query.append("VALUES (" + applicationid + "," + d + ")");
-                st.addBatch(query.toString());
+                st.addBatch(query.toString());}
             }
             st.executeBatch();
             con.commit();
@@ -106,13 +107,12 @@ public class WorkflowDbService {
             con.setAutoCommit(false);
             st = con.createStatement();
             for (int i = 0; i < opEndpointIDList.length; i++) {
-                if (opEndpointIDList[i] > 0) {
+                if (opEndpointIDList[i] > 0  && !endpointAppsIsExist(opEndpointIDList[i],appID)) {
                     StringBuilder query = new StringBuilder();
                     query.append("INSERT INTO endpointapps (endpointid, applicationid, isactive) VALUES ");
                     query.append("(" + opEndpointIDList[i] + "," + appID + ",0)");
                     st.addBatch(query.toString());
-
-                }
+               }
             }
             st.executeBatch();
             con.commit();
@@ -215,13 +215,14 @@ public class WorkflowDbService {
         Connection con = null;
         Statement st = null;
         try {
-            con = dbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
-            StringBuilder query = new StringBuilder();
-            query.append("INSERT INTO subscription_validator (application_id, api_id, validator_id) VALUES ");
-            query.append("(" + appID + "," + apiID + "," + validatorID + ")");
-            st = con.createStatement();
-            st.executeUpdate(query.toString());
-
+           if(!subscriptionIsExist(appID,apiID)) {
+               con = dbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+               StringBuilder query = new StringBuilder();
+               query.append("INSERT INTO subscription_validator (application_id, api_id, validator_id) VALUES ");
+               query.append("(" + appID + "," + apiID + "," + validatorID + ")");
+               st = con.createStatement();
+               st.executeUpdate(query.toString());
+           }
         } catch (SQLException e) {
             throw new SQLException();
         } catch (Exception e) {
@@ -435,4 +436,114 @@ public class WorkflowDbService {
         return operatorId;
     }
 
+    public Boolean endpointAppsIsExist(int endpointId,int applicationId)
+            throws Exception, BusinessException {
+
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Boolean isExist =false;
+
+        try {
+            conn = dbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+            StringBuilder query = new StringBuilder();
+            query.append("SELECT * FROM endpointapps ");
+            query.append("WHERE endpointid=? and applicationid=?");
+            ps = conn.prepareStatement(query.toString());
+            ps.setInt(1, endpointId);
+            ps.setInt(2, applicationId);
+
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                isExist = true;
+            }
+
+        } catch (SQLException e) {
+            log.error(e);
+            throw new SQLException(e);
+        } catch (Exception e) {
+            log.error(e);
+            throw new BusinessException(GenaralError.UNDEFINED);
+        } finally {
+            dbUtils.closeAllConnections(ps, conn, rs);
+
+        }
+
+        log.debug("isExist : " + isExist);
+        return isExist;
+    }
+
+
+    public Boolean subscriptionIsExist(int applicationId,int apiId)
+            throws Exception, BusinessException {
+
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Boolean isExist =false;
+
+        try {
+            conn = dbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+            StringBuilder query = new StringBuilder();
+            query.append("SELECT * FROM subscription_validator ");
+            query.append("WHERE application_id=? and api_id=?");
+            ps = conn.prepareStatement(query.toString());
+            ps.setInt(1, applicationId);
+            ps.setInt(2, apiId);
+
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                isExist = true;
+            }
+
+        } catch (SQLException e) {
+            log.error(e);
+            throw new SQLException(e);
+        } catch (Exception e) {
+            log.error(e);
+            throw new BusinessException(GenaralError.UNDEFINED);
+        } finally {
+            dbUtils.closeAllConnections(ps, conn, rs);
+
+        }
+
+        return isExist;
+    }
+
+
+    public Boolean operatorAppsIsExist(int applicationId,int operatorId)
+            throws Exception, BusinessException {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Boolean isExist =false;
+
+        try {
+            conn = dbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+            StringBuilder query = new StringBuilder();
+            query.append("SELECT * FROM operatorapps ");
+            query.append("WHERE applicationid=? and operatorid=?");
+            ps = conn.prepareStatement(query.toString());
+            ps.setInt(1, applicationId);
+            ps.setInt(2, operatorId);
+
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                isExist = true;
+            }
+
+        } catch (SQLException e) {
+            log.error(e);
+            throw new SQLException(e);
+        } catch (Exception e) {
+            log.error(e);
+            throw new BusinessException(GenaralError.UNDEFINED);
+        } finally {
+            dbUtils.closeAllConnections(ps, conn, rs);
+
+        }
+
+        return isExist;
+
+    }
 }
