@@ -95,8 +95,12 @@ public class ValidatorDBUtils {
             ps.setInt(1, applicationId);
             ps.setInt(2, apiId);
             results = ps.executeQuery();
-            while (results.next()) {
-                validatorClass = results.getString("class");
+            if (results.isBeforeFirst()) {
+                while (results.next()) {
+                    validatorClass = results.getString("class");
+                }
+            } else {
+                log.error("Result Set is empty");
             }
         } catch (Exception e) {
             handleException("Error occured while getting Validator Class for App: " + applicationId + " API: " +
