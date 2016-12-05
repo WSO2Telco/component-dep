@@ -29,8 +29,6 @@ public class Constants {
     public static final String OPERATOR = "operator";
     public static final String APPLICATION_ID = "applicationId";
     public static final String SERVICE_URL= "serviceURL";
-    public static final String GATEWAY = "gateway";
-    public static final String HUB = "hub";
     public static final String DEPLOYMENT_TYPE="deployment_type";
     public static final String COMPLETE_BY_USER="completedByUser";
     public static final String COMPLETED_ON="completedOn";
@@ -40,12 +38,11 @@ public class Constants {
     public static final String ADMIN_USER_NAME = "adminUserName";
     public static final String ADMIN_PASSWORD = "adminPassword";
     public static final String API_PUBLISHER_APPROVAL = "apiPublisherApproval";
-    public static final String WORKFLOW_CALLBACK_USERNAME_PROPERTY = "WORKFLOW_CALLBACK_USERNAME";
-    public static final String WORKFLOW_CALLBACK_PASSWORD_PROPERTY = "WORKFLOW_CALLBACK_PASSWORD";
     public static final String API_NAME = "apiName";
     public static final String API_ID = "apiId";
     public static final String EXTERNAL_GATEWAY = "external_gateway";
     public static final String INTERNAL_GATEWAY = "internal_gateway";
+    public static final String HUB = "hub";
     public static final String APPROVE = "APPROVED";
     public static final String API_VERSION = "apiVersion";
     public static final String API_PROVIDER = "apiProvider";
@@ -61,5 +58,6 @@ public class Constants {
     public static final String OPERATORS="operators";
     public static final String PUBLISHER_APPROVAL="PUBLISHER_APPROVAL";
     public static final String REJECTED_TIER="N/A";
+    public static final String TIER = "tier";
 
 }

@@ -19,6 +19,14 @@ package com.wso2telco.workflow.approval.application.servicetask;
 import java.util.ArrayList;
 import java.util.Collection;
 
+import com.wso2telco.workflow.approval.model.NotificationRequest;
+import com.wso2telco.workflow.approval.subscription.rest.client.NotificationApi;
+import com.wso2telco.workflow.approval.subscription.rest.client.WorkflowCallbackErrorDecoder;
+import com.wso2telco.workflow.approval.util.AuthRequestInterceptor;
+import com.wso2telco.workflow.approval.util.Constants;
+import feign.Feign;
+import feign.jackson.JacksonDecoder;
+import feign.jackson.JacksonEncoder;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.apache.commons.logging.Log;
@@ -32,11 +40,46 @@ public class OperatorListConverter implements JavaDelegate {
 
 		String[] operatorList = arg0.getVariable("operators").toString().split(",");
 		Collection<String> operatorNames = new ArrayList<String>();
+        Collection<String> operatorsRoles = new ArrayList<String>();
 		for(String operator : operatorList) {
 			operatorNames.add(operator.trim());
+            operatorsRoles.add(operator.trim()+Constants.ADMIN_ROLE);
 			// TODO: make debug
 			log.info("Operator '" + operator.trim() + "' added to operatorList");
 		}
 	    arg0.setVariable("operatorList", operatorNames);
+        arg0.setVariable("operatorRoles", operatorsRoles);
+        String deploymentType = arg0.getVariable(Constants.DEPLOYMENT_TYPE) != null ? arg0.getVariable(Constants.DEPLOYMENT_TYPE).toString() : null;
+
+        if(deploymentType.equalsIgnoreCase(Constants.HUB)) {
+
+            AuthRequestInterceptor authRequestInterceptor = new AuthRequestInterceptor();
+            String adminUserName = arg0.getVariable(Constants.ADMIN_USER_NAME) != null ? arg0.getVariable(Constants.ADMIN_USER_NAME).toString() : null;
+            String adminPassword = arg0.getVariable(Constants.ADMIN_PASSWORD).toString();
+            String serviceUrl = arg0.getVariable(Constants.SERVICE_URL) != null ? arg0.getVariable(Constants.SERVICE_URL).toString() : null;
+            String selectedTier = arg0.getVariable(Constants.TIER) != null ? arg0.getVariable(Constants.TIER).toString() : null;
+            String applicationName = arg0.getVariable(Constants.APPLICATION_NAME) != null ? arg0.getVariable(Constants.APPLICATION_NAME).toString() : null;
+            String applicationDescription = arg0.getVariable(Constants.DESCRIPTION) != null ? arg0.getVariable(Constants.DESCRIPTION).toString() : null;
+            String userName = arg0.getVariable(Constants.USER_NAME) != null ? arg0.getVariable(Constants.USER_NAME).toString() : null;
+            String completedByRole = Constants.WORKFLOW_ADMIN_ROLE;
+
+            NotificationApi apiNotification = Feign.builder()
+                    .encoder(new JacksonEncoder())
+                    .decoder(new JacksonDecoder())
+                    .errorDecoder(new WorkflowCallbackErrorDecoder())
+                    .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminUserName, adminPassword))
+                    .target(NotificationApi.class, serviceUrl);
+
+            NotificationRequest notificationRequest = new NotificationRequest();
+            notificationRequest.setApplicationName(applicationName);
+            notificationRequest.setApplicationTier(selectedTier);
+            notificationRequest.setApplicationDescription(applicationDescription);
+            notificationRequest.setUserName(userName);
+            notificationRequest.setReceiverRole(completedByRole);
+            apiNotification.sendHUBAdminAppApprovalNotification(notificationRequest);
+
+        }
+
+
 	}
 }
