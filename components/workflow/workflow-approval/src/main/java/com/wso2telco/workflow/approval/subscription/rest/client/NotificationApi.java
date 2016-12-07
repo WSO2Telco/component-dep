@@ -17,9 +17,8 @@
 package com.wso2telco.workflow.approval.subscription.rest.client;
 
 import com.wso2telco.workflow.approval.exception.SubscriptionApprovalWorkflowException;
-import com.wso2telco.workflow.approval.model.HUBAdminSubApprovalNotificationRequest;
-import com.wso2telco.workflow.approval.model.PLUGINAdminSubApprovalNotificationRequest;
-import com.wso2telco.workflow.approval.model.SubApprovalStatusSPNotificationRequest;
+import com.wso2telco.workflow.approval.model.NotificationRequest;
+
 
 import feign.Headers;
 import feign.RequestLine;
@@ -28,18 +27,38 @@ public interface NotificationApi {
 
     @RequestLine("POST workflow/notification/subscription/sp")
     @Headers("Content-Type: application/json")
-    void subscriptionNotificationSp (SubApprovalStatusSPNotificationRequest subApprovalStatusSPNotificationRequest) throws SubscriptionApprovalWorkflowException;
+    void subscriptionNotificationSp (NotificationRequest subApprovalStatusSPNotificationRequest) throws SubscriptionApprovalWorkflowException;
 
     @RequestLine("POST workflow/notification/subscription/gateway")
     @Headers("Content-Type: application/json")
-    void subscriptionNotificationAdmin (HUBAdminSubApprovalNotificationRequest hUBAdminSubApprovalNotificationRequest) throws SubscriptionApprovalWorkflowException;
+    void subscriptionNotificationAdmin (NotificationRequest hUBAdminSubApprovalNotificationRequest) throws SubscriptionApprovalWorkflowException;
 
     @RequestLine("POST workflow/notification/subscription/publisher")
     @Headers("Content-Type: application/json")
-    void subscriptionNotificationApiCreator (PLUGINAdminSubApprovalNotificationRequest pLUGINAdminSubApprovalNotificationRequest) throws SubscriptionApprovalWorkflowException;
+    void subscriptionNotificationApiCreator (NotificationRequest pLUGINAdminSubApprovalNotificationRequest) throws SubscriptionApprovalWorkflowException;
 
     @RequestLine("POST workflow/notification/subscription/gateway")
     @Headers("Content-Type: application/json")
-    void subscriptionNotificationAdminService(HUBAdminSubApprovalNotificationRequest hUBAdminSubApprovalNotificationRequest) throws SubscriptionApprovalWorkflowException;
+    void subscriptionNotificationAdminService(NotificationRequest hUBAdminSubApprovalNotificationRequest) throws SubscriptionApprovalWorkflowException;
+
+    @RequestLine("POST workflow/notification/application/hub")
+    @Headers("Content-Type: application/json")
+    void sendHUBAdminAppApprovalNotification(NotificationRequest notificationRequest) throws SubscriptionApprovalWorkflowException;
+
+    @RequestLine("POST workflow/notification/application/plugin")
+    @Headers("Content-Type: application/json")
+    void sendPLUGINAdminAppApprovalNotification(NotificationRequest notificationRequest) throws SubscriptionApprovalWorkflowException;
+
+    @RequestLine("POST workflow/notification/application/sp")
+    @Headers("Content-Type: application/json")
+    void sendAppApprovalStatusSPNotification(NotificationRequest notificationRequest) throws SubscriptionApprovalWorkflowException;
+
+    @RequestLine("POST workflow/notification/subscription/hub")
+    @Headers("Content-Type: application/json")
+    void sendHUBAdminSubrovalNotification(NotificationRequest notificationRequest) throws SubscriptionApprovalWorkflowException;
+
+
+
+
 
 }
