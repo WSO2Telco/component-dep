@@ -146,7 +146,7 @@ if(tasks.length==0){%>
 								<option value="REJECTED">Reject</option>
 							</select>
 							<button class="btn js_completeBtn pull-left btn-primary"
-								id="js_completeBtn<%=String(i)%>" data="<%=tasks[i].id%>"
+								id="js_completeBtn<%=String(i)%>" data="<%=tasks[i].id%>" taskName="<%=tasks[i].name%>"
 								iteration="<%=String(i)%>">Complete</button>
 							<%}else if (tasks[i].status=='READY'){%>
 							<button class="btn js_assignBtn pull-left btn-primary"
@@ -162,7 +162,7 @@ if(tasks.length==0){%>
 							</select>
 							<button class="btn js_completeBtn pull-left btn-primary"
 								id="js_completeBtn<%=String(i)%>" style="display: none"
-								data="<%=tasks[i].id%>" iteration="<%=String(i)%>">Complete</button>
+								data="<%=tasks[i].id%>"  taskName="<%=tasks[i].name%>" iteration="<%=String(i)%>">Complete</button>
 							<%}
 
 
