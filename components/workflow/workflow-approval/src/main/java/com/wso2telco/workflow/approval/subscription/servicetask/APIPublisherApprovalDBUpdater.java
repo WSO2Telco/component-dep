@@ -17,12 +17,9 @@
 package com.wso2telco.workflow.approval.subscription.servicetask;
 
 
-import com.wso2telco.workflow.approval.model.SubApprovalStatusSPNotificationRequest;
-import com.wso2telco.workflow.approval.model.Subscription;
+import com.wso2telco.workflow.approval.model.NotificationRequest;
 import com.wso2telco.workflow.approval.model.SubscriptionApprovalAuditRecord;
-import com.wso2telco.workflow.approval.model.SubscriptionValidation;
 import com.wso2telco.workflow.approval.subscription.rest.client.NotificationApi;
-import com.wso2telco.workflow.approval.subscription.rest.client.SubscriptionWorkflowApi;
 import com.wso2telco.workflow.approval.subscription.rest.client.WorkflowApprovalAuditApi;
 import com.wso2telco.workflow.approval.subscription.rest.client.WorkflowCallbackErrorDecoder;
 import com.wso2telco.workflow.approval.util.AuthRequestInterceptor;
@@ -67,7 +64,7 @@ public class APIPublisherApprovalDBUpdater implements JavaDelegate {
                 .encoder(new JacksonEncoder())
                 .decoder(new JacksonDecoder())
                 .errorDecoder(new WorkflowCallbackErrorDecoder())
-                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminUserName,adminPassword))
+                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminUserName, adminPassword))
                 .target(WorkflowApprovalAuditApi.class, serviceUrl);
 
         SubscriptionApprovalAuditRecord subscriptionApprovalAuditRecord = new SubscriptionApprovalAuditRecord();
@@ -81,19 +78,19 @@ public class APIPublisherApprovalDBUpdater implements JavaDelegate {
         subscriptionApprovalAuditRecord.setSubApprovalType(Constants.PUBLISHER_APPROVAL);
         subscriptionApprovalAuditRecord.setSubStatus(publisherApprovalStatus);
 
-        SubApprovalStatusSPNotificationRequest subApprovalStatusSPNotificationRequest = new SubApprovalStatusSPNotificationRequest();
-        subApprovalStatusSPNotificationRequest.setApprovalStatus(publisherApprovalStatus);
-        subApprovalStatusSPNotificationRequest.setApplicationName(applicationName);
-        subApprovalStatusSPNotificationRequest.setApiProvider(apiProvider);
-        subApprovalStatusSPNotificationRequest.setApiName(apiName);
-        subApprovalStatusSPNotificationRequest.setSubscriber(subscriber);
-        subApprovalStatusSPNotificationRequest.setSubscriptionTier(selectedTier);
-        subApprovalStatusSPNotificationRequest.setApplicationDescription(description);
-        subApprovalStatusSPNotificationRequest.setApiVersion(apiVersion);
-        subApprovalStatusSPNotificationRequest.setApiContext(apiContext);
+        NotificationRequest notificationRequest = new NotificationRequest();
+        notificationRequest.setApprovalStatus(publisherApprovalStatus);
+        notificationRequest.setApplicationName(applicationName);
+        notificationRequest.setApiProvider(apiProvider);
+        notificationRequest.setApiName(apiName);
+        notificationRequest.setSubscriber(subscriber);
+        notificationRequest.setSubscriptionTier(selectedTier);
+        notificationRequest.setApplicationDescription(description);
+        notificationRequest.setApiVersion(apiVersion);
+        notificationRequest.setApiContext(apiContext);
 
         apiAudit.subscriptionApprovalAudit(subscriptionApprovalAuditRecord);
-        apiNotification.subscriptionNotificationSp(subApprovalStatusSPNotificationRequest);
+        apiNotification.subscriptionNotificationSp(notificationRequest);
 
     }
 }

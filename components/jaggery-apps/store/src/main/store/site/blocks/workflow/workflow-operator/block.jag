@@ -1,0 +1,14 @@
+<%
+jagg.block("workflow/workflow-operator", {
+    initializer:function (data) {
+
+    },
+
+    getOutputs:function (inputs) {
+
+        return {
+
+        };
+    }
+});
+%>
