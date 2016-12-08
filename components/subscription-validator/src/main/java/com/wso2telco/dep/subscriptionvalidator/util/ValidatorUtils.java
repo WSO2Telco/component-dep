@@ -18,6 +18,7 @@ package com.wso2telco.dep.subscriptionvalidator.util;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
+import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.apache.synapse.rest.RESTConstants;
 import org.wso2.carbon.apimgt.api.APIManagementException;
 import org.wso2.carbon.apimgt.api.model.APIIdentifier;
@@ -26,6 +27,8 @@ import org.wso2.carbon.apimgt.gateway.handlers.security.AuthenticationContext;
 
 import com.wso2telco.dep.subscriptionvalidator.exceptions.ValidatorException;
 import com.wso2telco.dep.subscriptionvalidator.services.MifeValidator;
+
+import java.util.Map;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -95,8 +98,16 @@ public class ValidatorUtils {
     public static MifeValidator getValidatorForSubscriptionFromMessageContext(MessageContext mc) throws
             ValidatorException {
 
+        String apiIdString = null;
         int applicationId = Integer.parseInt((String)mc.getProperty("APPLICATION_ID"));
-        int apiId = Integer.parseInt((String)mc.getProperty("API_ID"));
+        Object headers = ((Axis2MessageContext) mc).getAxis2MessageContext()
+                .getProperty(org.apache.axis2.context.MessageContext.TRANSPORT_HEADERS);
+        if (headers != null && headers instanceof Map) {
+            Map headersMap = (Map) headers;
+            apiIdString = (String) headersMap.get("API_ID");
+
+        }
+        int apiId = Integer.parseInt(apiIdString);
 
         return getValidatorForSubscription(applicationId, apiId);
     }

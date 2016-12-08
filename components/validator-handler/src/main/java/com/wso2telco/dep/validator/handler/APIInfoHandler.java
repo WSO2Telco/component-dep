@@ -66,7 +66,7 @@ public class APIInfoHandler extends AbstractHandler implements ManagedLifecycle 
                     .getProperty(org.apache.axis2.context.MessageContext.TRANSPORT_HEADERS);
             if (headers != null && headers instanceof Map) {
                 Map headersMap = (Map) headers;
-                headersMap.put("API_ID", apiId);
+                headersMap.put("API_ID", Integer.toString(apiId));
             }
         } catch (APIManagementException e) {
             log.error("Error while creating the APIIdentifier and retreiving api id from database", e);
