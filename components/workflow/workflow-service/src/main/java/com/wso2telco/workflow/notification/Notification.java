@@ -20,13 +20,13 @@ import com.wso2telco.workflow.model.*;
 
 public interface Notification {
 
-	public void sendHUBAdminAppApprovalNotification(HUBAdminAppApprovalNotificationRequest request);
-    public void sendHUBAdminSubrovalNotification(HUBAdminSubApprovalNotificationRequest request);
-    public void sendPLUGINAdminAppApprovalNotification(PLUGINAdminAppApprovalNotificationRequest request);
-    public void sendPLUGINAdminSubApprovalNotification(PLUGINAdminSubApprovalNotificationRequest request);
-    public void sendAppApprovalStatusSPNotification(AppApprovalStatusSPNotificationRequest request);
-    public void sendSubApprovalStatusSPNotification(SubApprovalStatusSPNotificationRequest request);
-    public void sendInternalAdminSubrovalNotification(HUBAdminSubApprovalNotificationRequest request);
-    public void sendPublisherSubApprovalNotification(PLUGINAdminSubApprovalNotificationRequest request);
+	public void sendHUBAdminAppApprovalNotification(NotificationRequest request);
+    public void sendHUBAdminSubrovalNotification(NotificationRequest request);
+    public void sendPLUGINAdminAppApprovalNotification(NotificationRequest request);
+    public void sendPLUGINAdminSubApprovalNotification(NotificationRequest request);
+    public void sendAppApprovalStatusSPNotification(NotificationRequest request);
+    public void sendSubApprovalStatusSPNotification(NotificationRequest request);
+    public void sendInternalAdminSubrovalNotification(NotificationRequest request);
+    public void sendPublisherSubApprovalNotification(NotificationRequest request);
 
 }
