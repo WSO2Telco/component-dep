@@ -55,22 +55,19 @@ public class APIInfoHandler extends AbstractHandler implements ManagedLifecycle 
 
     @Override
     public boolean handleRequest(MessageContext messageContext) {
-        AuthenticationContext authContext = APISecurityUtils.getAuthenticationContext(messageContext);
-        int applicationId = Integer.parseInt(authContext.getApplicationId());
+
         String api_version = (String) messageContext.getProperty(RESTConstants.SYNAPSE_REST_API);
         api_version = api_version.replace("--", "_").replace(":v", "_");
         APIIdentifier apiIdentifier = null;
         try {
             apiIdentifier = new APIIdentifier(api_version);
             int apiId = ValidatorDBUtils.getApiId(apiIdentifier);
-            String validatorClassName = getValidatorForSubscription(applicationId, apiId);
             Object headers = ((Axis2MessageContext) messageContext).getAxis2MessageContext()
                     .getProperty(org.apache.axis2.context.MessageContext.TRANSPORT_HEADERS);
             if (headers != null && headers instanceof Map) {
                 Map headersMap = (Map) headers;
-                headersMap.put("API_ID", validatorClassName);
+                headersMap.put("API_ID", Integer.toString(apiId));
             }
-            log.info(validatorClassName);
         } catch (APIManagementException e) {
             log.error("Error while creating the APIIdentifier and retreiving api id from database", e);
         } catch (ValidatorException e) {
