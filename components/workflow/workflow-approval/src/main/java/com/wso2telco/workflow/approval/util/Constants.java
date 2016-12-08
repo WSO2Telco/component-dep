@@ -59,5 +59,6 @@ public class Constants {
     public static final String PUBLISHER_APPROVAL="PUBLISHER_APPROVAL";
     public static final String REJECTED_TIER="N/A";
     public static final String TIER = "tier";
+    public static final String OPERATOR_ROLES ="operatorRoles";
 
 }
