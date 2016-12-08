@@ -199,6 +199,7 @@ public class NotificationImpl implements Notification {
 
     @Override
     public void sendPLUGINAdminAppApprovalNotification(NotificationRequest request) {
+
         String role = null;
         Collection<String> operatorsRoles = request.getOperatorsRoles();
         String applicationName = request.getApplicationName();
@@ -211,26 +212,31 @@ public class NotificationImpl implements Notification {
         log.debug("applicationDescription : " + applicationDescription);
         log.debug("userName : " + userName);
 
-        for (Iterator<String> iterator = operatorsRoles.iterator(); iterator.hasNext(); ) {
-            role = iterator.next();
-            log.info("role : " + role);
-            RemoteUserStoreManager userStoreManager = new RemoteUserStoreManagerImpl();
-            String[] userListOfRole = userStoreManager.getUserListOfRole(role);
-            if (userListOfRole != null && userListOfRole.length > 0) {
-                String subject = Constants.SUBJECT_PLUGIN_ADMIN_APP_APPROVAL_NOTIFICATION;
-                String content = EmailNotificationUtil.getAppPluginApproverEmailContent(applicationName, applicationTier, applicationDescription, userName);
-                if (content != null && content.length() > 0) {
-                    for (int i = 0; i < userListOfRole.length; i++) {
-                        String email = userStoreManager.getUserClaimValue(userListOfRole[i], Constants.CLAIM_EMAIL);
-                        emailService.sendEmail(email, subject, content);
+            for (Iterator<String> iterator = operatorsRoles.iterator(); iterator.hasNext(); ) {
+                role = iterator.next();
+                log.info("role : " + role);
+                RemoteUserStoreManager userStoreManager = new RemoteUserStoreManagerImpl();
+                String[] userListOfRole = userStoreManager.getUserListOfRole(role);
+
+                if (userListOfRole != null && userListOfRole.length > 0) {
+
+                    String subject = Constants.SUBJECT_PLUGIN_ADMIN_APP_APPROVAL_NOTIFICATION;
+                    String content = EmailNotificationUtil.getAppPluginApproverEmailContent(applicationName, applicationTier, applicationDescription, userName);
+
+                    if (content != null && content.length() > 0) {
+                        for (int i = 0; i < userListOfRole.length; i++) {
+                            String email = userStoreManager.getUserClaimValue(userListOfRole[i], Constants.CLAIM_EMAIL);
+                            emailService.sendEmail(email, subject, content);
+                        }
+
+                    } else {
+                        log.error("Email content is either null or empty. [ content : " + content + " ]");
                     }
                 } else {
-                    log.error("Email content is either null or empty. [ content : " + content + " ]");
+                    log.info("User list is either null or empty. [ userListOfRole : " + userListOfRole + " ]");
                 }
-            } else {
-                log.info("User list is either null or empty. [ userListOfRole : " + userListOfRole + " ]");
             }
-        }
+
     }
 
     @Override
@@ -245,6 +251,7 @@ public class NotificationImpl implements Notification {
         String tierName = request.getSubscriptionTier();
         String applicationName = request.getApplicationName();
         String applicationDescription = request.getApplicationDescription();
+        Collection<String> operatorsRoles = request.getOperatorsRoles();
 
         log.debug("role : " + role);
         log.debug("apiName : " + apiName);
@@ -256,33 +263,26 @@ public class NotificationImpl implements Notification {
         log.debug("applicationName : " + applicationName);
         log.debug("applicationDescription : " + applicationDescription);
 
-        if (role != null && role.length() > 0) {
-
+        for (Iterator<String> iterator = operatorsRoles.iterator(); iterator.hasNext(); ) {
+            role = iterator.next();
             RemoteUserStoreManager userStoreManager = new RemoteUserStoreManagerImpl();
             String[] userListOfRole = userStoreManager.getUserListOfRole(role);
-
             if (userListOfRole != null && userListOfRole.length > 0) {
-
                 String subject = Constants.SUBJECT_PLUGIN_ADMIN_SUB_APPROVAL_NOTIFICATION;
                 String content = EmailNotificationUtil.getSubPluginApproverEmailContent(
                         apiName, apiVersion, apiContext, apiProvider, subscriber, tierName, applicationName, applicationDescription);
-
                 if (content != null && content.length() > 0) {
                     for (int i = 0; i < userListOfRole.length; i++) {
                         String email = userStoreManager.getUserClaimValue(userListOfRole[i], Constants.CLAIM_EMAIL);
                         emailService.sendEmail(email, subject, content);
                     }
-
                 } else {
                     log.error("Email content is either null or empty. [ content : " + content + " ]");
                 }
             } else {
                 log.info("User list is either null or empty. [ userListOfRole : " + userListOfRole + " ]");
             }
-        } else {
-            log.error("The specified role is either null or empty. [ role : " + role + " ]");
         }
-
     }
 
 

@@ -37,12 +37,15 @@ public class OperatorListConverter implements JavaDelegate {
         String[] operatorList = arg0.getVariable("operators").toString().split(",");
         String deploymentType = arg0.getVariable(Constants.DEPLOYMENT_TYPE).toString();
         Collection<String> operatorNames = new ArrayList<String>();
+        Collection<String> operatorsRoles = new ArrayList<String>();
         for (String operator : operatorList) {
             operatorNames.add(operator.trim());
+            operatorsRoles.add(operator.trim()+Constants.ADMIN_ROLE);
             // TODO: make debug
             log.info("Operator '" + operator.trim() + "' added to operatorList");
         }
         arg0.setVariable("operatorList", operatorNames);
+        arg0.setVariable("operatorRoles", operatorsRoles);
         SubscriptionInitiateFactory subscriptionInitiateFactory = new SubscriptionInitiateFactory();
         SubscriptionInitiate subscriptionInitiate = subscriptionInitiateFactory.getInstance(deploymentType);
         subscriptionInitiate.execute(arg0);
