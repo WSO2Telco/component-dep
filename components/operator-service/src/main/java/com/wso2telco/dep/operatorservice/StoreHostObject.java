@@ -30,7 +30,11 @@ import com.wso2telco.dep.operatorservice.model.Operator;
 import com.wso2telco.dep.operatorservice.model.OperatorSearchDTO;
 import com.wso2telco.dep.operatorservice.service.OparatorService;
 
+
+
 public class StoreHostObject extends ScriptableObject {
+	
+	private static final String DEPLOYMENT_TYPE_SYSTEM_PARAM = "DEPLOYMENT_TYPE";
 
     /**
      *
@@ -119,6 +123,12 @@ public class StoreHostObject extends ScriptableObject {
         }
 
         return status;
+    }
+    
+    public static String jsFunction_getDeploymentType(){
+    	
+    	return System.getProperty(DEPLOYMENT_TYPE_SYSTEM_PARAM, "hub");
+    			
     }
 
     /**

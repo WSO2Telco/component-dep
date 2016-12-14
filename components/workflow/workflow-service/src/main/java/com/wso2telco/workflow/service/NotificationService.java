@@ -35,7 +35,7 @@ public class NotificationService {
     @POST
     @Path("application/hub")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response sendHUBAdminAppApprovalNotification(HUBAdminAppApprovalNotificationRequest request){
+    public Response sendHUBAdminAppApprovalNotification(NotificationRequest request){
         try {
             notification.sendHUBAdminAppApprovalNotification(request);
             return Response.status(Response.Status.OK).build();
@@ -47,7 +47,7 @@ public class NotificationService {
     @POST
     @Path("subscription/hub")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response sendHUBAdminSubrovalNotification(HUBAdminSubApprovalNotificationRequest request){
+    public Response sendHUBAdminSubrovalNotification(NotificationRequest request){
         try {
             notification.sendHUBAdminSubrovalNotification(request);
             return Response.status(Response.Status.OK).build();
@@ -59,7 +59,7 @@ public class NotificationService {
     @POST
     @Path("application/plugin")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response sendPLUGINAdminAppApprovalNotification(PLUGINAdminAppApprovalNotificationRequest request){
+    public Response sendPLUGINAdminAppApprovalNotification(NotificationRequest request){
         try {
             notification.sendPLUGINAdminAppApprovalNotification(request);
             return Response.status(Response.Status.OK).build();
@@ -71,7 +71,7 @@ public class NotificationService {
     @POST
     @Path("subscription/plugin")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response sendPLUGINAdminSubApprovalNotification(PLUGINAdminSubApprovalNotificationRequest request){
+    public Response sendPLUGINAdminSubApprovalNotification(NotificationRequest request){
         try {
             notification.sendPLUGINAdminSubApprovalNotification(request);
             return Response.status(Response.Status.OK).build();
@@ -83,7 +83,7 @@ public class NotificationService {
     @POST
     @Path("application/sp")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response sendAppApprovalStatusSPNotification(AppApprovalStatusSPNotificationRequest request){
+    public Response sendAppApprovalStatusSPNotification(NotificationRequest request){
         try {
             notification.sendAppApprovalStatusSPNotification(request);
             return Response.status(Response.Status.OK).build();
@@ -95,7 +95,7 @@ public class NotificationService {
     @POST
     @Path("subscription/sp")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response sendSubApprovalStatusSPNotification(SubApprovalStatusSPNotificationRequest request){
+    public Response sendSubApprovalStatusSPNotification(NotificationRequest request){
         try {
             notification.sendSubApprovalStatusSPNotification(request);
         return Response.status(Response.Status.OK).build();
@@ -106,7 +106,7 @@ public class NotificationService {
     @POST
     @Path("subscription/gateway")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response sendSubApprovalStatusGatewayNotification(HUBAdminSubApprovalNotificationRequest request){
+    public Response sendSubApprovalStatusGatewayNotification(NotificationRequest request){
         try {
             notification.sendInternalAdminSubrovalNotification(request);
             return Response.status(Response.Status.OK).build();
@@ -117,7 +117,7 @@ public class NotificationService {
     @POST
     @Path("subscription/publisher")
     @Consumes(MediaType.APPLICATION_JSON)
-    public Response sendSubApprovalStatusApiPublisherNotification(PLUGINAdminSubApprovalNotificationRequest request){
+    public Response sendSubApprovalStatusApiPublisherNotification(NotificationRequest request){
         try {
             notification.sendPublisherSubApprovalNotification(request);
             return Response.status(Response.Status.OK).build();

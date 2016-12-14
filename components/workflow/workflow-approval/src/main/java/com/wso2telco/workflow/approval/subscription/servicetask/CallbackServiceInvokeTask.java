@@ -33,43 +33,40 @@ import org.apache.commons.logging.LogFactory;
 
 public class CallbackServiceInvokeTask implements JavaDelegate {
 
-	private static final Log log = LogFactory.getLog(CallbackServiceInvokeTask.class);
+    private static final Log log = LogFactory.getLog(CallbackServiceInvokeTask.class);
 
-	public void execute(DelegateExecution arg0) throws Exception {
-        
-		String adminUserName = arg0.getVariable(Constants.ADMIN_USER_NAME) != null ? arg0.getVariable(Constants.ADMIN_USER_NAME).toString() : null;
-        String adminPassword= arg0.getVariable(Constants.ADMIN_PASSWORD).toString();
-        AuthRequestInterceptor authRequestInterceptor=new AuthRequestInterceptor();
+    public void execute(DelegateExecution arg0) throws Exception {
 
-		String refId = arg0.getVariable(Constants.WORKFLOW_REF_ID).toString();
-		String activityName = arg0.getCurrentActivityName();
-		String approvalStatus;
-		if (activityName.equalsIgnoreCase(Constants.OPERATOR_CALLBACK_ACTIVITY)) {
-			approvalStatus = (String) arg0.getVariable(Constants.OPERATOR_ADMIN_APPROVAL);
-		} else if (activityName.equalsIgnoreCase(Constants.PUBLISHER_CALLBACK_ACTIVITY)) {
-			approvalStatus = (String) arg0.getVariable(Constants.API_PUBLISHER_APPROVAL);
-		} else {
-			approvalStatus = (String) arg0.getVariable(Constants.HUB_ADMIN_APPROVAL);
-		}
+        String adminUserName = arg0.getVariable(Constants.ADMIN_USER_NAME) != null ? arg0.getVariable(Constants.ADMIN_USER_NAME).toString() : null;
+        String adminPassword = arg0.getVariable(Constants.ADMIN_PASSWORD).toString();
+        AuthRequestInterceptor authRequestInterceptor = new AuthRequestInterceptor();
+        String refId = arg0.getVariable(Constants.WORKFLOW_REF_ID).toString();
+        String activityName = arg0.getCurrentActivityName();
+        String approvalStatus;
+        if (activityName.equalsIgnoreCase(Constants.OPERATOR_CALLBACK_ACTIVITY)) {
+            approvalStatus = (String) arg0.getVariable(Constants.OPERATOR_ADMIN_APPROVAL);
+        } else if (activityName.equalsIgnoreCase(Constants.PUBLISHER_CALLBACK_ACTIVITY)) {
+            approvalStatus = (String) arg0.getVariable(Constants.API_PUBLISHER_APPROVAL);
+        } else {
+            approvalStatus = (String) arg0.getVariable(Constants.HUB_ADMIN_APPROVAL);
+        }
+        String callbackUrl = (String) arg0.getVariable(Constants.CALL_BACK_URL);
+        WorkflowHttpClient client = Feign.builder()
+                .encoder(new JacksonEncoder())
+                .decoder(new JacksonDecoder())
+                .errorDecoder(new WorkflowCallbackErrorDecoder())
+                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminUserName, adminPassword))
+                .target(WorkflowHttpClient.class, callbackUrl);
 
-		String callbackUrl = (String) arg0.getVariable(Constants.CALL_BACK_URL);
+        log.info("Application creation workflow reference Id: " + refId + ", Hub Admin Approval Status: " +
+                approvalStatus);
 
-		WorkflowHttpClient client = Feign.builder()
-		                                 .encoder(new JacksonEncoder())
-		                                 .decoder(new JacksonDecoder())
-		                                 .errorDecoder(new WorkflowCallbackErrorDecoder())
-		                                 .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminUserName,adminPassword))
-		                                 .target(WorkflowHttpClient.class, callbackUrl);
-
-		log.info("Application creation workflow reference Id: " + refId + ", Hub Admin Approval Status: " +
-				approvalStatus);
-
-		try {
-			client.invokeCallback(refId, approvalStatus);
-		} catch (SubscriptionApprovalWorkflowException e) {
-			throw new Exception(e);
-		}
-	}
+        try {
+            client.invokeCallback(refId, approvalStatus);
+        } catch (SubscriptionApprovalWorkflowException e) {
+            throw new Exception(e);
+        }
+    }
 
 }
 

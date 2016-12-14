@@ -16,7 +16,6 @@
 
 package com.wso2telco.workflow.approval.model;
 
-//@JacksonXmlRootElement(localName = "application")
 public class Application {
 
     private int applicationID;
