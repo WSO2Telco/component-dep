@@ -60,21 +60,19 @@ public class HubAdminDbUpdater implements JavaDelegate {
         final String selectedTier = arg0.getVariable(Constants.SELECTED_TIER)!=null? status.equalsIgnoreCase(Constants.APPROVE)?arg0.getVariable(Constants.SELECTED_TIER).toString():Constants.REJECTED_TIER:null;
         arg0.setVariable("hubAdminApproval", status); //gub admin approval status is null. Check jag. remove before deployment.
 
-        
+        AuthRequestInterceptor authRequestInterceptor = new AuthRequestInterceptor();
+        SubscriptionWorkflowApi api = Feign.builder()
+                    .encoder(new JacksonEncoder())
+                    .decoder(new JacksonDecoder())
+                    .errorDecoder(new WorkflowCallbackErrorDecoder())
+                    .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminUserName,adminPassword))
+                    .target(SubscriptionWorkflowApi.class, serviceUrl);
+        String operators = api.subscriptionGetOperators(apiName, apiVersion, apiProvider, applicationId);
         String[] operatorList = operators.split(",");
         Collection<String> operatorNames = new ArrayList<String>();
         Collection<String> operatorsRoles = new ArrayList<String>();
         
         log.info("In HubDataUpdater, Hub admin approval status: " + status);
-
-        AuthRequestInterceptor authRequestInterceptor = new AuthRequestInterceptor();
-
-        SubscriptionWorkflowApi api = Feign.builder()
-                .encoder(new JacksonEncoder())
-                .decoder(new JacksonDecoder())
-                .errorDecoder(new WorkflowCallbackErrorDecoder())
-                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminUserName,adminPassword))
-                .target(SubscriptionWorkflowApi.class, serviceUrl);
 
         Subscription subscription = new Subscription();
         subscription.setApiName(apiName);
@@ -106,9 +104,7 @@ public class HubAdminDbUpdater implements JavaDelegate {
         } else {
             apiNotification.subscriptionNotificationSp(notificationRequest);
         }
-      
-      String operators = api.subscriptionGetOperators(apiName, apiVersion, apiProvider, applicationId);     
-        
+
       for (String operator : operatorList) {
           operatorNames.add(operator.trim().toLowerCase());
           operatorsRoles.add(operator.trim()+Constants.ADMIN_ROLE);
