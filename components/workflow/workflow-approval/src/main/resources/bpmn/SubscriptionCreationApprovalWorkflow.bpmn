@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
-  <process id="subscription_approval_process" name="Subscription Approval Process" isExecutable="true">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.activiti.org/test" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test" id="m1483336874534" name="">
+  <process id="subscription_approval_process" name="Subscription Approval Process" isExecutable="true" isClosed="false" processType="None">
     <startEvent id="startevent1" name="Start">
       <extensionElements>
         <activiti:formProperty id="deployment_type" name="Deployment Type" type="string" variable="deployment_type"></activiti:formProperty>
@@ -103,14 +103,15 @@
     <sequenceFlow id="flow37" name="operator callback error flow" sourceRef="operator_callback_error_event" targetRef="operator_admin_approval_transaction"></sequenceFlow>
     <sequenceFlow id="flow38" sourceRef="servicetask3" targetRef="endevent3"></sequenceFlow>
     <sequenceFlow id="flow40" sourceRef="api_publisher_approval_transaction" targetRef="endevent3"></sequenceFlow>
-    <exclusiveGateway id="exclusivegateway4" name="Exclusive Gateway" activiti:async="true"></exclusiveGateway>
+    <exclusiveGateway id="exclusivegateway4" name="Exclusive Gateway"></exclusiveGateway>
     <sequenceFlow id="flow41" sourceRef="operator_admin_approval_transaction" targetRef="exclusivegateway4"></sequenceFlow>
     <sequenceFlow id="internal_gateway_flow" name="internal gateway flow" sourceRef="exclusivegateway4" targetRef="api_publisher_approval_transaction">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${operatorAdminApproval.equals("APPROVED") and deployment_type.equals("internal_gateway")}]]></conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="external_gateway_flow" name="external gateway / operator admin rejected flow" sourceRef="exclusivegateway4" targetRef="servicetask3">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${operatorAdminApproval.equals("REJECTED") or deployment_type.equals("external_gateway") or deployment_type.equals("hub") }]]></conditionExpression>
-    </sequenceFlow>
+    <sequenceFlow id="external_gateway_flow" name="external gateway / operator admin rejected flow" sourceRef="exclusivegateway4" targetRef="servicetask3" skipExpression="${operatorAdminApproval.equals(&quot;REJECTED&quot;) or deployment_type.equals(&quot;external_gateway&quot;) or deployment_type.equals(&quot;hub&quot;) }
+
+
+"></sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_subscription_approval_process">
     <bpmndi:BPMNPlane bpmnElement="subscription_approval_process" id="BPMNPlane_subscription_approval_process">
@@ -268,7 +269,7 @@
         <omgdi:waypoint x="129.0" y="15.0"></omgdi:waypoint>
         <omgdi:waypoint x="108.0" y="47.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="39.0" width="100.0" x="32.0" y="-182.0"></omgdc:Bounds>
+          <omgdc:Bounds height="39.0" width="100.0" x="17.0" y="-197.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow33" id="BPMNEdge_flow33">
@@ -294,7 +295,7 @@
         <omgdi:waypoint x="730.0" y="99.0"></omgdi:waypoint>
         <omgdi:waypoint x="699.0" y="109.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="39.0" width="100.0" x="1117.0" y="-295.0"></omgdc:Bounds>
+          <omgdc:Bounds height="39.0" width="100.0" x="1117.0" y="-325.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow38" id="BPMNEdge_flow38">

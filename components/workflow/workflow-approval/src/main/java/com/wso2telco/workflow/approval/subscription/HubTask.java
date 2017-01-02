@@ -72,7 +72,8 @@ public class HubTask extends AbstractTaskExecutor {
         notificationRequest.setApiProvider(delegatedArgsDTO.getApiProvider());
         notificationRequest.setApplicationName(delegatedArgsDTO.getApiContext());
 
-        //apiNotification.subscriptionNotificationSp(notificationRequest);
+
+        apiNotification.subscriptionNotificationSp(notificationRequest);
         
      
     }

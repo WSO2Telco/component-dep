@@ -58,7 +58,7 @@ public class HubAdminDbUpdater implements JavaDelegate {
         final String subscriber = arg0.getVariable(Constants.SUBSCRIBER) != null ? arg0.getVariable(Constants.SUBSCRIBER).toString() : null;
         final String apiProvider = arg0.getVariable(Constants.API_PROVIDER)!=null?arg0.getVariable(Constants.API_PROVIDER).toString():null;
         final String selectedTier = arg0.getVariable(Constants.SELECTED_TIER)!=null? status.equalsIgnoreCase(Constants.APPROVE)?arg0.getVariable(Constants.SELECTED_TIER).toString():Constants.REJECTED_TIER:null;
-        arg0.setVariable("hubAdminApproval", status); //gub admin approval status is null. Check jag. remove before deployment.
+        arg0.setVariable("hubAdminApproval", status); //hub admin approval status is null. Check jag. remove before deployment.
 
         AuthRequestInterceptor authRequestInterceptor = new AuthRequestInterceptor();
         SubscriptionWorkflowApi api = Feign.builder()
@@ -71,6 +71,18 @@ public class HubAdminDbUpdater implements JavaDelegate {
         String[] operatorList = operators.split(",");
         Collection<String> operatorNames = new ArrayList<String>();
         Collection<String> operatorsRoles = new ArrayList<String>();
+
+            for (String operator : operatorList) {
+                    operatorNames.add(operator.trim().toLowerCase());
+                    operatorsRoles.add(operator.trim()+Constants.ADMIN_ROLE);
+
+                    // TODO: make debug
+                    log.info("Operator '" + operator.trim() + "' added to operatorList");
+            }
+
+            arg0.setVariable("operatorList", operatorNames);
+            arg0.setVariable("operatorRoles", operatorsRoles);
+
         
         log.info("In HubDataUpdater, Hub admin approval status: " + status);
 
@@ -89,7 +101,7 @@ public class HubAdminDbUpdater implements JavaDelegate {
 
         NotificationRequest notificationRequest = new NotificationRequest();
         notificationRequest.setApiName(apiName);
-        notificationRequest.setOperatorsRoles(operatorRoles);
+        notificationRequest.setOperatorsRoles((ArrayList)arg0.getVariable(Constants.OPERATOR_ROLES));
         notificationRequest.setApprovalStatus(status);
         notificationRequest.setApiVersion(apiVersion);
         notificationRequest.setApiContext(apiContext);
@@ -105,16 +117,7 @@ public class HubAdminDbUpdater implements JavaDelegate {
             apiNotification.subscriptionNotificationSp(notificationRequest);
         }
 
-      for (String operator : operatorList) {
-          operatorNames.add(operator.trim().toLowerCase());
-          operatorsRoles.add(operator.trim()+Constants.ADMIN_ROLE);
-          
-          // TODO: make debug
-          log.info("Operator '" + operator.trim() + "' added to operatorList");
-      }
-     
-      arg0.setVariable("operatorList", operatorNames);
-      arg0.setVariable("operatorRoles", operatorsRoles);
+
       
 
 
