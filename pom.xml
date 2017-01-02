@@ -75,7 +75,8 @@
         <module>components/jaggery-apps/sandbox</module>
         <module>components/jaggery-apps/store</module>
         <module>features</module>
-    </modules>
+        <module>components/operator-onboarding</module>
+  </modules>
 
     <scm>
         <url>https://github.com/WSO2Telco/component-dep.git</url>
@@ -638,6 +639,11 @@
                 <version>${activiti.version}</version>
                 <type>war</type>
             </dependency>
+	    <dependency>
+	        <groupId>org.hibernate</groupId>
+	        <artifactId>hibernate-core</artifactId>
+	        <version>${org.hibernate.version}</version>
+	    </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -742,6 +748,7 @@
         <carbon.p2.plugin.version>1.5.3</carbon.p2.plugin.version>
         <maven-scr-plugin.version>1.7.2</maven-scr-plugin.version>
         <maven-bundle-plugin.version>2.5.3</maven-bundle-plugin.version>
+	<org.hibernate.version>5.2.1.Final</org.hibernate.version>
     </properties>
 
 </project>
