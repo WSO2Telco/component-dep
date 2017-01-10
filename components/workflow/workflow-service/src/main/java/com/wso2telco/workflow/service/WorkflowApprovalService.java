@@ -18,25 +18,32 @@ package com.wso2telco.workflow.service;
 
 import com.wso2telco.workflow.application.ApplicationApproval;
 import com.wso2telco.workflow.application.ApplicationApprovalImpl;
+import com.wso2telco.workflow.dao.WorkflowDbService;
 import com.wso2telco.workflow.model.Application;
 import com.wso2telco.workflow.model.Subscription;
 import com.wso2telco.workflow.model.SubscriptionValidation;
 import com.wso2telco.workflow.subscription.SubscriptionApproval;
 import com.wso2telco.workflow.subscription.SubscriptionApprovalImpl;
 
+import java.util.Arrays;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.openjpa.persistence.jest.JSONObject;
+import org.codehaus.jettison.json.JSONArray;
+
 
 @Path("/approval")
 public class WorkflowApprovalService {
+	
+	
 
     private ApplicationApproval applicationApproval =new ApplicationApprovalImpl();
     private SubscriptionApproval subscriptionApproval=new SubscriptionApprovalImpl();
-
-
+    private WorkflowDbService workflowDbService = new WorkflowDbService();
+    
     @POST
     @Path("application/hub")
     @Consumes(MediaType.APPLICATION_JSON)
@@ -100,5 +107,20 @@ public class WorkflowApprovalService {
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
+    }
+    
+    @GET
+    @Path("subscription/getoperators/{apiname}/{apiversion}/{apiprovider}/{appid}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response subscriptionGetOperators(@PathParam("apiname") String apiName,
+    		@PathParam("apiversion") String apiVersion, @PathParam("apiprovider")	String apiProvider,@PathParam("appid") int appId){
+    	 try {
+    		 String t;
+             t = workflowDbService.getSubApprovalOperators(apiName, apiVersion, apiProvider, appId);
+
+             return Response.status(Response.Status.OK).entity("\"" + t + "\"").build();
+         } catch (Exception e) {
+             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+         }
     }
 }
