@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.wso2telco.dep.operatorservice;
 
+import java.sql.SQLException;
 import java.util.List;
 
 import com.wso2telco.dep.operatorservice.exception.StoreHostObjectException;
@@ -129,6 +130,32 @@ public class StoreHostObject extends ScriptableObject {
     	
     	return System.getProperty(DEPLOYMENT_TYPE_SYSTEM_PARAM, "hub");
     			
+    }
+
+    public static void jsFunction_removeAPISubscription(Context cx,
+                                                        Scriptable thisObj,
+                                                        Object[] args,
+                                                        Function funObj) {
+        OperatorDAO operatorDAO = new OperatorDAO();
+        String applicationId = (String) args[0];
+        try {
+            operatorDAO.removeAPISubscription(applicationId);
+        } catch (SQLException e) {
+            log.error("database operation error in remove API Subscription : ", e);
+        }
+    }
+
+    public static void jsFunction_removeApplication(Context cx,
+                                                    Scriptable thisObj,
+                                                    Object[] args,
+                                                    Function funObj) {
+        OperatorDAO operatorDAO = new OperatorDAO();
+        String applicationId = (String) args[0];
+        try {
+            operatorDAO.removeApplication(applicationId);
+        } catch (SQLException e) {
+            log.error("database operation error in remove application : ", e);
+        }
     }
 
     /**

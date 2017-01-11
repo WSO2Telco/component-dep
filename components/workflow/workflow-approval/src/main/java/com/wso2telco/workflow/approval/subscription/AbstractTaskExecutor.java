@@ -75,6 +75,7 @@ abstract class AbstractTaskExecutor implements SubscriptionTask {
         delegatedArgsDTO.setSelectedTier(selectedTier);
         delegatedArgsDTO.setApiContext(apiContext);
         delegatedArgsDTO.setSubscriber(subscriber);
+        delegatedArgsDTO.setApiName(apiName);
         delegatedArgsDTO.setOperatorAdminApprovalStatus(operatorAdminApprovalStatus);
 
         WorkflowApprovalAuditApi apiAudit = Feign.builder()
@@ -85,7 +86,6 @@ abstract class AbstractTaskExecutor implements SubscriptionTask {
                 .target(WorkflowApprovalAuditApi.class, serviceUrl);
 
         apiAudit.subscriptionApprovalAudit(subscriptionApprovalAuditRecord);
-
         performTasks(delegatedArgsDTO);
     }
 
