@@ -75,8 +75,11 @@ include("/jagg/jagg.jag");
         else {
             applicationId = parseInt(request.getParameter("applicationId"), 10);
         }
-
-
+        
+        //this is a new code added remove dep database endpointapps tabale data
+        var mod = jagg.module("manager");
+        var storeHostObject = mod.getStoreHostObject(); //get getstoreObj
+        storeHostObject.removeAPISubscription(applicationId.toString());
 
         mod = jagg.module("subscription");
         result = mod.removeAPISubscription(username,applicationId,{
