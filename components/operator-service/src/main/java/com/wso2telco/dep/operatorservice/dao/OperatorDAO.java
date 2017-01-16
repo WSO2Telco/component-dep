@@ -563,15 +563,17 @@ public class OperatorDAO {
 		}
 	}
 
-    public void removeAPISubscription(String applicationId) throws SQLException {
+    public void removeAPISubscription(String applicationId,String apiName) throws SQLException {
 
         Connection con = null;
         PreparedStatement ps = null;
-        String query = "delete from endpointapps where applicationid=?";
+        String query = "delete from endpointapps  where exists (select 1 from operatorendpoints ope where api=? and ope.id=endpointapps.endpointid) " +
+                "and endpointapps.applicationid=? ";
         try {
             con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
             ps = con.prepareStatement(query);
-            ps.setString(1, applicationId);
+            ps.setString(1, apiName);
+            ps.setString(2, applicationId);
             ps.executeUpdate();
 
         } catch (SQLException e) {
