@@ -138,8 +138,9 @@ public class StoreHostObject extends ScriptableObject {
                                                         Function funObj) {
         OperatorDAO operatorDAO = new OperatorDAO();
         String applicationId = (String) args[0];
+        String apiName= (String) args[1];
         try {
-            operatorDAO.removeAPISubscription(applicationId);
+            operatorDAO.removeAPISubscription(applicationId,apiName);
         } catch (SQLException e) {
             log.error("database operation error in remove API Subscription : ", e);
         }
