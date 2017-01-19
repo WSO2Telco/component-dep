@@ -22,7 +22,15 @@ public class DelegatedArgsDTO {
     private String subscriber;
     private String operatorAdminApprovalStatus;
     private String apiPublisher;
+    private String apiProviderRole;
 
+    public String getApiProviderRole() {
+        return apiProviderRole;
+    }
+
+    public void setApiProviderRole(String apiProviderRole) {
+        this.apiProviderRole = apiProviderRole;
+    }
 
     public String getApiPublisher() {
         return apiPublisher;

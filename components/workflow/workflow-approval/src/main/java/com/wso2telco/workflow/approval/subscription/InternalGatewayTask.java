@@ -29,6 +29,7 @@ public class InternalGatewayTask extends AbstractTaskExecutor {
         notificationRequest.setApiVersion(args.getApiVersion());
         notificationRequest.setApiContext(args.getApiContext());
         notificationRequest.setApiName(args.getApiName());
+        notificationRequest.setReceiverRole(args.getApiProviderRole());
         notificationRequest.setApiProvider(args.getApiProvider());
         notificationRequest.setSubscriber(args.getSubscriber());
         notificationRequest.setApiPublisher(args.getApiPublisher());
@@ -37,11 +38,10 @@ public class InternalGatewayTask extends AbstractTaskExecutor {
         notificationRequest.setSubscriptionTier(args.getSelectedTier());
 
         if (args.getOperatorAdminApprovalStatus().equalsIgnoreCase(Constants.APPROVE)) {
-          apiNotification.subscriptionNotificationApiCreator(notificationRequest);
+          apiNotification.subscriptionNotificationAdminService(notificationRequest);
         } else {
           apiNotification.subscriptionNotificationSp(notificationRequest);
         }
-
 
     }
 }

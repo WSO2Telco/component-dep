@@ -159,6 +159,20 @@ public class StoreHostObject extends ScriptableObject {
         }
     }
 
+    public static void jsFunction_removeSubApprovalOperators(Context cx,
+                                                    Scriptable thisObj,
+                                                    Object[] args,
+                                                    Function funObj) {
+        OperatorDAO operatorDAO = new OperatorDAO();
+        String applicationId = (String) args[0];
+        try {
+            operatorDAO.removeSubApprovalOperators(applicationId);
+        } catch (SQLException e) {
+            log.error("database operation error in remove application : ", e);
+        }
+    }
+
+
     /**
      * Handle exception.
      *

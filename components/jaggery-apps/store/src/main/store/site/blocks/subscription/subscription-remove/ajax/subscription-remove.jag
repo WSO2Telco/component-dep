@@ -80,6 +80,7 @@ include("/jagg/jagg.jag");
         var mod = jagg.module("manager");
         var storeHostObject = mod.getStoreHostObject(); //get getstoreObj
         storeHostObject.removeAPISubscription(applicationId.toString(),apiName);
+        storeHostObject.removeSubApprovalOperators(applicationId.toString());
 
         mod = jagg.module("subscription");
         result = mod.removeAPISubscription(username,applicationId,{
