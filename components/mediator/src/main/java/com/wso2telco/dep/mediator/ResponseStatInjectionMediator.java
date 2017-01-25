@@ -19,7 +19,13 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.mediators.AbstractMediator;
+import org.apache.synapse.rest.RESTConstants;
+import org.wso2.carbon.context.PrivilegedCarbonContext;
+import org.wso2.carbon.registry.core.internal.RegistryCoreServiceComponent;
+import org.wso2.carbon.user.api.UserRealm;
 import org.wso2.carbon.user.api.UserStoreException;
+import org.wso2.carbon.user.api.UserStoreManager;
+import org.wso2.carbon.user.core.service.RealmService;
 
 import com.wso2telco.dep.mediator.internal.StatInformationUtil;
 import com.wso2telco.dep.mediator.util.StatisticConstants;
@@ -27,6 +33,8 @@ import com.wso2telco.dep.mediator.util.StatisticConstants;
 public class ResponseStatInjectionMediator extends AbstractMediator {
 
 	private final Log log = LogFactory.getLog(ResponseStatInjectionMediator.class);
+
+	StatInformationUtil statInformationUtil = new StatInformationUtil();
 
 	@Override
 	public boolean mediate(MessageContext messageContext) {
@@ -42,7 +50,11 @@ public class ResponseStatInjectionMediator extends AbstractMediator {
 
 	private void setApiId(MessageContext messageContext) {
 		try {
-			String apiId = StatInformationUtil.getAPIId(messageContext);
+
+			String apiName = (String) messageContext.getProperty(StatInformationUtil.API);
+			String apiVersion = (String) messageContext.getProperty(RESTConstants.SYNAPSE_REST_API_VERSION);
+
+			String apiId = statInformationUtil.getAPIId(apiName, apiVersion);
 			messageContext.setProperty(StatisticConstants.API_ID, apiId);
 		} catch (Exception ex) {
 			log.error("####STATINJECTION#### Error while retrieving api id", ex);
@@ -52,7 +64,10 @@ public class ResponseStatInjectionMediator extends AbstractMediator {
 
 	private void setServiceProviderId(MessageContext messageContext) {
 		try {
-			String publisherId = StatInformationUtil.getServiceProviderId(messageContext);
+
+			String serviceProvider = (String) messageContext.getProperty(StatInformationUtil.SERVICE_PROVIDER_USERNAME);
+
+			String publisherId = statInformationUtil.getServiceProviderId(serviceProvider);
 			messageContext.setProperty(StatisticConstants.SERVICE_PROVIDER_ID, publisherId);
 		} catch (Exception ex) {
 			log.error("####STATINJECTION#### Error while retrieving service provider id", ex);
@@ -60,14 +75,17 @@ public class ResponseStatInjectionMediator extends AbstractMediator {
 	}
 
 	private void setServiceProviderUserId(MessageContext messageContext) {
-		String spUserId = StatInformationUtil.getServiceProviderUserId(messageContext);
+
+		String serviceProvider = (String) messageContext.getProperty(StatInformationUtil.SERVICE_PROVIDER_USERNAME);
+
+		String spUserId = statInformationUtil.getServiceProviderUserId(serviceProvider);
 		messageContext.setProperty(StatisticConstants.SERVICE_PROVIDER_USER_ID, spUserId);
 	}
 
 	private void setCompanyId(MessageContext messageContext) {
 		String companyId;
 		try {
-			companyId = StatInformationUtil.getUserClaimValue(messageContext, StatisticConstants.COMPANYID_CLAIM);
+			companyId = this.getUserClaimValue(messageContext, StatisticConstants.COMPANYID_CLAIM);
 			messageContext.setProperty(StatisticConstants.COMPANYID, companyId);
 		} catch (UserStoreException ex) {
 			log.error("####STATINJECTION#### Error while retrieving company Id", ex);
@@ -79,7 +97,7 @@ public class ResponseStatInjectionMediator extends AbstractMediator {
 		String department;
 
 		try {
-			department = StatInformationUtil.getUserClaimValue(messageContext, StatisticConstants.DEPARTMENT_CLAIM);
+			department = this.getUserClaimValue(messageContext, StatisticConstants.DEPARTMENT_CLAIM);
 			messageContext.setProperty(StatisticConstants.DEPARTMENT, department);
 		} catch (UserStoreException ex) {
 			log.error("####STATINJECTION#### Error while retrieving department", ex);
@@ -89,20 +107,80 @@ public class ResponseStatInjectionMediator extends AbstractMediator {
 	private void setOperatorName(MessageContext messageContext) {
 
 		try {
-			String operatorName = StatInformationUtil.getOperatorName(messageContext);
+
+			String companyId = (String) messageContext.getProperty(StatisticConstants.COMPANYID);
+
+			String operatorName = statInformationUtil.getOperatorName(companyId);
 			messageContext.setProperty(StatisticConstants.OPERATOR_NAME, operatorName);
 		} catch (Exception ex) {
 			log.error("####STATINJECTION#### Error while retrieving operator Name", ex);
 		}
 	}
-	
-	private void setServiceProviderConsumerKey (MessageContext messageContext) {
+
+	private void setServiceProviderConsumerKey(MessageContext messageContext) {
 		try {
-			String consumerKey = StatInformationUtil.getServiceProviderConsumerKey(messageContext);
+
+			String applicationId = (String) messageContext.getProperty(StatInformationUtil.APPLICATION_ID);
+
+			String consumerKey = statInformationUtil.getServiceProviderConsumerKey(applicationId);
 			messageContext.setProperty(StatisticConstants.SERVICE_PROVIDER_CONSUMER_KEY, consumerKey);
 		} catch (Exception ex) {
 			log.error("####STATINJECTION#### Error while retrieving Service Provider Consumer Key", ex);
 		}
+	}
+
+	private UserStoreManager getUserStoreManager(MessageContext context) throws UserStoreException {
+		RealmService realmService = RegistryCoreServiceComponent.getRealmService();
+
+		String tenantDomain = (String) context.getProperty(StatInformationUtil.TENANT);
+
+		if (getNullOrTrimmedValue(tenantDomain) == null) {
+			String userId = (String) context.getProperty(StatInformationUtil.SERVICE_PROVIDER_USERNAME);
+			tenantDomain = getTenantDomain(userId);
+		}
+
+		int tenantId = realmService.getTenantManager().getTenantId(tenantDomain);
+		UserRealm userRealm = realmService.getTenantUserRealm(tenantId);
+		UserStoreManager userStoreManager = userRealm.getUserStoreManager();
+
+		return userStoreManager;
+
+	}
+
+	public String getUserClaimValue(MessageContext context, String claim) throws UserStoreException {
+
+		UserStoreManager userStoreManager;
+		String claimValue = null;
+		try {
+			String apiPublisher = (String) context.getProperty(StatInformationUtil.API_PUBLISHER);
+
+			userStoreManager = getUserStoreManager(context);
+			claimValue = userStoreManager.getUserClaimValue(apiPublisher, claim, StatInformationUtil.DEFAULT_PROFILE);
+
+		} catch (UserStoreException ex) {
+			log.error("####STATINJECTION#### Error while retrieving user claim " + claim, ex);
+			throw ex;
+		} finally {
+			PrivilegedCarbonContext.endTenantFlow();
+		}
+
+		return claimValue;
+
+	}
+
+	private static String getTenantDomain(String userId) {
+		String splitRegex = "\\@";
+		return userId.split(splitRegex)[1];
+	}
+
+	private static String getNullOrTrimmedValue(String value) {
+		String returnValue = null;
+
+		if (value != null && value.trim().length() > 0) {
+			returnValue = value.trim();
+		}
+
+		return returnValue;
 	}
 
 }
