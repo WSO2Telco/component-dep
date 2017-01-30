@@ -131,7 +131,7 @@ public class StatDao {
 		return operatorName;
 	}
 
-	public String getServiceProviderConsumerKey(String applicationId) {
+	public String getServiceProviderConsumerKey(String applicationId) throws Exception {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet resultSet = null;
@@ -157,11 +157,48 @@ public class StatDao {
 
 		} catch (Exception ex) {
 			log.error("####STATINJECTION#### Error while retrieving Service Provider Consumer Key", ex);
+			throw ex;
 		} finally {
 			DbUtils.closeAllConnections(ps, connection, resultSet);
 		}
 
 		return consumerKey;
+	}
+	
+	public String getAPIPublisherId (String apiPublisherUserName) throws Exception {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet resultSet = null;
+		String apiPublisherId = null;
+		
+		try {
+			connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+			
+			StringBuilder queryBuilder = new StringBuilder();
+			
+			queryBuilder.append("select um_id ");
+			queryBuilder.append(" from um_user ");
+			queryBuilder.append(" where UM_USER_NAME=?");
+			
+			ps = connection.prepareStatement(queryBuilder.toString());
+			
+			ps.setString(1, apiPublisherUserName);
+			
+			resultSet = ps.executeQuery();
+			
+			if (resultSet.next()) {
+				apiPublisherUserName = resultSet.getString(1);
+			}
+			
+		} catch (Exception ex) {
+			log.error("####STATINJECTION#### Error while retrieving Service Provider Consumer Key", ex);
+			throw ex;
+		} finally {
+			DbUtils.closeAllConnections(ps, connection, resultSet);
+		}
+		
+		
+		return apiPublisherId;
 	}
 
 }

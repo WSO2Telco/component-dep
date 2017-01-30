@@ -45,6 +45,7 @@ public class ResponseStatInjectionMediator extends AbstractMediator {
 		setDepartment(messageContext);
 		setOperatorName(messageContext);
 		setServiceProviderConsumerKey(messageContext);
+		setApiPublisherId(messageContext);
 		return true;
 	}
 
@@ -85,12 +86,26 @@ public class ResponseStatInjectionMediator extends AbstractMediator {
 	private void setCompanyId(MessageContext messageContext) {
 		String companyId;
 		try {
-			companyId = this.getUserClaimValue(messageContext, StatisticConstants.COMPANYID_CLAIM);
-			messageContext.setProperty(StatisticConstants.COMPANYID, companyId);
+			companyId = this.getUserClaimValue(messageContext, StatisticConstants.OPERATOR_CLAIM);
+			messageContext.setProperty(StatisticConstants.OPERATORID, companyId);
 		} catch (UserStoreException ex) {
 			log.error("####STATINJECTION#### Error while retrieving company Id", ex);
 		}
 
+	}
+	
+	private void setApiPublisherId (MessageContext messageContext) {
+		String apiPublisherId;
+		
+		try {
+			
+			String apiPublisher = (String) messageContext.getProperty(StatInformationUtil.API_PUBLISHER);
+			
+			apiPublisherId = statInformationUtil.getAPIPublisherId(apiPublisher);
+			messageContext.setProperty(StatisticConstants.API_PUBLISHER_ID, apiPublisherId);
+		} catch (Exception ex) {
+			log.error("####STATINJECTION#### Error while retrieving api publisher id", ex);
+		}
 	}
 
 	private void setDepartment(MessageContext messageContext) {
@@ -108,7 +123,7 @@ public class ResponseStatInjectionMediator extends AbstractMediator {
 
 		try {
 
-			String companyId = (String) messageContext.getProperty(StatisticConstants.COMPANYID);
+			String companyId = (String) messageContext.getProperty(StatisticConstants.OPERATORID);
 
 			String operatorName = statInformationUtil.getOperatorName(companyId);
 			messageContext.setProperty(StatisticConstants.OPERATOR_NAME, operatorName);
