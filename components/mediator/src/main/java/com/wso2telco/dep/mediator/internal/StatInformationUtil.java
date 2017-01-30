@@ -74,6 +74,19 @@ public class StatInformationUtil {
 
 		return spUserId;
 	}
+	
+	public String getAPIPublisherId (String apiPublisherUserName) throws Exception {
+		String apiPublisherId = null;
+		
+		try {
+			apiPublisherId = statDao.getAPIPublisherId(apiPublisherUserName);
+		} catch (Exception ex) {
+			log.error("####STATINJECTION#### Error while retrieving API Publisher Id", ex);
+			throw ex;
+		}
+		
+		return apiPublisherId;
+	}
 
 	public String getOperatorName(String companyId) throws Exception {
 		String operatorName = null;
