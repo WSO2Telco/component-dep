@@ -21,8 +21,9 @@ public class StatisticConstants {
 	public static final String SERVICE_PROVIDER_USER_ID = "spUserId";
 	public static final String DEPARTMENT_CLAIM = "http://wso2.org/claims/department";
 	public static final String DEPARTMENT = "department";
-	public static final String COMPANYID_CLAIM = "http://wso2.org/claims/apiPublisherID";
-	public static final String COMPANYID = "apiPublisherID";
+	public static final String OPERATOR_CLAIM = "http://wso2.org/claims/operatorID";
+	public static final String OPERATORID = "operatorId";
 	public static final String OPERATOR_NAME = "operatorName";
 	public static final String SERVICE_PROVIDER_CONSUMER_KEY = "spConsumerKey";
+	public static final String API_PUBLISHER_ID = "apiPublisherID";
 }
