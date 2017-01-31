@@ -172,7 +172,7 @@ public class StatDao {
 		String apiPublisherId = null;
 		
 		try {
-			connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+			connection = DbUtils.getDbConnection(DataSourceNames.WSO2UM_DB);
 			
 			StringBuilder queryBuilder = new StringBuilder();
 			
