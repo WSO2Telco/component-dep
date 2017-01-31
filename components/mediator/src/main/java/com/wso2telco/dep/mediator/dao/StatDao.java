@@ -187,7 +187,7 @@ public class StatDao {
 			resultSet = ps.executeQuery();
 			
 			if (resultSet.next()) {
-				apiPublisherUserName = resultSet.getString(1);
+				apiPublisherId = resultSet.getString(1);
 			}
 			
 		} catch (Exception ex) {
