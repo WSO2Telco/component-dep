@@ -64,8 +64,8 @@ public class StatInformationUtil {
 	}
 
 	public static String getAPIId(MessageContext context) throws Exception {
-		String apiId = null;
 
+		String apiId = null;
 		StatDao statDao = new StatDao();
 
 		String apiName = (String) context.getProperty(API);

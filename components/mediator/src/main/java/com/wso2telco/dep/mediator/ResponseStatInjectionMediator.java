@@ -52,8 +52,8 @@ public class ResponseStatInjectionMediator extends AbstractMediator {
 
 	private void setServiceProviderId(MessageContext messageContext) {
 		try {
-			String publisherId = StatInformationUtil.getServiceProviderId(messageContext);
-			messageContext.setProperty(StatisticConstants.SERVICE_PROVIDER_ID, publisherId);
+			String serviceProviderId = StatInformationUtil.getServiceProviderId(messageContext);
+			messageContext.setProperty(StatisticConstants.SERVICE_PROVIDER_ID, serviceProviderId);
 		} catch (Exception ex) {
 			log.error("####STATINJECTION#### Error while retrieving service provider id", ex);
 		}
