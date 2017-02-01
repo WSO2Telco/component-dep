@@ -695,7 +695,7 @@
 
 
     <properties>
-        <com.wso2telco.dep.version>2.1.0-rc1</com.wso2telco.dep.version>
+        <com.wso2telco.dep.version>2.1.0-SNAPSHOT</com.wso2telco.dep.version>
         <log4j.version>1.2.13</log4j.version>
         <com.google.code.gson.version>2.3.1</com.google.code.gson.version>
         <org.glassfish.jersey.core.version>2.4</org.glassfish.jersey.core.version>
