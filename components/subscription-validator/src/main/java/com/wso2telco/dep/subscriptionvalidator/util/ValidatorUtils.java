@@ -79,10 +79,11 @@ public class ValidatorUtils {
      //   AuthenticationContext authContext = APISecurityUtils.getAuthenticationContext(mc);
       //  int applicationId = Integer.parseInt(authContext.getApplicationId());
         int applicationId = Integer.parseInt((String)mc.getProperty("APPLICATION_ID"));
-        String api_version = (String) mc.getProperty(RESTConstants.SYNAPSE_REST_API);
-        api_version = api_version.replace("--", "_").replace(":v", "_");
-        APIIdentifier apiIdentifier = new APIIdentifier(api_version);
-        int apiId = ValidatorDBUtils.getApiId(apiIdentifier);
+        //String api_version = (String) mc.getProperty(RESTConstants.SYNAPSE_REST_API);
+        //api_version = api_version.replace("--", "_").replace(":v", "_");
+        //APIIdentifier apiIdentifier = new APIIdentifier(api_version);
+        //int apiId = ValidatorDBUtils.getApiId(apiIdentifier);
+        int apiId = Integer.parseInt((String) mc.getProperty("API_ID"));
 
         return getValidatorForSubscription(applicationId, apiId);
     }
