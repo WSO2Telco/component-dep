@@ -16,8 +16,6 @@
 
 package com.wso2telco.workflow.service;
 
-import com.wso2telco.dep.operatorservice.dao.WorkflowDAO;
-import com.wso2telco.hub.workflow.extensions.SubscriptionCreationRestWorkflowExecutor;
 import com.wso2telco.workflow.application.ApplicationApproval;
 import com.wso2telco.workflow.application.ApplicationApprovalImpl;
 import com.wso2telco.workflow.dao.WorkflowDbService;
@@ -27,14 +25,10 @@ import com.wso2telco.workflow.model.SubscriptionValidation;
 import com.wso2telco.workflow.subscription.SubscriptionApproval;
 import com.wso2telco.workflow.subscription.SubscriptionApprovalImpl;
 
-import java.util.Arrays;
-
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.openjpa.persistence.jest.JSONObject;
-import org.codehaus.jettison.json.JSONArray;
 
 
 @Path("/approval")
@@ -126,18 +120,4 @@ public class WorkflowApprovalService {
          }
     }
 
-    @POST
-    @Path("subscription/cleanup/{apiname}/{apiversion}/{appid}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response cleanUpPendingTask(@PathParam("apiname") String apiName,@PathParam("apiversion") String apiVersion,@PathParam("appid") String appId){
-        WorkflowDAO workflowDAO=new WorkflowDAO();
-        try {
-            String workflowId=workflowDAO.findWorkflowId(apiName,appId);
-            SubscriptionCreationRestWorkflowExecutor subscriptionCreationRestWorkflowExecutor=new SubscriptionCreationRestWorkflowExecutor();
-            subscriptionCreationRestWorkflowExecutor.cleanUpPendingTask(workflowId);
-            return Response.status(Response.Status.OK).entity("\"" + workflowId + "\"").build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
-    }
 }

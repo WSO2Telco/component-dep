@@ -23,8 +23,6 @@ import com.wso2telco.core.dbutils.fileutils.PropertyFileReader;
 import com.wso2telco.dep.operatorservice.dao.WorkflowDAO;
 import com.wso2telco.dep.operatorservice.exception.StoreHostObjectException;
 import com.wso2telco.dep.operatorservice.model.WorkflowReferenceDTO;
-import feign.Feign;
-import feign.auth.BasicAuthRequestInterceptor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mozilla.javascript.Context;
