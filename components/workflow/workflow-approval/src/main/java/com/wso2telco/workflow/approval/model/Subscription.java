@@ -24,6 +24,15 @@ public class Subscription {
     private String ApiName;
     private String OpID;
     private String operatorName;
+    private String workflowRefId;
+
+    public String getWorkflowRefId() {
+        return workflowRefId;
+    }
+
+    public void setWorkflowRefId(String workflowRefId) {
+        this.workflowRefId = workflowRefId;
+    }
 
     public String getOperatorName() {
         return operatorName;

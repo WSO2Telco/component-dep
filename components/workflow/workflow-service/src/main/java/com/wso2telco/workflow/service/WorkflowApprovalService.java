@@ -25,14 +25,10 @@ import com.wso2telco.workflow.model.SubscriptionValidation;
 import com.wso2telco.workflow.subscription.SubscriptionApproval;
 import com.wso2telco.workflow.subscription.SubscriptionApprovalImpl;
 
-import java.util.Arrays;
-
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-import org.apache.openjpa.persistence.jest.JSONObject;
-import org.codehaus.jettison.json.JSONArray;
 
 
 @Path("/approval")
@@ -123,4 +119,5 @@ public class WorkflowApprovalService {
              return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
          }
     }
+
 }

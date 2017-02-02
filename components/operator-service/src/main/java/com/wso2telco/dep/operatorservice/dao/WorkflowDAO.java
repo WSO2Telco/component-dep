@@ -1,0 +1,141 @@
+/**
+ * Copyright (c) 2015, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+ *
+ * WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
+package com.wso2telco.dep.operatorservice.dao;
+
+import com.wso2telco.core.dbutils.DbUtils;
+import com.wso2telco.core.dbutils.util.DataSourceNames;
+import com.wso2telco.dep.operatorservice.model.Operator;
+import com.wso2telco.dep.operatorservice.model.WorkflowReferenceDTO;
+import com.wso2telco.dep.operatorservice.util.OparatorTable;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
+
+public class WorkflowDAO {
+
+    /**
+     * The Constant log.
+     */
+    private final Log log = LogFactory.getLog(OperatorDAO.class);
+
+    public void insertWorkflowRef(String workflowID,String apiName, String apiVersion,int appId,String serviceEndpoint) throws Exception {
+
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            this.updateWorkflowRef(apiName,apiVersion,appId);
+            conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+            StringBuilder query = new StringBuilder();
+            query.append("INSERT INTO ");
+            query.append("workflow_reference");
+            query.append(" (workflow_ref_id, application_id, api_name, api_version,service_endpoint,status) ");
+            query.append("VALUES (?, ?, ?, ?,?,?)");
+
+            ps = conn.prepareStatement(query.toString());
+            ps.setString(1, workflowID);
+            ps.setInt(2, appId);
+            ps.setString(3, apiName);
+            ps.setString(4, apiVersion);
+            ps.setString(5, serviceEndpoint);
+            ps.setInt(6, 1);
+
+            log.debug("sql query in persistOperators : " + ps);
+            ps.execute();
+
+        } catch (SQLException e) {
+            log.error("database operation error in retrieveOperatorList : ", e);
+            throw e;
+        } finally {
+            DbUtils.closeAllConnections(ps, conn, rs);
+        }
+
+    }
+
+
+    public WorkflowReferenceDTO findWorkflow(String apiName,String appId,String apiVersion) throws Exception {
+
+        WorkflowReferenceDTO workflowReferenceDTO=new WorkflowReferenceDTO();
+        String sql = "SELECT * from workflow_reference where api_name = ? and application_id = ? and status=? and api_version=?";
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            conn =DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, apiName);
+            ps.setString(2, appId);
+            ps.setInt(3, 1);
+            ps.setString(4, apiVersion);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                 workflowReferenceDTO.setWorkflowRef(rs.getString("workflow_ref_id"));
+                 workflowReferenceDTO.setWorkflowServiceURL(rs.getString("service_endpoint"));
+            }
+        } catch (SQLException e) {
+          log.error("SQLException "+e);
+            throw e;
+        } finally {
+            DbUtils.closeAllConnections(ps, conn, rs);
+        }
+      return workflowReferenceDTO;
+    }
+
+    public void updateWorkflowRef(String apiName, String apiVersion, int appId)
+            throws SQLException, Exception {
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        try {
+            con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+            if (con == null) {
+                throw new Exception("Connection not found");
+            }
+            StringBuilder queryString = new StringBuilder("UPDATE ");
+            queryString.append("workflow_reference");
+            queryString.append(" SET status = ?");
+            queryString.append(" WHERE api_version = ?");
+            queryString.append(" and application_id = ?");
+            queryString.append(" and api_name = ?");
+
+            ps = con.prepareStatement(queryString.toString());
+
+            ps.setInt(1, 0);
+            ps.setString(2, apiVersion);
+            ps.setInt(3, appId);
+            ps.setString(4, apiName);
+            log.debug("sql query in updateOperatorToken : " + ps);
+            ps.executeUpdate();
+        } catch (SQLException e) {
+            log.error("database operation error in updateWorkflowRef : ", e);
+            throw e;
+        } catch (Exception e) {
+            log.error("error in updateWorkflowRef : ", e);
+            throw e;
+        } finally {
+            DbUtils.closeAllConnections(ps, con, null);
+        }
+    }
+
+}
