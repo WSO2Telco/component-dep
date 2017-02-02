@@ -17,8 +17,14 @@ package com.wso2telco.dep.operatorservice;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Properties;
 
+import com.wso2telco.core.dbutils.fileutils.PropertyFileReader;
+import com.wso2telco.dep.operatorservice.dao.WorkflowDAO;
 import com.wso2telco.dep.operatorservice.exception.StoreHostObjectException;
+import com.wso2telco.dep.operatorservice.model.WorkflowReferenceDTO;
+import feign.Feign;
+import feign.auth.BasicAuthRequestInterceptor;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mozilla.javascript.Context;
@@ -171,6 +177,26 @@ public class StoreHostObject extends ScriptableObject {
             log.error("database operation error in remove application : ", e);
         }
     }
+
+    public static WorkflowReferenceDTO jsFunction_getWorkflowRef(Context cx,
+                                                      Scriptable thisObj,
+                                                      Object[] args,
+                                                      Function funObj){
+        WorkflowReferenceDTO workflow=null;
+        WorkflowDAO workflowDAO=new WorkflowDAO();
+        String apiName = (String) args[1];
+        String applicationId = (String) args[0];
+        String apiVersion = (String) args[2];
+        try {
+            workflow=workflowDAO.findWorkflow(apiName, applicationId, apiVersion);
+        } catch (Exception e) {
+            log.error("database operation error in get workflow ref : ", e);
+        }
+        return workflow;
+
+    }
+
+
 
 
     /**

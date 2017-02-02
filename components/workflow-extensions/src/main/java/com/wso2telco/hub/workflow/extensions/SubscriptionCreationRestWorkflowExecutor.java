@@ -16,6 +16,7 @@
 
 package com.wso2telco.hub.workflow.extensions;
 
+import com.wso2telco.dep.operatorservice.dao.WorkflowDAO;
 import com.wso2telco.hub.workflow.extensions.beans.CreateProcessInstanceRequest;
 import com.wso2telco.hub.workflow.extensions.beans.CreateProcessInstanceResponse;
 import com.wso2telco.hub.workflow.extensions.beans.ProcessInstanceData;
@@ -104,6 +105,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
     public WorkflowResponse execute(WorkflowDTO workflowDTO) throws WorkflowException {
 
         OperatorApi operatorApi = new OperatorImpl();
+        WorkflowDAO workflowDAO=new WorkflowDAO();
 
         try {
             if (log.isDebugEnabled()) {
@@ -261,7 +263,10 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
             CreateProcessInstanceResponse processInstanceResponse;
             try {
                 processInstanceResponse = httpClient.createProcessInstance(processInstanceRequest);
+                workflowDAO.insertWorkflowRef(subscriptionWorkFlowDTO.getExternalWorkflowReference(),apiName,version,applicationId,serviceEndpoint);
             } catch (WorkflowExtensionException e) {
+                throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
+            } catch(Exception e){
                 throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
             }
 
@@ -320,7 +325,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
                 .requestInterceptor(new BasicAuthRequestInterceptor(username, password))
                 .target(BusinessProcessApi.class, serviceEndpoint);
 
-        ProcessInstanceData instanceData = null;
+       ProcessInstanceData instanceData = null;
         try {
             instanceData = api.getProcessInstances(workflowExtRef);
         } catch (WorkflowExtensionException e) {
@@ -373,5 +378,6 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
     public void setPassword(String password) {
         this.password = password;
     }
+
 }
 

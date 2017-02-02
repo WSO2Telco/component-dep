@@ -58,6 +58,7 @@ public class HubAdminDbUpdater implements JavaDelegate {
         final String subscriber = arg0.getVariable(Constants.SUBSCRIBER) != null ? arg0.getVariable(Constants.SUBSCRIBER).toString() : null;
         final String apiProvider = arg0.getVariable(Constants.API_PROVIDER)!=null?arg0.getVariable(Constants.API_PROVIDER).toString():null;
         final String selectedTier = arg0.getVariable(Constants.SELECTED_TIER)!=null? status.equalsIgnoreCase(Constants.APPROVE)?arg0.getVariable(Constants.SELECTED_TIER).toString():Constants.REJECTED_TIER:null;
+        final String workflowRefId = arg0.getVariable(Constants.WORK_FLOW_REF)!=null?arg0.getVariable(Constants.WORK_FLOW_REF).toString():null;
         arg0.setVariable("hubAdminApproval", status); //hub admin approval status is null. Check jag. remove before deployment.
 
         AuthRequestInterceptor authRequestInterceptor = new AuthRequestInterceptor();
@@ -90,6 +91,7 @@ public class HubAdminDbUpdater implements JavaDelegate {
         subscription.setApiName(apiName);
         subscription.setApplicationID(applicationId);
         subscription.setOperatorName(operatorName);
+        subscription.setWorkflowRefId(workflowRefId);
         api.subscriptionApprovalHub(subscription);
 
         NotificationApi apiNotification = Feign.builder()
