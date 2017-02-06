@@ -353,6 +353,16 @@ CREATE TABLE `workflow_reference` (
   PRIMARY KEY (`workflow_ref_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE IF NOT EXISTS `deptnotificationurls` (
+  `notifyurldid` int(20) NOT NULL AUTO_INCREMENT,
+  `apiname` varchar(255) NOT NULL,
+  `notifyurl` varchar(255) NOT NULL,
+  `serviceprovider` varchar(255) NOT NULL,
+  `notifystatus` int(10) NOT NULL DEFAULT 0,
+  `createddate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`notifyurldid`)
+);
+
 
 /*
 * Default validator types provided from mife-validator component
