@@ -353,6 +353,16 @@ CREATE TABLE IF NOT EXISTS `workflow_reference` (
   PRIMARY KEY (`workflow_ref_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+CREATE TABLE IF NOT EXISTS `deptnotificationurls` (
+  `notifyurldid` int(20) NOT NULL AUTO_INCREMENT,
+  `apiname` varchar(255) NOT NULL,
+  `notifyurl` varchar(255) NOT NULL,
+  `serviceprovider` varchar(255) NOT NULL,
+  `notifystatus` int(10) NOT NULL DEFAULT 0,
+  `createddate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`notifyurldid`)
+);
+
 INSERT INTO `mdtxmsgtype` (`msgtypedid`, `msgtype`) VALUES ('1', 'paymentrequest'),('2', 'paymentresponse'), ('3', 'refundrequest'),('4', 'refundresponse');
 
 CREATE TABLE IF NOT EXISTS `tokeninfo` (
@@ -373,8 +383,8 @@ CREATE TABLE IF NOT EXISTS `userinfo` (
 /*
 * Default validator types provided from mife-validator component
 */
-INSERT INTO validator (name, class) values ('passthru','com.wso2telco.dep.subscriptionvalidator.services.impl.PassThroughValidator');
-INSERT INTO validator (name, class) values ('msisdn','com.wso2telco.dep.subscriptionvalidator.services.impl.MSISDNValidator');
+insert into validator (name, class) values ('passthru','com.wso2telco.dep.subscriptionvalidator.services.impl.PassThroughValidator');
+insert into validator (name, class) values ('msisdn','com.wso2telco.dep.subscriptionvalidator.services.impl.MSISDNValidator');
 
 /*
 * Default operator
@@ -399,4 +409,5 @@ INSERT INTO `workflow_api_key_mappings` (`API_NAME`, `API_KEY`) VALUES ('smsmess
 INSERT INTO `workflow_api_key_mappings` (`API_NAME`, `API_KEY`) VALUES ('payment', 'payment');
 INSERT INTO `workflow_api_key_mappings` (`API_NAME`, `API_KEY`) VALUES ('location', 'location');
 
-
+--
+INSERT INTO `mdtxmsgtype` (`msgtypedid`, `msgtype`) VALUES ('1', 'paymentrequest'),('2', 'paymentresponse'), ('3', 'refundrequest'),('4', 'refundresponse');
