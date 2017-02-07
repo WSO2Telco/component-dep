@@ -2,6 +2,7 @@ package com.wso2telco.workflow.approval.subscription;
 
 import com.wso2telco.workflow.approval.model.DelegatedArgsDTO;
 import com.wso2telco.workflow.approval.model.Subscription;
+import com.wso2telco.workflow.approval.model.SubscriptionValidation;
 import com.wso2telco.workflow.approval.subscription.rest.client.SubscriptionWorkflowApi;
 import com.wso2telco.workflow.approval.subscription.rest.client.WorkflowCallbackErrorDecoder;
 import com.wso2telco.workflow.approval.util.AuthRequestInterceptor;
@@ -30,6 +31,11 @@ class ExternalGatewayTask extends AbstractTaskExecutor{
         subscription.setStatus(args.getOperatorAdminApprovalStatus());
         api.subscriptionApprovalHub(subscription);
         api.subscriptionApprovalOperator(subscription);
+
+        SubscriptionValidation subscriptionValidation = new SubscriptionValidation();
+        subscriptionValidation.setApiID(args.getApiID());
+        subscriptionValidation.setApplicationID(args.getApplicationId());
+        api.subscriptionApprovalValidator(subscriptionValidation);
 
     }
 	
