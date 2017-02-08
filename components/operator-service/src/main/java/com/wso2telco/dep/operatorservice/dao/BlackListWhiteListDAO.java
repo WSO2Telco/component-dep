@@ -29,6 +29,7 @@ import java.util.TreeMap;
 
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.dep.operatorservice.util.BlacklistWhitelistUtils;
+import com.wso2telco.dep.operatorservice.util.OparatorError;
 import com.wso2telco.dep.operatorservice.util.SQLConstants;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
@@ -466,12 +467,10 @@ public class BlackListWhiteListDAO {
 			}
 			return userApplicationUsages;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
 		}
-
-		return null;
 	}
 
 
@@ -499,12 +498,11 @@ public class BlackListWhiteListDAO {
 
 			return subscriberList;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
 		}
 
-		return null;
 	}
 
 	public int getAPIId(String providerName, String apiName, String apiVersion) throws BusinessException {
@@ -528,12 +526,11 @@ public class BlackListWhiteListDAO {
 
 			while (result.next()) {
 				return result.getInt("API_ID");
-
 			}
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
 		}
 
 		return -1;
@@ -565,12 +562,10 @@ public class BlackListWhiteListDAO {
 
 			return appUniqueIDList;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
 		}
-
-		return null;
 	}
 
 
@@ -602,12 +597,10 @@ public class BlackListWhiteListDAO {
 
 			return apiNamesList;
 		} catch (SQLException e) {
-			e.printStackTrace();
+			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
 		} catch (Exception e) {
-			e.printStackTrace();
+			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
 		}
-
-		return null;
 	}
 
 
@@ -618,7 +611,7 @@ public class BlackListWhiteListDAO {
 	 * @return access token data
 	 * @throws Exception
 	 */
-	public Map<String, String>  getAccessTokenData(int subscriptionId) throws  Exception {
+/*	public Map<String, String>  getAccessTokenData(int subscriptionId) throws  Exception {
 		Map<String, String> apiKeys = new HashMap<String, String>();
 
 		if (checkAccessTokenPartitioningEnabled() && checkUserNameAssertionEnabled()) {
@@ -636,9 +629,9 @@ public class BlackListWhiteListDAO {
 			apiKeys = getAccessTokenData(subscriptionId, getKeysSqlUsingSubscriptionId(null));
 		}
 		return apiKeys;
-	}
+	}*/
 
-	private Map<String, String> getAccessTokenData(int subscriptionId, String getKeysSql)
+	/*private Map<String, String> getAccessTokenData(int subscriptionId, String getKeysSql)
 			throws Exception {
 		Connection connection = null;
 		PreparedStatement ps = null;
@@ -662,5 +655,5 @@ public class BlackListWhiteListDAO {
 		}
 		return apiKeys;
 	}
-
+*/
 }

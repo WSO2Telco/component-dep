@@ -10,7 +10,7 @@ var addBulkURL = getLocationRestUrl();//"http://localhost:8090/locationrest/quer
 function getLocationRestUrl() {
 	//var site = require("/site/conf/site.json");
 	var hostPort = site.externalServicesUrl;
-	return hostPort + "locationrest/queries/Whitelist";
+	return hostPort + "blacklist-whitelist-service/queries/Whitelist";
 }
 %>
 <%
@@ -21,7 +21,7 @@ function getLocationRestUrl() {
 
 function addNewToWhitelist(subscriberList, appId, apiId){
 	var log = new Log();
-	var addBulkURL = site.externalServicesUrl + "locationrest/queries/Whitelist";
+	var addBulkURL = site.externalServicesUrl + "blacklist-whitelist-service/queries/Whitelist";
 	var subscribers = subscriberList.split(",");
 // 	log.info("Whitelist Log 004: subscribers >> "+ stringify(subscribers));
 	
@@ -44,7 +44,7 @@ function addNewToWhitelist(subscriberList, appId, apiId){
 
 function getWhitelist() {
 	var log = new Log();
-	var url = site.externalServicesUrl + "locationrest/queries/GetWhiteList";
+	var url = site.externalServicesUrl + "blacklist-whitelist-service/queries/GetWhiteList";
 	var data = {};
 	var response = postJSON(url, data);	
 
@@ -68,7 +68,7 @@ function removeFromWhiteListNumbers(subscriber){
 	var log = new Log();
 	var subscribe = "tel3A+"+subscriber;
 	log.info("subscriber: " + subscribe);
-	var newURL = site.externalServicesUrl + "locationrest/queries/RemoveFromWhiteList/" + subscribe;
+	var newURL = site.externalServicesUrl + "blacklist-whitelist-service/queries/RemoveFromWhiteList/" + subscribe;
 
 	var response = postJSON(newURL);
 	log.info("response = " + response);
@@ -78,14 +78,20 @@ function removeFromWhiteListNumbers(subscriber){
 
 
 function getSubscribers() {
-	var url = site.externalServicesUrl + "locationrest/queries/getSubscribers";
+	var url = site.externalServicesUrl + "blacklist-whitelist-service/queries/getSubscribers";
 	var data = {};
 	var response = postJSON(url, data);
 	return response;
 }
 
+function getSubscribersOfProvider (){
+	var url = site.externalServicesUrl + "blacklist-whitelist-service/queries/subscribers";
+	var data = {};
+	var response = postJSON(url, data);
+	return response;
+}
 function getApps(subscriberId) {
-	var url = site.externalServicesUrl + "locationrest/queries/getApps";
+	var url = site.externalServicesUrl + "blacklist-whitelist-service/queries/apps";
 // 	var response = postJSON(url, "{\"id\":\"" + subscriberId + "\"}");
 	var data = {
 			"id":subscriberId
@@ -94,10 +100,11 @@ function getApps(subscriberId) {
 	return response;
 }
 
-function getApis(appId) {
-	var url = site.externalServicesUrl + "locationrest/queries/getApis";
+function getApis(subscriberId, appId) {
+	var url = site.externalServicesUrl + "blacklist-whitelist-service/queries/apis";
 	var data = {
-				"id":appId
+				"id":subscriberId + "|" + appId
+
 			};
 	var response = postJSON(url, data);
 	return response;
@@ -114,6 +121,7 @@ function postJSON(url, data) {
 	log.info("request = " + JSON.stringify(request));
 	var ajax = new XMLHttpRequest();
 	ajax.open("POST", request.url, false);
+	ajax.setRequestHeader("Content-type", "application/json");
 	ajax.onreadystatechange = function() {
 		if (ajax.readyState == 4) {
 			log.info("ajax onreadystatechange");
@@ -125,11 +133,15 @@ function postJSON(url, data) {
 }
 
 function urlEncode(subscribers){
+	var log2 = new Log();
+	log2.info("subscribers=" + stringify(subscribers));
 	var validSubscribers = new Array();
 	for (i = 0; i < subscribers.length; i++) {
 		if(subscribers[i] != null && subscribers[i].length > 0) {
+			log2.info("PPPPPPPPPPPPPPPPPPPPPPPPPPPPPPPP");
 // 	    	subscribers[i] = "tel3A+" + subscribers[i];
 	    	validSubscribers[validSubscribers.length] = "tel3A+" + subscribers[i];
+	    	log2.info("LLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLLll" + stringify(validSubscribers[validSubscribers.length-1] ));
 	    }
 	}
 // 	return subscribers;
