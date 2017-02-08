@@ -22,7 +22,14 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.TreeMap;
+
+import com.wso2telco.core.dbutils.exception.BusinessException;
+import com.wso2telco.dep.operatorservice.util.BlacklistWhitelistUtils;
+import com.wso2telco.dep.operatorservice.util.SQLConstants;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -30,8 +37,17 @@ import com.wso2telco.core.msisdnvalidator.MSISDN;
 import com.wso2telco.core.dbutils.DbUtils;
 import com.wso2telco.core.dbutils.util.DataSourceNames;
 import com.wso2telco.dep.operatorservice.model.MSISDNSearchDTO;
-import com.wso2telco.dep.operatorservice.model.WhiteListMSISDNSearchDTO;
 import com.wso2telco.dep.operatorservice.util.OparatorTable;
+import org.wso2.carbon.apimgt.api.dto.UserApplicationAPIUsage;
+import org.wso2.carbon.apimgt.api.model.APIIdentifier;
+import org.wso2.carbon.apimgt.api.model.SubscribedAPI;
+import org.wso2.carbon.apimgt.api.model.Subscriber;
+import org.wso2.carbon.apimgt.impl.utils.APIUtil;
+
+import static com.wso2telco.dep.operatorservice.util.BlacklistWhitelistUtils.checkAccessTokenPartitioningEnabled;
+import static com.wso2telco.dep.operatorservice.util.BlacklistWhitelistUtils.checkUserNameAssertionEnabled;
+import static com.wso2telco.dep.operatorservice.util.BlacklistWhitelistUtils.getAvailableKeyStoreTables;
+import static com.wso2telco.dep.operatorservice.util.BlacklistWhitelistUtils.getKeysSqlUsingSubscriptionId;
 
 public class BlackListWhiteListDAO {
 
@@ -39,7 +55,7 @@ public class BlackListWhiteListDAO {
 
 	/**
 	 * blacklist list given msisdns
-	 * 
+	 *
 	 * @param msisdns
 	 * @param apiID
 	 * @param apiName
@@ -68,7 +84,15 @@ public class BlackListWhiteListDAO {
 			conn.setAutoCommit(false);
 
 			for (MSISDN msisdn : msisdns) {
-				ps.setString(1, String.valueOf(msisdn.getCountryCode()) + String.valueOf(msisdn.getNationalNumber()));
+				String msisdnID = "";
+
+				if (msisdn.getPrefix() != null) {
+					msisdnID = String.valueOf(msisdn.getPrefix());
+				}
+
+				msisdnID += "+" + String.valueOf(msisdn.getCountryCode()) + String.valueOf(msisdn.getNationalNumber
+						());
+				ps.setString(1, msisdnID);
 				ps.setString(2, apiID);
 				ps.setString(3, apiName);
 				ps.setString(4, userID);
@@ -89,7 +113,7 @@ public class BlackListWhiteListDAO {
 
 	/**
 	 * filter and return already balcklisted for the filtering
-	 * 
+	 *
 	 * @param searchDTO
 	 * @return
 	 * @throws SQLException
@@ -98,12 +122,48 @@ public class BlackListWhiteListDAO {
 		return Collections.EMPTY_LIST;
 	}
 
-	public List<MSISDN> loadSubScriptionWhiteListed(WhiteListMSISDNSearchDTO searchDTO) throws SQLException {
-		return Collections.EMPTY_LIST;
+	public List<MSISDN> loadSubscriptionsForAlreadyWhiteListedMSISDN(String subscriptionID) throws SQLException {
+
+
+		String sql = SQLConstants.GET_WHITE_LIST_MSISDNS_FOR_SUBSCRIPTION;
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		String msisdnString = "";
+		try {
+			conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, subscriptionID);
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+				if(msisdnString.isEmpty()) {
+					msisdnString = rs.getString("msisdn");
+				} else {
+					msisdnString += "," + rs.getString("msisdn");
+				}
+			}
+
+			if(msisdnString != null && msisdnString.length() <= 0){
+				return new ArrayList<MSISDN>();
+			}
+			return BlacklistWhitelistUtils.getMSISDNList(msisdnString);
+		} catch (SQLException e) {
+			System.out.println(e.toString());
+			throw e;
+		} catch (Exception e) {
+			e.printStackTrace();
+		} finally {
+			DbUtils.closeAllConnections(ps, conn, rs);
+
+		}
+
+		return null;
 	}
+
 	/**
 	 * balcklist single msisdn
-	 * 
+	 *
 	 * @param msisdn
 	 * @param apiID
 	 * @param apiName
@@ -125,9 +185,8 @@ public class BlackListWhiteListDAO {
 		sql.append(" FROM ");
 		sql.append(OparatorTable.BLACKLIST_MSISDN.getTObject());
 		sql.append(" WHERE 1=1 ");
-
-		if (searchDTO.isValidApiName()) {
-			sql.append(" AND  API_NAME =? ");
+		if (searchDTO.getApiID() != null) {
+			sql.append(" AND  API_ID =? ");
 		}
 
 		Connection conn = null;
@@ -139,8 +198,8 @@ public class BlackListWhiteListDAO {
 			conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
 
 			ps = conn.prepareStatement(sql.toString());
-			if (searchDTO.isValidApiName()) {
-				ps.setString(1, searchDTO.getApiName());
+			if (searchDTO.getApiID() != null) {
+				ps.setInt(1, Integer.parseInt(searchDTO.getApiID()));
 			}
 
 			rs = ps.executeQuery();
@@ -155,7 +214,7 @@ public class BlackListWhiteListDAO {
 			DbUtils.closeAllConnections(ps, conn, rs);
 
 		}
-		if (returnList_ != null && !returnList_.isEmpty()) {
+		if ( !returnList_.isEmpty()) {
 			return returnList_.toArray(new String[returnList_.size()]);
 		} else {
 			return null;
@@ -182,7 +241,7 @@ public class BlackListWhiteListDAO {
 			ps.setString(2, userMSISDN);
 
 			ps.executeUpdate();
-							
+
 		} catch (SQLException e) {
 			throw e;
 		} finally {
@@ -191,10 +250,11 @@ public class BlackListWhiteListDAO {
 
 		}
 	}
-	
-	
+
+
 	/**
 	 * when the subscription id is known
+	 *
 	 * @param userMSISDNs
 	 * @param SubscriptionID
 	 * @param apiID
@@ -202,7 +262,7 @@ public class BlackListWhiteListDAO {
 	 * @throws SQLException
 	 * @throws Exception
 	 */
-	public void whitelist(List<MSISDN> userMSISDNs, String SubscriptionID, String apiID, String applicationID) 	throws SQLException, Exception {
+	public void whitelist(List<MSISDN> userMSISDNs, String SubscriptionID, String apiID, String applicationID) throws SQLException, Exception {
 
 		StringBuilder sql = new StringBuilder();
 		sql.append("INSERT INTO ");
@@ -220,14 +280,15 @@ public class BlackListWhiteListDAO {
 			conn.setAutoCommit(false);
 			for (MSISDN msisdn : userMSISDNs) {
 
-				ps.setString(1, String.valueOf(msisdn.getCountryCode()).intern() + String.valueOf(msisdn.getNationalNumber()));
+				ps.setString(1, msisdn.getPrefix() + "+" + String.valueOf(msisdn.getCountryCode()).intern() + String
+						.valueOf(msisdn.getNationalNumber()));
 				ps.setString(2, SubscriptionID);
 				ps.setString(3, apiID);
 				ps.setString(4, applicationID);
 
 				ps.addBatch();
 			}
-			ps.executeUpdate();
+			ps.executeBatch();
 			conn.commit();
 
 		} catch (Exception e) {
@@ -239,23 +300,24 @@ public class BlackListWhiteListDAO {
 		}
 
 	}
-	
+
 	/**
 	 * this need to replace form the apim admin services
-	 * @param appId
+	 *
+	// * @param appId
 	 * @param apiId
 	 * @return
 	 * @throws Exception
 	 */
-	 @Deprecated
-	public  String findSubscriptionId(String appId, String apiId) throws Exception {
+/*	@Deprecated
+	public String findSubscriptionId(String appId, String apiId) throws Exception {
 
 		String sql = "SELECT SUBSCRIPTION_ID from AM_SUBSCRIPTION where APPLICATION_ID = ? and API_ID = ?";
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
-			conn =DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
+			conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
 			ps = conn.prepareStatement(sql);
 			ps.setString(1, appId);
 			ps.setString(2, apiId);
@@ -272,13 +334,41 @@ public class BlackListWhiteListDAO {
 		}
 		throw new Exception(
 				"No record found in table AM_SUBSCRIPTION for APPLICATION_ID = " + appId + " and API_ID = " + apiId);
+	}*/
+
+	public int findSubscriptionId(String appId, String apiId) throws
+			Exception {
+
+		String sql = SQLConstants.GET_SUBSCRIPTION_ID_FOR_API_AND_APP_SQL;
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		try {
+			conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+			ps = conn.prepareStatement(sql);
+			ps.setInt(1, Integer.parseInt(apiId));
+			ps.setInt(2, Integer.parseInt(appId));
+
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				return rs.getInt("SUBSCRIPTION_ID");
+			}
+		} catch (SQLException e) {
+			System.out.println(e.toString());
+			throw e;
+		} finally {
+			DbUtils.closeAllConnections(ps, conn, rs);
+
+		}
+		throw new Exception(
+				"No record found in table AM_SUBSCRIPTION for APPLICATION_ID = " + appId + " and API_ID = " + apiId);
 	}
-	
+
 	public void removeWhitelistNumber(String userMSISDN) throws Exception {
 
 		StringBuffer sql = new StringBuffer();
 		sql.append("DELETE FROM ");
-		sql.append( OparatorTable.SUBSCRIPTION_WHITELIST.getTObject());
+		sql.append(OparatorTable.SUBSCRIPTION_WHITELIST.getTObject());
 		sql.append(" WHERE `MSISDN`=?;");
 
 		Connection conn = null;
@@ -291,18 +381,18 @@ public class BlackListWhiteListDAO {
 			ps.execute();
 		} catch (Exception e) {
 			throw e;
-		} finally { 
+		} finally {
 			DbUtils.closeAllConnections(ps, conn, null);
 		}
 	}
-	
-	 
+
+
 	public List<String> getWhiteListNumbers() throws Exception {
 
 		StringBuilder sql = new StringBuilder();
 		sql.append("SELECT MSISDN FROM ");
 		sql.append(OparatorTable.SUBSCRIPTION_WHITELIST.getTObject());
-		
+
 
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -318,7 +408,7 @@ public class BlackListWhiteListDAO {
 				whiteList.add(rs.getString("MSISDN"));
 			}
 			return whiteList;
-			
+
 		} catch (SQLException e) {
 			throw e;
 		} finally {
@@ -326,6 +416,251 @@ public class BlackListWhiteListDAO {
 
 		}
 	}
-	  
-	 
+
+	public Map<String, UserApplicationAPIUsage> getAllAPIUsageByProvider() throws BusinessException {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet result = null;
+
+		try {
+			String sqlQuery = SQLConstants.GET_APP_API_USAGE_BY_PROVIDER_SQL;
+			connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+
+			ps = connection.prepareStatement(sqlQuery);
+			result = ps.executeQuery();
+
+			Map<String, UserApplicationAPIUsage> userApplicationUsages = new TreeMap<String,
+					UserApplicationAPIUsage>();
+			while (result.next()) {
+				//int subId = result.getInt("SUBSCRIPTION_ID");
+				//Map<String, String> keyData = getAccessTokenData(subId);
+				//String accessToken = keyData.get("token");
+				//String tokenStatus = keyData.get("status");
+				String userId = result.getString("USER_ID");
+				String application = result.getString("APPNAME");
+				int appId = result.getInt("APPLICATION_ID");
+				String subStatus = result.getString("SUB_STATUS");
+				String subsCreateState = result.getString("SUBS_CREATE_STATE");
+				String key = userId + "::" + application;
+				UserApplicationAPIUsage usage = userApplicationUsages.get(key);
+				if (usage == null) {
+					usage = new UserApplicationAPIUsage();
+					usage.setUserId(userId);
+					usage.setApplicationName(application);
+					usage.setAppId(appId);
+					//usage.setAccessToken(accessToken);
+					//usage.setAccessTokenStatus(tokenStatus);
+					userApplicationUsages.put(key, usage);
+				}
+
+				APIIdentifier apiId = new APIIdentifier(result.getString("API_PROVIDER"), result.getString
+						("API_NAME") + "|" + String.valueOf(result.getInt("API_ID")), result.getString("API_VERSION"));
+				SubscribedAPI apiSubscription = new SubscribedAPI(new Subscriber(userId), apiId);
+				apiSubscription.setSubStatus(subStatus);
+				apiSubscription.setSubCreatedStatus(subsCreateState);
+				//apiSubscription.setUUID(result.getString("SUB_UUID"));
+				//apiSubscription.setTier(new Tier(result.getString("SUB_TIER_ID")));
+				//Application applicationObj = new Application(result.getString("APP_UUID"));
+				//apiSubscription.setApplication(applicationObj);
+				usage.addApiSubscriptions(apiSubscription);
+			}
+			return userApplicationUsages;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+
+	public List<String> getAllAPIUsageByUser() throws BusinessException {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet result = null;
+
+		try {
+			java.lang.String sqlQuery = SQLConstants.GET_APP_API_USER_SQL;
+			connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+
+			ps = connection.prepareStatement(sqlQuery);
+			//ps.setString(1, APIUtil.replaceEmailDomainBack(providerName));
+			result = ps.executeQuery();
+
+
+			List<String> subscriberList = new ArrayList<String>();
+			while (result.next()) {
+				String userId = result.getString("USER_ID");
+				if(!subscriberList.contains(userId)){
+					subscriberList.add(userId);
+				}
+			}
+
+			return subscriberList;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+	public int getAPIId(String providerName, String apiName, String apiVersion) throws BusinessException {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet result = null;
+
+		try {
+
+
+			java.lang.String sqlQuery = SQLConstants.GET_API_ID_SQL;
+			connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+
+			ps = connection.prepareStatement(sqlQuery);
+			ps.setString(1, APIUtil.replaceEmailDomainBack(providerName));
+			//ps.setString(1, providerName);
+			ps.setString(2, apiName);
+			ps.setString(3, apiVersion);
+			result = ps.executeQuery();
+
+
+			while (result.next()) {
+				return result.getInt("API_ID");
+
+			}
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return -1;
+	}
+
+	public List<String> getAllAplicationsByUser(String userID) throws BusinessException {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet result = null;
+
+		try {
+			java.lang.String sqlQuery = SQLConstants.GET_APP_USER_SUBSCRIPTION_SQL;
+			connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+
+			ps = connection.prepareStatement(sqlQuery);
+			ps.setString(1, APIUtil.replaceEmailDomainBack(userID));
+			result = ps.executeQuery();
+
+
+			List<String> appUniqueIDList = new ArrayList<String>();
+			while (result.next()) {
+				String appName = result.getString("APPNAME");
+				int appID = result.getInt("APPLICATION_ID");
+				String appUniqueID = appID + ":" + appName;
+				if(!appUniqueIDList.contains(appUniqueID)){
+					appUniqueIDList.add(appUniqueID);
+				}
+			}
+
+			return appUniqueIDList;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+
+	public List<String> getAllApisByUserAndApp(String userID, String appID) throws BusinessException {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet result = null;
+
+		try {
+			java.lang.String sqlQuery = SQLConstants.GET_API_FOR_USER_AND_APP_SQL;
+			connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+
+			ps = connection.prepareStatement(sqlQuery);
+			ps.setString(1, APIUtil.replaceEmailDomainBack(userID));
+			ps.setString(2, appID);
+			result = ps.executeQuery();
+
+
+			List<String> apiNamesList = new ArrayList<String>();
+			while (result.next()) {
+				String apiProvider = result.getString("API_PROVIDER");
+				String apiName = result.getString("API_NAME");
+				String apiVersion = result.getString("API_VERSION");
+				int apiID = result.getInt("API_ID");
+
+				String apiFullName = String.valueOf(apiID) + ":"+apiProvider +":"+ apiName + ":" + apiVersion;
+				apiNamesList.add(apiFullName);
+			}
+
+			return apiNamesList;
+		} catch (SQLException e) {
+			e.printStackTrace();
+		} catch (Exception e) {
+			e.printStackTrace();
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * Get access token data based on application ID
+	 *
+	 * @param subscriptionId Subscription Id
+	 * @return access token data
+	 * @throws Exception
+	 */
+	public Map<String, String>  getAccessTokenData(int subscriptionId) throws  Exception {
+		Map<String, String> apiKeys = new HashMap<String, String>();
+
+		if (checkAccessTokenPartitioningEnabled() && checkUserNameAssertionEnabled()) {
+			String[] keyStoreTables = getAvailableKeyStoreTables();
+			if (keyStoreTables != null) {
+				for (String keyStoreTable : keyStoreTables) {
+					apiKeys = getAccessTokenData(subscriptionId,
+							getKeysSqlUsingSubscriptionId(keyStoreTable));
+					if (apiKeys.size() > 0) {
+						break;
+					}
+				}
+			}
+		} else {
+			apiKeys = getAccessTokenData(subscriptionId, getKeysSqlUsingSubscriptionId(null));
+		}
+		return apiKeys;
+	}
+
+	private Map<String, String> getAccessTokenData(int subscriptionId, String getKeysSql)
+			throws Exception {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet result = null;
+		Map<String, String> apiKeys = new HashMap<String, String>();
+		try {
+			connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+			ps = connection.prepareStatement(getKeysSql);
+			ps.setInt(1, subscriptionId);
+			result = ps.executeQuery();
+			while (result.next()) {
+				apiKeys.put("token", BlacklistWhitelistUtils.decryptToken(result.getString("ACCESS_TOKEN")));
+				apiKeys.put("status", result.getString("TOKEN_STATE"));
+			}
+		} catch (SQLException e) {
+			//handleException("Failed to get keys for application: " + subscriptionId, e);
+			e.printStackTrace();
+		}  finally {
+			//APIMgtDBUtil.closeAllConnections(ps, connection, result);
+			DbUtils.closeAllConnections(ps, connection, result);
+		}
+		return apiKeys;
+	}
+
 }

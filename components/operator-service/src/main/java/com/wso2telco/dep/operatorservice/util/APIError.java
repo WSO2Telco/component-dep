@@ -14,32 +14,29 @@
  * limitations under the License.
  */
 
-package com.wso2telco.dep.operatorservice.model;
+package com.wso2telco.dep.operatorservice.util;
 
-abstract class AbstractWBDTO {
-	private String[] userMSISDN = null;
-	private String apiID = null;
+import com.wso2telco.core.dbutils.exception.ThrowableError;
 
-	public String[] getUserMSISDN() {
-		return userMSISDN;
+public enum APIError  implements ThrowableError {
+
+	INVALID_API_NAME("APIE0001","Invalid API Name");
+
+	private String code;
+	private String desc;
+
+	APIError(final String code, final String desc) {
+		this.desc = desc;
+		this.code = code;
 	}
 
-	public void setUserMSISDN(String[] userMSISDN) {
-		this.userMSISDN = userMSISDN;
+	@Override
+	public String getMessage() {
+		return this.desc;
 	}
 
-	public void setUserMSISDN(String userMSISDN) {
-		this.userMSISDN = new String[] { userMSISDN };
+	@Override
+	public String getCode() {
+		return this.code;
 	}
-	public String getApiID() {
-		return apiID;
-	}
-
-	public void setApiID(String apiID) {
-		if(apiID!=null && apiID.trim().length()>0){
-			this.apiID = apiID;
-		}
-		
-	}
-
 }

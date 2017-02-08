@@ -2540,7 +2540,7 @@ public class BillingDAO {
         .append(ReportingTable.AM_APPLICATION.getTObject())
         .append(" am,")
         .append(ReportingTable.AM_APPLICATION_KEY_MAPPING.getTObject())
-        .append(" km where ac.consumer_key=ca.consumer_key ")
+        .append(" km where ac.CONSUMER_KEY_ID=ca.ID ")
         .append("and km.application_id=am.application_id and km.consumer_key=ca.consumer_key and ac.authz_user=ca.username and user_type='APPLICATION' and token_State='Active') as dummy");
  
         ArrayList<SPObject> spList = new ArrayList<SPObject>();
@@ -2585,7 +2585,7 @@ public class BillingDAO {
         .append(" am,")
         .append(ReportingTable.AM_APPLICATION_KEY_MAPPING.getTObject())
         .append(" km ")
-        .append("where ac.consumer_key=ca.consumer_key and km.application_id=am.application_id ")
+        .append("where ac.consumer_key_id=ca.id and km.application_id=am.application_id ")
         .append("and km.consumer_key=ca.consumer_key and ac.authz_user=ca.username and user_type='APPLICATION' and token_State='Active' and am.application_id='")
         .append(appId)
         .append("' limit 1");
