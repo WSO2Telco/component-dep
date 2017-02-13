@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.activiti.org/test" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test" id="m1483336874534" name="">
-  <process id="subscription_approval_process" name="Subscription Approval Process" isExecutable="true" isClosed="false" processType="None">
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="subscription_approval_process" name="Subscription Approval Process" isExecutable="true">
     <startEvent id="startevent1" name="Start">
       <extensionElements>
         <activiti:formProperty id="deployment_type" name="Deployment Type" type="string" variable="deployment_type"></activiti:formProperty>
@@ -22,9 +22,10 @@
         <activiti:formProperty id="adminPassword" name="admin Password" variable="adminPassword"></activiti:formProperty>
         <activiti:formProperty id="serviceURL" name="serviceURL" variable="serviceURL" writable="false"></activiti:formProperty>
         <activiti:formProperty id="adminUserName" name="Admin User Name" variable="adminUserName" required="true"></activiti:formProperty>
+        <activiti:formProperty id="apiProviderRole" name="api Provider Role" type="string"></activiti:formProperty>
       </extensionElements>
     </startEvent>
-    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway" default="gatewayFlow"></exclusiveGateway>
+    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
     <sequenceFlow id="hubFlow" name="Hub Flow" sourceRef="exclusivegateway1" targetRef="hub_admin_approval_transaction">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${deployment_type.equals("hub")}]]></conditionExpression>
     </sequenceFlow>
@@ -36,7 +37,6 @@
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${hubAdminApproval.equals("APPROVED")}]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="hubAdminRejectedFlow" name="Hub admin rejected flow" sourceRef="exclusivegateway2" targetRef="servicetask2"></sequenceFlow>
-    <sequenceFlow id="gatewayFlow" name="Gateway Flow" sourceRef="exclusivegateway1" targetRef="operator_admin_approval_transaction"></sequenceFlow>
     <serviceTask id="operators_converter" name="Operators Converter" activiti:class="com.wso2telco.workflow.approval.subscription.servicetask.OperatorListConverter"></serviceTask>
     <sequenceFlow id="flow26" sourceRef="startevent1" targetRef="operators_converter"></sequenceFlow>
     <sequenceFlow id="flow27" sourceRef="operators_converter" targetRef="exclusivegateway1"></sequenceFlow>
@@ -82,7 +82,7 @@
     <transaction id="api_publisher_approval_transaction" name="API Publisher Approval Transaction">
       <startEvent id="startevent4" name="Start"></startEvent>
       <endEvent id="endevent6" name="End"></endEvent>
-      <userTask id="api_publisher_approval" name="API Publisher Approval" activiti:assignee="${apiProvider}">
+      <userTask id="api_publisher_approval" name="API Publisher Approval" activiti:candidateGroups="${apiProviderRole}">
         <extensionElements>
           <activiti:formProperty id="apiPublisherApproval" name="Approve / Reject" type="enum" default="apiPublisherApproval" required="true">
             <activiti:value id="APPROVED" name="Approve"></activiti:value>
@@ -106,12 +106,17 @@
     <exclusiveGateway id="exclusivegateway4" name="Exclusive Gateway"></exclusiveGateway>
     <sequenceFlow id="flow41" sourceRef="operator_admin_approval_transaction" targetRef="exclusivegateway4"></sequenceFlow>
     <sequenceFlow id="internal_gateway_flow" name="internal gateway flow" sourceRef="exclusivegateway4" targetRef="api_publisher_approval_transaction">
-      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${operatorAdminApproval.equals("APPROVED") and deployment_type.equals("internal_gateway")}]]></conditionExpression>
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${operatorAdminApproval.equals("APPROVED") and deployment_type.equals("internal_gateway_type1")}]]></conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="external_gateway_flow" name="external gateway / operator admin rejected flow" sourceRef="exclusivegateway4" targetRef="servicetask3" skipExpression="${operatorAdminApproval.equals(&quot;REJECTED&quot;) or deployment_type.equals(&quot;external_gateway&quot;) or deployment_type.equals(&quot;hub&quot;) }
-
-
-"></sequenceFlow>
+    <sequenceFlow id="external_gateway_flow" name="external gateway / operator admin rejected flow" sourceRef="exclusivegateway4" targetRef="servicetask3">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${operatorAdminApproval.equals("REJECTED") or deployment_type.equals("external_gateway") or deployment_type.equals("hub") }]]></conditionExpression>
+    </sequenceFlow>
+    <exclusiveGateway id="exclusivegateway5" name="Exclusive Gateway"></exclusiveGateway>
+    <sequenceFlow id="flow42" name="Internal gateway type1 flow" sourceRef="exclusivegateway5" targetRef="api_publisher_approval_transaction">
+      <conditionExpression xsi:type="tFormalExpression"><![CDATA[${deployment_type.equals("internal_gateway_type2")}]]></conditionExpression>
+    </sequenceFlow>
+    <sequenceFlow id="flow43" sourceRef="exclusivegateway5" targetRef="operator_admin_approval_transaction"></sequenceFlow>
+    <sequenceFlow id="flow44" sourceRef="exclusivegateway1" targetRef="exclusivegateway5"></sequenceFlow>
   </process>
   <bpmndi:BPMNDiagram id="BPMNDiagram_subscription_approval_process">
     <bpmndi:BPMNPlane bpmnElement="subscription_approval_process" id="BPMNPlane_subscription_approval_process">
@@ -119,7 +124,7 @@
         <omgdc:Bounds height="35.0" width="35.0" x="91.0" y="608.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
-        <omgdc:Bounds height="40.0" width="40.0" x="88.0" y="400.0"></omgdc:Bounds>
+        <omgdc:Bounds height="40.0" width="40.0" x="87.0" y="432.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="servicetask2" id="BPMNShape_servicetask2">
         <omgdc:Bounds height="55.0" width="105.0" x="472.0" y="20.0"></omgdc:Bounds>
@@ -134,7 +139,7 @@
         <omgdc:Bounds height="40.0" width="40.0" x="309.0" y="191.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="operators_converter" id="BPMNShape_operators_converter">
-        <omgdc:Bounds height="55.0" width="105.0" x="56.0" y="479.0"></omgdc:Bounds>
+        <omgdc:Bounds height="55.0" width="105.0" x="55.0" y="500.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="hub_admin_approval_transaction" id="BPMNShape_hub_admin_approval_transaction">
         <omgdc:Bounds height="330.0" width="205.0" x="6.0" y="47.0"></omgdc:Bounds>
@@ -193,11 +198,14 @@
       <bpmndi:BPMNShape bpmnElement="exclusivegateway4" id="BPMNShape_exclusivegateway4">
         <omgdc:Bounds height="40.0" width="40.0" x="1080.0" y="191.0"></omgdc:Bounds>
       </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway5" id="BPMNShape_exclusivegateway5">
+        <omgdc:Bounds height="40.0" width="40.0" x="678.0" y="432.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="hubFlow" id="BPMNEdge_hubFlow">
-        <omgdi:waypoint x="108.0" y="400.0"></omgdi:waypoint>
+        <omgdi:waypoint x="107.0" y="432.0"></omgdi:waypoint>
         <omgdi:waypoint x="108.0" y="377.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="13.0" width="46.0" x="108.0" y="400.0"></omgdc:Bounds>
+          <omgdc:Bounds height="12.0" width="100.0" x="107.0" y="432.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow14" id="BPMNEdge_flow14">
@@ -209,7 +217,7 @@
         <omgdi:waypoint x="349.0" y="211.0"></omgdi:waypoint>
         <omgdi:waypoint x="457.0" y="211.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="39.0" width="100.0" x="349.0" y="211.0"></omgdc:Bounds>
+          <omgdc:Bounds height="36.0" width="100.0" x="349.0" y="211.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="hubAdminRejectedFlow" id="BPMNEdge_hubAdminRejectedFlow">
@@ -217,24 +225,16 @@
         <omgdi:waypoint x="329.0" y="47.0"></omgdi:waypoint>
         <omgdi:waypoint x="472.0" y="47.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="39.0" width="100.0" x="330.0" y="150.0"></omgdc:Bounds>
-        </bpmndi:BPMNLabel>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="gatewayFlow" id="BPMNEdge_gatewayFlow">
-        <omgdi:waypoint x="128.0" y="420.0"></omgdi:waypoint>
-        <omgdi:waypoint x="699.0" y="420.0"></omgdi:waypoint>
-        <omgdi:waypoint x="699.0" y="314.0"></omgdi:waypoint>
-        <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="13.0" width="68.0" x="128.0" y="420.0"></omgdc:Bounds>
+          <omgdc:Bounds height="36.0" width="100.0" x="330.0" y="150.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow26" id="BPMNEdge_flow26">
         <omgdi:waypoint x="108.0" y="608.0"></omgdi:waypoint>
-        <omgdi:waypoint x="108.0" y="534.0"></omgdi:waypoint>
+        <omgdi:waypoint x="107.0" y="555.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow27" id="BPMNEdge_flow27">
-        <omgdi:waypoint x="108.0" y="479.0"></omgdi:waypoint>
-        <omgdi:waypoint x="108.0" y="440.0"></omgdi:waypoint>
+        <omgdi:waypoint x="107.0" y="500.0"></omgdi:waypoint>
+        <omgdi:waypoint x="107.0" y="472.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
         <omgdi:waypoint x="102.0" y="236.0"></omgdi:waypoint>
@@ -269,7 +269,7 @@
         <omgdi:waypoint x="129.0" y="15.0"></omgdi:waypoint>
         <omgdi:waypoint x="108.0" y="47.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="39.0" width="100.0" x="17.0" y="-197.0"></omgdc:Bounds>
+          <omgdc:Bounds height="36.0" width="100.0" x="-43.0" y="-257.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow33" id="BPMNEdge_flow33">
@@ -295,7 +295,7 @@
         <omgdi:waypoint x="730.0" y="99.0"></omgdi:waypoint>
         <omgdi:waypoint x="699.0" y="109.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="39.0" width="100.0" x="1117.0" y="-325.0"></omgdc:Bounds>
+          <omgdc:Bounds height="36.0" width="100.0" x="1117.0" y="-445.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="flow38" id="BPMNEdge_flow38">
@@ -314,18 +314,38 @@
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="internal_gateway_flow" id="BPMNEdge_internal_gateway_flow">
         <omgdi:waypoint x="1100.0" y="231.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1100.0" y="452.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1100.0" y="400.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1134.0" y="400.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1159.0" y="400.0"></omgdi:waypoint>
         <omgdi:waypoint x="1160.0" y="452.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="13.0" width="100.0" x="1000.0" y="324.0"></omgdc:Bounds>
+          <omgdc:Bounds height="36.0" width="100.0" x="1000.0" y="324.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
       <bpmndi:BPMNEdge bpmnElement="external_gateway_flow" id="BPMNEdge_external_gateway_flow">
         <omgdi:waypoint x="1120.0" y="211.0"></omgdi:waypoint>
         <omgdi:waypoint x="1228.0" y="211.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="52.0" width="100.0" x="1119.0" y="164.0"></omgdc:Bounds>
+          <omgdc:Bounds height="48.0" width="100.0" x="1119.0" y="164.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow42" id="BPMNEdge_flow42">
+        <omgdi:waypoint x="718.0" y="452.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1160.0" y="452.0"></omgdi:waypoint>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="36.0" width="100.0" x="718.0" y="452.0"></omgdc:Bounds>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow43" id="BPMNEdge_flow43">
+        <omgdi:waypoint x="698.0" y="432.0"></omgdi:waypoint>
+        <omgdi:waypoint x="699.0" y="314.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow44" id="BPMNEdge_flow44">
+        <omgdi:waypoint x="127.0" y="452.0"></omgdi:waypoint>
+        <omgdi:waypoint x="318.0" y="451.0"></omgdi:waypoint>
+        <omgdi:waypoint x="546.0" y="451.0"></omgdi:waypoint>
+        <omgdi:waypoint x="678.0" y="451.0"></omgdi:waypoint>
+        <omgdi:waypoint x="718.0" y="452.0"></omgdi:waypoint>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

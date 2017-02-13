@@ -16,12 +16,16 @@
 
 package com.wso2telco.workflow.approval.subscription.servicetask;
 
+import com.wso2telco.workflow.approval.model.NotificationRequest;
 import com.wso2telco.workflow.approval.subscription.initiate.SubscriptionInitiate;
 import com.wso2telco.workflow.approval.subscription.initiate.SubscriptionInitiateFactory;
+import com.wso2telco.workflow.approval.subscription.rest.client.NotificationApi;
 import com.wso2telco.workflow.approval.subscription.rest.client.SubscriptionWorkflowApi;
+import com.wso2telco.workflow.approval.subscription.rest.client.WorkflowCallbackErrorDecoder;
 import com.wso2telco.workflow.approval.util.AuthRequestInterceptor;
 import com.wso2telco.workflow.approval.util.Constants;
 
+import feign.Feign;
 import feign.Feign.Builder;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
@@ -42,6 +46,9 @@ public class OperatorListConverter implements JavaDelegate {
 
         String deploymentType = arg0.getVariable(Constants.DEPLOYMENT_TYPE).toString();
         String[] operatorList = arg0.getVariable(Constants.OPERATORS).toString().split(",");
+        String adminUserName = arg0.getVariable(Constants.ADMIN_USER_NAME) != null ? arg0.getVariable(Constants.ADMIN_USER_NAME).toString() : null;
+        String adminPassword= arg0.getVariable(Constants.ADMIN_PASSWORD).toString();
+        String apiName=arg0.getVariable(Constants.API_NAME).toString();
 
         SubscriptionInitiateFactory subscriptionInitiateFactory = new SubscriptionInitiateFactory();
         SubscriptionInitiate subscriptionInitiate = subscriptionInitiateFactory.getInstance(deploymentType);

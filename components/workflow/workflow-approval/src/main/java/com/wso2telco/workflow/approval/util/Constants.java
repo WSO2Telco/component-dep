@@ -60,5 +60,8 @@ public class Constants {
     public static final String REJECTED_TIER="N/A";
     public static final String TIER = "tier";
     public static final String OPERATOR_ROLES ="operatorRoles";
+    public static final String API_PROVIDER_ROLE="apiProviderRole";
+    public static final String INTERNAL_GATEWAY_TYPE2 = "internal_gateway_type2";
+    public static final String WORK_FLOW_REF = "workflowRefId";
 
 }

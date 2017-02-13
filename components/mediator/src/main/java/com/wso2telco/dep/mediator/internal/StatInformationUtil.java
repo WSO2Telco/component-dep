@@ -35,38 +35,10 @@ public class StatInformationUtil {
 	
 	StatDao statDao = new StatDao();
 
-<<<<<<< HEAD
-	private static UserStoreManager getUserStoreManager(MessageContext context) throws UserStoreException {
-		RealmService realmService = RegistryCoreServiceComponent.getRealmService();
 
-		String tenantDomain = (String) context.getProperty(TENANT);
-
-		if (getNullOrTrimmedValue(tenantDomain) == null) {
-			String userId = (String) context.getProperty(SERVICE_PROVIDER_USERNAME);
-			tenantDomain = getTenantDomain(userId);
-		}
-
-		int tenantId = realmService.getTenantManager().getTenantId(tenantDomain);
-		UserRealm userRealm = realmService.getTenantUserRealm(tenantId);
-		UserStoreManager userStoreManager = userRealm.getUserStoreManager();
-
-		return userStoreManager;
-
-	}
-
-	public static String getAPIId(MessageContext context) throws Exception {
-
-		String apiId = null;
-		StatDao statDao = new StatDao();
-
-		String apiName = (String) context.getProperty(API);
-		String apiVersion = (String) context.getProperty(RESTConstants.SYNAPSE_REST_API_VERSION);
-
-=======
 	public String getAPIId(String apiName, String apiVersion) throws Exception {
 		String apiId = null;
 
->>>>>>> 89fd30f5abe5430131e457d39ef696aec6b84bdd
 		try {
 			apiId = statDao.getAPIId(apiName, apiVersion);
 		} catch (SQLException ex) {

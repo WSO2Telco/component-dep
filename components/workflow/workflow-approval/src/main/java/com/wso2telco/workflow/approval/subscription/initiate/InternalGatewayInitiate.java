@@ -14,13 +14,14 @@ public class InternalGatewayInitiate implements SubscriptionInitiate {
     @Override
     public void execute(DelegateExecution arg0) throws Exception {
 
+        String deploymentType = arg0.getVariable(Constants.DEPLOYMENT_TYPE).toString();
         AuthRequestInterceptor authRequestInterceptor = new AuthRequestInterceptor();
         String adminUserName = arg0.getVariable(Constants.ADMIN_USER_NAME) != null ? arg0.getVariable(Constants.ADMIN_USER_NAME).toString() : null;
         String adminPassword= arg0.getVariable(Constants.ADMIN_PASSWORD).toString();
         String serviceUrl = arg0.getVariable(Constants.SERVICE_URL)!=null?arg0.getVariable(Constants.SERVICE_URL).toString():null;
         String apiVersion = arg0.getVariable(Constants.API_VERSION)!=null?arg0.getVariable(Constants.API_VERSION).toString():null;
         String apiProvider = arg0.getVariable(Constants.API_PROVIDER)!=null?arg0.getVariable(Constants.API_PROVIDER).toString():null;
-        String completedByRole =Constants.WORKFLOW_ADMIN_ROLE;
+        String completedByRole=(deploymentType.equalsIgnoreCase(Constants.INTERNAL_GATEWAY_TYPE2))?(arg0.getVariable(Constants.API_PROVIDER_ROLE)!=null?arg0.getVariable(Constants.API_PROVIDER_ROLE).toString():null):Constants.WORKFLOW_ADMIN_ROLE;
         String applicationName = arg0.getVariable(Constants.APPLICATION_NAME)!=null?arg0.getVariable(Constants.APPLICATION_NAME).toString():null;
         String apiContext = arg0.getVariable(Constants.API_CONTEXT)!=null?arg0.getVariable(Constants.API_CONTEXT).toString():null;
         String apiTiers = arg0.getVariable(Constants.API_TIERS)!=null?arg0.getVariable(Constants.API_TIERS).toString():null;

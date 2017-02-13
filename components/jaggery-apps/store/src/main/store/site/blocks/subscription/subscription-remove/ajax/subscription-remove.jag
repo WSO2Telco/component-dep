@@ -80,6 +80,18 @@ include("/jagg/jagg.jag");
         var mod = jagg.module("manager");
         var storeHostObject = mod.getStoreHostObject(); //get getstoreObj
         storeHostObject.removeAPISubscription(applicationId.toString(),apiName);
+        storeHostObject.removeSubApprovalOperators(applicationId.toString());
+
+        var workflowRef=storeHostObject.getWorkflowRef(applicationId.toString(),apiName,version);
+        var businessProcessEngineUrl = workflowRef.workflowServiceURL;
+        var encodedString = encode('kermit:kermit');//this username and password hardcoded because activiti engine on same sarver 
+        var headers = {"Authorization":"Basic " + encodedString};
+        var applicationData = get( businessProcessEngineUrl+ "runtime/process-instances?businessKey="+workflowRef.workflowRef,null, headers,"json" ).data;
+
+        if(applicationData.size!=0){
+        log.info("application data :"+JSON.stringify(applicationData));
+        del(businessProcessEngineUrl + "runtime/process-instances/"+applicationData.data[0].id,null, headers,"json" ).data;
+        }
 
         mod = jagg.module("subscription");
         result = mod.removeAPISubscription(username,applicationId,{
