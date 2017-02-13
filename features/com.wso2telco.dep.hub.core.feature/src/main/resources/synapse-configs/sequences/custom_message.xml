@@ -1,20 +1,5 @@
-<?xml version="1.0" encoding="UTF-8"?><sequence xmlns="http://ws.apache.org/ns/synapse" name="custom_fault">
-<!--
-~ Copyright (c) 2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
-~
-~ WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
-~ you may not use this file except in compliance with the License.
-~ You may obtain a copy of the License at
-~
-~ http://www.apache.org/licenses/LICENSE-2.0
-~
-~ Unless required by applicable law or agreed to in writing, software
-~ distributed under the License is distributed on an "AS IS" BASIS,
-~ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
-~ See the License for the specific language governing permissions and
-~ limitations under the License.
-~
--->
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="custom_fault" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
     <sequence key="_build_"/>
     <log level="full"/>
     <switch source="$ctx:ERROR_CODE">
@@ -658,9 +643,9 @@
             </payloadFactory>
         </case>
         <default>
-            <property name="ERROR_CODE" value="SVC0001" scope="default" type="STRING"/>
-            <property name="message" value="A service error occurred. Error code is %1" scope="default" type="STRING"/>
-            <property name="errvar" value="An internal service error has occured. Please try again later." scope="default" type="STRING"/>
+            <property name="ERROR_CODE" scope="default" type="STRING" value="SVC0001"/>
+            <property name="message" scope="default" type="STRING" value="A service error occurred. Error code is %1"/>
+            <property name="errvar" scope="default" type="STRING" value="An internal service error has occured. Please try again later."/>
             <payloadFactory media-type="xml">
                 <format>
                     <m:requestError xmlns:m="http://services.samples">
@@ -679,34 +664,29 @@
             </payloadFactory>
         </default>
     </switch>
-
-    <filter source="$ctx:ERROR_CODE" regex="POL*">
+    <filter regex="POL*" source="$ctx:ERROR_CODE">
         <then>
-            <property name="HTTP_SC" value="403" scope="axis2"/>
+            <property name="HTTP_SC" scope="axis2" type="STRING" value="403"/>
         </then>
-        <else>   
-            <filter source="$axis2:HTTP_SC" regex="405">
+        <else>
+            <filter regex="405" source="$axis2:HTTP_SC">
                 <then>
-                    <property name="HTTP_SC" value="405" scope="axis2"/>
+                    <property name="HTTP_SC" scope="axis2" type="STRING" value="405"/>
                 </then>
                 <else>
-                    <property name="HTTP_SC" value="400" scope="axis2"/>
+                    <property name="HTTP_SC" scope="axis2" type="STRING" value="400"/>
                 </else>
             </filter>
         </else>
     </filter>
-            
-    <property name="RESPONSE" value="true"/>
-    <header name="To" action="remove"/>
-    <property name="NO_ENTITY_BODY" scope="axis2" action="remove"/>
-    <property name="ContentType" scope="axis2" action="remove"/>
-    <property name="Authorization" scope="transport" action="remove"/>
-    <property name="Host" scope="transport" action="remove"/>
-    <property name="Accept" scope="transport" action="remove"/>
-    <property name="X-JWT-Assertion" scope="transport" action="remove"/>
-    <property name="messageType" value="application/json" scope="axis2"/>
+    <property name="RESPONSE" scope="default" type="STRING" value="true"/>
+    <header action="remove" name="To" scope="default"/>
+    <property action="remove" name="NO_ENTITY_BODY" scope="axis2"/>
+    <property action="remove" name="ContentType" scope="axis2"/>
+    <property action="remove" name="Authorization" scope="transport"/>
+    <property action="remove" name="Host" scope="transport"/>
+    <property action="remove" name="Accept" scope="transport"/>
+    <property action="remove" name="X-JWT-Assertion" scope="transport"/>
+    <property name="messageType" scope="axis2" type="STRING" value="application/json"/>
     <send/>
-    <log level="full">
-        <property name="fault_message" value="*******************custom fault message************"/>
-    </log>
 </sequence>
