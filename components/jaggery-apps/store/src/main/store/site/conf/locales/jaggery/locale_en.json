@@ -330,5 +330,6 @@
     "subscription": "subscription",
     "subscriptionStatus": "subscriptionStatus",
     "tenants": "Visible to Tenants",
-    "timeWarn": "timeWarn"
+    "timeWarn": "timeWarn",
+    "operators" : "Operators"
 }
