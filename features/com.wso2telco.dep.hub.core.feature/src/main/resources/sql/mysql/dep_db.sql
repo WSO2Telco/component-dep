@@ -306,14 +306,14 @@ CREATE TABLE IF NOT EXISTS `mo_ussd_subscription` (
   PRIMARY KEY (`mo_ussd_request_did`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE `mdtxmsgtype` (
+CREATE TABLE IF NOT EXISTS `mdtxmsgtype` (
   `msgtypedid` int(11) NOT NULL AUTO_INCREMENT,
   `msgtype` varchar(45) NOT NULL,
   PRIMARY KEY (`msgtypedid`),
   UNIQUE KEY `msgtype_UNIQUE` (`msgtype`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
-CREATE TABLE `mdtrequestmessage` (
+CREATE TABLE IF NOT EXISTS `mdtrequestmessage` (
   `messegeId` int(11) NOT NULL AUTO_INCREMENT,
   `msgtypeId` int(11) NOT NULL,
   `mdtrequestId` varchar(45) DEFAULT NULL,
@@ -329,7 +329,7 @@ CREATE TABLE `mdtrequestmessage` (
   CONSTRAINT `fk_mdtrequestmessage_1` FOREIGN KEY (`msgtypeId`) REFERENCES `mdtxmsgtype` (`msgtypedid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=228911 DEFAULT CHARSET=latin1;
 
-CREATE TABLE `spendlimitdata` (
+CREATE TABLE IF NOT EXISTS `spendlimitdata` (
   `msgType` int(11) DEFAULT NULL,
   `groupName` varchar(255) DEFAULT NULL,
   `consumerKey` varchar(255) DEFAULT NULL,
@@ -343,7 +343,7 @@ CREATE TABLE `spendlimitdata` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-CREATE TABLE `workflow_reference` (
+CREATE TABLE IF NOT EXISTS `workflow_reference` (
   `workflow_ref_id` varchar(255) NOT NULL,
   `application_id` varchar(45) DEFAULT NULL,
   `api_name` varchar(45) DEFAULT NULL,
@@ -353,45 +353,9 @@ CREATE TABLE `workflow_reference` (
   PRIMARY KEY (`workflow_ref_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE `mdtxmsgtype` (
-  `msgtypedid` int(11) NOT NULL AUTO_INCREMENT,
-  `msgtype` varchar(45) NOT NULL,
-  PRIMARY KEY (`msgtypedid`),
-  UNIQUE KEY `msgtype_UNIQUE` (`msgtype`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
-
 INSERT INTO `mdtxmsgtype` (`msgtypedid`, `msgtype`) VALUES ('1', 'paymentrequest'),('2', 'paymentresponse'), ('3', 'refundrequest'),('4', 'refundresponse');
 
-CREATE TABLE `mdtrequestmessage` (
-  `messegeId` int(11) NOT NULL AUTO_INCREMENT,
-  `msgtypeId` int(11) NOT NULL,
-  `mdtrequestId` varchar(45) DEFAULT NULL,
-  `internalclientrefcode` varchar(20) DEFAULT NULL,
-  `message` blob,
-  `clientrefcode` varchar(45) DEFAULT NULL,
-  `clientrefval` varchar(45) DEFAULT NULL,
-  `reportedtime` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`messegeId`),
-  KEY `fk_mdtrequestmessage_1_idx` (`msgtypeId`),
-  KEY `index_msgtypeId` (`msgtypeId`),
-  KEY `index_clientrefcode` (`clientrefcode`),
-  CONSTRAINT `fk_mdtrequestmessage_1` FOREIGN KEY (`msgtypeId`) REFERENCES `mdtxmsgtype` (`msgtypedid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=228911 DEFAULT CHARSET=latin1;
-
-CREATE TABLE `spendlimitdata` (
-  `msgType` int(11) DEFAULT NULL,
-  `groupName` varchar(255) DEFAULT NULL,
-  `consumerKey` varchar(255) DEFAULT NULL,
-  `operatorId` varchar(255) DEFAULT NULL,
-  `msisdn` varchar(255) DEFAULT NULL,
-  `amount` decimal(40,15) NOT NULL,
-  `currentDateTime` bigint(20) DEFAULT NULL,
-  `effectiveTime` bigint(20) DEFAULT NULL,
-  KEY `index_msisdn` (`msisdn`),
-  KEY `index_msgType` (`msgType`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-CREATE TABLE `tokeninfo` (
+CREATE TABLE IF NOT EXISTS `tokeninfo` (
   `username` varchar(255) NOT NULL DEFAULT '',
   `password` varchar(255) NOT NULL DEFAULT '',
   `authtoken` varchar(255) NOT NULL DEFAULT '',
@@ -399,7 +363,7 @@ CREATE TABLE `tokeninfo` (
   PRIMARY KEY (`username`,`password`,`authtoken`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE `userinfo` (
+CREATE TABLE IF NOT EXISTS `userinfo` (
   `enduserid` varchar(16) NOT NULL DEFAULT '',
   `package` varchar(20) NOT NULL DEFAULT '',
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -409,8 +373,8 @@ CREATE TABLE `userinfo` (
 /*
 * Default validator types provided from mife-validator component
 */
-insert into validator (name, class) values ('passthru','com.wso2telco.dep.subscriptionvalidator.services.impl.PassThroughValidator');
-insert into validator (name, class) values ('msisdn','com.wso2telco.dep.subscriptionvalidator.services.impl.MSISDNValidator');
+INSERT INTO validator (name, class) values ('passthru','com.wso2telco.dep.subscriptionvalidator.services.impl.PassThroughValidator');
+INSERT INTO validator (name, class) values ('msisdn','com.wso2telco.dep.subscriptionvalidator.services.impl.MSISDNValidator');
 
 /*
 * Default operator
@@ -434,5 +398,4 @@ INSERT INTO `workflow_api_key_mappings` (`API_NAME`, `API_KEY`) VALUES ('smsmess
 INSERT INTO `workflow_api_key_mappings` (`API_NAME`, `API_KEY`) VALUES ('payment', 'payment');
 INSERT INTO `workflow_api_key_mappings` (`API_NAME`, `API_KEY`) VALUES ('location', 'location');
 
---
-INSERT INTO `mdtxmsgtype` (`msgtypedid`, `msgtype`) VALUES ('1', 'paymentrequest'),('2', 'paymentresponse'), ('3', 'refundrequest'),('4', 'refundresponse');
+
