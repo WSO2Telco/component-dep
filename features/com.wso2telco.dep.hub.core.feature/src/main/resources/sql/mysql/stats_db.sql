@@ -358,7 +358,7 @@ CREATE TABLE IF NOT EXISTS subscription_rates (
 /*
 * Tables for whitelist & blacklist
 */
-CREATE TABLE `blacklistmsisdn` (
+CREATE TABLE IF NOT EXISTS `blacklistmsisdn` (
  `Index` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
  `MSISDN` varchar(45) NOT NULL,
  `API_ID` varchar(45) NOT NULL,
@@ -391,7 +391,7 @@ CREATE TABLE IF NOT EXISTS `subscription_comments` (
   PRIMARY KEY (`TaskID`)
 );
 
-CREATE TABLE  `rates_percentages` (
+CREATE TABLE IF NOT EXISTS `rates_percentages` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `merchant_code` varchar(45) NOT NULL,
   `app_id` int(10) unsigned NOT NULL,
@@ -431,7 +431,7 @@ INSERT INTO `api_operation_types` (`operation_id`, `api`, `operation`,`default_r
 (400, 'ussd', 'Send USSD','u1');
 
 
-CREATE TABLE `merchant_rates_percentages` (
+CREATE TABLE IF NOT EXISTS `merchant_rates_percentages` (
   `id` int(10) unsigned NOT NULL AUTO_INCREMENT,
   `subscriber` varchar(45) NOT NULL,
   `merchant_code` varchar(45) NOT NULL,
