@@ -416,6 +416,7 @@ CREATE TABLE IF NOT EXISTS `api_operation_types` (
   `default_rate` varchar(255) NOT NULL,
   PRIMARY KEY (`operation_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
 INSERT INTO `api_operation_types` (`operation_id`, `api`, `operation`,`default_rate`) VALUES
 (100, 'payment', 'Charge', 'p1'),
 (101, 'payment', 'Refund', 'RF2'),
