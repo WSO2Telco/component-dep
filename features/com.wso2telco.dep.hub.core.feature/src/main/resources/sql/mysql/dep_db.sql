@@ -358,6 +358,7 @@ CREATE TABLE IF NOT EXISTS `deptnotificationurls` (
   `apiname` varchar(255) NOT NULL,
   `notifyurl` varchar(255) NOT NULL,
   `serviceprovider` varchar(255) NOT NULL,
+  `clientCorrelator` varchar(500) NULL,
   `notifystatus` int(10) NOT NULL DEFAULT 0,
   `createddate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`notifyurldid`)
