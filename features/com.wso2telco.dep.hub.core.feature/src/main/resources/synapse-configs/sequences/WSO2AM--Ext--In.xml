@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="WSO2AM--Ext--In" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+    <property expression="get-property('SYSTEM_TIME')" name="REQUEST_TIMESTAMP" scope="default" type="STRING"/>
+    <property expression="get-property('MessageID')" name="MESSAGE_ID" scope="default" type="STRING"/>
+    <sequence key="httpHeaderSeq"/>
+    <log level="custom">
+        <property expression="get-property('To')" name="API Request URL"/>
+        <property expression="$ctx:MESSAGE_ID" name="Request ID"/>
+    </log>
+</sequence>

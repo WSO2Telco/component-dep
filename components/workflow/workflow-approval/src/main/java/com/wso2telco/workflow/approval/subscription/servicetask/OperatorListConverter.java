@@ -16,9 +16,19 @@
 
 package com.wso2telco.workflow.approval.subscription.servicetask;
 
+import com.wso2telco.workflow.approval.model.NotificationRequest;
 import com.wso2telco.workflow.approval.subscription.initiate.SubscriptionInitiate;
 import com.wso2telco.workflow.approval.subscription.initiate.SubscriptionInitiateFactory;
+import com.wso2telco.workflow.approval.subscription.rest.client.NotificationApi;
+import com.wso2telco.workflow.approval.subscription.rest.client.SubscriptionWorkflowApi;
+import com.wso2telco.workflow.approval.subscription.rest.client.WorkflowCallbackErrorDecoder;
+import com.wso2telco.workflow.approval.util.AuthRequestInterceptor;
 import com.wso2telco.workflow.approval.util.Constants;
+
+import feign.Feign;
+import feign.Feign.Builder;
+import feign.jackson.JacksonDecoder;
+import feign.jackson.JacksonEncoder;
 
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
@@ -34,21 +44,21 @@ public class OperatorListConverter implements JavaDelegate {
 
     public void execute(DelegateExecution arg0) throws Exception {
 
-        String[] operatorList = arg0.getVariable("operators").toString().split(",");
         String deploymentType = arg0.getVariable(Constants.DEPLOYMENT_TYPE).toString();
-        Collection<String> operatorNames = new ArrayList<String>();
-        Collection<String> operatorsRoles = new ArrayList<String>();
-        for (String operator : operatorList) {
-            operatorNames.add(operator.trim());
-            operatorsRoles.add(operator.trim()+Constants.ADMIN_ROLE);
-            // TODO: make debug
-            log.info("Operator '" + operator.trim() + "' added to operatorList");
-        }
-        arg0.setVariable("operatorList", operatorNames);
-        arg0.setVariable("operatorRoles", operatorsRoles);
+        String[] operatorList = arg0.getVariable(Constants.OPERATORS).toString().split(",");
+        String adminUserName = arg0.getVariable(Constants.ADMIN_USER_NAME) != null ? arg0.getVariable(Constants.ADMIN_USER_NAME).toString() : null;
+        String adminPassword= arg0.getVariable(Constants.ADMIN_PASSWORD).toString();
+        String apiName=arg0.getVariable(Constants.API_NAME).toString();
+
         SubscriptionInitiateFactory subscriptionInitiateFactory = new SubscriptionInitiateFactory();
         SubscriptionInitiate subscriptionInitiate = subscriptionInitiateFactory.getInstance(deploymentType);
         subscriptionInitiate.execute(arg0);
 
+        Collection<String> operatorNames = new ArrayList<String>();
+        for(String operator : operatorList) {
+            operatorNames.add(operator.trim());
+            log.info("Operator '" + operator.trim() + "' added to operatorList");
+        }
+        arg0.setVariable("operatorList", operatorNames);
     }
 }

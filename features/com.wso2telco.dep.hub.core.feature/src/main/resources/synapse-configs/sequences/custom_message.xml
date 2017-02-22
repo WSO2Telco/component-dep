@@ -1,0 +1,692 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<sequence name="custom_fault" trace="disable" xmlns="http://ws.apache.org/ns/synapse">
+    <sequence key="_build_"/>
+    <log level="full"/>
+    <switch source="$ctx:ERROR_CODE">
+        <case regex="SVC0001">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>A service error occurred. Error code is %1</m:text>
+                            <m:variables>$2</m:variables>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                    <arg evaluator="xml" expression="$ctx:errvar"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="SVC0002">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text> Invalid input value for message part %1</m:text>
+                            <m:variables>$2</m:variables>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                    <arg evaluator="xml" expression="$ctx:errvar"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="SVC0003">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>Invalid input value for message part, valid values are %1</m:text>
+                            <m:variables>$2</m:variables>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                    <arg evaluator="xml" expression="$ctx:errvar"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="SVC0004">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>No valid addresses provided in message part %1</m:text>
+                            <m:variables>$2</m:variables>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                    <arg evaluator="xml" expression="$ctx:errvar"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="SVC0005">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>Correlator %1 specified in message part %2 is a duplicate</m:text>
+                            <m:variables>$2</m:variables>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                    <arg evaluator="xml" expression="$ctx:errvar"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="SVC0006">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>Group %1 in message part %2 is not a valid group</m:text>
+                            <m:variables>$2</m:variables>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                    <arg evaluator="xml" expression="$ctx:errvar"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="SVC0007">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>Invalid charging information</m:text>
+                            <!-- m:variables>$2</m:variables -->
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="SVC0008">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>Overlapped criteria %1</m:text>
+                            <m:variables>$2</m:variables>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                    <arg evaluator="xml" expression="$ctx:errvar"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="SVC1000">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>No resources</m:text>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="SVC0280">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>Message too long. Maximum length is %1 characters</m:text>
+                            <m:variables>$2</m:variables>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                    <arg evaluator="xml" expression="$ctx:errvar"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="SCV0283">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>Delivery receipt notification not supported</m:text>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="SVC0284">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>Address format is invalid. Expected format is %1</m:text>
+                            <m:variables>$2</m:variables>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                    <arg evaluator="xml" expression="$ctx:errvar"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="SVC0285">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>Message Not Delivered %1</m:text>
+                            <m:variables>$2</m:variables>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                    <arg evaluator="xml" expression="$ctx:errvar"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="SVC0270">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>Charging operation failed, the charge was not applied</m:text>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="SVC0271">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>endUserId format invalid. Expected format is %1</m:text>
+                            <m:variables>$2</m:variables>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                    <arg evaluator="xml" expression="$ctx:errvar"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="POL0001">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>A policy error occurred. Error code is %1</m:text>
+                            <m:variables>$2</m:variables>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                    <arg evaluator="xml" expression="$ctx:errvar"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="POL0002">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>Privacy verification failed for address %1, request is refused</m:text>
+                            <m:variables>$2</m:variables>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                    <arg evaluator="xml" expression="$ctx:errvar"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="POL0003">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>Too many addresses specified in message part %1</m:text>
+                            <m:variables>$2</m:variables>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                    <arg evaluator="xml" expression="$ctx:errvar"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="POL0004">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>Unlimited notification request not supported</m:text>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="POL0005">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>Too many notifications requested</m:text>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="POL0006">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>Group specified in message part %1 not allowed</m:text>
+                            <m:variables>$2</m:variables>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                    <arg evaluator="xml" expression="$ctx:errvar"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="POL0007">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>Nested groups specified in message part %1 not allowed</m:text>
+                            <m:variables>$2</m:variables>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                    <arg evaluator="xml" expression="$ctx:errvar"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="POL0008">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>Charging is not supported</m:text>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="POL0009">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>Invalid frequency requested</m:text>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="POL0010">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>Requested information unavailable as the retention time interval has expired</m:text>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="POL0011">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>Media type not supported</m:text>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="POL0012">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>Too many description entries specified in message part %1</m:text>
+                            <m:variables>$2</m:variables>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                    <arg evaluator="xml" expression="$ctx:errvar"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="POL0013">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>Duplicated addresses %1</m:text>
+                            <m:variables>$2</m:variables>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                    <arg evaluator="xml" expression="$ctx:errvar"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="POL0253">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>Payment operation refused by user</m:text>
+                            <!-- m:variables>$2</m:variables-->
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="POL0254">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>The amount exceeds the operator limit for a single charge</m:text>
+                            <!-- m:variables>$2</m:variables-->
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="POL0255">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>Address format invalid. Expected format is %1</m:text>
+                            <m:variables>$2</m:variables>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                    <arg evaluator="xml" expression="$ctx:errvar"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="POL0256">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>Invalid currency specified. %1</m:text>
+                            <m:variables>$2</m:variables>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                    <arg evaluator="xml" expression="$ctx:errvar"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="POL0257">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>Message not delivered %1</m:text>
+                            <m:variables>$2</m:variables>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                    <arg evaluator="xml" expression="$ctx:errvar"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="POL0299">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>Unexpected Errors</m:text>
+                            <!--m:variables>$2</m:variables-->
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="POL1000">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>User has insufficient credit for transaction</m:text>
+                            <!--m:variables>$2</m:variables-->
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="POL1001">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>The %1 operator charging limit for this user has been exceeded</m:text>
+                            <m:variables>$2</m:variables>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                    <arg evaluator="xml" expression="$ctx:errvar"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="POL1007">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>Refunds not supported</m:text>
+                            <!-- m:variables>$2</m:variables -->
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="POL1009">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>User has not been provisioned for %1</m:text>
+                            <m:variables>$2</m:variables>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                    <arg evaluator="xml" expression="$ctx:errvar"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <case regex="POL1010">
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>User has been suspended from %1</m:text>
+                            <m:variables>$2</m:variables>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                    <arg evaluator="xml" expression="$ctx:errvar"/>
+                </args>
+            </payloadFactory>
+        </case>
+        <default>
+            <property name="ERROR_CODE" scope="default" type="STRING" value="SVC0001"/>
+            <property name="message" scope="default" type="STRING" value="A service error occurred. Error code is %1"/>
+            <property name="errvar" scope="default" type="STRING" value="An internal service error has occured. Please try again later."/>
+            <payloadFactory media-type="xml">
+                <format>
+                    <m:requestError xmlns:m="http://services.samples">
+                        <m:serviceException>
+                            <m:messageId>$1</m:messageId>
+                            <m:text>$2</m:text>
+                            <m:variables>$3</m:variables>
+                        </m:serviceException>
+                    </m:requestError>
+                </format>
+                <args>
+                    <arg evaluator="xml" expression="$ctx:ERROR_CODE"/>
+                    <arg evaluator="xml" expression="$ctx:message"/>
+                    <arg evaluator="xml" expression="$ctx:errvar"/>
+                </args>
+            </payloadFactory>
+        </default>
+    </switch>
+    <filter regex="POL*" source="$ctx:ERROR_CODE">
+        <then>
+            <property name="HTTP_SC" scope="axis2" type="STRING" value="403"/>
+        </then>
+        <else>
+            <filter regex="405" source="$axis2:HTTP_SC">
+                <then>
+                    <property name="HTTP_SC" scope="axis2" type="STRING" value="405"/>
+                </then>
+                <else>
+                    <property name="HTTP_SC" scope="axis2" type="STRING" value="400"/>
+                </else>
+            </filter>
+        </else>
+    </filter>
+    <property name="RESPONSE" scope="default" type="STRING" value="true"/>
+    <header action="remove" name="To" scope="default"/>
+    <property action="remove" name="NO_ENTITY_BODY" scope="axis2"/>
+    <property action="remove" name="ContentType" scope="axis2"/>
+    <property action="remove" name="Authorization" scope="transport"/>
+    <property action="remove" name="Host" scope="transport"/>
+    <property action="remove" name="Accept" scope="transport"/>
+    <property action="remove" name="X-JWT-Assertion" scope="transport"/>
+    <property name="messageType" scope="axis2" type="STRING" value="application/json"/>
+    <send/>
+</sequence>

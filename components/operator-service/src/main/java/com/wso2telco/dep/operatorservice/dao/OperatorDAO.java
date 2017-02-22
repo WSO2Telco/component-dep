@@ -562,4 +562,69 @@ public class OperatorDAO {
 			DbUtils.closeAllConnections(ps, con, null);
 		}
 	}
+
+    public void removeAPISubscription(String applicationId,String apiName) throws SQLException {
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        String query = "delete from endpointapps  where exists (select 1 from operatorendpoints ope where api=? and ope.id=endpointapps.endpointid) " +
+                "and endpointapps.applicationid=? ";
+        try {
+            con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+            ps = con.prepareStatement(query);
+            ps.setString(1, apiName);
+            ps.setString(2, applicationId);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            log.error("database operation error in remove API Subscription : ", e);
+            throw e;
+        } catch (Exception e) {
+            log.error("database operation error in remove API Subscription : ", e);
+        } finally {
+            DbUtils.closeAllConnections(ps, con, null);
+        }
+    }
+
+    public void removeApplication(String applicationId) throws SQLException {
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        String query = "delete from operatorapps where applicationid=?";
+        try {
+            con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+            ps = con.prepareStatement(query);
+            ps.setString(1, applicationId);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            log.error("database operation error in remove application : ", e);
+            throw e;
+        } catch (Exception e) {
+            log.error("database operation error in remove API Subscription : ", e);
+        } finally {
+            DbUtils.closeAllConnections(ps, con, null);
+        }
+    }
+
+    public void removeSubApprovalOperators(String applicationId) throws SQLException {
+
+        Connection con = null;
+        PreparedStatement ps = null;
+        String query = "delete from sub_approval_operators where APP_ID=?";
+        try {
+            con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+            ps = con.prepareStatement(query);
+            ps.setString(1, applicationId);
+            ps.executeUpdate();
+
+        } catch (SQLException e) {
+            log.error("database operation error in remove application : ", e);
+            throw e;
+        } catch (Exception e) {
+            log.error("database operation error in remove API Subscription : ", e);
+        } finally {
+            DbUtils.closeAllConnections(ps, con, null);
+        }
+    }
 }

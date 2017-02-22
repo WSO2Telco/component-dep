@@ -16,6 +16,7 @@
 
 package com.wso2telco.hub.workflow.extensions;
 
+import com.wso2telco.dep.operatorservice.dao.WorkflowDAO;
 import com.wso2telco.hub.workflow.extensions.beans.CreateProcessInstanceRequest;
 import com.wso2telco.hub.workflow.extensions.beans.CreateProcessInstanceResponse;
 import com.wso2telco.hub.workflow.extensions.beans.ProcessInstanceData;
@@ -45,6 +46,7 @@ import org.wso2.carbon.apimgt.impl.APIManagerFactory;
 import org.wso2.carbon.apimgt.impl.dao.ApiMgtDAO;
 import org.wso2.carbon.apimgt.impl.dto.SubscriptionWorkflowDTO;
 import org.wso2.carbon.apimgt.impl.dto.WorkflowDTO;
+import org.wso2.carbon.apimgt.impl.internal.ServiceReferenceHolder;
 import org.wso2.carbon.apimgt.impl.utils.APIUtil;
 import org.wso2.carbon.apimgt.impl.workflow.GeneralWorkflowResponse;
 import org.wso2.carbon.apimgt.impl.workflow.WorkflowConstants;
@@ -53,6 +55,9 @@ import org.wso2.carbon.apimgt.impl.workflow.WorkflowExecutor;
 import org.wso2.carbon.apimgt.impl.workflow.WorkflowStatus;
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.user.api.UserStoreException;
+import org.wso2.carbon.user.api.UserStoreManager;
+import org.wso2.carbon.user.core.UserRealm;
+import org.wso2.carbon.user.core.service.RealmService;
 
 import java.util.*;
 
@@ -84,6 +89,10 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
     private static final String SERVICE_HOST = "service.host";
     private static final String SERVICE_URL = "serviceURL";
     private static final String PUBLISHED_STATE = "PUBLISHED";
+    private static final String API_PROVIDER_ROLE = "apiProviderRole";
+    private static final String INTERNAL_GATEWAY ="internal_gateway";
+    private static final String PUBLISHER_ROLE_START_WITH ="workflow.Publisher.role.start.with";
+    private static final String PUBLISHER_ROLE_END_WITH ="workflow.Publisher.role.end.with";
 
     private String serviceEndpoint;
     private String username;
@@ -96,6 +105,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
     public WorkflowResponse execute(WorkflowDTO workflowDTO) throws WorkflowException {
 
         OperatorApi operatorApi = new OperatorImpl();
+        WorkflowDAO workflowDAO=new WorkflowDAO();
 
         try {
             if (log.isDebugEnabled()) {
@@ -170,7 +180,8 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
 
             Properties workflowProperties = WorkflowProperties.loadWorkflowProperties();
             String serviceURLString = workflowProperties.getProperty(SERVICE_HOST);
-
+            String startsWith=workflowProperties.getProperty(PUBLISHER_ROLE_START_WITH);
+            String endsWith=workflowProperties.getProperty(PUBLISHER_ROLE_END_WITH);
 
             Variable deploymentType = new Variable(DEPLOYMENT_TYPE, getDeploymentType());
             Variable subscribedApiName = new Variable(API_NAME, apiName);
@@ -198,6 +209,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
                     .getRealmConfiguration().getAdminPassword());
 
             Variable operators = new Variable(OPERATORS, operatorApi.getOperators());
+            Variable apiProviderRole= new Variable(API_PROVIDER_ROLE, null);
             if (operators == null) {
                 throw new WorkflowException("No operator(s) defined!!");
             }
@@ -206,6 +218,22 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
                 log.debug("Application name: " + applicationName + ", deployment type: " + deploymentType +
                         ", callback url: " + callBackURL +
                         ", workflow reference id: " + workflowRefId + ", service endpoint: " + serviceEndpoint);
+            }
+
+            //get API publisher role
+            if (getDeploymentType().startsWith(INTERNAL_GATEWAY)) {
+                RealmService realmService = ServiceReferenceHolder.getInstance().getRealmService();
+                UserRealm realm = realmService.getBootstrapRealm();
+                UserStoreManager manager = realm.getUserStoreManager();
+                String userList[] = manager.getRoleListOfUser(publisherName);
+                String publisherRole = null;
+                for (String roleName : userList) {
+                    if (roleName.startsWith(startsWith) && roleName.endsWith(endsWith)) {
+                        publisherRole = roleName;
+                        break;
+                    }
+                }
+                apiProviderRole = new Variable(API_PROVIDER_ROLE, publisherRole);
             }
 
             List<Variable> variables = new ArrayList<Variable>();
@@ -228,13 +256,17 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
             variables.add(serviceURL);
             variables.add(adminUserName);
             variables.add(adminPassword);
+            variables.add(apiProviderRole);
 
             processInstanceRequest.setVariables(variables);
 
             CreateProcessInstanceResponse processInstanceResponse;
             try {
                 processInstanceResponse = httpClient.createProcessInstance(processInstanceRequest);
+                workflowDAO.insertWorkflowRef(subscriptionWorkFlowDTO.getExternalWorkflowReference(),apiName,version,applicationId,serviceEndpoint);
             } catch (WorkflowExtensionException e) {
+                throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
+            } catch(Exception e){
                 throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
             }
 
@@ -293,7 +325,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
                 .requestInterceptor(new BasicAuthRequestInterceptor(username, password))
                 .target(BusinessProcessApi.class, serviceEndpoint);
 
-        ProcessInstanceData instanceData = null;
+       ProcessInstanceData instanceData = null;
         try {
             instanceData = api.getProcessInstances(workflowExtRef);
         } catch (WorkflowExtensionException e) {
@@ -346,5 +378,6 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
     public void setPassword(String password) {
         this.password = password;
     }
+
 }
 

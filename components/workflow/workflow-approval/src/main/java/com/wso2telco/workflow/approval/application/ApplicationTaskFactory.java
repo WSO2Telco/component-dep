@@ -8,8 +8,10 @@ public class ApplicationTaskFactory {
         ApplicationTask subscriptionTask = null;
         if (deploymentTypes.equals(Constants.HUB)) {
             subscriptionTask = new HubTask();
+        }else if (deploymentTypes.equals(Constants.EXTERNAL_GATEWAY)) {
+            subscriptionTask = new ExternalGatewayTask();
         } else {
-            new DefaultApplicationTaskExecutor();
+            subscriptionTask =new DefaultApplicationTaskExecutor();
         }
         return subscriptionTask;
     }

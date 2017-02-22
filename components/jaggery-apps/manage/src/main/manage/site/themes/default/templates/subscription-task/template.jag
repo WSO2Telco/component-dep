@@ -77,7 +77,7 @@ else{
                                   <option value="APPROVED">Approve</option>
                                   <option value="REJECTED">Reject</option>
                               </select>
-                              <button class="btn js_completeBtn pull-left" id="js_completeBtn<%=String(i)%>" style="display: none" data="<%=tasks[i].id%>" iteration="<%=String(i)%>">Complete</button>
+                              <button class="btn js_completeBtn pull-left" id="js_completeBtn<%=String(i)%>" style="display: none" data="<%=tasks[i].id%>" taskName="<%=tasks[i].name%>" iteration="<%=String(i)%>">Complete</button>
                               </td>
                               <%}else if (tasks[i].status=='COMPLETED'){%>
                               <label>Completed</label>
@@ -87,7 +87,7 @@ else{
                                 <option value="APPROVED">Approve</option>
                                 <option value="REJECTED">Reject</option>
                                </select>
-                               <button class="btn js_completeBtn pull-left" id="js_completeBtn<%=String(i)%>" data="<%=tasks[i].id%>" iteration="<%=String(i)%>">Complete</button>
+                               <button class="btn js_completeBtn pull-left" id="js_completeBtn<%=String(i)%>" data="<%=tasks[i].id%>" taskName="<%=tasks[i].name%>" iteration="<%=String(i)%>">Complete</button>
                               <%}else if (tasks[i].status=='READY'){%>
                               <button class="btn js_assignBtn pull-left" id="js_assignBtn<%=String(i)%>" data="<%=tasks[i].id%>" iteration="<%=String(i)%>">Assign To Me</button>
                               <button class="btn js_startBtn pull-left" id="js_startBtn<%=String(i)%>" style="display: none" data="<%=tasks[i].id%>" iteration="<%=String(i)%>">Start</button>
@@ -95,7 +95,7 @@ else{
                               <option value="APPROVED">Approve</option>
                               <option value="REJECTED">Reject</option>
                               </select>
-                              <button class="btn js_completeBtn pull-left" id="js_completeBtn<%=String(i)%>" style="display: none" data="<%=tasks[i].id%>" iteration="<%=String(i)%>">Complete</button>
+                              <button class="btn js_completeBtn pull-left" id="js_completeBtn<%=String(i)%>" style="display: none" data="<%=tasks[i].id%>" taskName="<%=tasks[i].name%>" iteration="<%=String(i)%>">Complete</button>
                                <%}%>
 
 </div>

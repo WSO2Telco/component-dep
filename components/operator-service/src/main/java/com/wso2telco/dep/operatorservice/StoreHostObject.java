@@ -15,9 +15,14 @@
  ******************************************************************************/
 package com.wso2telco.dep.operatorservice;
 
+import java.sql.SQLException;
 import java.util.List;
+import java.util.Properties;
 
+import com.wso2telco.core.dbutils.fileutils.PropertyFileReader;
+import com.wso2telco.dep.operatorservice.dao.WorkflowDAO;
 import com.wso2telco.dep.operatorservice.exception.StoreHostObjectException;
+import com.wso2telco.dep.operatorservice.model.WorkflowReferenceDTO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mozilla.javascript.Context;
@@ -130,6 +135,67 @@ public class StoreHostObject extends ScriptableObject {
     	return System.getProperty(DEPLOYMENT_TYPE_SYSTEM_PARAM, "hub");
     			
     }
+
+    public static void jsFunction_removeAPISubscription(Context cx,
+                                                        Scriptable thisObj,
+                                                        Object[] args,
+                                                        Function funObj) {
+        OperatorDAO operatorDAO = new OperatorDAO();
+        String applicationId = (String) args[0];
+        String apiName= (String) args[1];
+        try {
+            operatorDAO.removeAPISubscription(applicationId,apiName);
+        } catch (SQLException e) {
+            log.error("database operation error in remove API Subscription : ", e);
+        }
+    }
+
+    public static void jsFunction_removeApplication(Context cx,
+                                                    Scriptable thisObj,
+                                                    Object[] args,
+                                                    Function funObj) {
+        OperatorDAO operatorDAO = new OperatorDAO();
+        String applicationId = (String) args[0];
+        try {
+            operatorDAO.removeApplication(applicationId);
+        } catch (SQLException e) {
+            log.error("database operation error in remove application : ", e);
+        }
+    }
+
+    public static void jsFunction_removeSubApprovalOperators(Context cx,
+                                                    Scriptable thisObj,
+                                                    Object[] args,
+                                                    Function funObj) {
+        OperatorDAO operatorDAO = new OperatorDAO();
+        String applicationId = (String) args[0];
+        try {
+            operatorDAO.removeSubApprovalOperators(applicationId);
+        } catch (SQLException e) {
+            log.error("database operation error in remove application : ", e);
+        }
+    }
+
+    public static WorkflowReferenceDTO jsFunction_getWorkflowRef(Context cx,
+                                                      Scriptable thisObj,
+                                                      Object[] args,
+                                                      Function funObj){
+        WorkflowReferenceDTO workflow=null;
+        WorkflowDAO workflowDAO=new WorkflowDAO();
+        String apiName = (String) args[1];
+        String applicationId = (String) args[0];
+        String apiVersion = (String) args[2];
+        try {
+            workflow=workflowDAO.findWorkflow(apiName, applicationId, apiVersion);
+        } catch (Exception e) {
+            log.error("database operation error in get workflow ref : ", e);
+        }
+        return workflow;
+
+    }
+
+
+
 
     /**
      * Handle exception.

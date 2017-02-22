@@ -38,7 +38,7 @@
     <sequenceFlow id="flow26" sourceRef="startevent1" targetRef="operators_converter"></sequenceFlow>
     <sequenceFlow id="flow27" sourceRef="operators_converter" targetRef="exclusivegateway1"></sequenceFlow>
     <transaction id="hub_admin_approval_transaction" name="Hub Admin Approval Transaction">
-      <userTask id="hub_admin_approval" name="Hub Admin Approval" activiti:candidateGroups="hub_admin">
+      <userTask id="hub_admin_approval" name="Hub Admin Approval" activiti:candidateGroups="admin">
         <extensionElements>
           <activiti:formProperty id="hubAdminApproval" name="Approve / Reject" type="enum" variable="hubAdminApproval" required="true">
             <activiti:value id="APPROVED" name="Approve"></activiti:value>
@@ -217,7 +217,7 @@
         <omgdi:waypoint x="129.0" y="15.0"></omgdi:waypoint>
         <omgdi:waypoint x="108.0" y="47.0"></omgdi:waypoint>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="36.0" width="100.0" x="171.0" y="-137.0"></omgdc:Bounds>
+          <omgdc:Bounds height="36.0" width="100.0" x="156.0" y="-152.0"></omgdc:Bounds>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>

@@ -32,7 +32,10 @@ import org.apache.commons.logging.LogFactory;
 
 import com.wso2telco.workflow.approval.util.Constants;
 
+
+
 import java.util.ArrayList;
+import java.util.Collection;
 
 public class HubAdminDbUpdater implements JavaDelegate {
 
@@ -40,7 +43,7 @@ public class HubAdminDbUpdater implements JavaDelegate {
 
 	public void execute(DelegateExecution arg0) throws Exception {
 
-        final String status =arg0.getVariable(Constants.OPERATOR_ADMIN_APPROVAL) != null ? arg0.getVariable(Constants.OPERATOR_ADMIN_APPROVAL).toString() :null;
+        final String status =arg0.getVariable("status") != null ? arg0.getVariable("status").toString() :null;
         final String adminUserName = arg0.getVariable(Constants.ADMIN_USER_NAME) != null ? arg0.getVariable(Constants.ADMIN_USER_NAME).toString() : null;
         final String adminPassword = arg0.getVariable(Constants.ADMIN_PASSWORD) != null ? arg0.getVariable(Constants.ADMIN_PASSWORD).toString() : null;
         final String serviceUrl = arg0.getVariable(Constants.SERVICE_URL) != null ? arg0.getVariable(Constants.SERVICE_URL).toString() : null;
@@ -55,23 +58,40 @@ public class HubAdminDbUpdater implements JavaDelegate {
         final String subscriber = arg0.getVariable(Constants.SUBSCRIBER) != null ? arg0.getVariable(Constants.SUBSCRIBER).toString() : null;
         final String apiProvider = arg0.getVariable(Constants.API_PROVIDER)!=null?arg0.getVariable(Constants.API_PROVIDER).toString():null;
         final String selectedTier = arg0.getVariable(Constants.SELECTED_TIER)!=null? status.equalsIgnoreCase(Constants.APPROVE)?arg0.getVariable(Constants.SELECTED_TIER).toString():Constants.REJECTED_TIER:null;
-
-
-        log.info("In HubDataUpdater, Hub admin approval status: " + status);
+        final String workflowRefId = arg0.getVariable(Constants.WORK_FLOW_REF)!=null?arg0.getVariable(Constants.WORK_FLOW_REF).toString():null;
+        arg0.setVariable("hubAdminApproval", status); //hub admin approval status is null. Check jag. remove before deployment.
 
         AuthRequestInterceptor authRequestInterceptor = new AuthRequestInterceptor();
-
         SubscriptionWorkflowApi api = Feign.builder()
-                .encoder(new JacksonEncoder())
-                .decoder(new JacksonDecoder())
-                .errorDecoder(new WorkflowCallbackErrorDecoder())
-                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminUserName,adminPassword))
-                .target(SubscriptionWorkflowApi.class, serviceUrl);
+                    .encoder(new JacksonEncoder())
+                    .decoder(new JacksonDecoder())
+                    .errorDecoder(new WorkflowCallbackErrorDecoder())
+                    .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminUserName,adminPassword))
+                    .target(SubscriptionWorkflowApi.class, serviceUrl);
+        String operators = api.subscriptionGetOperators(apiName, apiVersion, apiProvider, applicationId);
+        String[] operatorList = operators.split(",");
+        Collection<String> operatorNames = new ArrayList<String>();
+        Collection<String> operatorsRoles = new ArrayList<String>();
+
+            for (String operator : operatorList) {
+                    operatorNames.add(operator.trim().toLowerCase());
+                    operatorsRoles.add(operator.trim()+Constants.ADMIN_ROLE);
+
+                    // TODO: make debug
+                    log.info("Operator '" + operator.trim() + "' added to operatorList");
+            }
+
+            arg0.setVariable("operatorList", operatorNames);
+            arg0.setVariable("operatorRoles", operatorsRoles);
+
+        
+        log.info("In HubDataUpdater, Hub admin approval status: " + status);
 
         Subscription subscription = new Subscription();
         subscription.setApiName(apiName);
         subscription.setApplicationID(applicationId);
         subscription.setOperatorName(operatorName);
+        subscription.setWorkflowRefId(workflowRefId);
         api.subscriptionApprovalHub(subscription);
 
         NotificationApi apiNotification = Feign.builder()
@@ -83,7 +103,7 @@ public class HubAdminDbUpdater implements JavaDelegate {
 
         NotificationRequest notificationRequest = new NotificationRequest();
         notificationRequest.setApiName(apiName);
-        notificationRequest.setOperatorsRoles(operatorRoles);
+        notificationRequest.setOperatorsRoles((ArrayList)arg0.getVariable(Constants.OPERATOR_ROLES));
         notificationRequest.setApprovalStatus(status);
         notificationRequest.setApiVersion(apiVersion);
         notificationRequest.setApiContext(apiContext);
@@ -98,6 +118,9 @@ public class HubAdminDbUpdater implements JavaDelegate {
         } else {
             apiNotification.subscriptionNotificationSp(notificationRequest);
         }
+
+
+      
 
 
 

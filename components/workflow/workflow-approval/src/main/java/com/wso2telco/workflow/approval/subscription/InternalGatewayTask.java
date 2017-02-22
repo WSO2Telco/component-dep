@@ -2,7 +2,9 @@ package com.wso2telco.workflow.approval.subscription;
 
 import com.wso2telco.workflow.approval.model.DelegatedArgsDTO;
 import com.wso2telco.workflow.approval.model.NotificationRequest;
+import com.wso2telco.workflow.approval.model.Subscription;
 import com.wso2telco.workflow.approval.subscription.rest.client.NotificationApi;
+import com.wso2telco.workflow.approval.subscription.rest.client.SubscriptionWorkflowApi;
 import com.wso2telco.workflow.approval.subscription.rest.client.WorkflowCallbackErrorDecoder;
 import com.wso2telco.workflow.approval.util.AuthRequestInterceptor;
 import com.wso2telco.workflow.approval.util.Constants;
@@ -16,7 +18,6 @@ public class InternalGatewayTask extends AbstractTaskExecutor {
     public void performTasks(DelegatedArgsDTO args) throws Exception {
 
         AuthRequestInterceptor authRequestInterceptor = new AuthRequestInterceptor();
-
         NotificationApi apiNotification = Feign.builder()
                 .encoder(new JacksonEncoder())
                 .decoder(new JacksonDecoder())
@@ -28,6 +29,7 @@ public class InternalGatewayTask extends AbstractTaskExecutor {
         notificationRequest.setApiVersion(args.getApiVersion());
         notificationRequest.setApiContext(args.getApiContext());
         notificationRequest.setApiName(args.getApiName());
+        notificationRequest.setReceiverRole(args.getApiProviderRole());
         notificationRequest.setApiProvider(args.getApiProvider());
         notificationRequest.setSubscriber(args.getSubscriber());
         notificationRequest.setApiPublisher(args.getApiPublisher());
@@ -36,11 +38,10 @@ public class InternalGatewayTask extends AbstractTaskExecutor {
         notificationRequest.setSubscriptionTier(args.getSelectedTier());
 
         if (args.getOperatorAdminApprovalStatus().equalsIgnoreCase(Constants.APPROVE)) {
-          apiNotification.subscriptionNotificationApiCreator(notificationRequest);
+          apiNotification.subscriptionNotificationAdminService(notificationRequest);
         } else {
           apiNotification.subscriptionNotificationSp(notificationRequest);
         }
-
 
     }
 }

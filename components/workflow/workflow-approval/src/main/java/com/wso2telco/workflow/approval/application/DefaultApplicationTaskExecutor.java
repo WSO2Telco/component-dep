@@ -76,8 +76,8 @@ class DefaultApplicationTaskExecutor implements ApplicationTask {
     }
 
     public void execute(final DelegateExecution arg0) throws Exception {
-
-
+        DelegatedArgsDTO delegatedArgsDTO= constructDelegatedArgsDTO(arg0);
+        this.execute(delegatedArgsDTO);
     }
 
 }

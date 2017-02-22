@@ -306,14 +306,14 @@ CREATE TABLE IF NOT EXISTS `mo_ussd_subscription` (
   PRIMARY KEY (`mo_ussd_request_did`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE `mdtxmsgtype` (
+CREATE TABLE IF NOT EXISTS `mdtxmsgtype` (
   `msgtypedid` int(11) NOT NULL AUTO_INCREMENT,
   `msgtype` varchar(45) NOT NULL,
   PRIMARY KEY (`msgtypedid`),
   UNIQUE KEY `msgtype_UNIQUE` (`msgtype`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
-CREATE TABLE `mdtrequestmessage` (
+CREATE TABLE IF NOT EXISTS `mdtrequestmessage` (
   `messegeId` int(11) NOT NULL AUTO_INCREMENT,
   `msgtypeId` int(11) NOT NULL,
   `mdtrequestId` varchar(45) DEFAULT NULL,
@@ -329,7 +329,7 @@ CREATE TABLE `mdtrequestmessage` (
   CONSTRAINT `fk_mdtrequestmessage_1` FOREIGN KEY (`msgtypeId`) REFERENCES `mdtxmsgtype` (`msgtypedid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=228911 DEFAULT CHARSET=latin1;
 
-CREATE TABLE `spendlimitdata` (
+CREATE TABLE IF NOT EXISTS `spendlimitdata` (
   `msgType` int(11) DEFAULT NULL,
   `groupName` varchar(255) DEFAULT NULL,
   `consumerKey` varchar(255) DEFAULT NULL,
@@ -343,11 +343,38 @@ CREATE TABLE `spendlimitdata` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
+CREATE TABLE IF NOT EXISTS `workflow_reference` (
+  `workflow_ref_id` varchar(255) NOT NULL,
+  `application_id` varchar(45) DEFAULT NULL,
+  `api_name` varchar(45) DEFAULT NULL,
+  `api_version` varchar(45) DEFAULT NULL,
+  `status` varchar(45) DEFAULT NULL,
+  `service_endpoint` varchar(45) DEFAULT NULL,
+  PRIMARY KEY (`workflow_ref_id`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+INSERT INTO `mdtxmsgtype` (`msgtypedid`, `msgtype`) VALUES ('1', 'paymentrequest'),('2', 'paymentresponse'), ('3', 'refundrequest'),('4', 'refundresponse');
+
+CREATE TABLE IF NOT EXISTS `tokeninfo` (
+  `username` varchar(255) NOT NULL DEFAULT '',
+  `password` varchar(255) NOT NULL DEFAULT '',
+  `authtoken` varchar(255) NOT NULL DEFAULT '',
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`username`,`password`,`authtoken`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+CREATE TABLE IF NOT EXISTS `userinfo` (
+  `enduserid` varchar(16) NOT NULL DEFAULT '',
+  `package` varchar(20) NOT NULL DEFAULT '',
+  `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`enduserid`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
 /*
 * Default validator types provided from mife-validator component
 */
-insert into validator (name, class) values ('passthru','com.wso2telco.dep.subscriptionvalidator.services.impl.PassThroughValidator');
-insert into validator (name, class) values ('msisdn','com.wso2telco.dep.subscriptionvalidator.services.impl.MSISDNValidator');
+INSERT INTO validator (name, class) values ('passthru','com.wso2telco.dep.subscriptionvalidator.services.impl.PassThroughValidator');
+INSERT INTO validator (name, class) values ('msisdn','com.wso2telco.dep.subscriptionvalidator.services.impl.MSISDNValidator');
 
 /*
 * Default operator
@@ -361,7 +388,8 @@ INSERT INTO `operators` (`ID`, `operatorname`, `description`, `created`, `create
 INSERT INTO `operatorendpoints` (`ID`, `operatorid`, `api`, `isactive`, `endpoint`, `created`, `created_date`, `lastupdated`, `lastupdated_date`) VALUES
   (1, 1, 'smsmessaging', 1, 'http://localhost:8081/mifesandbox/SandboxController/smsmessaging/1', NULL, '2014-03-04 11:36:23', NULL, NULL),
   (2, 1, 'payment', 1, 'http://localhost:8081/mifesandbox/SandboxController/payment/1', NULL, '2014-03-04 11:36:58', NULL, NULL),
-  (3, 1, 'location', 1, 'http://localhost:8081/mifesandbox/SandboxController/location/1', NULL, '2014-10-02 10:33:41', NULL, NULL);
+  (3, 1, 'location', 1, 'http://localhost:8081/mifesandbox/SandboxController/location/1', NULL, '2014-10-02 10:33:41', NULL, NULL),
+  (4, 1, 'location', 1, 'http://localhost:8081/mifesandbox/SandboxController/ussd/1', NULL, '2014-10-02 10:33:41', NULL, NULL);
 
 --
 -- Initial Metadata script for table `workflow_api_key_mappings`
@@ -371,5 +399,4 @@ INSERT INTO `workflow_api_key_mappings` (`API_NAME`, `API_KEY`) VALUES ('smsmess
 INSERT INTO `workflow_api_key_mappings` (`API_NAME`, `API_KEY`) VALUES ('payment', 'payment');
 INSERT INTO `workflow_api_key_mappings` (`API_NAME`, `API_KEY`) VALUES ('location', 'location');
 
---
-INSERT INTO `mdtxmsgtype` (`msgtypedid`, `msgtype`) VALUES ('1', 'paymentrequest'),('2', 'paymentresponse'), ('3', 'refundrequest'),('4', 'refundresponse');
+

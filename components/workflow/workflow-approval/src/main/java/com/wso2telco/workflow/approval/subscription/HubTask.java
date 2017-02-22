@@ -1,5 +1,6 @@
 package com.wso2telco.workflow.approval.subscription;
 
+import com.wso2telco.workflow.approval.exception.HubWorkflowCallbackApiErrorDecoder;
 import com.wso2telco.workflow.approval.model.DelegatedArgsDTO;
 import com.wso2telco.workflow.approval.model.NotificationRequest;
 import com.wso2telco.workflow.approval.model.Subscription;
@@ -8,7 +9,10 @@ import com.wso2telco.workflow.approval.subscription.rest.client.NotificationApi;
 import com.wso2telco.workflow.approval.subscription.rest.client.SubscriptionWorkflowApi;
 import com.wso2telco.workflow.approval.subscription.rest.client.WorkflowCallbackErrorDecoder;
 import com.wso2telco.workflow.approval.util.AuthRequestInterceptor;
+import com.wso2telco.workflow.approval.util.Constants;
+
 import feign.Feign;
+import feign.Feign.Builder;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
 
@@ -16,6 +20,15 @@ public class HubTask extends AbstractTaskExecutor {
 
     @Override
     public void performTasks(DelegatedArgsDTO delegatedArgsDTO) throws Exception {
+    	
+    	String adminUserName = delegatedArgsDTO.getAdminUserName() != null ? delegatedArgsDTO.getAdminUserName() : null;
+        String adminPassword = delegatedArgsDTO.getAdminPassword() != null ? delegatedArgsDTO.getAdminPassword() : null;
+        String serviceUrl = delegatedArgsDTO.getServiceUrl() != null ? delegatedArgsDTO.getServiceUrl() : null;
+        int applicationId = Integer.toString(delegatedArgsDTO.getApplicationId()) != null ? delegatedArgsDTO.getApplicationId() : null;
+        String apiVersion = delegatedArgsDTO.getApiVersion() !=null? delegatedArgsDTO.getApiVersion() : null;
+        String apiProvider = delegatedArgsDTO.getApiProvider() !=null? delegatedArgsDTO.getApiProvider() :null;
+        String apiName = delegatedArgsDTO.getApiName() !=null? delegatedArgsDTO.getApiName() :null;
+        
 
         AuthRequestInterceptor authRequestInterceptor = new AuthRequestInterceptor();
 
@@ -59,7 +72,9 @@ public class HubTask extends AbstractTaskExecutor {
         notificationRequest.setApiProvider(delegatedArgsDTO.getApiProvider());
         notificationRequest.setApplicationName(delegatedArgsDTO.getApiContext());
 
-        apiNotification.subscriptionNotificationSp(notificationRequest);
 
+        apiNotification.subscriptionNotificationSp(notificationRequest);
+        
+     
     }
 }

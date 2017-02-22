@@ -1,0 +1,14 @@
+<sequence xmlns="http://ws.apache.org/ns/synapse" name="WSO2AM--Ext--Out">
+	<property name="RESPONSE_TIMESTAMP" expression="get-property('SYSTEM_TIME')"/>
+	<script language="js">
+		var requestTimeStamp = mc.getProperty("REQUEST_TIMESTAMP");
+		var responseTimeStamp = mc.getProperty("RESPONSE_TIMESTAMP");
+		var responseTime = responseTimeStamp - requestTimeStamp;
+		mc.setProperty("RESPONSE_TIME", responseTime);
+	</script>
+	<log level="custom">
+        	<property name="API Response Status" expression="$axis2:HTTP_SC"/>
+        	<property name="Request ID" expression="$ctx:MESSAGE_ID"/>
+		<property name="Response Time(ms)" expression="$ctx:RESPONSE_TIME"/>
+    	</log>
+</sequence>
