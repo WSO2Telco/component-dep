@@ -633,7 +633,7 @@ public class BlackListWhiteListDAO {
 
 	/*private Map<String, String> getAccessTokenData(int subscriptionId, String getKeysSql)
 			throws Exception {
-		Connection connection = null;
+		Connection connection  = null;
 		PreparedStatement ps = null;
 		ResultSet result = null;
 		Map<String, String> apiKeys = new HashMap<String, String>();
