@@ -19,6 +19,8 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.logging.Level;
 
 import java.util.logging.Logger;
@@ -40,15 +42,64 @@ public class APIUtil {
      * @param messageContext the message context
      * @return the api
      */
-    public static String getAPI(MessageContext messageContext){
+    /*public static String getAPI(MessageContext messageContext){
         
-        String resourceUrl=(String) messageContext.getProperty("REST_FULL_REQUEST_PATH");
+        //String resourceUrl=(String) messageContext.getProperty("REST_FULL_REQUEST_PATH");
 
         String apiContext = (String) messageContext.getProperty("api.ut.context");
 
-        String apiName = apiContext.substring(apiContext.indexOf("/") + 1);
+        if(apiContext != null){
+            return apiContext.substring(apiContext.indexOf("/") + 1);
+        }
 
-        return apiName;
+        return null;
     }
-    
+*/
+    public static String getAPI(MessageContext messageContext){
+
+        //String resourceUrl=(String) messageContext.getProperty("REST_FULL_REQUEST_PATH");
+
+        String contextPath = (String) messageContext.getProperty("api.ut.context");
+
+        if(contextPath != null){
+
+            int firstContextSlash = contextPath.indexOf("/");
+
+            if(firstContextSlash != -1) {
+                int secondContextSlash = contextPath.indexOf("/", firstContextSlash + 1);
+
+                if(secondContextSlash != -1){
+                    return contextPath.substring(firstContextSlash+1, secondContextSlash);
+                }
+            }
+        }
+
+        return null;
+    }
+
+   /* public static List<String> getAPI(MessageContext messageContext){
+
+        String contextPath = (String) messageContext.getProperty("api.ut.context");
+
+        List<String> apiContextInfoList = new ArrayList<String>();
+
+        int firstContextSlash = contextPath.indexOf("/");
+
+        if(firstContextSlash != -1) {
+            int secondContextSlash = contextPath.indexOf("/", firstContextSlash + 1);
+
+            if(secondContextSlash != -1){
+                apiContextInfoList.add(contextPath.substring(firstContextSlash+1, secondContextSlash));
+                // return contextPath.substring(firstContextSlash+1, secondContextSlash);
+
+                if(secondContextSlash+1 < contextPath.length()){
+                    apiContextInfoList.add(contextPath.substring(secondContextSlash+1));
+                }
+            }
+
+
+        }
+
+        return apiContextInfoList;
+    }*/
 }

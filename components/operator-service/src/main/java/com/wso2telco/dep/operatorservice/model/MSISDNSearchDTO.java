@@ -31,10 +31,10 @@ public class MSISDNSearchDTO implements Serializable {
 	/**
 	 * 
 	 */
-	private String apiID;
-	private List<MSISDN> msisdntoSearch;
+	private String apiID = null;
 
-	{
+
+	private List<MSISDN> msisdntoSearch;{
 		msisdntoSearch = new ArrayList<MSISDN>();
 	}
 
@@ -49,23 +49,5 @@ public class MSISDNSearchDTO implements Serializable {
 	public void addMSISDN2Search(MSISDN msisdn) {
 		this.msisdntoSearch.add(msisdn);
 
-	}
-
-	private String apiName_;
-	private boolean validApiName_;
-
-	public boolean isValidApiName() {
-		return validApiName_;
-	}
-
-	public void setApiName(final String apiName) {
-		if (apiName != null && apiName.trim().length() > 0) {
-			this.apiName_ = apiName.trim();
-			this.validApiName_ = true;
-		}
-
-	}
-	public String getApiName(){
-		return this.apiName_;
 	}
 }

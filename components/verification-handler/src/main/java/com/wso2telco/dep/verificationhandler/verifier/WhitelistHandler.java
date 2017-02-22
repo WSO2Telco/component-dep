@@ -32,7 +32,7 @@ import org.apache.synapse.SynapseConstants;
 import org.apache.synapse.commons.json.JsonUtil;
 import org.apache.synapse.core.SynapseEnvironment;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
-import org.apache.synapse.mediators.AbstractMediator;
+import org.apache.synapse.rest.AbstractHandler;
 import org.wso2.carbon.apimgt.gateway.handlers.Utils;
 import org.wso2.carbon.apimgt.gateway.handlers.security.APISecurityConstants;
 import javax.naming.NamingException;
@@ -49,7 +49,7 @@ import java.util.regex.Pattern;
 /**
  * The Class WhitelistHandler.
  */
-public class WhitelistHandler extends AbstractMediator implements ManagedLifecycle {
+public class WhitelistHandler extends AbstractHandler implements ManagedLifecycle {
     
     /** The Constant log. */
     private static final Log log = LogFactory.getLog(WhitelistHandler.class);
@@ -62,7 +62,7 @@ public class WhitelistHandler extends AbstractMediator implements ManagedLifecyc
 
 
     //Entry point to the White list Mediator
-    public boolean mediate(MessageContext messageContext) {
+    public boolean handleRequest(MessageContext messageContext) {
 
 
         try {
@@ -73,10 +73,16 @@ public class WhitelistHandler extends AbstractMediator implements ManagedLifecyc
             String msisdn = null;
             ArrayList<String> msisdns = null;
 
+            String apiName = APIUtil.getAPI(messageContext);
 
-            String apiContext = APIUtil.getAPI(messageContext);
+            if(apiName == null){
+                return true;
+            }
 
-            if (apiContext.equals(APINameConstant.PAYMENT)) {
+            String apiVersion = (String) messageContext.getProperty("api.ut.version");//
+
+
+            if (apiName.equals(APINameConstant.PAYMENT)) {
                 //msisdn = str_piece(resourceUrl, '/', 4);
                 String urlMSISDN = null;
 
@@ -117,7 +123,7 @@ public class WhitelistHandler extends AbstractMediator implements ManagedLifecyc
                 }
 
 
-            } else if (apiContext.equals(APINameConstant.LOCATION)) {
+            } else if (apiName.equals(APINameConstant.LOCATION)) {
                 //Retrieving MSISDN from the incoming request
                 log.info("Location");
 //                msisdn = str_piece(str_piece(resourceUrl, '=', 2), '&', 1);
@@ -133,7 +139,7 @@ public class WhitelistHandler extends AbstractMediator implements ManagedLifecyc
                     log.error("RegX: " + e.getMessage(), e);
                 }
 
-            } else if (apiContext.equals(APINameConstant.MESSAGING)) {
+            } else if (apiName.equals(APINameConstant.MESSAGING)) {
                 log.info("Messaging");
 
                 String urlMSISDN = null;
@@ -169,14 +175,14 @@ public class WhitelistHandler extends AbstractMediator implements ManagedLifecyc
                         log.warn("URL MSISDN not match Body " + urlMSISDN + ":" + msisdn);
                     }
 
-                    if (sms.getOutboundSMSMessageRequest().getAddress().size() > 1)
+                    if (sms.getOutboundSMSMessageRequest().getAddress().size() > 0)
                         msisdns = sms.getOutboundSMSMessageRequest().getAddress();
 
                 } catch (Exception e) {
                     e.printStackTrace();
                 }
 
-            } else if (apiContext.equals(APINameConstant.USSD)) {
+            } else if (apiName.equals(APINameConstant.USSD)) {
                 log.info("USSD");
                 String urlMSISDN = null;
 
@@ -204,7 +210,7 @@ public class WhitelistHandler extends AbstractMediator implements ManagedLifecyc
                     e.printStackTrace();
                 }
 
-            } else if (apiContext.equals(APINameConstant.BALANCECHECK)) {
+            } else if (apiName.equals(APINameConstant.BALANCECHECK)) {
                 //Retrieving MSISDN from the incoming request
                 log.info("balance Check");
                 try {
@@ -228,13 +234,13 @@ public class WhitelistHandler extends AbstractMediator implements ManagedLifecyc
 
             log.info("App ID : " + appID);
             //Retrieving API Name
-            String api = messageContext.getProperty("api.ut.api").toString();
+           // String api = messageContext.getProperty("api.ut.api").toString();
             String apiID = null;
-            String subscriptionID = null;
+            //String subscriptionID = null;
 
             try {
                 //Retrieving API ID
-                apiID = DatabaseUtils.getAPIId(api);
+                apiID = DatabaseUtils.getAPIId(apiName, apiVersion);
             } catch (NamingException ex) {
                 Logger.getLogger(WhitelistHandler.class.getName()).log(Level.SEVERE, null, ex);
             } catch (SQLException ex) {
@@ -242,31 +248,40 @@ public class WhitelistHandler extends AbstractMediator implements ManagedLifecyc
             }
 
 
-            if (!isWhiteListedNumber(userMSISDN, appID, null, apiID)) {
+            int subscriptionID = getSubscriptionID(apiID, appID);
+            String subscriptionIDstring = null;
+
+            if(subscriptionID != -1){
+                subscriptionIDstring = String.valueOf(subscriptionID);
+            }
+
+            if (!isWhiteListedNumber(userMSISDN, appID, subscriptionIDstring, apiID)) {
                 log.info("Not a WhiteListed number");
                 hadleNonWhiteListedResponse(messageContext);
             } else if (msisdns != null) {
-                try {
+
                     //check all numbers are whitelisted
                     log.info("Multiple MSISDN");
                     for (String cur : msisdns) {
                         cur = ACRModule.getMSISDNFromACR(cur);
-                        if (!isWhiteListedNumber(cur)) {
+                        if (!isWhiteListedNumber(cur, appID, subscriptionIDstring, apiID)) {
                             log.info("Not a WhiteListed number");
                             hadleNonWhiteListedResponse(messageContext);
                             break;
                         }
                     }
-                } catch (Exception e) {
-                    log.error("Multiple MSISDN ERROR " + e.getMessage());
-
-                }
             }
         } catch (Exception err) {
 
             log.error("Whitelist error : " + err.getMessage());
             log.error("Whitelist error : ", err);
         }
+        return true;
+    }
+
+
+    public boolean handleResponse(MessageContext messageContext) {
+
         return true;
     }
 
@@ -321,6 +336,7 @@ public class WhitelistHandler extends AbstractMediator implements ManagedLifecyc
      */
     public static boolean isWhiteListedNumber(String MSISDN, String applicationId, String subscriptionId, String apiId) throws SQLException, NamingException {
         MSISDN = filterMSISDN(MSISDN);
+        MSISDN = "tel3A+" + MSISDN;
         WhiteListResult whiteListResult = DatabaseUtils.checkWhiteListed(MSISDN, applicationId, subscriptionId, apiId);
         if (whiteListResult == null) {
             log.info("Whitelist not : App " + applicationId + ", API " + apiId + ", Subscription : " + subscriptionId + " , MSISDN " + MSISDN);
@@ -333,6 +349,13 @@ public class WhitelistHandler extends AbstractMediator implements ManagedLifecyc
 
 
     }
+
+    public static int getSubscriptionID(String apiId, String applicationId)
+            throws SQLException, NamingException {
+
+        return DatabaseUtils.getSubscriptionId(apiId,applicationId);
+    }
+
 
     /**
      * Filter msisdn.
