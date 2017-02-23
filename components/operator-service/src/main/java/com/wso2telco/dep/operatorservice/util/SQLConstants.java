@@ -95,4 +95,8 @@ public class SQLConstants {
 			" SELECT AM_API.API_ID AS API_ID FROM  AM_API WHERE AM_API.API_PROVIDER = ? AND AM_API.API_NAME = ? AND " +
 					"AM_API.API_VERSION = ?";
 
+
+	public static final String GET_API_INFO_SQL =
+			" SELECT API_PROVIDER, API_NAME, API_VERSION FROM  AM_API WHERE API_ID = ?";
+
 }

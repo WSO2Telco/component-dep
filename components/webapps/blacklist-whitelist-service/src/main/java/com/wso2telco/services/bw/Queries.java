@@ -138,15 +138,20 @@ public class Queries {
 
 		BlackListBulk blackListReq = gson.fromJson(jsonBody, BlackListBulk.class);
 
-		String apiName = blackListReq.getAPIName();
+		int apiId = Integer.parseInt(blackListReq.getAPIID());
+
+/*		String apiName = blackListReq.getAPIName();
 		String[] apiNameArray = apiName.split("[:]");
 
 		if(apiNameArray.length != 3){
 			return Response.status(Response.Status.BAD_REQUEST).entity(APIError.INVALID_API_NAME).build();
-		}
-
+		}*/
+/*
 		int apiId = blackListWhiteListService.getAPIId(apiNameArray[0], apiNameArray[1],
-				apiNameArray[2]);
+				apiNameArray[2]);*/
+
+
+
 
 		if(apiId == -1){
 			return Response.status(Response.Status.BAD_REQUEST).entity(APIError.INVALID_API_NAME).build();
@@ -171,12 +176,12 @@ public class Queries {
 		successMSG.append("\"variables\":").append(gson.toJson(msisdnList)).append("}}");
 
 		//gson = new Gson();
-
-		if (userID != null && msisdnList != null) {
+		String[] apiInfoArray = blackListWhiteListService.getAPIInfo(apiId);
+		if (userID != null && msisdnList != null && apiInfoArray != null && apiInfoArray.length == 3) {
 			try {
 				BlackListDTO blackListDTO = new BlackListDTO();
 				blackListDTO.setApiID(String.valueOf(apiId));
-				blackListDTO.setApiName(apiName);
+				blackListDTO.setApiName(apiInfoArray[0]+":"+ apiInfoArray[1] + ":" + apiInfoArray[2]);
 				blackListDTO.setUserID(userID);
 				blackListDTO.setUserMSISDN(msisdnList);
 
@@ -264,12 +269,12 @@ public class Queries {
 		erroMsg.append("Blacklist number could not be removed ".intern()).append("\",").append("\"variables\":\"")
 				.append(msisdn).append("\"").append("}}");
 
-		String apiName = removeReq.getAPIName();
+		int apiId = removeReq.getAPIId();
 
-		if (apiName != null) {
+		if (apiId != -1) {
 
 			try {
-				blackListWhiteListService.removeBlacklist(apiName, msisdn);
+				blackListWhiteListService.removeBlacklist(apiId, msisdn);
 
 				StringBuilder jsonreturn = new StringBuilder();
 				jsonreturn.append("{").append("\"Success\":").append("{").append("\"messageId\":\"")

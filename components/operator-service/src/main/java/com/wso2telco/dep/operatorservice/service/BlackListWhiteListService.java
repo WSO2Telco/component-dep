@@ -112,9 +112,9 @@ public class BlackListWhiteListService {
 		}
 	}
 
-	public void removeBlacklist(final String apiName, final String userMSISDN) throws BusinessException {
+	public void removeBlacklist(int apiId, final String userMSISDN) throws BusinessException {
 		try {
-			dao.removeBlacklist(apiName, userMSISDN);
+			dao.removeBlacklist(apiId, userMSISDN);
 		} catch (Exception e) {
 			LOG.error("removeBlacklist", e);
 			throw new NumberBlackListException(GenaralError.INTERNAL_SERVER_ERROR);
@@ -288,5 +288,9 @@ public class BlackListWhiteListService {
 	public int getAPIId(String providerName, String apiName, String apiVersion) throws BusinessException {
 
 		return  dao.getAPIId(providerName,apiName,apiVersion);
+	}
+
+	public String[] getAPIInfo(int apiId) throws BusinessException {
+		return dao.getAPIInfo(apiId);
 	}
 }
