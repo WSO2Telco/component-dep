@@ -223,12 +223,12 @@ public class BlackListWhiteListDAO {
 
 	}
 
-	public void removeBlacklist(final String apiName, final String userMSISDN) throws SQLException, Exception {
+	public void removeBlacklist(final int apiId, final String userMSISDN) throws SQLException, Exception {
 
 		StringBuilder sql = new StringBuilder();
 		sql.append("DELETE FROM ");
 		sql.append(OparatorTable.BLACKLIST_MSISDN.getTObject());
-		sql.append(" WHERE API_NAME = ?");
+		sql.append(" WHERE API_ID = ?");
 		sql.append(" AND MSISDN = ?");
 
 		Connection conn = null;
@@ -238,7 +238,7 @@ public class BlackListWhiteListDAO {
 			conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
 			ps = conn.prepareStatement(sql.toString());
 
-			ps.setString(1, apiName);
+			ps.setInt(1, apiId);
 			ps.setString(2, userMSISDN);
 
 			ps.executeUpdate();
@@ -535,6 +535,42 @@ public class BlackListWhiteListDAO {
 
 		return -1;
 	}
+
+
+	public String[] getAPIInfo(int apiID) throws BusinessException {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet result = null;
+
+		try {
+
+
+			java.lang.String sqlQuery = SQLConstants.GET_API_INFO_SQL;
+			connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+
+			ps = connection.prepareStatement(sqlQuery);
+			ps.setInt(1, apiID);
+			//ps.setString(1, providerName);
+			result = ps.executeQuery();
+
+			String[] apiInfoArray = new String[3];
+
+			while (result.next()) {
+				apiInfoArray[0] = result.getString("API_PROVIDER");
+				apiInfoArray[1] = result.getString("API_NAME");
+				apiInfoArray[2] = result.getString("API_VERSION");
+
+				return apiInfoArray;
+			}
+		} catch (SQLException e) {
+			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
+		} catch (Exception e) {
+			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
+		}
+
+		return null;
+	}
+
 
 	public List<String> getAllAplicationsByUser(String userID) throws BusinessException {
 		Connection connection = null;

@@ -21,13 +21,13 @@ import java.io.Serializable;
 public class RemoveRequest implements Serializable{
 
 	private static final long serialVersionUID = 4671872069760564128L;
-	private String apiName;
+	private int apiId;
     
-    public String getAPIName(){
-        return this.apiName;
+    public int getAPIId(){
+        return this.apiId;
     }
     
-    public String setAPIName(String apiName){
-        return this.apiName = apiName;
+    public int setAPIId(int apiId){
+        return this.apiId = apiId;
     }    
 }

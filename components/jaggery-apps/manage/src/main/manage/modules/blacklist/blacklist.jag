@@ -100,7 +100,7 @@ function removeFromBlacklist(api, subscriber){
 	log.info("subscriber: " + subscriber);
 	var newURL = removeBlacklistURL + subscriber;
 	var data = {
-		"apiName":api
+		"apiId":api
 	};
 	var response = postJSON(newURL, data);
 	log.info("response = " + response);
