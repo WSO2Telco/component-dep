@@ -17,17 +17,27 @@ package com.wso2telco.dep.operatorservice.internal;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.apimgt.impl.APIManagerConfigurationService;
 import org.wso2.carbon.utils.ConfigurationContextService;
 
  
 /**
  * @scr.component name="operator.store" immediate="true"
+ *
  * @scr.reference name="config.context.service"
  * 				  interface="org.wso2.carbon.utils.ConfigurationContextService"
  * 				  cardinality="1..1" 
  * 				  policy="dynamic"  
  * 				  bind="setConfigurationContextService"
  * 				  unbind="unsetConfigurationContextService"
+ *
+ *@scr.reference name="apimanager.configurations.service"
+ * 				  interface="org.wso2.carbon.apimgt.impl.APIManagerConfigurationService"
+ * 				  cardinality="1..1"
+ * 				  policy="dynamic"
+ * 				  bind="setAPIManagerConfigurationService"
+ * 				  unbind="unsetAPIManagerConfigurationService"
+ *
  *
  */
 public class StoreComponent {
@@ -38,18 +48,36 @@ public class StoreComponent {
     /**
      * Sets the configuration context service.
      *
-     * @param contextService the new configuration context service
+     * @param apiManagerConfigurationService the new configuration context service
      */
-    protected void setConfigurationContextService(ConfigurationContextService contextService) {
-        ServiceReferenceHolder.setContextService(contextService);
+    protected void setAPIManagerConfigurationService(APIManagerConfigurationService apiManagerConfigurationService) {
+        ServiceReferenceHolder.setAPIManagerConfigurationService(apiManagerConfigurationService);
     }
 
     /**
      * Unset configuration context service.
      *
-     * @param contextService the context service
+     * @param apiManagerConfigurationService the context service
      */
-    protected void unsetConfigurationContextService(ConfigurationContextService contextService) {
-        ServiceReferenceHolder.setContextService(null);
+    protected void unsetAPIManagerConfigurationService(APIManagerConfigurationService apiManagerConfigurationService) {
+        ServiceReferenceHolder.setAPIManagerConfigurationService(null);
     }
+
+	/**
+	 * Sets the configuration context service.
+	 *
+	 * @param contextService the new configuration context service
+	 */
+	protected void setConfigurationContextService(ConfigurationContextService contextService) {
+		ServiceReferenceHolder.setContextService(contextService);
+	}
+
+	/**
+	 * Unset configuration context service.
+	 *
+	 * @param contextService the context service
+	 */
+	protected void unsetConfigurationContextService(ConfigurationContextService contextService) {
+		ServiceReferenceHolder.setContextService(null);
+	}
 }

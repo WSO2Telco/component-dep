@@ -8,10 +8,11 @@ include("/jagg/jagg.jag");
 	var user = jagg.getUser();
 
 	var log = new Log();
+	log.info("Action:=" + action);
 
 	if (action =="getBlacklistByAPI"){
 		var api = request.getParameter("api");
-
+		log.info("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK:"+api);
 		var blacklistModule = jagg.module("blacklist");
 		result = blacklistModule.getApiwiseBlacklist(api);
 
@@ -72,6 +73,26 @@ include("/jagg/jagg.jag");
 			}
 		}
 		print(obj);
+	} else if (action =="apis"){
+		
+		var blacklistModule = jagg.module("blacklist");
+		result = blacklistModule.loadAPIs();
+
+		log.info("::: Fetching all the APIs - result: >> "+ stringify(result));
+		print(result);
+
+//		if (result.error) {
+//			obj = {
+//				error:result.error,
+//				message:result.error
+//			};
+//		} else {
+//			obj = {
+//				error:false,
+//				code:result
+//			}
+//		}
+//		print(obj);
 	} else{
 		print({
 			error:true,

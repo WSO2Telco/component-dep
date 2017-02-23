@@ -123,7 +123,7 @@ public class DatabaseUtils {
      * @throws NamingException the naming exception
      * @throws SQLException the SQL exception
      */
-    public static String getAPIId(String apiName) throws NamingException, SQLException {
+    public static String getAPIId(String apiName, String apiVersion) throws NamingException, SQLException {
 
         String apiId = null;
 
@@ -134,15 +134,21 @@ public class DatabaseUtils {
 
         try {
 
-            String sql =
-                    "select API_ID "
-                            + "from AM_API where " + "API_NAME=?;";
+            String sql = "select API_ID from AM_API where API_NAME=? ";
+
+            if(apiVersion != null){
+                sql += " AND API_VERSION = ?";
+            }
 
 
             conn = getAMDBConnection();
             ps = conn.prepareStatement(sql);
 
             ps.setString(1, apiName);
+
+            if(apiVersion != null){
+                ps.setString(2, apiVersion);
+            }
 
             rs = ps.executeQuery();
 
@@ -174,7 +180,39 @@ public class DatabaseUtils {
      * @throws NamingException the naming exception
      * @throws SQLException the SQL exception
      */
-    public static String getSubscriptionId(String apiID, String applicationID) throws NamingException, SQLException {
+
+/*
+    public int findSubscriptionId(String appId, String apiId) throws
+            Exception {
+
+        String sql = SQLConstants.GET_SUBSCRIPTION_ID_FOR_API_AND_APP_SQL;
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+            ps = conn.prepareStatement(sql);
+            ps.setInt(1, Integer.parseInt(apiId));
+            ps.setInt(2, Integer.parseInt(appId));
+
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                return rs.getInt("SUBSCRIPTION_ID");
+            }
+        } catch (SQLException e) {
+            System.out.println(e.toString());
+            throw e;
+        } finally {
+            DbUtils.closeAllConnections(ps, conn, rs);
+
+        }
+        throw new Exception(
+                "No record found in table AM_SUBSCRIPTION for APPLICATION_ID = " + appId + " and API_ID = " + apiId);
+    }*/
+
+
+
+    public static int getSubscriptionId(String apiID, String applicationID) throws NamingException, SQLException {
 
         String subscriptionId = null;
 
@@ -185,24 +223,19 @@ public class DatabaseUtils {
 
         try {
 
-            String sql =
-                    "select SUBSCRIPTION_ID "
-                            + "from AM_SUBSCRIPTION where " + "API_ID=? AND "
-                            + "APPLICATION_ID=?;";
+            String sql = VerificationConstants.GET_SUBSCRIPTION_ID_FOR_API_AND_APP_SQL;
 
 
             conn = getAMDBConnection();
             ps = conn.prepareStatement(sql);
 
-            ps.setString(1, apiID);
-            ps.setString(2, applicationID);
-
+            ps.setInt(1, Integer.parseInt(apiID));
+            ps.setInt(2, Integer.parseInt(applicationID));
             rs = ps.executeQuery();
 
-            subscriptionIDs.clear();
 
             while (rs.next()) {
-                subscriptionIDs.add(rs.getString("SUBSCRIPTION_ID"));
+                return rs.getInt("SUBSCRIPTION_ID");
             }
 
 
@@ -216,20 +249,20 @@ public class DatabaseUtils {
             APIMgtDBUtil.closeAllConnections(ps, conn, rs);
         }
 
-        return subscriptionIDs.get(0);
+        return -1;
     }
 
     /**
      * Read blacklist numbers.
      *
-     * @param apiName the api name
+     * @param apiId the api name
      * @return the list
      * @throws SQLException the SQL exception
      * @throws NamingException the naming exception
      */
-    public static List<String> ReadBlacklistNumbers(String apiName) throws SQLException, NamingException {
+    public static List<String> ReadBlacklistNumbers(String apiId) throws SQLException, NamingException {
 
-        String sql = "select * from blacklistmsisdn where " + "API_NAME=?;";
+        String sql = "select * from blacklistmsisdn where API_ID = ?";
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -237,7 +270,7 @@ public class DatabaseUtils {
         try {
             conn = getStatsDBConnection();
             ps = conn.prepareStatement(sql);
-            ps.setString(1, apiName);
+            ps.setString(1, apiId);
 
             rs = ps.executeQuery();
 

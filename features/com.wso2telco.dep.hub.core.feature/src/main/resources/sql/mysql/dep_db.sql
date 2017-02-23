@@ -306,14 +306,14 @@ CREATE TABLE IF NOT EXISTS `mo_ussd_subscription` (
   PRIMARY KEY (`mo_ussd_request_did`)
 ) ENGINE=InnoDB;
 
-CREATE TABLE `mdtxmsgtype` (
+CREATE TABLE IF NOT EXISTS `mdtxmsgtype` (
   `msgtypedid` int(11) NOT NULL AUTO_INCREMENT,
   `msgtype` varchar(45) NOT NULL,
   PRIMARY KEY (`msgtypedid`),
   UNIQUE KEY `msgtype_UNIQUE` (`msgtype`)
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
 
-CREATE TABLE `mdtrequestmessage` (
+CREATE TABLE IF NOT EXISTS `mdtrequestmessage` (
   `messegeId` int(11) NOT NULL AUTO_INCREMENT,
   `msgtypeId` int(11) NOT NULL,
   `mdtrequestId` varchar(45) DEFAULT NULL,
@@ -329,7 +329,7 @@ CREATE TABLE `mdtrequestmessage` (
   CONSTRAINT `fk_mdtrequestmessage_1` FOREIGN KEY (`msgtypeId`) REFERENCES `mdtxmsgtype` (`msgtypedid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=228911 DEFAULT CHARSET=latin1;
 
-CREATE TABLE `spendlimitdata` (
+CREATE TABLE IF NOT EXISTS `spendlimitdata` (
   `msgType` int(11) DEFAULT NULL,
   `groupName` varchar(255) DEFAULT NULL,
   `consumerKey` varchar(255) DEFAULT NULL,
@@ -343,7 +343,7 @@ CREATE TABLE `spendlimitdata` (
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
 
-CREATE TABLE `workflow_reference` (
+CREATE TABLE IF NOT EXISTS `workflow_reference` (
   `workflow_ref_id` varchar(255) NOT NULL,
   `application_id` varchar(45) DEFAULT NULL,
   `api_name` varchar(45) DEFAULT NULL,
@@ -353,45 +353,20 @@ CREATE TABLE `workflow_reference` (
   PRIMARY KEY (`workflow_ref_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE `mdtxmsgtype` (
-  `msgtypedid` int(11) NOT NULL AUTO_INCREMENT,
-  `msgtype` varchar(45) NOT NULL,
-  PRIMARY KEY (`msgtypedid`),
-  UNIQUE KEY `msgtype_UNIQUE` (`msgtype`)
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+CREATE TABLE IF NOT EXISTS `deptnotificationurls` (
+  `notifyurldid` int(20) NOT NULL AUTO_INCREMENT,
+  `apiname` varchar(255) NOT NULL,
+  `notifyurl` varchar(255) NOT NULL,
+  `serviceprovider` varchar(255) NOT NULL,
+  `clientCorrelator` varchar(500) NULL,
+  `notifystatus` int(10) NOT NULL DEFAULT 0,
+  `createddate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  PRIMARY KEY (`notifyurldid`)
+);
 
 INSERT INTO `mdtxmsgtype` (`msgtypedid`, `msgtype`) VALUES ('1', 'paymentrequest'),('2', 'paymentresponse'), ('3', 'refundrequest'),('4', 'refundresponse');
 
-CREATE TABLE `mdtrequestmessage` (
-  `messegeId` int(11) NOT NULL AUTO_INCREMENT,
-  `msgtypeId` int(11) NOT NULL,
-  `mdtrequestId` varchar(45) DEFAULT NULL,
-  `internalclientrefcode` varchar(20) DEFAULT NULL,
-  `message` blob,
-  `clientrefcode` varchar(45) DEFAULT NULL,
-  `clientrefval` varchar(45) DEFAULT NULL,
-  `reportedtime` bigint(20) DEFAULT NULL,
-  PRIMARY KEY (`messegeId`),
-  KEY `fk_mdtrequestmessage_1_idx` (`msgtypeId`),
-  KEY `index_msgtypeId` (`msgtypeId`),
-  KEY `index_clientrefcode` (`clientrefcode`),
-  CONSTRAINT `fk_mdtrequestmessage_1` FOREIGN KEY (`msgtypeId`) REFERENCES `mdtxmsgtype` (`msgtypedid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=228911 DEFAULT CHARSET=latin1;
-
-CREATE TABLE `spendlimitdata` (
-  `msgType` int(11) DEFAULT NULL,
-  `groupName` varchar(255) DEFAULT NULL,
-  `consumerKey` varchar(255) DEFAULT NULL,
-  `operatorId` varchar(255) DEFAULT NULL,
-  `msisdn` varchar(255) DEFAULT NULL,
-  `amount` decimal(40,15) NOT NULL,
-  `currentDateTime` bigint(20) DEFAULT NULL,
-  `effectiveTime` bigint(20) DEFAULT NULL,
-  KEY `index_msisdn` (`msisdn`),
-  KEY `index_msgType` (`msgType`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
-
-CREATE TABLE `tokeninfo` (
+CREATE TABLE IF NOT EXISTS `tokeninfo` (
   `username` varchar(255) NOT NULL DEFAULT '',
   `password` varchar(255) NOT NULL DEFAULT '',
   `authtoken` varchar(255) NOT NULL DEFAULT '',
@@ -399,7 +374,7 @@ CREATE TABLE `tokeninfo` (
   PRIMARY KEY (`username`,`password`,`authtoken`)
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
-CREATE TABLE `userinfo` (
+CREATE TABLE IF NOT EXISTS `userinfo` (
   `enduserid` varchar(16) NOT NULL DEFAULT '',
   `package` varchar(20) NOT NULL DEFAULT '',
   `timestamp` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
@@ -424,7 +399,8 @@ INSERT INTO `operators` (`ID`, `operatorname`, `description`, `created`, `create
 INSERT INTO `operatorendpoints` (`ID`, `operatorid`, `api`, `isactive`, `endpoint`, `created`, `created_date`, `lastupdated`, `lastupdated_date`) VALUES
   (1, 1, 'smsmessaging', 1, 'http://localhost:8081/mifesandbox/SandboxController/smsmessaging/1', NULL, '2014-03-04 11:36:23', NULL, NULL),
   (2, 1, 'payment', 1, 'http://localhost:8081/mifesandbox/SandboxController/payment/1', NULL, '2014-03-04 11:36:58', NULL, NULL),
-  (3, 1, 'location', 1, 'http://localhost:8081/mifesandbox/SandboxController/location/1', NULL, '2014-10-02 10:33:41', NULL, NULL);
+  (3, 1, 'location', 1, 'http://localhost:8081/mifesandbox/SandboxController/location/1', NULL, '2014-10-02 10:33:41', NULL, NULL),
+  (4, 1, 'location', 1, 'http://localhost:8081/mifesandbox/SandboxController/ussd/1', NULL, '2014-10-02 10:33:41', NULL, NULL);
 
 --
 -- Initial Metadata script for table `workflow_api_key_mappings`

@@ -23,9 +23,12 @@ jagg.module("whitelist", {
     	},
 	removeFromWhiteListNumbers:function () {
         	return jagg.require(jagg.getModulesDir() + "whitelist/whitelist.jag").removeFromWhiteListNumbers.apply(this, arguments);
+    	},
+	
+    getSubscribersOfProvider:function () {
+        	return jagg.require(jagg.getModulesDir() + "whitelist/whitelist.jag").getSubscribersOfProvider.apply(this, arguments);
     	}
 	
-    
 });
 %>
 

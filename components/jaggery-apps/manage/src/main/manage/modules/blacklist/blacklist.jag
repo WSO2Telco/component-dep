@@ -10,11 +10,11 @@ var isOperator = jagg.getUser().operator;
 var site = require("/site/conf/site.json");
 var externalServicesUrl = site.externalServicesUrl;
 
-var addSingleURL = externalServicesUrl + "locationrest/queries/Blacklist/tel3A%2B";
-var addBulkURL = externalServicesUrl + "locationrest/queries/Blacklist";
-var getBlacklistURL = externalServicesUrl + "locationrest/queries/GetBlacklistPerApi/";
-var removeBlacklistURL = externalServicesUrl + "locationrest/queries/RemoveFromBlacklist/tel3A%2B";
-
+var addSingleURL = externalServicesUrl + "blacklist-whitelist-service/queries/Blacklist/tel3A%2B";
+var addBulkURL = externalServicesUrl + "blacklist-whitelist-service/queries/Blacklist";
+var getBlacklistURL = externalServicesUrl + "blacklist-whitelist-service/queries/GetBlacklistPerApi/";
+var removeBlacklistURL = externalServicesUrl + "blacklist-whitelist-service/queries/RemoveFromBlacklist/tel3A%2B";
+var apiListURL = externalServicesUrl + "blacklist-whitelist-service/queries/apis";
 
 %>
 
@@ -79,6 +79,7 @@ function addNewToBlacklist(api, subscriberList){
 
 	// Invoke bulk-add API
 	log.info(subscribers);
+	log.info("api:::::::::::::::::::::::::::::::::::" + stringify(api));
 	var data = {
 		"apiID":"1",
 		"apiName":api,
@@ -107,6 +108,15 @@ function removeFromBlacklist(api, subscriber){
 	return 1;
 }
 
+function loadAPIs(){
+	var log = new Log();
+
+	var response = getJSON(apiListURL);
+	log.info("response = " + response);
+
+	return response;
+}
+
 function postJSON(url, data) {
 	var log = new Log();
 	log.info("data = " + JSON.stringify(data));
@@ -119,6 +129,7 @@ function postJSON(url, data) {
 
 	var ajax = new XMLHttpRequest();
 	ajax.open("POST", request.url, false);
+	ajax.setRequestHeader("Content-type", "application/json");
 	ajax.onreadystatechange = function() {
 		if (ajax.readyState == 4) {
 			log.info("ajax onreadystatechange");
@@ -126,6 +137,23 @@ function postJSON(url, data) {
 		}
 	};
 	ajax.send(request.payload);
+	return ajax.responseText;
+}
+
+
+function getJSON(url) {
+	var log = new Log();
+
+	var ajax = new XMLHttpRequest();
+	ajax.open("GET", url, false);
+		ajax.onreadystatechange = function() {
+		if (ajax.readyState == 4) {
+			log.info("ajax onreadystatechange");
+			request.handler.call(request, ajax.responseText);
+		}
+	};
+
+	ajax.send();
 	return ajax.responseText;
 }
 

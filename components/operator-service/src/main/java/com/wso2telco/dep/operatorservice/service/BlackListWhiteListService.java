@@ -19,13 +19,15 @@ package com.wso2telco.dep.operatorservice.service;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Map;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.exception.GenaralError;
-import com.wso2telco.core.msisdnvalidator.InvalidMSISDNException;
 import com.wso2telco.core.msisdnvalidator.MSISDN;
 import com.wso2telco.core.msisdnvalidator.MSISDNUtil;
 import com.wso2telco.dep.operatorservice.dao.BlackListWhiteListDAO;
@@ -36,12 +38,16 @@ import com.wso2telco.dep.operatorservice.model.BlackListDTO;
 import com.wso2telco.dep.operatorservice.model.MSISDNSearchDTO;
 import com.wso2telco.dep.operatorservice.model.WhiteListDTO;
 import com.wso2telco.dep.operatorservice.model.WhiteListMSISDNSearchDTO;
+import org.wso2.carbon.apimgt.api.dto.UserApplicationAPIUsage;
+import org.wso2.carbon.apimgt.api.model.APIIdentifier;
+import org.wso2.carbon.apimgt.api.model.SubscribedAPI;
 
 public class BlackListWhiteListService {
 	Log LOG = LogFactory.getLog(BlackListWhiteListService.class);
 	private BlackListWhiteListDAO dao;
 
 	private MSISDNUtil phoneNumberValidationUtil_;
+
 	{
 		dao = new BlackListWhiteListDAO();
 		phoneNumberValidationUtil_ = new MSISDNUtil();
@@ -58,25 +64,31 @@ public class BlackListWhiteListService {
 		List<MSISDN> numberA = new ArrayList<MSISDN>();
 		MSISDNSearchDTO mSISDNSearchDTO = new MSISDNSearchDTO();
 		try {
-		for (String msisdn : msisdns) {
+			for (String msisdn : msisdns) {
 
-			MSISDN msisdnDTO = phoneNumberValidationUtil_.parse(msisdn);
-			numberA.add(msisdnDTO);
-			mSISDNSearchDTO.addMSISDN2Search(msisdnDTO);
-		}
+				//The number format should be telco:phonenumber
+				int charIndex = msisdn.indexOf('+');
+				String prefix = msisdn.substring(0, charIndex);
+				msisdn = msisdn.substring(msisdn.indexOf('+'));
+				MSISDN msisdnDTO = phoneNumberValidationUtil_.parse(msisdn);
+				msisdnDTO.setPrefix(prefix);
+				numberA.add(msisdnDTO);
+				mSISDNSearchDTO.addMSISDN2Search(msisdnDTO);
+			}
 
-		final String apiID_ = dto.hasValidApiID() ? dto.getApiID().trim() : null;
-		final String apiName_ = dto.getApiName();
-		final String userId_ = dto.getUserID();
+			final String apiID_ = dto.getApiID();
+			final String apiName_ = dto.getApiName();
+			final String userId_ = dto.getUserID();
 
-		// load already black listed numbers
-		mSISDNSearchDTO.setApiID(apiID_);
-		List<MSISDN> alreadyBlacklisted;
-	
+			// load already black listed numbers
+			mSISDNSearchDTO.setApiID(apiID_);
+			List<MSISDN> alreadyBlacklisted;
+
 			alreadyBlacklisted = dao.loadAlreadyBlacklisted(mSISDNSearchDTO);
 
 			// Remove already black listed from the list
 			for (MSISDN msisdn : alreadyBlacklisted) {
+
 				numberA.remove(msisdn);
 			}
 
@@ -112,61 +124,66 @@ public class BlackListWhiteListService {
 	/**
 	 * remove already white listed msisdns from the list and white list the
 	 * subscription
-	 * 
+	 *
 	 * @param whiteListDTO
 	 * @throws BusinessException
 	 */
-	public void whiteListSubscription(WhiteListDTO whiteListDTO) throws InvalidMSISDNException,BusinessException {
+	public void whiteListSubscription(WhiteListDTO whiteListDTO) throws Exception {
 		String[] msisdns = whiteListDTO.getUserMSISDN();
-		List<MSISDN> numberA = new ArrayList<MSISDN>();
+		List<MSISDN> msisdnArrayList = new ArrayList<MSISDN>();
 		WhiteListMSISDNSearchDTO mSISDNSearchDTO = new WhiteListMSISDNSearchDTO();
 
 		for (String msisdn : msisdns) {
 
-			MSISDN msisdnDTO;
-				msisdnDTO = phoneNumberValidationUtil_.parse(msisdn);
-			numberA.add(msisdnDTO);
+			//The number format should be telco:phonenumber
+			int charIndex = msisdn.indexOf('+');
+			String prefix = msisdn.substring(0, charIndex);
+			msisdn = msisdn.substring(msisdn.indexOf('+'));
+			MSISDN msisdnDTO = phoneNumberValidationUtil_.parse(msisdn);
+			//msisdnDTO = phoneNumberValidationUtil_.parse(msisdn);
+			msisdnDTO.setPrefix(prefix);
+			msisdnArrayList.add(msisdnDTO);
 			mSISDNSearchDTO.addMSISDN2Search(msisdnDTO);
 		}
 
-		final String apiID = whiteListDTO.hasValidApiID() ? whiteListDTO.getApiID() : null;
-		String subscriptionID = whiteListDTO.hasValidSubscriptionID() ? whiteListDTO.getSubscriptionID() : null;
-		final String applicationID = whiteListDTO.hasValidApplicationID() ? whiteListDTO.getApplicationID() : null;
-
+		String subscriptionID = whiteListDTO.getSubscriptionID();
 		// if no subscription provided
 		// subscription id derived using applicationid and using api id
-		try {
-			if (whiteListDTO.hasValidSubscriptionID()) {
-				subscriptionID = dao.findSubscriptionId(applicationID, apiID);
-			}
-			if (subscriptionID == null || subscriptionID.trim().length() <= 0) {
+		if(subscriptionID == null){
+			//String[] apiArray = whiteListDTO.getApiID().split("[:]");
+			String apiId = whiteListDTO.getApiID();
+			subscriptionID = String.valueOf(dao.findSubscriptionId(whiteListDTO.getApplicationID(), whiteListDTO.getApiID()));
+
+			if (subscriptionID.trim().length() <= 0) {
 				throw new SubscriptionWhiteListException(SubscriptionWhiteListErrorType.NULL_SUBSCRIPTION);
 			}
-		} catch (Exception e1) {
-			throw new SubscriptionWhiteListException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
+
+		final String apiID = whiteListDTO.getApiID();
+		final String applicationID =  whiteListDTO.getApplicationID();
+
 
 		// check the input stream for already white listed numbers
 		mSISDNSearchDTO.setApiID(apiID);
 		List<MSISDN> alreadyWhilteListed;
 		try {
-			alreadyWhilteListed = dao.loadSubScriptionWhiteListed(mSISDNSearchDTO);
+			alreadyWhilteListed = dao.loadSubscriptionsForAlreadyWhiteListedMSISDN(subscriptionID);
 			for (MSISDN msisdn : alreadyWhilteListed) {
-				numberA.remove(msisdn);
+				msisdnArrayList.remove(msisdn);
 			}
 		} catch (SQLException e) {
-			LOG.error("whiteListSubscription, calling dao.loadSubScriptionWhiteListed(", e);
+			LOG.error("whiteListSubscription, calling dao.loadSubscriptionsForAlreadyWhiteListedMSISDN(", e);
 			throw new SubscriptionWhiteListException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
 
 		// All numbers already white listed then throw exception
-		if (numberA.isEmpty()) {
+		if (msisdnArrayList.isEmpty()) {
 			LOG.debug(" All the numbers already black listed");
 			throw new SubscriptionWhiteListException(SubscriptionWhiteListErrorType.SUBSCRIPTION_ALREADY_WHITELISTED);
 		}
 		// persistence goes hare
 		try {
-			dao.whitelist(numberA, subscriptionID, apiID, applicationID);
+			dao.whitelist(msisdnArrayList, subscriptionID, apiID, applicationID);
 
 		} catch (Exception e) {
 			LOG.error("whiteListSubscription. caling dao.whitelist", e);
@@ -196,5 +213,80 @@ public class BlackListWhiteListService {
 			LOG.error("getWhiteListNumbers", e);
 			throw new SubscriptionWhiteListException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
+	}
+
+	public  String getAllSubscribers() throws BusinessException {
+
+		Map<String, UserApplicationAPIUsage> userApplicationAPIUsageMap = dao.getAllAPIUsageByProvider();
+		List<UserApplicationAPIUsage> userApplicationAPIUsageArrayList = new ArrayList<UserApplicationAPIUsage>(userApplicationAPIUsageMap.values());
+
+		List<String> subsscriberList = new ArrayList<String>();
+		for (UserApplicationAPIUsage userApplicationAPIUsage : userApplicationAPIUsageArrayList){
+			if(!subsscriberList.contains(userApplicationAPIUsage.getUserId())){
+				subsscriberList.add(userApplicationAPIUsage.getUserId());
+			}
+		}
+		Gson gson = new GsonBuilder().create();
+		//return gson.toJson(userApplicationAPIUsageArrayList);
+		return gson.toJson(subsscriberList);
+	}
+
+	public  String getAllSubscribedUsers() throws BusinessException {
+
+		List<String> subscriberList = dao.getAllAPIUsageByUser();
+
+		Gson gson = new GsonBuilder().create();
+		return gson.toJson(subscriberList);
+	}
+
+
+	public  String getAllApplicationsByUser(String userID) throws BusinessException {
+
+		List<String> appUniqueIDList = dao.getAllAplicationsByUser(userID);
+
+		Gson gson = new GsonBuilder().create();
+		return gson.toJson(appUniqueIDList);
+	}
+
+	public  String getAllApisByUserAndApp(String userID, String appID) throws BusinessException {
+
+		List<String> appList = dao.getAllApisByUserAndApp(userID, appID);
+
+		Gson gson = new GsonBuilder().create();
+		return gson.toJson(appList);
+	}
+
+
+	public String getAllAPIs() throws BusinessException {
+
+		Map<String, UserApplicationAPIUsage> userApplicationAPIUsageMap = dao.getAllAPIUsageByProvider();
+		List<UserApplicationAPIUsage> userApplicationAPIUsageArrayList = new ArrayList<UserApplicationAPIUsage>(userApplicationAPIUsageMap.values());
+
+		List<String> apiNameList = new ArrayList<String>();
+		for (UserApplicationAPIUsage userApplicationAPIUsage : userApplicationAPIUsageArrayList){
+			SubscribedAPI[] subscribedAPIS =  userApplicationAPIUsage.getApiSubscriptions();
+
+			for (SubscribedAPI subscribedAPI:subscribedAPIS){
+
+				APIIdentifier apiIdentifier = subscribedAPI.getApiId();
+				String[] apiName = apiIdentifier.getApiName().split("[|]");
+				String apiFullName = apiIdentifier.getProviderName()+":"+apiName[0]+":"+apiIdentifier
+						.getVersion()+ ":" + apiName[1];
+
+				if(!apiNameList.contains(apiFullName)){
+					apiNameList.add(apiFullName);
+				}
+			}
+		}
+
+		Gson gson = new GsonBuilder().create();
+		//return gson.toJson(userApplicationAPIUsageArrayList);
+		return gson.toJson(apiNameList);
+	}
+
+
+	public int getAPIId(String providerName, String apiName, String apiVersion) throws BusinessException {
+
+		return  dao.getAPIId(providerName,apiName,apiVersion);
 	}
 }

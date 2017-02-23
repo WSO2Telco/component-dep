@@ -21,6 +21,7 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.UnsupportedEncodingException;
 import java.sql.SQLException;
+import java.util.List;
 import java.util.Map;
 import java.util.logging.Level;
 import java.util.logging.Logger;
@@ -89,7 +90,12 @@ public class ACRHandler extends AbstractHandler implements ManagedLifecycle {
         String msisdnAcr = null;
 
         String api = APIUtil.getAPI(messageContext);
-        
+
+        if(api == null){
+            return true;
+        }
+
+
         if (api.equals(APINameConstant.PAYMENT)){
            //Retriveing MSISDN from the incoming request
            msisdnAcr = str_piece(resourceUrl,'/',4); 

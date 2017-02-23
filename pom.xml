@@ -8,7 +8,8 @@
 	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
 	the specific language governing permissions and limitations under the License.
    folk test M	-->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns="http://maven.apache.org/POM/4.0.0"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -69,14 +70,14 @@
         <module>components/server-startup-observer</module>
         <module>components/webapps/blacklist-whitelist-service</module>
         <module>components/webapps/aggregator-blacklist</module>
-	<module>components/webapps/operator-onboard</module>
+        <module>components/webapps/operator-onboard</module>
         <module>components/jaggery-apps/manage</module>
         <module>components/jaggery-apps/publisher</module>
         <module>components/jaggery-apps/sandbox</module>
         <module>components/jaggery-apps/store</module>
         <module>features</module>
         <module>components/operator-onboarding</module>
-  </modules>
+    </modules>
 
     <scm>
         <url>https://github.com/WSO2Telco/component-dep.git</url>
@@ -179,15 +180,16 @@
                     <plugin>
                         <groupId>org.apache.rat</groupId>
                         <artifactId>apache-rat-plugin</artifactId>
-						<version>0.12</version>
+                        <version>0.12</version>
                         <configuration>
                             <licenses>
                                 <license implementation="org.apache.rat.analysis.license.SimplePatternBasedLicense">
                                     <licenseFamilyCategory>WSO2Telco</licenseFamilyCategory>
                                     <licenseFamilyName>WSO2Telco License 1.0</licenseFamilyName>
-                                    <notes />
+                                    <notes/>
                                     <patterns>
-										<pattern>WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved</pattern>
+                                        <pattern>WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved
+                                        </pattern>
                                     </patterns>
                                 </license>
                                 <!-- <license implementation="org.apache.rat.analysis.license.ApacheSoftwareLicense20" /> -->
@@ -626,6 +628,11 @@
                 <artifactId>slf4j-jdk14</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.identity</groupId>
+                <artifactId>org.wso2.carbon.identity.oauth</artifactId>
+                <version>${carbon.identity.version}</version>
+            </dependency>
 
             <dependency>
                 <groupId>org.activiti</groupId>
@@ -639,11 +646,11 @@
                 <version>${activiti.version}</version>
                 <type>war</type>
             </dependency>
-	    <dependency>
-	        <groupId>org.hibernate</groupId>
-	        <artifactId>hibernate-core</artifactId>
-	        <version>${org.hibernate.version}</version>
-	    </dependency>
+            <dependency>
+                <groupId>org.hibernate</groupId>
+                <artifactId>hibernate-core</artifactId>
+                <version>${org.hibernate.version}</version>
+            </dependency>
         </dependencies>
     </dependencyManagement>
 
@@ -696,10 +703,11 @@
 
     <properties>
         <com.wso2telco.dep.version>2.1.0</com.wso2telco.dep.version>
+        <com.wso2telco.dep.version>2.1.0-SNAPSHOT</com.wso2telco.dep.version>
+        <com.wso2telco.core.version>2.0.16</com.wso2telco.core.version>
         <log4j.version>1.2.13</log4j.version>
         <com.google.code.gson.version>2.3.1</com.google.code.gson.version>
         <org.glassfish.jersey.core.version>2.4</org.glassfish.jersey.core.version>
-        <com.wso2telco.core.version>2.0.15-rc1</com.wso2telco.core.version>
         <org.json.wso2.version>3.0.0.wso2v1</org.json.wso2.version>
         <junit.version>3.8.1</junit.version>
         <org.apache.synapse.core.version>2.1.7-wso2v3</org.apache.synapse.core.version>
@@ -748,7 +756,8 @@
         <carbon.p2.plugin.version>1.5.3</carbon.p2.plugin.version>
         <maven-scr-plugin.version>1.7.2</maven-scr-plugin.version>
         <maven-bundle-plugin.version>2.5.3</maven-bundle-plugin.version>
-	<org.hibernate.version>5.2.1.Final</org.hibernate.version>
+        <carbon.identity.version>5.1.1</carbon.identity.version>
+        <org.hibernate.version>5.2.1.Final</org.hibernate.version>
     </properties>
 
 </project>

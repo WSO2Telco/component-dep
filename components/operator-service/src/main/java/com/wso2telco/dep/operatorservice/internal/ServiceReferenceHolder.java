@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.wso2telco.dep.operatorservice.internal;
 
+import org.wso2.carbon.apimgt.impl.APIManagerConfigurationService;
 import org.wso2.carbon.utils.ConfigurationContextService;
 
 // TODO: Auto-generated Javadoc
@@ -28,6 +29,9 @@ public class ServiceReferenceHolder {
 	
 	/** The context service. */
 	private static ConfigurationContextService contextService = null;
+
+	/** The api manager configuration service. */
+	private static APIManagerConfigurationService apiManagerConfigurationService = null;
 	
 
     /**
@@ -48,7 +52,11 @@ public class ServiceReferenceHolder {
         return contextService;
     }
 
-    /**
+	public static APIManagerConfigurationService getApiManagerConfigurationService() {
+		return apiManagerConfigurationService;
+	}
+
+	/**
      * Sets the context service.
      *
      * @param contextService the new context service
@@ -57,4 +65,8 @@ public class ServiceReferenceHolder {
         ServiceReferenceHolder.contextService = contextService;
     }
 
+	public static void setAPIManagerConfigurationService(APIManagerConfigurationService
+			                                                     APIManagerConfigurationService) {
+		ServiceReferenceHolder.apiManagerConfigurationService = APIManagerConfigurationService;
+	}
 }

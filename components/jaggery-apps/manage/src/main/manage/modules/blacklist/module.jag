@@ -8,6 +8,9 @@ jagg.module("blacklist", {
 	},
 	removeFromBlacklist:function () {
 		return jagg.require(jagg.getModulesDir() + "blacklist/blacklist.jag").removeFromBlacklist.apply(this, arguments);
+	},
+	loadAPIs:function () {
+		return jagg.require(jagg.getModulesDir() + "blacklist/blacklist.jag").loadAPIs.apply(this, arguments);
 	}
 });
 %>

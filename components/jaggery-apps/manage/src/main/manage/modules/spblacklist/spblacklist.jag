@@ -17,6 +17,7 @@ function getSPforBlacklist(sp){
 	try {
 		sp="testParam";
 		apps = billing.getSPforBlacklist(sp,jagg.getUser().isAdmin,jagg.getUser().operator);
+		log.info("Apps:" + stringify(apps));
 		return {error:false, data : apps};
 
 	} catch (e) {
@@ -51,6 +52,8 @@ function addNewSPToBlacklist(sp){
 	
 	
     callWSInOnly(webService, serverUrl, "urn:lockUserAccount", lockUserAccount);
+
+    log.info("JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ");
     return {error:false, data : appObj};
  
 
@@ -101,6 +104,7 @@ function callWSInOnly(webService, serverUrl, action, payload){
 	options.action = action;
 	options.mep = 'in-only';
 	try {
+		log.info("callingggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg");
 		call(webService, serverUrl, options, payload);
 	}
 	catch (e) {
@@ -126,7 +130,9 @@ function call(webService, serverUrl, options, payload){
 	var amConfig = getAdminData();
 	var adminUserName = String(amConfig.AuthManager.Username.text());
 	var adminPwd = String(amConfig.AuthManager.Password.text());
-	webService.open(options, serverUrl, false, adminUserName, adminPwd);
+
+	log.info("adminUserName:" + String(amConfig.AuthManager.Username.text()) + "   adminPwd:" + adminPwd);
+	webService.open(options, serverUrl, false, "admin", "admin");
 	webService.send(payload);
 }
 

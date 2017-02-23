@@ -11,7 +11,7 @@
 	log.info(isAdmin);
 	log.info(isOperator);
 %>
-	
+
 <div class="title-section">
 	<% if(isAdmin == true){ %>
 	<h2>APIwise Whitelist</h2>
@@ -31,12 +31,12 @@
 						<table>
 						<thead>
 							<th style="width: 250px;"></th>
-							<th style="width: 200px; vertical-align: top;"></th>
+							<th style="width: 200px; vertical-align: left;"></th>
+							
 						</thead>
 						<tbody>
 						
-						<!-- -------------------------------------------------------------------- -->
-
+						
 							<tr id="listRow3">
 								<td>
 									<span>Subscriber: </span>
@@ -47,40 +47,57 @@
 									<span>Application: </span>
 									<select id="appSelect" style="width: 150px;" name="appSelect">
 									</select>
-									<span>API:</span>
+									<span>&nbsp;&nbsp;API:</span>
 									<select id="apiSelect" style="width: 150px;" name="apiSelect">
 									</select>
 								</td>
 							</tr>
-						<!-- -------------------------------------------------------------------- -->
+						
 							
 							<tr id="manualRow1">
 								<td>&nbsp;</td>
-								<td><input type="radio" name="uploadOptions" value="isManual" id="isManual" onchange="radioButton1();">&nbsp;Upload number Manually</td>
+								<td>&nbsp;</td>
+							</tr>
+
+						
+							<tr id="manualRow1">
+								<td>&nbsp;</td>
+								<td><div id="rangeConfigsManaged">
+									<legend>Numbers list configuration </legend><div class="form-group form-inline"><div class="col-sm-3"></div><div class="col-sm-9"></div></div></div>
+								</td>
 							</tr>
 							
 							<tr id="manualRow2">
 								<td>Number</td>
-								<td><input type="text" name="manualNumber" id="manualNumber">
-								<label style="color:grey;">e.g.94777333100</label>
+								<td style="align:center"><br/><br/><input type="text" name="manualNumber" id="manualNumber" placeholder="e.g.94777333100,94777333105 (Comma seperated entries)">&nbsp;
+								<button class="btn btn-primary"  style="margin-left: 10px; margin-top: 5x; vertical-align: top;" id="add-manual"><span class="icon fw-stack" style="font-size:10px">
+											<i class="fw fw-add fw-stack-1x"></i>
+											<i class="fw fw-circle-outline fw-stack-2x"></i>
+										</span>&nbsp;Upload Number</button>
 								</td>
 							</tr>
-							<tr id="manualRow3">
-								<td></td>
-								<td style="vertical-align: top;">
-									<button class="btn btn-primary" style="margin-left: 15px; margin-top: 3px;" id="add-manual">Upload Number</button>
-								</td>
-							</tr>
-														
+																				
 							<tr id="manualRow4">
 								<td>&nbsp;</td>
 								<td>&nbsp;</td>
 							</tr>
+
+								<tr id="manualRow5">
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
+
+								<tr id="manualRow6">
+								<td>&nbsp;</td>
+								<td>&nbsp;</td>
+							</tr>
 						
-						<!-- -------------------------------------------------------------------- -->
+						
 							<tr id="rangeRow1">
 								<td>&nbsp;</td>
-								<td><input type="radio" name="uploadOptions" value="isRange" id="isRange" onchange="radioButton2();">&nbsp;Whitelist numbers range</td>
+								<td><div id="rangeConfigsManaged">
+									<legend>Numbers Range configuration </legend><div class="form-group form-inline"><div class="col-sm-3"></div><div class="col-sm-9"></div></div></div>
+								</td>
 							</tr>
 							
 							<tr id="rangeRow2">
@@ -104,21 +121,7 @@
 								<td>&nbsp;</td>
 								<td>&nbsp;</td>
 							</tr>
-							
-							<!-- -------------------------------------------------------------------- -->
-							
-							<tr id="listRow1">
-								<td>&nbsp;</td>
-								<td><input type="radio" name="uploadOptions" value="isList" id="isList" onchange="radioButton3();">&nbsp;Upload White list number list 
-								<label style="color:grey;">e.g.94777333100,94777333105</label>
-								</td>
-							</tr>
-							<tr id="listRow2">
-								<td></td>
-								<td style="vertical-align: top;">
-									<button class="btn btn-primary" style="margin-left: 15px; margin-top: 3px;" id="add-new">Add Number List</button>
-								</td>
-							</tr>
+														
 						</tbody>
 					</table>
 
@@ -131,13 +134,13 @@
                         <h3>Whitelisted subscribers</h3>
                       </div>
 
-<div  style="width:566px;height:200px; overflow:scroll;" >
+                   <div  style="width:566px;height:200px; overflow-y: auto;overflow-x: hidden;" >
                       <table>
                         <thead>
                           <tr>
-                            <th style="width: 550px;"></th>
+                            <th style="width: 200px;"></th>
 
-                            <th style="width: 200px; vertical-align: top;"></th>
+                            <th style="width: 50px; vertical-align: top;"></th>
                           </tr>
                         </thead>
 
@@ -145,14 +148,6 @@
                           <tr>
                             <td>
                               <table class="table table-bordered" style="width: 550px;">
-                                <thead>
-                                  <tr>
-                                    <th style="width: 400px;">Subscriber</th>
-
-                                    <th style="width: 150px;">Remove from whitelist</th>
-                                  </tr>
-                                </thead>
-
                                 <tbody id="billingBody"></tbody>
                               </table>
                             </td>

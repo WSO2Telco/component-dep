@@ -11,7 +11,7 @@ public class ApplicationTaskFactory {
         }else if (deploymentTypes.equals(Constants.EXTERNAL_GATEWAY)) {
             subscriptionTask = new ExternalGatewayTask();
         } else {
-            new DefaultApplicationTaskExecutor();
+            subscriptionTask =new DefaultApplicationTaskExecutor();
         }
         return subscriptionTask;
     }

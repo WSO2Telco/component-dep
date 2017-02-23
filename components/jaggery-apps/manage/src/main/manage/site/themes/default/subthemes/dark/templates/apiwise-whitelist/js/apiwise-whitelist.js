@@ -1,5 +1,6 @@
+var selectedSubscriber = null;
+var selectedApplication = null;
 var selectedAPI = null;
-
 
 $(document).ready(function() {
 	
@@ -22,11 +23,13 @@ $(document).ready(function() {
 	});
 	
 	$("#subsSelect").change(function() {
-		loadApplicationsComboBox($("#subsSelect").val());
+		selectedSubscriber = $("#subsSelect").val();
+		loadApplicationsComboBox(selectedSubscriber);
 	});
 	
 	$("#appSelect").change(function() {
-		loadApisComboBox($("#appSelect").val());
+		selectedApplication = $("#appSelect").val();
+		loadApisComboBox($("#subsSelect").val(), selectedApplication);
 	});
 	
 	loadSubscribersComboBox();
@@ -103,8 +106,8 @@ function addNewToWhitelist() {
 	if(subscriberList != null){
 		jagg.post("/site/blocks/apiwise-whitelist/ajax/apiwise-whitelist.jag", {
 			action : "addNewToWhitelist",
-			appId : $("#appSelect").val(),
-			apiId : $("#apiSelect").val(),
+			appId : $("#appSelect").val(), //lbs-payment-app
+			apiId : $("#apiSelect").val(), //admin:LBS:v1.0
 			/*subscriptionId : subscriptionId,*/
 			subscriberList : subscriberList
 			
@@ -214,7 +217,8 @@ function loadSubscribersComboBox() {
 		action : "getSubscribers"
 	}, function(result) {
 		var subsSelect = $("#subsSelect");
-//		result = JSON.parse(result);
+		//result = JSON.parse(result);
+//		
 		if(result.error == 'true') {
 			jagg.message({
 				content : 'Error loading subscribers. Try reloading the page.',
@@ -224,11 +228,11 @@ function loadSubscribersComboBox() {
 		}
 		
 	    for (var prop in result) {
+ 
 	    	subsSelect.append($("<option></option>")
-	    	         .attr("value",prop)
+	    	         .attr("value",result[prop])
 	    	         .text(result[prop])); 
 	    }
-	    //alert("auto-selectedSubs>" + subsSelect.val());
 	    loadApplicationsComboBox(subsSelect.val());
 	}, "json");
 }
@@ -248,20 +252,22 @@ function loadApplicationsComboBox(subscriberId) {
 			return;
 		}
 	    for (var prop in result) {
+	    	var appArray = result[prop].split(':');
 	    	appSelect.append($("<option></option>")
-	    	         .attr("value",prop)
-	    	         .text(result[prop])); 
+	    	         .attr("value",appArray[0])
+	    	         .text(appArray[1])); 
 	    }
-//	    alert("auto-selectedApp>" + appSelect.val());
-	    loadApisComboBox(appSelect.val());
+	   
+	    loadApisComboBox($("#subsSelect").val(), appSelect.val());
 	}, "json");
 }
-function loadApisComboBox(appId) {
+function loadApisComboBox(subscriberId, appId) {
 	//alert("appId>" + appId);
 	jagg.post("/site/blocks/apiwise-whitelist/ajax/apiwise-whitelist.jag", {
-		action : "getApis",
+		action : "apis",
+		subscriberId: subscriberId,
 		appId : appId
-	}, function(result) {
+		}, function(result) {
 		var apiSelect = $("#apiSelect");
 		apiSelect.html("");
 		//result = JSON.parse(result);
@@ -272,10 +278,12 @@ function loadApisComboBox(appId) {
 			});
 			return;
 		}
+		
 	    for (var prop in result) {
+	    	var apiArray = result[prop].split(':');
 	    	apiSelect.append($("<option></option>")
-	    	         .attr("value",prop)
-	    	         .text(result[prop])); 
+	    	         .attr("value",apiArray[0])
+	    	         .text(apiArray[2] + " - " + apiArray[3] + "  Provided by " + apiArray[1])); 
 	    }
 	    //alert("selectedAPI>" + apiSelect.val());
 	}, "json");
@@ -300,12 +308,15 @@ function populateWhitelistData() {
 				var subscriber = whitelist[i];
 				var sub = subscriber.replace('tel3A+', '');		
 				var row = document.createElement("tr");
+				row.setAttribute("style","background-color: #f5f5f5;");
 				var cell0 = document.createElement("td");
 				cell0.innerHTML = sub;
 				row.appendChild(cell0);
 				var cell1 = document.createElement("td");
 
-				cell1.innerHTML = "<div><a onclick=\"removeFromWhitelist(" + sub + ")\">Remove</a><div>";
+				//cell1.innerHTML = "<div><a onclick=\"removeFromWhitelist(" + sub + ")\"><span class=\"fw-stack\" style=\"font-size:10px\"><i class=\"fw fw-delete fw-stack-1x\"></i><i class=\"fw fw-circle-outline fw-stack-2x\"></i></a><div>";
+				cell1.innerHTML = "<a class=\"operation-summary delete_resource\" onclick=\"removeFromWhitelist(" + sub + ")\"><span class=\"fw-stack\" style=\"font-size:10px\"><i class=\"fw fw-delete fw-stack-1x\"></i><i class=\"fw fw-circle-outline fw-stack-2x\"></i></a>";
+				//<a class="operation-summary delete_resource" onclick="removeFromWhitelist(94776049792)"><span class="fw-stack" style="font-size:10px"><i class="fw fw-delete fw-stack-1x"></i><i class="fw fw-circle-outline fw-stack-2x"></i></a>
 				row.appendChild(cell1);
 				tbody.appendChild(row);
 
@@ -336,5 +347,5 @@ function removeFromWhitelist(subStr) {
 		}
 	}, "json");
 
-
+	populateWhitelistData();
 }
