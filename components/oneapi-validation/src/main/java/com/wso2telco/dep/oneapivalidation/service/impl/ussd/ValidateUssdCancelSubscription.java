@@ -28,7 +28,7 @@ import com.wso2telco.dep.oneapivalidation.util.UrlValidator;
 public class ValidateUssdCancelSubscription implements IServiceValidate {
 
     /** The validation rules. */
-    private final String[] validationRules = {"ussd", "*", "inbound", "subscriptions", "*"};
+    private final String[] validationRules = {"inbound", "subscriptions", "*"};
 
     /* (non-Javadoc)
      * @see com.wso2telco.oneapivalidation.service.IServiceValidate#validate(java.lang.String)
