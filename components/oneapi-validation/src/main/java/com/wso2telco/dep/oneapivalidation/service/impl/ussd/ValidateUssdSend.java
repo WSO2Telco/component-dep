@@ -31,7 +31,7 @@ import org.json.JSONObject;
 public class ValidateUssdSend implements IServiceValidate {
 
     /** The validation rules. */
-    private final String[] validationRules = {"ussd", "*", "outbound"};
+    private final String[] validationRules = {"outbound", "*"};
 
     /* (non-Javadoc)
      * @see com.wso2telco.oneapivalidation.service.IServiceValidate#validate(java.lang.String)

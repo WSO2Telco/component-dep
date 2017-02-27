@@ -21,9 +21,12 @@ import com.wso2telco.dep.oneapivalidation.util.UrlValidator;
 import com.wso2telco.dep.oneapivalidation.util.Validation;
 import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
 
+import org.json.JSONArray;
 import org.json.JSONObject;
 
- 
+import java.util.ArrayList;
+import java.util.List;
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class ValidateUssdSubscription.
@@ -31,7 +34,7 @@ import org.json.JSONObject;
 public class ValidateUssdSubscription implements IServiceValidate {
 
     /** The validation rules. */
-    private final String[] validationRules = {"ussd", "*", "inbound", "subscriptions"};
+    private final String[] validationRules = {"inbound", "subscriptions"};
 
     /* (non-Javadoc)
      * @see com.wso2telco.oneapivalidation.service.IServiceValidate#validate(java.lang.String)
@@ -41,22 +44,14 @@ public class ValidateUssdSubscription implements IServiceValidate {
 
         String callbackData = null;
         String notifyUrl = null;
-        String destinationAddress = null;
         String clientCorrelator = null;
-        String resourceUrl = null;
 
         try {
             JSONObject objJSONObject = new JSONObject(json);
             JSONObject requestData = objJSONObject.getJSONObject("subscription");
 
-            if (requestData.has("destinationAddress")) {
-                destinationAddress = nullOrTrimmed(requestData.getString("destinationAddress"));
-            }
             if (requestData.has("clientCorrelator")) {
                 clientCorrelator = nullOrTrimmed(requestData.getString("clientCorrelator"));
-            }
-            if (requestData.has("resourceURL")) {
-                resourceUrl = nullOrTrimmed(requestData.getString("resourceURL"));
             }
 
             if (requestData.has("callbackReference")) {
@@ -70,17 +65,45 @@ public class ValidateUssdSubscription implements IServiceValidate {
                 }
             }
 
+            if (requestData.has("shortCodes")) {
+                JSONArray shortCodesArray = requestData.getJSONArray("shortCodes");
+
+                if (shortCodesArray.length() != 0) {
+
+                    List<ValidationRule> shortCodeListRules = new ArrayList<ValidationRule>();
+
+                    for (int i=0; i<shortCodesArray.length(); i++) {
+                        JSONObject shortCode = shortCodesArray.getJSONObject(i);
+                        String sCode = nullOrTrimmed(shortCode.getString("shortCode"));
+                        String oCode = nullOrTrimmed(shortCode.getString("operatorCode"));
+
+                        shortCodeListRules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "shortCode"+i, sCode));
+                        shortCodeListRules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "operatorCode"+i, oCode));
+                    }
+
+                    Validation.checkRequestParams(shortCodeListRules.toArray(new ValidationRule[shortCodesArray.length()]));
+                } else {
+                    throw new CustomException("POL0299", "Invalid request, missing shortcodes list is empty", new String[]{""});
+                }
+            } else if (requestData.has("shortCode")) {
+                ValidationRule[] shortCodeRules = new ValidationRule[2];
+                shortCodeRules[0] = new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "shortCode", nullOrTrimmed(requestData.getString("shortCode")));
+                shortCodeRules[1] = new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "keyword", nullOrTrimmed(requestData.getString("keyword")));
+
+                Validation.checkRequestParams(shortCodeRules);
+            } else {
+                throw new CustomException("POL0299", "Invalid request, missing shortcodes", new String[]{""});
+            }
+
         } catch (Exception e) {
 
-            System.out.println("Manipulating recived JSON Object: " + e);
+            System.out.println("Manipulating received JSON Object: " + e);
             throw new CustomException("POL0299", "Unexpected Error", new String[]{""});
         }
 
         ValidationRule[] rules = null;
 
         rules = new ValidationRule[]{
-            new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "destinationAddress", destinationAddress),
-            new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "resourceURL", resourceUrl),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "clientCorrelator", clientCorrelator),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "notifyURL", notifyUrl),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "callbackData", callbackData),};
