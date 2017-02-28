@@ -65,6 +65,15 @@ public class ValidateUssdSubscription implements IServiceValidate {
                 }
             }
 
+            ValidationRule[] rules = null;
+
+            rules = new ValidationRule[]{
+                    new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "clientCorrelator", clientCorrelator),
+                    new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "notifyURL", notifyUrl),
+                    new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "callbackData", callbackData),};
+
+            Validation.checkRequestParams(rules);
+
             if (requestData.has("shortCodes")) {
                 JSONArray shortCodesArray = requestData.getJSONArray("shortCodes");
 
@@ -83,7 +92,7 @@ public class ValidateUssdSubscription implements IServiceValidate {
 
                     Validation.checkRequestParams(shortCodeListRules.toArray(new ValidationRule[shortCodesArray.length()]));
                 } else {
-                    throw new CustomException("POL0299", "Invalid request, missing shortcodes list is empty", new String[]{""});
+                    throw new CustomException("SVC0002", "Invalid input value for message part %1", new String[]{"Empty sortcodes list"});
                 }
             } else if (requestData.has("shortCode")) {
                 ValidationRule[] shortCodeRules = new ValidationRule[2];
@@ -92,23 +101,18 @@ public class ValidateUssdSubscription implements IServiceValidate {
 
                 Validation.checkRequestParams(shortCodeRules);
             } else {
-                throw new CustomException("POL0299", "Invalid request, missing shortcodes", new String[]{""});
+                throw new CustomException("SVC0002", "Invalid input value for message part %1", new String[]{"Missing mandatory parameter: shortCode"});
             }
 
         } catch (Exception e) {
 
             System.out.println("Manipulating received JSON Object: " + e);
-            throw new CustomException("POL0299", "Unexpected Error", new String[]{""});
+
+            if (e instanceof CustomException)
+                throw new CustomException(((CustomException) e).getErrcode(), ((CustomException) e).getErrmsg(), ((CustomException) e).getErrvar());
+            else
+                throw new CustomException("POL0299", "Unexpected Error", new String[]{""});
         }
-
-        ValidationRule[] rules = null;
-
-        rules = new ValidationRule[]{
-            new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "clientCorrelator", clientCorrelator),
-            new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "notifyURL", notifyUrl),
-            new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "callbackData", callbackData),};
-        
-        Validation.checkRequestParams(rules);
     }
 
     /* (non-Javadoc)
