@@ -117,16 +117,16 @@ public class BlacklistHandler extends AbstractHandler implements ManagedLifecycl
 
 		ArrayList<String> msisdns = null;
 
-		if (apiName.equals(APINameConstant.PAYMENT)) {
+		if (apiName.equalsIgnoreCase(APINameConstant.PAYMENT)) {
 			acr = str_piece(resourceUrl, '/', 4);
 
-		} else if (apiName.equals(APINameConstant.LOCATION)) {
+		} else if (apiName.equalsIgnoreCase(APINameConstant.LOCATION)) {
 
 			//Retriveing MSISDN from the incoming request
 			acr = str_piece(str_piece(resourceUrl, '=', 2), '&', 1);
 			log.info("API : LOCATION ; MSISDN : " + acr);
 
-		} else if (apiName.equals(APINameConstant.MESSAGING)) {
+		} else if (apiName.equalsIgnoreCase(APINameConstant.MESSAGING)) {
 
 			String urlMSISDN = null;
 			String rgx = ".*/outbound/(.+?)/requests";
@@ -159,9 +159,9 @@ public class BlacklistHandler extends AbstractHandler implements ManagedLifecycl
 					msisdns = sms.getOutboundSMSMessageRequest().getAddress();
 
 			} catch (Exception e) {
-				e.printStackTrace();
+				Logger.getLogger(BlacklistHandler.class.getName()).log(Level.SEVERE, null, e);
 			}
-		} else if (apiName.equals(APINameConstant.USSD)) {
+		} else if (apiName.equalsIgnoreCase(APINameConstant.USSD)) {
 			log.info(" USSD API REQUEST ");
 			if (resourceUrl.contains("outbound") && !resourceUrl.contains("subscriptions")) {
 				Gson gson = new Gson();
@@ -176,7 +176,7 @@ public class BlacklistHandler extends AbstractHandler implements ManagedLifecycl
 					log.info("API : USSD ; MSISDN : " + acr);
 
 				} catch (Exception e) {
-					e.printStackTrace();
+					Logger.getLogger(BlacklistHandler.class.getName()).log(Level.SEVERE, null, e);
 				}
 			} else if (resourceUrl.contains("inbound") && !resourceUrl.contains("subscriptions")) {
 				Gson gson = new Gson();
@@ -192,7 +192,7 @@ public class BlacklistHandler extends AbstractHandler implements ManagedLifecycl
 					log.info("API : USSD ; MSISDN : " + acr);
 
 				} catch (Exception e) {
-					e.printStackTrace();
+					Logger.getLogger(BlacklistHandler.class.getName()).log(Level.SEVERE, null, e);
 				}
 			}
 		} else {
@@ -208,7 +208,8 @@ public class BlacklistHandler extends AbstractHandler implements ManagedLifecycl
 		//String subscriptionID = null;
 
 		try {
-			apiID = DatabaseUtils.getAPIId(apiName, apiVersion);
+			String apiContext = (String) messageContext.getProperty("REST_API_CONTEXT");
+			apiID = DatabaseUtils.getAPIId(apiContext, apiVersion);
 		} catch (NamingException ex) {
 			Logger.getLogger(BlacklistHandler.class.getName()).log(Level.SEVERE, null, ex);
 		} catch (SQLException ex) {
@@ -233,7 +234,6 @@ public class BlacklistHandler extends AbstractHandler implements ManagedLifecycl
 					}
 				} catch (Exception e) {
 					log.error("Multiple MSISDN ERROR " + e.getMessage());
-
 				}
 
 			} else {
