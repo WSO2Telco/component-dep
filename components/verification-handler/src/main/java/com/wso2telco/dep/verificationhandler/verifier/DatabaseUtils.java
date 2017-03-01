@@ -118,12 +118,12 @@ public class DatabaseUtils {
     /**
      * Gets the API id.
      *
-     * @param apiName the api name
+     * @param apiContext the api name
      * @return the API id
      * @throws NamingException the naming exception
      * @throws SQLException the SQL exception
      */
-    public static String getAPIId(String apiName, String apiVersion) throws NamingException, SQLException {
+    public static String getAPIId(String apiContext, String apiVersion) throws NamingException, SQLException {
 
         String apiId = null;
 
@@ -134,7 +134,7 @@ public class DatabaseUtils {
 
         try {
 
-            String sql = "select API_ID from AM_API where API_NAME=? ";
+            String sql = "select API_ID from AM_API where CONTEXT = ? ";
 
             if(apiVersion != null){
                 sql += " AND API_VERSION = ?";
@@ -144,7 +144,7 @@ public class DatabaseUtils {
             conn = getAMDBConnection();
             ps = conn.prepareStatement(sql);
 
-            ps.setString(1, apiName);
+            ps.setString(1, apiContext);
 
             if(apiVersion != null){
                 ps.setString(2, apiVersion);

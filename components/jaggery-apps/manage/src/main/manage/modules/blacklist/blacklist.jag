@@ -81,7 +81,7 @@ function addNewToBlacklist(api, subscriberList){
 	log.info(subscribers);
 	log.info("api:::::::::::::::::::::::::::::::::::" + stringify(api));
 	var data = {
-		"apiID":"1",
+		"apiID":api,
 		"apiName":api,
 		"userID":jagg.getUser().username,
 		"msisdnList":subscribers
