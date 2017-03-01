@@ -70,7 +70,7 @@ public class Validation {
     
     /** The Constant telFormats. */
     private static final String[] telFormats = {
-    	"tel\\:\\+[a-zA-Z0-9]+", "tel\\:[a-zA-Z0-9]+", "\\+[a-zA-Z0-9]+"
+    	"tel\\:\\+[a-zA-Z0-9]+", "tel\\:[a-zA-Z0-9]+", "\\+[a-zA-Z0-9]+","etel\\:\\+[a-zA-Z0-9]+", "etel\\:[a-zA-Z0-9]+"
     	//"tel\\:\\+[a-zA-Z0-9]+", "tel\\:[a-zA-Z0-9]+" 
     };
 
