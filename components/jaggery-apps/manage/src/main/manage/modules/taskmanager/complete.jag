@@ -45,11 +45,6 @@ try {
                       "type" : "string"
                     },
                     {
-                      "name" : 'description',
-                      "value" : description,
-                      "type" : "string"
-                    },
-                    {
                       "name" : 'selectedTier',
                       "value" : selectedTier,
                       "type" : "string"
