@@ -92,7 +92,10 @@ public class ValidateRefund implements IServiceValidate {
             JSONObject objChargingInformation = (JSONObject) objPaymentAmount.get("chargingInformation");
 
             if (!objChargingInformation.isNull("amount") ) {
-                amount = Double.parseDouble(nullOrTrimmed(objChargingInformation.get("amount").toString()));
+                if(nullOrTrimmed(objChargingInformation.get("amount").toString()) != null){
+                    amount = Double.parseDouble(nullOrTrimmed(objChargingInformation.get("amount").toString()));
+                }
+
             }
             if (!objChargingInformation.isNull("currency")) {
                 currency = nullOrTrimmed(objChargingInformation.get("currency").toString());
