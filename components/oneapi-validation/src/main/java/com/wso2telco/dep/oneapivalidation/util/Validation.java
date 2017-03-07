@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
- * 
+ *
  * WSO2.Telco Inc. licences this file to you under  the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -23,7 +23,6 @@ import java.util.Set;
 
 import com.wso2telco.core.dbutils.fileutils.FileReader;
 import org.apache.log4j.Logger;
-
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import org.wso2.carbon.utils.CarbonUtils;
 
@@ -76,10 +75,9 @@ public class Validation {
 
     /** The Constant telFormats. */
     private static String[] telFormats = readCustomRegex();
+
     /** The Constant urlFormats. */
-    private static final String[] urlFormats = {
-        "http\\:\\/\\/.+", "https\\:\\/\\/.+"
-    };
+    private static final String[] urlFormats = {"http\\:\\/\\/.+", "https\\:\\/\\/.+"};
 
     /**
      * Checks if is correctly formatted number.
@@ -90,7 +88,6 @@ public class Validation {
 
 
     static String[] readCustomRegex() {
-
         String[] telFormatsTemp = null;
 
         FileReader fileReader = new FileReader();
@@ -99,7 +96,6 @@ public class Validation {
 
         try {
             Map<String, String> oneAPIValidationConfMap = fileReader.readPropertyFile(file);
-
             String customeRegexs = oneAPIValidationConfMap.get("validation.regex");
 
             if (!customeRegexs.equals("")) {
@@ -109,9 +105,7 @@ public class Validation {
                 for (String reg : customRegexArray) {
                     customRegex.add(reg.trim());
                 }
-
                 telFormatsTemp = customRegex.toArray(new String[customRegex.size()]);
-
             } else {
                 telFormatsTemp = new String[]{"tel\\:\\+[a-zA-Z0-9]+", "tel\\:[a-zA-Z0-9]+", "\\+[a-zA-Z0-9]+"};
             }
