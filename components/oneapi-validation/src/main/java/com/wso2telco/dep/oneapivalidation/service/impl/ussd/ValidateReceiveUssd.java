@@ -43,6 +43,7 @@ public class ValidateReceiveUssd implements IServiceValidate {
         String keyword = null;
         String message = null;
         String clientCorrelator = null;
+        String sessionID = null;
         String notifyUrl = null;
         String callbackData = null;
         String ussdAction = null;
@@ -66,6 +67,9 @@ public class ValidateReceiveUssd implements IServiceValidate {
             }
             if (requestData.has("clientCorrelator")) {
                 clientCorrelator = nullOrTrimmed(requestData.getString("clientCorrelator"));
+            }
+            if (requestData.has("sessionID")) {
+                sessionID = nullOrTrimmed(requestData.getString("sessionID"));
             }
             if (requestData.has("ussdAction")) {
                 ussdAction = nullOrTrimmed(requestData.getString("ussdAction"));
@@ -93,6 +97,7 @@ public class ValidateReceiveUssd implements IServiceValidate {
             new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "keyword", keyword),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "inboundUSSDMessage", message),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "clientCorrelator", clientCorrelator),
+            new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "sessionID", sessionID),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "ussdAction", ussdAction),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "notifyURL", notifyUrl),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "callbackData", callbackData),};
