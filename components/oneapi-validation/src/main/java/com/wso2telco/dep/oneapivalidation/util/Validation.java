@@ -15,11 +15,17 @@
  ******************************************************************************/
 package com.wso2telco.dep.oneapivalidation.util;
 
+import java.io.File;
+import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.Map;
 import java.util.Set;
+
+import com.wso2telco.core.dbutils.fileutils.FileReader;
 import org.apache.log4j.Logger;
 
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
+import org.wso2.carbon.utils.CarbonUtils;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -66,36 +72,68 @@ public class Validation {
     /** The dump request and response. */
     public static boolean dumpRequestAndResponse = false;
 
-     
-    
-    /** The Constant telFormats. */
-    private static final String[] telFormats = {
-    	"tel\\:\\+[a-zA-Z0-9]+", "tel\\:[a-zA-Z0-9]+", "\\+[a-zA-Z0-9]+","etel\\:\\+[a-zA-Z0-9]+", "etel\\:[a-zA-Z0-9]+"
-    	//"tel\\:\\+[a-zA-Z0-9]+", "tel\\:[a-zA-Z0-9]+" 
-    };
+    public static ArrayList<String> customRegex = null;
 
+    /** The Constant telFormats. */
+    private static String[] telFormats = readCustomRegex();
     /** The Constant urlFormats. */
     private static final String[] urlFormats = {
         "http\\:\\/\\/.+", "https\\:\\/\\/.+"
     };
 
-     
     /**
      * Checks if is correctly formatted number.
      *
      * @param tel the tel
      * @return true, if is correctly formatted number
      */
+
+
+    static String[] readCustomRegex() {
+
+        String[] telFormatsTemp = null;
+
+        FileReader fileReader = new FileReader();
+        String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
+                + FileNames.ONEAPI_VALIDATION_CONF_FILE.getFileName();
+
+        try {
+            Map<String, String> oneAPIValidationConfMap = fileReader.readPropertyFile(file);
+
+            String customeRegexs = oneAPIValidationConfMap.get("validation.regex");
+
+            if (!customeRegexs.equals("")) {
+                customRegex = new ArrayList<String>();
+                String customRegexArray[] = customeRegexs.split(",");
+
+                for (String reg : customRegexArray) {
+                    customRegex.add(reg.trim());
+                }
+
+                telFormatsTemp = customRegex.toArray(new String[customRegex.size()]);
+
+            } else {
+                telFormatsTemp = new String[]{"tel\\:\\+[a-zA-Z0-9]+", "tel\\:[a-zA-Z0-9]+", "\\+[a-zA-Z0-9]+"};
+            }
+        } catch (Exception e) {
+            logger.error("Error while reading custom custom regex. Default validation will be used.",e);
+            telFormatsTemp = new String[]{"tel\\:\\+[a-zA-Z0-9]+", "tel\\:[a-zA-Z0-9]+", "\\+[a-zA-Z0-9]+"};
+        }
+
+        return telFormatsTemp;
+    }
+
     public static boolean isCorrectlyFormattedNumber(String tel) {
         boolean matched = false;
-        if (tel != null) {
-            for (int i = 0; i < telFormats.length && !matched; i++) {
-                if (tel.matches(telFormats[i])) {
-                    matched = true;
+
+            if (tel != null) {
+                for (int i = 0; i < telFormats.length && !matched; i++) {
+                    if (tel.matches(telFormats[i])) {
+                        matched = true;
+                    }
+                    logger.debug("Number=" + tel + " matches regex=" + telFormats[i] + " = " + matched);
                 }
-                logger.debug("Number=" + tel + " matches regex=" + telFormats[i] + " = " + matched);
             }
-        }
         return matched;
     }
 
