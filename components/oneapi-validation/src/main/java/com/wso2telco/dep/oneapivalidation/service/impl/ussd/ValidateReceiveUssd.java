@@ -31,7 +31,7 @@ import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
 public class ValidateReceiveUssd implements IServiceValidate {
 
     /** The validation rules. */
-    private final String[] validationRules = {"ussd", "V1", "inbound"};
+    private final String[] validationRules = {"inbound", "*"};
 
     /* (non-Javadoc)
      * @see com.wso2telco.oneapivalidation.service.IServiceValidate#validate(java.lang.String)
