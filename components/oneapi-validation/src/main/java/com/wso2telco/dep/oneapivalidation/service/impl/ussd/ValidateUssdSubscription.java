@@ -69,7 +69,7 @@ public class ValidateUssdSubscription implements IServiceValidate {
 
             rules = new ValidationRule[]{
                     new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "clientCorrelator", clientCorrelator),
-                    new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "notifyURL", notifyUrl),
+                    new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "notifyURL", notifyUrl),
                     new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "callbackData", callbackData),};
 
             Validation.checkRequestParams(rules);
