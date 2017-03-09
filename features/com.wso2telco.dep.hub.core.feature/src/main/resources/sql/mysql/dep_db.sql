@@ -366,7 +366,7 @@ CREATE TABLE IF NOT EXISTS `deptnotificationurls` (
   PRIMARY KEY (`notifyurldid`)
 );
 
-INSERT INTO `mdtxmsgtype` (`msgtypedid`, `msgtype`) VALUES ('1', 'paymentrequest'),('2', 'paymentresponse'), ('3', 'refundrequest'),('4', 'refundresponse');
+
 
 CREATE TABLE IF NOT EXISTS `tokeninfo` (
   `username` varchar(255) NOT NULL DEFAULT '',
@@ -414,11 +414,17 @@ CREATE TABLE IF NOT EXISTS `MDTATTRIBUTEMAP` (
   CONSTRAINT `FK01MDTATTRIBUTEMAP` FOREIGN KEY (`ATTRIBUTEDID`) REFERENCES `MDXATTRIBUTE` (`ATTRIBUTEDID`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
 
+/**
+*
+* Metadata inserts 
+**/
+
 /*
 * Default validator types provided from mife-validator component
 */
 insert into validator (name, class) values ('passthru','com.wso2telco.dep.subscriptionvalidator.services.impl.PassThroughValidator');
 insert into validator (name, class) values ('msisdn','com.wso2telco.dep.subscriptionvalidator.services.impl.MSISDNValidator');
+
 
 /*
 * Default operator
@@ -443,5 +449,7 @@ INSERT INTO `workflow_api_key_mappings` (`API_NAME`, `API_KEY`) VALUES ('smsmess
 INSERT INTO `workflow_api_key_mappings` (`API_NAME`, `API_KEY`) VALUES ('payment', 'payment');
 INSERT INTO `workflow_api_key_mappings` (`API_NAME`, `API_KEY`) VALUES ('location', 'location');
 
+--
+-- Default message types
 --
 INSERT INTO `mdtxmsgtype` (`msgtypedid`, `msgtype`) VALUES ('1', 'paymentrequest'),('2', 'paymentresponse'), ('3', 'refundrequest'),('4', 'refundresponse');
