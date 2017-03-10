@@ -23,6 +23,7 @@ import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.dep.oneapivalidation.util.UrlValidator;
 import com.wso2telco.dep.oneapivalidation.util.Validation;
 import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
+
 /**
  *
  * @author WSO2telco
@@ -50,72 +51,55 @@ public class ValidateInboundSMSMessageNotification implements IServiceValidate {
 
 			if (!objInboundSMSMessageNotification.isNull("callbackData")) {
 
-				callbackData = nullOrTrimmed(objInboundSMSMessageNotification
-						.getString("callbackData"));
+				callbackData = nullOrTrimmed(objInboundSMSMessageNotification.getString("callbackData"));
 			}
 
 			if (!objInboundSMSMessageNotification.isNull("resourceURL")) {
 
-				resourceURL = nullOrTrimmed(objInboundSMSMessageNotification
-						.getString("resourceURL"));
+				resourceURL = nullOrTrimmed(objInboundSMSMessageNotification.getString("resourceURL"));
 			}
 
-			JSONObject objInboundSMSMessage = (JSONObject) objInboundSMSMessageNotification
-					.get("inboundSMSMessage");
+			JSONObject objInboundSMSMessage = (JSONObject) objInboundSMSMessageNotification.get("inboundSMSMessage");
 
-			if (objInboundSMSMessage.get("dateTime") != null) {
+			if (!objInboundSMSMessage.isNull("dateTime")) {
 
-				dateTime = nullOrTrimmed(objInboundSMSMessage
-						.getString("dateTime"));
+				dateTime = nullOrTrimmed(objInboundSMSMessage.getString("dateTime"));
 			}
 
-			if (objInboundSMSMessage.get("destinationAddress") != null) {
+			if (!objInboundSMSMessage.isNull("destinationAddress")) {
 
-				destinationAddress = nullOrTrimmed(objInboundSMSMessage
-						.getString("destinationAddress"));
+				destinationAddress = nullOrTrimmed(objInboundSMSMessage.getString("destinationAddress"));
 			}
 
-			if (objInboundSMSMessage.get("messageId") != null) {
+			if (!objInboundSMSMessage.isNull("messageId")) {
 
-				messageId = nullOrTrimmed(objInboundSMSMessage
-						.getString("messageId"));
+				messageId = nullOrTrimmed(objInboundSMSMessage.getString("messageId"));
 			}
 
-			if (objInboundSMSMessage.get("message") != null) {
+			if (!objInboundSMSMessage.isNull("message")) {
 
-				message = nullOrTrimmed(objInboundSMSMessage
-						.getString("message"));
+				message = nullOrTrimmed(objInboundSMSMessage.getString("message"));
 			}
 
-			if (objInboundSMSMessage.get("senderAddress") != null) {
+			if (!objInboundSMSMessage.isNull("senderAddress")) {
 
-				senderAddress = nullOrTrimmed(objInboundSMSMessage
-						.getString("senderAddress"));
+				senderAddress = nullOrTrimmed(objInboundSMSMessage.getString("senderAddress"));
 			}
 		} catch (Exception e) {
 
-			throw new CustomException("POL0299", "Unexpected Error",
-					new String[] { "" });
+			throw new CustomException("POL0299", "Unexpected Error", new String[] { "" });
 		}
 
 		ValidationRule[] rules = null;
 
 		rules = new ValidationRule[] {
-				new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL,
-						"callbackData", callbackData),
-				new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL,
-						"dateTime", dateTime),
-				new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY,
-						"destinationAddress", destinationAddress),
-				new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY,
-						"messageId", messageId),
-				new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY,
-						"message", message),
-				new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL,
-						"resourceURL", resourceURL),
-				new ValidationRule(
-						ValidationRule.VALIDATION_TYPE_MANDATORY_TEL,
-						"senderAddress", senderAddress) };
+				new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "callbackData", callbackData),
+				new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "dateTime", dateTime),
+				new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "destinationAddress", destinationAddress),
+				new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "messageId", messageId),
+				new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "message", message),
+				new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "resourceURL", resourceURL),
+				new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_TEL, "senderAddress", senderAddress) };
 
 		Validation.checkRequestParams(rules);
 	}
