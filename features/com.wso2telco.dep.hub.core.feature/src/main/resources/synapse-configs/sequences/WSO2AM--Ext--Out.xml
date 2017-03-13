@@ -6,6 +6,7 @@
 		var responseTime = responseTimeStamp - requestTimeStamp;
 		mc.setProperty("RESPONSE_TIME", responseTime);
 	</script>
+        <!-- Values log level = full; enable payload loggin. log level=custom; disable payload loggin for the response -->
 	<log level="custom">
         	<property name="API Response Status" expression="$axis2:HTTP_SC"/>
         	<property name="Request ID" expression="$ctx:MESSAGE_ID"/>
