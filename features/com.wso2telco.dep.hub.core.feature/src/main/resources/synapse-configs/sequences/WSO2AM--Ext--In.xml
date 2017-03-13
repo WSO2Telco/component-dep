@@ -3,6 +3,7 @@
     <property expression="get-property('SYSTEM_TIME')" name="REQUEST_TIMESTAMP" scope="default" type="STRING"/>
     <property expression="get-property('MessageID')" name="MESSAGE_ID" scope="default" type="STRING"/>
     <sequence key="httpHeaderSeq"/>
+    <!-- Values log level = full; enable payload loggin. log level=custom; disable payload loggin for the request -->
     <log level="custom">
         <property expression="get-property('To')" name="API Request URL"/>
         <property expression="$ctx:MESSAGE_ID" name="Request ID"/>
