@@ -69,7 +69,7 @@ public class ValidateSBDeliveryInfoNotification implements IServiceValidate {
         rules = new ValidationRule[]{
             new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "callbackData", callbackData),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_TEL, "address", address),
-          new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "deliveryStatus", deliveryStatus)};
+            new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "deliveryStatus", deliveryStatus)};
 
         Validation.checkRequestParams(rules);
     }
