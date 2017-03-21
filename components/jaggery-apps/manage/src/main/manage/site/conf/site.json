@@ -24,6 +24,7 @@
         "keyStoreName" :"repository/resources/security/wso2carbon.jks"
     },
     "externalServicesUrl":"http://localhost:9763/",
+    "revokeTokenEndpointUrl":"http://localhost:8280/revoke"
     "IS_URL" : "https://localhost:9444/",
 	"webapp_URL" : "http://localhost:9763/",
     "chart1":"false",

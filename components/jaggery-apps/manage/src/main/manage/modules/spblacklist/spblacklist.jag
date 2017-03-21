@@ -7,6 +7,8 @@ var serverUrl =  store.getAuthServerURL()+"UserIdentityManagementAdminService";
 log.info("serverUrl : " + stringify(serverUrl));
 var ws = require("ws");
 var webService = new ws.WSRequest();
+var site = require("/site/conf/site.json");
+var revokeEndpoint = site.revokeTokenEndpointUrl;
 
 var isAdmin;
 
@@ -64,12 +66,13 @@ function revokeAppToken(token,secret,key){
 	log.info("token WEB SERVICE ############################ 03 : "+token);
 	log.info("secret WEB SERVICE ############################ 04 : "+secret);
 	log.info("key WEB SERVICE ############################ 05 : "+key);
+	log.info("Revoke endpoint ############################ 05 : "+ revokeEndpoint);
 	
 	var result, message,
 	log = new Log();
 	try {
 		var xhr = new XMLHttpRequest();
-		var endpoint = "http://localhost:8280/revoke";
+		var endpoint = revokeEndpoint;
 		xhr.open("POST", endpoint);
 		xhr.setRequestHeader("Content-type","application/x-www-form-urlencoded");
 		var keysecret=key+":"+secret;
