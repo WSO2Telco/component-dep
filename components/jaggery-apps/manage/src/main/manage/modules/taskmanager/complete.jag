@@ -50,6 +50,36 @@ try {
                       "type" : "string"
                     }
                 ]};
+
+             if(adminApprovalLevel=='operatorAdminApproval'){
+
+              body = {
+                "action" : "complete",
+                "variables" : [
+                    {
+                      "name" : adminApprovalLevel,
+                      "value" : status,
+                      "type" : "string"
+                    },
+                    {
+                      "name" : 'completedByUser',
+                      "value" : username,
+                      "type" : "string"
+                    },
+                    {
+                      "name" : 'status',
+                      "value" : status,
+                      "type" : "string"
+                    },
+                    {
+                      "name" : 'completedOn',
+                      "value" : currentDate,
+                      "type" : "string"
+                    }
+                ]};
+
+                }
+
 	var result = post(businessProcessEngineUrl + "runtime/tasks/"+taskId,
 	JSON.stringify(body),
 	headers, "json").data;
@@ -86,18 +116,18 @@ return 0;
 
 // Set tier for the specified subscription.
 var setSubscriptionTier = function (taskId, taskType, tierId, endpoint) {
-	
+
 	var refId = getRefId(taskId, endpoint, taskType);
 
 	var workflow, result;
 	workflow = jagg.module("manager").getWorkflowHostObject();
-	
+
 	try {
 		result = workflow.setSubscriptionTier(refId,tierId);
 		if (log.isDebugEnabled()) {
 			log.debug("setSubscriptionTier for SUBSCRIPTION_ID : " + refId);
 		}
-				
+
 		if (result == null) {
 			return {error:true};
 		} else {
@@ -111,10 +141,10 @@ var setSubscriptionTier = function (taskId, taskType, tierId, endpoint) {
 
 //Set subscription charge rate card. Added by Hiranya on 2014-11-11
 var setSubscriptionChargeRate = function (appId, apiId, opName, rateNameNB,operationId) {
-	
+
 	var workflow, result;
 	workflow = jagg.module("manager").getWorkflowHostObject();
-	
+
 	try {
 		result = workflow.setSubscriptionChargeRate(appId, apiId, opName, rateNameNB, operationId);
 		if (result == null) {
@@ -129,10 +159,10 @@ var setSubscriptionChargeRate = function (appId, apiId, opName, rateNameNB,opera
 };
 
 var setSubscriptionChargeRateNB = function (appId, apiId) {
-	
+
 	var workflow, result;
 	workflow = jagg.module("manager").getWorkflowHostObject();
-	
+
 	try {
 		result = workflow.setSubscriptionChargeRateNB(appId, apiId);
 		if (result == null) {
@@ -147,12 +177,12 @@ var setSubscriptionChargeRateNB = function (appId, apiId) {
 };
 // Set tier for the specified application.
 var setApplicationTier = function (taskId, taskType, tierId, endpoint) {
-	
+
 	var refId = getRefId(taskId, endpoint, taskType);
 
 	var workflow, result;
 	workflow = jagg.module("manager").getWorkflowHostObject();
-	   
+
 	try {
 
 		result = workflow.setApplicationTier(refId,tierId);
@@ -160,7 +190,7 @@ var setApplicationTier = function (taskId, taskType, tierId, endpoint) {
 		if (log.isDebugEnabled()) {tierId
 			log.debug("setApplicationTier for APPLICATION_ID : " + refId);
 		}
-				
+
 		if (result == null) {
 			return {error:true};
 		} else {

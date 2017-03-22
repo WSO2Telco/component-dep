@@ -1,36 +1,41 @@
 {
-    "theme" : {
-        "base" : "default",
-        "subtheme" : "dark"
-    },
-    "context" : "/manage",
-    "request_url":"READ_FROM_REQUEST",
-    "tasksPerPage": 10,
-    "allowedRole":"admin",
-    "allowedRoles":"admin,subscriber,operator1-admin-role,operator2-admin-role,operator2-cc-role",
-    "adminRole":"manage-app-admin",
-    "workflows":{
-      "businessProcessEngineBaseUrl" : "http://localhost:9763/activiti-rest/service/",
-      "applicationCreationBusinessProcess" : "application_creation_approval_process",
-      "subscriptionCreationBusinessProcess" : "subscription_approval_process"
+  "theme": {
+    "base": "default",
+    "subtheme": "dark"
   },
-    "ssoConfiguration" : {
-        "enabled" : "false",
-        "issuer" : "API_MANAGE",
-        "identityProviderURL" : "https://localhost:9444/samlsso",
-        "keyStorePassword" : "wso2carbon",
-        "identityAlias" : "wso2carbon",
-        "responseSigningEnabled":"true",
-        "keyStoreName" :"repository/resources/security/wso2carbon.jks"
-    },
-    "externalServicesUrl":"http://localhost:9763/",
-    "revokeTokenEndpointUrl":"http://localhost:8280/revoke"
-    "IS_URL" : "https://localhost:9444/",
-	"webapp_URL" : "http://localhost:9763/",
-    "chart1":"false",
-    "chart2":"false",
-    "chart3":"false",
-    "chart4":"fasle",
-    "chart5":"false",
-    "chart6":"false"
+  "operators": {
+    "operator1": "operator1-admin-role",
+    "operator2": "operator2-admin-role",
+    "operator3": "operator3-admin-role"
+  },
+  "context": "/manage",
+  "request_url": "READ_FROM_REQUEST",
+  "tasksPerPage": 10,
+  "allowedRole": "admin",
+  "allowedRoles": "admin,subscriber,operator1-admin-role,operator2-admin-role,operator2-cc-role",
+  "adminRole": "manage-app-admin",
+  "workflows": {
+    "businessProcessEngineBaseUrl": "http://localhost:9763/activiti-rest/service/",
+    "applicationCreationBusinessProcess": "application_creation_approval_process",
+    "subscriptionCreationBusinessProcess": "subscription_approval_process"
+  },
+  "ssoConfiguration": {
+    "enabled": "false",
+    "issuer": "API_MANAGE",
+    "identityProviderURL": "https://localhost:9444/samlsso",
+    "keyStorePassword": "wso2carbon",
+    "identityAlias": "wso2carbon",
+    "responseSigningEnabled": "true",
+    "keyStoreName": "repository/resources/security/wso2carbon.jks"
+  },
+  "externalServicesUrl": "http://localhost:9763/",
+  "revokeTokenEndpointUrl": "http://localhost:8280/revoke"
+  "IS_URL": "https://localhost:9444/",
+  "webapp_URL": "http://localhost:9763/",
+  "chart1": "false",
+  "chart2": "false",
+  "chart3": "false",
+  "chart4": "fasle",
+  "chart5": "false",
+  "chart6": "false"
 }
