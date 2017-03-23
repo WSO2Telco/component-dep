@@ -49,6 +49,7 @@ class DefaultApplicationTaskExecutor implements ApplicationTask {
         delegatedArgsDTO.setOperatorAdminApprovalStatus(operatorAdminApprovalStatus);
         delegatedArgsDTO.setDescription(applicationDescription);
         delegatedArgsDTO.setSelectedTier(selectedTier);
+        delegatedArgsDTO.setAppCreatorName(userName);
         return delegatedArgsDTO;
     }
 
