@@ -45,7 +45,7 @@ public class HubTask extends DefaultApplicationTaskExecutor {
         notificationRequest.setApplicationName(delegatedArgsDTO.getApplicationName());
         notificationRequest.setApplicationTier(delegatedArgsDTO.getSelectedTier());
         notificationRequest.setApplicationDescription(delegatedArgsDTO.getDescription());
-        notificationRequest.setUserName(delegatedArgsDTO.getAdminUserName());
+        notificationRequest.setUserName(delegatedArgsDTO.getAppCreatorName());
         notificationRequest.setApprovalStatus(delegatedArgsDTO.getOperatorAdminApprovalStatus());
 
         apiNotification.sendAppApprovalStatusSPNotification(notificationRequest);

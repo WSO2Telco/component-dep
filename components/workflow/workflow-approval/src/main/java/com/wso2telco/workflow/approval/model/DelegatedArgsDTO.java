@@ -23,6 +23,15 @@ public class DelegatedArgsDTO {
     private String operatorAdminApprovalStatus;
     private String apiPublisher;
     private String apiProviderRole;
+    private String appCreatorName;
+
+    public String getAppCreatorName() {
+        return appCreatorName;
+    }
+
+    public void setAppCreatorName(String appCreatorName) {
+        this.appCreatorName = appCreatorName;
+    }
 
     public String getApiProviderRole() {
         return apiProviderRole;
