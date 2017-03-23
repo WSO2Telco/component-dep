@@ -21,9 +21,7 @@ import com.wso2telco.workflow.approval.subscription.rest.client.WorkflowCallback
 import com.wso2telco.workflow.approval.subscription.rest.client.WorkflowHttpClient;
 import com.wso2telco.workflow.approval.util.AuthRequestInterceptor;
 import com.wso2telco.workflow.approval.util.Constants;
-
 import feign.Feign;
-import feign.auth.BasicAuthRequestInterceptor;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
 import org.activiti.engine.delegate.DelegateExecution;
@@ -31,9 +29,9 @@ import org.activiti.engine.delegate.JavaDelegate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-public class CallbackServiceInvokeTask implements JavaDelegate {
+public class HubCallbackServiceInvokeTask implements JavaDelegate {
 
-    private static final Log log = LogFactory.getLog(CallbackServiceInvokeTask.class);
+    private static final Log log = LogFactory.getLog(HubCallbackServiceInvokeTask.class);
 
     public void execute(DelegateExecution arg0) throws Exception {
 
@@ -62,9 +60,7 @@ public class CallbackServiceInvokeTask implements JavaDelegate {
                 approvalStatus);
 
         try {
-            if(!arg0.getVariable(Constants.DEPLOYMENT_TYPE).toString().equalsIgnoreCase(Constants.HUB)){
-            client.invokeCallback(refId, approvalStatus);
-            }
+           client.invokeCallback(refId, approvalStatus);
         } catch (SubscriptionApprovalWorkflowException e) {
             throw new Exception(e);
         }

@@ -55,7 +55,8 @@ public class OperatorWorkflowCallback implements JavaDelegate {
                 opAdminApprovalStatus + ", operator: " + arg0.getVariable(Constants.OPERATOR).toString());
 
         try {
-            api.invokeCallback(refId, opAdminApprovalStatus);
+            if(!arg0.getVariable(Constants.DEPLOYMENT_TYPE).toString().equalsIgnoreCase(Constants.HUB)){
+            api.invokeCallback(refId, opAdminApprovalStatus);}
         } catch (HubWorkflowCallbackApiException e) {
             throw new Exception(e);
         }
