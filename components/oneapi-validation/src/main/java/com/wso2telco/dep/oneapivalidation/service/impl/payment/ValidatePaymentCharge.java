@@ -78,7 +78,7 @@ public class ValidatePaymentCharge  implements IServiceValidate {
                 JSONObject chargingInfo = (JSONObject) payAmount.get("chargingInformation");
                 
                 if (!chargingInfo.isNull("amount")) {
-                    amount = Double.parseDouble(nullOrTrimmed(chargingInfo.getString("amount")));
+                    amount = Double.parseDouble(nullOrTrimmed(String.valueOf(chargingInfo.get("amount"))));
                 }
                 if (!chargingInfo.isNull("currency")) {
                     currency = nullOrTrimmed(chargingInfo.getString("currency"));
