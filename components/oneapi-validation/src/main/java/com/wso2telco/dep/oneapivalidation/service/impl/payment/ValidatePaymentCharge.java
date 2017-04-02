@@ -16,13 +16,12 @@
 package com.wso2telco.dep.oneapivalidation.service.impl.payment;
 
 
-import org.json.JSONObject;
-
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.dep.oneapivalidation.util.UrlValidator;
 import com.wso2telco.dep.oneapivalidation.util.Validation;
 import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
+import org.json.JSONObject;
 
  
 // TODO: Auto-generated Javadoc
@@ -53,6 +52,7 @@ public class ValidatePaymentCharge  implements IServiceValidate {
             String purchaseCategoryCode = null;
             String channel = null;
             Double taxAmount = null;
+            String doubleValidationRegex = "(\\d+(\\.\\d{1,2})?)";
 
             try {
                 JSONObject mainJSONObject = new JSONObject(json);
@@ -76,8 +76,12 @@ public class ValidatePaymentCharge  implements IServiceValidate {
 
                 JSONObject payAmount = (JSONObject) jsonObj.get("paymentAmount");
                 JSONObject chargingInfo = (JSONObject) payAmount.get("chargingInformation");
-                
+
                 if (!chargingInfo.isNull("amount")) {
+                    if (!chargingInfo.get("amount").toString().matches(doubleValidationRegex)) {
+                        throw new CustomException("SVC0002", "Invalid input value for message part %1",
+                                new String[]{"amount should be a whole or two digit decimal positive number"});
+                    }
                     amount = Double.parseDouble(nullOrTrimmed(String.valueOf(chargingInfo.get("amount"))));
                 }
                 if (!chargingInfo.isNull("currency")) {
@@ -99,17 +103,24 @@ public class ValidatePaymentCharge  implements IServiceValidate {
                     channel = nullOrTrimmed(chargingMetaData.getString("channel"));
                 }
                 if (!chargingMetaData.isNull("taxAmount")) {
-                    taxAmount = Double.parseDouble(nullOrTrimmed(chargingMetaData.getString("taxAmount")));
+                    if(!chargingMetaData.get("taxAmount").toString().matches(doubleValidationRegex)){
+                        throw new CustomException("SVC0002", "Invalid input value for message part %1",
+                                new String[]{"taxAmount should be a whole or two digit decimal positive number"});
+                    }
+                    taxAmount = Double.parseDouble(nullOrTrimmed(String.valueOf(chargingMetaData.get("taxAmount"))));
+
                 }
 
                 System.out.println("Manipulated recived JSON Object: " + json);
 
+            } catch (CustomException e){
+                throw new CustomException(e.getErrcode(), e.getErrmsg(), e.getErrvar());
             } catch (Exception e) {
                 System.out.println("Manipulating recived JSON Object: " + e);
                 throw new CustomException("POL0299", "Unexpected Error", new String[]{""});
             }
 
-            ValidationRule[] rules = null;
+        ValidationRule[] rules = null;
 
             rules = new ValidationRule[]{
                 new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_TEL_END_USER_ID, "endUserId", endUserId),
