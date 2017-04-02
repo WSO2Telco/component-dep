@@ -15,16 +15,13 @@
  ******************************************************************************/
 package com.wso2telco.dep.oneapivalidation.util;
 
-import java.io.File;
-import java.util.ArrayList;
-import java.util.HashSet;
-import java.util.Map;
-import java.util.Set;
-
 import com.wso2telco.core.dbutils.fileutils.FileReader;
-import org.apache.log4j.Logger;
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
+import org.apache.log4j.Logger;
 import org.wso2.carbon.utils.CarbonUtils;
+
+import java.io.File;
+import java.util.*;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -97,20 +94,25 @@ public class Validation {
         try {
             Map<String, String> oneAPIValidationConfMap = fileReader.readPropertyFile(file);
             String customeRegexs = oneAPIValidationConfMap.get("validation.regex");
+            String useCustomRegex = oneAPIValidationConfMap.get("customValidation");
 
-            if (!customeRegexs.equals("")) {
-                customRegex = new ArrayList<String>();
-                String customRegexArray[] = customeRegexs.split(",");
+            if (useCustomRegex.equals("true")) {
+                if (!customeRegexs.equals("")) {
+                    customRegex = new ArrayList<String>();
+                    String customRegexArray[] = customeRegexs.split(",");
 
-                for (String reg : customRegexArray) {
-                    customRegex.add(reg.trim());
+                    for (String reg : customRegexArray) {
+                        customRegex.add(reg.trim());
+                    }
+                    telFormatsTemp = customRegex.toArray(new String[customRegex.size()]);
+                    logger.info("Read custom validation from config file: " + Arrays.toString(telFormatsTemp));
                 }
-                telFormatsTemp = customRegex.toArray(new String[customRegex.size()]);
             } else {
                 telFormatsTemp = new String[]{"tel\\:\\+[a-zA-Z0-9]+", "tel\\:[a-zA-Z0-9]+", "\\+[a-zA-Z0-9]+"};
             }
+
         } catch (Exception e) {
-            logger.error("Error while reading custom custom regex. Default validation will be used.",e);
+            logger.error("Error while reading custom custom regex. Default validation will be used.", e);
             telFormatsTemp = new String[]{"tel\\:\\+[a-zA-Z0-9]+", "tel\\:[a-zA-Z0-9]+", "\\+[a-zA-Z0-9]+"};
         }
 
