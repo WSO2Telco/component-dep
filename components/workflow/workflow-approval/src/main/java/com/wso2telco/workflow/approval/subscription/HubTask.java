@@ -65,13 +65,13 @@ public class HubTask extends AbstractTaskExecutor {
         notificationRequest.setApiContext(delegatedArgsDTO.getApiContext());
         notificationRequest.setApiName(delegatedArgsDTO.getApiName());
         notificationRequest.setSubscriber(delegatedArgsDTO.getSubscriber());
-        notificationRequest.setSubscriptionTier(delegatedArgsDTO.getSelectedTier());
+        notificationRequest.setSubscriptionTier(delegatedArgsDTO.getAdminSelectedTier());
         notificationRequest.setReceiverRole(delegatedArgsDTO.getCompletedByRole());
         notificationRequest.setApiVersion(delegatedArgsDTO.getApiVersion());
         notificationRequest.setApplicationDescription(delegatedArgsDTO.getDescription());
         notificationRequest.setApiProvider(delegatedArgsDTO.getApiProvider());
         notificationRequest.setApplicationName(delegatedArgsDTO.getApiContext());
-        notificationRequest.setApprovalStatus(delegatedArgsDTO.getOperatorName()+"-"+delegatedArgsDTO.getOperatorAdminApprovalStatus());
+        notificationRequest.setApprovalStatus(delegatedArgsDTO.getOperatorName().toUpperCase()+"-"+delegatedArgsDTO.getOperatorAdminApprovalStatus());
 
 
         apiNotification.subscriptionNotificationSp(notificationRequest);

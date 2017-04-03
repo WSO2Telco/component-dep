@@ -24,6 +24,15 @@ public class DelegatedArgsDTO {
     private String apiPublisher;
     private String apiProviderRole;
     private String appCreatorName;
+    private String adminSelectedTier;
+
+    public String getAdminSelectedTier() {
+        return adminSelectedTier;
+    }
+
+    public void setAdminSelectedTier(String adminSelectedTier) {
+        this.adminSelectedTier = adminSelectedTier;
+    }
 
     public String getAppCreatorName() {
         return appCreatorName;
