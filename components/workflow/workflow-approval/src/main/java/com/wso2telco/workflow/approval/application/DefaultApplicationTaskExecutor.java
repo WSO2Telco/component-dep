@@ -35,6 +35,7 @@ class DefaultApplicationTaskExecutor implements ApplicationTask {
         String operatorAdminApprovalStatus = arg0.getVariable(Constants.OPERATOR_ADMIN_APPROVAL) != null ? arg0.getVariable(Constants.OPERATOR_ADMIN_APPROVAL).toString() : null;
         String applicationDescription = arg0.getVariable(Constants.DESCRIPTION) != null ? arg0.getVariable(Constants.DESCRIPTION).toString() : null;
         String selectedTier = arg0.getVariable(Constants.TIER) != null ? arg0.getVariable(Constants.TIER).toString() : null;
+        String adminSelectedTier = arg0.getVariable(Constants.ADMIN_SELECTED_TIER) != null ? arg0.getVariable(Constants.ADMIN_SELECTED_TIER).toString() : null;
 
         DelegatedArgsDTO delegatedArgsDTO = new DelegatedArgsDTO();
         delegatedArgsDTO.setAdminUserName(adminUserName);
@@ -50,6 +51,7 @@ class DefaultApplicationTaskExecutor implements ApplicationTask {
         delegatedArgsDTO.setDescription(applicationDescription);
         delegatedArgsDTO.setSelectedTier(selectedTier);
         delegatedArgsDTO.setAppCreatorName(userName);
+        delegatedArgsDTO.setAdminSelectedTier(adminSelectedTier);
         return delegatedArgsDTO;
     }
 

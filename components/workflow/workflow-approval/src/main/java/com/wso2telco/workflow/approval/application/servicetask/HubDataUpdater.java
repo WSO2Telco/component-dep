@@ -61,6 +61,7 @@ public class HubDataUpdater implements JavaDelegate {
         String selectedTier = arg0.getVariable(Constants.SELECTED_TIER) != null ? arg0.getVariable(Constants.SELECTED_TIER).toString() : null;
         ArrayList operatorRoles= (ArrayList)arg0.getVariable("operatorRoles");
         String completedByRole=Constants.ADMIN_ROLE;
+        arg0.setVariable(Constants.ADMIN_SELECTED_TIER,selectedTier);
 
 
         log.info("In HubDataUpdater, Hub admin approval status: " + status);
