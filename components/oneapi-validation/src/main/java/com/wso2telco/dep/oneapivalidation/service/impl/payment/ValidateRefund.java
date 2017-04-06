@@ -58,6 +58,7 @@ public class ValidateRefund implements IServiceValidate {
         String notificationFormat = null;
         String originalServerReferenceCode = null;
         String transactionOperationStatus = null;
+        String doubleValidationRegex = "(\\d+(\\.\\d{1,2})?)";
 
         try {
             JSONObject objJSONObject = new JSONObject(json);
@@ -91,11 +92,12 @@ public class ValidateRefund implements IServiceValidate {
             JSONObject objPaymentAmount = (JSONObject) objAmountTransaction.get("paymentAmount");
             JSONObject objChargingInformation = (JSONObject) objPaymentAmount.get("chargingInformation");
 
-            if (!objChargingInformation.isNull("amount") ) {
-                if(nullOrTrimmed(objChargingInformation.get("amount").toString()) != null){
-                    amount = Double.parseDouble(nullOrTrimmed(objChargingInformation.get("amount").toString()));
+            if (!objChargingInformation.isNull("amount")) {
+                if (!objChargingInformation.get("amount").toString().matches(doubleValidationRegex)) {
+                    throw new CustomException("SVC0002", "Invalid input value for message part %1",
+                            new String[]{"amount should be a whole or two digit decimal positive number"});
                 }
-
+                amount = Double.parseDouble(nullOrTrimmed(String.valueOf(objChargingInformation.get("amount"))));
             }
             if (!objChargingInformation.isNull("currency")) {
                 currency = nullOrTrimmed(objChargingInformation.get("currency").toString());
@@ -118,8 +120,13 @@ public class ValidateRefund implements IServiceValidate {
             if (!objChargingMetaData.isNull("channel") ) {
                 channel = nullOrTrimmed(objChargingMetaData.get("channel").toString());
             }
-            if (!objChargingMetaData.isNull("taxAmount") ) {
-                taxAmount = Double.parseDouble(nullOrTrimmed(objChargingMetaData.get("taxAmount").toString()));
+            if (!objChargingMetaData.isNull("taxAmount")) {
+                if(!objChargingMetaData.get("taxAmount").toString().matches(doubleValidationRegex)){
+                    throw new CustomException("SVC0002", "Invalid input value for message part %1",
+                            new String[]{"taxAmount should be a whole or two digit decimal positive number"});
+                }
+                taxAmount = Double.parseDouble(nullOrTrimmed(String.valueOf(objChargingMetaData.get("taxAmount"))));
+
             }
             if (!objChargingMetaData.isNull("mandateId") ) {
                 mandateId = nullOrTrimmed(objChargingMetaData.get("mandateId").toString());
