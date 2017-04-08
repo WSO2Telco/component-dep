@@ -19,7 +19,7 @@
     <parent>
         <groupId>com.wso2telco.dep</groupId>
         <artifactId>component-dep-feature</artifactId>
-        <version>2.1.6-SNAPSHOT</version>
+        <version>0.1.1-test</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
