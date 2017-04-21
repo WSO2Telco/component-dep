@@ -294,7 +294,69 @@ function setSubscriptionDescriptions(result){
 	operatorId.value = result.data.operatorId;
 	apiNameElement.value = result.data.apiName;
 	
+	var apiCode = result.data.apiName;
+	var operatorCode = result.data.operatorId;
+
+	if (operatorCode) {
+
+		getOperatorRates(apiCode, operatorCode);
+	} else {
+
+		getHubRates(apiCode);
+	}
 }
+
+function getHubRates(apiCode) {
+
+	var action = "getHubRates";
+	
+	jagg
+	.post(
+			"/site/blocks/subscription-task/ajax/subscription-task.jag",
+			{
+				action : action,
+				apiCode : apiCode
+			},
+			function(result) {
+				
+				if (!result.error) {
+					if (result.apiServiceRates != null) {
+						
+						var apiServiceRatesData = result.apiServiceRates.apiServiceRates;
+					}
+				} else {
+					
+					//alert("error");
+				}
+			}, "json");
+}
+
+function getOperatorRates(apiCode, operatorCode) {
+
+	var action = "getOperatorRates";
+	
+	jagg
+	.post(
+			"/site/blocks/subscription-task/ajax/subscription-task.jag",
+			{
+				action : action,
+				apiCode : apiCode,
+				operatorCode : operatorCode
+			},
+			function(result) {
+				
+				if (!result.error) {
+					if (result.operatorAPIServiceRates != null) {
+						
+						var operatorAPIServiceRatesData = result.operatorAPIServiceRates.operatorAPIServiceRates;
+					}
+				} else {
+					
+					//alert("error");
+				}
+			}, "json");
+}
+
 function showProfileDetailsPopup(anchorElement, username) {
 	getProfileData(anchorElement, username);
 }

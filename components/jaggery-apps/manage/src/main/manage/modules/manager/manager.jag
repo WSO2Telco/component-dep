@@ -18,7 +18,7 @@ var getServer = function() {
 };
 
 var getAdminCookie = function() {
-    //TODO : this should be set in the Context during the deployment
+    // TODO : this should be set in the Context during the deployment
 
 };
 
@@ -84,5 +84,12 @@ var getWorkflowHostObject = function() {
     }
 };
 
+// get billing service host object
+var getBillingServiceHostObject = function() {
 
+	var billingService = require('billingservice');
+	var billingServiceHostObject = new billingService.BillingServiceHostObject(); 
+	
+    return billingServiceHostObject;
+};
 %>

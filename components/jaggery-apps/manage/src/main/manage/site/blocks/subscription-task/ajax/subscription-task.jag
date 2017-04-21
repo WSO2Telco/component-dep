@@ -293,6 +293,47 @@ include("/jagg/jagg.jag");
 			}
 		}
 		print(obj);
+	}else if(action == "getHubRates"){
+		
+		var apiCode = request.getParameter("apiCode");
+
+		var mod = jagg.module("billing-service");
+		var result = mod.getHubRatesByAPICode(apiCode);
+
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		} else {
+			obj = {
+				error:false,
+				apiServiceRates: result.apiServiceRates
+			}
+		}
+		
+		print(obj);
+	} else if(action == "getOperatorRates"){
+		
+		var apiCode = request.getParameter("apiCode");
+		var operatorCode = request.getParameter("operatorCode");
+
+		var mod = jagg.module("billing-service");
+		var result = mod.getOperatorRatesByAPICodeAndOperatorCode(apiCode, operatorCode);
+
+		if (result.error) {
+			obj = {
+				error:result.error,
+				message:result.message
+			};
+		} else {
+			obj = {
+				error:false,
+				operatorAPIServiceRates: result.operatorAPIServiceRates
+			}
+		}
+		
+		print(obj);
 	}
 }());
 %>

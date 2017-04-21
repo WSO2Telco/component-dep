@@ -1,0 +1,11 @@
+<%
+jagg.module("billing-service", {
+	getHubRatesByAPICode:function () {
+		return jagg.require(jagg.getModulesDir() + "billing-service/billing-service.jag").getHubRatesByAPICode.apply(this, arguments);
+	},
+	getOperatorRatesByAPICodeAndOperatorCode:function () {
+		return jagg.require(jagg.getModulesDir() + "billing-service/billing-service.jag").getOperatorRatesByAPICodeAndOperatorCode.apply(this, arguments);
+	} 
+});
+%>
+
