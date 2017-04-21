@@ -76,6 +76,7 @@
         <module>components/jaggery-apps/store</module>
         <module>features</module>
         <module>components/operator-onboarding</module>
+        <module>components/billing-service</module>
     </modules>
 
     <scm>
