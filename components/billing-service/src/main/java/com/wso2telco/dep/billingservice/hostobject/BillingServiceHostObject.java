@@ -34,7 +34,7 @@ public class BillingServiceHostObject extends ScriptableObject {
 	 */
 	public BillingServiceHostObject() {
 
-		log.info("--------------------------Initialized HostObject Billing Sservice Host Object--------------------");
+		log.debug("--------------------------Initialized HostObject Billing Sservice Host Object--------------------");
 	}
 
 	public static NativeObject jsFunction_getHubRatesByAPICode(Context cx, Scriptable thisObj, Object[] args,
