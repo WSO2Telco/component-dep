@@ -319,7 +319,7 @@ CREATE TABLE IF NOT EXISTS `mdtrequestmessage` (
   `messegeId` int(11) NOT NULL AUTO_INCREMENT,
   `msgtypeId` int(11) NOT NULL,
   `mdtrequestId` varchar(45) DEFAULT NULL,
-  `internalclientrefcode` varchar(20) DEFAULT NULL,
+  `internalclientrefcode` varchar(100) DEFAULT NULL,
   `message` blob,
   `clientrefcode` varchar(45) DEFAULT NULL,
   `clientrefval` varchar(45) DEFAULT NULL,
