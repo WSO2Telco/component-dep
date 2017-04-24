@@ -81,6 +81,11 @@ try {
                       "name" : 'completedOn',
                       "value" : currentDate,
                       "type" : "string"
+                    },
+                    {
+                      "name" : 'selectedRate',
+                      "value" : selectedRate,
+                      "type" : "string"
                     }
                 ]};
 
