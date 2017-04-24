@@ -175,4 +175,84 @@ public class RateCardDAO {
 
 		return rateDetails;
 	}
+
+	public void setHubSubscriptionRateData(int servicesRateDid, int applicationDid, String apiCode)
+			throws SQLException, Exception {
+
+		Connection conn = null;
+		PreparedStatement ps = null;
+
+		try {
+
+			conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+
+			StringBuilder query = new StringBuilder();
+			query.append("INSERT INTO ");
+			query.append(DatabaseTables.IN_MD_NB_SUBSCRIPTION_RATE.getTObject());
+			query.append(" (servicesRateDid, applicationDid, apiDid) ");
+			query.append("VALUES (?, ?, (SELECT apiDid ");
+			query.append("FROM ");
+			query.append(DatabaseTables.IN_MD_API.getTObject());
+			query.append(" WHERE code = ?))");
+
+			ps = conn.prepareStatement(query.toString());
+
+			ps.setInt(1, servicesRateDid);
+			ps.setInt(2, applicationDid);
+			ps.setString(3, apiCode);
+
+			log.debug("sql query in setHubSubscriptionRateData : " + ps);
+
+			ps.execute();
+		} catch (SQLException e) {
+
+			log.error("database operation error in setHubSubscriptionRateData : ", e);
+			throw e;
+		} catch (Exception e) {
+
+			log.error("error in setHubSubscriptionRateData : ", e);
+			throw e;
+		} finally {
+
+			DbUtils.closeAllConnections(ps, conn, null);
+		}
+	}
+
+	public void setOperatorSubscriptionRateData(int operatorRateDid, int applicationDid)
+			throws SQLException, Exception {
+
+		Connection conn = null;
+		PreparedStatement ps = null;
+
+		try {
+
+			conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+
+			StringBuilder query = new StringBuilder();
+			query.append("INSERT INTO ");
+			query.append(DatabaseTables.IN_MD_SB_SUBSCRIPTIONS.getTObject());
+			query.append(" (operationRateDid, applicationDid) ");
+			query.append("VALUES (?, ?)");
+
+			ps = conn.prepareStatement(query.toString());
+
+			ps.setInt(1, operatorRateDid);
+			ps.setInt(2, applicationDid);
+
+			log.debug("sql query in setOperatorSubscriptionRateData : " + ps);
+
+			ps.execute();
+		} catch (SQLException e) {
+
+			log.error("database operation error in setOperatorSubscriptionRateData : ", e);
+			throw e;
+		} catch (Exception e) {
+
+			log.error("error in setOperatorSubscriptionRateData : ", e);
+			throw e;
+		} finally {
+
+			DbUtils.closeAllConnections(ps, conn, null);
+		}
+	}
 }

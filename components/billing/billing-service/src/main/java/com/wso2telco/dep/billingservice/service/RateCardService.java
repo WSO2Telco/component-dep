@@ -75,4 +75,26 @@ public class RateCardService {
 			return Collections.emptyMap();
 		}
 	}
+
+	public void setHubSubscriptionRateData(int servicesRateDid, int applicationDid, String apiCode) throws Exception {
+
+		try {
+
+			rateCardDAO.setHubSubscriptionRateData(servicesRateDid, applicationDid, apiCode);
+		} catch (Exception e) {
+
+			throw e;
+		}
+	}
+
+	public void setOperatorSubscriptionRateData(int operatorRateDid, int applicationDid) throws Exception {
+
+		try {
+
+			rateCardDAO.setOperatorSubscriptionRateData(operatorRateDid, applicationDid);
+		} catch (Exception e) {
+
+			throw e;
+		}
+	}
 }

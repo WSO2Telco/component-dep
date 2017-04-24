@@ -7,7 +7,9 @@ public enum DatabaseTables {
 	IN_MD_SERVICES("inmdservices"),
 	IN_OPERATION_RATE("inmdoperationrate"),
 	IN_MD_RATE("inmdrate"),
-	IN_MD_OPERATOR_RATE("inmdoperatorrate");
+	IN_MD_OPERATOR_RATE("inmdoperatorrate"),
+	IN_MD_NB_SUBSCRIPTION_RATE("inmdnbsubscriptionrate"),
+	IN_MD_SB_SUBSCRIPTIONS("inmdsbsubscriptions");
 	
 	DatabaseTables(String tObject) {
 		
