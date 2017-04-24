@@ -57,6 +57,10 @@ public class WorkflowApprovalService {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response subscriptionApprovalHub(Subscription subscription){
         try {
+            String selectedRate = subscription.getSelectedRate();
+            int appID = subscription.getApplicationID();
+            String apiName = subscription.getApiName();
+            System.out.println("WorkflowApprovalService - POST /approval/subscription/hub = |Selected Rate: " + selectedRate + "|App ID: " + appID + "|API Name: " + apiName + "|");
             subscriptionApproval.updateDBSubHubApproval(subscription);
             return Response.status(Response.Status.CREATED).build();
         } catch (Exception e) {
@@ -85,6 +89,9 @@ public class WorkflowApprovalService {
     @Consumes(MediaType.APPLICATION_JSON)
     public Response subscriptionApprovalOperator(Subscription subscription){
         try {
+            String selectedRate = subscription.getSelectedRate();
+            int appID = subscription.getApplicationID();
+            System.out.println("WorkflowApprovalService - POST /approval/subscription/operator = |Selected Rate: " + selectedRate + "|App ID: " + appID + "|");
             subscriptionApproval.updateDBSubOpApproval(subscription);
             return Response.status(Response.Status.CREATED).build();
         } catch (Exception e) {

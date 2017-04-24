@@ -22,15 +22,18 @@ import com.wso2telco.workflow.approval.subscription.rest.client.NotificationApi;
 import com.wso2telco.workflow.approval.subscription.rest.client.SubscriptionWorkflowApi;
 import com.wso2telco.workflow.approval.subscription.rest.client.WorkflowCallbackErrorDecoder;
 import com.wso2telco.workflow.approval.util.AuthRequestInterceptor;
+
 import feign.Feign;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
+
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.wso2telco.workflow.approval.util.Constants;
+
 
 
 
@@ -59,6 +62,7 @@ public class HubAdminDbUpdater implements JavaDelegate {
         final String apiProvider = arg0.getVariable(Constants.API_PROVIDER)!=null?arg0.getVariable(Constants.API_PROVIDER).toString():null;
         final String selectedTier = arg0.getVariable(Constants.SELECTED_TIER)!=null? status.equalsIgnoreCase(Constants.APPROVE)?arg0.getVariable(Constants.SELECTED_TIER).toString():Constants.REJECTED_TIER:null;
         final String workflowRefId = arg0.getVariable(Constants.WORK_FLOW_REF)!=null?arg0.getVariable(Constants.WORK_FLOW_REF).toString():null;
+        final String selectedRate = arg0.getVariable(Constants.SELECTED_RATE)!=null?arg0.getVariable(Constants.SELECTED_RATE).toString():null;
         arg0.setVariable("hubAdminApproval", status); //hub admin approval status is null. Check jag. remove before deployment.arg0.setVariable(Constants.ADMIN_SELECTED_TIER,selectedTier);
             arg0.setVariable(Constants.ADMIN_SELECTED_TIER,selectedTier);
 
@@ -95,6 +99,7 @@ public class HubAdminDbUpdater implements JavaDelegate {
         subscription.setApplicationID(applicationId);
         subscription.setOperatorName(operatorName);
         subscription.setWorkflowRefId(workflowRefId);
+        subscription.setSelectedRate(selectedRate);
         api.subscriptionApprovalHub(subscription);
 
         NotificationApi apiNotification = Feign.builder()

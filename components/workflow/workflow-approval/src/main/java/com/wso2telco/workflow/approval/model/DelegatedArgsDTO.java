@@ -25,6 +25,7 @@ public class DelegatedArgsDTO {
     private String apiProviderRole;
     private String appCreatorName;
     private String adminSelectedTier;
+    private String selectedRate;
 
     public String getAdminSelectedTier() {
         return adminSelectedTier;
@@ -208,6 +209,14 @@ public class DelegatedArgsDTO {
 
     public void setOperatorAdminApprovalStatus(String operatorAdminApprovalStatus) {
         this.operatorAdminApprovalStatus = operatorAdminApprovalStatus;
+    }
+
+    public String getSelectedRate() {
+    	return selectedRate;
+    }
+
+    public void setSelectedRate(String selectedRate) {
+        this.selectedRate = selectedRate;
     }
 
 
