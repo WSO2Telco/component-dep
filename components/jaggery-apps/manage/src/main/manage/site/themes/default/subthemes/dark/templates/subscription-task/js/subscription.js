@@ -35,6 +35,9 @@ $(document).ready(function(){
         var tierId = $("#tiers_list_" + taskId).val();
         
          var rateName = null; //Replace this with selected rate value
+
+		var rateList = getSelectedrateval(taskId);
+
         
 	 bootbox.prompt("Enter approve/reject reasons", function(result) {  
 	   if(result === null){
@@ -50,7 +53,7 @@ $(document).ready(function(){
 else{
         btn.attr("disabled","disabled");
         
-        jagg.post("/site/blocks/task-manager/ajax/task.jag?comment="+ result, { action:"completeTask",status:status,taskId:taskId,taskName:taskName,taskType:"subscription",description:description,selectedTier:tierId },
+        jagg.post("/site/blocks/task-manager/ajax/task.jag?comment="+ result, { action:"completeTask",status:status,taskId:taskId,taskName:taskName,taskType:"subscription",description:description,selectedTier:tierId,selectedRate:rateList },
             function (json) {
                 if (!json.error) {
                     btn.next().show();
@@ -74,6 +77,26 @@ else{
  	}});
 
     }).removeAttr("disabled","disabled");
+
+	function getSelectedrateval(taskId){
+		var optionValues;
+		var selectedRateValues='';
+		var selectElement
+
+		optionValues = $('#ratecount_'+taskId).val();
+
+		for (var i = 0; i < optionValues; i++) {
+			selectElement = $("#rate_list_" + taskId + i).val();
+				if( selectElement == null) {
+					selectedRateValues += '0';
+				}else{
+					selectedRateValues += selectElement;
+				}
+
+		}
+		return selectedRateValues;
+
+	}
 
     $('.js_assignBtn').click(function(){
         var btn = $(this);
@@ -188,7 +211,7 @@ function loadAllTaskTierDetails() {
 			if (!result.error) {
 				if (result.data != null) {
 					setSubscriptionDescriptions(result);
-					setTierDropDownDetails(result);					
+					setTierDropDownDetails(result);
 										
 				} else {
 					jagg.showLogin();
@@ -296,20 +319,19 @@ function setSubscriptionDescriptions(result){
 	
 	var apiCode = result.data.apiName;
 	var operatorCode = result.data.operatorId;
+	var taskID = result.data.taskId;
 
 	if (operatorCode) {
-
-		getOperatorRates(apiCode, operatorCode);
+		getOperatorRates(apiCode, operatorCode,taskID);
 	} else {
-
-		getHubRates(apiCode);
+		getHubRates(apiCode , taskID);
 	}
 }
 
-function getHubRates(apiCode) {
-
+function getHubRates(apiCode , taskID) {
 	var action = "getHubRates";
-	
+	var IsHubRates = true;
+
 	jagg
 	.post(
 			"/site/blocks/subscription-task/ajax/subscription-task.jag",
@@ -323,6 +345,7 @@ function getHubRates(apiCode) {
 					if (result.apiServiceRates != null) {
 						
 						var apiServiceRatesData = result.apiServiceRates.apiServiceRates;
+						setratecarddropdown(apiServiceRatesData , taskID, IsHubRates);
 					}
 				} else {
 					
@@ -331,9 +354,10 @@ function getHubRates(apiCode) {
 			}, "json");
 }
 
-function getOperatorRates(apiCode, operatorCode) {
+function getOperatorRates(apiCode, operatorCode, taskID) {
 
 	var action = "getOperatorRates";
+	var IsHubRates = false;
 	
 	jagg
 	.post(
@@ -349,6 +373,7 @@ function getOperatorRates(apiCode, operatorCode) {
 					if (result.operatorAPIServiceRates != null) {
 						
 						var operatorAPIServiceRatesData = result.operatorAPIServiceRates.operatorAPIServiceRates;
+						setratecarddropdown(operatorAPIServiceRatesData , taskID, IsHubRates);
 					}
 				} else {
 					
@@ -410,6 +435,50 @@ function setChargeRates(taskId, rateName) {
 	
 }
 
+function setratecarddropdown(result , taskID , IsHubRates) {
+	var taskId = taskID;
+	var selectList;
+	var labelList;
+	var rateDiv = document.getElementById('ratecard_'+taskId);
+	var ratecountElement = document.getElementById('ratecount_' + taskId);
+	ratecountElement.value = result.apiRates.length;
+	if(result.apiRates.length != 0){
+		var divTitle = document.createElement("label");
+		divTitle.innerHTML = '<b>Rate card details :<b>';
+		rateDiv.appendChild(divTitle);
+	}
+
+
+	for (var i = 0; i < result.apiRates.length; i++) {
+		labelList = document.createElement("label");
+		selectList = document.createElement("select");
+		selectList.setAttribute('id', 'rate_list_' + taskId + i);
+		labelList.setAttribute('id', 'rate_label_' + i);
+		labelList.innerHTML += '<b>'+ result.apiRates[i].serviceCode +':<b>';
+
+		for (var j = 0; j < result.apiRates[i].rates.length; j++) {
+			var at = result.apiRates[i].rates[j];
+			var id = result.apiRates[i].rates[j].operatorRateDid;
+			if(IsHubRates)
+			{
+				var id = result.apiRates[i].rates[j].servicesRateDid;
+			}else{
+				var id = result.apiRates[i].rates[j].operatorRateDid;
+			}
+
+			var name = result.apiRates[i].rates[j].rateCode;
+			var option = document.createElement("option");
+			option.value = id;
+			option.textContent = name;
+			selectList.appendChild(option);
+		}
+
+		rateDiv.appendChild(labelList);
+		rateDiv.appendChild(selectList);
+
+	}
+
+}
 
 $(document).ready(function() {
 	// Initialize the plugin

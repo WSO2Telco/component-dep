@@ -319,7 +319,7 @@ CREATE TABLE IF NOT EXISTS `mdtrequestmessage` (
   `messegeId` int(11) NOT NULL AUTO_INCREMENT,
   `msgtypeId` int(11) NOT NULL,
   `mdtrequestId` varchar(45) DEFAULT NULL,
-  `internalclientrefcode` varchar(20) DEFAULT NULL,
+  `internalclientrefcode` varchar(100) DEFAULT NULL,
   `message` blob,
   `clientrefcode` varchar(45) DEFAULT NULL,
   `clientrefval` varchar(45) DEFAULT NULL,
@@ -440,7 +440,7 @@ INSERT INTO `operatorendpoints` (`ID`, `operatorid`, `api`, `isactive`, `endpoin
   (1, 1, 'smsmessaging', 1, 'http://localhost:8081/mifesandbox/SandboxController/smsmessaging/1', NULL, '2014-03-04 11:36:23', NULL, NULL),
   (2, 1, 'payment', 1, 'http://localhost:8081/mifesandbox/SandboxController/payment/1', NULL, '2014-03-04 11:36:58', NULL, NULL),
   (3, 1, 'location', 1, 'http://localhost:8081/mifesandbox/SandboxController/location/1', NULL, '2014-10-02 10:33:41', NULL, NULL),
-  (4, 1, 'location', 1, 'http://localhost:8081/mifesandbox/SandboxController/ussd/1', NULL, '2014-10-02 10:33:41', NULL, NULL);
+  (4, 1, 'ussd', 1, 'http://localhost:8081/mifesandbox/SandboxController/ussd/1', NULL, '2014-10-02 10:33:41', NULL, NULL);
 
 --
 -- Initial Metadata script for table `workflow_api_key_mappings`
