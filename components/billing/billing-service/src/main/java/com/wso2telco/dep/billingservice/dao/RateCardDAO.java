@@ -184,7 +184,7 @@ public class RateCardDAO {
 
 		try {
 
-			conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+			conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 
 			StringBuilder query = new StringBuilder();
 			query.append("INSERT INTO ");
@@ -226,7 +226,7 @@ public class RateCardDAO {
 
 		try {
 
-			conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+			conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 
 			StringBuilder query = new StringBuilder();
 			query.append("INSERT INTO ");
