@@ -64,5 +64,6 @@ public class Constants {
     public static final String INTERNAL_GATEWAY_TYPE2 = "internal_gateway_type2";
     public static final String WORK_FLOW_REF = "workflowRefId";
     public static final String ADMIN_SELECTED_TIER = "adminSelectedTier";
+    public static final String SELECTED_RATE = "selectedRate";
 
 }
