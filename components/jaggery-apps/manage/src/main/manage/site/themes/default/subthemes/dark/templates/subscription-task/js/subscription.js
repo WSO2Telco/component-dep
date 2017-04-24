@@ -212,7 +212,6 @@ function loadAllTaskTierDetails() {
 				if (result.data != null) {
 					setSubscriptionDescriptions(result);
 					setTierDropDownDetails(result);
-					//setratecarddropdown(result);
 										
 				} else {
 					jagg.showLogin();
@@ -330,7 +329,6 @@ function setSubscriptionDescriptions(result){
 }
 
 function getHubRates(apiCode , taskID) {
-    alert('fire-hub');
 	var action = "getHubRates";
 	var IsHubRates = true;
 
