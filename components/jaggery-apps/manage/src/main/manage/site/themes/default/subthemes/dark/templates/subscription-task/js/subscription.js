@@ -88,9 +88,9 @@ else{
 		for (var i = 0; i < optionValues; i++) {
 			selectElement = $("#rate_list_" + taskId + i).val();
 				if( selectElement == null) {
-					selectedRateValues += '0';
+					selectedRateValues += '0-';
 				}else{
-					selectedRateValues += selectElement;
+					selectedRateValues += selectElement+'-';
 				}
 
 		}
