@@ -63,6 +63,8 @@
         <module>components/mediator</module>
         <!--module>components/publish-events/publish-events-data</module>
           <module>components/publish-events/publish-events-extensions</module-->
+        <module>components/billing/billing-extension</module>
+        <module>components/billing/billing-service</module>        
         <module>components/workflow/workflow-approval</module>
         <module>components/workflow-extensions</module>
         <module>components/workflow/workflow-service</module>
@@ -76,7 +78,6 @@
         <module>components/jaggery-apps/store</module>
         <module>features</module>
         <module>components/operator-onboarding</module>
-        <module>components/billing-service</module>
     </modules>
 
     <scm>
@@ -633,7 +634,6 @@
                 <artifactId>org.wso2.carbon.identity.oauth</artifactId>
                 <version>${carbon.identity.version}</version>
             </dependency>
-
             <dependency>
                 <groupId>org.activiti</groupId>
                 <artifactId>activiti-webapp-explorer2</artifactId>
@@ -650,6 +650,12 @@
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
                 <version>${org.hibernate.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>com.wso2telco.dep</groupId>
+                <artifactId>billing-extension</artifactId>
+                <version>${com.wso2telco.dep.version}</version>
+                <scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
