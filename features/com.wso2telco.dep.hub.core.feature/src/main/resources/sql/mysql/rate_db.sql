@@ -151,7 +151,7 @@ DROP TABLE IF EXISTS `inmdnbsubscriptionrate`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `inmdnbsubscriptionrate` (
-  `NBSubscriptionRateDid` int(11) NOT NULL,
+  `NBSubscriptionRateDid` int(11) NOT NULL AUTO_INCREMENT,
   `servicesRateDid` int(11) NOT NULL,
   `applicationDid` int(11) NOT NULL,
   `apiDid` int(11) NOT NULL,
@@ -329,7 +329,7 @@ DROP TABLE IF EXISTS `inmdsbsubscriptions`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `inmdsbsubscriptions` (
-  `SBSubscriptionsRateDid` int(11) NOT NULL,
+  `SBSubscriptionsRateDid` int(11) NOT NULL AUTO_INCREMENT,
   `operationRateDid` int(11) NOT NULL,
   `applicationDid` int(11) NOT NULL,
   PRIMARY KEY (`SBSubscriptionsRateDid`,`operationRateDid`,`applicationDid`),
