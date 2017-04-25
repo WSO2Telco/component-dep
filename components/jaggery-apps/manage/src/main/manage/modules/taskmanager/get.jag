@@ -33,7 +33,7 @@ var getTasks = function (filterCategory,taskType) {
 	//todo: get both claimable and assigned tasks from a sinple API call and assign status accordingly
 	//size is hard coded to '100' to stop UI loading issues. the proper fix is to implement pagination correctly by
 	//first getting the count of tasks, and then doing activiti API calls to get relevant portion for that particular page
-	var tasks = get(businessProcessEngineUrl + "runtime/tasks?candidateGroups=" + string + "&size=100" +
+	var tasks = get(businessProcessEngineUrl + "runtime/tasks?candidateGroups=" + encodeURIComponent(string) + "&size=100" +
 	"&processDefinitionKey=" + processType, null, headers,
 	"json" ).data;
         if (log.isDebugEnabled()) {
@@ -69,7 +69,7 @@ var getTasks = function (filterCategory,taskType) {
 
 		//size is hard coded to '100' to stop UI loading issues. the proper fix is to implement pagination correctly by
 		//first getting the count of tasks, and then doing activiti API calls to get relevant portion for that particular page
-        var assignedTasks = get(businessProcessEngineUrl + "runtime/tasks?assignee=" + user + "&size=100" +
+        var assignedTasks = get(businessProcessEngineUrl + "runtime/tasks?assignee=" + encodeURIComponent(user) + "&size=100" +
         "&processDefinitionKey=" + processType, null,
         headers, "json" ).data;
                 if (log.isDebugEnabled()) {
