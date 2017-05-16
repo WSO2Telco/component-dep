@@ -364,6 +364,7 @@ CREATE TABLE IF NOT EXISTS `deptnotificationurls` (
   `operatorName` varchar(255) NULL,
   `notifystatus` int(10) NOT NULL DEFAULT 0,
   `createddate` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `consumerkey` varchar(100) NULL,
   PRIMARY KEY (`notifyurldid`)
 );
 
