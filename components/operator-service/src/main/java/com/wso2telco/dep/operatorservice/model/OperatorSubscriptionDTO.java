@@ -28,6 +28,9 @@ public class OperatorSubscriptionDTO {
     /** The domain. */
     String domain;
 
+    /** The operator Id */
+    int operatorId;
+
     /**
      * Instantiates a new operatorsubs.
      *
@@ -37,6 +40,11 @@ public class OperatorSubscriptionDTO {
     public OperatorSubscriptionDTO(String operator, String domain) {
         this.operator = operator;
         this.domain = domain;
+    }
+
+    public OperatorSubscriptionDTO(String operator, String domain, int operatorId) {
+        this(operator, domain);
+        this.operatorId = operatorId;
     }
         
     /**
@@ -73,5 +81,23 @@ public class OperatorSubscriptionDTO {
      */
     public void setDomain(String domain) {
         this.domain = domain;
+    }
+
+    /**
+     * Gets the OperatorId.
+     *
+     * @return the OperatorId
+     */
+    public int getOperatorId() {
+        return operatorId;
+    }
+
+    /**
+     * Sets the OperatorId.
+     *
+     * @param operatorId
+     */
+    public void setOperatorId(int operatorId) {
+        this.operatorId = operatorId;
     }
 }
