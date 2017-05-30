@@ -83,11 +83,18 @@ public class ValidateUssdSubscription implements IServiceValidate {
 
                     for (int i=0; i<shortCodesArray.length(); i++) {
                         JSONObject shortCode = shortCodesArray.getJSONObject(i);
-                        String sCode = nullOrTrimmed(shortCode.getString("shortCode"));
-                        String oCode = nullOrTrimmed(shortCode.getString("operatorCode"));
 
-                        shortCodeListRules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "shortCode"+i, sCode));
-                        shortCodeListRules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "operatorCode"+i, oCode));
+                        String sCode = null;
+                        if (shortCode.has("shortCode")) {
+                            sCode = nullOrTrimmed(shortCode.getString("shortCode"));
+                        }
+                        shortCodeListRules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "shortCode" + i, sCode));
+
+                        String oCode = null;
+                        if (shortCode.has("operatorCode")) {
+                            oCode = nullOrTrimmed(shortCode.getString("operatorCode"));
+                        }
+                        shortCodeListRules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "operatorCode" + i, oCode));
                     }
 
                     Validation.checkRequestParams(shortCodeListRules.toArray(new ValidationRule[shortCodesArray.length()]));
@@ -96,8 +103,18 @@ public class ValidateUssdSubscription implements IServiceValidate {
                 }
             } else if (requestData.has("shortCode")) {
                 ValidationRule[] shortCodeRules = new ValidationRule[2];
-                shortCodeRules[0] = new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "shortCode", nullOrTrimmed(requestData.getString("shortCode")));
-                shortCodeRules[1] = new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "keyword", nullOrTrimmed(requestData.getString("keyword")));
+
+                String sCode = null;
+                if (requestData.has("shortCode")) {
+                    sCode = nullOrTrimmed(requestData.getString("shortCode"));
+                }
+                shortCodeRules[0] = new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "shortCode", sCode);
+
+                String keyword = null;
+                if (requestData.has("keyword")) {
+                    keyword = nullOrTrimmed(requestData.getString("keyword"));
+                }
+                shortCodeRules[1] = new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "keyword", keyword);
 
                 Validation.checkRequestParams(shortCodeRules);
             } else {
