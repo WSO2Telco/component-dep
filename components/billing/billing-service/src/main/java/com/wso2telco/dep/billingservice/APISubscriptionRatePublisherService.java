@@ -6,14 +6,12 @@ import com.wso2telco.dep.billingextension.BillingHandlerExtension;
 import com.wso2telco.dep.billingservice.service.RateCardService;
 
 public class APISubscriptionRatePublisherService implements BillingHandlerExtension {
-
 	@Override
-	public void publishHubAPIRate(int servicesRateDid, int applicationDid, String apiCode) throws BusinessException {
-
+	public void publishHubAPIRate(int servicesRateDid, int applicationDid) throws BusinessException {
 		try {
 
 			RateCardService rateCardService = new RateCardService();
-			rateCardService.setHubSubscriptionRateData(servicesRateDid, applicationDid, apiCode);
+			rateCardService.setHubSubscriptionRateData(servicesRateDid, applicationDid);
 		} catch (Exception e) {
 
 			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
@@ -21,15 +19,15 @@ public class APISubscriptionRatePublisherService implements BillingHandlerExtens
 	}
 
 	@Override
-	public void publishOperatorAPIRate(int operatorRateDid, int applicationDid) throws BusinessException {
-
+	public void publishOperatorAPIRate(int operatorRateDid, int applicationDid, String operatorId, String operationId) throws BusinessException {
 		try {
 
 			RateCardService rateCardService = new RateCardService();
-			rateCardService.setOperatorSubscriptionRateData(operatorRateDid, applicationDid);
+			rateCardService.setOperatorSubscriptionRateData(operatorRateDid, applicationDid, operatorId, operationId);
 		} catch (Exception e) {
 
 			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 		}
 	}
+
 }

@@ -12,6 +12,7 @@ public class RateCardService {
 		rateCardDAO = new RateCardDAO();
 	}
 
+	//TODO:hit method
 	public Map<Integer, String> getServiceDetailsByAPICode(String apiCode) throws Exception {
 
 		Map<Integer, String> serviceDetails = null;
@@ -76,22 +77,26 @@ public class RateCardService {
 		}
 	}
 
-	public void setHubSubscriptionRateData(int servicesRateDid, int applicationDid, String apiCode) throws Exception {
+
+	//setters
+	//public void setHubSubscriptionRateData(int servicesRateDid, int applicationDid, String apiCode) throws Exception {
+	public void setHubSubscriptionRateData(int servicesRateDid, int applicationDid) throws Exception {
 
 		try {
 
-			rateCardDAO.setHubSubscriptionRateData(servicesRateDid, applicationDid, apiCode);
+			rateCardDAO.setHubSubscriptionRateData(servicesRateDid, applicationDid);
 		} catch (Exception e) {
 
 			throw e;
 		}
 	}
-
-	public void setOperatorSubscriptionRateData(int operatorRateDid, int applicationDid) throws Exception {
+//int operatorRateDid, int applicationDid, String operatorId, String operationId
+	//public void setOperatorSubscriptionRateData(int operatorRateDid, int applicationDid) throws Exception {
+	public void setOperatorSubscriptionRateData(int operatorRateDid, int applicationDid, String operatorId, String operationId) throws Exception {
 
 		try {
 
-			rateCardDAO.setOperatorSubscriptionRateData(operatorRateDid, applicationDid);
+			rateCardDAO.setOperatorSubscriptionRateData(operatorRateDid, applicationDid, operatorId, operationId);
 		} catch (Exception e) {
 
 			throw e;

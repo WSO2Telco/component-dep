@@ -31,16 +31,12 @@ public class RateCardDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder queryString = new StringBuilder("SELECT services.servicesDid, services.code ");
-			queryString.append("FROM ");
-			queryString.append(DatabaseTables.IN_MD_API.getTObject());
-			queryString.append(" api, ");
-			queryString.append(DatabaseTables.IN_MD_SERVICES.getTObject());
-			queryString.append(" services ");
-			queryString.append("WHERE api.apiDid = services.apiDid ");
-			queryString.append("AND api.code = ?");
+			StringBuilder query = new StringBuilder("select apiop.api_operationid, apiop.api_operation, apiop.api_operationcode ");
+			query.append("from api_operation apiop, api ");
+			query.append("where apiop.apiid = api.apiid ");
+			query.append("and api.apiname=?");
 
-			ps = con.prepareStatement(queryString.toString());
+			ps = con.prepareStatement(query.toString());
 
 			ps.setString(1, apiCode);
 
@@ -49,8 +45,7 @@ public class RateCardDAO {
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
-
-				serviceDetails.put(rs.getInt("servicesDid"), rs.getString("code"));
+				serviceDetails.put(rs.getInt("api_operationid"), rs.getString("api_operation"));
 			}
 		} catch (SQLException e) {
 
@@ -82,16 +77,12 @@ public class RateCardDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder queryString = new StringBuilder("SELECT operationRate.servicesRateDid, rate.code ");
-			queryString.append("FROM ");
-			queryString.append(DatabaseTables.IN_MD_RATE.getTObject());
-			queryString.append(" rate, ");
-			queryString.append(DatabaseTables.IN_OPERATION_RATE.getTObject());
-			queryString.append(" operationRate ");
-			queryString.append("WHERE operationRate.rateDid = rate.rateDid ");
-			queryString.append("AND operationRate.servicesDid = ?");
+			StringBuilder query = new StringBuilder("select opr.operation_rateid,rd.rate_defname ");
+			query.append("from operation_rate opr, rate_def rd ");
+			query.append("where opr.rate_defid=rd.rate_defid ");
+			query.append("and api_operationid=? ");
 
-			ps = con.prepareStatement(queryString.toString());
+			ps = con.prepareStatement(query.toString());
 
 			ps.setInt(1, servicesDid);
 
@@ -101,7 +92,7 @@ public class RateCardDAO {
 
 			while (rs.next()) {
 
-				rateDetails.put(rs.getInt("servicesRateDid"), rs.getString("code"));
+				rateDetails.put(rs.getInt("operation_rateid"), rs.getString("rate_defname"));
 			}
 		} catch (SQLException e) {
 
@@ -119,6 +110,7 @@ public class RateCardDAO {
 		return rateDetails;
 	}
 
+	//TODO:changing
 	public Map<Integer, String> getOperatorRateDetailsByServicesDidAndOperatorCode(int servicesDid, String operatorCode)
 			throws SQLException, Exception {
 
@@ -134,20 +126,15 @@ public class RateCardDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder queryString = new StringBuilder("SELECT operatorRate.operatorRateDid, rate.code ");
-			queryString.append("FROM ");
-			queryString.append(DatabaseTables.IN_MD_RATE.getTObject());
-			queryString.append(" rate, ");
-			queryString.append(DatabaseTables.IN_MD_OPERATOR.getTObject());
-			queryString.append(" operator, ");
-			queryString.append(DatabaseTables.IN_MD_OPERATOR_RATE.getTObject());
-			queryString.append(" operatorRate ");
-			queryString.append("WHERE operatorRate.rateDid = rate.rateDid ");
-			queryString.append("AND operator.operatorDid = operatorRate.operatorDid ");
-			queryString.append("AND operatorRate.servicesDid = ? ");
-			queryString.append("AND operator.code = ?");
+			StringBuilder query = new StringBuilder("SELECT operationRate.operation_rateid, rate.rate_defname ");
+			query.append("FROM ");
+			query.append("rate_def rate,operator op,operation_rate operationRate ");
+			query.append("WHERE operationRate.rate_defid = rate.rate_defid ");
+			query.append("AND op.operatorid = operationRate.operator_id ");
+			query.append("AND operationRate.api_operationid = ? ");
+			query.append("AND op.operatorname = ?");
 
-			ps = con.prepareStatement(queryString.toString());
+			ps = con.prepareStatement(query.toString());
 
 			ps.setInt(1, servicesDid);
 			ps.setString(2, operatorCode);
@@ -158,7 +145,7 @@ public class RateCardDAO {
 
 			while (rs.next()) {
 
-				rateDetails.put(rs.getInt("operatorRateDid"), rs.getString("code"));
+				rateDetails.put(rs.getInt("operation_rateid"), rs.getString("rate_defname"));
 			}
 		} catch (SQLException e) {
 
@@ -176,7 +163,9 @@ public class RateCardDAO {
 		return rateDetails;
 	}
 
-	public void setHubSubscriptionRateData(int servicesRateDid, int applicationDid, String apiCode)
+
+	//TODO:change here rate. write rollback as well
+	public void setHubSubscriptionRateData(int servicesRateDid, int applicationDid)
 			throws SQLException, Exception {
 
 		Connection conn = null;
@@ -186,20 +175,16 @@ public class RateCardDAO {
 
 			conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 
-			StringBuilder query = new StringBuilder();
-			query.append("INSERT INTO ");
-			query.append(DatabaseTables.IN_MD_NB_SUBSCRIPTION_RATE.getTObject());
-			query.append(" (servicesRateDid, applicationDid, apiDid) ");
-			query.append("VALUES (?, ?, (SELECT apiDid ");
-			query.append("FROM ");
-			query.append(DatabaseTables.IN_MD_API.getTObject());
-			query.append(" WHERE code = ?))");
+			StringBuilder query = new StringBuilder("INSERT INTO rate_db.sub_rate_nb ");
+			query.append("(api_operationid,applicationid,rate_defid) ");
+			query.append("VALUES ((select api_operationid from operation_rate where operation_rateid=?),?,");
+			query.append("(select rate_defid from operation_rate where operation_rateid=?))");
+			//query.append("(SELECT rate_defid FROM rate_def WHERE rate_defname=?))");
 
 			ps = conn.prepareStatement(query.toString());
-
-			ps.setInt(1, servicesRateDid);
-			ps.setInt(2, applicationDid);
-			ps.setString(3, apiCode);
+			ps.setInt(1,servicesRateDid);
+			ps.setInt(2,applicationDid);
+			ps.setInt(3,servicesRateDid);
 
 			log.debug("sql query in setHubSubscriptionRateData : " + ps);
 
@@ -218,7 +203,7 @@ public class RateCardDAO {
 		}
 	}
 
-	public void setOperatorSubscriptionRateData(int operatorRateDid, int applicationDid)
+	public void setOperatorSubscriptionRateData(int operatorRateDid, int applicationDid, String operatorId, String operationId)
 			throws SQLException, Exception {
 
 		Connection conn = null;
@@ -228,16 +213,16 @@ public class RateCardDAO {
 
 			conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 
-			StringBuilder query = new StringBuilder();
-			query.append("INSERT INTO ");
-			query.append(DatabaseTables.IN_MD_SB_SUBSCRIPTIONS.getTObject());
-			query.append(" (operationRateDid, applicationDid) ");
-			query.append("VALUES (?, ?)");
+			StringBuilder query = new StringBuilder("INSERT INTO sub_rate_sb ");
+			query.append("(operatorid, api_operationid, applicationid, rate_defid)");
+			query.append("VALUES (?, ?,?,?)");
 
 			ps = conn.prepareStatement(query.toString());
 
-			ps.setInt(1, operatorRateDid);
-			ps.setInt(2, applicationDid);
+			ps.setInt(1, 1);
+			ps.setInt(2, 1);
+			ps.setInt(3,1);
+			ps.setInt(4,2);
 
 			log.debug("sql query in setOperatorSubscriptionRateData : " + ps);
 

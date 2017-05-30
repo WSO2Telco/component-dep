@@ -36,7 +36,7 @@ public class BillingServiceHostObject extends ScriptableObject {
 
 		log.debug("--------------------------Initialized HostObject Billing Sservice Host Object--------------------");
 	}
-
+	//TODO: hit method 1
 	public static NativeObject jsFunction_getHubRatesByAPICode(Context cx, Scriptable thisObj, Object[] args,
 			Function funObj) throws BusinessException {
 
@@ -115,13 +115,15 @@ public class BillingServiceHostObject extends ScriptableObject {
 		return resultObject;
 	}
 
+
+	//TODO: hit method 2
 	public static NativeObject jsFunction_getOperatorRatesByAPICodeAndOperatorCode(Context cx, Scriptable thisObj,
 			Object[] args, Function funObj) throws BusinessException {
 
 		NativeObject resultObject = new NativeObject();
 		NativeObject apiData = new NativeObject();
 
-		String apiCode = args[0].toString();
+		String apiCode = args[0].toString(); // api name - payment or smsmessaging
 		String operatorCode = args[1].toString();
 
 		RateCardService rateCardService = new RateCardService();
