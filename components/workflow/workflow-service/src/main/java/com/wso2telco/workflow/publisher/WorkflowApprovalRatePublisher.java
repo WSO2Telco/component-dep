@@ -33,7 +33,7 @@ public class WorkflowApprovalRatePublisher {
 
 	//TODO:change in here
 	//rateId, appID, operatorId, operationId
-	public void publishOperatorAPIRate(int operatorRateDid, int applicationDid, String operatorId, String operationId) throws BusinessException {
+	public void publishOperatorAPIRate(int operatorRateDid, int applicationDid) throws BusinessException {
 
 		try {
 
@@ -41,7 +41,7 @@ public class WorkflowApprovalRatePublisher {
 
 			for (BillingHandlerExtension extn : loader) {
 
-				extn.publishOperatorAPIRate(operatorRateDid, applicationDid, operatorId, operationId);
+				extn.publishOperatorAPIRate(operatorRateDid, applicationDid);
 				break;
 			}
 		} catch (BusinessException e) {

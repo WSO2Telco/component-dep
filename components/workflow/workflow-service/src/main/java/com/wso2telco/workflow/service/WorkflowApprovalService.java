@@ -125,7 +125,7 @@ public class WorkflowApprovalService {
 					if (rateId != 0) {
 					
 						//workflowApprovalRatePublisher.publishOperatorAPIRate(rateId, appID, operatorId, operationId);
-						workflowApprovalRatePublisher.publishOperatorAPIRate(rateId, appID, operatorId, operationId);
+						workflowApprovalRatePublisher.publishOperatorAPIRate(rateId, appID);
 					}
 				}
 			}			

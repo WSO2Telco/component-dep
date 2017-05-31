@@ -19,11 +19,11 @@ public class APISubscriptionRatePublisherService implements BillingHandlerExtens
 	}
 
 	@Override
-	public void publishOperatorAPIRate(int operatorRateDid, int applicationDid, String operatorId, String operationId) throws BusinessException {
+	public void publishOperatorAPIRate(int operatorRateDid, int applicationDid) throws BusinessException {
 		try {
 
 			RateCardService rateCardService = new RateCardService();
-			rateCardService.setOperatorSubscriptionRateData(operatorRateDid, applicationDid, operatorId, operationId);
+			rateCardService.setOperatorSubscriptionRateData(operatorRateDid, applicationDid);
 		} catch (Exception e) {
 
 			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);

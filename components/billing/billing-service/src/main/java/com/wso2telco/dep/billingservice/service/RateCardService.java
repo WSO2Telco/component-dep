@@ -92,11 +92,11 @@ public class RateCardService {
 	}
 //int operatorRateDid, int applicationDid, String operatorId, String operationId
 	//public void setOperatorSubscriptionRateData(int operatorRateDid, int applicationDid) throws Exception {
-	public void setOperatorSubscriptionRateData(int operatorRateDid, int applicationDid, String operatorId, String operationId) throws Exception {
+	public void setOperatorSubscriptionRateData(int operatorRateDid, int applicationDid) throws Exception {
 
 		try {
 
-			rateCardDAO.setOperatorSubscriptionRateData(operatorRateDid, applicationDid, operatorId, operationId);
+			rateCardDAO.setOperatorSubscriptionRateData(operatorRateDid, applicationDid);
 		} catch (Exception e) {
 
 			throw e;

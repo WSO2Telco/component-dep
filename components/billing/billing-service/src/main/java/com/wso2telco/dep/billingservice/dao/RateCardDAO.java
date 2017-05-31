@@ -203,7 +203,15 @@ public class RateCardDAO {
 		}
 	}
 
-	public void setOperatorSubscriptionRateData(int operatorRateDid, int applicationDid, String operatorId, String operationId)
+	/*
+	INSERT INTO rate_db.sub_rate_sb
+(operatorid, api_operationid, applicationid, rate_defid)
+VALUES ((select operator_id from operation_rate where operation_rateid=1),
+(select api_operationid from operation_rate where operation_rateid=1),
+30,
+(select rate_defid from operation_rate where operation_rateid=1))
+	* */
+	public void setOperatorSubscriptionRateData(int operatorRateDid, int applicationDid)
 			throws SQLException, Exception {
 
 		Connection conn = null;
@@ -213,16 +221,18 @@ public class RateCardDAO {
 
 			conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 
-			StringBuilder query = new StringBuilder("INSERT INTO sub_rate_sb ");
-			query.append("(operatorid, api_operationid, applicationid, rate_defid)");
-			query.append("VALUES (?, ?,?,?)");
+			StringBuilder query = new StringBuilder("INSERT INTO rate_db.sub_rate_sb ");
+			query.append("(operatorid, api_operationid, applicationid, rate_defid) ");
+			query.append("VALUES ((select operator_id from operation_rate where operation_rateid=?),");
+			query.append("(select api_operationid from operation_rate where operation_rateid=?),?,");
+			query.append("(select rate_defid from operation_rate where operation_rateid=?))");
 
 			ps = conn.prepareStatement(query.toString());
 
-			ps.setInt(1, 1);
-			ps.setInt(2, 1);
-			ps.setInt(3,1);
-			ps.setInt(4,2);
+			ps.setInt(1, operatorRateDid);
+			ps.setInt(2, operatorRateDid);
+			ps.setInt(3,applicationDid);
+			ps.setInt(4,operatorRateDid);
 
 			log.debug("sql query in setOperatorSubscriptionRateData : " + ps);
 
