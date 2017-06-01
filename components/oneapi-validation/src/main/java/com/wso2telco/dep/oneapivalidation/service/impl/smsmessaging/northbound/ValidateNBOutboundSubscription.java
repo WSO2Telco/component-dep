@@ -112,8 +112,8 @@ public class ValidateNBOutboundSubscription implements IServiceValidate {
 
                     for (validationCount = 0; validationCount < addressess.size(); validationCount++) {
                         String[] details = addressess.get(validationCount);
-                        if (details[0].equalsIgnoreCase("senderAddresses")) {
-                            rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "senderAddresses", details[1]));
+                        if (details[0].equalsIgnoreCase("senderAddress")) {
+                            rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "senderAddress", details[1]));
                         } else if (details[0].equalsIgnoreCase("operatorCode")) {
                             rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "operatorCode", details[1]));
                         } else if (details[0].equalsIgnoreCase("filterCriteria")) {
