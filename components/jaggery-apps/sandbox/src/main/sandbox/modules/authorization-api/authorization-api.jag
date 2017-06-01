@@ -18,7 +18,7 @@ var createAuthCodeRequest = function (key,secret,username) {
             var reqerr =false;
         }
 
-        log.info("endpoint: >>>>>>>>>>>>>>> "+endpoint);
+        log.info("endpoint >>>> "+endpoint);
         log.info('response :'+result);
 
         return {
@@ -196,7 +196,7 @@ var generateAccessTokenRequest = function (grant_type, refresh_token, scope, aut
             var reqerr = false;
         }
 
-        log.info("endpoint: >>>>>>>>>>>>>>> " + endpoint);
+        log.info("endpoint >>>> " + endpoint);
         log.info('response :' + result);
 
         return {

@@ -37,7 +37,7 @@ function getApiwiseBlacklist(api){
 
 	// API invocation
 	if (isAdmin || isOperator) {
-		log.info(api);
+		log.debug("API id = " + api);
 		var data = {
 		};
 		var newURL = getBlacklistURL + api;
@@ -51,7 +51,7 @@ function getApiwiseBlacklist(api){
 			
 			return blacklist;
 		} catch(e) {
-			log.info("e: " + e);
+			log.error("exception: " + e);
 			return [];
 		}
 		
@@ -79,7 +79,7 @@ function addNewToBlacklist(api, subscriberList){
 
 	// Invoke bulk-add API
 	log.info(subscribers);
-	log.info("api:::::::::::::::::::::::::::::::::::" + stringify(api));
+	log.debug("API id = " + stringify(api));
 	var data = {
 		"apiID":api,
 		"apiName":api,

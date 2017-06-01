@@ -8,11 +8,11 @@ include("/jagg/jagg.jag");
 	var user = jagg.getUser();
 
 	var log = new Log();
-	log.info("Action:=" + action);
+	log.info("::: Action:=" + action);
 
 	if (action =="getBlacklistByAPI"){
 		var api = request.getParameter("api");
-		log.info("KKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKKK:"+api);
+		log.info("::: Received API id :"+api);
 		var blacklistModule = jagg.module("blacklist");
 		result = blacklistModule.getApiwiseBlacklist(api);
 
