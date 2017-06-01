@@ -38,8 +38,7 @@ function populateBlacklistData() {
 			tbody.innerHTML = "";
 
 			var blacklistHeader = document.getElementById("blacklist-header");
-			blacklistHeader.innerHTML = "<h3>Blacklisted subscribers ("
-					+ $("#apiSelect").val() + ")</h3>";
+			blacklistHeader.innerHTML = "<h3>Blacklisted subscribers (" + blacklist.length + ")</h3>";
 
 			for (var i = 0; i < blacklist.length; i++) {
 
