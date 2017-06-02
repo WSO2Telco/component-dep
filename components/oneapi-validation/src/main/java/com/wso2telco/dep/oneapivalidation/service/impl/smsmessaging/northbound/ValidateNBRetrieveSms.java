@@ -167,14 +167,15 @@ public class ValidateNBRetrieveSms implements IServiceValidate {
                 rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "clientCorrelator", clientCorrelator));
             }
 
-            ValidationRule[] validationRuleArray = new ValidationRule[rules.size()];
-            validationRuleArray = rules.toArray(validationRuleArray);
-
-            Validation.checkRequestParams(validationRuleArray);
         } catch (Exception e) {
             System.out.println("Manipulating recived JSON Object: " + e);
             throw new CustomException("POL0299", "Unexpected Error", new String[]{""});
         }
+
+        ValidationRule[] validationRuleArray = new ValidationRule[rules.size()];
+        validationRuleArray = rules.toArray(validationRuleArray);
+
+        Validation.checkRequestParams(validationRuleArray);
     }
 
     /* (non-Javadoc)
