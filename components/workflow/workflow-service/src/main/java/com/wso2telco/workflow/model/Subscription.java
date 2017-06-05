@@ -28,6 +28,7 @@ public class Subscription {
     private String OpID;
     private String operatorName;
     private String workflowRefId;
+    private String selectedRate;
 
     public String getWorkflowRefId() {
         return workflowRefId;
@@ -84,6 +85,14 @@ public class Subscription {
 
     public void setEndpointID(int endpointID) {
         this.endpointID = endpointID;
+    }
+
+    public String getSelectedRate() {
+    	return selectedRate;
+    }
+
+    public void setSelectedRate(String selectedRate) {
+        this.selectedRate = selectedRate;
     }
 
 

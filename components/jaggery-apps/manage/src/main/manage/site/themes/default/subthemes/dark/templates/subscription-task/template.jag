@@ -80,6 +80,8 @@ else{
                 <tbody>
                 <%for(var i=from;i<to;i++){%>
                 <tr>
+                <% var log = new Log();
+                log.info(tasks); %>
                     <td><%=tasks[i].id%></td>
 					<input type="hidden" id="<%=tasks[i].id%>" name="subscription_task"
 							value="<%=tasks[i].id%>" />
@@ -109,18 +111,29 @@ else{
 								<%
 								if(isAdmin == true){
 								%>
-								<label data-section="tiers-section" class="js_toggle"
-								id="<%=tasks[i].id%>">
 								<label data-section="tiers-section" class="js_toggle" id="<%=tasks[i].id%>"><b>Subscription Details</b><i class="icon-chevron-right icon-keys"></i></label>
-								<div style="display:none">
-									<div id="tiersDiv_<%=tasks[i].id%>" style="display:block">
-										<label><b>Tiers:</b></label>
+								<div style="display:none;">
+								<label><b>Tiers:</b></label>
+
+								 <div id="tiersDiv_<%=tasks[i].id%>" style="display:block; overflow: hidden;">
 										<select id="tiers_list_<%=tasks[i].id%>" name="tiers_list_<%=tasks[i].id%>" onchange="getSelectedTier(this);" style="float: left;">
                         				</select>
                         				<div id="tierAttributesDiv_<%=tasks[i].id%>" style="margin-left: 38%">								
 										</div>
-									</div>		
-								</div>	
+									</div>
+								<div id="ratecard_<%=tasks[i].id%>">
+								<input type="hidden" id="ratecount_<%=tasks[i].id%>" name="ratecardcount" value="">
+								</div>
+								</div>
+								<%
+								} else {
+								%>
+								<label class="js_toggle" id="<%=tasks[i].id%>"><b>Subscription Details</b><i class="icon-chevron-right icon-keys"></i></label>
+								<div style="display:none;">
+								<div id="ratecard_<%=tasks[i].id%>">
+								<input type="hidden" id="ratecount_<%=tasks[i].id%>" name="ratecardcount" value="">
+									</div>
+								</div>
 								<%
 								}
 								%>			

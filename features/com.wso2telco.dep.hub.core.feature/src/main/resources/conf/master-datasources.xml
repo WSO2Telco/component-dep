@@ -213,6 +213,48 @@
         </datasource-->
 
         <datasource>
+            <name>WSO2TELCO_RATE_DB</name>
+            <description>The custom datasource used for rate database</description>
+            <jndiConfig>
+                <name>jdbc/WSO2TELCO_RATE_DB</name>
+            </jndiConfig>
+            <definition type="RDBMS">
+                <configuration>
+                    <url>jdbc:mysql://{database host}:{port}/hub_ratedb?autoReconnect=true&amp;useSSL=false&amp;</url>
+                    <username>{username}</username>
+                    <password>{password}</password>
+                    <driverClassName>com.mysql.jdbc.Driver</driverClassName>
+                    <maxActive>50</maxActive>
+                    <maxWait>60000</maxWait>
+                    <testOnBorrow>true</testOnBorrow>
+                    <validationQuery>SELECT 1 FROM DUAL</validationQuery>
+                    <validationInterval>30000</validationInterval>
+                </configuration>
+            </definition>
+        </datasource>
+
+        <!--datasource>
+            <name>WSO2_SOCIAL_DB</name>
+            <description>The datasource used for social framework</description>
+            <jndiConfig>
+                <name>jdbc/WSO2SocialDB</name>
+            </jndiConfig>
+            <definition type="RDBMS">
+                <configuration>
+                    <url>jdbc:h2:repository/database/WSO2SOCIAL_DB;DB_CLOSE_ON_EXIT=FALSE;MVCC=true</url>
+                    <username>wso2carbon</username>
+                    <password>wso2carbon</password>
+                    <driverClassName>org.h2.Driver</driverClassName>
+                    <maxActive>50</maxActive>
+                    <maxWait>60000</maxWait>
+                    <testOnBorrow>true</testOnBorrow>
+                    <validationQuery>SELECT 1</validationQuery>
+                    <validationInterval>30000</validationInterval>
+                </configuration>
+            </definition>
+        </datasource-->
+
+        <datasource>
             <name>JAGH2</name>
             <description>The datasource used for by the Jaggery Storage Manager</description>
             <jndiConfig>

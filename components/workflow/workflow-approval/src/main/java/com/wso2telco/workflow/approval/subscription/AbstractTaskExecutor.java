@@ -1,6 +1,7 @@
 package com.wso2telco.workflow.approval.subscription;
 
 import com.wso2telco.workflow.approval.model.DelegatedArgsDTO;
+
 import org.activiti.engine.delegate.DelegateExecution;
 
 import com.wso2telco.workflow.approval.model.SubscriptionApprovalAuditRecord;
@@ -12,6 +13,7 @@ import com.wso2telco.workflow.approval.util.Constants;
 import feign.Feign;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -44,6 +46,7 @@ abstract class AbstractTaskExecutor implements SubscriptionTask {
         String operatorAdminApprovalStatus = arg0.getVariable(Constants.OPERATOR_ADMIN_APPROVAL) != null ? arg0.getVariable(Constants.OPERATOR_ADMIN_APPROVAL).toString() : null;
         String apiProviderRole = arg0.getVariable(Constants.API_PROVIDER_ROLE) != null ? arg0.getVariable(Constants.API_PROVIDER_ROLE).toString() : null;
         String adminSelectedTier = arg0.getVariable(Constants.ADMIN_SELECTED_TIER) != null ? arg0.getVariable(Constants.ADMIN_SELECTED_TIER).toString() : null;
+        String selectedRate = arg0.getVariable(Constants.SELECTED_RATE) != null ? arg0.getVariable(Constants.SELECTED_RATE).toString() : null;
 
         log.info("In OperatorDataUpdater, Operator admin approval status: " + operatorAdminApprovalStatus +
                 " Operator: " + operatorName);
@@ -81,6 +84,7 @@ abstract class AbstractTaskExecutor implements SubscriptionTask {
         delegatedArgsDTO.setOperatorAdminApprovalStatus(operatorAdminApprovalStatus);
         delegatedArgsDTO.setApiProviderRole(apiProviderRole);
         delegatedArgsDTO.setAdminSelectedTier(adminSelectedTier);
+        delegatedArgsDTO.setSelectedRate(selectedRate);
 
         WorkflowApprovalAuditApi apiAudit = Feign.builder()
                 .encoder(new JacksonEncoder())
