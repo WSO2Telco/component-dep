@@ -74,6 +74,8 @@
         <module>components/jaggery-apps/publisher</module>
         <module>components/jaggery-apps/sandbox</module>
         <module>components/jaggery-apps/store</module>
+		<module>components/billing/billing-extension</module>
+		<module>components/billing/billing-service</module>
         <module>features</module>
         <module>components/operator-onboarding</module>
     </modules>
@@ -566,6 +568,11 @@
                 <groupId>com.wso2telco.core</groupId>
                 <artifactId>mnc-resolver</artifactId>
                 <version>${com.wso2telco.core.version}</version>
+            </dependency>
+			<dependency>
+                <groupId>com.wso2telco.dep</groupId>
+                <artifactId>billing-extension</artifactId>
+                <version>${com.wso2telco.dep.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.wso2.carbon.analytics</groupId>
