@@ -20,7 +20,7 @@ function getAllSubscribers(){
 
 function getAllOperators(){
 	var log = new Log();
-	//log.info("*************************Get All Operators from Host Object***************************");
+	
 
 	var billing = jagg.module("manager").getCustomBilling();
 	var operators = [];
@@ -37,7 +37,7 @@ function getAllOperators(){
 
 function getAllAPIs(){
 	var log = new Log();
-	//log.info("*************************Get All APIs from Host Object***************************");
+
 
 	var store = jagg.module("manager").getAPIStoreObj();
 	var apis = [];
@@ -55,7 +55,7 @@ function getAllAPIs(){
 function getAppsBySubscriber(selectedSubscriber){
 	var log = new Log();
 	log.info("Selected Subscriber: " + stringify(selectedSubscriber));
-	//log.info("*************************Get All Apps from Host Object***************************");
+
 
 	var store = jagg.module("manager").getAPIStoreObj();
 	var apps = [];

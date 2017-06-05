@@ -14,7 +14,7 @@ include("/jagg/jagg.jag");
         user = jagg.getUser();
         var mod = jagg.module("authorization-api");
         var result = mod.createAuthCodeRequest(key, secret, user.username);
-        log.info('GGGGGGGGGGGGGGGGGGGGGGGGG result  ' + result.data);
+       
         if (result.reqerr == false) {
             //{"MobileIdApiRequest":{""mobIdApiId":14,"sub":"ty","email":"tyt","given_name":"tytytytytyty"}}
             var locreqtxn = {
@@ -140,7 +140,7 @@ include("/jagg/jagg.jag");
         user = jagg.getUser();
         var mod = jagg.module("authorization-api");
         var result = mod.generateAccessTokenRequest(grant_type, refresh_token, scope, auth_code, user.username);
-        log.info('GGGGGGGGGGGGGGGGGGGGGGGGG result  ' + result);
+      
         if (result.reqerr == false) {
 
             var locreqtxn = {

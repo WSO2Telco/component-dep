@@ -65,6 +65,7 @@ include("/jagg/jagg.jag");
          var taskName = request.getParameter("taskName");
          var description= request.getParameter("description");
          var selectedTier= request.getParameter("selectedTier");
+         var selectedRate= request.getParameter("selectedRate");
          username = jagg.getUser().username;
          var currentDate = new Date();
 		 var webAppURL = site.webapp_URL;
@@ -90,7 +91,7 @@ include("/jagg/jagg.jag");
 
          }*/
 
-         result = mod.completeTask(taskId,taskType,taskName,status,description,username,currentDate,selectedTier);
+         result = mod.completeTask(taskId,taskType,taskName,status,description,username,currentDate,selectedTier,selectedRate);
          if (result.error==true) {
          obj = {
                error:true,

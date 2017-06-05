@@ -4,7 +4,6 @@ jagg.module("manager", {
 	getServer:function () {
 		return jagg.require(jagg.getModulesDir() + "manager/manager.jag").getServer.apply(this, arguments);
 	},
-
 	getAuthServerURL:function () {
 		return jagg.require(jagg.getModulesDir() + "manager/manager.jag").getAuthServerURL.apply(this, arguments);
 	},
@@ -25,7 +24,9 @@ jagg.module("manager", {
 	},
 	getWorkflowHostObject:function () {
 		return jagg.require(jagg.getModulesDir() + "manager/manager.jag").getWorkflowHostObject.apply(this, arguments);
+	},
+	getBillingServiceHostObject:function () {
+		return jagg.require(jagg.getModulesDir() + "manager/manager.jag").getBillingServiceHostObject.apply(this, arguments);
 	}
-
 });
 %>

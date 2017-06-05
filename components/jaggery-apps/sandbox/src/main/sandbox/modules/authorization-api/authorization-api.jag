@@ -2,7 +2,7 @@
 include("/jagg/jagg.jag");
 var createAuthCodeRequest = function (key,secret,username) {
     var log = new Log();
-    log.info('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZparams :'+key+' & '+secret);
+   
     try {
         var xhr = new XMLHttpRequest();
         var endpoint =  jagg.getSandboxurl()+"MobileIdApiAuthorizationServlet/mobileidapi/1/queries/mobileidapi?key="+key+"&secret="+secret;
@@ -74,7 +74,7 @@ var generateRefreshToken = function (granttype,username,password,scope,user,toke
 
 var getRefreshToken = function (url,user) {
     var log = new Log();
-    log.info('YYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYYXZ : '+url);
+  
     try {
         var xhr = new XMLHttpRequest();
         var endpoint =  jagg.getSandboxurl()+"GetRefreshToken/mobileidapi/1/queries/mobileidapi?url="+url+"&user="+user;
@@ -179,7 +179,7 @@ var sendMobileIdApiRequestWithToken = function (authorization, username) {
 
 var generateAccessTokenRequest = function (grant_type, refresh_token, scope, authCode, username) {
     var log = new Log();
-    log.info('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZparams :' + grant_type + ' & ' + refresh_token + ' & ' + scope + ' & ' + authCode);
+   
     try {
         var xhr = new XMLHttpRequest();
         var endpoint = jagg.getSandboxurl() + "MobileIdApiGenerateAccessTokenServlet/mobileidapi/1/queries/mobileidapi?grant_type=" +

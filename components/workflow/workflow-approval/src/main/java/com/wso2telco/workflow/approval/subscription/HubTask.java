@@ -28,6 +28,7 @@ public class HubTask extends AbstractTaskExecutor {
         String apiVersion = delegatedArgsDTO.getApiVersion() !=null? delegatedArgsDTO.getApiVersion() : null;
         String apiProvider = delegatedArgsDTO.getApiProvider() !=null? delegatedArgsDTO.getApiProvider() :null;
         String apiName = delegatedArgsDTO.getApiName() !=null? delegatedArgsDTO.getApiName() :null;
+        String selectedRate = delegatedArgsDTO.getSelectedRate() !=null? delegatedArgsDTO.getSelectedRate() :null;
         
 
         AuthRequestInterceptor authRequestInterceptor = new AuthRequestInterceptor();
@@ -45,6 +46,7 @@ public class HubTask extends AbstractTaskExecutor {
         subscription.setApplicationID(delegatedArgsDTO.getApplicationId());
         subscription.setStatus(delegatedArgsDTO.getOperatorAdminApprovalStatus());
         subscription.setOperatorName(delegatedArgsDTO.getOperatorName());
+        subscription.setSelectedRate(selectedRate);
 
         SubscriptionValidation subscriptionValidation = new SubscriptionValidation();
         subscriptionValidation.setApiID(delegatedArgsDTO.getApiID());

@@ -390,8 +390,7 @@ function parseApplicationDetailsResponse(response, endpoint, taskId){
 			if(attVal.length() == 0) {
 				attVal = tierAtt.*::tierAttributevalue.*;
 			}
-			// 			log.info("Tier" + stringify(attVal));
-			// 			log.info("----------------------------------------------------------------------------");
+
 			tier_attribute.attributeName = attName;
 			tier_attribute.attributeValue = attVal;
 			tier_attributes[j] = tier_attribute;
@@ -553,7 +552,7 @@ function parseSubscriptionDetailsResponse(response, endpoint, taskId){
 
 function getAllTiers(){
 	var log = new Log();
-	//log.info("*************************Get All Tiers from Host Object***************************");
+
 
 	var workflow = jagg.module("manager").getWorkflowHostObject();
 	var tiers = [];

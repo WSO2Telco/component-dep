@@ -1,0 +1,45 @@
+<%
+var log = new Log();
+
+function getHubRatesByAPICode(apiCode){
+	
+	log.debug("API Code : " + stringify(apiCode));
+	
+	var billingService = jagg.module("manager").getBillingServiceHostObject();
+	
+	var apiServiceRates = [];
+	
+	try{
+		
+		apiServiceRates = billingService.getHubRatesByAPICode(apiCode);
+		//log.debug("API Service Rates : " + stringify(apiServiceRates));
+		return {error:false, apiServiceRates : apiServiceRates};
+	}catch (e) {
+		
+		log.error(e.message);
+		return { error:true,message:e.message};
+	}
+}
+
+function getOperatorRatesByAPICodeAndOperatorCode(apiCode, operatorCode){
+	
+	log.debug("Invoke getOperatorRatesByAPICodeAndOperatorCode");
+	log.debug("API Code : " + stringify(apiCode));
+	log.debug("Operator Code : " + stringify(operatorCode));
+	
+	var billingService = jagg.module("manager").getBillingServiceHostObject();
+	
+	var operatorAPIServiceRates = [];
+	
+	try{
+		
+		operatorAPIServiceRates = billingService.getOperatorRatesByAPICodeAndOperatorCode(apiCode, operatorCode);
+		log.debug("--------------------------------- Operator API Service Rates : " + stringify(operatorAPIServiceRates));
+		return {error:false, operatorAPIServiceRates : operatorAPIServiceRates};
+	}catch (e) {
+		
+		log.error(e.message);
+		return { error:true,message:e.message};
+	}
+}
+%>

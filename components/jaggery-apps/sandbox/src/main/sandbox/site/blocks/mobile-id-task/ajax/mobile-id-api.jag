@@ -18,7 +18,7 @@ include("/jagg/jagg.jag");
 		user =jagg.getUser();
 		var mod = jagg.module("mobile-id-task");
 		var result = mod.saveMobileIdApiRequest(sub,email,name,family_name,preferred_username,given_name, user.username);
-		log.info('GGGGGGGGGGGGGGGGGGGGGGGGG result'+result);
+		
 		if (result.reqerr == false) {
 			//{"MobileIdApiRequest":{""mobIdApiId":14,"sub":"ty","email":"tyt","given_name":"tytytytytyty"}}
 			var locreqtxn = {

@@ -23,7 +23,7 @@ include("/jagg/jagg.jag");
 
 		result = mod.GetNumberData(userid);
 
-		//log.info(result.data+"\n WWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
+	
 
 		if (result.error) {
 			obj = {
@@ -51,7 +51,7 @@ include("/jagg/jagg.jag");
 
 		result = mod.SaveNumber(phonenumber, description, balance, userid);
 
-		//log.info(result.data+"\n WWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
+
 
 		if (result.error) {
 			obj = {
@@ -77,7 +77,7 @@ include("/jagg/jagg.jag");
 
 		result = mod.UpdateNumber(rowid, phonenumber, description, balance);
 
-		//log.info(result.data+"\n WWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
+
 
 		if (result.error) {
 			obj = {
@@ -121,7 +121,7 @@ include("/jagg/jagg.jag");
 
 		result = mod.FilterNumberTable(userid, phonenumber, description);
 
-		//log.info(result.data+"\n WWWWWWWWWWWWWWWWWWWWWWWWWWWWW");
+
 
 		if (result.error) {
 			obj = {

@@ -65,7 +65,7 @@ include("/jagg/jagg.jag");
 	} else if (action == "UnsubscribeDelivery"){
 		var rowid = request.getParameter("id");
 		result = mod.removeSubscription(rowid);
-		//log.info("XXXXXXXXXXXXXXXXXXX:: "+rowid);
+	
 						if (result.error) {
 							obj = {
 								error:result.error,

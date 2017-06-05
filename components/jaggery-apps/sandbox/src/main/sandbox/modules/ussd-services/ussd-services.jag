@@ -13,7 +13,7 @@ var sendUssd = function (payload, number, user) {
         xhr.setRequestHeader("sandbox", user.username);
 		xhr.send(payload);
 
-		//log.info('EEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEEE :'+user.username);
+	
 		result = xhr.responseText.toString();
 		log.info(result);
 		

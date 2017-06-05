@@ -22,6 +22,7 @@ import com.wso2telco.workflow.dao.WorkflowDbService;
 import com.wso2telco.workflow.model.Application;
 import com.wso2telco.workflow.model.Subscription;
 import com.wso2telco.workflow.model.SubscriptionValidation;
+import com.wso2telco.workflow.publisher.WorkflowApprovalRatePublisher;
 import com.wso2telco.workflow.subscription.SubscriptionApproval;
 import com.wso2telco.workflow.subscription.SubscriptionApprovalImpl;
 
@@ -29,95 +30,138 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-
-
 @Path("/approval")
 public class WorkflowApprovalService {
-	
-	
 
-    private ApplicationApproval applicationApproval =new ApplicationApprovalImpl();
-    private SubscriptionApproval subscriptionApproval=new SubscriptionApprovalImpl();
-    private WorkflowDbService workflowDbService = new WorkflowDbService();
-    
-    @POST
-    @Path("application/hub")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response applicationApprovalHub(Application application){
-        try {
-            applicationApproval.updateDBAppHubApproval(application);
-            return Response.status(Response.Status.CREATED).build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
-    }
+	private ApplicationApproval applicationApproval = new ApplicationApprovalImpl();
+	private SubscriptionApproval subscriptionApproval = new SubscriptionApprovalImpl();
+	private WorkflowDbService workflowDbService = new WorkflowDbService();
 
-    @POST
-    @Path("subscription/hub")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response subscriptionApprovalHub(Subscription subscription){
-        try {
-            subscriptionApproval.updateDBSubHubApproval(subscription);
-            return Response.status(Response.Status.CREATED).build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
+	@POST
+	@Path("application/hub")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response applicationApprovalHub(Application application) {
+		try {
+			applicationApproval.updateDBAppHubApproval(application);
+			return Response.status(Response.Status.CREATED).build();
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+	}
 
-    }
+	@POST
+	@Path("subscription/hub")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response subscriptionApprovalHub(Subscription subscription) {
 
+		try {
 
-    @PUT
-    @Path("application/operator")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response applicationApprovalOperator(Application application){
-        try {
-            applicationApproval.updateDBAppOpApproval(application);
-            return Response.status(Response.Status.CREATED).build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
+			WorkflowApprovalRatePublisher workflowApprovalRatePublisher = new WorkflowApprovalRatePublisher();
+			String selectedRate = subscription.getSelectedRate();
+			int appID = subscription.getApplicationID();
+			String apiName = subscription.getApiName();
 
-    }
+			subscriptionApproval.updateDBSubHubApproval(subscription);
 
+			String selectedRateArray[] = selectedRate.split("-");
+			for (int i = 0; i < selectedRateArray.length; i++) {
 
-    @PUT
-    @Path("subscription/operator")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response subscriptionApprovalOperator(Subscription subscription){
-        try {
-            subscriptionApproval.updateDBSubOpApproval(subscription);
-            return Response.status(Response.Status.CREATED).build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
-    }
+				String rate = selectedRateArray[i];
+				
+				if (rate != null && rate.trim().length() > 0) {
 
+					int rateId = Integer.parseInt(rate);
+					if (rateId != 0) {
 
-    @POST
-    @Path("subscription/validator")
-    @Consumes(MediaType.APPLICATION_JSON)
-    public Response insertValidatorForSubscription(SubscriptionValidation subscriptionValidation){
-        try {
-            subscriptionApproval.insertValidatorForSubscription(subscriptionValidation);
-            return Response.status(Response.Status.CREATED).build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
-    }
-    
-    @GET
-    @Path("subscription/getoperators/{apiname}/{apiversion}/{apiprovider}/{appid}")
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response subscriptionGetOperators(@PathParam("apiname") String apiName,
-    		@PathParam("apiversion") String apiVersion, @PathParam("apiprovider")	String apiProvider,@PathParam("appid") int appId){
-    	 try {
-    		 String t;
-             t = workflowDbService.getSubApprovalOperators(apiName, apiVersion, apiProvider, appId);
+						//workflowApprovalRatePublisher.publishHubAPIRate(rateId, appID, apiName);
+						workflowApprovalRatePublisher.publishHubAPIRate(rateId, appID);
+					}
+				}
+			}
 
-             return Response.status(Response.Status.OK).entity("\"" + t + "\"").build();
-         } catch (Exception e) {
-             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-         }
-    }
+			return Response.status(Response.Status.CREATED).build();
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+
+	}
+
+	@PUT
+	@Path("application/operator")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response applicationApprovalOperator(Application application) {
+		try {
+			applicationApproval.updateDBAppOpApproval(application);
+			return Response.status(Response.Status.CREATED).build();
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+
+	}
+
+	@PUT
+	@Path("subscription/operator")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response subscriptionApprovalOperator(Subscription subscription) {
+		
+		try {
+			
+			WorkflowApprovalRatePublisher workflowApprovalRatePublisher = new WorkflowApprovalRatePublisher();
+			String selectedRate = subscription.getSelectedRate();
+			int appID = subscription.getApplicationID();
+			String operatorId = subscription.getOperatorName();
+			String operationId = subscription.getOpID();
+			
+			subscriptionApproval.updateDBSubOpApproval(subscription);
+			
+			String selectedRateArray[] = selectedRate.split("-");
+			for (int i = 0; i < selectedRateArray.length; i++) {
+
+				String rate = selectedRateArray[i];
+				
+				if (rate != null && rate.trim().length() > 0) {
+
+					int rateId = Integer.parseInt(rate);
+					if (rateId != 0) {
+					
+						//workflowApprovalRatePublisher.publishOperatorAPIRate(rateId, appID, operatorId, operationId);
+						workflowApprovalRatePublisher.publishOperatorAPIRate(rateId, appID);
+					}
+				}
+			}			
+			
+			return Response.status(Response.Status.CREATED).build();
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+	@POST
+	@Path("subscription/validator")
+	@Consumes(MediaType.APPLICATION_JSON)
+	public Response insertValidatorForSubscription(SubscriptionValidation subscriptionValidation) {
+		try {
+			subscriptionApproval.insertValidatorForSubscription(subscriptionValidation);
+			return Response.status(Response.Status.CREATED).build();
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+	@GET
+	@Path("subscription/getoperators/{apiname}/{apiversion}/{apiprovider}/{appid}")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response subscriptionGetOperators(@PathParam("apiname") String apiName,
+			@PathParam("apiversion") String apiVersion, @PathParam("apiprovider") String apiProvider,
+			@PathParam("appid") int appId) {
+		try {
+			String t;
+			t = workflowDbService.getSubApprovalOperators(apiName, apiVersion, apiProvider, appId);
+
+			return Response.status(Response.Status.OK).entity("\"" + t + "\"").build();
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+	}
 
 }

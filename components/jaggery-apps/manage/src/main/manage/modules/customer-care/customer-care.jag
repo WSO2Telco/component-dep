@@ -37,8 +37,7 @@ function getCustomerCareData(fromDate, toDate, msisdn, selectedSubscriber, selec
 	try {
 		usage = billing.getCustomCareDataReport(fromDate, toDate, msisdn, selectedSubscriber, selectedOperator, app, api, stLimit, endLimit, timeOffset);
 
-		//log.info("XXXXXX :: "+stringify(usage));
-		if (usage == null) {
+	  if (usage == null) {
 			return {error:true};
 		} else {
 			return {error:false, usage:usage};
@@ -75,7 +74,6 @@ function getCustomerCareDataCount(fromDate, toDate, msisdn, selectedSubscriber, 
 	try {
 		usage = billing.getCustomCareDataRecordsCount(fromDate, toDate, msisdn, selectedSubscriber, selectedOperator, app, api);
 
-		//log.info("XXXXXX :: "+stringify(usage));
 		if (usage == null) {
 			return {error:true};
 		} else {
@@ -91,7 +89,7 @@ function getCustomerCareDataCount(fromDate, toDate, msisdn, selectedSubscriber, 
 function getAppsByOperator(selectedOperator){
 	var log = new Log();
 	log.info("Current Operator: " + stringify(selectedOperator));
-	//log.info("*************************Get All Apps from Host Object***************************");
+	
 
 	var billing = jagg.module("manager").getCustomBilling();
 	var apps = [];

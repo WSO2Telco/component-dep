@@ -14,7 +14,7 @@ var isOperator = jagg.getUser().operator;
 var isCustomerCare = jagg.getUser().isCustomerCare;
 // log.info(isAdmin);
 // log.info(isOperator);
-log.info("--------------------------------isCustomerCare" + isCustomerCare);
+
 %>
 
 <div class="sidebar-nav left-menu-back01">
