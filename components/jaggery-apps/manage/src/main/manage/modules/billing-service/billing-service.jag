@@ -3,8 +3,7 @@ var log = new Log();
 
 function getHubRatesByAPICode(apiCode){
 	
-	log.info("--------------------------------- Invoke getHubRatesByAPICode");
-	log.info("--------------------------------- API Code : " + stringify(apiCode));
+	log.debug("API Code : " + stringify(apiCode));
 	
 	var billingService = jagg.module("manager").getBillingServiceHostObject();
 	
@@ -13,7 +12,7 @@ function getHubRatesByAPICode(apiCode){
 	try{
 		
 		apiServiceRates = billingService.getHubRatesByAPICode(apiCode);
-		log.info("--------------------------------- API Service Rates : " + stringify(apiServiceRates));
+		//log.debug("API Service Rates : " + stringify(apiServiceRates));
 		return {error:false, apiServiceRates : apiServiceRates};
 	}catch (e) {
 		
@@ -24,9 +23,9 @@ function getHubRatesByAPICode(apiCode){
 
 function getOperatorRatesByAPICodeAndOperatorCode(apiCode, operatorCode){
 	
-	log.info("--------------------------------- Invoke getOperatorRatesByAPICodeAndOperatorCode");
-	log.info("--------------------------------- API Code : " + stringify(apiCode));
-	log.info("--------------------------------- Operator Code : " + stringify(operatorCode));
+	log.debug("Invoke getOperatorRatesByAPICodeAndOperatorCode");
+	log.debug("API Code : " + stringify(apiCode));
+	log.debug("Operator Code : " + stringify(operatorCode));
 	
 	var billingService = jagg.module("manager").getBillingServiceHostObject();
 	
@@ -35,7 +34,7 @@ function getOperatorRatesByAPICodeAndOperatorCode(apiCode, operatorCode){
 	try{
 		
 		operatorAPIServiceRates = billingService.getOperatorRatesByAPICodeAndOperatorCode(apiCode, operatorCode);
-		log.info("--------------------------------- Operator API Service Rates : " + stringify(operatorAPIServiceRates));
+		log.debug("--------------------------------- Operator API Service Rates : " + stringify(operatorAPIServiceRates));
 		return {error:false, operatorAPIServiceRates : operatorAPIServiceRates};
 	}catch (e) {
 		

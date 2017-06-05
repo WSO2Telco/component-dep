@@ -20,7 +20,7 @@ function getAllSubscribers(){
 
 function getAllOperators(){
 	var log = new Log();
-	//log.info("*************************Get All Operators from Host Object***************************");
+
 
 	var billing = jagg.module("manager").getCustomBilling();
 	var operators = [];
@@ -37,7 +37,7 @@ function getAllOperators(){
 
 function getAllAPIs(){
 	var log = new Log();
-	//log.info("*************************Get All APIs from Host Object***************************");
+	
 
 	var store = jagg.module("manager").getAPIStoreObj();
 	var apis = [];
@@ -55,7 +55,7 @@ function getAllAPIs(){
 function getAppsBySubscriber(selectedSubscriber){
 	var log = new Log();
 	log.info("Selected Subscriber: " + stringify(selectedSubscriber));
-	//log.info("*************************Get All Apps from Host Object***************************");
+	
 
 	var store = jagg.module("manager").getAPIStoreObj();
 	var apps = [];
@@ -90,7 +90,6 @@ function getOperatorsBySubscriber(subscriberName){
 function getAppsByOperator(selectedOperator){
 	var log = new Log();
 	log.info("Current Operator: " + stringify(selectedOperator));
-	//log.info("*************************Get All Apps from Host Object***************************");
 
 	var billing = jagg.module("manager").getCustomBilling();
 	var apps = [];
@@ -115,7 +114,7 @@ function getBillingData(subscriber, period){
 	var store = jagg.module("manager").getCustomBilling();
 	try {
 		usage = store.getAPIUsageforSubscriber(subscriber, period);
-		log.info('HHHHHHHHHHHHHHHHHH         isNorthbound          FINANCE  : ');
+		
 		if (usage == null) {
 			return {error:true};
 		} else {
@@ -169,7 +168,7 @@ function getRevenueChartData(subscriber, period, operator, app, user, isNorthbou
 	try {
 		usage = billing.getCostPerAPI(subscriber, period, operator, app, isNorthbound);
 
-		log.debug("XXXXXX getRevenueChartData :: "+stringify(usage));
+	
 		if (usage == null) {
 			return {error:true};
 		} else {

@@ -225,7 +225,7 @@ function sendReceive (httpMethod,data,url){
         default :
             log.error("Error in the programme flow.");
     }
-    log.debug("---------------------:" + stringify(response));
+   
     if(response.data.Error) {
         session.put("get-status", response.data.Error.errorMessage);
     } else {

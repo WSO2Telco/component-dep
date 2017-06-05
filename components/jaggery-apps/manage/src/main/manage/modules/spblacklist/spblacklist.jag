@@ -49,13 +49,12 @@ function addNewSPToBlacklist(sp){
 	                         "<ser:userName>"+userForLock+"</ser:userName>\n" +
 	                      "</ser:lockUserAccount>";
 	isAdmin=true;
-	log.info("lockUserAccount WEB SERVICE ############################ 01 : "+lockUserAccount);
-	log.info("lockUserAccount WEB SERVICE ############################ 02 : "+serverUrl);
+
 	
 	
     callWSInOnly(webService, serverUrl, "urn:lockUserAccount", lockUserAccount);
 
-    log.info("JJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJJ");
+
     return {error:false, data : appObj};
  
 
@@ -63,11 +62,7 @@ function addNewSPToBlacklist(sp){
 
 function revokeAppToken(token,secret,key){
 	var log = new Log();
-	log.info("token WEB SERVICE ############################ 03 : "+token);
-	log.info("secret WEB SERVICE ############################ 04 : "+secret);
-	log.info("key WEB SERVICE ############################ 05 : "+key);
-	log.info("Revoke endpoint ############################ 05 : "+ revokeEndpoint);
-	
+
 	var result, message,
 	log = new Log();
 	try {
@@ -79,12 +74,12 @@ function revokeAppToken(token,secret,key){
 		xhr.setRequestHeader("Authorization","Basic "+base64_encode(keysecret));
 		var payload = "token="+token;
 		
-		log.info("payload WEB SERVICE ############################ 06 : "+payload);
+
 		
 		xhr.send(payload);
 		result = xhr.status.toString();
 		
-		log.info("result WEB SERVICE ############################ 07 : "+result);
+
 		
 		return {
 			error:false,
@@ -107,7 +102,7 @@ function callWSInOnly(webService, serverUrl, action, payload){
 	options.action = action;
 	options.mep = 'in-only';
 	try {
-		log.info("callingggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggggg");
+
 		call(webService, serverUrl, options, payload);
 	}
 	catch (e) {

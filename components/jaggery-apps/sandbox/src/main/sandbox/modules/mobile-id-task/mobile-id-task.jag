@@ -2,7 +2,7 @@
 include("/jagg/jagg.jag");
 var saveMobileIdApiRequest = function (sub,email,name,family_name,preferred_username,given_name, username) {
 	var log = new Log();
-	log.info('ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZparams :'+sub+' & '+email+' & '+name+' & '+family_name+' & '+preferred_username+' & '+given_name+' & '+ username);
+
 	try {
 		var xhr = new XMLHttpRequest();
 		var endpoint =  jagg.getSandboxurl()+"MobileIdApiServlet/mobileidapi/1/queries/mobileidapi?sub="+sub+"&email="+email+"&name="+name+"&family_name="+family_name+"&preferred_username="+preferred_username+"&given_name="+given_name;

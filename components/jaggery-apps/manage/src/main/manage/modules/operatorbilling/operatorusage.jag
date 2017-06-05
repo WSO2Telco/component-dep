@@ -67,9 +67,9 @@ function getResponseTimes(subscriberName){
         var store = jagg.module("manager").getCustomBilling();
 	var responseTimes = [];
 	try {
-		log.info("****Before finding ResponseTimes***");
+		
 	        responseTimes = store.getResponseTimeData(subscriberName);
-		log.info("****After finding ResponseTimes*** "+stringify(responseTimes));
+		
 		return {error:false,data : responseTimes};
 			
 		} catch (e) {
@@ -122,7 +122,7 @@ function getDashboardProviderAPIUsage(subscriberName, operator, period) {
         var usage = [];
         var log = new Log();
 		if (log.isDebugEnabled()) {
-			 log.debug("---------test dashboard------Starting getProviderAPIUsage for : " + subscriberName + " - " + period);
+			 
 
 		}
         var store = jagg.module("manager").getCustomBilling();

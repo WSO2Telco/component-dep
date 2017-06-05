@@ -115,13 +115,7 @@ include("/jagg/jagg.jag");
         var callbackData = request.getParameter("callbackData");
         var criteria = request.getParameter("criteria");
         var clientCorrelator = request.getParameter("clientCorrelator");
-        
-        log.info('add notify *********** :'+senderaddr);
-        log.info('add notify *********** :'+notifyURL);
-        log.info('add notify *********** :'+callbackData);
-        log.info('add notify *********** :'+criteria);
-        log.info('add notify *********** :'+clientCorrelator);
-        
+
 
         var callbackReference = {
                     "notifyURL" : notifyURL,

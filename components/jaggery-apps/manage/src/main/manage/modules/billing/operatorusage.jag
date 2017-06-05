@@ -1,7 +1,7 @@
 <%
 var log = new Log();
 function getProviderAPIUsage(subscriberName,period, isNorthbound) {
-		log.info('HHHHHHHHHHHHHHHHHH         isNorthbound            : '+isNorthbound);
+	
         var usage = [];
         var usageout = [];
         var log = new Log();

@@ -60,9 +60,7 @@ include("/jagg/jagg.jag");
 		taskManagerModule = jagg.module("taskmanager");
 		result = taskManagerModule.getApplicationDetails(taskId);
 		log.debug("::: Application details retrieval result: >> "+ stringify(result));
-		//log.info("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ: " + taskId);
-		// 		log.info("::: Application details retrieval result: >> "+ stringify(result));
-		// 		log.info("---------------------------------------------------------------------------------");
+	
 		if (result.error) {
 			obj = {
 				error:result.error,
@@ -127,8 +125,6 @@ include("/jagg/jagg.jag");
 				return;
 			}
 
-			log.info("DddddddddddddddddddddddddD:" + webService + ":" + serverUrl);
-			log.info(stringify(result));
 
 			var firstNameUri = "http://wso2.org/claims/givenname";
 			var lastNameUri = "http://wso2.org/claims/lastname";

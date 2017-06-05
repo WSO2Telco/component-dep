@@ -53,9 +53,7 @@ include("/jagg/jagg.jag");
 		apiName = request.getParameter("apiName");
 
 		var operator = jagg.getUser().operator;
-		log.info("::: Recived subscription charge parameters: >> "+ appId+" :: "+apiId+" :: "+operator+" :: "+rateNameSB+" :: "+apiName);
-
-		log.info("============================================================= operator "+operator);
+		
 		if(operator != null){
 
 			opName = operator;
@@ -69,14 +67,14 @@ include("/jagg/jagg.jag");
 				for (var i = 0; i < resultObj.length; i++) {
 					var record = resultObj[i];
 					if(stringify(record.isDefault) == 'true'){
-						//log.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:: "+record.rateName);
+				
 						rateNameSB = record.rateName;
 					}
 				}
 
 			} */
 			var rateNameSB = null;
-			//log.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX RATE:: "+rateName);
+		
 			var taskManagerModule, result, operationId;
 			taskManagerModule = jagg.module("taskmanager");
 			result = taskManagerModule.setSubscriptionChargeRate(appId, apiId, opName, rateNameSB, operationId);
@@ -107,7 +105,7 @@ include("/jagg/jagg.jag");
 				for (var i = 0; i < resultObj.length; i++) {
 					var record = resultObj[i];
 					if(stringify(record.isDefault) == 'true'){
-						//log.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX:: "+record.rateName);
+					
 						rateNameSB = record.rateName;
 					}
 				}
@@ -115,7 +113,6 @@ include("/jagg/jagg.jag");
 			} */
 		log.info("============================================================= NB operator "+operator);
 
-			//log.info("XXXXXXXXXXXXXXXXXXXXXXXXXXXXXX RATE:: "+rateName);
 			var taskManagerModule, result;
 			taskManagerModule = jagg.module("taskmanager");
 			result = taskManagerModule.setSubscriptionChargeRateNB(appId, apiId);
@@ -185,7 +182,7 @@ include("/jagg/jagg.jag");
 		result = taskManagerModule.getSubscriptionDetails(taskId);
 
 		log.debug("::: Application details retrieval result: >> "+ stringify(result));
-		//log.info("ZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZZ: " + stringify(result));
+
 		if (result.error) {
 			obj = {
 				error:result.error,
