@@ -67,7 +67,7 @@
         <dependency>
             <groupId>com.wso2telco.dep</groupId>
             <artifactId>operator-service</artifactId>
-        </dependency>
+        </dependency>		
     </dependencies>
 
     <build>

@@ -5,8 +5,8 @@
 	<parent>
 		<groupId>com.wso2telco.dep</groupId>
 		<artifactId>component-dep</artifactId>
-		<version>2.1.6-SNAPSHOT</version>
-		<relativePath>../../../pom.xml</relativePath>
+		<version>2.1.9-SNAPSHOT</version>
+		<relativePath>../../../pom.xml</relativePath>	
 	</parent>
 
 	<artifactId>billing-service</artifactId>

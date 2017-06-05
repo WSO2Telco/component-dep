@@ -79,6 +79,10 @@
             <artifactId>org.wso2.carbon.utils</artifactId>
             <scope>provided</scope>
         </dependency>
+		<dependency>
+			<groupId>com.wso2telco.dep</groupId>
+			<artifactId>billing-extension</artifactId>
+		</dependency>
 
     </dependencies>
 
