@@ -84,7 +84,7 @@ public class BillingDAO {
             ps = conn.prepareStatement(sql.toString());
             rs = ps.executeQuery();
             while (rs.next()) {
-                System.out.println("=== Results for api :" + rs.getString("api") + " , ck :  "
+                System.out.println("Results for api :" + rs.getString("api") + " , ck :  "
                         + rs.getString("consumerKey") + " , count : "
                         + rs.getInt("total_request_count"));
             }
@@ -117,7 +117,7 @@ public class BillingDAO {
 
             log.debug("Print Southbound Reporting");
             while (rs.next()) {
-                log.debug("=== Results for southbound Traffic :" + rs.getString("ENDPOINT") + " , endpoint :  "
+                log.debug("Results for southbound Traffic :" + rs.getString("ENDPOINT") + " , endpoint :  "
                         + rs.getString("CONSUMER_KEY") + " , key : "
                         + rs.getString("TIME_CREATED"));
             }
@@ -621,7 +621,7 @@ public class BillingDAO {
             ps = conn.prepareStatement(sql.toString());
             rs = ps.executeQuery();
             while (rs.next()) {
-                System.out.println("=== Results for SUBSCRIBER_ID  :" + rs.getInt("SUBSCRIBER_ID")
+                System.out.println("Results for SUBSCRIBER_ID  :" + rs.getInt("SUBSCRIBER_ID")
                                            + " , USER_ID :  " + rs.getString("USER_ID")
                                            + " , DATE_SUBSCRIBED : " + rs.getDate("DATE_SUBSCRIBED"));
             }
@@ -3032,10 +3032,10 @@ public class BillingDAO {
 
         log.debug("Offset value = " +offsetValue);
         DateTimeZone systemTimeZone = DateTimeZone.getDefault();
-        log.debug("system time zone -== " +systemTimeZone.toString());
+        log.debug("system time zone " +systemTimeZone.toString());
         DateTimeFormatter formatter = DateTimeFormat.forPattern("yyyy-MM-dd HH:mm:ss");
         DateTime systemDateTime = formatter.parseDateTime(time);
-        log.debug("system date time === " + systemDateTime.toString());
+        log.debug("system date time " + systemDateTime.toString());
         systemDateTime = systemDateTime.withZoneRetainFields(systemTimeZone);
         log.debug("system date time after adding systemtimezone === " + systemDateTime.toString());
 
@@ -3051,7 +3051,7 @@ public class BillingDAO {
 
         String convertedDateTimeString = formatter.print(convertedDateTime);
 
-        log.debug("converted time === "+convertedDateTimeString);
+        log.debug("converted time  :"+convertedDateTimeString);
 
         return convertedDateTimeString;
 
