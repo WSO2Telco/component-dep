@@ -59,9 +59,11 @@ public class APIInfoHandler extends AbstractHandler implements ManagedLifecycle 
     
     private static final String REQUEST_ID = "REQUEST_ID";
 
+    private static String HUB_GATEWAY_ID_VALUE = null;
+
     @Override
     public void init(SynapseEnvironment synapseEnvironment) {
-
+        getHubGatewayId();
     }
 
     @Override
@@ -122,21 +124,22 @@ public class APIInfoHandler extends AbstractHandler implements ManagedLifecycle 
 	private String getRequestId(String messageId, String applicationId, String apiName) {
 		String requestId = null;
 
-		String hubGatewayId = getHubGatewayId();
+		String hubGatewayId = HUB_GATEWAY_ID_VALUE;
 
 		requestId = messageId + REQUEST_ID_SEPARATOR + hubGatewayId + apiName.toUpperCase() + applicationId;
 
 		return requestId;
 	}
 
-	private String getHubGatewayId() {
-		String hubGatewayId = null;
+	private void getHubGatewayId() {
 
 		PropertyFileReader fileReader = PropertyFileReader.getFileReader();
 		Properties properties = fileReader.getProperties(MEDIATOR_CONF_FILE);
 
-		hubGatewayId = properties.getProperty(HUB_GATEWAY_ID);
+        HUB_GATEWAY_ID_VALUE = properties.getProperty(HUB_GATEWAY_ID);
 
-		return hubGatewayId;
+		if (HUB_GATEWAY_ID_VALUE == null) {
+		    log.error("Property : " + HUB_GATEWAY_ID + " in file " + MEDIATOR_CONF_FILE + " is missing");
+        }
 	}
 }
