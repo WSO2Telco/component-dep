@@ -33,9 +33,9 @@
         <module>com.wso2telco.dep.mediator.feature</module>
         <module>com.wso2telco.dep.subscriptionvalidator.feature</module>
         <module>com.wso2telco.dep.reportingservice.feature</module>
-	    <module>com.wso2telco.dep.billingservice.feature</module>
-	    <module>com.wso2telco.dep.billingextension.feature</module>
-	    <module>com.wso2telco.dep.nashornmediator.feature</module>
+        <module>com.wso2telco.dep.billingservice.feature</module>
+        <module>com.wso2telco.dep.billingextension.feature</module>
+        <module>com.wso2telco.dep.nashornmediator.feature</module>
         <module>com.wso2telco.dep.verificationhandler.feature</module>
         <module>com.wso2telco.dep.store.ui.feature</module>
         <module>com.wso2telco.dep.oneapivalidation.feature</module>
