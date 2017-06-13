@@ -1,11 +1,13 @@
 <sequence xmlns="http://ws.apache.org/ns/synapse" name="WSO2AM--Ext--Out">
 	<property name="RESPONSE_TIMESTAMP" expression="get-property('SYSTEM_TIME')"/>
-	<script language="js">
-		var requestTimeStamp = mc.getProperty("REQUEST_TIMESTAMP");
-		var responseTimeStamp = mc.getProperty("RESPONSE_TIMESTAMP");
-		var responseTime = responseTimeStamp - requestTimeStamp;
-		mc.setProperty("RESPONSE_TIME", responseTime);
-	</script>
+	<class name="org.wso2telco.dep.nashornmediator.NashornMediator">
+		<property name="script" value="
+			var requestTimeStamp = mc.getProperty('REQUEST_TIMESTAMP');
+			var responseTimeStamp = mc.getProperty('RESPONSE_TIMESTAMP');
+			var responseTime = responseTimeStamp - requestTimeStamp;
+			mc.setProperty('RESPONSE_TIME', responseTime);
+		"/>
+	</class>
         <!-- Values log level = full; enable payload loggin. log level=custom; disable payload loggin for the response -->
 	<log level="custom">
         	<property name="API Response Status" expression="$axis2:HTTP_SC"/>
