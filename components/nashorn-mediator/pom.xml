@@ -72,6 +72,9 @@
                         <Export-Package>
                             org.wso2telco.dep.nashornmediator.NashornMediator
                         </Export-Package>
+                        <Import-Package>
+                            *;resolution:=optional
+                        </Import-Package>
                         <DynamicImport-Package>*</DynamicImport-Package>
                         <Fragment-Host>synapse-core</Fragment-Host>                        ​
                     </instructions>
