@@ -317,3 +317,212 @@ CREATE TABLE `tax_validity` (
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
 -- Dump completed on 2017-06-05 15:01:47
+DROP TABLE IF EXISTS audit;
+CREATE TABLE audit (
+  `tbl_name` VARCHAR(255) DEFAULT NULL,
+  `id` VARCHAR(255) DEFAULT NULL,
+  `col_name` VARCHAR (255) DEFAULT NULL,
+  `old_data` VARCHAR(255) DEFAULT NULL,
+  `new_data` VARCHAR(255) DEFAULT NULL,
+  `action` VARCHAR(255) DEFAULT NULL,
+  `updated_at` DATETIME DEFAULT NULL
+)ENGINE=InnoDB DEFAULT CHARSET=latin1;
+
+DELIMITER //
+DROP TRIGGER IF EXISTS update_tariff_trigger;
+CREATE TRIGGER update_tariff_trigger BEFORE UPDATE ON tariff
+  FOR EACH ROW BEGIN
+    IF OLD.tariffname <> NEW.tariffname THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tarrif', OLD.tariffid,  'tariffname',
+      OLD.tariffname, NEW.tariffname, 'update' ,NOW());
+    END IF;
+    IF OLD.tariffdesc <> NEW.tariffdesc THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tarrif', OLD.tariffid,  'tariffdesc', OLD.tariffdesc, NEW.tariffdesc, 'update' ,NOW());
+    END IF;
+    IF OLD.tariffdefaultval <> NEW.tariffdefaultval THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tarrif', OLD.tariffid,  'tariffdefaultval', OLD.tariffdefaultval, NEW.tariffdefaultval, 'update' ,NOW());
+    END IF;
+    IF OLD.tariffmaxcount <> NEW.tariffmaxcount THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tarrif', OLD.tariffid,  'tariffmaxcount', OLD.tariffmaxcount, NEW.tariffmaxcount, 'update' ,NOW());
+    END IF;
+    IF OLD.tariffexcessrate <> NEW.tariffexcessrate THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tarrif', OLD.tariffid,  'tariffexcessrate', OLD.tariffexcessrate, NEW.tariffexcessrate, 'update' ,NOW());
+    END IF;
+    IF OLD.tariffdefrate <> NEW.tariffdefrate THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tarrif', OLD.tariffid,  'tariffdefrate', OLD.tariffdefrate, NEW.tariffdefrate, 'update' ,NOW());
+    END IF;
+    IF OLD.tariffname <> NEW.tariffname THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tarrif', OLD.tariffid,  'tariffspcommission', OLD.tariffspcommission, NEW.tariffspcommission, 'update' ,NOW());
+    END IF;
+    IF OLD.tariffadscommission <> NEW.tariffadscommission THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tarrif', OLD.tariffid,  'tariffadscommission', OLD.tariffadscommission, NEW.tariffadscommission, 'update' ,NOW());
+    END IF;
+    IF OLD.tariffopcocommission <> NEW.tariffopcocommission THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tarrif', OLD.tariffid,  'tariffopcocommission', OLD.tariffopcocommission, NEW.tariffopcocommission, 'update' ,NOW());
+    END IF;
+    IF OLD.tariffsurchargeval <> NEW.tariffsurchargeval THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tarrif', OLD.tariffid,  'tariffsurchargeval', OLD.tariffsurchargeval, NEW.tariffsurchargeval, 'update' ,NOW());
+    END IF;
+    IF OLD.tariffsurchargeAds <> NEW.tariffsurchargeAds THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tarrif', OLD.tariffid,  'tariffsurchargeAds', OLD.tariffsurchargeAds, NEW.tariffsurchargeAds, 'update' ,NOW());
+    END IF;
+    IF OLD.tariffsurchargeOpco <> NEW.tariffsurchargeOpco THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tarrif', OLD.tariffid,  'tariffsurchargeOpco', OLD.tariffsurchargeOpco, NEW.tariffsurchargeOpco, 'update' ,NOW());
+    END IF;
+END ;
+
+DROP TRIGGER IF EXISTS delete_tariff_trigger;
+CREATE TRIGGER delete_tariff_trigger AFTER DELETE ON tariff
+  FOR EACH ROW BEGIN
+
+   INSERT INTO audit(tbl_name, id, col_name, old_data, new_data, action, updated_at) VALUES ('tarrif', OLD.tariffid,
+   'tariffid', OLD.tariffid, 'null' , 'delete' ,NOW());
+END;
+
+DROP TRIGGER IF EXISTS insert_tariff_trigger;
+CREATE TRIGGER insert_tariff_trigger AFTER INSERT ON tariff
+  FOR EACH ROW BEGIN
+
+   INSERT INTO audit(tbl_name, id, col_name, old_data, new_data, action, updated_at) VALUES ('tarrif', NEW.tariffid,
+   'tariffid', 'null', NEW.tariffid , 'insert' ,NOW());
+END ;
+
+DROP TRIGGER IF EXISTS insert_tax_validity_trigger;
+CREATE TRIGGER insert_tax_validity_trigger AFTER INSERT ON tax_validity
+  FOR EACH ROW BEGIN
+
+   INSERT INTO audit(tbl_name, id, col_name, old_data, new_data, action, updated_at) VALUES ('tax_validity', NEW
+   .idtax_validityid, 'idtax_validityid', 'null', NEW.idtax_validityid , 'insert' ,NOW());
+END ;
+
+DROP TRIGGER IF EXISTS delete_tax_validity_trigger;
+CREATE TRIGGER delete_tax_validity_trigger AFTER DELETE ON tax_validity
+  FOR EACH ROW BEGIN
+
+   INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tax_validity', OLD
+   .idtax_validityid, 'idtax_validityid', OLD.idtax_validityid , 'null' , 'delete' ,NOW());
+END ;
+
+DROP TRIGGER IF EXISTS update_tax_validity_trigger;
+CREATE TRIGGER update_tax_validity_trigger BEFORE UPDATE ON tax_validity
+  FOR EACH ROW BEGIN
+
+    IF OLD.tax_validityactdate <> NEW.tax_validityactdate THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tax_validity', OLD.idtax_validityid, 'tax_validityactdate', OLD.tax_validityactdate, NEW.tax_validityactdate, 'update' ,NOW());
+    END IF;
+    IF OLD.tax_validitydisdate <> NEW.tax_validitydisdate THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tax_validity', OLD.idtax_validityid, 'tax_validitydisdate', OLD.tax_validitydisdate, NEW.tax_validitydisdate, 'update' ,NOW());
+    END IF;
+    IF OLD.tax_validityval <> NEW.tax_validityval THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tax_validity', OLD.idtax_validityid, 'tax_validityval', OLD.tax_validityval, NEW.tax_validityval, 'update' ,NOW());
+    END IF;
+    IF OLD.taxid <> NEW.taxid THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tax_validity', OLD.idtax_validityid, 'taxid', OLD.taxid, NEW.taxid, 'update' ,NOW());
+    END IF;
+END ;
+
+DROP TRIGGER IF EXISTS insert_rate_taxes_trigger;
+CREATE TRIGGER insert_rate_taxes_trigger AFTER INSERT ON rate_taxes
+  FOR EACH ROW BEGIN
+    INSERT INTO audit(tbl_name, id, col_name, old_data, new_data, action, updated_at) VALUES ('rate_taxes', NEW.rate_taxesid, 'rate_taxesid', 'null', NEW.rate_taxesid , 'insert' ,NOW());
+END ;
+
+DROP TRIGGER IF EXISTS delete_rate_taxes_trigger;
+CREATE TRIGGER delete_rate_taxes_trigger AFTER DELETE ON rate_taxes
+  FOR EACH ROW BEGIN
+
+   INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('rate_taxes', OLD.rate_taxesid,
+   'rate_taxesid', OLD.rate_taxesid , 'null' , 'delete' ,NOW());
+END ;
+
+
+DROP TRIGGER IF EXISTS update_rate_taxes_trigger;
+CREATE TRIGGER update_rate_taxes_trigger BEFORE UPDATE ON rate_taxes
+  FOR EACH ROW BEGIN
+
+    IF OLD.rate_defid <> NEW.rate_defid THEN
+      INSERT INTO audit(tbl_name, id, col_name, old_data, new_data, action, updated_at) VALUES ('rate_taxes', OLD
+      .rate_taxesid,
+      'rate_defid', OLD.rate_defid, NEW.rate_defid, 'update' ,NOW());
+    END IF;
+    IF OLD.taxid <> NEW.taxid THEN
+      INSERT INTO audit(tbl_name, id, col_name, old_data, new_data, action, updated_at) VALUES ('rate_taxes', OLD
+      .rate_taxesid, 'taxid', OLD.taxid, NEW.taxid, 'update' ,NOW());
+    END IF;
+END ;
+
+DROP TRIGGER IF EXISTS insert_sub_rate_nb_trigger;
+CREATE TRIGGER insert_sub_rate_nb_trigger AFTER INSERT ON sub_rate_nb
+  FOR EACH ROW BEGIN
+
+   INSERT INTO audit(tbl_name, id, col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_nb', NEW
+   .sub_rate_nbid, 'sub_rate_nbid', 'null' , NEW.sub_rate_nbid , 'insert' ,NOW());
+END ;
+
+DROP TRIGGER IF EXISTS delete_sub_rate_nb_trigger;
+CREATE TRIGGER delete_sub_rate_nb_trigger AFTER DELETE ON sub_rate_nb
+  FOR EACH ROW BEGIN
+
+   INSERT INTO audit(tbl_name, id, col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_nb', OLD
+   .sub_rate_nbid, 'sub_rate_nbid', OLD.sub_rate_nbid , 'null' , 'delete' ,NOW());
+END ;
+
+DROP TRIGGER IF EXISTS update_sub_rate_nb_trigger;
+CREATE TRIGGER update_sub_rate_nb_trigger BEFORE UPDATE ON sub_rate_nb
+  FOR EACH ROW BEGIN
+
+    IF OLD.api_operationid <> NEW.api_operationid THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_nb', OLD.sub_rate_nbid, 'api_operationid', OLD.api_operationid, NEW.api_operationid, 'update' ,NOW());
+    END IF;
+    IF OLD.applicationid <> NEW.applicationid THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_nb', OLD.sub_rate_nbid, 'applicationid', OLD.applicationid, NEW.applicationid, 'update' ,NOW());
+    END IF;
+    IF OLD.rate_defid <> NEW.rate_defid THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_nb', OLD.sub_rate_nbid, 'rate_defid', OLD.rate_defid, NEW.rate_defid, 'update' ,NOW());
+    END IF;
+    IF OLD.sub_rate_nbactdate <> NEW.sub_rate_nbactdate THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_nb', OLD.sub_rate_nbid, 'sub_rate_nbactdate', OLD.sub_rate_nbactdate, NEW.sub_rate_nbactdate, 'update' ,NOW());
+    END IF;
+    IF OLD.sub_rate_nbdisdate <> NEW.sub_rate_nbdisdate THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_nb', OLD.sub_rate_nbid, 'sub_rate_nbdisdate', OLD.sub_rate_nbdisdate, NEW.sub_rate_nbdisdate, 'update' ,NOW());
+    END IF;
+END ;
+
+DROP TRIGGER IF EXISTS insert_sub_rate_sb_trigger;
+CREATE TRIGGER insert_sub_rate_sb_trigger AFTER INSERT ON sub_rate_sb
+  FOR EACH ROW BEGIN
+
+   INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_sb', NEW.sub_rate_sbid, 'sub_rate_sbid', 'null'
+   , NEW.sub_rate_sbid , 'insert' ,NOW());
+END ;
+
+DROP TRIGGER IF EXISTS delete_sub_rate_sb_trigger;
+CREATE TRIGGER delete_sub_rate_sb_trigger AFTER DELETE ON sub_rate_sb
+  FOR EACH ROW BEGIN
+
+   INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_sb', OLD.sub_rate_sbid,
+   'sub_rate_sbid', OLD.sub_rate_sbid , 'null' , 'delete' ,NOW());
+END ;
+
+DROP TRIGGER IF EXISTS update_sub_rate_sb_trigger;
+CREATE TRIGGER update_sub_rate_sb_trigger BEFORE UPDATE ON sub_rate_sb
+  FOR EACH ROW BEGIN
+
+    IF OLD.api_operationid <> NEW.api_operationid THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_sb', NEW.sub_rate_sbid, 'api_operationid', OLD.api_operationid, NEW.api_operationid, 'update' ,NOW());
+    END IF;
+    IF OLD.applicationid <> NEW.applicationid THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_sb', NEW.sub_rate_sbid, 'applicationid', OLD.applicationid, NEW.applicationid, 'update' ,NOW());
+    END IF;
+    IF OLD.rate_defid <> NEW.rate_defid THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_sb', NEW.sub_rate_sbid, 'rate_defid', OLD.rate_defid, NEW.rate_defid, 'update' ,NOW());
+    END IF;
+    IF OLD.sub_rate_sbactdate <> NEW.sub_rate_sbactdate THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_sb', NEW.sub_rate_sbid, 'sub_rate_sbactdate', OLD.sub_rate_sbactdate, NEW.sub_rate_sbactdate, 'update' ,NOW());
+    END IF;
+    IF OLD.sub_rate_sbdisdate <> NEW.sub_rate_sbdisdate THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_sb', NEW.sub_rate_sbid, 'sub_rate_sbdisdate', OLD.sub_rate_sbdisdate, NEW.sub_rate_sbdisdate, 'update' ,NOW());
+    END IF;
+END //
+
+DELIMITER ;
