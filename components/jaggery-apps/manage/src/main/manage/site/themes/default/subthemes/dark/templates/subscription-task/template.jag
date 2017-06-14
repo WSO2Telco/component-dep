@@ -128,11 +128,7 @@ else{
 								<%
 								} else {
 								%>
-<<<<<<< HEAD
 								<div id="SubsContainer_<%=tasks[i].id%>" style="display:none;>
-=======
-								<div id="SubsContainer_<%=tasks[i].id%>">
->>>>>>> cd0fc1ccc03c6115aa13b1bbed4922d0be5d7575
 								<label class="js_toggle" id="<%=tasks[i].id%>"><b>Subscription Details</b><i class="icon-chevron-right icon-keys"></i></label>
 								<div style="display:none;">
 								<div id="ratecard_<%=tasks[i].id%>">
