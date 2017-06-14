@@ -446,7 +446,12 @@ function setratecarddropdown(result , taskID , IsHubRates) {
 		var divTitle = document.createElement("label");
 		divTitle.innerHTML = '<b>Rate card details :<b>';
 		rateDiv.appendChild(divTitle);
+<<<<<<< HEAD
 		$('#SubsContainer_'+taskId).css("display", "block");
+=======
+	}else{
+		$('#SubsContainer_'+taskId).css("display", "none");
+>>>>>>> cd0fc1ccc03c6115aa13b1bbed4922d0be5d7575
 	}
 
 	for (var i = 0; i < result.apiRates.length; i++) {
