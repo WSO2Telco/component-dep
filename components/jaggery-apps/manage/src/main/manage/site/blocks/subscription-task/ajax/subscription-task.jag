@@ -3,334 +3,334 @@ include("/jagg/jagg.jag");
 
 (function () {
 
-	var msg = require("/site/conf/ui-messages.jag");
-	var action = request.getParameter("action");
-	var user = jagg.getUser();
-	var site = require("/site/conf/site.json");
-	var obj;
+    var msg = require("/site/conf/ui-messages.jag");
+    var action = request.getParameter("action");
+    var user = jagg.getUser();
+    var site = require("/site/conf/site.json");
+    var obj;
 
-	var log = new Log();
-	// Gets the list of tiers available for the specified subscription.
-	if(action == "getSubscriptionTiers") {
-		if (!user) {
-			print({
-				error:true,
-				message:msg.error.loginRequired(action)
-			});
-			return;
-		}
-		var username = user.username;
+    var log = new Log();
+    // Gets the list of tiers available for the specified subscription.
+    if(action == "getSubscriptionTiers") {
+        if (!user) {
+            print({
+                error:true,
+                message:msg.error.loginRequired(action)
+            });
+            return;
+        }
+        var username = user.username;
 
-		var taskId, taskManagerModule, result;
+        var taskId, taskManagerModule, result;
 
-		taskId = request.getParameter("taskId");
-		taskManagerModule = jagg.module("taskmanager");
-		result = taskManagerModule.getSubscriptionTiers(taskId);
+        taskId = request.getParameter("taskId");
+        taskManagerModule = jagg.module("taskmanager");
+        result = taskManagerModule.getSubscriptionTiers(taskId);
 
-		log.debug("::: Tier retrieval result: >> "+ stringify(result));
+        log.debug("::: Tier retrieval result: >> "+ stringify(result));
 
-		if (result.error) {
-			obj = {
-				error:result.error,
-				message:msg.error.authError(action, username)
-			};
-		} else {
-			obj = {
-				error:false,
-				"tiers":result
-			}
-		}
-		print(obj);
+        if (result.error) {
+            obj = {
+                error:result.error,
+                message:msg.error.authError(action, username)
+            };
+        } else {
+            obj = {
+                error:false,
+                "tiers":result
+            }
+        }
+        print(obj);
 
-		//Function for API subscriptions to charge rate mapping :: Hiranya
-	} if(action == "setChargeRates") {
+        //Function for API subscriptions to charge rate mapping :: Hiranya
+    } if(action == "setChargeRates") {
 
-		var appId, apiId, opName, rateNameSB, apiName;
-		appId = request.getParameter("appId");
-		apiId = request.getParameter("apiId");
-		opName = request.getParameter("opName");
-		rateNameSB = request.getParameter("rateName");
-		apiName = request.getParameter("apiName");
+        var appId, apiId, opName, rateNameSB, apiName;
+        appId = request.getParameter("appId");
+        apiId = request.getParameter("apiId");
+        opName = request.getParameter("opName");
+        rateNameSB = request.getParameter("rateName");
+        apiName = request.getParameter("apiName");
 
-		var operator = jagg.getUser().operator;
-		
-		if(operator != null){
+        var operator = jagg.getUser().operator;
 
-			opName = operator;
+        if(operator != null){
+
+            opName = operator;
 			/* if(rateNameSB == 'null'){
-				//Get default rate
-				var taskManagerModule, result;
-				taskManagerModule = jagg.module("taskmanager");
-				result = taskManagerModule.getRatesList(apiName, opName);
-					
-				var resultObj = result.result;
-				for (var i = 0; i < resultObj.length; i++) {
-					var record = resultObj[i];
-					if(stringify(record.isDefault) == 'true'){
-				
-						rateNameSB = record.rateName;
-					}
-				}
+			 //Get default rate
+			 var taskManagerModule, result;
+			 taskManagerModule = jagg.module("taskmanager");
+			 result = taskManagerModule.getRatesList(apiName, opName);
 
-			} */
-			var rateNameSB = null;
-		
-			var taskManagerModule, result, operationId;
-			taskManagerModule = jagg.module("taskmanager");
-			result = taskManagerModule.setSubscriptionChargeRate(appId, apiId, opName, rateNameSB, operationId);
+			 var resultObj = result.result;
+			 for (var i = 0; i < resultObj.length; i++) {
+			 var record = resultObj[i];
+			 if(stringify(record.isDefault) == 'true'){
 
-			if (result.error) {
-				obj = {
-					error:result.error,
-					message:msg.error.authError(action, username)
-				};
-			} else {
-				obj = {
-					error:false,
-					"status":result
-				}
-			}
-			print(obj);
+			 rateNameSB = record.rateName;
+			 }
+			 }
 
-		}else{
+			 } */
+            var rateNameSB = null;
 
-		opName = operator;
-		/* if(rateNameSB == 'null'){
-				//Get default rate
-				var taskManagerModule, result;
-				taskManagerModule = jagg.module("taskmanager");
-				result = taskManagerModule.getRatesList(apiName, opName);
-					
-				var resultObj = result.result;
-				for (var i = 0; i < resultObj.length; i++) {
-					var record = resultObj[i];
-					if(stringify(record.isDefault) == 'true'){
-					
-						rateNameSB = record.rateName;
-					}
-				}
+            var taskManagerModule, result, operationId;
+            taskManagerModule = jagg.module("taskmanager");
+			/*result = taskManagerModule.setSubscriptionChargeRate(appId, apiId, opName, rateNameSB, operationId);
 
-			} */
-		log.info("============================================================= NB operator "+operator);
+			 if (result.error) {
+			 obj = {
+			 error:result.error,
+			 message:msg.error.authError(action, username)
+			 };
+			 } else {
+			 obj = {
+			 error:false,
+			 "status":result
+			 }
+			 }
+			 print(obj);
+			 */
+        }else{
 
-			var taskManagerModule, result;
-			taskManagerModule = jagg.module("taskmanager");
-			result = taskManagerModule.setSubscriptionChargeRateNB(appId, apiId);
+            opName = operator;
+			/* if(rateNameSB == 'null'){
+			 //Get default rate
+			 var taskManagerModule, result;
+			 taskManagerModule = jagg.module("taskmanager");
+			 result = taskManagerModule.getRatesList(apiName, opName);
 
-			if (result.error) {
-				obj = {
-					error:result.error,
-					message:msg.error.authError(action, username)
-				};
-			} else {
-				obj = {
-					error:false,
-					"status":result
-				}
-			}
-			print(obj);
-		}
-		// Sets the tier selected for the current completed subscription.
-	} else if(action == "setSubscriptionTier") {
-		if (!user) {
-			print({
-				error:true,
-				message:msg.error.loginRequired(action)
-			});
-			return;
-		}
-		var username = user.username;
+			 var resultObj = result.result;
+			 for (var i = 0; i < resultObj.length; i++) {
+			 var record = resultObj[i];
+			 if(stringify(record.isDefault) == 'true'){
 
-		var externalWFReference, taskId, taskType, tierId, taskManagerModule, result;
+			 rateNameSB = record.rateName;
+			 }
+			 }
 
-		taskId = request.getParameter("taskId");
-		taskType = request.getParameter("taskType");
-		tierId = request.getParameter("tierId");
+			 } */
+            log.info("============================================================= NB operator "+operator);
 
-		var prefixEndpoint = site.workflows.subscriptionWorkFlowServerURL;
-		var endpoint = prefixEndpoint+ "HumanTaskClientAPIAdmin/";
+            var taskManagerModule, result;
+            taskManagerModule = jagg.module("taskmanager");
+			/*result = taskManagerModule.setSubscriptionChargeRateNB(appId, apiId);
 
-		taskManagerModule = jagg.module("taskmanager");
-		result = taskManagerModule.setSubscriptionTier(taskId, taskType, tierId, endpoint);
+			 if (result.error) {
+			 obj = {
+			 error:result.error,
+			 message:msg.error.authError(action, username)
+			 };
+			 } else {
+			 obj = {
+			 error:false,
+			 "status":result
+			 }
+			 }
+			 print(obj);*/
+        }
+        // Sets the tier selected for the current completed subscription.
+    } else if(action == "setSubscriptionTier") {
+        if (!user) {
+            print({
+                error:true,
+                message:msg.error.loginRequired(action)
+            });
+            return;
+        }
+        var username = user.username;
 
-		if (result.error) {
-			obj = {
-				error:result.error,
-				message:msg.error.authError(action, username)
-			};
-		} else {
-			obj = {
-				error:false,
-				"status":result
-			}
-		}
-		print(obj);
-	}else if(action == "getSubscriptionDetails"){
-		if (!user) {
-			print({
-				error:true,
-				message:msg.error.loginRequired(action)
-			});
-			return;
-		}
-		var username = user.username;
+        var externalWFReference, taskId, taskType, tierId, taskManagerModule, result;
 
-		var taskId, taskManagerModule, result;
+        taskId = request.getParameter("taskId");
+        taskType = request.getParameter("taskType");
+        tierId = request.getParameter("tierId");
 
-		taskId = request.getParameter("taskId");
-		taskManagerModule = jagg.module("taskmanager");
-		result = taskManagerModule.getSubscriptionDetails(taskId);
+        var prefixEndpoint = site.workflows.subscriptionWorkFlowServerURL;
+        var endpoint = prefixEndpoint+ "HumanTaskClientAPIAdmin/";
 
-		log.debug("::: Application details retrieval result: >> "+ stringify(result));
+        taskManagerModule = jagg.module("taskmanager");
+        result = taskManagerModule.setSubscriptionTier(taskId, taskType, tierId, endpoint);
 
-		if (result.error) {
-			obj = {
-				error:result.error,
-				message:msg.error.authError(action, username)
-			};
-		} else {
-			obj = {
-				error:false,
-				"data":result
-			}
-		}
-		print(obj);
-	} else if(action == "getProfileData"){
-		try {
-			var store = jagg.module("manager").getAPIStoreObj();
-			var serverUrl =  store.getAuthServerURL()+"UserProfileMgtService/";
-			var profileUser = request.getParameter("profileUser");
-			var payload = '<mgt:getUserProfile xmlns:mgt="http://mgt.profile.user.identity.carbon.wso2.org">'+
-			'<mgt:username>' + profileUser + '</mgt:username>' +
-			'<mgt:profileName>default</mgt:profileName>' +
-			'</mgt:getUserProfile>';
+        if (result.error) {
+            obj = {
+                error:result.error,
+                message:msg.error.authError(action, username)
+            };
+        } else {
+            obj = {
+                error:false,
+                "status":result
+            }
+        }
+        print(obj);
+    }else if(action == "getSubscriptionDetails"){
+        if (!user) {
+            print({
+                error:true,
+                message:msg.error.loginRequired(action)
+            });
+            return;
+        }
+        var username = user.username;
 
-			var ws = require('ws');
-			var webService = new ws.WSRequest();
-			var profileName = 'default';
-			var options = new Array();
-			options.useSOAP = 1.2;
-			options.useWSA = 1.0;
-			options.action = "urn:getUserProfile";
+        var taskId, taskManagerModule, result;
 
+        taskId = request.getParameter("taskId");
+        taskManagerModule = jagg.module("taskmanager");
+        result = taskManagerModule.getSubscriptionDetails(taskId);
 
-			//get AuthManager admin credentials from api-manager.xml (source copied from /manage/modules/user/login.jag)
-			var configPath = "file://" + Packages.java.lang.System.getProperty("carbon.config.dir.path");
-			var amConfigPath = configPath + "/api-manager.xml";
-			var file = new File(amConfigPath);
-			file.open("r");
-			var amConfig = new XML(file.readAll());
-			file.close();
-			var adminUsername = String(amConfig.AuthManager.Username.text());
-			var adminPassword = String(amConfig.AuthManager.Password.text());
+        log.debug("::: Application details retrieval result: >> "+ stringify(result));
+
+        if (result.error) {
+            obj = {
+                error:result.error,
+                message:msg.error.authError(action, username)
+            };
+        } else {
+            obj = {
+                error:false,
+                "data":result
+            }
+        }
+        print(obj);
+    } else if(action == "getProfileData"){
+        try {
+            var store = jagg.module("manager").getAPIStoreObj();
+            var serverUrl =  store.getAuthServerURL()+"UserProfileMgtService/";
+            var profileUser = request.getParameter("profileUser");
+            var payload = '<mgt:getUserProfile xmlns:mgt="http://mgt.profile.user.identity.carbon.wso2.org">'+
+                '<mgt:username>' + profileUser + '</mgt:username>' +
+                '<mgt:profileName>default</mgt:profileName>' +
+                '</mgt:getUserProfile>';
+
+            var ws = require('ws');
+            var webService = new ws.WSRequest();
+            var profileName = 'default';
+            var options = new Array();
+            options.useSOAP = 1.2;
+            options.useWSA = 1.0;
+            options.action = "urn:getUserProfile";
 
 
-			var wsUtil = require('wsUtil.jag');
-			var result = wsUtil.callWSReturnJSON(options, webService, serverUrl, payload, adminUsername, adminPassword);
-			if(result.error) {
-				print(result);
-				return;
-			}
+            //get AuthManager admin credentials from api-manager.xml (source copied from /manage/modules/user/login.jag)
+            var configPath = "file://" + Packages.java.lang.System.getProperty("carbon.config.dir.path");
+            var amConfigPath = configPath + "/api-manager.xml";
+            var file = new File(amConfigPath);
+            file.open("r");
+            var amConfig = new XML(file.readAll());
+            file.close();
+            var adminUsername = String(amConfig.AuthManager.Username.text());
+            var adminPassword = String(amConfig.AuthManager.Password.text());
 
-			var firstNameUri = "http://wso2.org/claims/givenname";
-			var lastNameUri = "http://wso2.org/claims/lastname";
-			var addressUri = "http://wso2.org/claims/streetaddress";
-			var countryUri = "http://wso2.org/claims/country";
-			var organizationUri = "http://wso2.org/claims/organization";
-			var emailUri = "http://wso2.org/claims/emailaddress";
-			var telephoneUri = "http://wso2.org/claims/telephone";
-			var mobileUri = "http://wso2.org/claims/mobile";
-			var retObj = new Object();
 
-			for(var x = 0; x < result.return.fieldValues.length; x++){
-				var obj = result.return.fieldValues[x];
-				if(obj.claimUri == firstNameUri){
-					retObj.firstName = obj.fieldValue;
-				} else if (obj.claimUri == lastNameUri){
-					retObj.lastName = obj.fieldValue;
-				} else if (obj.claimUri == addressUri){
-					retObj.address = obj.fieldValue;
-				} else if (obj.claimUri == countryUri){
-					retObj.country = obj.fieldValue;
-				} else if (obj.claimUri == organizationUri){
-					retObj.organization = obj.fieldValue;
-				} else if (obj.claimUri == emailUri){
-					retObj.email = obj.fieldValue;
-				} else if (obj.claimUri == telephoneUri){
-					retObj.telephone = obj.fieldValue;
-				} else if (obj.claimUri == mobileUri){
-					retObj.mobile = obj.fieldValue;
-				}
-			}
-			print(retObj);
-		} catch (e) {
-			var retObj = new Object();
-			retObj.error = true;
-			retObj.errorMsg = e.toString();
-			print(retObj);
-		}
-	} else if (action == "getSubscriptionTasks") {
-		var filterCategory,taskType, result, mod,tasks;
-		filterCategory = request.getParameter("filterCategory");
-		if(filterCategory==null){
-			filterCategory='userOnly';
-		}
-		taskType = "ApproveSubscription";
-		mod = jagg.module("taskmanager");
-		result = mod.getTasks(filterCategory,taskType);
-		if (result.error) {
-			obj = {
-				error:result.error,
-				message:msg.error.authError(action, username)
-			};
-		} else {
-			obj = {
-				error:false,
-				"tasks":result
-			}
-		}
-		print(obj);
-	}else if(action == "getHubRates"){
-		
-		var apiCode = request.getParameter("apiCode");
+            var wsUtil = require('wsUtil.jag');
+            var result = wsUtil.callWSReturnJSON(options, webService, serverUrl, payload, adminUsername, adminPassword);
+            if(result.error) {
+                print(result);
+                return;
+            }
 
-		var mod = jagg.module("billing-service");
-		var result = mod.getHubRatesByAPICode(apiCode);
+            var firstNameUri = "http://wso2.org/claims/givenname";
+            var lastNameUri = "http://wso2.org/claims/lastname";
+            var addressUri = "http://wso2.org/claims/streetaddress";
+            var countryUri = "http://wso2.org/claims/country";
+            var organizationUri = "http://wso2.org/claims/organization";
+            var emailUri = "http://wso2.org/claims/emailaddress";
+            var telephoneUri = "http://wso2.org/claims/telephone";
+            var mobileUri = "http://wso2.org/claims/mobile";
+            var retObj = new Object();
 
-		if (result.error) {
-			obj = {
-				error:result.error,
-				message:result.message
-			};
-		} else {
-			obj = {
-				error:false,
-				apiServiceRates: result.apiServiceRates
-			}
-		}
-		
-		print(obj);
-	} else if(action == "getOperatorRates"){
-		
-		var apiCode = request.getParameter("apiCode");
-		var operatorCode = request.getParameter("operatorCode");
+            for(var x = 0; x < result.return.fieldValues.length; x++){
+                var obj = result.return.fieldValues[x];
+                if(obj.claimUri == firstNameUri){
+                    retObj.firstName = obj.fieldValue;
+                } else if (obj.claimUri == lastNameUri){
+                    retObj.lastName = obj.fieldValue;
+                } else if (obj.claimUri == addressUri){
+                    retObj.address = obj.fieldValue;
+                } else if (obj.claimUri == countryUri){
+                    retObj.country = obj.fieldValue;
+                } else if (obj.claimUri == organizationUri){
+                    retObj.organization = obj.fieldValue;
+                } else if (obj.claimUri == emailUri){
+                    retObj.email = obj.fieldValue;
+                } else if (obj.claimUri == telephoneUri){
+                    retObj.telephone = obj.fieldValue;
+                } else if (obj.claimUri == mobileUri){
+                    retObj.mobile = obj.fieldValue;
+                }
+            }
+            print(retObj);
+        } catch (e) {
+            var retObj = new Object();
+            retObj.error = true;
+            retObj.errorMsg = e.toString();
+            print(retObj);
+        }
+    } else if (action == "getSubscriptionTasks") {
+        var filterCategory,taskType, result, mod,tasks;
+        filterCategory = request.getParameter("filterCategory");
+        if(filterCategory==null){
+            filterCategory='userOnly';
+        }
+        taskType = "ApproveSubscription";
+        mod = jagg.module("taskmanager");
+        result = mod.getTasks(filterCategory,taskType);
+        if (result.error) {
+            obj = {
+                error:result.error,
+                message:msg.error.authError(action, username)
+            };
+        } else {
+            obj = {
+                error:false,
+                "tasks":result
+            }
+        }
+        print(obj);
+    }else if(action == "getHubRates"){
 
-		var mod = jagg.module("billing-service");
-		var result = mod.getOperatorRatesByAPICodeAndOperatorCode(apiCode, operatorCode);
+        var apiCode = request.getParameter("apiCode");
 
-		if (result.error) {
-			obj = {
-				error:result.error,
-				message:result.message
-			};
-		} else {
-			obj = {
-				error:false,
-				operatorAPIServiceRates: result.operatorAPIServiceRates
-			}
-		}
-		
-		print(obj);
-	}
+        var mod = jagg.module("billing-service");
+        var result = mod.getHubRatesByAPICode(apiCode);
+
+        if (result.error) {
+            obj = {
+                error:result.error,
+                message:result.message
+            };
+        } else {
+            obj = {
+                error:false,
+                apiServiceRates: result.apiServiceRates
+            }
+        }
+
+        print(obj);
+    } else if(action == "getOperatorRates"){
+
+        var apiCode = request.getParameter("apiCode");
+        var operatorCode = request.getParameter("operatorCode");
+
+        var mod = jagg.module("billing-service");
+        var result = mod.getOperatorRatesByAPICodeAndOperatorCode(apiCode, operatorCode);
+
+        if (result.error) {
+            obj = {
+                error:result.error,
+                message:result.message
+            };
+        } else {
+            obj = {
+                error:false,
+                operatorAPIServiceRates: result.operatorAPIServiceRates
+            }
+        }
+
+        print(obj);
+    }
 }());
 %>
