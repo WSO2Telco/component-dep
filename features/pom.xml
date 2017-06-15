@@ -48,6 +48,7 @@
         <module>com.wso2telco.dep.workflow.service.feature</module>
         <module>com.wso2telco.dep.workflow.extensions.feature</module>
         <module>com.wso2telco.dep.server.startup.observer.feature</module>
+        <module>com.wso2telco.dep.logging.extension.feature</module>
     </modules>
 </project>
 
