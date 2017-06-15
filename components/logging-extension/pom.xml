@@ -148,19 +148,6 @@
 					</instructions>
 				</configuration>
 			</plugin>
-			<plugin>
-				<artifactId>maven-eclipse-plugin</artifactId>
-				<version>2.9</version>
-				<configuration>
-					<buildcommands>
-						<buildcommand>org.eclipse.jdt.core.javabuilder</buildcommand>
-					</buildcommands>
-					<projectnatures>
-						<projectnature>org.wso2.developerstudio.eclipse.artifact.mediator.project.nature</projectnature>
-						<projectnature>org.eclipse.jdt.core.javanature</projectnature>
-					</projectnatures>
-				</configuration>
-			</plugin>
 		</plugins>
 	</build>
 </project>
