@@ -77,6 +77,7 @@
         <module>components/billing/billing-extension</module>
         <module>components/billing/billing-service</module>
         <module>components/nashorn-mediator</module>
+        <module>components/logging-extension</module>
         <module>features</module>
         <module>components/operator-onboarding</module>
     </modules>
