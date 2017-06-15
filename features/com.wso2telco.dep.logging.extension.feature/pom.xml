@@ -29,7 +29,7 @@
     <packaging>pom</packaging>
     <name>logging-extension</name>
     <description>logging-extension</description>
-
+`
     <build>
         <plugins>
             <plugin>
@@ -44,7 +44,7 @@
                             <goal>p2-feature-gen</goal>
                         </goals>
                         <configuration>
-                            <id>com.wso2telco.dep.logging</id>
+                            <id>com.wso2telco.dep.logging.extension</id>
                             <propertiesFile>../feature.properties</propertiesFile>
                             <adviceFile>
                                 <properties>
