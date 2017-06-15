@@ -29,7 +29,6 @@
     <packaging>pom</packaging>
     <name>logging-extension</name>
     <description>logging-extension</description>
-`
     <build>
         <plugins>
             <plugin>
