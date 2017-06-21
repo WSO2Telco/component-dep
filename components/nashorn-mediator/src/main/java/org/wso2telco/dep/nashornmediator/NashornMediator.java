@@ -63,6 +63,11 @@ public class NashornMediator extends AbstractMediator {
      */
     private JsonParser jsonParser;
 
+    /**
+     * Flag to determine whether nashorn mediator is using JSON payload
+     */
+    private boolean isJsonPayloadAware;
+
     public NashornMediator() {
         try {
             scriptEngine = new ScriptEngineManager().getEngineByName("nashorn");
@@ -77,7 +82,11 @@ public class NashornMediator extends AbstractMediator {
 
         try {
             NashornMessageContext nashornMessageContext = new NashornMessageContext(messageContext, scriptEngine, emptyJsonObject);
-            processJSONPayload(messageContext, nashornMessageContext);
+
+            if (isJsonPayloadAware) {
+                processJSONPayload(messageContext, nashornMessageContext);
+            }
+
             Bindings bindings = scriptEngine.createBindings();
             bindings.put(MC_VAR_NAME, nashornMessageContext);
             compiledScript.eval(bindings);
@@ -117,6 +126,10 @@ public class NashornMediator extends AbstractMediator {
 
     public void setScript(String sourceScript) {
         try {
+            if (sourceScript.contains("getPayloadJSON")) {
+                isJsonPayloadAware = true;
+            }
+
             compiledScript = ((Compilable) scriptEngine).compile(sourceScript);
         } catch (ScriptException e) {
             throw new SynapseException("Error occurred while compiling the script", e);
