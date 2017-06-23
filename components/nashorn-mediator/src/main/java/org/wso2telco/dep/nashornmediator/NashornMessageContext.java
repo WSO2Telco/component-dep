@@ -18,9 +18,6 @@
 package org.wso2telco.dep.nashornmediator;
 
 import java.io.*;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import java.util.Set;
 import javax.script.ScriptEngine;
 import javax.script.ScriptException;
 import org.apache.axis2.AxisFault;
@@ -30,9 +27,6 @@ import org.apache.synapse.MessageContext;
 import org.apache.synapse.commons.json.JsonUtil;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import jdk.nashorn.api.scripting.ScriptObjectMirror;
-import org.mozilla.javascript.ConsString;
-import org.mozilla.javascript.NativeArray;
-import org.mozilla.javascript.Wrapper;
 
 /**
  * Wrapped Synapse {@link MessageContext} to expose functionality in a javascript friendly manner
@@ -61,31 +55,17 @@ public class NashornMessageContext {
      *                         context
      */
     public void setPayloadJSON(Object jsonPayload) throws ScriptException {
-        org.apache.axis2.context.MessageContext axis2MessageContext;
-        axis2MessageContext = ((Axis2MessageContext) messageContext).getAxis2MessageContext();
-
-        byte[] json = {'{', '}'};
-        if (jsonPayload instanceof String) {
-            json = jsonPayload.toString().getBytes();
-        } else if (jsonPayload != null) {
-            try {
-                ByteArrayOutputStream out = new ByteArrayOutputStream();
-                serializeJSON_(jsonPayload, out);
-                json = out.toByteArray();
-            } catch (IOException e) {
-                logger.error("#setPayloadJSON. Could not retrieve bytes from JSON object. Error>>> "
-                        + e.getLocalizedMessage());
-            }
-        }
-        // save this JSON object as the new payload.
         try {
-            JsonUtil.getNewJsonPayload(axis2MessageContext, json, 0, json.length, true, true);
+            ScriptObjectMirror json = (ScriptObjectMirror) scriptEngine.eval("JSON");
+            String jsonString = (String)json.callMember("stringify", jsonPayload);
+            InputStream stream = new ByteArrayInputStream(jsonString.getBytes());
+            org.apache.axis2.context.MessageContext axis2mc =
+                    ((Axis2MessageContext) messageContext).getAxis2MessageContext();
+            JsonUtil.getNewJsonPayload(axis2mc, stream, true, true);
+            setJsonObject(messageContext, jsonPayload);
         } catch (AxisFault axisFault) {
             throw new ScriptException(axisFault);
         }
-        //JsonUtil.setContentType(messageContext);
-        Object jsonObject = scriptEngine.eval(JsonUtil.newJavaScriptSourceReader(axis2MessageContext));
-        setJsonObject(messageContext, jsonObject);
     }
 
     /**
@@ -138,90 +118,4 @@ public class NashornMessageContext {
         messageContext.setProperty(key, value);
     }
 
-    private void serializeJSON_(Object obj, OutputStream out) throws IOException {
-        if (out == null) {
-            logger.warn("#serializeJSON_. Did not serialize JSON object. Object: " + obj + "  Stream: " + out);
-            return;
-        }
-        if(obj instanceof Wrapper) {
-            obj = ((Wrapper) obj).unwrap();
-        }
-
-        if(obj == null){
-            out.write("null".getBytes());
-        }
-        else if (obj instanceof NativeArray) {
-            // TODO : Find a proper solution for array handling
-            /*out.write('[');
-            NativeArray o = (NativeArray) obj;
-            Object[] ids = o.getIds();
-            boolean first = true;
-            for (Object id : ids) {
-                Object value = o.get((Integer) id, o);
-                if (!first) {
-                    out.write(',');
-                    out.write(' ');
-                } else {
-                    first = false;
-                }
-                serializeJSON_(value, out);
-            }
-            out.write(']');*/
-        } else if (obj instanceof ScriptObjectMirror) {
-            out.write('{');
-            ScriptObjectMirror o = (ScriptObjectMirror) obj;
-            Set<String> keys = o.keySet();
-            boolean first = true;
-            for (String key : keys) {
-                Object value = o.get(key);
-                if (!first) {
-                    out.write(',');
-                    out.write(' ');
-                } else {
-                    first = false;
-                }
-                out.write('"');
-                out.write(key.getBytes());
-                out.write('"');
-                out.write(':');
-                serializeJSON_(value, out);
-            }
-            out.write('}');
-        } else if (obj instanceof Object[]) {
-            out.write('[');
-            boolean first = true;
-            for (Object value : (Object[]) obj) {
-                if (!first) {
-                    out.write(',');
-                    out.write(' ');
-                } else {
-                    first = false;
-                }
-                serializeJSON_(value, out);
-            }
-            out.write(']');
-        } else if (obj instanceof String) {
-            out.write('"');
-            out.write(((String) obj).getBytes());
-            out.write('"');
-        } else if (obj instanceof ConsString) {
-            //This class represents a string composed of two components using the "+" operator
-            //in java script with rhino7 upward. ex:var str = "val1" + "val2";
-            out.write('"');
-            out.write((((ConsString) obj).toString()).getBytes());
-            out.write('"');
-        } else if (obj instanceof Integer ||
-                obj instanceof Long ||
-                obj instanceof Float ||
-                obj instanceof Double ||
-                obj instanceof Short ||
-                obj instanceof BigInteger ||
-                obj instanceof BigDecimal ||
-                obj instanceof Boolean) {
-            out.write(obj.toString().getBytes());
-        } else {
-            out.write('{');
-            out.write('}');
-        }
-    }
 }

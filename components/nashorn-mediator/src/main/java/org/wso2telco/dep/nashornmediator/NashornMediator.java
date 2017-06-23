@@ -119,6 +119,7 @@ public class NashornMediator extends AbstractMediator {
             String jsonPayload = jsonParser.parse(jsonString).toString();
             jsonObject = this.scriptEngine.eval('(' + jsonPayload + ')');
         }
+
         if (jsonObject != null) {
             nashornMessageContext.setJsonObject(synapseContext, jsonObject);
         }
