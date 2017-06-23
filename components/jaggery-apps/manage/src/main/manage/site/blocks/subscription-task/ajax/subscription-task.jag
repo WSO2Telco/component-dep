@@ -290,7 +290,7 @@ include("/jagg/jagg.jag");
             }
         }
         print(obj);
-    }else if(action == "getHubRates"){
+    }else if(action == "getHubRates" && site.isBillingEnabled){
 
         var apiCode = request.getParameter("apiCode");
 
