@@ -14,6 +14,7 @@
   "allowedRole": "admin",
   "allowedRoles": "admin,subscriber,operator1-admin-role,operator2-admin-role,operator2-cc-role",
   "adminRole": "manage-app-admin",
+  "isBillingEnabled": false,
   "workflows": {
     "businessProcessEngineBaseUrl": "http://localhost:9763/activiti-rest/service/",
     "applicationCreationBusinessProcess": "application_creation_approval_process",

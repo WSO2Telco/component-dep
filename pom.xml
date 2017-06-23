@@ -576,6 +576,11 @@
                 <artifactId>billing-extension</artifactId>
                 <version>${com.wso2telco.dep.version}</version>
             </dependency>
+			<dependency>
+                <groupId>com.wso2telco.dep</groupId>
+                <artifactId>billing-service</artifactId>
+                <version>${com.wso2telco.dep.version}</version>
+            </dependency>
             <dependency>
                 <groupId>org.wso2.carbon.analytics</groupId>
                 <artifactId>org.wso2.carbon.analytics.spark.core</artifactId>
