@@ -40,6 +40,7 @@ public class BillingServiceHostObject extends ScriptableObject {
 	public static NativeObject jsFunction_getHubRatesByAPICode(Context cx, Scriptable thisObj, Object[] args,
 			Function funObj) throws BusinessException {
 
+		log.debug("getHubRatesByAPICode : ");
 		NativeObject resultObject = new NativeObject();
 		NativeObject apiData = new NativeObject();
 
@@ -65,7 +66,7 @@ public class BillingServiceHostObject extends ScriptableObject {
 					String serviceCode = service.getValue();
 
 					Map<Integer, String> rateDetails = rateCardService.getHubRateDetailsByServicesDid(servicesDid);
-
+					log.debug("getHubRatesByAPICode : " + rateDetails);
 					NativeArray rateDataArray = new NativeArray(0);
 
 					if (!rateDetails.isEmpty()) {
