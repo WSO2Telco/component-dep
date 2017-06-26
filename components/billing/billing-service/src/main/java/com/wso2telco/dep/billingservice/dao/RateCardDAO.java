@@ -175,7 +175,7 @@ public class RateCardDAO {
 
 			conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 
-			StringBuilder query = new StringBuilder("INSERT INTO rate_db.sub_rate_nb ");
+			StringBuilder query = new StringBuilder("INSERT INTO sub_rate_nb ");
 			query.append("(api_operationid,applicationid,rate_defid) ");
 			query.append("VALUES ((select api_operationid from operation_rate where operation_rateid=?),?,");
 			query.append("(select rate_defid from operation_rate where operation_rateid=?))");
@@ -221,7 +221,7 @@ VALUES ((select operator_id from operation_rate where operation_rateid=1),
 
 			conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 
-			StringBuilder query = new StringBuilder("INSERT INTO rate_db.sub_rate_sb ");
+			StringBuilder query = new StringBuilder("INSERT INTO sub_rate_sb ");
 			query.append("(operatorid, api_operationid, applicationid, rate_defid) ");
 			query.append("VALUES ((select operator_id from operation_rate where operation_rateid=?),");
 			query.append("(select api_operationid from operation_rate where operation_rateid=?),?,");
