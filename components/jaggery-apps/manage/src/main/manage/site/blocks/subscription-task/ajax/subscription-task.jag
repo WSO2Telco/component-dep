@@ -310,7 +310,7 @@ include("/jagg/jagg.jag");
         }
 
         print(obj);
-    } else if(action == "getOperatorRates"){
+    } else if(action == "getOperatorRates" && site.isBillingEnabled){
 
         var apiCode = request.getParameter("apiCode");
         var operatorCode = request.getParameter("operatorCode");
