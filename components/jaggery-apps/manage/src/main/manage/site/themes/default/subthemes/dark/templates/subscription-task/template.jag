@@ -130,7 +130,7 @@ else{
 								%>
 								<div id="SubsContainer_<%=tasks[i].id%>" style="display:none;>
 								<label class="js_toggle" id="<%=tasks[i].id%>"><b>Subscription Details</b><i class="icon-chevron-right icon-keys"></i></label>
-								<div style="display:none;">
+								<div id="rateCardContainer" style="display:none;">
 								<div id="ratecard_<%=tasks[i].id%>">
 								<input type="hidden" id="ratecount_<%=tasks[i].id%>" name="ratecardcount" value="">
 									</div>
