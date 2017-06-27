@@ -455,3 +455,16 @@ INSERT INTO `workflow_api_key_mappings` (`API_NAME`, `API_KEY`) VALUES ('locatio
 -- Default message types
 --
 INSERT INTO `mdtxmsgtype` (`msgtypedid`, `msgtype`) VALUES ('1', 'paymentrequest'),('2', 'paymentresponse'), ('3', 'refundrequest'),('4', 'refundresponse');
+
+--
+-- Quota Limit table.
+--
+CREATE TABLE IF NOT EXISTS `sp_quota_limit` (
+  `idsp_quota_limit` int(11) NOT NULL,
+  `serviceProvider` varchar(45) DEFAULT NULL,
+  `operatorName` varchar(45) DEFAULT NULL,
+  `application` varchar(45) DEFAULT NULL,
+  `apiName` varchar(45) DEFAULT NULL,
+  `quota_limit` int(11) DEFAULT NULL,
+  PRIMARY KEY (`idsp_quota_limit`)
+) ENGINE=InnoDB DEFAULT CHARSET=latin1;
