@@ -64,7 +64,7 @@ public class RateCardDAO {
 	}
 
 	public Map<Integer, String> getHubRateDetailsByServicesDid(int servicesDid) throws SQLException, Exception {
-
+		log.debug("getHubRateDetailsByServicesDid : RateCardDAO " + servicesDid);
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -80,7 +80,7 @@ public class RateCardDAO {
 			StringBuilder query = new StringBuilder("select opr.operation_rateid,rd.rate_defname ");
 			query.append("from operation_rate opr, rate_def rd ");
 			query.append("where opr.rate_defid=rd.rate_defid ");
-			query.append("and api_operationid=? ");
+			query.append("and api_operationid=? and operator_id is null;");
 
 			ps = con.prepareStatement(query.toString());
 
@@ -113,7 +113,7 @@ public class RateCardDAO {
 	//TODO:changing
 	public Map<Integer, String> getOperatorRateDetailsByServicesDidAndOperatorCode(int servicesDid, String operatorCode)
 			throws SQLException, Exception {
-
+		log.debug("getOperatorRateDetailsByServicesDidAndOperatorCode : RateCardDAO " + "servicesDid :" + servicesDid + "operatorCode :" +operatorCode) ;
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 		PreparedStatement ps = null;
 		ResultSet rs = null;
