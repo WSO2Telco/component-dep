@@ -43,9 +43,10 @@ CREATE TABLE `api_operation` (
   `api_operation` varchar(45) DEFAULT NULL,
   `api_operationcode` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`api_operationid`),
+  UNIQUE KEY `apiid_UNIQUE` (`apiid`,`api_operation`,`api_operationcode`),
   KEY `fk_api_operation_1_idx` (`apiid`),
   CONSTRAINT `fk_api_operation_1` FOREIGN KEY (`apiid`) REFERENCES `api` (`apiid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -89,16 +90,17 @@ DROP TABLE IF EXISTS `operation_rate`;
 CREATE TABLE `operation_rate` (
   `operation_rateid` int(11) NOT NULL AUTO_INCREMENT,
   `operator_id` int(11) DEFAULT NULL,
-  `api_operationid` int(11) DEFAULT NULL,
-  `rate_defid` int(11) DEFAULT NULL,
+  `api_operationid` int(11) NOT NULL,
+  `rate_defid` int(11) NOT NULL,
   PRIMARY KEY (`operation_rateid`),
+  UNIQUE KEY `operator_id_UNIQUE` (`operator_id`,`api_operationid`,`rate_defid`),
   KEY `fk_operation_rate_1_idx` (`api_operationid`),
   KEY `fk_operation_rate_2_idx` (`rate_defid`),
   KEY `fk_operation_rate_3_idx` (`operator_id`),
-  CONSTRAINT `fk_operation_rate_1` FOREIGN KEY (`api_operationid`) REFERENCES `api_operation` (`api_operationid`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_operation_rate_2` FOREIGN KEY (`rate_defid`) REFERENCES `rate_def` (`rate_defid`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_operation_rate_3` FOREIGN KEY (`operator_id`) REFERENCES `operator` (`operatorId`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+  CONSTRAINT `fk_operation_rate_1` FOREIGN KEY (`operator_id`) REFERENCES `operator` (`operatorId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_operation_rate_2` FOREIGN KEY (`api_operationid`) REFERENCES `api_operation` (`api_operationid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_operation_rate_3` FOREIGN KEY (`rate_defid`) REFERENCES `rate_def` (`rate_defid`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -216,6 +218,7 @@ CREATE TABLE `sub_rate_nb` (
   `sub_rate_nbactdate` date DEFAULT NULL,
   `sub_rate_nbdisdate` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`sub_rate_nbid`),
+  UNIQUE KEY `api_operationid_UNIQUE` (`api_operationid`,`applicationid`,`rate_defid`),
   KEY `fk_sub_rate_nb_1_idx` (`api_operationid`),
   KEY `fk_sub_rate_nb_2_idx` (`rate_defid`),
   CONSTRAINT `fk_sub_rate_nb_1` FOREIGN KEY (`api_operationid`) REFERENCES `api_operation` (`api_operationid`) ON DELETE CASCADE ON UPDATE CASCADE,
@@ -239,6 +242,7 @@ CREATE TABLE `sub_rate_sb` (
   `sub_rate_sbactdate` date DEFAULT NULL,
   `sub_rate_sbdisdate` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`sub_rate_sbid`),
+  UNIQUE KEY `operatorid_UNIQUE` (`operatorid`,`api_operationid`,`applicationid`,`rate_defid`),
   KEY `fk_sub_rate_sb_1_idx` (`operatorid`),
   KEY `fk_sub_rate_sb_2_idx` (`api_operationid`),
   KEY `fk_sub_rate_sb_3_idx` (`rate_defid`),
