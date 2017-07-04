@@ -53,7 +53,7 @@ CREATE TABLE `api_operation` (
   `api_operation` varchar(45) DEFAULT NULL,
   `api_operationcode` varchar(45) DEFAULT NULL,
   PRIMARY KEY (`api_operationid`),
-  UNIQUE KEY `apiid_UNIQUE` (`apiid`,`api_operation`,`api_operationcode`),
+  UNIQUE KEY `apiid_UNIQUE` (`api_operation`),
   KEY `fk_api_operation_1_idx` (`apiid`),
   CONSTRAINT `fk_api_operation_1` FOREIGN KEY (`apiid`) REFERENCES `api` (`apiid`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
