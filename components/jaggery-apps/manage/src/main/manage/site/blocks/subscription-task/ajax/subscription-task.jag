@@ -111,7 +111,6 @@ include("/jagg/jagg.jag");
 			 }
 
 			 } */
-            log.info("============================================================= NB operator "+operator);
 
             var taskManagerModule, result;
             taskManagerModule = jagg.module("taskmanager");

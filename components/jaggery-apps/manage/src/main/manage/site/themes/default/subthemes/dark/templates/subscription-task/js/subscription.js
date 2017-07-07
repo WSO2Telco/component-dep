@@ -234,7 +234,6 @@ function setTierDropDownDetails(result){
 		if (tierName.toUpperCase() != "DEFAULT") {
 			tiersList.options[tiersList.options.length] = new Option(
 					tierDisplayName, tierName);
-			
 			var tierAttributes = tiers[j].attributes;
 			for (var k = 0; k < tierAttributes.length; k++) {
 				var tierAttributeName = tierAttributes[k].attributeName;
@@ -435,14 +434,17 @@ function setChargeRates(taskId, rateName) {
 	
 }
 
+//{"apiCode":"location","operatorCode":"operator1","apiRates":[{"servicesDid":1,"serviceCode":"Location","rates":[]}]}
 function setratecarddropdown(result , taskID , IsHubRates) {
 	var taskId = taskID;
 	var selectList;
 	var labelList;
 	var rateDiv = document.getElementById('ratecard_'+taskId);
-	var ratecountElement = document.getElementById('ratecount_' + taskId);
-	ratecountElement.value = result.apiRates.length;
-	if(result.apiRates.length != 0){
+    var ratesLength = result.apiRates.length;
+    var ratecountElement = document.getElementById('ratecount_' + taskId);
+	ratecountElement.value = ratesLength;
+
+	if(ratesLength != 0) {
 		var divTitle = document.createElement("label");
 		divTitle.innerHTML = '<b>Rate card details :<b>';
 		rateDiv.appendChild(divTitle);
@@ -450,7 +452,9 @@ function setratecarddropdown(result , taskID , IsHubRates) {
 		$('#rateCardContainer_'+taskId).css("display", "block");
 	}
 
-	for (var i = 0; i < result.apiRates.length; i++) {
+
+
+	for (var i = 0; i < ratesLength; i++) {
 		labelList = document.createElement("label");
 		selectList = document.createElement("select");
 		selectList.setAttribute('id', 'rate_list_' + taskId + i);
