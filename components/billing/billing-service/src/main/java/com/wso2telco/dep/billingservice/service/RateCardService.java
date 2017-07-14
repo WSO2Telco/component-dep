@@ -34,9 +34,9 @@ public class RateCardService {
 		}
 	}
 
-	public Map<Integer, String> getHubRateDetailsByServicesDid(int servicesDid) throws Exception {
+	public Map<Integer, Map<String,String>> getHubRateDetailsByServicesDid(int servicesDid) throws Exception {
 
-		Map<Integer, String> rateDetails = null;
+		Map<Integer, Map<String,String>> rateDetails = null;
 
 		try {
 
