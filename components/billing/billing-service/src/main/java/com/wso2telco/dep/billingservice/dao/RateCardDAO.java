@@ -63,12 +63,12 @@ public class RateCardDAO {
 		return serviceDetails;
 	}
 
-	public Map<Integer, String> getHubRateDetailsByServicesDid(int servicesDid) throws SQLException, Exception {
+	public Map<Integer, Map<String,String>> getHubRateDetailsByServicesDid(int servicesDid) throws SQLException, Exception {
 		log.debug("getHubRateDetailsByServicesDid : RateCardDAO " + servicesDid);
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		Map<Integer, String> rateDetails = new HashMap<Integer, String>();
+		Map<Integer, Map<String,String>> rateDetails = new HashMap<Integer, Map<String,String>>();
 
 		try {
 
@@ -77,7 +77,7 @@ public class RateCardDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select opr.operation_rateid,rd.rate_defname ");
+			StringBuilder query = new StringBuilder("select opr.operation_rateid,rd.rate_defname,rd.rate_defdesc ");
 			query.append("from operation_rate opr, rate_def rd ");
 			query.append("where opr.rate_defid=rd.rate_defid ");
 			query.append("and api_operationid=? and operator_id is null;");
@@ -92,7 +92,10 @@ public class RateCardDAO {
 
 			while (rs.next()) {
 
-				rateDetails.put(rs.getInt("operation_rateid"), rs.getString("rate_defname"));
+				Map<String,String> rateData = new HashMap<String, String>();
+				rateData.put("rate_defname", rs.getString("rate_defname"));
+				rateData.put("rate_defdesc", rs.getString("rate_defdesc"));
+				rateDetails.put(rs.getInt("operation_rateid"), rateData);
 			}
 		} catch (SQLException e) {
 
