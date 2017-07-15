@@ -68,12 +68,11 @@ var getTasks = function (filterCategory,taskType) {
                 id:taskId,
                 name:taskName,
                 applicationName:applicationNameVariable.value,
-                applicationId:applicationIdVariable.value,
                 status:status,
                 createdTime:time,
                 date:dueDate
             });}else{
-            	
+
             	    var mod = jagg.module("manager");
                     var storeHostObject = mod.getOperatorsHostObject(); //changed from get getstoreObj
                     var appStatus = storeHostObject.getAppStatus(applicationIdVariable.value,operator.value);
@@ -84,7 +83,6 @@ var getTasks = function (filterCategory,taskType) {
                 name:taskName,
                 applicationName:applicationNameVariable.value,
                 applicationId:applicationIdVariable.value,
-                operator:operator.value,
                 status:status,
                 createdTime:time,
                 date:dueDate
