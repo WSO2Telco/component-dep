@@ -255,7 +255,7 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
         } catch (APIManagementException e) {
             throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
         }
-        if (WorkflowStatus.CREATED.equals(workflowDTO.getStatus())) {
+
             try {
                 instanceData = api.getProcessInstances(workflowExtRef);
             } catch (WorkflowExtensionException e) {
@@ -263,7 +263,7 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
             }
             // should be only one process instance for this business key, hence get the 0th element
             try {
-                if(instanceData.getData().size()!=0) {
+                if(instanceData!=null && instanceData.getData().size()!=0) {
                     api.deleteProcessInstance(Integer.toString(instanceData.getData().get(0).getId()));
                 }
             } catch (WorkflowExtensionException e) {
@@ -272,7 +272,7 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
 
             log.info("Application Creation approval process instance task with business key " +
                     workflowExtRef + " deleted successfully");
-        }
+
     }
 
     private String getDeploymentType() {

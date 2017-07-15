@@ -33,7 +33,7 @@ var getTasks = function (filterCategory,taskType) {
 	//todo: get both claimable and assigned tasks from a sinple API call and assign status accordingly
 	//size is hard coded to '100' to stop UI loading issues. the proper fix is to implement pagination correctly by
 	//first getting the count of tasks, and then doing activiti API calls to get relevant portion for that particular page
-	var tasks = get(businessProcessEngineUrl + "runtime/tasks?candidateGroups=" + encodeURIComponent(string) + "&size=100" +
+	var tasks = get(businessProcessEngineUrl + "runtime/tasks?candidateGroups=" + encodeURIComponent(string) + "&size=1000" +
 	"&processDefinitionKey=" + processType, null, headers,
 	"json" ).data;
         if (log.isDebugEnabled()) {
@@ -56,7 +56,14 @@ var getTasks = function (filterCategory,taskType) {
             //get required application details from process instance variables
             var applicationNameVariable = get(businessProcessEngineUrl + "runtime/tasks/" +
             taskId + "/variables/applicationName",null, headers,"json" ).data;
-            if(taskName == null){ taskName = "Not available"; }
+            var applicationIdVariable = get(businessProcessEngineUrl + "runtime/tasks/" +
+            taskId + "/variables/applicationId",null, headers,"json" ).data;
+            var operator = get(businessProcessEngineUrl + "runtime/tasks/" +
+            taskId + "/variables/operator",null, headers,"json" ).data;
+
+           if(taskName == null){ taskName = "Not available"; }
+
+           if( taskType =="ApproveApplication" || !operator.value ){
             task.push({
                 id:taskId,
                 name:taskName,
@@ -64,12 +71,31 @@ var getTasks = function (filterCategory,taskType) {
                 status:status,
                 createdTime:time,
                 date:dueDate
-            });
+            });}else{
+
+            	    var mod = jagg.module("manager");
+                    var storeHostObject = mod.getOperatorsHostObject(); //changed from get getstoreObj
+                    var appStatus = storeHostObject.getAppStatus(applicationIdVariable.value,operator.value);
+            
+            if(appStatus == true){
+                task.push({
+                id:taskId,
+                name:taskName,
+                applicationName:applicationNameVariable.value,
+                applicationId:applicationIdVariable.value,
+                status:status,
+                createdTime:time,
+                date:dueDate
+                });
+             }
+            }
+            
+
         }
 
 		//size is hard coded to '100' to stop UI loading issues. the proper fix is to implement pagination correctly by
 		//first getting the count of tasks, and then doing activiti API calls to get relevant portion for that particular page
-        var assignedTasks = get(businessProcessEngineUrl + "runtime/tasks?assignee=" + encodeURIComponent(user) + "&size=100" +
+        var assignedTasks = get(businessProcessEngineUrl + "runtime/tasks?assignee=" + encodeURIComponent(user) + "&size=1000" +
         "&processDefinitionKey=" + processType, null,
         headers, "json" ).data;
                 if (log.isDebugEnabled()) {
