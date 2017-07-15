@@ -102,7 +102,7 @@ else{
 								</div>
 								<div>
 								<b>User:</b>
-									<a style="display: inline;" id="desc_user_<%=tasks[i].id%>"
+									<a style="display: inline;color:blue;text-decoration: underline" id="desc_user_<%=tasks[i].id%>"
 										class="my_tooltip_open" 
 										onclick="showProfileDetailsPopup($(this), $('#desc_user_' + <%=tasks[i].id%>).html());"></a>
 								</div>
