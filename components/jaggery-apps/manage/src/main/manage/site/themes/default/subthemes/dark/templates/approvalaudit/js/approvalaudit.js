@@ -86,7 +86,7 @@ function generateDataTable(object, currentPage,pageCount){
 				//cell2.innerHTML = application.applicationname;
 				//cell2.appendChild(a);
 
-				rowHTML = rowHTML + '<td><a style="color:blue;text-decoration: underline" href="app-history.jag?AppId='+appid+'&appname='+valueN+'">'+valueN+'</a></td>';
+				rowHTML = rowHTML + '<td><a style="color:#5F9EA0;text-decoration: underline" href="app-history.jag?AppId='+appid+'&appname='+valueN+'">'+valueN+'</a></td>';
 			} else {
 				rowHTML = rowHTML + '<td>'+valueN+'</td>';
 			}
