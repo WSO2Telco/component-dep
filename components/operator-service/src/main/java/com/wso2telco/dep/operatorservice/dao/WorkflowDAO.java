@@ -135,8 +135,8 @@ public class WorkflowDAO {
         }
     }
 
-    public Boolean operatorAppsIsActive(int applicationId,String operatorName)throws Exception, Exception {
-        
+    public Boolean operatorAppsIsActive(int applicationId,String operatorName)
+            throws Exception, Exception {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -181,7 +181,7 @@ public class WorkflowDAO {
      * @return the operatorId
      * @throws Exception the exception
      */
-    public int getOperatorIdByName(String operatorName) throws SQLException,Exception {
+    public int getOperatorIdByName(String operatorName) throws SQLException, Exception {
 
         Connection con = null;
         Statement st = null;
@@ -206,7 +206,7 @@ public class WorkflowDAO {
         } catch (SQLException e) {
             throw new SQLException();
         } catch (Exception e) {
-            throw e;
+            throw  e;
         } finally {
             DbUtils.closeAllConnections(st, con, rs);
         }
