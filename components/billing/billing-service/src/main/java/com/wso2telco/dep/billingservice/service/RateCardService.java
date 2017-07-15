@@ -83,7 +83,10 @@ public class RateCardService {
 	public void setHubSubscriptionRateData(int servicesRateDid, int applicationDid) throws Exception {
 
 		try {
-
+			boolean recordsExists = rateCardDAO.checkHubSubscriptionRateDataExists(servicesRateDid, applicationDid);
+			if (recordsExists) {
+				rateCardDAO.deleteHubSubscriptionRateData(servicesRateDid, applicationDid);
+			}
 			rateCardDAO.setHubSubscriptionRateData(servicesRateDid, applicationDid);
 		} catch (Exception e) {
 
@@ -95,7 +98,10 @@ public class RateCardService {
 	public void setOperatorSubscriptionRateData(int operatorRateDid, int applicationDid) throws Exception {
 
 		try {
-
+			boolean recordsExists = rateCardDAO.checkOperatorSubscriptionRateData(operatorRateDid, applicationDid);
+			if (recordsExists) {
+				rateCardDAO.deleteOperatorSubscriptionRateData(operatorRateDid, applicationDid);
+			}
 			rateCardDAO.setOperatorSubscriptionRateData(operatorRateDid, applicationDid);
 		} catch (Exception e) {
 
