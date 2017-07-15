@@ -17,10 +17,14 @@
 	%>
 
 <div class="title-section">
-	<h2>Application - <%=appname%></h2>
+	<h2>
+		Application -
+		<%=appname%>
+	</h2>
 </div>
 
-<div id="tierattribute_tooltip" class="well" style="display: none;"></div>
+<div
+	id="tierattribute_tooltip" class="well" style="display: none;"></div>
 
 <div class="content-section shadow-up">
 	<div class="content-data">
@@ -30,26 +34,26 @@
 		<div class="api-info">
 			<div class="row-fluid">
 				<div class="span12">
-                    <div class="thumbnail span2">
-                        <img width="100" src="/store/site/themes/fancy/subthemes/dark/images/api-default.png">
+					<div class="thumbnail span2">
+						<!--img width="100" src="/store/site/themes/fancy/subthemes/dark/images/api-default.png"-->
 					</div>
 					<div class="span6">
 						<table cellspacing="0" cellpadding="0" class="table">
 							<tbody>
-								<!-- 
+								<!--
                             <tr>
                                 <th>Rating:</th>
-                                
-                                
+
+
                                 <td colspan="2">
                                     <div class="star-ratings">
                                         <div style="width:100px;" class="dynamic-rating"><span>Your rating:</span><span class="dynamic-rating-stars"><a class="star-0"></a><a class="star-0"></a><a class="star-0"></a><a class="star-0"></a><a class="star-0"></a></span>N/A</div>
-                                        
+
                                     </div>
                                 </td>
 
                             </tr>
-                            
+
                             <tr>
                                 <th>Version:</th>
                                 <td colspan="2">v1</td>
@@ -62,18 +66,19 @@
 									<th>OPERATOR:</th>
 									<td colspan="2"></td>
 								</tr>
-								
-								
+
+
 								<% if(opcoapps.length==0){%>
 								<tr>
-								<th>
-									<div class="alert alert-info">
-										<div style="padding-bottom: 10px">
-											<b><%=i18n.localize("noOperatorApv")%> </b>
-										</div
-									</div>
+									<th>
+										<div class="alert alert-info">
+											<div style="padding-bottom: 10px">
+												<b><%=i18n.localize("noOperatorApv")%> </b>
+											</div
+
+										</div>
 									</th>
-								</tr>	
+								</tr>
 								<%} else {for (var i = 0; i < opcoapps.length; i++){%>
 								<tr>
 									<%if (opcoapps[i].operatorid==1) {%>
@@ -82,19 +87,19 @@
 									<th>Operator2:</th>
 									<%} else if (opcoapps[i].operatorid==3) {%>
 									<th>Operator3:</th>
-                                 <%}%>
+									<%}
+									%>
 									<td colspan="2"><%=opcoapps[i].status%></td>
 								</tr>
-                            <%}}%>                            
-                            
+								<%}
+}%>
+
 
 							</tbody>
 						</table>
 					</div>
 
-                       <div class="span4 appStyleFix">
-
-                    </div>
+					<div class="span4 appStyleFix"></div>
 					<div class="span12 tabs-section">
 
 						<div class="ui-tab">
@@ -102,15 +107,15 @@
 							<ul class="nav nav-tabs all-tabs">
 
 
-        <li class="first active"><a href="#tab0">Subscribed APIs</a>
+								<li class="first active"><a href="#tab0">Subscribed APIs</a>
 								</li>
 
-								<!-- 
+								<!--
         <li class="">
             <a href="#tab1">Documentation</a>
         </li>
-    
-    
+
+
         <li class="last">
             <a href="#tab2">API Console</a>
         </li> -->
@@ -124,22 +129,23 @@
 
 
 									<div id="overview">
-										
-										<% if (Subscriptions.length==0) {%> 
+
+										<% if (Subscriptions.length==0) {%>
 										<div class="alert alert-info">
 											<div style="padding-bottom: 10px">
 												<b><%=i18n.localize("noSubscriptions")%> </b>
 											</div
-									    </div>
-									    <%}										
+
+										</div>
+										<%}
 										for (var i = 0; i < Subscriptions.length; i++){%>
 
 										<h5>
 											<%=Subscriptions[i].api%>
 											-
 											<%=Subscriptions[i].apiversion%>
-											[<a style="display: inline;" id="tierLbl_<%=Subscriptions[i].api%>" class="tierattribute_tooltip_open"
-											 onclick="getLblText(this);"><%=Subscriptions[i].tier%></a>] Subscription - <span style="font-weight: normal"><%=Subscriptions[i].status%>
+											[<%=Subscriptions[i].tier%>]
+											Subscription - <span style="font-weight: normal"><%=Subscriptions[i].status%>
 											</span>
 										</h5>
 
@@ -147,8 +153,8 @@
 
 											<div class="content-data">
 
-            <div>
-							</div><table class="table table-bordered table-striped">
+												<div></div>
+												<table class="table table-bordered table-striped">
 													<thead>
 														<tr>
 															<th>Operator</th>
@@ -171,22 +177,24 @@
 															<td>Operator2:</td>
 															<%} else if (opcosubs[j].operatorid==3) {%>
 															<td>Operator3:</td>
-                                 <%}%>
-                                 
-							<td id="status0"><%=opcosubs[j].status%></td>
-							<td><%=opcosubs[j].lastupdated%></td>
- 							 
-                    					
-                    </td>
-                    
-                </tr>
-                                
-                <%}}%>  
-                </tbody>
-            </table>
-            
-              <!--START Pagination links-->
-              
+															<%}
+															%>
+
+															<td id="status0"><%=opcosubs[j].status%></td>
+															<td><%=opcosubs[j].lastupdated%></td>
+
+
+															</td>
+
+														</tr>
+
+														<%}
+}%>
+													</tbody>
+												</table>
+
+												<!--START Pagination links-->
+
 
 												<!--START Pagination links-->
 
@@ -198,7 +206,8 @@
 										</div>
 										<br />
 
-           <%}%>   
+										<%}
+										%>
 
 										<div id="comment-add">
 											<!--   <div style="display:none" id="commentAdd-error" class="alert alert-error">
@@ -213,10 +222,7 @@
 
 
 
-<div id="comment-list">
-    
-    
-</div>
+										<div id="comment-list"></div>
 
 
 									</div>
