@@ -54,7 +54,7 @@ try{
 
 	if(isAdmin != true && !(operator != null)){
 	if (log.isDebugEnabled()) {log.debug("Error while authenticating user : " + username);}
-	message="Unable to log you in! Permission denied."
+	message="Permission denied."
 	return {error:true,cookie:null,message:message};}
 
     var roleresult = getRoles(username,password);
