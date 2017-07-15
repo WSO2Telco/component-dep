@@ -27,6 +27,9 @@ jagg.module("manager", {
 	},
 	getBillingServiceHostObject:function () {
 		return jagg.require(jagg.getModulesDir() + "manager/manager.jag").getBillingServiceHostObject.apply(this, arguments);
-	}
+	},
+    getOperatorsHostObject:function () {
+        return jagg.require(jagg.getModulesDir() + "manager/manager.jag").getOperatorsHostObject.apply(this, arguments);
+    }
 });
 %>
