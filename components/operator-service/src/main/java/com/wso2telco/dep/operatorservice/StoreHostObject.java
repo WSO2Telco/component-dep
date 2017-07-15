@@ -194,8 +194,21 @@ public class StoreHostObject extends ScriptableObject {
 
     }
 
+    public static boolean jsFunction_getAppStatus(Context cx,Scriptable thisObj,Object[] args,Function funObj){
 
+        String appId = (String) args[0];
+        String operator = (String) args[1];
+        boolean status=false;
+        WorkflowDAO workflowDAO=new WorkflowDAO();
 
+        try {
+            status=workflowDAO.operatorAppsIsActive(Integer.parseInt(appId),operator);
+        } catch (Exception e) {
+            log.error("database operation error in get workflow ref : ", e);
+        }
+        return status;
+
+    }
 
     /**
      * Handle exception.

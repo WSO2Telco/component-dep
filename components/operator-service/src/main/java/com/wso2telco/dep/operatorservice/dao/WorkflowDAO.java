@@ -23,10 +23,7 @@ import com.wso2telco.dep.operatorservice.util.OparatorTable;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -136,6 +133,84 @@ public class WorkflowDAO {
         } finally {
             DbUtils.closeAllConnections(ps, con, null);
         }
+    }
+
+    public Boolean operatorAppsIsActive(int applicationId,String operatorName)throws Exception, Exception {
+        
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Boolean isExist =false;
+        int isActive=0;
+        int operatorId=getOperatorIdByName(operatorName);
+
+        try {
+            conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+            StringBuilder query = new StringBuilder();
+            query.append("SELECT applicationid,isactive FROM operatorapps ");
+            query.append("WHERE applicationid=? and operatorid=?");
+            ps = conn.prepareStatement(query.toString());
+            ps.setInt(1, applicationId);
+            ps.setInt(2, operatorId);
+
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                isActive = rs.getInt("isactive");
+                if(isActive==1){
+                    isExist = true;}
+            }
+
+        } catch (SQLException e) {
+            log.error(e);
+            throw new SQLException(e);
+        } catch (Exception e) {
+            log.error(e);
+            throw e;
+        } finally {
+            DbUtils.closeAllConnections(ps, conn, rs);
+
+        }
+
+        return isExist;
+
+    }
+
+    /**
+     * Gets the operator if by name.
+     *
+     * @return the operatorId
+     * @throws Exception the exception
+     */
+    public int getOperatorIdByName(String operatorName) throws SQLException,Exception {
+
+        Connection con = null;
+        Statement st = null;
+        ResultSet rs = null;
+        int operatorId = 0;
+        try {
+            con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+
+            if (con == null) {
+                throw new Exception("Connection not found");
+            }
+
+            st = con.createStatement();
+            StringBuilder query = new StringBuilder();
+            query.append("SELECT ID, operatorname ");
+            query.append("FROM operators WHERE operatorname = '" + operatorName + " ' ");
+            rs = st.executeQuery(query.toString());
+            while (rs.next()) {
+                operatorId = rs.getInt("ID");
+            }
+
+        } catch (SQLException e) {
+            throw new SQLException();
+        } catch (Exception e) {
+            throw e;
+        } finally {
+            DbUtils.closeAllConnections(st, con, rs);
+        }
+        return operatorId;
     }
 
 }
