@@ -213,4 +213,34 @@ public class WorkflowDAO {
         return operatorId;
     }
 
+    public List<WorkflowReferenceDTO> findWorkflowByAppId(String appId) throws Exception {
+
+        WorkflowReferenceDTO workflowReferenceDTO=new WorkflowReferenceDTO();
+        String sql = "SELECT * from workflow_reference where application_id = ? ";
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        List<WorkflowReferenceDTO> workflowReferenceDTOs=new ArrayList<WorkflowReferenceDTO>();
+
+        try {
+            conn =DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, appId);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                workflowReferenceDTO.setWorkflowRef(rs.getString("workflow_ref_id"));
+                workflowReferenceDTO.setWorkflowServiceURL(rs.getString("service_endpoint"));
+                workflowReferenceDTOs.add(workflowReferenceDTO);
+            }
+
+        } catch (SQLException e) {
+            log.error("SQLException "+e);
+            throw e;
+        } finally {
+            DbUtils.closeAllConnections(ps, conn, rs);
+        }
+        return workflowReferenceDTOs;
+    }
+
 }
