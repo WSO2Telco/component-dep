@@ -468,9 +468,11 @@ function setratecarddropdown(result , taskID , IsHubRates) {
 			}
 
 			var name = result.apiRates[i].rates[j].rateCode;
+			var toolTip = result.apiRates[i].rates[j].rateDesc;
 			var option = document.createElement("option");
 			option.value = id;
 			option.textContent = name;
+			option.title = toolTip;
 			selectList.appendChild(option);
 		}
 

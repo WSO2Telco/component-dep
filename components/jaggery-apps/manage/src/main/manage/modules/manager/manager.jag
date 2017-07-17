@@ -92,4 +92,19 @@ var getBillingServiceHostObject = function() {
 	
     return billingServiceHostObject;
 };
+
+
+var getOperatorsHostObject = function() {
+    
+    var user = jagg.getUser();
+    var operatorsHostObject;
+    if (user == null) {
+        operatorsHostObject = require('operatorservice');
+        return operatorsHostObject;
+    } else {
+        operatorsHostObject = require('operatorservice');
+         return new operatorsHostObject.StoreHostObject(user.username);
+    }
+};
+
 %>

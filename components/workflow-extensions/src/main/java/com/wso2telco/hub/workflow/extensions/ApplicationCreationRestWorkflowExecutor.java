@@ -16,6 +16,8 @@
 
 package com.wso2telco.hub.workflow.extensions;
 
+import com.wso2telco.dep.operatorservice.dao.WorkflowDAO;
+import com.wso2telco.dep.operatorservice.model.WorkflowReferenceDTO;
 import com.wso2telco.hub.workflow.extensions.beans.CreateProcessInstanceRequest;
 import com.wso2telco.hub.workflow.extensions.beans.CreateProcessInstanceResponse;
 import com.wso2telco.hub.workflow.extensions.beans.ProcessInstanceData;
@@ -255,24 +257,39 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
         } catch (APIManagementException e) {
             throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
         }
-        if (WorkflowStatus.CREATED.equals(workflowDTO.getStatus())) {
-            try {
-                instanceData = api.getProcessInstances(workflowExtRef);
-            } catch (WorkflowExtensionException e) {
-                throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
+
+        try {
+            instanceData = api.getProcessInstances(workflowExtRef);
+        } catch (WorkflowExtensionException e) {
+            throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
+        }
+        // should be only one process instance for this business key, hence get the 0th element
+        try {
+            if (instanceData != null && instanceData.getData().size() != 0) {
+                api.deleteProcessInstance(Integer.toString(instanceData.getData().get(0).getId()));
             }
-            // should be only one process instance for this business key, hence get the 0th element
-            try {
-                if(instanceData.getData().size()!=0) {
+        } catch (WorkflowExtensionException e) {
+            throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
+        }
+
+        // if application has a subscription task clean
+        try {
+            String applicationId = workflowDTO.getWorkflowReference();
+            WorkflowDAO workflowDAO = new WorkflowDAO();
+            List<WorkflowReferenceDTO> workflowByAppId = workflowDAO.findWorkflowByAppId(applicationId);
+            for (WorkflowReferenceDTO workflowReferenceDTO : workflowByAppId) {
+                instanceData = api.getProcessInstances(workflowReferenceDTO.getWorkflowRef());
+                if (instanceData != null && instanceData.getData().size() != 0) {
                     api.deleteProcessInstance(Integer.toString(instanceData.getData().get(0).getId()));
                 }
-            } catch (WorkflowExtensionException e) {
-                throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
             }
-
-            log.info("Application Creation approval process instance task with business key " +
-                    workflowExtRef + " deleted successfully");
+        } catch (Exception e) {
+            log.error(e);
         }
+
+        log.info("Application Creation approval process instance task with business key " +
+                workflowExtRef + " deleted successfully");
+
     }
 
     private String getDeploymentType() {

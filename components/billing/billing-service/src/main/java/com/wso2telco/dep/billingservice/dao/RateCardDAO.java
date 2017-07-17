@@ -63,12 +63,12 @@ public class RateCardDAO {
 		return serviceDetails;
 	}
 
-	public Map<Integer, String> getHubRateDetailsByServicesDid(int servicesDid) throws SQLException, Exception {
+	public Map<Integer, Map<String,String>> getHubRateDetailsByServicesDid(int servicesDid) throws SQLException, Exception {
 		log.debug("getHubRateDetailsByServicesDid : RateCardDAO " + servicesDid);
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		Map<Integer, String> rateDetails = new HashMap<Integer, String>();
+		Map<Integer, Map<String,String>> rateDetails = new HashMap<Integer, Map<String,String>>();
 
 		try {
 
@@ -77,7 +77,7 @@ public class RateCardDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select opr.operation_rateid,rd.rate_defname ");
+			StringBuilder query = new StringBuilder("select opr.operation_rateid,rd.rate_defname,rd.rate_defdesc ");
 			query.append("from operation_rate opr, rate_def rd ");
 			query.append("where opr.rate_defid=rd.rate_defid ");
 			query.append("and api_operationid=? and operator_id is null;");
@@ -92,7 +92,10 @@ public class RateCardDAO {
 
 			while (rs.next()) {
 
-				rateDetails.put(rs.getInt("operation_rateid"), rs.getString("rate_defname"));
+				Map<String,String> rateData = new HashMap<String, String>();
+				rateData.put("rate_defname", rs.getString("rate_defname"));
+				rateData.put("rate_defdesc", rs.getString("rate_defdesc"));
+				rateDetails.put(rs.getInt("operation_rateid"), rateData);
 			}
 		} catch (SQLException e) {
 
@@ -203,6 +206,81 @@ public class RateCardDAO {
 		}
 	}
 
+	public boolean checkHubSubscriptionRateDataExists(int servicesRateDid, int applicationDid)
+			throws SQLException, Exception {
+
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		boolean recordsExist = false;
+
+		try {
+			conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
+
+			StringBuilder query = new StringBuilder("SELECT * FROM sub_rate_nb ");
+			query.append("WHERE api_operationid=(select api_operationid from operation_rate where operation_rateid=?) ");
+			query.append("AND applicationid=? ");
+			query.append("AND rate_defid=(select rate_defid from operation_rate where operation_rateid=?)");
+
+			ps = conn.prepareStatement(query.toString());
+			ps.setInt(1,servicesRateDid);
+			ps.setInt(2,applicationDid);
+			ps.setInt(3,servicesRateDid);
+
+			log.debug("sql query in checkHubSubscriptionRateDataExists : " + ps);
+
+			rs = ps.executeQuery();
+			
+			while (rs.next()) {
+				int sub_rate_nbid = rs.getInt("sub_rate_nbid");
+				recordsExist = true;
+				break;
+			}
+		} catch (SQLException e) {
+			log.error("database operation error in checkHubSubscriptionRateDataExists : ", e);
+			throw e;
+		} catch (Exception e) {
+			log.error("error in checkHubSubscriptionRateDataExists : ", e);
+			throw e;
+		} finally {
+			DbUtils.closeAllConnections(ps, conn, null);
+		}
+		return recordsExist;
+	}
+
+	public void deleteHubSubscriptionRateData(int servicesRateDid, int applicationDid)
+			throws SQLException, Exception {
+
+		Connection conn = null;
+		PreparedStatement ps = null;
+
+		try {
+			conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
+
+			StringBuilder query = new StringBuilder("DELETE FROM sub_rate_nb ");
+			query.append("WHERE api_operationid=(select api_operationid from operation_rate where operation_rateid=?) ");
+			query.append("AND applicationid=? ");
+			query.append("AND rate_defid=(select rate_defid from operation_rate where operation_rateid=?)");
+
+			ps = conn.prepareStatement(query.toString());
+			ps.setInt(1,servicesRateDid);
+			ps.setInt(2,applicationDid);
+			ps.setInt(3,servicesRateDid);
+
+			log.debug("sql query in deleteHubSubscriptionRateData : " + ps);
+
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			log.error("database operation error in deleteHubSubscriptionRateData : ", e);
+			throw e;
+		} catch (Exception e) {
+			log.error("error in deleteHubSubscriptionRateData : ", e);
+			throw e;
+		} finally {
+			DbUtils.closeAllConnections(ps, conn, null);
+		}
+	}
+
 	/*
 	INSERT INTO rate_db.sub_rate_sb
 (operatorid, api_operationid, applicationid, rate_defid)
@@ -247,6 +325,87 @@ VALUES ((select operator_id from operation_rate where operation_rateid=1),
 			throw e;
 		} finally {
 
+			DbUtils.closeAllConnections(ps, conn, null);
+		}
+	}	
+
+	public boolean checkOperatorSubscriptionRateData(int operatorRateDid, int applicationDid)
+			throws SQLException, Exception {
+
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		boolean recordsExist = false;
+
+		try {
+			conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
+
+			StringBuilder query = new StringBuilder("SELECT * FROM sub_rate_sb ");
+			query.append("WHERE operatorid=(select operator_id from operation_rate where operation_rateid=?) ");
+			query.append("AND api_operationid=(select api_operationid from operation_rate where operation_rateid=?) ");
+			query.append("AND applicationid=? ");
+			query.append("AND rate_defid=(select rate_defid from operation_rate where operation_rateid=?) ");
+
+			ps = conn.prepareStatement(query.toString());
+
+			ps.setInt(1, operatorRateDid);
+			ps.setInt(2, operatorRateDid);
+			ps.setInt(3,applicationDid);
+			ps.setInt(4,operatorRateDid);
+
+			log.debug("sql query in checkOperatorSubscriptionRateData : " + ps);
+
+			rs = ps.executeQuery();
+			
+			while (rs.next()) {
+				int sub_rate_sbid = rs.getInt("sub_rate_sbid");
+				recordsExist = true;
+				break;
+			}
+		} catch (SQLException e) {
+			log.error("database operation error in checkOperatorSubscriptionRateData : ", e);
+			throw e;
+		} catch (Exception e) {
+			log.error("error in checkOperatorSubscriptionRateData : ", e);
+			throw e;
+		} finally {
+			DbUtils.closeAllConnections(ps, conn, null);
+		}
+		return recordsExist;
+	}
+	
+	public void deleteOperatorSubscriptionRateData(int operatorRateDid, int applicationDid)
+			throws SQLException, Exception {
+
+		Connection conn = null;
+		PreparedStatement ps = null;
+
+		try {
+			conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
+
+			StringBuilder query = new StringBuilder("DELETE FROM sub_rate_sb ");
+			query.append("WHERE operatorid=(select operator_id from operation_rate where operation_rateid=?) ");
+			query.append("AND api_operationid=(select api_operationid from operation_rate where operation_rateid=?) ");
+			query.append("AND applicationid=? ");
+			query.append("AND rate_defid=(select rate_defid from operation_rate where operation_rateid=?) ");
+
+			ps = conn.prepareStatement(query.toString());
+
+			ps.setInt(1, operatorRateDid);
+			ps.setInt(2, operatorRateDid);
+			ps.setInt(3,applicationDid);
+			ps.setInt(4,operatorRateDid);
+
+			log.debug("sql query in deleteOperatorSubscriptionRateData : " + ps);
+
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			log.error("database operation error in deleteOperatorSubscriptionRateData : ", e);
+			throw e;
+		} catch (Exception e) {
+			log.error("error in deleteOperatorSubscriptionRateData : ", e);
+			throw e;
+		} finally {
 			DbUtils.closeAllConnections(ps, conn, null);
 		}
 	}
