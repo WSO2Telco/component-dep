@@ -22,6 +22,8 @@ import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
 import javax.cache.Cache;
 import javax.cache.Caching;
 import org.apache.commons.logging.Log;
@@ -627,4 +629,66 @@ public class OperatorDAO {
             DbUtils.closeAllConnections(ps, con, null);
         }
     }
+    
+    public Map<Integer, Map<String, Map<String,String>>> getOperatorApprovedSubscriptionsByApplicationId(int appId) throws SQLException, Exception {
+		
+    	log.debug("getOperatorApprovedSubscriptionsByApplicationId : OperatorDAO " + appId);
+		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Map<Integer, Map<String, Map<String,String>>> historyDetails = new HashMap<Integer, Map<String, Map<String,String>>>();
+
+		try {
+
+			if (con == null) {
+
+				throw new Exception("Connection not found");
+			}
+
+			StringBuilder query = new StringBuilder("select opcoendpoints.api, opco.operatorname, if(eapps.isactive = 0, 'NOT APPROVED','APPROVED') as substatus ");
+			query.append("from ");
+			query.append(OparatorTable.ENDPOINT_APPS.getTObject());
+			query.append(" eapps, ");
+			query.append(OparatorTable.OPERATOR_ENDPOINTS.getTObject());
+			query.append(" opcoendpoints, ");
+			query.append(OparatorTable.OPERATORS.getTObject());
+			query.append(" opco ");			
+			query.append("where eapps.endpointid = opcoendpoints.ID and opcoendpoints.operatorid = opco.ID and eapps.applicationid = ?");
+
+			ps = con.prepareStatement(query.toString());
+
+			ps.setInt(1, appId);
+
+			log.debug("sql query in getOperatorApprovedSubscriptionsByApplicationId : " + ps);
+
+			rs = ps.executeQuery();
+			
+			int i = 0;
+			while (rs.next()) {
+
+				Map<String, Map<String,String>> subDetails = new HashMap<String, Map<String,String>>();
+				Map<String,String> subData = new HashMap<String, String>();
+				
+				subData.put("operatorname", rs.getString("operatorname"));
+				subData.put("substatus", rs.getString("substatus"));
+				subDetails.put(rs.getString("api"), subData);
+				
+				historyDetails.put(i, subDetails);
+				i++;
+			}
+		} catch (SQLException e) {
+
+			log.error("database operation error in getOperatorApprovedSubscriptionsByApplicationId : ", e);
+			throw e;
+		} catch (Exception e) {
+
+			log.error("error in getOperatorApprovedSubscriptionsByApplicationId : ", e);
+			throw e;
+		} finally {
+
+			DbUtils.closeAllConnections(ps, con, rs);
+		}
+
+		return historyDetails;
+	}
 }
