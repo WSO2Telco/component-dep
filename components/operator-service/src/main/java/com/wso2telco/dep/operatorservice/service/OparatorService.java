@@ -18,10 +18,10 @@ package com.wso2telco.dep.operatorservice.service;
 
 import java.util.Collections;
 import java.util.List;
+import java.util.Map;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.exception.GenaralError;
 import com.wso2telco.dep.operatorservice.dao.OperatorDAO;
@@ -35,7 +35,6 @@ import com.wso2telco.dep.operatorservice.model.Operator;
 import com.wso2telco.dep.operatorservice.model.OperatorSearchDTO;
 import com.wso2telco.dep.operatorservice.model.ProvisionReq;
 import com.wso2telco.dep.operatorservice.util.OparatorError;
-
 import com.wso2telco.dep.operatorservice.model.OperatorEndPointDTO;
 import com.wso2telco.dep.operatorservice.model.OperatorApplicationDTO;
 
@@ -246,4 +245,24 @@ public class OparatorService {
           return dao.retrieveOperatorList();
     }
 
+    public Map<Integer, Map<String, Map<String,String>>> getOperatorApprovedSubscriptionsByApplicationId(int appId) throws Exception {
+
+		Map<Integer, Map<String, Map<String,String>>> historyDetails = null;
+
+		try {
+
+			historyDetails = dao.getOperatorApprovedSubscriptionsByApplicationId(appId);
+		} catch (Exception e) {
+
+			throw e;
+		}
+
+		if (historyDetails != null) {
+
+			return historyDetails;
+		} else {
+
+			return Collections.emptyMap();
+		}
+	}
 }
