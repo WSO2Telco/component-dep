@@ -233,6 +233,8 @@
 							</div>
 
 						</div>
+                        <br/>
+                        <button class="btn btn-primary" id="generate" onclick="window.history.go(-1); return false;">Back</button>
 					</div>
 
 				</div>
