@@ -15,9 +15,10 @@
       	<thead>
 	        <tr>
 	            <th><%= i18n.localize("API Name")%></th>            
-	            <th><%= i18n.localize("Subscription Tier")%></th>      
-	            <th><%= i18n.localize("Status")%></th>
-                <th><%= i18n.localize("Actions")%></th>
+	            <th width="15%"><%= i18n.localize("Subscription Tier")%></th>      
+	            <th width="20%"><%= i18n.localize("hubadminstatus")%></th>
+                    <th width="23%"><%= i18n.localize("operatorstatus")%></th>
+                    <th width="15%"><%= i18n.localize("Actions")%></th>
 	        </tr>
     	</thead>    
     </table>
