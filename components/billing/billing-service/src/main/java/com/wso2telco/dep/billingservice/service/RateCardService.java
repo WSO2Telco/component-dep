@@ -55,10 +55,10 @@ public class RateCardService {
 		}
 	}
 
-	public Map<Integer, String> getOperatorRateDetailsByServicesDidAndOperatorCode(int servicesDid, String operatorCode)
+	public Map<Integer, Map<String,String>> getOperatorRateDetailsByServicesDidAndOperatorCode(int servicesDid, String operatorCode)
 			throws Exception {
 
-		Map<Integer, String> rateDetails = null;
+		Map<Integer, Map<String,String>> rateDetails = null;
 
 		try {
 

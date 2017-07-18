@@ -147,7 +147,7 @@ public class BillingServiceHostObject extends ScriptableObject {
 					int servicesDid = service.getKey();
 					String serviceCode = service.getValue();
 
-					Map<Integer, String> rateDetails = rateCardService
+					Map<Integer, Map<String,String>> rateDetails = rateCardService
 							.getOperatorRateDetailsByServicesDidAndOperatorCode(servicesDid, operatorCode);
 
 					NativeArray rateDataArray = new NativeArray(0);
@@ -156,14 +156,15 @@ public class BillingServiceHostObject extends ScriptableObject {
 
 						int z = 0;
 
-						for (Map.Entry<Integer, String> rate : rateDetails.entrySet()) {
+						for (Map.Entry<Integer, Map<String,String>> rate : rateDetails.entrySet()) {
 
 							int operatorRateDid = rate.getKey();
-							String rateCode = rate.getValue();
+							Map<String,String> rateInfo = rate.getValue();
 
 							NativeObject rateData = new NativeObject();
 							rateData.put("operatorRateDid", rateData, operatorRateDid);
-							rateData.put("rateCode", rateData, rateCode);
+							rateData.put("rateCode", rateData, rateInfo.get("rate_defname"));
+							rateData.put("rateDesc", rateData, rateInfo.get("rate_defdesc"));
 
 							rateDataArray.put(z, rateDataArray, rateData);
 							z++;
