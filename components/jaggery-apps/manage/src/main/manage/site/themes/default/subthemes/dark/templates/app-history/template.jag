@@ -81,14 +81,12 @@
 								</tr>
 								<%} else {for (var i = 0; i < opcoapps.length; i++){%>
 								<tr>
-									<%if (opcoapps[i].operatorid==1) {%>
-									<th>Operator1:</th>
-									<%} else if (opcoapps[i].operatorid==2) {%>
-									<th>Operator2:</th>
-									<%} else if (opcoapps[i].operatorid==3) {%>
-									<th>Operator3:</th>
-									<%}
-									%>
+									<%if (opcosubs[j].operatorid==1) {%>
+                                    <td>IVORYCOAST :</td>
+                                    <%} else if (opcosubs[j].operatorid==2) {%>
+                                    <td>SENEGAL :</td>
+                                    <%}
+                                    %>
 									<td colspan="2"><%=opcoapps[i].status%></td>
 								</tr>
 								<%}
@@ -172,13 +170,11 @@
 														<tr>
 
 															<%if (opcosubs[j].operatorid==1) {%>
-															<td>Operator1:</td>
-															<%} else if (opcosubs[j].operatorid==2) {%>
-															<td>Operator2:</td>
-															<%} else if (opcosubs[j].operatorid==3) {%>
-															<td>Operator3:</td>
-															<%}
-															%>
+                                                            <td>IVORYCOAST :</td>
+                                                            <%} else if (opcosubs[j].operatorid==2) {%>
+                                                            <td>SENEGAL :</td>
+                                                            <%}
+                                                            %>
 
 															<td id="status0"><%=opcosubs[j].status%></td>
 															<td><%=opcosubs[j].lastupdated%></td>
