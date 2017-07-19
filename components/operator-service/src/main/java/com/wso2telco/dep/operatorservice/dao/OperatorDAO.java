@@ -645,7 +645,7 @@ public class OperatorDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select opcoendpoints.api, opco.operatorname, if(eapps.isactive = 0, 'NOT APPROVED','APPROVED') as substatus ");
+			StringBuilder query = new StringBuilder("select opcoendpoints.api, opco.operatorname, (case eapps.isactive when 0 then 'PENDING' when 1 then 'APPROVED' else 'REJECTED' end) as substatus ");
 			query.append("from ");
 			query.append(OparatorTable.ENDPOINT_APPS.getTObject());
 			query.append(" eapps, ");
