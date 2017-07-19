@@ -147,9 +147,9 @@ public class OperatorDAO {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
-        String sql = "SELECT applicationid as application_id ,2 as type, 'APPO' as name, operatorid, IF(isactive = 0, 'NOT APPROVED','APPROVED') as isactive, '' as api_name, created_date,lastupdated_date "+ 
+        String sql = "SELECT applicationid as application_id ,2 as type, 'APPO' as name, operatorid, (case isactive when 0 then 'PENDING' when 1 then 'APPROVED' else 'REJECTED' end) as isactive, '' as api_name, created_date,lastupdated_date "+ 
                 "FROM "+ ReportingTable.OPERATORAPPS +" where operatorid like ? and applicationid = ? "+
-                "UNION ALL SELECT applicationid as application_id, 4 as type,'SUBO' as name, openp.operatorid as operatorid, IF(enp.isactive = 0, 'NOT APPROVED','APPROVED') as isactive, openp.api as api_name, enp.created_date,enp.lastupdated_date "+
+                "UNION ALL SELECT applicationid as application_id, 4 as type,'SUBO' as name, openp.operatorid as operatorid, (case enp.isactive when 0 then 'PENDING' when 1 then 'APPROVED' else 'REJECTED' end) as isactive, openp.api as api_name, enp.created_date,enp.lastupdated_date "+
                 "FROM "+ ReportingTable.ENDPOINTAPPS +" enp,"+ ReportingTable.OPERATORENDPOINTS +" openp WHERE " +
                 "enp.endpointid = openp.id and openp.operatorid like ? and applicationid = ? "+
                 "ORDER BY type,api_name, operatorid";
