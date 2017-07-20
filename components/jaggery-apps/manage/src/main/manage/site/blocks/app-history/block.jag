@@ -1,0 +1,45 @@
+<%
+jagg.block("app-history", {
+    initializer:function (data) {
+
+    } ,
+ getInputs:function () {
+        return {
+            "usage":null
+        }
+    } ,
+getOutputs:function (inputs) {
+	    var numberOfTasks, pageNumber, filterCategory,taskType, result, mod,tasks;
+
+	    var data, user = inputs.user;
+	    var operator ="%";
+	    appid = request.getParameter("AppId");
+	    
+	    var logedop = jagg.getUser().operator;
+        log = new Log();	
+	log.info('############### OPERATOR : '+ logedop);	    
+        
+        mod = jagg.module("approvalaudit");
+
+        if (user.isAdmin) {
+        	operator = "%";
+        } else if (logedop.toUpperCase() == 'SENEGAL') {
+        	operator = "1";
+        } else if (logedop.toUpperCase() == 'IVORYCOAST') {
+        	operator = "2";
+        }
+ 
+        result = mod.getApprovalHistoryApp(appid,operator);
+        if(result==null){
+                tasks=null;
+                }
+                else{
+                tasks = result;
+                }
+                    return {
+                        "tasks":tasks
+                    }
+                }
+
+});
+%>

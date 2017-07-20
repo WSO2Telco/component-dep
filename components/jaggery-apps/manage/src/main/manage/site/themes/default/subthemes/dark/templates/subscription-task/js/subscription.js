@@ -512,7 +512,6 @@ function setratecarddropdown(result, taskID, IsHubRates) {
         rateDiv.appendChild(selectList);
 
     }
-
 }
 
 $(document).ready(function () {
