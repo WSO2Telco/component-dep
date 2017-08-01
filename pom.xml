@@ -59,6 +59,7 @@
         <module>components/reporting-service</module>
         <module>components/verification-handler</module>
         <module>components/validator-handler</module>
+        <module>components/scope-validation</module>
         <module>components/operator-service</module>
         <module>components/mediator</module>
         <!--module>components/publish-events/publish-events-data</module>
