@@ -78,8 +78,9 @@
         <module>components/billing/billing-service</module>
         <module>components/nashorn-mediator</module>
         <module>components/logging-extension</module>
-        <module>features</module>
         <module>components/operator-onboarding</module>
+        <module>components/webapps/ratecard-service</module>
+        <module>features</module>
     </modules>
 
     <scm>
