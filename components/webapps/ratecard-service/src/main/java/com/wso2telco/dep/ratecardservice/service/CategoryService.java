@@ -48,4 +48,19 @@ public class CategoryService {
 
 		return newCategory;
 	}
+	
+	public CategoryDTO getCategory(int categoryId) throws Exception {
+
+		CategoryDTO category = null;
+
+		try {
+
+			category = categoryDAO.getCategory(categoryId);
+		} catch (Exception e) {
+
+			throw e;
+		}
+
+		return category;
+	}
 }

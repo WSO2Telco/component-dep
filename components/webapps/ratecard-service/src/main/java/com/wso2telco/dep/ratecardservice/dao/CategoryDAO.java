@@ -126,4 +126,57 @@ public class CategoryDAO {
 
 		return category;
 	}
+	
+	public CategoryDTO getCategory(int categoryId) throws Exception {
+
+		CategoryDTO category = null;
+
+		Connection con = null;
+		ResultSet rs = null;
+		PreparedStatement ps = null;
+
+		try {
+
+			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
+			if (con == null) {
+
+				throw new Exception("Connection not found");
+			}
+
+			StringBuilder query = new StringBuilder("select * from ");
+			query.append(DatabaseTables.CATEGORY.getTObject());
+			query.append(" where categoryid = ?");
+
+			ps = con.prepareStatement(query.toString());
+
+			log.debug("sql query in getCategory : " + ps);
+
+			ps.setInt(1, categoryId);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				category = new CategoryDTO();
+				
+				category.setCategoryId(rs.getInt("categoryid"));
+				category.setCategoryName(rs.getString("categoryname"));
+				category.setCategoryCode(rs.getString("categorycode"));
+				category.setCategoryDesc(rs.getString("categorydesc"));
+			}
+		} catch (SQLException e) {
+
+			log.error("database operation error in getCategory : ", e);
+			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+		} catch (Exception e) {
+
+			log.error("error in getCategory : ", e);
+			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+		} finally {
+
+			DbUtils.closeAllConnections(ps, con, rs);
+		}
+
+		return category;
+	}
 }

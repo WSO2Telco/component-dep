@@ -6,7 +6,8 @@ public enum DatabaseTables {
 	CURRENCY("currency"),
 	RATE_TYPE("rate_type"),
 	CATEGORY("category"),
-	RATE_DEF("rate_def");
+	RATE_DEF("rate_def"),
+	RATE_CATEGORY("rate_category");
 	
 	DatabaseTables(String tObject) {
 		

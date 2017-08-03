@@ -145,4 +145,66 @@ public class TariffDAO {
 
 		return tariff;
 	}
+
+	public TariffDTO getTariff(int tariffId) throws Exception {
+
+		TariffDTO tariff = null;
+
+		Connection con = null;
+		ResultSet rs = null;
+		PreparedStatement ps = null;
+
+		try {
+
+			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
+			if (con == null) {
+
+				throw new Exception("Connection not found");
+			}
+
+			StringBuilder query = new StringBuilder("select * from ");
+			query.append(DatabaseTables.TARIFF.getTObject());
+			query.append(" where tariffid = ?");
+
+			ps = con.prepareStatement(query.toString());
+
+			log.debug("sql query in getTariff : " + ps);
+			
+			ps.setInt(1, tariffId);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				tariff = new TariffDTO();
+
+				tariff.setTariffId(rs.getInt("tariffid"));
+				tariff.setTariffName(rs.getString("tariffname"));
+				tariff.setTariffDesc(rs.getString("tariffdesc"));
+				tariff.setTariffDefaultVal(rs.getDouble("tariffdefaultval"));
+				tariff.setTariffMaxCount(rs.getInt("tariffmaxcount"));
+				tariff.setTariffExcessRate(rs.getDouble("tariffexcessrate"));
+				tariff.setTariffDefRate(rs.getDouble("tariffdefrate"));
+				tariff.setTariffSPCommission(rs.getDouble("tariffspcommission"));
+				tariff.setTariffAdsCommission(rs.getDouble("tariffadscommission"));
+				tariff.setTariffOpcoCommission(rs.getDouble("tariffopcocommission"));
+				tariff.setTariffSurChargeval(rs.getDouble("tariffsurchargeval"));
+				tariff.setTariffSurChargeAds(rs.getDouble("tariffsurchargeAds"));
+				tariff.setTariffSurChargeOpco(rs.getDouble("tariffsurchargeOpco"));
+			}
+		} catch (SQLException e) {
+
+			log.error("database operation error in getTariff : ", e);
+			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+		} catch (Exception e) {
+
+			log.error("error in getTariff : ", e);
+			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+		} finally {
+
+			DbUtils.closeAllConnections(ps, con, rs);
+		}
+
+		return tariff;
+	}
 }

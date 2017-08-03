@@ -48,4 +48,19 @@ public class TariffService {
 		
 		return newTariff;
 	}
+	
+	public TariffDTO getTariff(int tariffId) throws Exception {
+
+		TariffDTO tariff = null;
+
+		try {
+
+			tariff = tariffDAO.getTariff(tariffId);
+		} catch (Exception e) {
+
+			throw e;
+		}
+
+		return tariff;
+	}
 }
