@@ -41,7 +41,7 @@ public class RateDefinitionService {
 		try {
 
 			newRateDefinition = rateDefinitionDAO.addRateDefinition(rateDefinition);
-			newRateDefinition = rateDefinitionDAO.getRateDefinition(newRateDefinition.getRateDefId());
+			newRateDefinition = getRateDefinition(newRateDefinition.getRateDefId());
 		} catch (Exception e) {
 
 			throw e;
@@ -63,5 +63,20 @@ public class RateDefinitionService {
 		}
 
 		return rateDefinition;
+	}
+
+	public boolean deleteRateDefinition(int rateDefId) throws Exception {
+
+		boolean status = false;
+
+		try {
+
+			status = rateDefinitionDAO.deleteRateDefinition(rateDefId);
+		} catch (Exception e) {
+
+			throw e;
+		}
+
+		return status;
 	}
 }

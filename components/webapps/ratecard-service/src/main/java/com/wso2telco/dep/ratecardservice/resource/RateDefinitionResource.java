@@ -2,6 +2,7 @@ package com.wso2telco.dep.ratecardservice.resource;
 
 import java.util.List;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.DELETE;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -139,8 +140,6 @@ public class RateDefinitionResource {
 
 			if (rateDefinition != null) {
 
-				rateDefinition.getCurrency();
-				rateDefinition.getRateDefDesc();
 				responseString = rateDefinition;
 				responseCode = Response.Status.OK;
 			} else {
@@ -181,5 +180,66 @@ public class RateDefinitionResource {
 		log.debug("RateDefinitionResource getRateDefinition -> response body : " + responseString);
 
 		return Response.status(responseCode).entity(responseString).build();
+	}
+	
+	@DELETE
+	@Path("/{rateDefId}")
+	public Response deleteRateDefinition(@PathParam("rateDefId") int rateDefId) {
+
+		boolean status = false;
+		Status responseCode = null;
+		Object responseString = null;
+
+		try {
+
+			status = rateDefinitionService.deleteRateDefinition(rateDefId);
+
+			if (status != false) {
+
+				responseCode = Response.Status.NO_CONTENT;
+			} else {
+
+				log.error(
+						"Error in RateDefinitionResource deleteRateDefinition : rate definition is not found in database ");
+				throw new BusinessException(ServiceError.NO_RESOURCES);
+			}
+		} catch (BusinessException e) {
+
+			ErrorDTO errorDTO = new ErrorDTO();
+			ErrorDTO.ServiceException serviceException = new ErrorDTO.ServiceException();
+
+			serviceException.setMessageId(e.getErrorType().getCode());
+			serviceException.setText(e.getErrorType().getMessage());
+			errorDTO.setServiceException(serviceException);
+
+			responseCode = Response.Status.NOT_FOUND;
+			responseString = errorDTO;
+		} catch (Exception e) {
+
+			ErrorDTO errorDTO = new ErrorDTO();
+			ErrorDTO.ServiceException serviceException = new ErrorDTO.ServiceException();
+
+			if (e instanceof BusinessException) {
+
+				BusinessException be = (BusinessException) e;
+				serviceException.setMessageId(be.getErrorType().getCode());
+				serviceException.setText(be.getErrorType().getMessage());
+				errorDTO.setServiceException(serviceException);
+			}
+
+			responseCode = Response.Status.BAD_REQUEST;
+			responseString = errorDTO;
+		}
+
+		log.debug("RateDefinitionResource deleteRateDefinition -> response code : " + responseCode);
+		log.debug("RateDefinitionResource deleteRateDefinition -> response body : " + responseString);
+
+		return Response.status(responseCode).build();
+	}
+
+	@Path("/{rateDefId}/ratecategories")
+	public RateCategoryResource getRateCategoryResource() {
+
+		return new RateCategoryResource();
 	}
 }
