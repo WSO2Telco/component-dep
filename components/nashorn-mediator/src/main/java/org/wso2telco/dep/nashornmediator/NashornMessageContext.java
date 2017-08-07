@@ -58,6 +58,7 @@ public class NashornMessageContext {
         try {
             ScriptObjectMirror json = (ScriptObjectMirror) scriptEngine.eval("JSON");
             String jsonString = (String)json.callMember("stringify", jsonPayload);
+            jsonString = getClearString(jsonString);
             InputStream stream = new ByteArrayInputStream(jsonString.getBytes());
             org.apache.axis2.context.MessageContext axis2mc =
                     ((Axis2MessageContext) messageContext).getAxis2MessageContext();
@@ -65,7 +66,27 @@ public class NashornMessageContext {
             setJsonObject(messageContext, jsonPayload);
         } catch (AxisFault axisFault) {
             throw new ScriptException(axisFault);
+        } catch (ScriptException scriptException) {
+            throw scriptException;
         }
+    }
+
+    /**
+     * Sometimes the stringified result should be parsed to remove additional characters
+     *
+     * @param jsonString
+     * @return
+     * @throws ScriptException
+     */
+    private String getClearString(String jsonString) throws ScriptException {
+        String clearString = jsonString;
+
+        if (jsonString.contains("\\n") || jsonString.startsWith("\"")) {
+            ScriptObjectMirror json = (ScriptObjectMirror) scriptEngine.eval("JSON");
+            clearString = (String)json.callMember("parse", jsonString);
+        }
+
+        return clearString;
     }
 
     /**
