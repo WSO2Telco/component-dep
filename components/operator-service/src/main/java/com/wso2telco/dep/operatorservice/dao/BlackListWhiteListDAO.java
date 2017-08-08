@@ -16,39 +16,29 @@
 
 package com.wso2telco.dep.operatorservice.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
-
+import com.wso2telco.core.dbutils.DbUtils;
 import com.wso2telco.core.dbutils.exception.BusinessException;
+import com.wso2telco.core.dbutils.util.DataSourceNames;
+import com.wso2telco.core.msisdnvalidator.MSISDN;
+import com.wso2telco.dep.operatorservice.model.MSISDNSearchDTO;
 import com.wso2telco.dep.operatorservice.util.BlacklistWhitelistUtils;
 import com.wso2telco.dep.operatorservice.util.OparatorError;
+import com.wso2telco.dep.operatorservice.util.OparatorTable;
 import com.wso2telco.dep.operatorservice.util.SQLConstants;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import com.wso2telco.core.msisdnvalidator.MSISDN;
-import com.wso2telco.core.dbutils.DbUtils;
-import com.wso2telco.core.dbutils.util.DataSourceNames;
-import com.wso2telco.dep.operatorservice.model.MSISDNSearchDTO;
-import com.wso2telco.dep.operatorservice.util.OparatorTable;
 import org.wso2.carbon.apimgt.api.dto.UserApplicationAPIUsage;
 import org.wso2.carbon.apimgt.api.model.APIIdentifier;
 import org.wso2.carbon.apimgt.api.model.SubscribedAPI;
 import org.wso2.carbon.apimgt.api.model.Subscriber;
 import org.wso2.carbon.apimgt.impl.utils.APIUtil;
 
-import static com.wso2telco.dep.operatorservice.util.BlacklistWhitelistUtils.checkAccessTokenPartitioningEnabled;
-import static com.wso2telco.dep.operatorservice.util.BlacklistWhitelistUtils.checkUserNameAssertionEnabled;
-import static com.wso2telco.dep.operatorservice.util.BlacklistWhitelistUtils.getAvailableKeyStoreTables;
-import static com.wso2telco.dep.operatorservice.util.BlacklistWhitelistUtils.getKeysSqlUsingSubscriptionId;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.*;
 
 public class BlackListWhiteListDAO {
 
@@ -414,7 +404,6 @@ public class BlackListWhiteListDAO {
 			throw e;
 		} finally {
 			DbUtils.closeAllConnections(ps, conn, rs);
-
 		}
 	}
 
@@ -469,9 +458,12 @@ public class BlackListWhiteListDAO {
 		} catch (SQLException e) {
 			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
 		} catch (Exception e) {
-			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
-		}
-	}
+            throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
+        } finally {
+            DbUtils.closeAllConnections(ps, connection, result);
+        }
+
+    }
 
 
 	public List<String> getAllAPIUsageByUser() throws BusinessException {
@@ -501,7 +493,9 @@ public class BlackListWhiteListDAO {
 			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
 		} catch (Exception e) {
 			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
-		}
+		} finally {
+            DbUtils.closeAllConnections(ps, connection, result);
+        }
 
 	}
 
@@ -531,7 +525,9 @@ public class BlackListWhiteListDAO {
 			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
 		} catch (Exception e) {
 			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
-		}
+		} finally {
+            DbUtils.closeAllConnections(ps, connection, result);
+        }
 
 		return -1;
 	}
@@ -566,7 +562,9 @@ public class BlackListWhiteListDAO {
 			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
 		} catch (Exception e) {
 			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
-		}
+		} finally {
+            DbUtils.closeAllConnections(ps, connection, result);
+        }
 
 		return null;
 	}
@@ -601,7 +599,9 @@ public class BlackListWhiteListDAO {
 			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
 		} catch (Exception e) {
 			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
-		}
+		} finally {
+            DbUtils.closeAllConnections(ps, connection, result);
+        }
 	}
 
 
@@ -636,7 +636,9 @@ public class BlackListWhiteListDAO {
 			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
 		} catch (Exception e) {
 			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
-		}
+		} finally {
+            DbUtils.closeAllConnections(ps, connection, result);
+        }
 	}
 
 
