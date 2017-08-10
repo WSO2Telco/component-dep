@@ -62,6 +62,10 @@ public class TariffDAO {
 				tariff.setTariffSurChargeval(rs.getDouble("tariffsurchargeval"));
 				tariff.setTariffSurChargeAds(rs.getDouble("tariffsurchargeAds"));
 				tariff.setTariffSurChargeOpco(rs.getDouble("tariffsurchargeOpco"));
+				tariff.setCreatedBy(rs.getString("createdby"));
+				tariff.setCreatedDate(rs.getTimestamp("createddate").toString());
+				tariff.setUpdatedBy(rs.getString("updatedby"));
+				tariff.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 
 				tariffs.add(tariff);
 			}
@@ -99,9 +103,9 @@ public class TariffDAO {
 			StringBuilder query = new StringBuilder("insert into ");
 			query.append(DatabaseTables.TARIFF.getTObject());
 			query.append(
-					" (tariffname, tariffdesc, tariffdefaultval, tariffmaxcount, tariffexcessrate, tariffdefrate, tariffspcommission, tariffadscommission, tariffopcocommission, tariffsurchargeval, tariffsurchargeAds, tariffsurchargeOpco)");
+					" (tariffname, tariffdesc, tariffdefaultval, tariffmaxcount, tariffexcessrate, tariffdefrate, tariffspcommission, tariffadscommission, tariffopcocommission, tariffsurchargeval, tariffsurchargeAds, tariffsurchargeOpco, createdby)");
 			query.append(" values");
-			query.append(" (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
+			query.append(" (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)");
 
 			ps = con.prepareStatement(query.toString(), Statement.RETURN_GENERATED_KEYS);
 
@@ -119,6 +123,7 @@ public class TariffDAO {
 			ps.setDouble(10, tariff.getTariffSurChargeval());
 			ps.setDouble(11, tariff.getTariffSurChargeAds());
 			ps.setDouble(12, tariff.getTariffSurChargeOpco());
+			ps.setString(13, tariff.getCreatedBy());
 
 			ps.executeUpdate();
 
@@ -191,6 +196,10 @@ public class TariffDAO {
 				tariff.setTariffSurChargeval(rs.getDouble("tariffsurchargeval"));
 				tariff.setTariffSurChargeAds(rs.getDouble("tariffsurchargeAds"));
 				tariff.setTariffSurChargeOpco(rs.getDouble("tariffsurchargeOpco"));
+				tariff.setCreatedBy(rs.getString("createdby"));
+				tariff.setCreatedDate(rs.getTimestamp("createddate").toString());
+				tariff.setUpdatedBy(rs.getString("updatedby"));
+				tariff.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 			}
 		} catch (SQLException e) {
 

@@ -51,6 +51,10 @@ public class RateTypeDAO {
 				rateType.setRateTypeId(rs.getInt("rate_typeid"));
 				rateType.setRateTypeCode(rs.getString("rate_typecode"));
 				rateType.setRateTypeDesc(rs.getString("rate_typedesc"));
+				rateType.setCreatedBy(rs.getString("createdby"));
+				rateType.setCreatedDate(rs.getTimestamp("createddate").toString());
+				rateType.setUpdatedBy(rs.getString("updatedby"));
+				rateType.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 
 				rateTypes.add(rateType);
 			}
@@ -68,5 +72,61 @@ public class RateTypeDAO {
 		}
 
 		return rateTypes;
+	}
+	
+	public RateTypeDTO getRateType(int rateTypeId) throws Exception {
+
+		RateTypeDTO rateType = null;
+
+		Connection con = null;
+		ResultSet rs = null;
+		PreparedStatement ps = null;
+
+		try {
+
+			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
+			if (con == null) {
+
+				throw new Exception("Connection not found");
+			}
+
+			StringBuilder query = new StringBuilder("select * from ");
+			query.append(DatabaseTables.RATE_TYPE.getTObject());
+			query.append(" where rate_typeid = ?");
+
+			ps = con.prepareStatement(query.toString());
+
+			log.debug("sql query in getRateType : " + ps);
+
+			ps.setInt(1, rateTypeId);
+			
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				rateType = new RateTypeDTO();
+
+				rateType.setRateTypeId(rs.getInt("rate_typeid"));
+				rateType.setRateTypeCode(rs.getString("rate_typecode"));
+				rateType.setRateTypeDesc(rs.getString("rate_typedesc"));
+				rateType.setCreatedBy(rs.getString("createdby"));
+				rateType.setCreatedDate(rs.getTimestamp("createddate").toString());
+				rateType.setUpdatedBy(rs.getString("updatedby"));
+				rateType.setUpdatedDate(rs.getTimestamp("updateddate").toString());
+			}
+		} catch (SQLException e) {
+
+			log.error("database operation error in getRateType : ", e);
+			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+		} catch (Exception e) {
+
+			log.error("error in getRateType : ", e);
+			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+		} finally {
+
+			DbUtils.closeAllConnections(ps, con, rs);
+		}
+
+		return rateType;
 	}
 }

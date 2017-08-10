@@ -18,6 +18,10 @@ public class TariffDTO {
 	private Double tariffSurChargeval;
 	private Double tariffSurChargeAds;
 	private Double tariffSurChargeOpco;
+	private String createdBy;
+	private String createdDate;
+	private String updatedBy;
+	private String updatedDate;
 	
 	public Integer getTariffId() {
 		return tariffId;
@@ -96,5 +100,29 @@ public class TariffDTO {
 	}
 	public void setTariffSurChargeOpco(Double tariffSurChargeOpco) {
 		this.tariffSurChargeOpco = tariffSurChargeOpco;
+	}
+	public String getCreatedBy() {
+		return createdBy;
+	}
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+	public String getCreatedDate() {
+		return createdDate;
+	}
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
+	}
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+	public String getUpdatedDate() {
+		return updatedDate;
+	}
+	public void setUpdatedDate(String updatedDate) {
+		this.updatedDate = updatedDate;
 	}
 }

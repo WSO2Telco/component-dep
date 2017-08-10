@@ -53,6 +53,10 @@ public class CategoryDAO {
 				category.setCategoryName(rs.getString("categoryname"));
 				category.setCategoryCode(rs.getString("categorycode"));
 				category.setCategoryDesc(rs.getString("categorydesc"));
+				category.setCreatedBy(rs.getString("createdby"));
+				category.setCreatedDate(rs.getTimestamp("createddate").toString());
+				category.setUpdatedBy(rs.getString("updatedby"));
+				category.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 
 				categories.add(category);
 			}
@@ -89,9 +93,9 @@ public class CategoryDAO {
 
 			StringBuilder query = new StringBuilder("insert into ");
 			query.append(DatabaseTables.CATEGORY.getTObject());
-			query.append(" (categoryname, categorycode, categorydesc)");
+			query.append(" (categoryname, categorycode, categorydesc, createdby)");
 			query.append(" values");
-			query.append(" (?, ?, ?)");
+			query.append(" (?, ?, ?, ?)");
 
 			ps = con.prepareStatement(query.toString(), Statement.RETURN_GENERATED_KEYS);
 
@@ -100,6 +104,7 @@ public class CategoryDAO {
 			ps.setString(1, category.getCategoryName());
 			ps.setString(2, category.getCategoryCode());
 			ps.setString(3, category.getCategoryDesc());
+			ps.setString(4, category.getCreatedBy());
 
 			ps.executeUpdate();
 
@@ -126,7 +131,7 @@ public class CategoryDAO {
 
 		return category;
 	}
-	
+
 	public CategoryDTO getCategory(int categoryId) throws Exception {
 
 		CategoryDTO category = null;
@@ -158,11 +163,15 @@ public class CategoryDAO {
 			while (rs.next()) {
 
 				category = new CategoryDTO();
-				
+
 				category.setCategoryId(rs.getInt("categoryid"));
 				category.setCategoryName(rs.getString("categoryname"));
 				category.setCategoryCode(rs.getString("categorycode"));
 				category.setCategoryDesc(rs.getString("categorydesc"));
+				category.setCreatedBy(rs.getString("createdby"));
+				category.setCreatedDate(rs.getTimestamp("createddate").toString());
+				category.setUpdatedBy(rs.getString("updatedby"));
+				category.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 			}
 		} catch (SQLException e) {
 

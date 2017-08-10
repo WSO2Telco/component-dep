@@ -12,7 +12,7 @@ public class CurrencyService {
 	{
 		currencyDAO = new CurrencyDAO();
 	}
-	
+
 	public List<CurrencyDTO> getCurrencies() throws Exception {
 
 		List<CurrencyDTO> currencies = null;
@@ -33,7 +33,7 @@ public class CurrencyService {
 			return Collections.emptyList();
 		}
 	}
-	
+
 	public CurrencyDTO addCurrency(CurrencyDTO currency) throws Exception {
 
 		CurrencyDTO newCurrency = null;
@@ -45,7 +45,22 @@ public class CurrencyService {
 
 			throw e;
 		}
-		
+
 		return newCurrency;
+	}
+
+	public CurrencyDTO getCurrency(int currencyId) throws Exception {
+
+		CurrencyDTO currency = null;
+
+		try {
+
+			currency = currencyDAO.getCurrency(currencyId);
+		} catch (Exception e) {
+
+			throw e;
+		}
+
+		return currency;
 	}
 }
