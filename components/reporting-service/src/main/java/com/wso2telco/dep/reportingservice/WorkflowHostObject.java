@@ -145,6 +145,7 @@ public class WorkflowHostObject extends ScriptableObject {
          * @throws APIManagementException the API management exception
          */
         public static String jsFunction_setSubscriptionChargeRate(Context cx, Scriptable thisObj, Object[] args, Function funObj) throws BusinessException {
+
             if (args == null || args.length == 0) {
                 log.error("Invalid number of parameters.");
                 throw new BusinessException(ReportingServiceError.INTERNAL_SERVER_ERROR);

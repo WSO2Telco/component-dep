@@ -111,7 +111,6 @@ public class NashornMediator extends AbstractMediator {
                     return;
                 }
                 jsonObject = this.scriptEngine.eval(JsonUtil.newJavaScriptSourceReader(messageContext));
-                // TODO : arrays are converted into maps. Need to avoid
             } catch (Exception e) {
                 handleException("Failed to get the JSON payload from the input stream. Error>>>\n" + e.getLocalizedMessage(), synapseContext);
             }

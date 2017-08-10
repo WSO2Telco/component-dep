@@ -212,7 +212,7 @@ function loadAllTaskTierDetails() {
 				if (result.data != null) {
 					setSubscriptionDescriptions(result);
 					setTierDropDownDetails(result);
-										
+
 				} else {
 					jagg.showLogin();
 				}
@@ -447,6 +447,7 @@ function setratecarddropdown(result , taskID , IsHubRates) {
 		divTitle.innerHTML = '<b>Rate card details :<b>';
 		rateDiv.appendChild(divTitle);
 		$('#SubsContainer_'+taskId).css("display", "block");
+		$('#rateCardContainer_'+taskId).css("display", "block");
 	}
 
 	for (var i = 0; i < result.apiRates.length; i++) {
@@ -467,9 +468,11 @@ function setratecarddropdown(result , taskID , IsHubRates) {
 			}
 
 			var name = result.apiRates[i].rates[j].rateCode;
+			var toolTip = result.apiRates[i].rates[j].rateDesc;
 			var option = document.createElement("option");
 			option.value = id;
 			option.textContent = name;
+			option.title = toolTip;
 			selectList.appendChild(option);
 		}
 

@@ -17,8 +17,10 @@ package com.wso2telco.dep.operatorservice;
 
 import java.sql.SQLException;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
-
+import com.wso2telco.core.dbutils.exception.BusinessException;
+import com.wso2telco.core.dbutils.exception.ServiceError;
 import com.wso2telco.core.dbutils.fileutils.PropertyFileReader;
 import com.wso2telco.dep.operatorservice.dao.WorkflowDAO;
 import com.wso2telco.dep.operatorservice.exception.StoreHostObjectException;
@@ -27,9 +29,10 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.mozilla.javascript.Context;
 import org.mozilla.javascript.Function;
+import org.mozilla.javascript.NativeArray;
+import org.mozilla.javascript.NativeObject;
 import org.mozilla.javascript.Scriptable;
 import org.mozilla.javascript.ScriptableObject;
-
 import com.wso2telco.dep.operatorservice.dao.OperatorDAO;
 import com.wso2telco.dep.operatorservice.model.Operator;
 import com.wso2telco.dep.operatorservice.model.OperatorSearchDTO;
@@ -194,8 +197,78 @@ public class StoreHostObject extends ScriptableObject {
 
     }
 
+    public static boolean jsFunction_getAppStatus(Context cx,Scriptable thisObj,Object[] args,Function funObj){
 
+        String appId = (String) args[0];
+        String operator = (String) args[1];
+        boolean status=false;
+        WorkflowDAO workflowDAO=new WorkflowDAO();
 
+        try {
+            status=workflowDAO.operatorAppsIsActive(Integer.parseInt(appId),operator);
+        } catch (Exception e) {
+            log.error("database operation error in get workflow ref : ", e);
+        }
+        return status;
+
+    }
+    
+    public static NativeObject jsFunction_getOperatorApprovedSubscriptionsByApplicationId(Context cx, Scriptable thisObj, Object[] args,
+			Function funObj) throws StoreHostObjectException {
+
+		NativeObject resultObject = new NativeObject();
+		NativeArray historyArray = new NativeArray(0);
+
+		String appId = args[0].toString();
+
+		OparatorService oparatorService = new OparatorService();
+
+		try {
+
+			Map<Integer, Map<String, Map<String,String>>> subDetails = oparatorService.getOperatorApprovedSubscriptionsByApplicationId(Integer.parseInt(appId));
+			log.debug("getOperatorApprovedSubscriptionsByApplicationId : " + subDetails);
+			
+			if (!subDetails.isEmpty()) {
+
+				int j = 0;
+				for (Map.Entry<Integer, Map<String, Map<String,String>>> sub : subDetails.entrySet()) {
+
+					Map<String, Map<String,String>> subInfo = sub.getValue();
+
+					NativeArray historyDataArray = new NativeArray(0);
+					int z = 0;
+					
+					for (Map.Entry<String, Map<String,String>> sb : subInfo.entrySet()) {
+						
+						String apiName = sb.getKey();
+						Map<String,String> s = sb.getValue();
+						
+						NativeObject subData = new NativeObject();
+						subData.put("apiName", subData, apiName);
+						subData.put("substatus", subData, s.get("substatus"));
+						subData.put("operatorname", subData, s.get("operatorname"));
+						
+						historyDataArray.put(z, historyDataArray, subData);
+						z++;
+					}
+					
+					historyArray.put(j, historyArray, historyDataArray);
+					j++;
+				}
+			} else {
+
+				log.error("subscription details unavalible for application id : " + appId);
+			}
+		} catch (Exception e) {
+
+			log.error("error occurred in getOperatorApprovedSubscriptionsByApplicationId : ", e);
+			handleException(e.getMessage(), e);
+		}
+
+		resultObject.put("operatorSubsApprovedHistory", resultObject, historyArray);
+
+		return resultObject;
+	}
 
     /**
      * Handle exception.

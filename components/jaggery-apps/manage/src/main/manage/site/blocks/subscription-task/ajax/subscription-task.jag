@@ -216,14 +216,14 @@ include("/jagg/jagg.jag");
 
             //get AuthManager admin credentials from api-manager.xml (source copied from /manage/modules/user/login.jag)
             var configPath = "file://" + Packages.java.lang.System.getProperty("carbon.config.dir.path");
-            var amConfigPath = configPath + "/api-manager.xml";
+            var amConfigPath = configPath + "/user-mgt.xml";
             var file = new File(amConfigPath);
             file.open("r");
             var amConfig = new XML(file.readAll());
             file.close();
-            var adminUsername = String(amConfig.AuthManager.Username.text());
-            var adminPassword = String(amConfig.AuthManager.Password.text());
 
+            var adminUsername = String(amConfig.Realm.Configuration.AdminUser.UserName.text());
+            var adminPassword = String(amConfig.Realm.Configuration.AdminUser.Password.text());
 
             var wsUtil = require('wsUtil.jag');
             var result = wsUtil.callWSReturnJSON(options, webService, serverUrl, payload, adminUsername, adminPassword);
@@ -310,7 +310,7 @@ include("/jagg/jagg.jag");
         }
 
         print(obj);
-    } else if(action == "getOperatorRates"){
+    } else if(action == "getOperatorRates" && site.isBillingEnabled){
 
         var apiCode = request.getParameter("apiCode");
         var operatorCode = request.getParameter("operatorCode");

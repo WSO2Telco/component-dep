@@ -331,5 +331,7 @@
     "subscriptionStatus": "subscriptionStatus",
     "tenants": "Visible to Tenants",
     "timeWarn": "timeWarn",
-    "operators" : "Operators"
+    "operators" : "Operators",
+    "operatorstatus" : "Operator Status",
+    "hubadminstatus" : "Hub Admin Status"
 }

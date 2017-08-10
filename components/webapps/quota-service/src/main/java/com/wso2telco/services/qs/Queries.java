@@ -17,7 +17,6 @@
 package com.wso2telco.services.qs;
 
 import java.sql.SQLException;
-import java.util.Iterator;
 import java.util.List;
 
 import javax.ws.rs.Consumes;
@@ -54,7 +53,7 @@ public class Queries {
 		try {
 			Gson gson = new Gson();
 			QuotaReqBean quotaReqBean = gson.fromJson(jsonBody, QuotaReqBean.class);
-			List<QuotaBean> quotaBeanList = quotaService.getQuotaLimitInfo(quotaReqBean.getByFlag(),quotaReqBean.getInfo());
+			List<QuotaBean> quotaBeanList = quotaService.getQuotaLimitInfo(quotaReqBean.getByFlag(),quotaReqBean.getInfo(),quotaReqBean.getFromDate(),quotaReqBean.getToDate());
 			StringBuilder succMSG = new StringBuilder();
 			succMSG.append("{ \"Success\": { \"service\": \"QuotaLimit\", \"text\": ");
 			succMSG.append(new Gson().toJson(quotaBeanList));

@@ -7,7 +7,7 @@
 	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
 	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
 	the specific language governing permissions and limitations under the License.
-   folk test M	-->
+   	-->
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
@@ -21,7 +21,7 @@
     <groupId>com.wso2telco.dep</groupId>
     <artifactId>component-dep</artifactId>
     <packaging>pom</packaging>
-    <version>2.2.2-SNAPSHOT</version>
+    <version>2.2.5-SNAPSHOT</version>
     <name>WSO2Telco -Digital Enable Platform Component</name>
     <description>WSO2Telco DEP Aggregate Pom</description>
     <url>http://wso2telco.com</url>
@@ -78,8 +78,9 @@
         <module>components/billing/billing-service</module>
         <module>components/nashorn-mediator</module>
         <module>components/logging-extension</module>
-        <module>features</module>
         <module>components/operator-onboarding</module>
+        <module>components/webapps/ratecard-service</module>
+        <module>features</module>
     </modules>
 
     <scm>
@@ -715,8 +716,8 @@
 
 
     <properties>
-        <com.wso2telco.dep.version>2.2.2-SNAPSHOT</com.wso2telco.dep.version>
-        <com.wso2telco.core.version>2.0.23-SNAPSHOT</com.wso2telco.core.version>
+        <com.wso2telco.dep.version>2.2.5-SNAPSHOT</com.wso2telco.dep.version>
+        <com.wso2telco.core.version>2.0.24-SNAPSHOT</com.wso2telco.core.version>
         <log4j.version>1.2.13</log4j.version>
         <com.google.code.gson.version>2.3.1</com.google.code.gson.version>
         <org.glassfish.jersey.core.version>2.4</org.glassfish.jersey.core.version>

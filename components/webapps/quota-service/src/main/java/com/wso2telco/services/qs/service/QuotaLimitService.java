@@ -1,6 +1,7 @@
 package com.wso2telco.services.qs.service;
 
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -31,7 +32,7 @@ public class QuotaLimitService {
 		}
 	}
 
-	public List<QuotaBean> getQuotaLimitInfo(String byFlag, String info) throws QuotaLimitException{
+	public List<QuotaBean> getQuotaLimitInfo(String byFlag, String info, Date fromDate, Date toDate) throws QuotaLimitException{
 		List<QuotaBean> returnObjList=new ArrayList<QuotaBean>();
 		try {
 			switch (byFlag) {
