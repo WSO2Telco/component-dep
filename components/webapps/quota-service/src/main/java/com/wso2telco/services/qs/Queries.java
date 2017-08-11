@@ -32,6 +32,7 @@ import com.google.gson.GsonBuilder;
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.services.qs.entity.QuotaBean;
 import com.wso2telco.services.qs.entity.QuotaReqBean;
+import com.wso2telco.services.qs.entity.QuotaReqBeanWithDates;
 import com.wso2telco.services.qs.service.QuotaLimitService;
 
 @Path("/services")
@@ -53,10 +54,34 @@ public class Queries {
 		try {
 			Gson gson = new Gson();
 			QuotaReqBean quotaReqBean = gson.fromJson(jsonBody, QuotaReqBean.class);
-			List<QuotaBean> quotaBeanList = quotaService.getQuotaLimitInfo(quotaReqBean.getByFlag(),quotaReqBean.getInfo(),quotaReqBean.getFromDate(),quotaReqBean.getToDate());
+			List<QuotaBean> quotaBeanList = quotaService.getQuotaLimitInfo(quotaReqBean.getByFlag(),quotaReqBean.getInfo());
 			StringBuilder succMSG = new StringBuilder();
 			succMSG.append("{ \"Success\": { \"service\": \"QuotaLimit\", \"text\": ");
 			succMSG.append(new Gson().toJson(quotaBeanList));
+			succMSG.append("}}");
+			return Response.status(Response.Status.OK).entity(succMSG.toString()).build();
+
+		} catch (BusinessException e) {
+			StringBuilder errorMSG = new StringBuilder();
+			errorMSG.append("{\"Failed\":{\"service\":\"getQuotaLimitInfo\",\"text\":\"QuotaLimit could not be retrieved. \"}}");
+			return Response.status(Response.Status.BAD_REQUEST).entity(e.getErrorType()).build();
+		}
+
+	}
+
+	@POST
+	@Path("/checkIfDatesOverlap")
+	@Consumes("application/json")
+	@Produces("application/json")
+	public Response checkIfDatesOverlap(String jsonBody) throws SQLException {
+		LOG.debug("checkIfDatesOverlap request jsonBody :" + jsonBody);
+		try {
+			Gson gson = new Gson();
+			QuotaReqBeanWithDates quotaReqBeanWD = gson.fromJson(jsonBody, QuotaReqBeanWithDates.class);
+			Boolean checkIfDatesOverlap = quotaService.checkIfDatesOverlap(quotaReqBeanWD.getByFlag(),quotaReqBeanWD.getInfo(),quotaReqBeanWD.getFromDate(),quotaReqBeanWD.getToDate());
+			StringBuilder succMSG = new StringBuilder();
+			succMSG.append("{ \"Success\": { \"service\": \"QuotaLimit\", \"text\": ");
+			succMSG.append(new Gson().toJson(checkIfDatesOverlap.toString()));
 			succMSG.append("}}");
 			return Response.status(Response.Status.OK).entity(succMSG.toString()).build();
 

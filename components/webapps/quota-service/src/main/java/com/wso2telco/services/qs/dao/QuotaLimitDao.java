@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 import org.apache.commons.logging.Log;
@@ -19,7 +20,7 @@ public class QuotaLimitDao {
 
 	public void addQuotaLimit(QuotaBean quotaBean) throws SQLException, Exception {
 		StringBuilder sql = new StringBuilder();
-		sql.append("INSERT INTO `sp_quota_limit` (`serviceProvider`,`operatorName`,`application`,`apiName`,`quota_limit`) VALUES (?,?,?,?,?);");
+		sql.append("INSERT INTO `sp_quota_limit` (`serviceProvider`,`operatorName`,`application`,`apiName`,`quota_limit`) VALUES (?,?,?,?,?,?,?);");
 		Connection conn = null;
 		PreparedStatement ps = null;
 		try {
@@ -32,6 +33,9 @@ public class QuotaLimitDao {
 			ps.setString(3, quotaBean.getApplicationName());
 			ps.setString(4, quotaBean.getApiName());
 			ps.setString(5, quotaBean.getQuotaLimit());
+			ps.setString(6, quotaBean.getFromDate().toString());
+			ps.setString(7, quotaBean.getToDate().toString());
+
 			ps.executeUpdate();
 			conn.commit();
 
@@ -65,6 +69,9 @@ public class QuotaLimitDao {
 					returnObj_.setApplicationName(rs.getString("application"));
 					returnObj_.setApiName(rs.getString("apiName"));
 					returnObj_.setQuotaLimit(rs.getString("quota_limit"));
+					returnObj_.setFromDate(rs.getDate("fromDate"));
+					returnObj_.setToDate(rs.getDate("toDate"));
+
 					returnObjList.add(returnObj_);
 				}
 			} catch (SQLException e) {
@@ -95,6 +102,8 @@ public class QuotaLimitDao {
 					returnObj_.setApplicationName(rs.getString("application"));
 					returnObj_.setApiName(rs.getString("apiName"));
 					returnObj_.setQuotaLimit(rs.getString("quota_limit"));
+					returnObj_.setFromDate(rs.getDate("fromDate"));
+					returnObj_.setToDate(rs.getDate("toDate"));
 					returnObjList.add(returnObj_);
 				}
 			} catch (SQLException e) {
@@ -125,6 +134,8 @@ public class QuotaLimitDao {
 					returnObj_.setApplicationName(rs.getString("application"));
 					returnObj_.setApiName(rs.getString("apiName"));
 					returnObj_.setQuotaLimit(rs.getString("quota_limit"));
+					returnObj_.setFromDate(rs.getDate("fromDate"));
+					returnObj_.setToDate(rs.getDate("toDate"));
 					returnObjList.add(returnObj_);
 				}
 			} catch (SQLException e) {
@@ -136,4 +147,86 @@ public class QuotaLimitDao {
 
 		return returnObjList;
 	}
+
+	public Boolean checkQuotaLimitInfoByServiceProviderWithDateRange(String info,String fromDate, String toDate) throws Exception {
+		StringBuilder sqlByServiceProvider=new StringBuilder();
+		sqlByServiceProvider.append("SELECT * FROM sp_quota_limit where serviceProvider =? and application is null and apiName is null and ((? <= toDate and ? >= fromDate));");
+
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Boolean ifOverlapped=false;
+
+			try {
+				conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+				ps = conn.prepareStatement(sqlByServiceProvider.toString());
+				ps.setString(1, info);
+				ps.setString(2, fromDate);
+				ps.setString(3, toDate);
+				rs = ps.executeQuery();
+				if (rs.next()) {
+					ifOverlapped=true;
+				}
+			} catch (SQLException e) {
+				throw e;
+			} finally {
+				DbUtils.closeAllConnections(ps, conn, rs);
+			}
+		return ifOverlapped;
+	}
+
+	public Boolean checkQuotaLimitInfoByApplicationWithDateRange(String info,String fromDate, String toDate) throws Exception {
+		StringBuilder sqlByApplication=new StringBuilder();
+		sqlByApplication.append("SELECT * FROM sp_quota_limit where serviceProvider is not null and application =? and apiName is null and ((? <= toDate and ? >= fromDate));");
+
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Boolean ifOverlapped=false;
+			try {
+				conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+				ps = conn.prepareStatement(sqlByApplication.toString());
+				ps.setString(1, info);
+				ps.setString(2, fromDate);
+				ps.setString(3, toDate);
+				rs = ps.executeQuery();
+				if (rs.next()) {
+					ifOverlapped=true;
+				}
+			} catch (SQLException e) {
+				throw e;
+			} finally {
+				DbUtils.closeAllConnections(ps, conn, rs);
+			}
+		return ifOverlapped;
+	}
+
+	public Boolean checkQuotaLimitInfoByApiWithDateRange(String info,String fromDate, String toDate) throws Exception {
+		StringBuilder sqlByApi=new StringBuilder();
+		sqlByApi.append("SELECT * FROM sp_quota_limit where serviceProvider is not null and application is not null and apiName =? and ((? <= toDate and ? >= fromDate)); ");
+
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Boolean ifOverlapped=false;
+			try {
+				conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+				ps = conn.prepareStatement(sqlByApi.toString());
+				ps.setString(1, info);
+				ps.setString(2, fromDate);
+				ps.setString(3, toDate);
+				rs = ps.executeQuery();
+				if (rs.next()) {
+					ifOverlapped=true;
+				}
+			} catch (SQLException e) {
+				throw e;
+			} finally {
+				DbUtils.closeAllConnections(ps, conn, rs);
+
+			}
+
+		return ifOverlapped;
+	}
+
 }
