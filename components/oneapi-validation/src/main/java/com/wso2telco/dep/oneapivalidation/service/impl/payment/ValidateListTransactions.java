@@ -55,6 +55,13 @@ public class ValidateListTransactions  implements IServiceValidate {
             requestParts = pathInfo.split("/");
         }
 
+        int reqlength = requestParts.length - 1;
+
+        if (requestParts[reqlength] != null && requestParts[reqlength].contains("?")) {
+            // remove optional params
+            requestParts[reqlength] = requestParts[reqlength].split("\\?")[0];
+        }
+
         UrlValidator.validateRequest(requestParts, validationRules);
     }
 
