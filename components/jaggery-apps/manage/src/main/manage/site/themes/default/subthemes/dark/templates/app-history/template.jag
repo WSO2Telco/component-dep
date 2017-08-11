@@ -81,12 +81,15 @@
 								</tr>
 								<%} else {for (var i = 0; i < opcoapps.length; i++){%>
 								<tr>
-									<%if (opcosubs[j].operatorid==1) {%>
-                                    <td>IVORYCOAST :</td>
-                                    <%} else if (opcosubs[j].operatorid==2) {%>
-                                    <td>SENEGAL :</td>
-                                    <%}
-                                    %>
+
+									<%if (opcoapps[i].operatorid==1) {%>
+									<td>IVORYCOAST :</td>
+									<%} else if (opcoapps[i].operatorid==2) {%>
+									<td>SENEGAL :</td>
+													
+							
+									<%}%>
+
 									<td colspan="2"><%=opcoapps[i].status%></td>
 								</tr>
 								<%}
@@ -96,6 +99,8 @@
 							</tbody>
 						</table>
 					</div>
+
+													  
 
 					<div class="span4 appStyleFix"></div>
 					<div class="span12 tabs-section">
@@ -170,11 +175,12 @@
 														<tr>
 
 															<%if (opcosubs[j].operatorid==1) {%>
-                                                            <td>IVORYCOAST :</td>
-                                                            <%} else if (opcosubs[j].operatorid==2) {%>
-                                                            <td>SENEGAL :</td>
-                                                            <%}
-                                                            %>
+															<td>IVORYCOAST :</td>
+															<%} else if (opcosubs[j].operatorid==2) {%>
+								  
+														  
+															<td>SENEGAL :</td>
+															<%}%>
 
 															<td id="status0"><%=opcosubs[j].status%></td>
 															<td><%=opcosubs[j].lastupdated%></td>
@@ -219,6 +225,9 @@
 
 
 										<div id="comment-list"></div>
+	
+	
+	  
 
 
 									</div>
@@ -229,8 +238,8 @@
 							</div>
 
 						</div>
-                        <br/>
-                        <button class="btn btn-primary" id="generate" onclick="window.history.go(-1); return false;">Back</button>
+					<br/><button class="btn btn-primary" id="generate" onclick="window.history.go(-1); return false;">Back</button>
+
 					</div>
 
 				</div>
