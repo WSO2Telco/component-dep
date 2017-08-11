@@ -52,7 +52,7 @@ public class CategoryDAO {
 				category.setCategoryId(rs.getInt("categoryid"));
 				category.setCategoryName(rs.getString("categoryname"));
 				category.setCategoryCode(rs.getString("categorycode"));
-				category.setCategoryDesc(rs.getString("categorydesc"));
+				category.setCategoryDescription(rs.getString("categorydesc"));
 				category.setCreatedBy(rs.getString("createdby"));
 				category.setCreatedDate(rs.getTimestamp("createddate").toString());
 				category.setUpdatedBy(rs.getString("updatedby"));
@@ -103,7 +103,7 @@ public class CategoryDAO {
 
 			ps.setString(1, category.getCategoryName());
 			ps.setString(2, category.getCategoryCode());
-			ps.setString(3, category.getCategoryDesc());
+			ps.setString(3, category.getCategoryDescription());
 			ps.setString(4, category.getCreatedBy());
 
 			ps.executeUpdate();
@@ -167,7 +167,7 @@ public class CategoryDAO {
 				category.setCategoryId(rs.getInt("categoryid"));
 				category.setCategoryName(rs.getString("categoryname"));
 				category.setCategoryCode(rs.getString("categorycode"));
-				category.setCategoryDesc(rs.getString("categorydesc"));
+				category.setCategoryDescription(rs.getString("categorydesc"));
 				category.setCreatedBy(rs.getString("createdby"));
 				category.setCreatedDate(rs.getTimestamp("createddate").toString());
 				category.setUpdatedBy(rs.getString("updatedby"));

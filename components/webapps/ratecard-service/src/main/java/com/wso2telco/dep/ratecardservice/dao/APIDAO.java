@@ -12,16 +12,16 @@ import com.wso2telco.core.dbutils.DbUtils;
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.exception.ServiceError;
 import com.wso2telco.core.dbutils.util.DataSourceNames;
-import com.wso2telco.dep.ratecardservice.dao.model.RateTypeDTO;
+import com.wso2telco.dep.ratecardservice.dao.model.APIDTO;
 import com.wso2telco.dep.ratecardservice.util.DatabaseTables;
 
-public class RateTypeDAO {
+public class APIDAO {
 
-	private final Log log = LogFactory.getLog(RateTypeDAO.class);
+	private final Log log = LogFactory.getLog(APIDAO.class);
 
-	public List<RateTypeDTO> getRateTypes() throws Exception {
+	public List<APIDTO> getAPIs() throws Exception {
 
-		List<RateTypeDTO> rateTypes = new ArrayList<RateTypeDTO>();
+		List<APIDTO> apis = new ArrayList<APIDTO>();
 
 		Connection con = null;
 		ResultSet rs = null;
@@ -36,47 +36,47 @@ public class RateTypeDAO {
 			}
 
 			StringBuilder query = new StringBuilder("select * from ");
-			query.append(DatabaseTables.RATE_TYPE.getTObject());
+			query.append(DatabaseTables.API.getTObject());
 
 			ps = con.prepareStatement(query.toString());
 
-			log.debug("sql query in getRateTypes : " + ps);
+			log.debug("sql query in getAPIs : " + ps);
 
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
 
-				RateTypeDTO rateType = new RateTypeDTO();
+				APIDTO api = new APIDTO();
 
-				rateType.setRateTypeId(rs.getInt("rate_typeid"));
-				rateType.setRateTypeCode(rs.getString("rate_typecode"));
-				rateType.setRateTypeDescription(rs.getString("rate_typedesc"));
-				rateType.setCreatedBy(rs.getString("createdby"));
-				rateType.setCreatedDate(rs.getTimestamp("createddate").toString());
-				rateType.setUpdatedBy(rs.getString("updatedby"));
-				rateType.setUpdatedDate(rs.getTimestamp("updateddate").toString());
+				api.setApiId(rs.getInt("apiid"));
+				api.setApiName(rs.getString("apiname"));
+				api.setApiDescription(rs.getString("apidesc"));
+				api.setCreatedBy(rs.getString("createdby"));
+				api.setCreatedDate(rs.getTimestamp("createddate").toString());
+				api.setUpdatedBy(rs.getString("updatedby"));
+				api.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 
-				rateTypes.add(rateType);
+				apis.add(api);
 			}
 		} catch (SQLException e) {
 
-			log.error("database operation error in getRateTypes : ", e);
+			log.error("database operation error in getAPIs : ", e);
 			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 		} catch (Exception e) {
 
-			log.error("error in getRateTypes : ", e);
+			log.error("error in getAPIs : ", e);
 			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 		} finally {
 
 			DbUtils.closeAllConnections(ps, con, rs);
 		}
 
-		return rateTypes;
+		return apis;
 	}
-	
-	public RateTypeDTO getRateType(int rateTypeId) throws Exception {
 
-		RateTypeDTO rateType = null;
+	public APIDTO getAPI(int apiId) throws Exception {
+
+		APIDTO api = null;
 
 		Connection con = null;
 		ResultSet rs = null;
@@ -91,42 +91,42 @@ public class RateTypeDAO {
 			}
 
 			StringBuilder query = new StringBuilder("select * from ");
-			query.append(DatabaseTables.RATE_TYPE.getTObject());
-			query.append(" where rate_typeid = ?");
+			query.append(DatabaseTables.API.getTObject());
+			query.append(" where apiid = ?");
 
 			ps = con.prepareStatement(query.toString());
 
-			log.debug("sql query in getRateType : " + ps);
+			log.debug("sql query in getAPI : " + ps);
 
-			ps.setInt(1, rateTypeId);
-			
+			ps.setInt(1, apiId);
+
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
 
-				rateType = new RateTypeDTO();
+				api = new APIDTO();
 
-				rateType.setRateTypeId(rs.getInt("rate_typeid"));
-				rateType.setRateTypeCode(rs.getString("rate_typecode"));
-				rateType.setRateTypeDescription(rs.getString("rate_typedesc"));
-				rateType.setCreatedBy(rs.getString("createdby"));
-				rateType.setCreatedDate(rs.getTimestamp("createddate").toString());
-				rateType.setUpdatedBy(rs.getString("updatedby"));
-				rateType.setUpdatedDate(rs.getTimestamp("updateddate").toString());
+				api.setApiId(rs.getInt("apiid"));
+				api.setApiName(rs.getString("apiname"));
+				api.setApiDescription(rs.getString("apidesc"));
+				api.setCreatedBy(rs.getString("createdby"));
+				api.setCreatedDate(rs.getTimestamp("createddate").toString());
+				api.setUpdatedBy(rs.getString("updatedby"));
+				api.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 			}
 		} catch (SQLException e) {
 
-			log.error("database operation error in getRateType : ", e);
+			log.error("database operation error in getAPI : ", e);
 			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 		} catch (Exception e) {
 
-			log.error("error in getRateType : ", e);
+			log.error("error in getAPI : ", e);
 			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 		} finally {
 
 			DbUtils.closeAllConnections(ps, con, rs);
 		}
 
-		return rateType;
+		return api;
 	}
 }

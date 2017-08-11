@@ -3,38 +3,38 @@ package com.wso2telco.dep.ratecardservice.dao.model;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class RateTypeDTO {
+public class APIDTO {
 
-	private Integer rateTypeId;
-	private String rateTypeCode;
-	private String rateTypeDescription;
+	private Integer apiId;
+	private String apiName;
+	private String apiDescription;
 	private String createdBy;
 	private String createdDate;
 	private String updatedBy;
 	private String updatedDate;
 
-	public Integer getRateTypeId() {
-		return rateTypeId;
+	public Integer getApiId() {
+		return apiId;
 	}
 
-	public void setRateTypeId(Integer rateTypeId) {
-		this.rateTypeId = rateTypeId;
+	public void setApiId(Integer apiId) {
+		this.apiId = apiId;
 	}
 
-	public String getRateTypeCode() {
-		return rateTypeCode;
+	public String getApiName() {
+		return apiName;
 	}
 
-	public void setRateTypeCode(String rateTypeCode) {
-		this.rateTypeCode = rateTypeCode;
+	public void setApiName(String apiName) {
+		this.apiName = apiName;
 	}
 
-	public String getRateTypeDesc() {
-		return rateTypeDescription;
+	public String getApiDescription() {
+		return apiDescription;
 	}
 
-	public void setRateTypeDescription(String rateTypeDescription) {
-		this.rateTypeDescription = rateTypeDescription;
+	public void setApiDescription(String apiDescription) {
+		this.apiDescription = apiDescription;
 	}
 
 	public String getCreatedBy() {

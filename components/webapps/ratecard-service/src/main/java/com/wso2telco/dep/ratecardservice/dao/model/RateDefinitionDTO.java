@@ -7,7 +7,7 @@ public class RateDefinitionDTO {
 
 	private Integer rateDefId;
 	private String rateDefName;
-	private String rateDefDesc;
+	private String rateDefDescription;
 	private Integer rateDefDefault;
 	private CurrencyDTO currency;
 	private RateTypeDTO rateType;
@@ -30,11 +30,11 @@ public class RateDefinitionDTO {
 	public void setRateDefName(String rateDefName) {
 		this.rateDefName = rateDefName;
 	}
-	public String getRateDefDesc() {
-		return rateDefDesc;
+	public String getRateDefDescription() {
+		return rateDefDescription;
 	}
-	public void setRateDefDesc(String rateDefDesc) {
-		this.rateDefDesc = rateDefDesc;
+	public void setRateDefDescription(String rateDefDescription) {
+		this.rateDefDescription = rateDefDescription;
 	}
 	public Integer getRateDefDefault() {
 		return rateDefDefault;

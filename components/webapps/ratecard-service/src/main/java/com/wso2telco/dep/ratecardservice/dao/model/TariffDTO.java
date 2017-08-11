@@ -7,7 +7,7 @@ public class TariffDTO {
 
 	private Integer tariffId;
 	private String tariffName;
-	private String tariffDesc;
+	private String tariffDescription;
 	private Double tariffDefaultVal;
 	private Integer tariffMaxCount;
 	private Double tariffExcessRate;
@@ -35,11 +35,11 @@ public class TariffDTO {
 	public void setTariffName(String tariffName) {
 		this.tariffName = tariffName;
 	}
-	public String getTariffDesc() {
-		return tariffDesc;
+	public String getTariffDescription() {
+		return tariffDescription;
 	}
-	public void setTariffDesc(String tariffDesc) {
-		this.tariffDesc = tariffDesc;
+	public void setTariffDescription(String tariffDescription) {
+		this.tariffDescription = tariffDescription;
 	}
 	public Double getTariffDefaultVal() {
 		return tariffDefaultVal;

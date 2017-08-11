@@ -51,7 +51,7 @@ public class TariffDAO {
 
 				tariff.setTariffId(rs.getInt("tariffid"));
 				tariff.setTariffName(rs.getString("tariffname"));
-				tariff.setTariffDesc(rs.getString("tariffdesc"));
+				tariff.setTariffDescription(rs.getString("tariffdesc"));
 				tariff.setTariffDefaultVal(rs.getDouble("tariffdefaultval"));
 				tariff.setTariffMaxCount(rs.getInt("tariffmaxcount"));
 				tariff.setTariffExcessRate(rs.getDouble("tariffexcessrate"));
@@ -112,7 +112,7 @@ public class TariffDAO {
 			log.debug("sql query in addTariff : " + ps);
 
 			ps.setString(1, tariff.getTariffName());
-			ps.setString(2, tariff.getTariffDesc());
+			ps.setString(2, tariff.getTariffDescription());
 			ps.setDouble(3, tariff.getTariffDefaultVal());
 			ps.setInt(4, tariff.getTariffMaxCount());
 			ps.setDouble(5, tariff.getTariffExcessRate());
@@ -185,7 +185,7 @@ public class TariffDAO {
 
 				tariff.setTariffId(rs.getInt("tariffid"));
 				tariff.setTariffName(rs.getString("tariffname"));
-				tariff.setTariffDesc(rs.getString("tariffdesc"));
+				tariff.setTariffDescription(rs.getString("tariffdesc"));
 				tariff.setTariffDefaultVal(rs.getDouble("tariffdefaultval"));
 				tariff.setTariffMaxCount(rs.getInt("tariffmaxcount"));
 				tariff.setTariffExcessRate(rs.getDouble("tariffexcessrate"));

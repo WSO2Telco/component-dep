@@ -8,7 +8,7 @@ public class CategoryDTO {
 	private Integer categoryId;
 	private String categoryName;
 	private String categoryCode;
-	private String categoryDesc;
+	private String categoryDescription;
 	private String createdBy;
 	private String createdDate;
 	private String updatedBy;
@@ -38,12 +38,12 @@ public class CategoryDTO {
 		this.categoryCode = categoryCode;
 	}
 
-	public String getCategoryDesc() {
-		return categoryDesc;
+	public String getCategoryDescription() {
+		return categoryDescription;
 	}
 
-	public void setCategoryDesc(String categoryDesc) {
-		this.categoryDesc = categoryDesc;
+	public void setCategoryDescription(String categoryDescription) {
+		this.categoryDescription = categoryDescription;
 	}
 
 	public String getCreatedBy() {

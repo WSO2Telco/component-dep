@@ -54,7 +54,7 @@ public class RateDefinitionDAO {
 
 				rateDefinition.setRateDefId(rs.getInt("rate_defid"));
 				rateDefinition.setRateDefName(rs.getString("rate_defname"));
-				rateDefinition.setRateDefDesc(rs.getString("rate_defdesc"));
+				rateDefinition.setRateDefDescription(rs.getString("rate_defdesc"));
 				rateDefinition.setRateDefDefault(rs.getInt("rate_defdefault"));
 				rateDefinition.setRateDefCategoryBase(rs.getInt("rate_defcategorybase"));
 				rateDefinition.setCreatedBy(rs.getString("createdby"));
@@ -119,7 +119,7 @@ public class RateDefinitionDAO {
 			log.debug("sql query in addRateDefinition : " + ps);
 
 			ps.setString(1, rateDefinition.getRateDefName());
-			ps.setString(2, rateDefinition.getRateDefDesc());
+			ps.setString(2, rateDefinition.getRateDefDescription());
 			ps.setInt(3, rateDefinition.getRateDefDefault());
 			ps.setInt(4, rateDefinition.getCurrency().getCurrencyId());
 			ps.setInt(5, rateDefinition.getRateType().getRateTypeId());
@@ -187,7 +187,7 @@ public class RateDefinitionDAO {
 
 				rateDefinition.setRateDefId(rs.getInt("rate_defid"));
 				rateDefinition.setRateDefName(rs.getString("rate_defname"));
-				rateDefinition.setRateDefDesc(rs.getString("rate_defdesc"));
+				rateDefinition.setRateDefDescription(rs.getString("rate_defdesc"));
 				rateDefinition.setRateDefDefault(rs.getInt("rate_defdefault"));
 				rateDefinition.setRateDefCategoryBase(rs.getInt("rate_defcategorybase"));
 				rateDefinition.setCreatedBy(rs.getString("createdby"));
