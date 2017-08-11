@@ -95,11 +95,13 @@ public class HubAdminDbUpdater implements JavaDelegate {
         log.info("In HubDataUpdater, Hub admin approval status: " + status);
 
         Subscription subscription = new Subscription();
-        subscription.setApiName(apiName);
-        subscription.setApplicationID(applicationId);
-        subscription.setOperatorName(operatorName);
-        subscription.setWorkflowRefId(workflowRefId);
-        subscription.setSelectedRate(selectedRate);
+            subscription.setApiName(apiName);
+            subscription.setApplicationID(applicationId);
+            subscription.setOperatorName(operatorName);
+            subscription.setWorkflowRefId(workflowRefId);
+            subscription.setSelectedRate(selectedRate);
+            subscription.setApiProvider(apiProvider);
+            subscription.setApiVersion(apiVersion);
         api.subscriptionApprovalHub(subscription);
 
         NotificationApi apiNotification = Feign.builder()
@@ -126,11 +128,6 @@ public class HubAdminDbUpdater implements JavaDelegate {
         } else {
             apiNotification.subscriptionNotificationSp(notificationRequest);
         }
-
-
-      
-
-
 
 	}
 
