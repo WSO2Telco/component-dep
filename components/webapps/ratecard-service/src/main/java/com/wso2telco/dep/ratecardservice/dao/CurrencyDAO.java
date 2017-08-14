@@ -52,6 +52,10 @@ public class CurrencyDAO {
 				currency.setCurrencyId(rs.getInt("currencyid"));
 				currency.setCurrencyCode(rs.getString("currencycode"));
 				currency.setCurrencyDescription(rs.getString("currencydesc"));
+				currency.setCreatedBy(rs.getString("createdby"));
+				currency.setCreatedDate(rs.getTimestamp("createddate").toString());
+				currency.setUpdatedBy(rs.getString("updatedby"));
+				currency.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 
 				currencies.add(currency);
 			}
@@ -88,9 +92,9 @@ public class CurrencyDAO {
 
 			StringBuilder query = new StringBuilder("insert into ");
 			query.append(DatabaseTables.CURRENCY.getTObject());
-			query.append(" (currencycode, currencydesc)");
+			query.append(" (currencycode, currencydesc, createdby)");
 			query.append(" values");
-			query.append(" (?, ?)");
+			query.append(" (?, ?, ?)");
 
 			ps = con.prepareStatement(query.toString(), Statement.RETURN_GENERATED_KEYS);
 
@@ -98,6 +102,7 @@ public class CurrencyDAO {
 
 			ps.setString(1, currency.getCurrencyCode());
 			ps.setString(2, currency.getCurrencyDescription());
+			ps.setString(3, currency.getCreatedBy());
 
 			ps.executeUpdate();
 
@@ -116,6 +121,62 @@ public class CurrencyDAO {
 		} catch (Exception e) {
 
 			log.error("error in addCurrency : ", e);
+			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+		} finally {
+
+			DbUtils.closeAllConnections(ps, con, rs);
+		}
+
+		return currency;
+	}
+	
+	public CurrencyDTO getCurrency(int currencyId) throws Exception {
+
+		CurrencyDTO currency = null;
+
+		Connection con = null;
+		ResultSet rs = null;
+		PreparedStatement ps = null;
+
+		try {
+
+			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
+			if (con == null) {
+
+				throw new Exception("Connection not found");
+			}
+
+			StringBuilder query = new StringBuilder("select * from ");
+			query.append(DatabaseTables.CURRENCY.getTObject());
+			query.append(" where currencyid = ?");
+
+			ps = con.prepareStatement(query.toString());
+
+			log.debug("sql query in getCurrency : " + ps);
+
+			ps.setInt(1, currencyId);
+			
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				currency = new CurrencyDTO();
+
+				currency.setCurrencyId(rs.getInt("currencyid"));
+				currency.setCurrencyCode(rs.getString("currencycode"));
+				currency.setCurrencyDescription(rs.getString("currencydesc"));
+				currency.setCreatedBy(rs.getString("createdby"));
+				currency.setCreatedDate(rs.getTimestamp("createddate").toString());
+				currency.setUpdatedBy(rs.getString("updatedby"));
+				currency.setUpdatedDate(rs.getTimestamp("updateddate").toString());
+			}
+		} catch (SQLException e) {
+
+			log.error("database operation error in getCurrency : ", e);
+			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+		} catch (Exception e) {
+
+			log.error("error in getCurrency : ", e);
 			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 		} finally {
 
