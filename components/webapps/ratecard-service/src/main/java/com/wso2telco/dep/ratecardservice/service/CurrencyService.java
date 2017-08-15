@@ -41,6 +41,7 @@ public class CurrencyService {
 		try {
 
 			newCurrency = currencyDAO.addCurrency(currency);
+			newCurrency = getCurrency(newCurrency.getCurrencyId());
 		} catch (Exception e) {
 
 			throw e;

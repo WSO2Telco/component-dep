@@ -104,7 +104,7 @@ DROP TABLE IF EXISTS `operation_rate`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `operation_rate` (
   `operation_rateid` int(11) NOT NULL AUTO_INCREMENT,
-  `operator_id` int(11) NOT NULL,
+  `operator_id` int(11) DEFAULT NULL,
   `api_operationid` int(11) NOT NULL,
   `rate_defid` int(11) NOT NULL,
   `createdby` varchar(255) NOT NULL,

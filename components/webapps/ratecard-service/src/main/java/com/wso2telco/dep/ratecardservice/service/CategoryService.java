@@ -41,6 +41,7 @@ public class CategoryService {
 		try {
 
 			newCategory = categoryDAO.addCategory(category);
+			newCategory = getCategory(newCategory.getCategoryId());
 		} catch (Exception e) {
 
 			throw e;
