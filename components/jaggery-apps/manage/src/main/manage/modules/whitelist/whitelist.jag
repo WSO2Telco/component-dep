@@ -53,7 +53,7 @@ function getWhitelist() {
         if (response.Success) {
 
             var whiteListedNumbers = response.Success.variables;
-            log.info("response.Success.variables = " + response.Success.variables);
+            log.debug("response.Success.variables = " + response.Success.variables);
 
             if (whiteListedNumbers) {
                 return whiteListedNumbers;
