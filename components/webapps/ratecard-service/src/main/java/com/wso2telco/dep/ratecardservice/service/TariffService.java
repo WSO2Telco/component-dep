@@ -41,6 +41,7 @@ public class TariffService {
 		try {
 
 			newTariff = tariffDAO.addTariff(tariff);
+			newTariff = getTariff(newTariff.getTariffId());
 		} catch (Exception e) {
 
 			throw e;

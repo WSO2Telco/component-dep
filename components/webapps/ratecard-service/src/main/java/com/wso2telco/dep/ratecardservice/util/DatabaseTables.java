@@ -11,7 +11,9 @@ public enum DatabaseTables {
 	API("api"),
 	API_OPERATION("api_operation"),
 	OPERATOR("operator"),
-	OPERATION_RATE("operation_rate");
+	OPERATION_RATE("operation_rate"),
+	TAX("tax"),
+	RATE_TAX("rate_taxes");
 	
 	DatabaseTables(String tObject) {
 		
