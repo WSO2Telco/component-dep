@@ -43,24 +43,33 @@ function addNewToWhitelist(subscriberList, appId, apiId){
 }
 
 function getWhitelist() {
-	var log = new Log();
-	var url = site.externalServicesUrl + "blacklist-whitelist-service/queries/GetWhiteList";
-	var data = {};
-	var response = postJSON(url, data);	
+    var log = new Log();
+    var url = site.externalServicesUrl + "blacklist-whitelist-service/queries/GetWhiteList";
+    var data = {};
+    var response = postJSON(url, data);
+    response = JSON.parse(response);
 
-		try{	
-			response = JSON.parse(response);	
-			log.info("response.Success.variables = " + response.Success.variables);
-			var whitelist =response.Success.variables;
-			
-			return whitelist;
+    try {
+        if (response.Success) {
 
-		} catch(e) {
-			log.info("error: " + e);
-			return [];
-		}
-	
-	
+            var whiteListedNumbers = response.Success.variables;
+            log.debug("response.Success.variables = " + response.Success.variables);
+
+            if (whiteListedNumbers) {
+                return whiteListedNumbers;
+            } else {
+                return "";
+            };
+        } else {
+            var errorMsg = stringify(response);
+            log.error(errorMsg);
+            return {error: true,message: errorMsg};
+        }
+
+    } catch (e) {
+        log.error(e.message);
+        return {error: true,message: e.message};
+    }
 }
 
 function removeFromWhiteListNumbers(subscriber){
