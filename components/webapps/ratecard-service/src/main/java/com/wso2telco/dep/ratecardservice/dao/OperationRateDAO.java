@@ -42,8 +42,11 @@ public class OperationRateDAO {
 			query.append(DatabaseTables.OPERATION_RATE.getTObject());
 			query.append(" operationrate, ");
 			query.append(DatabaseTables.API.getTObject());
-			query.append(" api ");
-			query.append(" where api.apiname = ? and operationrate.operator_id is null");
+			query.append(" api, ");
+			query.append(DatabaseTables.API_OPERATION.getTObject());
+			query.append(" apioperation ");
+			query.append(
+					" where api.apiid = apioperation.apiid and operationrate.api_operationid = apioperation.api_operationid and api.apiname = ? and operationrate.operator_id is null");
 
 			ps = con.prepareStatement(query.toString());
 
@@ -115,9 +118,11 @@ public class OperationRateDAO {
 			query.append(DatabaseTables.API.getTObject());
 			query.append(" api, ");
 			query.append(DatabaseTables.OPERATOR.getTObject());
-			query.append(" operator ");
+			query.append(" operator, ");
+			query.append(DatabaseTables.API_OPERATION.getTObject());
+			query.append(" apioperation ");
 			query.append(
-					" where operationrate.operator_id = operator.operatorId and api.apiname = ? and operator.operatorname = ?");
+					" where api.apiid = apioperation.apiid and operationrate.api_operationid = apioperation.api_operationid and operationrate.operator_id = operator.operatorId and api.apiname = ? and operator.operatorname = ?");
 
 			ps = con.prepareStatement(query.toString());
 
