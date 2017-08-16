@@ -20,7 +20,7 @@ public class QuotaLimitDao {
 
 	public void addQuotaLimit(QuotaBean quotaBean) throws SQLException, Exception {
 		StringBuilder sql = new StringBuilder();
-		sql.append("INSERT INTO `sp_quota_limit` (`serviceProvider`,`operatorName`,`application`,`apiName`,`quota_limit`) VALUES (?,?,?,?,?,?,?);");
+		sql.append("INSERT INTO `sp_quota_limit` (`serviceProvider`,`operatorName`,`application`,`apiName`,`quota_limit`,`fromDate`,`toDate`) VALUES (?,?,?,?,?,?,?);");
 		Connection conn = null;
 		PreparedStatement ps = null;
 		try {
@@ -33,8 +33,8 @@ public class QuotaLimitDao {
 			ps.setString(3, quotaBean.getApplicationName());
 			ps.setString(4, quotaBean.getApiName());
 			ps.setString(5, quotaBean.getQuotaLimit());
-			ps.setString(6, quotaBean.getFromDate().toString());
-			ps.setString(7, quotaBean.getToDate().toString());
+			ps.setString(6, quotaBean.getFromDate());
+			ps.setString(7, quotaBean.getToDate());
 
 			ps.executeUpdate();
 			conn.commit();
@@ -69,8 +69,8 @@ public class QuotaLimitDao {
 					returnObj_.setApplicationName(rs.getString("application"));
 					returnObj_.setApiName(rs.getString("apiName"));
 					returnObj_.setQuotaLimit(rs.getString("quota_limit"));
-					returnObj_.setFromDate(rs.getDate("fromDate"));
-					returnObj_.setToDate(rs.getDate("toDate"));
+					returnObj_.setFromDate(rs.getString("fromDate"));
+					returnObj_.setToDate(rs.getString("toDate"));
 
 					returnObjList.add(returnObj_);
 				}
@@ -102,8 +102,8 @@ public class QuotaLimitDao {
 					returnObj_.setApplicationName(rs.getString("application"));
 					returnObj_.setApiName(rs.getString("apiName"));
 					returnObj_.setQuotaLimit(rs.getString("quota_limit"));
-					returnObj_.setFromDate(rs.getDate("fromDate"));
-					returnObj_.setToDate(rs.getDate("toDate"));
+					returnObj_.setFromDate(rs.getString("fromDate"));
+					returnObj_.setToDate(rs.getString("toDate"));
 					returnObjList.add(returnObj_);
 				}
 			} catch (SQLException e) {
@@ -134,8 +134,8 @@ public class QuotaLimitDao {
 					returnObj_.setApplicationName(rs.getString("application"));
 					returnObj_.setApiName(rs.getString("apiName"));
 					returnObj_.setQuotaLimit(rs.getString("quota_limit"));
-					returnObj_.setFromDate(rs.getDate("fromDate"));
-					returnObj_.setToDate(rs.getDate("toDate"));
+					returnObj_.setFromDate(rs.getString("fromDate"));
+					returnObj_.setToDate(rs.getString("toDate"));
 					returnObjList.add(returnObj_);
 				}
 			} catch (SQLException e) {

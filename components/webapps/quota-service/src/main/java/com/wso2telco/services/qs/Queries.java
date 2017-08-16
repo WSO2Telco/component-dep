@@ -103,6 +103,13 @@ public class Queries {
 		Gson gson = new GsonBuilder().serializeNulls().create();
 		QuotaBean quotaBean = gson.fromJson(jsonBody, QuotaBean.class);
 
+		if (quotaBean.getOperator().equalsIgnoreCase("_ALL_")) {
+			quotaBean.setOperator(null);
+		}
+
+		/*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String fromDate = sdf.format(quotaBean.getFromDate());*/
+
 		try {
 			quotaService.addQuotaLimit(quotaBean);
 
