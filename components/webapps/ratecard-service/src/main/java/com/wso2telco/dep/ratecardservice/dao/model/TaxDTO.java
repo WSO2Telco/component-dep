@@ -1,35 +1,32 @@
 package com.wso2telco.dep.ratecardservice.dao.model;
 
-import javax.xml.bind.annotation.XmlRootElement;
+public class TaxDTO {
 
-@XmlRootElement
-public class CurrencyDTO {
-
-	private Integer currencyId;
-	private String currencyCode;
-	private String currencyDescription;
+	private Integer taxId;
+	private String taxCode;
+	private String taxName;
 	private String createdBy;
 	private String createdDate;
 	private String updatedBy;
 	private String updatedDate;
 	
-	public Integer getCurrencyId() {
-		return currencyId;
+	public Integer getTaxId() {
+		return taxId;
 	}
-	public void setCurrencyId(Integer currencyId) {
-		this.currencyId = currencyId;
+	public void setTaxId(Integer taxId) {
+		this.taxId = taxId;
 	}
-	public String getCurrencyCode() {
-		return currencyCode;
+	public String getTaxCode() {
+		return taxCode;
 	}
-	public void setCurrencyCode(String currencyCode) {
-		this.currencyCode = currencyCode;
+	public void setTaxCode(String taxCode) {
+		this.taxCode = taxCode;
 	}
-	public String getCurrencyDescription() {
-		return currencyDescription;
+	public String getTaxName() {
+		return taxName;
 	}
-	public void setCurrencyDescription(String currencyDescription) {
-		this.currencyDescription = currencyDescription;
+	public void setTaxName(String taxName) {
+		this.taxName = taxName;
 	}
 	public String getCreatedBy() {
 		return createdBy;

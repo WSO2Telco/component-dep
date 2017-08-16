@@ -26,6 +26,10 @@ CREATE TABLE `api` (
   `apiid` int(11) NOT NULL AUTO_INCREMENT,
   `apiname` varchar(45) NOT NULL,
   `apidesc` varchar(45) DEFAULT NULL,
+  `createdby` varchar(255) NOT NULL,
+  `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  `updatedby` varchar(255) DEFAULT NULL,
+  `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`apiid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -39,9 +43,13 @@ DROP TABLE IF EXISTS `api_operation`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `api_operation` (
   `api_operationid` int(11) NOT NULL AUTO_INCREMENT,
-  `apiid` int(11) DEFAULT NULL,
-  `api_operation` varchar(45) DEFAULT NULL,
-  `api_operationcode` varchar(45) DEFAULT NULL,
+  `apiid` int(11) NOT NULL,
+  `api_operation` varchar(45) NOT NULL,
+  `api_operationcode` varchar(45) NOT NULL,
+  `createdby` varchar(255) NOT NULL,
+  `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  `updatedby` varchar(255) DEFAULT NULL,
+  `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`api_operationid`),
   KEY `fk_api_operation_1_idx` (`apiid`),
   CONSTRAINT `fk_api_operation_1` FOREIGN KEY (`apiid`) REFERENCES `api` (`apiid`) ON DELETE CASCADE ON UPDATE CASCADE
@@ -57,9 +65,13 @@ DROP TABLE IF EXISTS `category`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `category` (
   `categoryid` int(11) NOT NULL AUTO_INCREMENT,
-  `categoryname` varchar(45) DEFAULT NULL,
-  `categorycode` varchar(45) DEFAULT NULL,
+  `categoryname` varchar(45) NOT NULL,
+  `categorycode` varchar(45) NOT NULL,
   `categorydesc` varchar(45) DEFAULT NULL,
+  `createdby` varchar(255) NOT NULL,
+  `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  `updatedby` varchar(255) DEFAULT NULL,
+  `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`categoryid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -73,8 +85,12 @@ DROP TABLE IF EXISTS `currency`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `currency` (
   `currencyid` int(11) NOT NULL AUTO_INCREMENT,
-  `currencycode` varchar(45) DEFAULT NULL,
+  `currencycode` varchar(45) NOT NULL,
   `currencydesc` varchar(45) DEFAULT NULL,
+  `createdby` varchar(255) NOT NULL,
+  `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  `updatedby` varchar(255) DEFAULT NULL,
+  `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`currencyid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -89,8 +105,12 @@ DROP TABLE IF EXISTS `operation_rate`;
 CREATE TABLE `operation_rate` (
   `operation_rateid` int(11) NOT NULL AUTO_INCREMENT,
   `operator_id` int(11) DEFAULT NULL,
-  `api_operationid` int(11) DEFAULT NULL,
-  `rate_defid` int(11) DEFAULT NULL,
+  `api_operationid` int(11) NOT NULL,
+  `rate_defid` int(11) NOT NULL,
+  `createdby` varchar(255) NOT NULL,
+  `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  `updatedby` varchar(255) DEFAULT NULL,
+  `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`operation_rateid`),
   KEY `fk_operation_rate_1_idx` (`api_operationid`),
   KEY `fk_operation_rate_2_idx` (`rate_defid`),
@@ -110,8 +130,12 @@ DROP TABLE IF EXISTS `operator`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `operator` (
   `operatorId` int(11) NOT NULL AUTO_INCREMENT,
-  `operatorname` varchar(45) DEFAULT NULL,
+  `operatorname` varchar(45) NOT NULL,
   `operatordesc` varchar(45) DEFAULT NULL,
+  `createdby` varchar(255) NOT NULL,
+  `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  `updatedby` varchar(255) DEFAULT NULL,
+  `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`operatorId`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -125,10 +149,14 @@ DROP TABLE IF EXISTS `rate_category`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `rate_category` (
   `rate_category_id` int(11) NOT NULL AUTO_INCREMENT,
-  `rate_defid` int(11) DEFAULT NULL,
+  `rate_defid` int(11) NOT NULL,
   `parentcategoryid` int(11) NOT NULL,
   `childcategoryid` int(11) DEFAULT NULL,
-  `tariffid` int(11) DEFAULT NULL,
+  `tariffid` int(11) NOT NULL,
+  `createdby` varchar(255) NOT NULL,
+  `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  `updatedby` varchar(255) DEFAULT NULL,
+  `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`rate_category_id`),
   KEY `fk_rate_category_1_idx` (`rate_defid`),
   KEY `fk_rate_category_2_idx` (`tariffid`),
@@ -150,13 +178,17 @@ DROP TABLE IF EXISTS `rate_def`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `rate_def` (
   `rate_defid` int(11) NOT NULL AUTO_INCREMENT,
-  `rate_defname` varchar(45) DEFAULT NULL,
+  `rate_defname` varchar(45) NOT NULL,
   `rate_defdesc` varchar(45) DEFAULT NULL,
-  `rate_defdefault` tinyint(4) DEFAULT NULL,
-  `currencyid` int(11) DEFAULT NULL,
-  `rate_typeid` int(11) DEFAULT NULL,
-  `rate_defcategorybase` tinyint(4) DEFAULT NULL,
-  `tariffid` int(11) DEFAULT NULL,
+  `rate_defdefault` tinyint(4) NOT NULL,
+  `currencyid` int(11) NOT NULL,
+  `rate_typeid` int(11) NOT NULL,
+  `rate_defcategorybase` tinyint(4) NOT NULL,
+  `tariffid` int(11) NOT NULL,
+  `createdby` varchar(255) NOT NULL,
+  `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  `updatedby` varchar(255) DEFAULT NULL,
+  `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`rate_defid`),
   KEY `fk_rate_def_1_idx` (`rate_typeid`),
   KEY `fk_rate_def_2_idx` (`currencyid`),
@@ -176,8 +208,12 @@ DROP TABLE IF EXISTS `rate_taxes`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `rate_taxes` (
   `rate_taxesid` int(11) NOT NULL AUTO_INCREMENT,
-  `rate_defid` int(11) DEFAULT NULL,
-  `taxid` int(11) DEFAULT NULL,
+  `rate_defid` int(11) NOT NULL,
+  `taxid` int(11) NOT NULL,
+  `createdby` varchar(255) NOT NULL,
+  `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  `updatedby` varchar(255) DEFAULT NULL,
+  `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`rate_taxesid`),
   KEY `fk_rate_taxes_1_idx` (`rate_defid`),
   KEY `fk_rate_taxes_2_idx` (`taxid`),
@@ -195,8 +231,12 @@ DROP TABLE IF EXISTS `rate_type`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `rate_type` (
   `rate_typeid` int(11) NOT NULL AUTO_INCREMENT,
-  `rate_typecode` varchar(45) DEFAULT NULL,
+  `rate_typecode` varchar(45) NOT NULL,
   `rate_typedesc` varchar(45) DEFAULT NULL,
+  `createdby` varchar(255) NOT NULL,
+  `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  `updatedby` varchar(255) DEFAULT NULL,
+  `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`rate_typeid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -210,11 +250,15 @@ DROP TABLE IF EXISTS `sub_rate_nb`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sub_rate_nb` (
   `sub_rate_nbid` int(11) NOT NULL AUTO_INCREMENT,
-  `api_operationid` int(11) DEFAULT NULL,
-  `applicationid` int(11) DEFAULT NULL,
-  `rate_defid` int(11) DEFAULT NULL,
+  `api_operationid` int(11) NOT NULL,
+  `applicationid` int(11) NOT NULL,
+  `rate_defid` int(11) NOT NULL,
   `sub_rate_nbactdate` date DEFAULT NULL,
-  `sub_rate_nbdisdate` varchar(45) DEFAULT NULL,
+  `sub_rate_nbdisdate` date DEFAULT NULL,
+  `createdby` varchar(255) NOT NULL,
+  `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  `updatedby` varchar(255) DEFAULT NULL,
+  `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`sub_rate_nbid`),
   KEY `fk_sub_rate_nb_1_idx` (`api_operationid`),
   KEY `fk_sub_rate_nb_2_idx` (`rate_defid`),
@@ -232,12 +276,16 @@ DROP TABLE IF EXISTS `sub_rate_sb`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `sub_rate_sb` (
   `sub_rate_sbid` int(11) NOT NULL AUTO_INCREMENT,
-  `operatorid` int(11) DEFAULT NULL,
-  `api_operationid` int(11) DEFAULT NULL,
-  `applicationid` int(11) DEFAULT NULL,
-  `rate_defid` int(11) DEFAULT NULL,
+  `operatorid` int(11) NOT NULL,
+  `api_operationid` int(11) NOT NULL,
+  `applicationid` int(11) NOT NULL,
+  `rate_defid` int(11) NOT NULL,
   `sub_rate_sbactdate` date DEFAULT NULL,
-  `sub_rate_sbdisdate` varchar(45) DEFAULT NULL,
+  `sub_rate_sbdisdate` date DEFAULT NULL,
+  `createdby` varchar(255) NOT NULL,
+  `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  `updatedby` varchar(255) DEFAULT NULL,
+  `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`sub_rate_sbid`),
   KEY `fk_sub_rate_sb_1_idx` (`operatorid`),
   KEY `fk_sub_rate_sb_2_idx` (`api_operationid`),
@@ -257,7 +305,7 @@ DROP TABLE IF EXISTS `tariff`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tariff` (
   `tariffid` int(11) NOT NULL AUTO_INCREMENT,
-  `tariffname` varchar(45) DEFAULT NULL,
+  `tariffname` varchar(45) NOT NULL,
   `tariffdesc` varchar(45) DEFAULT NULL,
   `tariffdefaultval` double DEFAULT NULL,
   `tariffmaxcount` int(11) DEFAULT NULL,
@@ -269,6 +317,10 @@ CREATE TABLE `tariff` (
   `tariffsurchargeval` double DEFAULT NULL,
   `tariffsurchargeAds` double DEFAULT NULL,
   `tariffsurchargeOpco` double DEFAULT NULL,
+  `createdby` varchar(255) NOT NULL,
+  `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  `updatedby` varchar(255) DEFAULT NULL,
+  `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`tariffid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -282,8 +334,12 @@ DROP TABLE IF EXISTS `tax`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tax` (
   `taxid` int(11) NOT NULL AUTO_INCREMENT,
-  `taxcode` varchar(45) DEFAULT NULL,
-  `taxname` varchar(45) DEFAULT NULL,
+  `taxcode` varchar(45) NOT NULL,
+  `taxname` varchar(45) NOT NULL,
+  `createdby` varchar(255) NOT NULL,
+  `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  `updatedby` varchar(255) DEFAULT NULL,
+  `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`taxid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -297,10 +353,14 @@ DROP TABLE IF EXISTS `tax_validity`;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tax_validity` (
   `idtax_validityid` int(11) NOT NULL,
-  `tax_validityactdate` date DEFAULT NULL,
-  `tax_validitydisdate` date DEFAULT NULL,
-  `tax_validityval` double DEFAULT NULL,
-  `taxid` int(11) DEFAULT NULL,
+  `tax_validityactdate` date NOT NULL,
+  `tax_validitydisdate` date NOT NULL,
+  `tax_validityval` double NOT NULL,
+  `taxid` int(11) NOT NULL,
+  `createdby` varchar(255) NOT NULL,
+  `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  `updatedby` varchar(255) DEFAULT NULL,
+  `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`idtax_validityid`),
   KEY `fk_tax_validity_1_idx` (`taxid`),
   CONSTRAINT `fk_tax_validity_1` FOREIGN KEY (`taxid`) REFERENCES `tax` (`taxid`) ON DELETE NO ACTION ON UPDATE NO ACTION

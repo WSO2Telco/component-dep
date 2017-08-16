@@ -40,9 +40,9 @@ public class RateCategoryDAO {
 
 			StringBuilder query = new StringBuilder("insert into ");
 			query.append(DatabaseTables.RATE_CATEGORY.getTObject());
-			query.append(" (rate_defid, parentcategoryid, childcategoryid, tariffid)");
+			query.append(" (rate_defid, parentcategoryid, childcategoryid, tariffid, createdby)");
 			query.append(" values");
-			query.append(" (?, ?, ?, ?)");
+			query.append(" (?, ?, ?, ?, ?)");
 
 			ps = con.prepareStatement(query.toString(), Statement.RETURN_GENERATED_KEYS);
 
@@ -52,6 +52,7 @@ public class RateCategoryDAO {
 			ps.setInt(2, rateCategory.getCategory().getCategoryId());
 			ps.setInt(3, rateCategory.getSubCategory().getCategoryId());
 			ps.setInt(4, rateCategory.getTariff().getTariffId());
+			ps.setString(5, rateCategory.getCreatedBy());
 
 			ps.executeUpdate();
 
@@ -128,6 +129,11 @@ public class RateCategoryDAO {
 				TariffDTO tariff = new TariffDTO();
 				tariff.setTariffId(rs.getInt("tariffid"));
 				rateCategory.setTariff(tariff);
+				
+				rateCategory.setCreatedBy(rs.getString("createdby"));
+				rateCategory.setCreatedDate(rs.getTimestamp("createddate").toString());
+				rateCategory.setUpdatedBy(rs.getString("updatedby"));
+				rateCategory.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 
 				rateCategories.add(rateCategory);
 			}
@@ -196,6 +202,11 @@ public class RateCategoryDAO {
 				TariffDTO tariff = new TariffDTO();
 				tariff.setTariffId(rs.getInt("tariffid"));
 				rateCategory.setTariff(tariff);
+				
+				rateCategory.setCreatedBy(rs.getString("createdby"));
+				rateCategory.setCreatedDate(rs.getTimestamp("createddate").toString());
+				rateCategory.setUpdatedBy(rs.getString("updatedby"));
+				rateCategory.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 			}
 		} catch (SQLException e) {
 

@@ -33,4 +33,18 @@ public class RateTypeService {
 			return Collections.emptyList();
 		}
 	}
+
+	public RateTypeDTO getRateType(int rateTypeId) throws Exception {
+
+		RateTypeDTO rateType = null;
+
+		try {
+
+			rateType = rateTypeDAO.getRateType(rateTypeId);
+		} catch (Exception e) {
+
+			throw e;
+		}
+		return rateType;
+	}
 }

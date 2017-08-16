@@ -12,16 +12,16 @@ import com.wso2telco.core.dbutils.DbUtils;
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.exception.ServiceError;
 import com.wso2telco.core.dbutils.util.DataSourceNames;
-import com.wso2telco.dep.ratecardservice.dao.model.RateTypeDTO;
+import com.wso2telco.dep.ratecardservice.dao.model.OperatorDTO;
 import com.wso2telco.dep.ratecardservice.util.DatabaseTables;
 
-public class RateTypeDAO {
+public class OperatorDAO {
 
-	private final Log log = LogFactory.getLog(RateTypeDAO.class);
+	private final Log log = LogFactory.getLog(OperatorDAO.class);
 
-	public List<RateTypeDTO> getRateTypes() throws Exception {
+	public OperatorDTO getOperator(int operatorId) throws Exception {
 
-		List<RateTypeDTO> rateTypes = new ArrayList<RateTypeDTO>();
+		OperatorDTO operator = null;
 
 		Connection con = null;
 		ResultSet rs = null;
@@ -36,47 +36,48 @@ public class RateTypeDAO {
 			}
 
 			StringBuilder query = new StringBuilder("select * from ");
-			query.append(DatabaseTables.RATE_TYPE.getTObject());
+			query.append(DatabaseTables.OPERATOR.getTObject());
+			query.append(" where operatorId = ?");
 
 			ps = con.prepareStatement(query.toString());
 
-			log.debug("sql query in getRateTypes : " + ps);
+			log.debug("sql query in getOperator : " + ps);
+
+			ps.setInt(1, operatorId);
 
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
 
-				RateTypeDTO rateType = new RateTypeDTO();
-
-				rateType.setRateTypeId(rs.getInt("rate_typeid"));
-				rateType.setRateTypeCode(rs.getString("rate_typecode"));
-				rateType.setRateTypeDescription(rs.getString("rate_typedesc"));
-				rateType.setCreatedBy(rs.getString("createdby"));
-				rateType.setCreatedDate(rs.getTimestamp("createddate").toString());
-				rateType.setUpdatedBy(rs.getString("updatedby"));
-				rateType.setUpdatedDate(rs.getTimestamp("updateddate").toString());
-
-				rateTypes.add(rateType);
+				operator = new OperatorDTO();
+				
+				operator.setOperatorId(rs.getInt("operatorId"));
+				operator.setOperatorName(rs.getString("operatorname"));
+				operator.setOperatorDescription(rs.getString("operatordesc"));
+				operator.setCreatedBy(rs.getString("createdby"));
+				operator.setCreatedDate(rs.getTimestamp("createddate").toString());
+				operator.setUpdatedBy(rs.getString("updatedby"));
+				operator.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 			}
 		} catch (SQLException e) {
 
-			log.error("database operation error in getRateTypes : ", e);
+			log.error("database operation error in getOperator : ", e);
 			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 		} catch (Exception e) {
 
-			log.error("error in getRateTypes : ", e);
+			log.error("error in getOperator : ", e);
 			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 		} finally {
 
 			DbUtils.closeAllConnections(ps, con, rs);
 		}
 
-		return rateTypes;
+		return operator;
 	}
 	
-	public RateTypeDTO getRateType(int rateTypeId) throws Exception {
+	public List<OperatorDTO> getOperators() throws Exception {
 
-		RateTypeDTO rateType = null;
+		List<OperatorDTO> operators = new ArrayList<OperatorDTO>();
 
 		Connection con = null;
 		ResultSet rs = null;
@@ -91,42 +92,41 @@ public class RateTypeDAO {
 			}
 
 			StringBuilder query = new StringBuilder("select * from ");
-			query.append(DatabaseTables.RATE_TYPE.getTObject());
-			query.append(" where rate_typeid = ?");
+			query.append(DatabaseTables.OPERATOR.getTObject());
 
 			ps = con.prepareStatement(query.toString());
 
-			log.debug("sql query in getRateType : " + ps);
+			log.debug("sql query in getOperators : " + ps);
 
-			ps.setInt(1, rateTypeId);
-			
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
 
-				rateType = new RateTypeDTO();
+				OperatorDTO operator = new OperatorDTO();
+				
+				operator.setOperatorId(rs.getInt("operatorId"));
+				operator.setOperatorName(rs.getString("operatorname"));
+				operator.setOperatorDescription(rs.getString("operatordesc"));
+				operator.setCreatedBy(rs.getString("createdby"));
+				operator.setCreatedDate(rs.getTimestamp("createddate").toString());
+				operator.setUpdatedBy(rs.getString("updatedby"));
+				operator.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 
-				rateType.setRateTypeId(rs.getInt("rate_typeid"));
-				rateType.setRateTypeCode(rs.getString("rate_typecode"));
-				rateType.setRateTypeDescription(rs.getString("rate_typedesc"));
-				rateType.setCreatedBy(rs.getString("createdby"));
-				rateType.setCreatedDate(rs.getTimestamp("createddate").toString());
-				rateType.setUpdatedBy(rs.getString("updatedby"));
-				rateType.setUpdatedDate(rs.getTimestamp("updateddate").toString());
+				operators.add(operator);
 			}
 		} catch (SQLException e) {
 
-			log.error("database operation error in getRateType : ", e);
+			log.error("database operation error in getOperators : ", e);
 			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 		} catch (Exception e) {
 
-			log.error("error in getRateType : ", e);
+			log.error("error in getOperators : ", e);
 			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 		} finally {
 
 			DbUtils.closeAllConnections(ps, con, rs);
 		}
 
-		return rateType;
+		return operators;
 	}
 }

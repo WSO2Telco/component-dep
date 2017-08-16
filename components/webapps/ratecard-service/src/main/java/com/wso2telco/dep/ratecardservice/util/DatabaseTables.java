@@ -7,7 +7,13 @@ public enum DatabaseTables {
 	RATE_TYPE("rate_type"),
 	CATEGORY("category"),
 	RATE_DEF("rate_def"),
-	RATE_CATEGORY("rate_category");
+	RATE_CATEGORY("rate_category"),
+	API("api"),
+	API_OPERATION("api_operation"),
+	OPERATOR("operator"),
+	OPERATION_RATE("operation_rate"),
+	TAX("tax"),
+	RATE_TAX("rate_taxes");
 	
 	DatabaseTables(String tObject) {
 		

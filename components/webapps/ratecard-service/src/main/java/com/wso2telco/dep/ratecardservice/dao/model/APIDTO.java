@@ -3,55 +3,68 @@ package com.wso2telco.dep.ratecardservice.dao.model;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class CurrencyDTO {
+public class APIDTO {
 
-	private Integer currencyId;
-	private String currencyCode;
-	private String currencyDescription;
+	private Integer apiId;
+	private String apiName;
+	private String apiDescription;
 	private String createdBy;
 	private String createdDate;
 	private String updatedBy;
 	private String updatedDate;
-	
-	public Integer getCurrencyId() {
-		return currencyId;
+
+	public Integer getApiId() {
+		return apiId;
 	}
-	public void setCurrencyId(Integer currencyId) {
-		this.currencyId = currencyId;
+
+	public void setApiId(Integer apiId) {
+		this.apiId = apiId;
 	}
-	public String getCurrencyCode() {
-		return currencyCode;
+
+	public String getApiName() {
+		return apiName;
 	}
-	public void setCurrencyCode(String currencyCode) {
-		this.currencyCode = currencyCode;
+
+	public void setApiName(String apiName) {
+		this.apiName = apiName;
 	}
-	public String getCurrencyDescription() {
-		return currencyDescription;
+
+	public String getApiDescription() {
+		return apiDescription;
 	}
-	public void setCurrencyDescription(String currencyDescription) {
-		this.currencyDescription = currencyDescription;
+
+	public void setApiDescription(String apiDescription) {
+		this.apiDescription = apiDescription;
 	}
+
 	public String getCreatedBy() {
 		return createdBy;
 	}
+
 	public void setCreatedBy(String createdBy) {
 		this.createdBy = createdBy;
 	}
+
 	public String getCreatedDate() {
 		return createdDate;
 	}
+
 	public void setCreatedDate(String createdDate) {
 		this.createdDate = createdDate;
 	}
+
 	public String getUpdatedBy() {
 		return updatedBy;
 	}
+
 	public void setUpdatedBy(String updatedBy) {
 		this.updatedBy = updatedBy;
 	}
+
 	public String getUpdatedDate() {
 		return updatedDate;
 	}
+
 	public void setUpdatedDate(String updatedDate) {
 		this.updatedDate = updatedDate;
 	}

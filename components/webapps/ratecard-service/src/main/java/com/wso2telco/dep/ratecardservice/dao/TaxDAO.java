@@ -13,16 +13,16 @@ import com.wso2telco.core.dbutils.DbUtils;
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.exception.ServiceError;
 import com.wso2telco.core.dbutils.util.DataSourceNames;
-import com.wso2telco.dep.ratecardservice.dao.model.CurrencyDTO;
+import com.wso2telco.dep.ratecardservice.dao.model.TaxDTO;
 import com.wso2telco.dep.ratecardservice.util.DatabaseTables;
 
-public class CurrencyDAO {
+public class TaxDAO {
 
-	private final Log log = LogFactory.getLog(CurrencyDAO.class);
+	private final Log log = LogFactory.getLog(TaxDAO.class);
 
-	public List<CurrencyDTO> getCurrencies() throws Exception {
+	public List<TaxDTO> getTaxes() throws Exception {
 
-		List<CurrencyDTO> currencies = new ArrayList<CurrencyDTO>();
+		List<TaxDTO> taxes = new ArrayList<TaxDTO>();
 
 		Connection con = null;
 		ResultSet rs = null;
@@ -37,50 +37,50 @@ public class CurrencyDAO {
 			}
 
 			StringBuilder query = new StringBuilder("select * from ");
-			query.append(DatabaseTables.CURRENCY.getTObject());
+			query.append(DatabaseTables.TAX.getTObject());
 
 			ps = con.prepareStatement(query.toString());
 
-			log.debug("sql query in getCurrencies : " + ps);
+			log.debug("sql query in getTaxes : " + ps);
 
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
 
-				CurrencyDTO currency = new CurrencyDTO();
+				TaxDTO tax = new TaxDTO();
 
-				currency.setCurrencyId(rs.getInt("currencyid"));
-				currency.setCurrencyCode(rs.getString("currencycode"));
-				currency.setCurrencyDescription(rs.getString("currencydesc"));
-				currency.setCreatedBy(rs.getString("createdby"));
-				currency.setCreatedDate(rs.getTimestamp("createddate").toString());
-				currency.setUpdatedBy(rs.getString("updatedby"));
-				currency.setUpdatedDate(rs.getTimestamp("updateddate").toString());
+				tax.setTaxId(rs.getInt("taxid"));
+				tax.setTaxCode(rs.getString("taxcode"));
+				tax.setTaxName(rs.getString("taxname"));
+				tax.setCreatedBy(rs.getString("createdby"));
+				tax.setCreatedDate(rs.getTimestamp("createddate").toString());
+				tax.setUpdatedBy(rs.getString("updatedby"));
+				tax.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 
-				currencies.add(currency);
+				taxes.add(tax);
 			}
 		} catch (SQLException e) {
 
-			log.error("database operation error in getCurrencies : ", e);
+			log.error("database operation error in getTaxes : ", e);
 			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 		} catch (Exception e) {
 
-			log.error("error in getCurrencies : ", e);
+			log.error("error in getTaxes : ", e);
 			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 		} finally {
 
 			DbUtils.closeAllConnections(ps, con, rs);
 		}
 
-		return currencies;
+		return taxes;
 	}
 
-	public CurrencyDTO addCurrency(CurrencyDTO currency) throws Exception {
+	public TaxDTO addTax(TaxDTO tax) throws Exception {
 
 		Connection con = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
-		Integer currencyId = 0;
+		Integer taxId = 0;
 
 		try {
 
@@ -91,18 +91,18 @@ public class CurrencyDAO {
 			}
 
 			StringBuilder query = new StringBuilder("insert into ");
-			query.append(DatabaseTables.CURRENCY.getTObject());
-			query.append(" (currencycode, currencydesc, createdby)");
+			query.append(DatabaseTables.TAX.getTObject());
+			query.append(" (taxcode, taxname, createdby)");
 			query.append(" values");
 			query.append(" (?, ?, ?)");
 
 			ps = con.prepareStatement(query.toString(), Statement.RETURN_GENERATED_KEYS);
 
-			log.debug("sql query in addCurrency : " + ps);
+			log.debug("sql query in addTax : " + ps);
 
-			ps.setString(1, currency.getCurrencyCode());
-			ps.setString(2, currency.getCurrencyDescription());
-			ps.setString(3, currency.getCreatedBy());
+			ps.setString(1, tax.getTaxCode());
+			ps.setString(2, tax.getTaxName());
+			ps.setString(3, tax.getCreatedBy());
 
 			ps.executeUpdate();
 
@@ -110,29 +110,29 @@ public class CurrencyDAO {
 
 			while (rs.next()) {
 
-				currencyId = rs.getInt(1);
+				taxId = rs.getInt(1);
 			}
 
-			currency.setCurrencyId(currencyId);
+			tax.setTaxId(taxId);
 		} catch (SQLException e) {
 
-			log.error("database operation error in addCurrency : ", e);
+			log.error("database operation error in addTax : ", e);
 			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 		} catch (Exception e) {
 
-			log.error("error in addCurrency : ", e);
+			log.error("error in addTax : ", e);
 			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 		} finally {
 
 			DbUtils.closeAllConnections(ps, con, rs);
 		}
 
-		return currency;
+		return tax;
 	}
-	
-	public CurrencyDTO getCurrency(int currencyId) throws Exception {
 
-		CurrencyDTO currency = null;
+	public TaxDTO getTax(int taxId) throws Exception {
+
+		TaxDTO tax = null;
 
 		Connection con = null;
 		ResultSet rs = null;
@@ -147,42 +147,42 @@ public class CurrencyDAO {
 			}
 
 			StringBuilder query = new StringBuilder("select * from ");
-			query.append(DatabaseTables.CURRENCY.getTObject());
-			query.append(" where currencyid = ?");
+			query.append(DatabaseTables.TAX.getTObject());
+			query.append(" where taxid = ?");
 
 			ps = con.prepareStatement(query.toString());
 
-			log.debug("sql query in getCurrency : " + ps);
+			log.debug("sql query in getTax : " + ps);
 
-			ps.setInt(1, currencyId);
-			
+			ps.setInt(1, taxId);
+
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
 
-				currency = new CurrencyDTO();
+				tax = new TaxDTO();
 
-				currency.setCurrencyId(rs.getInt("currencyid"));
-				currency.setCurrencyCode(rs.getString("currencycode"));
-				currency.setCurrencyDescription(rs.getString("currencydesc"));
-				currency.setCreatedBy(rs.getString("createdby"));
-				currency.setCreatedDate(rs.getTimestamp("createddate").toString());
-				currency.setUpdatedBy(rs.getString("updatedby"));
-				currency.setUpdatedDate(rs.getTimestamp("updateddate").toString());
+				tax.setTaxId(rs.getInt("taxid"));
+				tax.setTaxCode(rs.getString("taxcode"));
+				tax.setTaxName(rs.getString("taxname"));
+				tax.setCreatedBy(rs.getString("createdby"));
+				tax.setCreatedDate(rs.getTimestamp("createddate").toString());
+				tax.setUpdatedBy(rs.getString("updatedby"));
+				tax.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 			}
 		} catch (SQLException e) {
 
-			log.error("database operation error in getCurrency : ", e);
+			log.error("database operation error in getTax : ", e);
 			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 		} catch (Exception e) {
 
-			log.error("error in getCurrency : ", e);
+			log.error("error in getTax : ", e);
 			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 		} finally {
 
 			DbUtils.closeAllConnections(ps, con, rs);
 		}
 
-		return currency;
+		return tax;
 	}
 }

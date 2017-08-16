@@ -7,12 +7,16 @@ public class RateDefinitionDTO {
 
 	private Integer rateDefId;
 	private String rateDefName;
-	private String rateDefDesc;
+	private String rateDefDescription;
 	private Integer rateDefDefault;
 	private CurrencyDTO currency;
 	private RateTypeDTO rateType;
 	private Integer rateDefCategoryBase;
 	private TariffDTO tariff;
+	private String createdBy;
+	private String createdDate;
+	private String updatedBy;
+	private String updatedDate;
 	
 	public Integer getRateDefId() {
 		return rateDefId;
@@ -26,11 +30,11 @@ public class RateDefinitionDTO {
 	public void setRateDefName(String rateDefName) {
 		this.rateDefName = rateDefName;
 	}
-	public String getRateDefDesc() {
-		return rateDefDesc;
+	public String getRateDefDescription() {
+		return rateDefDescription;
 	}
-	public void setRateDefDesc(String rateDefDesc) {
-		this.rateDefDesc = rateDefDesc;
+	public void setRateDefDescription(String rateDefDescription) {
+		this.rateDefDescription = rateDefDescription;
 	}
 	public Integer getRateDefDefault() {
 		return rateDefDefault;
@@ -61,5 +65,29 @@ public class RateDefinitionDTO {
 	}
 	public void setTariff(TariffDTO tariff) {
 		this.tariff = tariff;
+	}
+	public String getCreatedBy() {
+		return createdBy;
+	}
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
+	}
+	public String getCreatedDate() {
+		return createdDate;
+	}
+	public void setCreatedDate(String createdDate) {
+		this.createdDate = createdDate;
+	}
+	public String getUpdatedBy() {
+		return updatedBy;
+	}
+	public void setUpdatedBy(String updatedBy) {
+		this.updatedBy = updatedBy;
+	}
+	public String getUpdatedDate() {
+		return updatedDate;
+	}
+	public void setUpdatedDate(String updatedDate) {
+		this.updatedDate = updatedDate;
 	}
 }

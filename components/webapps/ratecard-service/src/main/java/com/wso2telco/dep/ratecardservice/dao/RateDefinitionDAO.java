@@ -39,26 +39,8 @@ public class RateDefinitionDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select ");
-			query.append(
-					"rateDef.rate_defid, rateDef.rate_defname, rateDef.rate_defdesc, rateDef.rate_defdefault, rateDef.currencyid, rateDef.rate_typeid, rateDef.rate_defcategorybase, rateDef.tariffid, ");
-			query.append("currency.currencycode, currency.currencydesc, ");
-			query.append("rateType.rate_typecode, rateType.rate_typedesc, ");
-			query.append(
-					"tariff.tariffname, tariff.tariffdesc, tariff.tariffdefaultval, tariff.tariffmaxcount, tariff.tariffexcessrate, tariff.tariffdefrate, tariff.tariffspcommission, tariff.tariffadscommission, tariff.tariffopcocommission, tariff.tariffsurchargeval, tariff.tariffsurchargeAds, tariff.tariffsurchargeOpco ");
-			query.append("from ");
+			StringBuilder query = new StringBuilder("select * from ");
 			query.append(DatabaseTables.RATE_DEF.getTObject());
-			query.append(" rateDef, ");
-			query.append(DatabaseTables.CURRENCY.getTObject());
-			query.append(" currency, ");
-			query.append(DatabaseTables.RATE_TYPE.getTObject());
-			query.append(" rateType, ");
-			query.append(DatabaseTables.TARIFF.getTObject());
-			query.append(" tariff ");
-			query.append("where ");
-			query.append("rateDef.currencyid = currency.currencyid and ");
-			query.append("rateDef.rate_typeid = rateType.rate_typeid and ");
-			query.append("rateDef.tariffid = tariff.tariffid");
 
 			ps = con.prepareStatement(query.toString());
 
@@ -72,42 +54,24 @@ public class RateDefinitionDAO {
 
 				rateDefinition.setRateDefId(rs.getInt("rate_defid"));
 				rateDefinition.setRateDefName(rs.getString("rate_defname"));
-				rateDefinition.setRateDefDesc(rs.getString("rate_defdesc"));
+				rateDefinition.setRateDefDescription(rs.getString("rate_defdesc"));
 				rateDefinition.setRateDefDefault(rs.getInt("rate_defdefault"));
 				rateDefinition.setRateDefCategoryBase(rs.getInt("rate_defcategorybase"));
+				rateDefinition.setCreatedBy(rs.getString("createdby"));
+				rateDefinition.setCreatedDate(rs.getTimestamp("createddate").toString());
+				rateDefinition.setUpdatedBy(rs.getString("updatedby"));
+				rateDefinition.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 
 				CurrencyDTO currency = new CurrencyDTO();
-
 				currency.setCurrencyId(rs.getInt("currencyid"));
-				currency.setCurrencyCode(rs.getString("currencycode"));
-				currency.setCurrencyDescription(rs.getString("currencydesc"));
-
 				rateDefinition.setCurrency(currency);
 
 				RateTypeDTO rateType = new RateTypeDTO();
-
 				rateType.setRateTypeId(rs.getInt("rate_typeid"));
-				rateType.setRateTypeCode(rs.getString("rate_typecode"));
-				rateType.setRateTypeDesc(rs.getString("rate_typedesc"));
-
 				rateDefinition.setRateType(rateType);
 
 				TariffDTO tariff = new TariffDTO();
-
 				tariff.setTariffId(rs.getInt("tariffid"));
-				tariff.setTariffName(rs.getString("tariffname"));
-				tariff.setTariffDesc(rs.getString("tariffdesc"));
-				tariff.setTariffDefaultVal(rs.getDouble("tariffdefaultval"));
-				tariff.setTariffMaxCount(rs.getInt("tariffmaxcount"));
-				tariff.setTariffExcessRate(rs.getDouble("tariffexcessrate"));
-				tariff.setTariffDefRate(rs.getDouble("tariffdefrate"));
-				tariff.setTariffSPCommission(rs.getDouble("tariffspcommission"));
-				tariff.setTariffAdsCommission(rs.getDouble("tariffadscommission"));
-				tariff.setTariffOpcoCommission(rs.getDouble("tariffopcocommission"));
-				tariff.setTariffSurChargeval(rs.getDouble("tariffsurchargeval"));
-				tariff.setTariffSurChargeAds(rs.getDouble("tariffsurchargeAds"));
-				tariff.setTariffSurChargeOpco(rs.getDouble("tariffsurchargeOpco"));
-
 				rateDefinition.setTariff(tariff);
 
 				rateDefinitions.add(rateDefinition);
@@ -146,21 +110,22 @@ public class RateDefinitionDAO {
 			StringBuilder query = new StringBuilder("insert into ");
 			query.append(DatabaseTables.RATE_DEF.getTObject());
 			query.append(
-					" (rate_defname, rate_defdesc, rate_defdefault, currencyid, rate_typeid, rate_defcategorybase, tariffid)");
+					" (rate_defname, rate_defdesc, rate_defdefault, currencyid, rate_typeid, rate_defcategorybase, tariffid, createdby)");
 			query.append(" values");
-			query.append(" (?, ?, ?, ?, ?, ?, ?)");
+			query.append(" (?, ?, ?, ?, ?, ?, ?, ?)");
 
 			ps = con.prepareStatement(query.toString(), Statement.RETURN_GENERATED_KEYS);
 
 			log.debug("sql query in addRateDefinition : " + ps);
 
 			ps.setString(1, rateDefinition.getRateDefName());
-			ps.setString(2, rateDefinition.getRateDefDesc());
+			ps.setString(2, rateDefinition.getRateDefDescription());
 			ps.setInt(3, rateDefinition.getRateDefDefault());
 			ps.setInt(4, rateDefinition.getCurrency().getCurrencyId());
 			ps.setInt(5, rateDefinition.getRateType().getRateTypeId());
 			ps.setInt(6, rateDefinition.getRateDefCategoryBase());
 			ps.setInt(7, rateDefinition.getTariff().getTariffId());
+			ps.setString(8, rateDefinition.getCreatedBy());
 
 			ps.executeUpdate();
 
@@ -204,27 +169,9 @@ public class RateDefinitionDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select ");
-			query.append(
-					"rateDef.rate_defid, rateDef.rate_defname, rateDef.rate_defdesc, rateDef.rate_defdefault, rateDef.currencyid, rateDef.rate_typeid, rateDef.rate_defcategorybase, rateDef.tariffid, ");
-			query.append("currency.currencycode, currency.currencydesc, ");
-			query.append("rateType.rate_typecode, rateType.rate_typedesc, ");
-			query.append(
-					"tariff.tariffname, tariff.tariffdesc, tariff.tariffdefaultval, tariff.tariffmaxcount, tariff.tariffexcessrate, tariff.tariffdefrate, tariff.tariffspcommission, tariff.tariffadscommission, tariff.tariffopcocommission, tariff.tariffsurchargeval, tariff.tariffsurchargeAds, tariff.tariffsurchargeOpco ");
-			query.append("from ");
+			StringBuilder query = new StringBuilder("select * from ");
 			query.append(DatabaseTables.RATE_DEF.getTObject());
-			query.append(" rateDef, ");
-			query.append(DatabaseTables.CURRENCY.getTObject());
-			query.append(" currency, ");
-			query.append(DatabaseTables.RATE_TYPE.getTObject());
-			query.append(" rateType, ");
-			query.append(DatabaseTables.TARIFF.getTObject());
-			query.append(" tariff ");
-			query.append("where ");
-			query.append("rateDef.currencyid = currency.currencyid and ");
-			query.append("rateDef.rate_typeid = rateType.rate_typeid and ");
-			query.append("rateDef.tariffid = tariff.tariffid and ");
-			query.append("rateDef.rate_defid = ?");
+			query.append(" where rate_defid = ?");
 
 			ps = con.prepareStatement(query.toString());
 
@@ -240,42 +187,24 @@ public class RateDefinitionDAO {
 
 				rateDefinition.setRateDefId(rs.getInt("rate_defid"));
 				rateDefinition.setRateDefName(rs.getString("rate_defname"));
-				rateDefinition.setRateDefDesc(rs.getString("rate_defdesc"));
+				rateDefinition.setRateDefDescription(rs.getString("rate_defdesc"));
 				rateDefinition.setRateDefDefault(rs.getInt("rate_defdefault"));
 				rateDefinition.setRateDefCategoryBase(rs.getInt("rate_defcategorybase"));
+				rateDefinition.setCreatedBy(rs.getString("createdby"));
+				rateDefinition.setCreatedDate(rs.getTimestamp("createddate").toString());
+				rateDefinition.setUpdatedBy(rs.getString("updatedby"));
+				rateDefinition.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 
 				CurrencyDTO currency = new CurrencyDTO();
-
-				currency.setCurrencyId(rs.getInt("currencyid"));
-				currency.setCurrencyCode(rs.getString("currencycode"));
-				currency.setCurrencyDescription(rs.getString("currencydesc"));
-
+				currency.setCurrencyId(rs.getInt("currencyid"));;
 				rateDefinition.setCurrency(currency);
 
 				RateTypeDTO rateType = new RateTypeDTO();
-
 				rateType.setRateTypeId(rs.getInt("rate_typeid"));
-				rateType.setRateTypeCode(rs.getString("rate_typecode"));
-				rateType.setRateTypeDesc(rs.getString("rate_typedesc"));
-
 				rateDefinition.setRateType(rateType);
 
 				TariffDTO tariff = new TariffDTO();
-
 				tariff.setTariffId(rs.getInt("tariffid"));
-				tariff.setTariffName(rs.getString("tariffname"));
-				tariff.setTariffDesc(rs.getString("tariffdesc"));
-				tariff.setTariffDefaultVal(rs.getDouble("tariffdefaultval"));
-				tariff.setTariffMaxCount(rs.getInt("tariffmaxcount"));
-				tariff.setTariffExcessRate(rs.getDouble("tariffexcessrate"));
-				tariff.setTariffDefRate(rs.getDouble("tariffdefrate"));
-				tariff.setTariffSPCommission(rs.getDouble("tariffspcommission"));
-				tariff.setTariffAdsCommission(rs.getDouble("tariffadscommission"));
-				tariff.setTariffOpcoCommission(rs.getDouble("tariffopcocommission"));
-				tariff.setTariffSurChargeval(rs.getDouble("tariffsurchargeval"));
-				tariff.setTariffSurChargeAds(rs.getDouble("tariffsurchargeAds"));
-				tariff.setTariffSurChargeOpco(rs.getDouble("tariffsurchargeOpco"));
-
 				rateDefinition.setTariff(tariff);
 			}
 		} catch (SQLException e) {

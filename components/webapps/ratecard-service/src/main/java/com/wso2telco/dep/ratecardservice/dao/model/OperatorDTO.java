@@ -3,33 +3,33 @@ package com.wso2telco.dep.ratecardservice.dao.model;
 import javax.xml.bind.annotation.XmlRootElement;
 
 @XmlRootElement
-public class CurrencyDTO {
+public class OperatorDTO {
 
-	private Integer currencyId;
-	private String currencyCode;
-	private String currencyDescription;
+	private Integer operatorId;
+	private String operatorName;
+	private String operatorDescription;
 	private String createdBy;
 	private String createdDate;
 	private String updatedBy;
 	private String updatedDate;
 	
-	public Integer getCurrencyId() {
-		return currencyId;
+	public Integer getOperatorId() {
+		return operatorId;
 	}
-	public void setCurrencyId(Integer currencyId) {
-		this.currencyId = currencyId;
+	public void setOperatorId(Integer operatorId) {
+		this.operatorId = operatorId;
 	}
-	public String getCurrencyCode() {
-		return currencyCode;
+	public String getOperatorName() {
+		return operatorName;
 	}
-	public void setCurrencyCode(String currencyCode) {
-		this.currencyCode = currencyCode;
+	public void setOperatorName(String operatorName) {
+		this.operatorName = operatorName;
 	}
-	public String getCurrencyDescription() {
-		return currencyDescription;
+	public String getOperatorDescription() {
+		return operatorDescription;
 	}
-	public void setCurrencyDescription(String currencyDescription) {
-		this.currencyDescription = currencyDescription;
+	public void setOperatorDescription(String operatorDescription) {
+		this.operatorDescription = operatorDescription;
 	}
 	public String getCreatedBy() {
 		return createdBy;
