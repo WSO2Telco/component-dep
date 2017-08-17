@@ -429,6 +429,18 @@ CREATE TRIGGER update_tariff_trigger BEFORE UPDATE ON tariff
     IF OLD.tariffsurchargeOpco <> NEW.tariffsurchargeOpco THEN
       INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tarrif', OLD.tariffid,  'tariffsurchargeOpco', OLD.tariffsurchargeOpco, NEW.tariffsurchargeOpco, 'update' ,NOW());
     END IF;
+    IF OLD.createdby <> NEW.createdby THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tarrif', OLD.tariffid,  'createdby', OLD.createdby, NEW.createdby, 'update' ,NOW());
+    END IF;
+    IF OLD.createddate <> NEW.createddate THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tarrif', OLD.tariffid,  'createddate', OLD.createddate, NEW.createddate, 'update' ,NOW());
+    END IF;
+    IF OLD.updatedby <> NEW.updatedby THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tarrif', OLD.tariffid,  'updatedby', OLD.updatedby, NEW.updatedby, 'update' ,NOW());
+    END IF;
+    IF OLD.updateddate <> NEW.updateddate THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tarrif', OLD.tariffid,  'updateddate', OLD.updateddate, NEW.updateddate, 'update' ,NOW());
+    END IF;
 END ;
 
 DROP TRIGGER IF EXISTS delete_tariff_trigger;
@@ -478,6 +490,18 @@ CREATE TRIGGER update_tax_validity_trigger BEFORE UPDATE ON tax_validity
     END IF;
     IF OLD.taxid <> NEW.taxid THEN
       INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tax_validity', OLD.idtax_validityid, 'taxid', OLD.taxid, NEW.taxid, 'update' ,NOW());
+    END IF;
+    IF OLD.createdby <> NEW.createdby THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tax_validity', OLD.createdby, 'createdby', OLD.createdby, NEW.createdby, 'update' ,NOW());
+    END IF;
+     IF OLD.createddate <> NEW.createddate THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tax_validity', OLD.createddate, 'createddate', OLD.createddate, NEW.createddate, 'update' ,NOW());
+    END IF;
+     IF OLD.updatedby <> NEW.updatedby THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tax_validity', OLD.updatedby, 'updatedby', OLD.updatedby, NEW.updatedby, 'update' ,NOW());
+    END IF;
+     IF OLD.updateddate <> NEW.updateddate THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tax_validity', OLD.updateddate, 'updateddate', OLD.updateddate, NEW.updateddate, 'update' ,NOW());
     END IF;
 END ;
 
@@ -546,6 +570,18 @@ CREATE TRIGGER update_sub_rate_nb_trigger BEFORE UPDATE ON sub_rate_nb
     IF OLD.sub_rate_nbdisdate <> NEW.sub_rate_nbdisdate THEN
       INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_nb', OLD.sub_rate_nbid, 'sub_rate_nbdisdate', OLD.sub_rate_nbdisdate, NEW.sub_rate_nbdisdate, 'update' ,NOW());
     END IF;
+     IF OLD.createdby <> NEW.createdby THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_nb', OLD.createdby, 'createdby', OLD.createdby, NEW.createdby, 'update' ,NOW());
+    END IF;
+     IF OLD.createddate <> NEW.createddate THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_nb', OLD.createddate, 'createddate', OLD.createddate, NEW.createddate, 'update' ,NOW());
+    END IF;
+     IF OLD.updatedby <> NEW.updatedby THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_nb', OLD.updatedby, 'updatedby', OLD.updatedby, NEW.updatedby, 'update' ,NOW());
+    END IF;
+     IF OLD.updateddate <> NEW.updateddate THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_nb', OLD.updateddate, 'updateddate', OLD.updateddate, NEW.updateddate, 'update' ,NOW());
+    END IF;
 END ;
 
 DROP TRIGGER IF EXISTS insert_sub_rate_sb_trigger;
@@ -582,6 +618,18 @@ CREATE TRIGGER update_sub_rate_sb_trigger BEFORE UPDATE ON sub_rate_sb
     END IF;
     IF OLD.sub_rate_sbdisdate <> NEW.sub_rate_sbdisdate THEN
       INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_sb', NEW.sub_rate_sbid, 'sub_rate_sbdisdate', OLD.sub_rate_sbdisdate, NEW.sub_rate_sbdisdate, 'update' ,NOW());
+    END IF;
+     IF OLD.createdby <> NEW.createdby THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_sb', OLD.createdby, 'createdby', OLD.createdby, NEW.createdby, 'update' ,NOW());
+    END IF;
+     IF OLD.createddate <> NEW.createddate THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_sb', OLD.createddate, 'createddate', OLD.createddate, NEW.createddate, 'update' ,NOW());
+    END IF;
+     IF OLD.updatedby <> NEW.updatedby THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_sb', OLD.updatedby, 'updatedby', OLD.updatedby, NEW.updatedby, 'update' ,NOW());
+    END IF;
+     IF OLD.updateddate <> NEW.updateddate THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_sb', OLD.updateddate, 'updateddate', OLD.updateddate, NEW.updateddate, 'update' ,NOW());
     END IF;
 END //
 
