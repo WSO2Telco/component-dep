@@ -1,5 +1,8 @@
 package com.wso2telco.dep.ratecardservice.dao.model;
 
+import javax.xml.bind.annotation.XmlRootElement;
+
+@XmlRootElement
 public class RateCardDTO {
 
 	private RateDefinitionDTO rateDefinition;
