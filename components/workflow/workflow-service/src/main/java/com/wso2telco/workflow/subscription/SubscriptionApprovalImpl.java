@@ -28,6 +28,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 
@@ -47,17 +48,19 @@ public class SubscriptionApprovalImpl implements SubscriptionApproval {
             boolean isAdd = false;
             log.info("appID : " + appID + " | apiName : " + apiName);
             dbservice = new WorkflowDbService();
-            List<Operator> operatorList = dbservice.getOperators();
+            String selectedOperators=dbservice.getSubApprovalOperators(apiName, subHUBApprovalDBUpdateRequest.getApiVersion(), subHUBApprovalDBUpdateRequest.getApiProvider(), appID);
+            List<String> operatorList =  Arrays.asList(selectedOperators.split("\\s*,\\s*"));
             List<OperatorEndPointDTO> operatorEndpoints = dbservice.getOperatorEndpoints();
             log.info("operatorList.size() : " + operatorList.size());
             idList = new int[operatorList.size()];
             for (Iterator iterator = operatorList.iterator(); iterator.hasNext(); ) {
-                Operator operator = (Operator) iterator.next();
-                log.info("operator name : " + operator.getOperatorName() + "| operator id : " + operator.getOperatorId());
+                String operatorName = (String) iterator.next();
+                int operatorId=dbservice.getOperatorIdByName(operatorName);
+                log.info("operator name : " + operatorName + "| operator id : " + operatorId);
                 for (Iterator iterator2 = operatorEndpoints.iterator(); iterator2.hasNext(); ) {
                     OperatorEndPointDTO operatorendpoint = (OperatorEndPointDTO) iterator2.next();
                     log.debug("operatorendpoint.getOperatorid : " + operatorendpoint.getOperatorid());
-                    if (operator.getOperatorId() == operatorendpoint.getOperatorid() && operatorendpoint.getApi().equalsIgnoreCase(apiName)) {
+                    if (operatorId == operatorendpoint.getOperatorid() && operatorendpoint.getApi().equalsIgnoreCase(apiName)) {
                         log.info("operatorendpoint.getId : " + operatorendpoint.getId());
                         idList[counter] = operatorendpoint.getId();
                         isAdd = true;

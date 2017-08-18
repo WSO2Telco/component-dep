@@ -460,11 +460,13 @@ INSERT INTO `mdtxmsgtype` (`msgtypedid`, `msgtype`) VALUES ('1', 'paymentrequest
 -- Quota Limit table.
 --
 CREATE TABLE IF NOT EXISTS `sp_quota_limit` (
-  `idsp_quota_limit` int(11) NOT NULL,
+  `idsp_quota_limit` int(11) NOT NULL AUTO_INCREMENT,
   `serviceProvider` varchar(45) DEFAULT NULL,
   `operatorName` varchar(45) DEFAULT NULL,
   `application` varchar(45) DEFAULT NULL,
   `apiName` varchar(45) DEFAULT NULL,
   `quota_limit` int(11) DEFAULT NULL,
+  `fromDate` date DEFAULT NULL,
+  `toDate` date DEFAULT NULL,
   PRIMARY KEY (`idsp_quota_limit`)
-) ENGINE=InnoDB DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
