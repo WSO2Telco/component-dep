@@ -31,8 +31,18 @@ CREATE TABLE `api` (
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`apiid`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `api`
+--
+
+LOCK TABLES `api` WRITE;
+/*!40000 ALTER TABLE `api` DISABLE KEYS */;
+INSERT INTO `api` VALUES (1,'payment','payment'),(2,'smsmessaging','smsmessaging'),(3,'location','location'),(4,'ussd','ussd');
+/*!40000 ALTER TABLE `api` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `api_operation`
@@ -51,10 +61,20 @@ CREATE TABLE `api_operation` (
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`api_operationid`),
+  UNIQUE KEY `apiid_UNIQUE` (`api_operation`),
   KEY `fk_api_operation_1_idx` (`apiid`),
   CONSTRAINT `fk_api_operation_1` FOREIGN KEY (`apiid`) REFERENCES `api` (`apiid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+-- Dumping data for table `api_operation`
+--
+
+LOCK TABLES `api_operation` WRITE;
+/*!40000 ALTER TABLE `api_operation` DISABLE KEYS */;
+INSERT INTO `api_operation` VALUES (1,1,'Charge','Charge'),(6,1,'ChargeAgainstReservation','ChargeAgainstReservation'),(7,1,'ListChargeOperations','ListChargeOperations'),(2,1,'Refund','Refund'),(3,1,'ReleaseReservation','ReleaseReservation'),(4,1,'ReserveAdditionalAmount','ReserveAdditionalAmount'),(5,1,'ReserveAmount','ReserveAmount'),(10,2,'deliveryInfo','deliveryInfo'),(9,2,'receiveSMS','receiveSMS'),(8,2,'sendsms','sendsms'),(12,2,'StopSubscriptionToDeliveryNotifications','StopSubscriptionToDeliveryNotifications'),(14,2,'StopSubscriptionToMessageNotifcations','StopSubscriptionToMessageNotifcations'),(11,2,'SubscribeToDeliveryNotifications','SubscribeToDeliveryNotifications'),(13,2,'SubscribetoMessageNotifcations','SubscribetoMessageNotifcations'),(15,3,'Location','Location'),(16,4,'USSDInboundCont','USSDInboundCont'),(18,4,'USSDInboundFin','USSDInboundFin'),(17,4,'USSDInboundInit','USSDInboundInit'),(19,4,'USSDOutboundCont','USSDOutboundCont'),(20,4,'USSDOutboundFin','USSDOutboundFin'),(21,4,'USSDOutboundInit','USSDOutboundInit'),(22,4,'USSDSubscription','USSDSubscription');
+/*!40000 ALTER TABLE `api_operation` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `category`
@@ -73,7 +93,7 @@ CREATE TABLE `category` (
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`categoryid`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -92,7 +112,7 @@ CREATE TABLE `currency` (
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`currencyid`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -112,13 +132,14 @@ CREATE TABLE `operation_rate` (
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`operation_rateid`),
+  UNIQUE KEY `operator_id_UNIQUE` (`operator_id`,`api_operationid`,`rate_defid`),
   KEY `fk_operation_rate_1_idx` (`api_operationid`),
   KEY `fk_operation_rate_2_idx` (`rate_defid`),
   KEY `fk_operation_rate_3_idx` (`operator_id`),
-  CONSTRAINT `fk_operation_rate_1` FOREIGN KEY (`api_operationid`) REFERENCES `api_operation` (`api_operationid`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_operation_rate_2` FOREIGN KEY (`rate_defid`) REFERENCES `rate_def` (`rate_defid`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_operation_rate_3` FOREIGN KEY (`operator_id`) REFERENCES `operator` (`operatorId`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+  CONSTRAINT `fk_operation_rate_1` FOREIGN KEY (`operator_id`) REFERENCES `operator` (`operatorId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_operation_rate_2` FOREIGN KEY (`api_operationid`) REFERENCES `api_operation` (`api_operationid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_operation_rate_3` FOREIGN KEY (`rate_defid`) REFERENCES `rate_def` (`rate_defid`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -137,7 +158,7 @@ CREATE TABLE `operator` (
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`operatorId`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -166,7 +187,7 @@ CREATE TABLE `rate_category` (
   CONSTRAINT `fk_rate_category_2` FOREIGN KEY (`tariffid`) REFERENCES `tariff` (`tariffid`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_rate_category_3` FOREIGN KEY (`parentcategoryid`) REFERENCES `category` (`categoryid`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_rate_category_4` FOREIGN KEY (`childcategoryid`) REFERENCES `category` (`categoryid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -196,7 +217,7 @@ CREATE TABLE `rate_def` (
   CONSTRAINT `fk_rate_def_1` FOREIGN KEY (`rate_typeid`) REFERENCES `rate_type` (`rate_typeid`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_rate_def_2` FOREIGN KEY (`currencyid`) REFERENCES `currency` (`currencyid`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_rate_def_3` FOREIGN KEY (`tariffid`) REFERENCES `tariff` (`tariffid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -219,7 +240,7 @@ CREATE TABLE `rate_taxes` (
   KEY `fk_rate_taxes_2_idx` (`taxid`),
   CONSTRAINT `fk_rate_taxes_1` FOREIGN KEY (`rate_defid`) REFERENCES `rate_def` (`rate_defid`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_rate_taxes_2` FOREIGN KEY (`taxid`) REFERENCES `tax` (`taxid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -238,7 +259,7 @@ CREATE TABLE `rate_type` (
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`rate_typeid`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -260,11 +281,12 @@ CREATE TABLE `sub_rate_nb` (
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`sub_rate_nbid`),
+  UNIQUE KEY `api_operationid_UNIQUE` (`api_operationid`,`applicationid`,`rate_defid`),
   KEY `fk_sub_rate_nb_1_idx` (`api_operationid`),
   KEY `fk_sub_rate_nb_2_idx` (`rate_defid`),
   CONSTRAINT `fk_sub_rate_nb_1` FOREIGN KEY (`api_operationid`) REFERENCES `api_operation` (`api_operationid`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_sub_rate_nb_2` FOREIGN KEY (`rate_defid`) REFERENCES `rate_def` (`rate_defid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -287,13 +309,14 @@ CREATE TABLE `sub_rate_sb` (
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`sub_rate_sbid`),
+  UNIQUE KEY `operatorid_UNIQUE` (`operatorid`,`api_operationid`,`applicationid`,`rate_defid`),
   KEY `fk_sub_rate_sb_1_idx` (`operatorid`),
   KEY `fk_sub_rate_sb_2_idx` (`api_operationid`),
   KEY `fk_sub_rate_sb_3_idx` (`rate_defid`),
   CONSTRAINT `fk_sub_rate_sb_1` FOREIGN KEY (`operatorid`) REFERENCES `operator` (`operatorId`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_sub_rate_sb_2` FOREIGN KEY (`api_operationid`) REFERENCES `api_operation` (`api_operationid`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_sub_rate_sb_3` FOREIGN KEY (`rate_defid`) REFERENCES `rate_def` (`rate_defid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -322,7 +345,7 @@ CREATE TABLE `tariff` (
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`tariffid`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -341,7 +364,7 @@ CREATE TABLE `tax` (
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`taxid`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
