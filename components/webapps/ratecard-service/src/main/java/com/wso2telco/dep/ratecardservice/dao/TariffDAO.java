@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.logging.Log;
@@ -113,16 +114,78 @@ public class TariffDAO {
 
 			ps.setString(1, tariff.getTariffName());
 			ps.setString(2, tariff.getTariffDescription());
-			ps.setDouble(3, tariff.getTariffDefaultVal());
-			ps.setInt(4, tariff.getTariffMaxCount());
-			ps.setDouble(5, tariff.getTariffExcessRate());
-			ps.setDouble(6, tariff.getTariffDefRate());
-			ps.setDouble(7, tariff.getTariffSPCommission());
-			ps.setDouble(8, tariff.getTariffAdsCommission());
-			ps.setDouble(9, tariff.getTariffOpcoCommission());
-			ps.setDouble(10, tariff.getTariffSurChargeval());
-			ps.setDouble(11, tariff.getTariffSurChargeAds());
-			ps.setDouble(12, tariff.getTariffSurChargeOpco());
+			
+			Double tariffDefaultVal = tariff.getTariffDefaultVal();
+			if (tariffDefaultVal != null) {
+				ps.setDouble(3, tariffDefaultVal);
+			} else {
+				ps.setNull(3, Types.DOUBLE);
+			}			
+			
+			Integer tariffMaxCount = tariff.getTariffMaxCount();
+			if (tariffMaxCount != null) {
+				ps.setInt(4, tariffMaxCount);
+			} else {
+				ps.setNull(4, Types.INTEGER);
+			}			
+			
+			Double tariffExcessRate = tariff.getTariffExcessRate();
+			if (tariffExcessRate != null) {
+				ps.setDouble(5, tariffExcessRate);
+			} else {
+				ps.setNull(5, Types.DOUBLE);
+			}
+			
+			Double tariffDefRate = tariff.getTariffDefRate();
+			if (tariffDefRate != null) {
+				ps.setDouble(6, tariffDefRate);
+			} else {
+				ps.setNull(6, Types.DOUBLE);
+			}
+			
+			Double tariffSPCommission = tariff.getTariffSPCommission();
+			if (tariffSPCommission != null) {
+				ps.setDouble(7, tariffSPCommission);
+			} else {
+				ps.setNull(7, Types.DOUBLE);
+			}			
+			
+			Double tariffAdsCommission = tariff.getTariffAdsCommission();
+			if (tariffAdsCommission != null) {
+				ps.setDouble(8, tariffAdsCommission);
+			} else {
+				ps.setNull(8, Types.DOUBLE);
+			}			
+			
+			Double tariffOpcoCommission = tariff.getTariffOpcoCommission();
+			if (tariffOpcoCommission != null) {
+				ps.setDouble(9, tariffOpcoCommission);
+			} else {
+				ps.setNull(9, Types.DOUBLE);
+			}			
+			
+			Double tariffSurChargeval = tariff.getTariffSurChargeval();
+			if (tariffSurChargeval != null) {
+				ps.setDouble(10, tariffSurChargeval);
+			} else {
+				ps.setNull(10, Types.DOUBLE);
+			}			
+			
+			Double tariffSurChargeAds = tariff.getTariffSurChargeAds();
+			if (tariffSurChargeAds != null) {
+				ps.setDouble(11, tariffSurChargeAds);
+			} else {
+				ps.setNull(11, Types.DOUBLE);
+			}
+			
+			
+			Double tariffSurChargeOpco = tariff.getTariffSurChargeOpco();
+			if (tariffSurChargeOpco != null) {
+				ps.setDouble(12, tariffSurChargeOpco);
+			} else {
+				ps.setNull(12, Types.DOUBLE);
+			}			
+			
 			ps.setString(13, tariff.getCreatedBy());
 
 			ps.executeUpdate();
