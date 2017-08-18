@@ -42,7 +42,10 @@ public interface SubscriptionWorkflowApi {
     @Headers("Content-Type: application/json")
     String subscriptionGetOperators (@Param("apiname") String apiName, @Param("apiversion") String apiVersion, 
     		@Param("apiprovider")String apiProvider,@Param("appid") int appId) throws SubscriptionApprovalWorkflowException;
-    
-    
-    
+
+    @RequestLine("GET workflow/approval/subscription/getApprovedOrPendingOperators?appid={appid}")
+    @Headers("Content-Type: application/json")
+    String getApplicationApprovedOrPendingOperators (@Param("appid") int appId) throws SubscriptionApprovalWorkflowException;
+
+
 }
