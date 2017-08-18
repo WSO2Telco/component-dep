@@ -565,7 +565,7 @@ public class WorkflowDbService {
                 throw new Exception("Connection not found.");
             }
 
-            String query = new String("SELECT operatorname FROM operatorapps OA LEFT JOIN operators O ON OA.operatorid=O.ID WHERE (OA.isactive=0 OR OA.isactive=1) AND OA.applicationid=?");
+            String query = "SELECT operatorname FROM operatorapps OA LEFT JOIN operators O ON OA.operatorid=O.ID WHERE OA.isactive IN (0,1) AND OA.applicationid=?";
 
             ps = con.prepareStatement(query);
             ps.setInt(1, applicationID);
