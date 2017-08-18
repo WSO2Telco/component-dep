@@ -291,4 +291,21 @@ public class BlackListWhiteListService {
 	public String[] getAPIInfo(int apiId) throws BusinessException {
 		return dao.getAPIInfo(apiId);
 	}
+
+	//assumes case will match in all cases
+	public String getSPNameList() throws Exception {
+		Gson gson = new GsonBuilder().create();
+
+		List<String> adminUsers = dao.getAdminUsers();
+		List<String> SPs = dao.generateSPNameList();
+
+		for(String name : adminUsers){
+		    if(SPs.contains(name)){
+		        SPs.remove(name);
+            }
+        }
+
+		return gson.toJson(SPs);
+	}
+
 }

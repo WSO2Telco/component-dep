@@ -139,4 +139,24 @@ public class SQLConstants {
 			"SELECT wh.msisdn FROM subscription_whitelist wh,"+DbUtils.getDbNames().get(DataSourceNames.WSO2AM_DB)+".AM_SUBSCRIPTION sub " +
 			"where sub.created_by=? and wh.api_id=? and wh.application_id=? and wh.subscriptionId=sub.subscription_Id ";
 
+	public static final String GET_SP_NAMES = "SELECT distinct(authz_user) from" +
+			"  (SELECT ac.authz_user" +
+			"   FROM " + OparatorTable.IDN_OAUTH2_ACCESS_TOKEN + " ac, " + OparatorTable.IDN_OAUTH_CONSUMER_APPS + " ca, " +
+			OparatorTable.AM_APPLICATION.getTObject() + " am, " +
+			OparatorTable.AM_APPLICATION_KEY_MAPPING.getTObject() + " km" +
+			"   WHERE ac .CONSUMER_KEY_ID = ca.ID" +
+			"     AND km .application_id = am.application_id" +
+			"     AND km .consumer_key = ca.consumer_key" +
+			"     AND ac .authz_user = ca.username" +
+			"     AND user_type = 'APPLICATION'" +
+			"     AND token_State = 'Active') AS dummy";
+
+	public static final String GET_ADMIN_USERS = "SELECT usr.um_user_name " +
+			"FROM " + OparatorTable.UM_USER + " usr, " + OparatorTable.UM_USER_ROLE + " usr_role " +
+			"WHERE usr.UM_ID = usr_role.UM_USER_ID " +
+			"  AND usr_role.UM_ROLE_ID = " +
+			"    (SELECT role.UM_ID " +
+			"     FROM " + OparatorTable.UM_ROLE + " role " +
+			"     WHERE role.UM_ROLE_NAME = 'admin')";
+
 }
