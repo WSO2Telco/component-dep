@@ -29,6 +29,8 @@ import com.wso2telco.workflow.subscription.SubscriptionApprovalImpl;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import java.util.ArrayList;
+import java.util.List;
 
 @Path("/approval")
 public class WorkflowApprovalService {
@@ -159,6 +161,26 @@ public class WorkflowApprovalService {
 			t = workflowDbService.getSubApprovalOperators(apiName, apiVersion, apiProvider, appId);
 
 			return Response.status(Response.Status.OK).entity("\"" + t + "\"").build();
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+	@GET
+	@Path("subscription/getApprovedOrPendingOperators")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getApplicationApprovedOrPendingOperators(@QueryParam("appid") int appId) {
+		try {
+			List<String> operatorList;
+			operatorList = workflowDbService.getApplicationApprovedOrPendingOperators(appId);
+
+			String commaSeparatedOperators = "";
+
+			if (operatorList != null && operatorList instanceof ArrayList) {
+				commaSeparatedOperators = String.join(",", operatorList);
+			}
+
+			return Response.status(Response.Status.OK).entity("\"" + commaSeparatedOperators + "\"").build();
 		} catch (Exception e) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
