@@ -17,15 +17,25 @@
 package com.wso2telco.services.qs;
 
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
+import java.util.Set;
 
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 import org.apache.log4j.Logger;
+import org.wso2.carbon.apimgt.api.model.Application;
+import org.wso2.carbon.apimgt.api.model.Subscriber;
+import org.wso2.carbon.apimgt.impl.dao.ApiMgtDAO;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -39,7 +49,7 @@ import com.wso2telco.services.qs.service.QuotaLimitService;
 public class Queries {
 
 	private static final Logger LOG = Logger.getLogger(Queries.class.getName());
-	QuotaLimitService quotaService;
+	private static QuotaLimitService quotaService;
 
 	{
 		quotaService = new QuotaLimitService();
@@ -103,6 +113,13 @@ public class Queries {
 		Gson gson = new GsonBuilder().serializeNulls().create();
 		QuotaBean quotaBean = gson.fromJson(jsonBody, QuotaBean.class);
 
+		if (quotaBean.getOperator().equalsIgnoreCase("_ALL_")) {
+			quotaBean.setOperator(null);
+		}
+
+		/*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
+		String fromDate = sdf.format(quotaBean.getFromDate());*/
+
 		try {
 			quotaService.addQuotaLimit(quotaBean);
 
@@ -116,4 +133,93 @@ public class Queries {
 			return Response.status(Response.Status.BAD_REQUEST).entity(errorMSG.toString()).build();
 		}
 	}
+
+	@GET
+	@Path("/getOperatorsBySubscriber")
+	@Produces("application/json")
+	public static Response getOperatorsBySubscriber(@QueryParam("subscriberName") String subscriberName)throws SQLException,Exception {
+		String operatorListJsonStr="{\"result\": \"empty\"}";
+		List<String> operatorList = new ArrayList<String>();
+		List<String> tempOperatorList = new ArrayList<String>();
+		ApiMgtDAO apiMgtDAO = ApiMgtDAO.getInstance();
+		Application[] applications = apiMgtDAO.getApplications(new Subscriber(subscriberName), null);
+		if (applications != null && applications.length > 0) {
+			for (Application application : applications) {
+				int tempApplicationId = application.getId();
+				List<String> tempOperatorNames = new ArrayList<String>();
+				tempOperatorNames = QuotaLimitService.getOperatorNamesByApplication(tempApplicationId);
+				for (String operator : tempOperatorNames) {
+					String tempOperator = operator;
+					tempOperatorList.add(tempOperator);
+				}
+			}
+		} else {
+			LOG.info("Application list for the provided subscriber is null or empty.");
+		}
+		operatorList.addAll(removeDuplicateWithOrder(tempOperatorList));
+		if (!(operatorList.size()<1||operatorList.isEmpty())) {
+			Gson gson=new Gson();
+			operatorListJsonStr= gson.toJson(operatorList);
+		}
+		return Response.status(Response.Status.OK).entity(operatorListJsonStr).type(MediaType.APPLICATION_JSON).build();
+	}
+
+	@GET
+	@Path("/getSubscribersByOperator")
+	@Produces("application/json")
+	public static Response getSubscribersByOperator(@QueryParam("operatorName") String operatorName)throws SQLException, Exception{
+        String subscribersJsonStr="{\"result\": \"empty\"}";
+        List<String> subscribers = null;
+        try {
+        	if (operatorName.equalsIgnoreCase("_ALL_")) {
+        		subscribers = QuotaLimitService.getAllSubscribers();
+			}else{
+				subscribers = getSubscribersListByOperator(operatorName);
+			}
+
+            if (subscribers != null) {
+            	Gson gson=new Gson();
+        		subscribersJsonStr= gson.toJson(subscribers);
+            }
+        } catch (Exception e) {
+            LOG.error("Error occurred getSubscribersByOperator",e);
+        }
+		return Response.status(Response.Status.OK).entity(subscribersJsonStr).type(MediaType.APPLICATION_JSON).build();
+    }
+
+
+	public static List<String> getSubscribersListByOperator(String operatorName) throws SQLException, Exception {
+		List<Integer> applicationIds = QuotaLimitService.getApplicationsByOperator(operatorName);
+		List<String> subscribers = new ArrayList<String>();
+		List<String> tempSubscribers = new ArrayList<String>();
+		for (Integer applicationId : applicationIds) {
+			ApiMgtDAO apiMgtDAO = ApiMgtDAO.getInstance();
+			try {
+				Application application = apiMgtDAO.getApplicationById(applicationId);
+				int tempSubscriberId = application.getSubscriber().getId();
+				String tempSubscriberName = apiMgtDAO.getSubscriber(tempSubscriberId).getName();
+				tempSubscribers.add(tempSubscriberName);
+			} catch (NullPointerException ne) {
+				continue;
+			}
+		}
+		subscribers.addAll(removeDuplicateWithOrder(tempSubscribers));
+		return subscribers;
+	}
+
+	@SuppressWarnings({ "rawtypes", "unchecked" })
+	public static List<String> removeDuplicateWithOrder(List<String> arlList) {
+		Set set = new HashSet();
+		List newList = new ArrayList();
+		for (Iterator iter = arlList.iterator(); iter.hasNext();) {
+			Object element = iter.next();
+			if (set.add(element)) {
+				newList.add(element);
+			}
+		}
+		arlList.clear();
+		arlList.addAll(newList);
+		return arlList;
+	}
+
 }

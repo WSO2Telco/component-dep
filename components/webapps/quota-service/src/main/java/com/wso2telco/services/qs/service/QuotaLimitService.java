@@ -1,13 +1,13 @@
 package com.wso2telco.services.qs.service;
 
+import java.sql.SQLException;
 import java.util.ArrayList;
-import java.util.Date;
+import java.util.Collections;
 import java.util.List;
 
-import org.apache.bcel.generic.RETURN;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.apache.regexp.recompile;
+import org.wso2.carbon.apimgt.usage.client.exception.APIMgtUsageQueryServiceClientException;
 
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.exception.GenaralError;
@@ -78,5 +78,23 @@ public class QuotaLimitService {
 		}
 		return checkIfDatesOverlap;
 	}
+
+	public  static List<String> getOperatorNamesByApplication(int applicationId) throws Exception, SQLException {
+		return QuotaLimitDao.getOperatorNamesByApplication(applicationId);
+	}
+
+	public  static List<Integer> getApplicationsByOperator(String operatorName) throws Exception, SQLException {
+		return QuotaLimitDao.getApplicationsByOperator(operatorName);
+	}
+
+	public static List<String> getAllSubscribers() {
+		List<String> subscriptions = QuotaLimitDao.getAllSubscribers();
+		Collections.sort(subscriptions, String.CASE_INSENSITIVE_ORDER);
+		return subscriptions;
+
+	}
+
+
+
 
 }
