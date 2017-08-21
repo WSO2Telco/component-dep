@@ -26,7 +26,7 @@ CREATE TABLE `api` (
   `apiid` int(11) NOT NULL AUTO_INCREMENT,
   `apiname` varchar(45) NOT NULL,
   `apidesc` varchar(45) DEFAULT NULL,
-  `createdby` varchar(255) NOT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -40,7 +40,7 @@ CREATE TABLE `api` (
 
 LOCK TABLES `api` WRITE;
 /*!40000 ALTER TABLE `api` DISABLE KEYS */;
-INSERT INTO `api` VALUES (1,'payment','payment'),(2,'smsmessaging','smsmessaging'),(3,'location','location'),(4,'ussd','ussd');
+INSERT INTO `api` (`apiid`, `apiname`, `apidesc`, `createdby`) VALUES (1,'payment','payment','admin'),(2,'smsmessaging','smsmessaging','admin'),(3,'location','location','admin'),(4,'ussd','ussd','admin');
 /*!40000 ALTER TABLE `api` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -56,7 +56,7 @@ CREATE TABLE `api_operation` (
   `apiid` int(11) NOT NULL,
   `api_operation` varchar(45) NOT NULL,
   `api_operationcode` varchar(45) NOT NULL,
-  `createdby` varchar(255) NOT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -72,7 +72,7 @@ CREATE TABLE `api_operation` (
 
 LOCK TABLES `api_operation` WRITE;
 /*!40000 ALTER TABLE `api_operation` DISABLE KEYS */;
-INSERT INTO `api_operation` VALUES (1,1,'Charge','Charge'),(6,1,'ChargeAgainstReservation','ChargeAgainstReservation'),(7,1,'ListChargeOperations','ListChargeOperations'),(2,1,'Refund','Refund'),(3,1,'ReleaseReservation','ReleaseReservation'),(4,1,'ReserveAdditionalAmount','ReserveAdditionalAmount'),(5,1,'ReserveAmount','ReserveAmount'),(10,2,'deliveryInfo','deliveryInfo'),(9,2,'receiveSMS','receiveSMS'),(8,2,'sendsms','sendsms'),(12,2,'StopSubscriptionToDeliveryNotifications','StopSubscriptionToDeliveryNotifications'),(14,2,'StopSubscriptionToMessageNotifcations','StopSubscriptionToMessageNotifcations'),(11,2,'SubscribeToDeliveryNotifications','SubscribeToDeliveryNotifications'),(13,2,'SubscribetoMessageNotifcations','SubscribetoMessageNotifcations'),(15,3,'Location','Location'),(16,4,'USSDInboundCont','USSDInboundCont'),(18,4,'USSDInboundFin','USSDInboundFin'),(17,4,'USSDInboundInit','USSDInboundInit'),(19,4,'USSDOutboundCont','USSDOutboundCont'),(20,4,'USSDOutboundFin','USSDOutboundFin'),(21,4,'USSDOutboundInit','USSDOutboundInit'),(22,4,'USSDSubscription','USSDSubscription');
+INSERT INTO `api_operation` (`api_operationid`, `apiid`, `api_operation`, `api_operationcode`, `createdby`) VALUES (1,1,'Charge','Charge','admin'),(6,1,'ChargeAgainstReservation','ChargeAgainstReservation','admin'),(7,1,'ListChargeOperations','ListChargeOperations','admin'),(2,1,'Refund','Refund','admin'),(3,1,'ReleaseReservation','ReleaseReservation','admin'),(4,1,'ReserveAdditionalAmount','ReserveAdditionalAmount','admin'),(5,1,'ReserveAmount','ReserveAmount','admin'),(10,2,'deliveryInfo','deliveryInfo','admin'),(9,2,'receiveSMS','receiveSMS','admin'),(8,2,'sendsms','sendsms','admin'),(12,2,'StopSubscriptionToDeliveryNotifications','StopSubscriptionToDeliveryNotifications','admin'),(14,2,'StopSubscriptionToMessageNotifcations','StopSubscriptionToMessageNotifcations','admin'),(11,2,'SubscribeToDeliveryNotifications','SubscribeToDeliveryNotifications','admin'),(13,2,'SubscribetoMessageNotifcations','SubscribetoMessageNotifcations','admin'),(15,3,'Location','Location','admin'),(16,4,'USSDInboundCont','USSDInboundCont','admin'),(18,4,'USSDInboundFin','USSDInboundFin','admin'),(17,4,'USSDInboundInit','USSDInboundInit','admin'),(19,4,'USSDOutboundCont','USSDOutboundCont','admin'),(20,4,'USSDOutboundFin','USSDOutboundFin','admin'),(21,4,'USSDOutboundInit','USSDOutboundInit','admin'),(22,4,'USSDSubscription','USSDSubscription','admin');
 /*!40000 ALTER TABLE `api_operation` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -88,7 +88,7 @@ CREATE TABLE `category` (
   `categoryname` varchar(45) NOT NULL,
   `categorycode` varchar(45) NOT NULL,
   `categorydesc` varchar(45) DEFAULT NULL,
-  `createdby` varchar(255) NOT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -107,7 +107,7 @@ CREATE TABLE `currency` (
   `currencyid` int(11) NOT NULL AUTO_INCREMENT,
   `currencycode` varchar(45) NOT NULL,
   `currencydesc` varchar(45) DEFAULT NULL,
-  `createdby` varchar(255) NOT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -127,7 +127,7 @@ CREATE TABLE `operation_rate` (
   `operator_id` int(11) DEFAULT NULL,
   `api_operationid` int(11) NOT NULL,
   `rate_defid` int(11) NOT NULL,
-  `createdby` varchar(255) NOT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -153,7 +153,7 @@ CREATE TABLE `operator` (
   `operatorId` int(11) NOT NULL AUTO_INCREMENT,
   `operatorname` varchar(45) NOT NULL,
   `operatordesc` varchar(45) DEFAULT NULL,
-  `createdby` varchar(255) NOT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -174,7 +174,7 @@ CREATE TABLE `rate_category` (
   `parentcategoryid` int(11) NOT NULL,
   `childcategoryid` int(11) DEFAULT NULL,
   `tariffid` int(11) NOT NULL,
-  `createdby` varchar(255) NOT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -206,7 +206,7 @@ CREATE TABLE `rate_def` (
   `rate_typeid` int(11) NOT NULL,
   `rate_defcategorybase` tinyint(4) NOT NULL,
   `tariffid` int(11) NOT NULL,
-  `createdby` varchar(255) NOT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -231,7 +231,7 @@ CREATE TABLE `rate_taxes` (
   `rate_taxesid` int(11) NOT NULL AUTO_INCREMENT,
   `rate_defid` int(11) NOT NULL,
   `taxid` int(11) NOT NULL,
-  `createdby` varchar(255) NOT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -254,7 +254,7 @@ CREATE TABLE `rate_type` (
   `rate_typeid` int(11) NOT NULL AUTO_INCREMENT,
   `rate_typecode` varchar(45) NOT NULL,
   `rate_typedesc` varchar(45) DEFAULT NULL,
-  `createdby` varchar(255) NOT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -276,7 +276,7 @@ CREATE TABLE `sub_rate_nb` (
   `rate_defid` int(11) NOT NULL,
   `sub_rate_nbactdate` date DEFAULT NULL,
   `sub_rate_nbdisdate` date DEFAULT NULL,
-  `createdby` varchar(255) NOT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -304,7 +304,7 @@ CREATE TABLE `sub_rate_sb` (
   `rate_defid` int(11) NOT NULL,
   `sub_rate_sbactdate` date DEFAULT NULL,
   `sub_rate_sbdisdate` date DEFAULT NULL,
-  `createdby` varchar(255) NOT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -340,7 +340,7 @@ CREATE TABLE `tariff` (
   `tariffsurchargeval` double DEFAULT NULL,
   `tariffsurchargeAds` double DEFAULT NULL,
   `tariffsurchargeOpco` double DEFAULT NULL,
-  `createdby` varchar(255) NOT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -359,7 +359,7 @@ CREATE TABLE `tax` (
   `taxid` int(11) NOT NULL AUTO_INCREMENT,
   `taxcode` varchar(45) NOT NULL,
   `taxname` varchar(45) NOT NULL,
-  `createdby` varchar(255) NOT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -380,7 +380,7 @@ CREATE TABLE `tax_validity` (
   `tax_validitydisdate` date NOT NULL,
   `tax_validityval` double NOT NULL,
   `taxid` int(11) NOT NULL,
-  `createdby` varchar(255) NOT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
