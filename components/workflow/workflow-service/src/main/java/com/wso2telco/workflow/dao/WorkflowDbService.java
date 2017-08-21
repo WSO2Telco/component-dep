@@ -551,4 +551,38 @@ public class WorkflowDbService {
         return isExist;
 
     }
+
+    public List<String> getApplicationApprovedOrPendingOperators(int applicationID)
+            throws Exception, BusinessException {
+        List<String> operators = new ArrayList();
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        try {
+            con = dbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+            if (con == null) {
+                throw new Exception("Connection not found.");
+            }
+
+            String query = "SELECT operatorname FROM operatorapps OA LEFT JOIN operators O ON OA.operatorid=O.ID WHERE OA.isactive IN (0,1) AND OA.applicationid=?";
+
+            ps = con.prepareStatement(query);
+            ps.setInt(1, applicationID);
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                operators.add(rs.getString("operatorname"));
+            }
+
+        } catch (SQLException e) {
+            throw new SQLException();
+        } catch (Exception e) {
+            throw new BusinessException(GenaralError.UNDEFINED);
+        } finally {
+            dbUtils.closeAllConnections(ps, con, rs);
+        }
+
+        return operators;
+    }
 }

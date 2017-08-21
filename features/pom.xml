@@ -50,6 +50,7 @@
         <module>com.wso2telco.dep.server.startup.observer.feature</module>
         <module>com.wso2telco.dep.logging.extension.feature</module>
 		<module>com.wso2telco.dep.quota.service.feature</module>
+        <module>com.wso2telco.dep.ratecard.service.feature</module>
     </modules>
 </project>
 

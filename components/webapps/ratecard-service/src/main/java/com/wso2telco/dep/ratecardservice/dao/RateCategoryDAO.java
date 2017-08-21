@@ -5,6 +5,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.List;
 import org.apache.commons.logging.Log;
@@ -50,7 +51,14 @@ public class RateCategoryDAO {
 
 			ps.setInt(1, rateCategory.getRateDefinition().getRateDefId());
 			ps.setInt(2, rateCategory.getCategory().getCategoryId());
-			ps.setInt(3, rateCategory.getSubCategory().getCategoryId());
+			Integer subCategoryId = rateCategory.getSubCategory().getCategoryId();
+
+			if (subCategoryId != null) {
+				ps.setInt(3, subCategoryId);
+			} else {
+				ps.setNull(3, Types.INTEGER);
+			}
+
 			ps.setInt(4, rateCategory.getTariff().getTariffId());
 			ps.setString(5, rateCategory.getCreatedBy());
 
@@ -103,7 +111,7 @@ public class RateCategoryDAO {
 			ps = con.prepareStatement(query.toString());
 
 			log.debug("sql query in getRateCategories : " + ps);
-			
+
 			ps.setInt(1, rateDefId);
 
 			rs = ps.executeQuery();
@@ -113,23 +121,23 @@ public class RateCategoryDAO {
 				RateCategoryDTO rateCategory = new RateCategoryDTO();
 
 				rateCategory.setRateCategoryId(rs.getInt("rate_category_id"));
-				
+
 				RateDefinitionDTO rateDefinition = new RateDefinitionDTO();
 				rateDefinition.setRateDefId(rs.getInt("rate_defid"));
 				rateCategory.setRateDefinition(rateDefinition);
-				
+
 				CategoryDTO category = new CategoryDTO();
 				category.setCategoryId(rs.getInt("parentcategoryid"));
 				rateCategory.setCategory(category);
-				
+
 				CategoryDTO subCategory = new CategoryDTO();
 				subCategory.setCategoryId(rs.getInt("childcategoryid"));
 				rateCategory.setSubCategory(subCategory);
-				
+
 				TariffDTO tariff = new TariffDTO();
 				tariff.setTariffId(rs.getInt("tariffid"));
 				rateCategory.setTariff(tariff);
-				
+
 				rateCategory.setCreatedBy(rs.getString("createdby"));
 				rateCategory.setCreatedDate(rs.getTimestamp("createddate").toString());
 				rateCategory.setUpdatedBy(rs.getString("updatedby"));
@@ -152,7 +160,7 @@ public class RateCategoryDAO {
 
 		return rateCategories;
 	}
-	
+
 	public RateCategoryDTO getRateCategory(int rateCategoryId) throws Exception {
 
 		RateCategoryDTO rateCategory = null;
@@ -176,7 +184,7 @@ public class RateCategoryDAO {
 			ps = con.prepareStatement(query.toString());
 
 			log.debug("sql query in getRateCategory : " + ps);
-			
+
 			ps.setInt(1, rateCategoryId);
 
 			rs = ps.executeQuery();
@@ -186,23 +194,23 @@ public class RateCategoryDAO {
 				rateCategory = new RateCategoryDTO();
 
 				rateCategory.setRateCategoryId(rs.getInt("rate_category_id"));
-				
+
 				RateDefinitionDTO rateDefinition = new RateDefinitionDTO();
 				rateDefinition.setRateDefId(rs.getInt("rate_defid"));
 				rateCategory.setRateDefinition(rateDefinition);
-				
+
 				CategoryDTO category = new CategoryDTO();
 				category.setCategoryId(rs.getInt("parentcategoryid"));
 				rateCategory.setCategory(category);
-				
+
 				CategoryDTO subCategory = new CategoryDTO();
 				subCategory.setCategoryId(rs.getInt("childcategoryid"));
 				rateCategory.setSubCategory(subCategory);
-				
+
 				TariffDTO tariff = new TariffDTO();
 				tariff.setTariffId(rs.getInt("tariffid"));
 				rateCategory.setTariff(tariff);
-				
+
 				rateCategory.setCreatedBy(rs.getString("createdby"));
 				rateCategory.setCreatedDate(rs.getTimestamp("createddate").toString());
 				rateCategory.setUpdatedBy(rs.getString("updatedby"));

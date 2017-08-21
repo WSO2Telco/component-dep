@@ -38,7 +38,9 @@ import com.wso2telco.workflow.approval.util.Constants;
 
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.List;
 
 public class HubAdminDbUpdater implements JavaDelegate {
 
@@ -80,16 +82,22 @@ public class HubAdminDbUpdater implements JavaDelegate {
         Collection<String> operatorNames = new ArrayList<String>();
         Collection<String> operatorsRoles = new ArrayList<String>();
 
-            for (String operator : operatorList) {
-                    operatorNames.add(operator.trim().toLowerCase());
-                    operatorsRoles.add(operator.trim()+Constants.ADMIN_ROLE);
+        // Get approved or pending operator list
+        String validOperators = api.getApplicationApprovedOrPendingOperators(applicationId);
+        List<String> validOperatorList = Arrays.asList(validOperators.split(","));
 
-                    // TODO: make debug
-                    log.info("Operator '" + operator.trim() + "' added to operatorList");
+        for (String operator : operatorList) {
+            if(validOperatorList.contains(operator)) {
+                operatorNames.add(operator.trim().toLowerCase());
+                operatorsRoles.add(operator.trim() + Constants.ADMIN_ROLE);
+
+                // TODO: make debug
+                log.info("Operator '" + operator.trim() + "' added to operatorList");
             }
+        }
 
-            arg0.setVariable("operatorList", operatorNames);
-            arg0.setVariable("operatorRoles", operatorsRoles);
+        arg0.setVariable("operatorList", operatorNames);
+        arg0.setVariable("operatorRoles", operatorsRoles);
 
         
         log.info("In HubDataUpdater, Hub admin approval status: " + status);

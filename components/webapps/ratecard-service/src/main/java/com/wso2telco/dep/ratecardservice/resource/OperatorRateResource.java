@@ -1,6 +1,5 @@
 package com.wso2telco.dep.ratecardservice.resource;
 
-import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.PathParam;
@@ -14,30 +13,31 @@ import org.apache.commons.logging.LogFactory;
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.exception.ServiceError;
 import com.wso2telco.dep.ratecardservice.dao.model.ErrorDTO;
-import com.wso2telco.dep.ratecardservice.dao.model.OperationRateDTO;
-import com.wso2telco.dep.ratecardservice.service.OperationRateService;
+import com.wso2telco.dep.ratecardservice.dao.model.RateDTO;
+import com.wso2telco.dep.ratecardservice.service.RateService;
 
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class OperatorRateResource {
 
 	private final Log log = LogFactory.getLog(OperationRateResource.class);
-	private OperationRateService operationRateService = new OperationRateService();
-	
-	@GET
-	public Response getOperationRatesByAPIName(@PathParam("operatorName") String operatorName, @QueryParam("api") String apiName) {
+	private RateService rateService = new RateService();
 
-		List<OperationRateDTO> operationRates = null;
+	@GET
+	public Response getOperationRatesByAPIName(@PathParam("operatorName") String operatorName,
+			@QueryParam("api") String apiName) {
+
+		RateDTO rate = null;
 		Status responseCode = null;
 		Object responseString = null;
 
 		try {
 
-			operationRates = operationRateService.getOperationRates(apiName, operatorName.toUpperCase());
+			rate = rateService.getOperationRates(apiName, operatorName.toUpperCase());
 
-			if (!operationRates.isEmpty()) {
+			if (rate != null) {
 
-				responseString = operationRates;
+				responseString = rate;
 				responseCode = Response.Status.OK;
 			} else {
 

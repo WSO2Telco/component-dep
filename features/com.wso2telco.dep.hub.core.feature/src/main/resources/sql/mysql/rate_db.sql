@@ -26,13 +26,23 @@ CREATE TABLE `api` (
   `apiid` int(11) NOT NULL AUTO_INCREMENT,
   `apiname` varchar(45) NOT NULL,
   `apidesc` varchar(45) DEFAULT NULL,
-  `createdby` varchar(255) NOT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`apiid`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `api`
+--
+
+LOCK TABLES `api` WRITE;
+/*!40000 ALTER TABLE `api` DISABLE KEYS */;
+INSERT INTO `api` (`apiid`, `apiname`, `apidesc`, `createdby`) VALUES (1,'payment','payment','admin'),(2,'smsmessaging','smsmessaging','admin'),(3,'location','location','admin'),(4,'ussd','ussd','admin');
+/*!40000 ALTER TABLE `api` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `api_operation`
@@ -46,15 +56,25 @@ CREATE TABLE `api_operation` (
   `apiid` int(11) NOT NULL,
   `api_operation` varchar(45) NOT NULL,
   `api_operationcode` varchar(45) NOT NULL,
-  `createdby` varchar(255) NOT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`api_operationid`),
+  UNIQUE KEY `apiid_UNIQUE` (`api_operation`),
   KEY `fk_api_operation_1_idx` (`apiid`),
   CONSTRAINT `fk_api_operation_1` FOREIGN KEY (`apiid`) REFERENCES `api` (`apiid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+-- Dumping data for table `api_operation`
+--
+
+LOCK TABLES `api_operation` WRITE;
+/*!40000 ALTER TABLE `api_operation` DISABLE KEYS */;
+INSERT INTO `api_operation` (`api_operationid`, `apiid`, `api_operation`, `api_operationcode`, `createdby`) VALUES (1,1,'Charge','Charge','admin'),(6,1,'ChargeAgainstReservation','ChargeAgainstReservation','admin'),(7,1,'ListChargeOperations','ListChargeOperations','admin'),(2,1,'Refund','Refund','admin'),(3,1,'ReleaseReservation','ReleaseReservation','admin'),(4,1,'ReserveAdditionalAmount','ReserveAdditionalAmount','admin'),(5,1,'ReserveAmount','ReserveAmount','admin'),(10,2,'deliveryInfo','deliveryInfo','admin'),(9,2,'receiveSMS','receiveSMS','admin'),(8,2,'sendsms','sendsms','admin'),(12,2,'StopSubscriptionToDeliveryNotifications','StopSubscriptionToDeliveryNotifications','admin'),(14,2,'StopSubscriptionToMessageNotifcations','StopSubscriptionToMessageNotifcations','admin'),(11,2,'SubscribeToDeliveryNotifications','SubscribeToDeliveryNotifications','admin'),(13,2,'SubscribetoMessageNotifcations','SubscribetoMessageNotifcations','admin'),(15,3,'Location','Location','admin'),(16,4,'USSDInboundCont','USSDInboundCont','admin'),(18,4,'USSDInboundFin','USSDInboundFin','admin'),(17,4,'USSDInboundInit','USSDInboundInit','admin'),(19,4,'USSDOutboundCont','USSDOutboundCont','admin'),(20,4,'USSDOutboundFin','USSDOutboundFin','admin'),(21,4,'USSDOutboundInit','USSDOutboundInit','admin'),(22,4,'USSDSubscription','USSDSubscription','admin');
+/*!40000 ALTER TABLE `api_operation` ENABLE KEYS */;
+UNLOCK TABLES;
 
 --
 -- Table structure for table `category`
@@ -68,12 +88,12 @@ CREATE TABLE `category` (
   `categoryname` varchar(45) NOT NULL,
   `categorycode` varchar(45) NOT NULL,
   `categorydesc` varchar(45) DEFAULT NULL,
-  `createdby` varchar(255) NOT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`categoryid`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -87,12 +107,12 @@ CREATE TABLE `currency` (
   `currencyid` int(11) NOT NULL AUTO_INCREMENT,
   `currencycode` varchar(45) NOT NULL,
   `currencydesc` varchar(45) DEFAULT NULL,
-  `createdby` varchar(255) NOT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`currencyid`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -107,18 +127,19 @@ CREATE TABLE `operation_rate` (
   `operator_id` int(11) DEFAULT NULL,
   `api_operationid` int(11) NOT NULL,
   `rate_defid` int(11) NOT NULL,
-  `createdby` varchar(255) NOT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`operation_rateid`),
+  UNIQUE KEY `operator_id_UNIQUE` (`operator_id`,`api_operationid`,`rate_defid`),
   KEY `fk_operation_rate_1_idx` (`api_operationid`),
   KEY `fk_operation_rate_2_idx` (`rate_defid`),
   KEY `fk_operation_rate_3_idx` (`operator_id`),
-  CONSTRAINT `fk_operation_rate_1` FOREIGN KEY (`api_operationid`) REFERENCES `api_operation` (`api_operationid`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_operation_rate_2` FOREIGN KEY (`rate_defid`) REFERENCES `rate_def` (`rate_defid`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_operation_rate_3` FOREIGN KEY (`operator_id`) REFERENCES `operator` (`operatorId`) ON DELETE NO ACTION ON UPDATE NO ACTION
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+  CONSTRAINT `fk_operation_rate_1` FOREIGN KEY (`operator_id`) REFERENCES `operator` (`operatorId`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_operation_rate_2` FOREIGN KEY (`api_operationid`) REFERENCES `api_operation` (`api_operationid`) ON DELETE CASCADE ON UPDATE CASCADE,
+  CONSTRAINT `fk_operation_rate_3` FOREIGN KEY (`rate_defid`) REFERENCES `rate_def` (`rate_defid`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -132,12 +153,12 @@ CREATE TABLE `operator` (
   `operatorId` int(11) NOT NULL AUTO_INCREMENT,
   `operatorname` varchar(45) NOT NULL,
   `operatordesc` varchar(45) DEFAULT NULL,
-  `createdby` varchar(255) NOT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`operatorId`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -153,7 +174,7 @@ CREATE TABLE `rate_category` (
   `parentcategoryid` int(11) NOT NULL,
   `childcategoryid` int(11) DEFAULT NULL,
   `tariffid` int(11) NOT NULL,
-  `createdby` varchar(255) NOT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -166,7 +187,7 @@ CREATE TABLE `rate_category` (
   CONSTRAINT `fk_rate_category_2` FOREIGN KEY (`tariffid`) REFERENCES `tariff` (`tariffid`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_rate_category_3` FOREIGN KEY (`parentcategoryid`) REFERENCES `category` (`categoryid`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_rate_category_4` FOREIGN KEY (`childcategoryid`) REFERENCES `category` (`categoryid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -185,7 +206,7 @@ CREATE TABLE `rate_def` (
   `rate_typeid` int(11) NOT NULL,
   `rate_defcategorybase` tinyint(4) NOT NULL,
   `tariffid` int(11) NOT NULL,
-  `createdby` varchar(255) NOT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -196,7 +217,7 @@ CREATE TABLE `rate_def` (
   CONSTRAINT `fk_rate_def_1` FOREIGN KEY (`rate_typeid`) REFERENCES `rate_type` (`rate_typeid`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_rate_def_2` FOREIGN KEY (`currencyid`) REFERENCES `currency` (`currencyid`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_rate_def_3` FOREIGN KEY (`tariffid`) REFERENCES `tariff` (`tariffid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -210,7 +231,7 @@ CREATE TABLE `rate_taxes` (
   `rate_taxesid` int(11) NOT NULL AUTO_INCREMENT,
   `rate_defid` int(11) NOT NULL,
   `taxid` int(11) NOT NULL,
-  `createdby` varchar(255) NOT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -219,7 +240,7 @@ CREATE TABLE `rate_taxes` (
   KEY `fk_rate_taxes_2_idx` (`taxid`),
   CONSTRAINT `fk_rate_taxes_1` FOREIGN KEY (`rate_defid`) REFERENCES `rate_def` (`rate_defid`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_rate_taxes_2` FOREIGN KEY (`taxid`) REFERENCES `tax` (`taxid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -233,12 +254,12 @@ CREATE TABLE `rate_type` (
   `rate_typeid` int(11) NOT NULL AUTO_INCREMENT,
   `rate_typecode` varchar(45) NOT NULL,
   `rate_typedesc` varchar(45) DEFAULT NULL,
-  `createdby` varchar(255) NOT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`rate_typeid`)
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -255,16 +276,17 @@ CREATE TABLE `sub_rate_nb` (
   `rate_defid` int(11) NOT NULL,
   `sub_rate_nbactdate` date DEFAULT NULL,
   `sub_rate_nbdisdate` date DEFAULT NULL,
-  `createdby` varchar(255) NOT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`sub_rate_nbid`),
+  UNIQUE KEY `api_operationid_UNIQUE` (`api_operationid`,`applicationid`,`rate_defid`),
   KEY `fk_sub_rate_nb_1_idx` (`api_operationid`),
   KEY `fk_sub_rate_nb_2_idx` (`rate_defid`),
   CONSTRAINT `fk_sub_rate_nb_1` FOREIGN KEY (`api_operationid`) REFERENCES `api_operation` (`api_operationid`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_sub_rate_nb_2` FOREIGN KEY (`rate_defid`) REFERENCES `rate_def` (`rate_defid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -282,18 +304,19 @@ CREATE TABLE `sub_rate_sb` (
   `rate_defid` int(11) NOT NULL,
   `sub_rate_sbactdate` date DEFAULT NULL,
   `sub_rate_sbdisdate` date DEFAULT NULL,
-  `createdby` varchar(255) NOT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`sub_rate_sbid`),
+  UNIQUE KEY `operatorid_UNIQUE` (`operatorid`,`api_operationid`,`applicationid`,`rate_defid`),
   KEY `fk_sub_rate_sb_1_idx` (`operatorid`),
   KEY `fk_sub_rate_sb_2_idx` (`api_operationid`),
   KEY `fk_sub_rate_sb_3_idx` (`rate_defid`),
   CONSTRAINT `fk_sub_rate_sb_1` FOREIGN KEY (`operatorid`) REFERENCES `operator` (`operatorId`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_sub_rate_sb_2` FOREIGN KEY (`api_operationid`) REFERENCES `api_operation` (`api_operationid`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_sub_rate_sb_3` FOREIGN KEY (`rate_defid`) REFERENCES `rate_def` (`rate_defid`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -317,12 +340,12 @@ CREATE TABLE `tariff` (
   `tariffsurchargeval` double DEFAULT NULL,
   `tariffsurchargeAds` double DEFAULT NULL,
   `tariffsurchargeOpco` double DEFAULT NULL,
-  `createdby` varchar(255) NOT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`tariffid`)
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -336,12 +359,12 @@ CREATE TABLE `tax` (
   `taxid` int(11) NOT NULL AUTO_INCREMENT,
   `taxcode` varchar(45) NOT NULL,
   `taxname` varchar(45) NOT NULL,
-  `createdby` varchar(255) NOT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`taxid`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=latin1;
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -357,7 +380,7 @@ CREATE TABLE `tax_validity` (
   `tax_validitydisdate` date NOT NULL,
   `tax_validityval` double NOT NULL,
   `taxid` int(11) NOT NULL,
-  `createdby` varchar(255) NOT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
@@ -429,6 +452,18 @@ CREATE TRIGGER update_tariff_trigger BEFORE UPDATE ON tariff
     IF OLD.tariffsurchargeOpco <> NEW.tariffsurchargeOpco THEN
       INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tarrif', OLD.tariffid,  'tariffsurchargeOpco', OLD.tariffsurchargeOpco, NEW.tariffsurchargeOpco, 'update' ,NOW());
     END IF;
+    IF OLD.createdby <> NEW.createdby THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tarrif', OLD.tariffid,  'createdby', OLD.createdby, NEW.createdby, 'update' ,NOW());
+    END IF;
+    IF OLD.createddate <> NEW.createddate THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tarrif', OLD.tariffid,  'createddate', OLD.createddate, NEW.createddate, 'update' ,NOW());
+    END IF;
+    IF OLD.updatedby <> NEW.updatedby THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tarrif', OLD.tariffid,  'updatedby', OLD.updatedby, NEW.updatedby, 'update' ,NOW());
+    END IF;
+    IF OLD.updateddate <> NEW.updateddate THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tarrif', OLD.tariffid,  'updateddate', OLD.updateddate, NEW.updateddate, 'update' ,NOW());
+    END IF;
 END ;
 
 DROP TRIGGER IF EXISTS delete_tariff_trigger;
@@ -478,6 +513,18 @@ CREATE TRIGGER update_tax_validity_trigger BEFORE UPDATE ON tax_validity
     END IF;
     IF OLD.taxid <> NEW.taxid THEN
       INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tax_validity', OLD.idtax_validityid, 'taxid', OLD.taxid, NEW.taxid, 'update' ,NOW());
+    END IF;
+    IF OLD.createdby <> NEW.createdby THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tax_validity', OLD.createdby, 'createdby', OLD.createdby, NEW.createdby, 'update' ,NOW());
+    END IF;
+     IF OLD.createddate <> NEW.createddate THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tax_validity', OLD.createddate, 'createddate', OLD.createddate, NEW.createddate, 'update' ,NOW());
+    END IF;
+     IF OLD.updatedby <> NEW.updatedby THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tax_validity', OLD.updatedby, 'updatedby', OLD.updatedby, NEW.updatedby, 'update' ,NOW());
+    END IF;
+     IF OLD.updateddate <> NEW.updateddate THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tax_validity', OLD.updateddate, 'updateddate', OLD.updateddate, NEW.updateddate, 'update' ,NOW());
     END IF;
 END ;
 
@@ -546,6 +593,18 @@ CREATE TRIGGER update_sub_rate_nb_trigger BEFORE UPDATE ON sub_rate_nb
     IF OLD.sub_rate_nbdisdate <> NEW.sub_rate_nbdisdate THEN
       INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_nb', OLD.sub_rate_nbid, 'sub_rate_nbdisdate', OLD.sub_rate_nbdisdate, NEW.sub_rate_nbdisdate, 'update' ,NOW());
     END IF;
+     IF OLD.createdby <> NEW.createdby THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_nb', OLD.createdby, 'createdby', OLD.createdby, NEW.createdby, 'update' ,NOW());
+    END IF;
+     IF OLD.createddate <> NEW.createddate THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_nb', OLD.createddate, 'createddate', OLD.createddate, NEW.createddate, 'update' ,NOW());
+    END IF;
+     IF OLD.updatedby <> NEW.updatedby THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_nb', OLD.updatedby, 'updatedby', OLD.updatedby, NEW.updatedby, 'update' ,NOW());
+    END IF;
+     IF OLD.updateddate <> NEW.updateddate THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_nb', OLD.updateddate, 'updateddate', OLD.updateddate, NEW.updateddate, 'update' ,NOW());
+    END IF;
 END ;
 
 DROP TRIGGER IF EXISTS insert_sub_rate_sb_trigger;
@@ -582,6 +641,18 @@ CREATE TRIGGER update_sub_rate_sb_trigger BEFORE UPDATE ON sub_rate_sb
     END IF;
     IF OLD.sub_rate_sbdisdate <> NEW.sub_rate_sbdisdate THEN
       INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_sb', NEW.sub_rate_sbid, 'sub_rate_sbdisdate', OLD.sub_rate_sbdisdate, NEW.sub_rate_sbdisdate, 'update' ,NOW());
+    END IF;
+     IF OLD.createdby <> NEW.createdby THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_sb', OLD.createdby, 'createdby', OLD.createdby, NEW.createdby, 'update' ,NOW());
+    END IF;
+     IF OLD.createddate <> NEW.createddate THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_sb', OLD.createddate, 'createddate', OLD.createddate, NEW.createddate, 'update' ,NOW());
+    END IF;
+     IF OLD.updatedby <> NEW.updatedby THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_sb', OLD.updatedby, 'updatedby', OLD.updatedby, NEW.updatedby, 'update' ,NOW());
+    END IF;
+     IF OLD.updateddate <> NEW.updateddate THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('sub_rate_sb', OLD.updateddate, 'updateddate', OLD.updateddate, NEW.updateddate, 'update' ,NOW());
     END IF;
 END //
 

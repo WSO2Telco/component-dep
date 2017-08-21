@@ -144,6 +144,7 @@ public class BillingServiceHostObject extends ScriptableObject {
 
 				for (Map.Entry<Integer, String> service : serviceDetails.entrySet()) {
 
+					NativeObject serviceData = new NativeObject();
 					int servicesDid = service.getKey();
 					String serviceCode = service.getValue();
 
@@ -167,20 +168,18 @@ public class BillingServiceHostObject extends ScriptableObject {
 							rateData.put("rateDesc", rateData, rateInfo.get("rate_defdesc"));
 
 							rateDataArray.put(z, rateDataArray, rateData);
+
+							serviceData.put("servicesDid", serviceData, servicesDid);
+							serviceData.put("serviceCode", serviceData, serviceCode);
+							serviceData.put("rates", serviceData, rateDataArray);
 							z++;
 						}
+						serviceDataArray.put(y, serviceDataArray, serviceData);
 					} else {
 
 						log.error("rate details unavalible for service did : " + servicesDid + " - service code : "
 								+ serviceCode + " and operator : " + operatorCode);
 					}
-
-					NativeObject serviceData = new NativeObject();
-					serviceData.put("servicesDid", serviceData, servicesDid);
-					serviceData.put("serviceCode", serviceData, serviceCode);
-					serviceData.put("rates", serviceData, rateDataArray);
-
-					serviceDataArray.put(y, serviceDataArray, serviceData);
 					y++;
 				}
 			} else {
