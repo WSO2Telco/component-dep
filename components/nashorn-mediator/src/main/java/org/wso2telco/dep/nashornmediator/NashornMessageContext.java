@@ -81,7 +81,7 @@ public class NashornMessageContext {
     private String getClearString(String jsonString) throws ScriptException {
         String clearString = jsonString;
 
-        if (jsonString.contains("\\n") || jsonString.startsWith("\"")) {
+        if (jsonString.startsWith("\"")) {
             ScriptObjectMirror json = (ScriptObjectMirror) scriptEngine.eval("JSON");
             clearString = (String)json.callMember("parse", jsonString);
         }
