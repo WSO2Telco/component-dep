@@ -80,6 +80,7 @@
         <module>components/logging-extension</module>
         <module>components/operator-onboarding</module>
         <module>components/webapps/ratecard-service</module>
+		<module>components/webapps/quota-service</module>
         <module>features</module>
     </modules>
 
