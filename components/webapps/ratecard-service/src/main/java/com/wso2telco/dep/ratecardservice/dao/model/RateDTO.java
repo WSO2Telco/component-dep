@@ -176,6 +176,7 @@ public class RateDTO {
 
 			public static class RateDefinition {
 
+				private Integer operationRateId;
 				private Integer rateDefId;
 				private String rateDefName;
 				private String rateDefDescription;
@@ -188,6 +189,14 @@ public class RateDTO {
 				private String createdDate;
 				private String updatedBy;
 				private String updatedDate;
+
+				public Integer getOperationRateId() {
+					return operationRateId;
+				}
+
+				public void setOperationRateId(Integer operationRateId) {
+					this.operationRateId = operationRateId;
+				}
 
 				public Integer getRateDefId() {
 					return rateDefId;
