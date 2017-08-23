@@ -27,6 +27,10 @@ import java.util.List;
 
 import com.wso2telco.workflow.dao.ApprovalDAO;
 import org.apache.log4j.Logger;
+import org.wso2.carbon.apimgt.api.APIConsumer;
+import org.wso2.carbon.apimgt.api.model.Application;
+import org.wso2.carbon.apimgt.api.model.Subscriber;
+import org.wso2.carbon.apimgt.impl.APIManagerFactory;
 
 @Path("/history")
 public class WorkflowHistoryService {
@@ -76,7 +80,7 @@ public class WorkflowHistoryService {
 	}
 
 
-	/*@GET
+	@GET
 	@Path("/apis/{subscriberName}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAPIsBySubscriber(@PathParam("subscriberName") String subscriberName){
@@ -90,7 +94,7 @@ public class WorkflowHistoryService {
 			return Response.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).build();
 		}
 		return Response.status(HttpServletResponse.SC_OK).header("Content-Type", "application/json").entity(jsonPayload).build();
-	}*/
+	}
 
 
 	@GET
@@ -110,7 +114,7 @@ public class WorkflowHistoryService {
 	}
 
 
-	/*@GET
+	@GET
 	@Path("/applications/{subscriberName}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getApplications(@PathParam("subscriberName") String subscriberName){
@@ -120,12 +124,12 @@ public class WorkflowHistoryService {
 			Subscriber subscriber = new Subscriber(subscriberName);
 			Application[] applicationList = apiConsumer.getApplications(subscriber, "");
 			jsonPayload = new Gson().toJson(applicationList);
-		} catch (APIManagementException e) {
+		} catch (Exception e) {
 			log.error(e);
 			return Response.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).build();
 		}
 
 		return Response.status(HttpServletResponse.SC_OK).header("Content-Type", "application/json").entity(jsonPayload).build();
-	}*/
+	}
 
 }
