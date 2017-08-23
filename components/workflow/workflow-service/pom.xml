@@ -38,14 +38,16 @@
             <scope>test</scope>
         </dependency>
         <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-server</artifactId>
-            <version>${jersey.version}</version>
+            <groupId>org.glassfish.jersey.containers</groupId>
+            <artifactId>jersey-container-servlet</artifactId>
         </dependency>
         <dependency>
-            <groupId>com.sun.jersey</groupId>
-            <artifactId>jersey-json</artifactId>
-            <version>${jersey.version}</version>
+            <groupId>org.glassfish.jersey.core</groupId>
+            <artifactId>jersey-server</artifactId>
+        </dependency>
+        <dependency>
+            <groupId>org.glassfish.jersey.media</groupId>
+            <artifactId>jersey-media-json-jackson</artifactId>
         </dependency>
         <dependency>
             <groupId>com.wso2telco.core</groupId>
@@ -66,7 +68,6 @@
         <dependency>
             <groupId>org.wso2.carbon</groupId>
             <artifactId>org.wso2.carbon.user.core</artifactId>
-            <version>${carbon.user.core.version}</version>
             <scope>provided</scope>
         </dependency>
         <dependency>
@@ -87,7 +88,10 @@
 			<groupId>com.wso2telco.dep</groupId>
 			<artifactId>billing-service</artifactId>
 		</dependency>
-
+        <dependency>
+            <groupId>com.wso2telco.dep</groupId>
+            <artifactId>reporting-service</artifactId>
+        </dependency>
     </dependencies>
 
     <build>
@@ -125,10 +129,5 @@
             </plugin>
         </plugins>
     </build>
-
-    <properties>
-        <jersey.version>1.8</jersey.version>
-        <carbon.user.core.version>4.4.3</carbon.user.core.version>
-    </properties>
 
 </project>

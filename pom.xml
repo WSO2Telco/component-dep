@@ -273,6 +273,12 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
+                <groupId>com.wso2telco.dep</groupId>
+                <artifactId>reporting-service</artifactId>
+                <version>${com.wso2telco.dep.version}</version>
+                <scope>provided</scope>
+            </dependency>
+            <dependency>
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
                 <version>${log4j.version}</version>
@@ -283,8 +289,18 @@
                 <version>${com.google.code.gson.version}</version>
             </dependency>
             <dependency>
+                <groupId>org.glassfish.jersey.containers</groupId>
+                <artifactId>jersey-container-servlet</artifactId>
+                <version>${org.glassfish.jersey.core.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.glassfish.jersey.core</groupId>
-                <artifactId>jersey-client</artifactId>
+                <artifactId>jersey-server</artifactId>
+                <version>${org.glassfish.jersey.core.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.glassfish.jersey.media</groupId>
+                <artifactId>jersey-media-json-jackson</artifactId>
                 <version>${org.glassfish.jersey.core.version}</version>
             </dependency>
             <dependency>
@@ -721,7 +737,7 @@
         <com.wso2telco.core.version>2.0.24-SNAPSHOT</com.wso2telco.core.version>
         <log4j.version>1.2.13</log4j.version>
         <com.google.code.gson.version>2.3.1</com.google.code.gson.version>
-        <org.glassfish.jersey.core.version>2.4</org.glassfish.jersey.core.version>
+        <org.glassfish.jersey.core.version>2.17</org.glassfish.jersey.core.version>
         <org.json.wso2.version>3.0.0.wso2v1</org.json.wso2.version>
         <junit.version>3.8.1</junit.version>
         <org.apache.synapse.core.version>2.1.7-wso2v3</org.apache.synapse.core.version>
