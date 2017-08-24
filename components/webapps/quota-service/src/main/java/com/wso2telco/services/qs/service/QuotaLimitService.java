@@ -33,18 +33,18 @@ public class QuotaLimitService {
 		}
 	}
 
-	public List<QuotaBean> getQuotaLimitInfo(String byFlag, String info) throws QuotaLimitException{
+	public List<QuotaBean> getQuotaLimitInfo(String byFlag, String info, String operator) throws QuotaLimitException{
 		List<QuotaBean> returnObjList=new ArrayList<QuotaBean>();
 		try {
 			switch (byFlag) {
 			case "byServiceProvider":
-				returnObjList= dao.getQuotaLimitInfoByServiceProvider(info);
+				returnObjList= dao.getQuotaLimitInfoByServiceProvider(info,operator);
 				break;
 			case "byApplication":
-				returnObjList= dao.getQuotaLimitInfoByApplication(info);
+				returnObjList= dao.getQuotaLimitInfoByApplication(info,operator);
 				break;
 			case "byApi":
-				returnObjList= dao.getQuotaLimitInfoByApi(info);
+				returnObjList= dao.getQuotaLimitInfoByApi(info,operator);
 				break;
 			default:
 				break;
@@ -56,18 +56,18 @@ public class QuotaLimitService {
 		}
 	}
 
-	public Boolean checkIfDatesOverlap(String byFlag, String info,String fromDate, String toDate) throws QuotaLimitException{
+	public Boolean checkIfDatesOverlap(String byFlag, String info,String fromDate, String toDate, String operator) throws QuotaLimitException{
 		Boolean checkIfDatesOverlap=false;
 		try {
 			switch (byFlag) {
 			case "byServiceProvider":
-				checkIfDatesOverlap= dao.checkQuotaLimitInfoByServiceProviderWithDateRange(info,fromDate,toDate);
+				checkIfDatesOverlap= dao.checkQuotaLimitInfoByServiceProviderWithDateRange(info,fromDate,toDate,operator);
 				break;
 			case "byApplication":
-				checkIfDatesOverlap= dao.checkQuotaLimitInfoByApplicationWithDateRange(info,fromDate,toDate);
+				checkIfDatesOverlap= dao.checkQuotaLimitInfoByApplicationWithDateRange(info,fromDate,toDate,operator);
 				break;
 			case "byApi":
-				checkIfDatesOverlap= dao.checkQuotaLimitInfoByApiWithDateRange(info,fromDate,toDate);
+				checkIfDatesOverlap= dao.checkQuotaLimitInfoByApiWithDateRange(info,fromDate,toDate,operator);
 				break;
 			default:
 				break;

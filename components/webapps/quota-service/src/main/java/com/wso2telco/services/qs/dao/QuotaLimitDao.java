@@ -48,9 +48,14 @@ public class QuotaLimitDao {
 		}
 	}
 
-	public List<QuotaBean> getQuotaLimitInfoByServiceProvider(String info) throws Exception {
+	public List<QuotaBean> getQuotaLimitInfoByServiceProvider(String info, String operator) throws Exception {
 		StringBuilder sqlByServiceProvider=new StringBuilder();
-		sqlByServiceProvider.append("SELECT * FROM sp_quota_limit where serviceProvider =? and application is null and apiName is null;");
+
+		if (operator.equalsIgnoreCase("_ALL_")) {
+			sqlByServiceProvider.append("SELECT * FROM sp_quota_limit where serviceProvider =? and application is null and apiName is null");
+		}else {
+			sqlByServiceProvider.append("SELECT * FROM sp_quota_limit where serviceProvider =? and application is null and apiName is null and operatorName=?;");
+		}
 
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -61,6 +66,9 @@ public class QuotaLimitDao {
 				conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 				ps = conn.prepareStatement(sqlByServiceProvider.toString());
 				ps.setString(1, info);
+				if (!operator.equalsIgnoreCase("_ALL_")) {
+					ps.setString(2, operator);
+				}
 				rs = ps.executeQuery();
 				while (rs.next()) {
 					QuotaBean returnObj_ = new QuotaBean();
@@ -82,9 +90,13 @@ public class QuotaLimitDao {
 		return returnObjList;
 	}
 
-	public List<QuotaBean> getQuotaLimitInfoByApplication(String info) throws Exception {
+	public List<QuotaBean> getQuotaLimitInfoByApplication(String info, String operator) throws Exception {
 		StringBuilder sqlByApplication=new StringBuilder();
-		sqlByApplication.append("SELECT * FROM sp_quota_limit where serviceProvider is not null and application =? and apiName is null;");
+		if (operator.equalsIgnoreCase("_ALL_")) {
+			sqlByApplication.append("SELECT * FROM sp_quota_limit where serviceProvider is not null and application =? and apiName is null");
+		}else {
+			sqlByApplication.append("SELECT * FROM sp_quota_limit where serviceProvider is not null and application =? and apiName is null and operatorName=?;");
+		}
 
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -94,6 +106,9 @@ public class QuotaLimitDao {
 				conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 				ps = conn.prepareStatement(sqlByApplication.toString());
 				ps.setString(1, info);
+				if (!operator.equalsIgnoreCase("_ALL_")) {
+					ps.setString(2, operator);
+				}
 				rs = ps.executeQuery();
 				while (rs.next()) {
 					QuotaBean returnObj_ = new QuotaBean();
@@ -114,9 +129,13 @@ public class QuotaLimitDao {
 		return returnObjList;
 	}
 
-	public List<QuotaBean> getQuotaLimitInfoByApi(String info) throws Exception {
+	public List<QuotaBean> getQuotaLimitInfoByApi(String info, String operator) throws Exception {
 		StringBuilder sqlByApi=new StringBuilder();
-		sqlByApi.append("SELECT * FROM sp_quota_limit where serviceProvider is not null and application is not null and apiName =?; ");
+		if (operator.equalsIgnoreCase("_ALL_")) {
+			sqlByApi.append("SELECT * FROM sp_quota_limit where serviceProvider is not null and application is not null and apiName =? ");
+		}else {
+			sqlByApi.append("SELECT * FROM sp_quota_limit where serviceProvider is not null and application is not null and apiName =? and operatorName=?; ");
+		}
 
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -126,6 +145,9 @@ public class QuotaLimitDao {
 				conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 				ps = conn.prepareStatement(sqlByApi.toString());
 				ps.setString(1, info);
+				if (!operator.equalsIgnoreCase("_ALL_")) {
+					ps.setString(2, operator);
+				}
 				rs = ps.executeQuery();
 				while (rs.next()) {
 					QuotaBean returnObj_ = new QuotaBean();
@@ -148,9 +170,13 @@ public class QuotaLimitDao {
 		return returnObjList;
 	}
 
-	public Boolean checkQuotaLimitInfoByServiceProviderWithDateRange(String info,String fromDate, String toDate) throws Exception {
+	public Boolean checkQuotaLimitInfoByServiceProviderWithDateRange(String info,String fromDate, String toDate, String operator) throws Exception {
 		StringBuilder sqlByServiceProvider=new StringBuilder();
-		sqlByServiceProvider.append("SELECT * FROM sp_quota_limit where serviceProvider =? and application is null and apiName is null and ((? <= toDate and ? >= fromDate));");
+		if (operator.equalsIgnoreCase("_ALL_")) {
+			sqlByServiceProvider.append("SELECT * FROM sp_quota_limit where serviceProvider =? and application is null and apiName is null and ((? <= toDate and ? >= fromDate));");
+		}else {
+			sqlByServiceProvider.append("SELECT * FROM sp_quota_limit where serviceProvider =? and application is null and apiName is null and ((? <= toDate and ? >= fromDate)) and operatorName=?;");
+		}
 
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -163,6 +189,9 @@ public class QuotaLimitDao {
 				ps.setString(1, info);
 				ps.setString(2, fromDate);
 				ps.setString(3, toDate);
+				if (!operator.equalsIgnoreCase("_ALL_")) {
+					ps.setString(4, operator);
+				}
 				rs = ps.executeQuery();
 				if (rs.next()) {
 					ifOverlapped=true;
@@ -175,9 +204,13 @@ public class QuotaLimitDao {
 		return ifOverlapped;
 	}
 
-	public Boolean checkQuotaLimitInfoByApplicationWithDateRange(String info,String fromDate, String toDate) throws Exception {
+	public Boolean checkQuotaLimitInfoByApplicationWithDateRange(String info,String fromDate, String toDate, String operator) throws Exception {
 		StringBuilder sqlByApplication=new StringBuilder();
-		sqlByApplication.append("SELECT * FROM sp_quota_limit where serviceProvider is not null and application =? and apiName is null and ((? <= toDate and ? >= fromDate));");
+		if (operator.equalsIgnoreCase("_ALL_")) {
+			sqlByApplication.append("SELECT * FROM sp_quota_limit where serviceProvider is not null and application =? and apiName is null and ((? <= toDate and ? >= fromDate));");
+		}else {
+			sqlByApplication.append("SELECT * FROM sp_quota_limit where serviceProvider is not null and application =? and apiName is null and ((? <= toDate and ? >= fromDate)) and operatorName=?;");
+		}
 
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -189,6 +222,9 @@ public class QuotaLimitDao {
 				ps.setString(1, info);
 				ps.setString(2, fromDate);
 				ps.setString(3, toDate);
+				if (!operator.equalsIgnoreCase("_ALL_")) {
+					ps.setString(4, operator);
+				}
 				rs = ps.executeQuery();
 				if (rs.next()) {
 					ifOverlapped=true;
@@ -201,9 +237,13 @@ public class QuotaLimitDao {
 		return ifOverlapped;
 	}
 
-	public Boolean checkQuotaLimitInfoByApiWithDateRange(String info,String fromDate, String toDate) throws Exception {
+	public Boolean checkQuotaLimitInfoByApiWithDateRange(String info,String fromDate, String toDate, String operator) throws Exception {
 		StringBuilder sqlByApi=new StringBuilder();
-		sqlByApi.append("SELECT * FROM sp_quota_limit where serviceProvider is not null and application is not null and apiName =? and ((? <= toDate and ? >= fromDate)); ");
+		if (operator.equalsIgnoreCase("_ALL_")) {
+			sqlByApi.append("SELECT * FROM sp_quota_limit where serviceProvider is not null and application is not null and apiName =? and ((? <= toDate and ? >= fromDate)); ");
+		}else {
+			sqlByApi.append("SELECT * FROM sp_quota_limit where serviceProvider is not null and application is not null and apiName =? and ((? <= toDate and ? >= fromDate)) and operatorName=?; ");
+		}
 
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -215,6 +255,9 @@ public class QuotaLimitDao {
 				ps.setString(1, info);
 				ps.setString(2, fromDate);
 				ps.setString(3, toDate);
+				if (!operator.equalsIgnoreCase("_ALL_")) {
+					ps.setString(4, operator);
+				}
 				rs = ps.executeQuery();
 				if (rs.next()) {
 					ifOverlapped=true;

@@ -1,12 +1,12 @@
 package com.wso2telco.services.qs.entity;
 
-
 public class QuotaReqBeanWithDates {
 
 	private String byFlag;
 	private String info;
 	private String toDate;
 	private String fromDate;
+	private String operator;
 
 	public String getByFlag() {
 		return byFlag;
@@ -38,6 +38,14 @@ public class QuotaReqBeanWithDates {
 
 	public void setFromDate(String fromDate) {
 		this.fromDate = fromDate;
+	}
+
+	public String getOperator() {
+		return operator;
+	}
+
+	public void setOperator(String operator) {
+		this.operator = operator;
 	}
 
 }
