@@ -64,7 +64,7 @@ public class Queries {
 		try {
 			Gson gson = new Gson();
 			QuotaReqBean quotaReqBean = gson.fromJson(jsonBody, QuotaReqBean.class);
-			List<QuotaBean> quotaBeanList = quotaService.getQuotaLimitInfo(quotaReqBean.getByFlag(),quotaReqBean.getInfo());
+			List<QuotaBean> quotaBeanList = quotaService.getQuotaLimitInfo(quotaReqBean.getByFlag(),quotaReqBean.getInfo(),quotaReqBean.getOperator());
 			StringBuilder succMSG = new StringBuilder();
 			succMSG.append("{ \"Success\": { \"service\": \"QuotaLimit\", \"text\": ");
 			succMSG.append(new Gson().toJson(quotaBeanList));
@@ -88,7 +88,7 @@ public class Queries {
 		try {
 			Gson gson = new Gson();
 			QuotaReqBeanWithDates quotaReqBeanWD = gson.fromJson(jsonBody, QuotaReqBeanWithDates.class);
-			Boolean checkIfDatesOverlap = quotaService.checkIfDatesOverlap(quotaReqBeanWD.getByFlag(),quotaReqBeanWD.getInfo(),quotaReqBeanWD.getFromDate(),quotaReqBeanWD.getToDate());
+			Boolean checkIfDatesOverlap = quotaService.checkIfDatesOverlap(quotaReqBeanWD.getByFlag(),quotaReqBeanWD.getInfo(),quotaReqBeanWD.getFromDate(),quotaReqBeanWD.getToDate(),quotaReqBeanWD.getOperator());
 			StringBuilder succMSG = new StringBuilder();
 			succMSG.append("{ \"Success\": { \"service\": \"QuotaLimit\", \"text\": ");
 			succMSG.append(new Gson().toJson(checkIfDatesOverlap.toString()));

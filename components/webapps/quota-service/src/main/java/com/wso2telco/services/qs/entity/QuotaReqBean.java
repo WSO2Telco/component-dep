@@ -3,6 +3,7 @@ package com.wso2telco.services.qs.entity;
 public class QuotaReqBean {
 	private String byFlag;
 	private String info;
+	private String operator;
 
 	public String getByFlag() {
 		return byFlag;
@@ -18,6 +19,14 @@ public class QuotaReqBean {
 
 	public void setInfo(String info) {
 		this.info = info;
+	}
+
+	public String getOperator() {
+		return operator;
+	}
+
+	public void setOperator(String operator) {
+		this.operator = operator;
 	}
 
 }
