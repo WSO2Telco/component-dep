@@ -71,6 +71,7 @@ public class RateService {
 
 						RateDTO.API.APIOperation.RateDefinition rateDefinition = new RateDTO.API.APIOperation.RateDefinition();
 
+						rateDefinition.setOperationRateId(innerOperationRate.getOperationRateId());
 						rateDefinition.setRateDefId(innerOperationRate.getRateDefinition().getRateDefId());
 						rateDefinition.setRateDefName(innerOperationRate.getRateDefinition().getRateDefName());
 						rateDefinition
@@ -188,6 +189,7 @@ public class RateService {
 
 						RateDTO.API.APIOperation.RateDefinition rateDefinition = new RateDTO.API.APIOperation.RateDefinition();
 
+						rateDefinition.setOperationRateId(innerOperationRate.getOperationRateId());
 						rateDefinition.setRateDefId(innerOperationRate.getRateDefinition().getRateDefId());
 						rateDefinition.setRateDefName(innerOperationRate.getRateDefinition().getRateDefName());
 						rateDefinition
