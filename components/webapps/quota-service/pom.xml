@@ -36,10 +36,12 @@
 		<dependency>
             <groupId>org.wso2.carbon.apimgt</groupId>
             <artifactId>org.wso2.carbon.apimgt.impl</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>org.wso2.carbon.apimgt</groupId>
             <artifactId>org.wso2.carbon.apimgt.usage.client</artifactId>
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.wso2telco.core</groupId>
