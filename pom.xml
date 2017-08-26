@@ -64,6 +64,7 @@
         <!--module>components/publish-events/publish-events-data</module>
           <module>components/publish-events/publish-events-extensions</module-->
         <module>components/workflow/workflow-approval</module>
+		<module>components/workflow/workflow-user-manage</module>
         <module>components/workflow-extensions</module>
         <module>components/workflow/workflow-service</module>
         <module>components/server-startup-observer</module>

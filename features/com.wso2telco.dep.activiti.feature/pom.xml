@@ -182,9 +182,26 @@
                                     </fileset>
                                 </copy>
 
+                                <copy todir="${tempdir}/activiti-explorer/WEB-INF/classes" overwrite="true">
+                                    <fileset dir="${project.build.directory}/../src/main/resources/activiti-explorer">
+                                        <include name="activiti-login-context.xml" />
+                                    </fileset>
+                                </copy>
+
+                                <copy todir="${tempdir}/activiti-explorer/WEB-INF/lib" overwrite="true">
+                                    <fileset dir="${project.build.directory}/../../../components/workflow/workflow-approval/target">
+                                        <include name="workflow-user-manager-${project.version}.jar" />
+                                    </fileset>
+                                </copy>
+
                                 <copy todir="${tempdir}/activiti-rest/WEB-INF/lib" overwrite="true">
                                     <fileset dir="${project.build.directory}/../../../components/workflow/workflow-approval/target">
                                         <include name="workflow-approval-${project.version}.jar" />
+                                    </fileset>
+                                </copy>
+                                <copy todir="${tempdir}/activiti-rest/WEB-INF/lib" overwrite="true">
+                                    <fileset dir="${project.build.directory}/../../../components/workflow/workflow-approval/target">
+                                        <include name="workflow-user-manager-${project.version}.jar" />
                                     </fileset>
                                 </copy>
                                 <copy todir="${tempdir}/activiti-rest/WEB-INF/lib" overwrite="true">
