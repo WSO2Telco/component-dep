@@ -14,18 +14,21 @@ public class APIOperationService {
 		apiOperationDAO = new APIOperationDAO();
 	}
 
-	public APIOperationDTO getAPIOperation(int apiOperationId) throws Exception {
+	public APIOperationDTO getAPIOperation(int apiOperationId, String schema) throws Exception {
 
 		APIService apiService = new APIService();
-		
+
 		APIOperationDTO apiOperation = null;
 
 		try {
 
 			apiOperation = apiOperationDAO.getAPIOperation(apiOperationId);
-			
-			APIDTO api = apiService.getAPI(apiOperation.getApi().getApiId());
-			apiOperation.setApi(api);
+
+			if ((schema!= null && schema.trim().length() > 0) &&schema.equalsIgnoreCase("full")) {
+				
+				APIDTO api = apiService.getAPI(apiOperation.getApi().getApiId());
+				apiOperation.setApi(api);
+			}			
 		} catch (Exception e) {
 
 			throw e;
@@ -34,7 +37,7 @@ public class APIOperationService {
 		return apiOperation;
 	}
 
-	public List<APIOperationDTO> getAPIOperations(String apiName) throws Exception {
+	public List<APIOperationDTO> getAPIOperations(String apiName, String schema) throws Exception {
 
 		APIService apiService = new APIService();
 		List<APIOperationDTO> apiOperations = null;
@@ -49,14 +52,17 @@ public class APIOperationService {
 
 		if (apiOperations != null) {
 
-			for (int i = 0; i < apiOperations.size(); i++) {
+			if ((schema!= null && schema.trim().length() > 0) &&schema.equalsIgnoreCase("full")) {
 
-				APIOperationDTO apiOperation = apiOperations.get(i);
+				for (int i = 0; i < apiOperations.size(); i++) {
 
-				APIDTO api = apiService.getAPI(apiOperation.getApi().getApiId());
-				apiOperation.setApi(api);
+					APIOperationDTO apiOperation = apiOperations.get(i);
 
-				apiOperations.set(i, apiOperation);
+					APIDTO api = apiService.getAPI(apiOperation.getApi().getApiId());
+					apiOperation.setApi(api);
+
+					apiOperations.set(i, apiOperation);
+				}
 			}
 
 			return apiOperations;

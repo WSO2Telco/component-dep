@@ -8,6 +8,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -25,10 +26,10 @@ public class RateTaxResource {
 
 	private final Log log = LogFactory.getLog(RateTaxResource.class);
 	private RateTaxService rateTaxService = new RateTaxService();
-	
+
 	@POST
 	public Response addRateTax(@PathParam("taxId") int taxId, RateTaxDTO rateTax) {
-		
+
 		RateTaxDTO newRateTaxDTO = null;
 		Status responseCode = null;
 		Object responseString = null;
@@ -68,9 +69,9 @@ public class RateTaxResource {
 
 		return Response.status(responseCode).entity(responseString).build();
 	}
-	
+
 	@GET
-	public Response getRateTaxes(@PathParam("taxId") int taxId) {
+	public Response getRateTaxes(@PathParam("taxId") int taxId, @QueryParam("schema") String schema) {
 
 		List<RateTaxDTO> rateTaxes = null;
 		Status responseCode = null;
@@ -78,7 +79,7 @@ public class RateTaxResource {
 
 		try {
 
-			rateTaxes = rateTaxService.getRateTaxes(taxId);
+			rateTaxes = rateTaxService.getRateTaxes(taxId, schema);
 
 			if (!rateTaxes.isEmpty()) {
 
@@ -122,7 +123,7 @@ public class RateTaxResource {
 
 		return Response.status(responseCode).entity(responseString).build();
 	}
-	
+
 	@DELETE
 	@Path("/{rateTaxId}")
 	public Response deleteRateTax(@PathParam("taxId") int taxId, @PathParam("rateTaxId") int rateTaxId) {
@@ -140,8 +141,7 @@ public class RateTaxResource {
 				responseCode = Response.Status.NO_CONTENT;
 			} else {
 
-				log.error(
-						"Error in RateTaxResource deleteRateTax : rate tax is not found in database ");
+				log.error("Error in RateTaxResource deleteRateTax : rate tax is not found in database ");
 				throw new BusinessException(ServiceError.NO_RESOURCES);
 			}
 		} catch (BusinessException e) {

@@ -23,7 +23,7 @@ public class RateCategoryService {
 		try {
 
 			newRateCategory = rateCategoryDAO.addRateCategory(rateCategory);
-			newRateCategory = getRateCategory(newRateCategory.getRateCategoryId());
+			newRateCategory = getRateCategory(newRateCategory.getRateCategoryId(), null);
 		} catch (Exception e) {
 
 			throw e;
@@ -32,7 +32,7 @@ public class RateCategoryService {
 		return newRateCategory;
 	}
 
-	public List<RateCategoryDTO> getRateCategories(int rateDefId) throws Exception {
+	public List<RateCategoryDTO> getRateCategories(int rateDefId, String schema) throws Exception {
 
 		RateDefinitionService rateDefinitionService = new RateDefinitionService();
 		CategoryService categoryService = new CategoryService();
@@ -50,24 +50,28 @@ public class RateCategoryService {
 
 		if (rateCategories != null) {
 
-			for (int i = 0; i < rateCategories.size(); i++) {
+			if ((schema != null && schema.trim().length() > 0) && schema.equalsIgnoreCase("full")) {
 
-				RateCategoryDTO rateCategory = rateCategories.get(i);
+				for (int i = 0; i < rateCategories.size(); i++) {
 
-				RateDefinitionDTO rateDefinition = rateDefinitionService
-						.getRateDefinition(rateCategory.getRateDefinition().getRateDefId());
-				rateCategory.setRateDefinition(rateDefinition);
+					RateCategoryDTO rateCategory = rateCategories.get(i);
 
-				CategoryDTO category = categoryService.getCategory(rateCategory.getCategory().getCategoryId());
-				rateCategory.setCategory(category);
+					RateDefinitionDTO rateDefinition = rateDefinitionService
+							.getRateDefinition(rateCategory.getRateDefinition().getRateDefId(), schema);
+					rateCategory.setRateDefinition(rateDefinition);
 
-				CategoryDTO subCategory = categoryService.getCategory(rateCategory.getSubCategory().getCategoryId());
-				rateCategory.setSubCategory(subCategory);
+					CategoryDTO category = categoryService.getCategory(rateCategory.getCategory().getCategoryId());
+					rateCategory.setCategory(category);
 
-				TariffDTO tariff = tariffService.getTariff(rateCategory.getTariff().getTariffId());
-				rateCategory.setTariff(tariff);
+					CategoryDTO subCategory = categoryService
+							.getCategory(rateCategory.getSubCategory().getCategoryId());
+					rateCategory.setSubCategory(subCategory);
 
-				rateCategories.set(i, rateCategory);
+					TariffDTO tariff = tariffService.getTariff(rateCategory.getTariff().getTariffId());
+					rateCategory.setTariff(tariff);
+
+					rateCategories.set(i, rateCategory);
+				}
 			}
 
 			return rateCategories;
@@ -77,7 +81,7 @@ public class RateCategoryService {
 		}
 	}
 
-	public RateCategoryDTO getRateCategory(int rateCategoryId) throws Exception {
+	public RateCategoryDTO getRateCategory(int rateCategoryId, String schema) throws Exception {
 
 		RateDefinitionService rateDefinitionService = new RateDefinitionService();
 		CategoryService categoryService = new CategoryService();
@@ -89,18 +93,21 @@ public class RateCategoryService {
 
 			rateCategory = rateCategoryDAO.getRateCategory(rateCategoryId);
 
-			RateDefinitionDTO rateDefinition = rateDefinitionService
-					.getRateDefinition(rateCategory.getRateDefinition().getRateDefId());
-			rateCategory.setRateDefinition(rateDefinition);
+			if ((schema != null && schema.trim().length() > 0) && schema.equalsIgnoreCase("full")) {
+				
+				RateDefinitionDTO rateDefinition = rateDefinitionService
+						.getRateDefinition(rateCategory.getRateDefinition().getRateDefId(), schema);
+				rateCategory.setRateDefinition(rateDefinition);
 
-			CategoryDTO category = categoryService.getCategory(rateCategory.getCategory().getCategoryId());
-			rateCategory.setCategory(category);
+				CategoryDTO category = categoryService.getCategory(rateCategory.getCategory().getCategoryId());
+				rateCategory.setCategory(category);
 
-			CategoryDTO subCategory = categoryService.getCategory(rateCategory.getSubCategory().getCategoryId());
-			rateCategory.setSubCategory(subCategory);
+				CategoryDTO subCategory = categoryService.getCategory(rateCategory.getSubCategory().getCategoryId());
+				rateCategory.setSubCategory(subCategory);
 
-			TariffDTO tariff = tariffService.getTariff(rateCategory.getTariff().getTariffId());
-			rateCategory.setTariff(tariff);
+				TariffDTO tariff = tariffService.getTariff(rateCategory.getTariff().getTariffId());
+				rateCategory.setTariff(tariff);
+			}			
 		} catch (Exception e) {
 
 			throw e;

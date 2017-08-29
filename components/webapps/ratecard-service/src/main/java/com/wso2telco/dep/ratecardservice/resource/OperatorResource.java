@@ -86,8 +86,8 @@ public class OperatorResource {
 
 	@GET
 	@Path("/{operatorName}/operatorrates")
-	public Response getOperationRates(@PathParam("operatorName") String operatorName,
-			@QueryParam("api") String apiName) {
+	public Response getOperationRates(@PathParam("operatorName") String operatorName, @QueryParam("api") String apiName,
+			@QueryParam("schema") String schema) {
 
 		RateDTO rate = null;
 		Status responseCode = null;
@@ -97,7 +97,7 @@ public class OperatorResource {
 
 		try {
 
-			rate = rateService.getOperationRates(apiName, operatorName.toUpperCase());
+			rate = rateService.getOperationRates(apiName, operatorName.toUpperCase(), schema);
 
 			if (rate != null) {
 
@@ -145,7 +145,7 @@ public class OperatorResource {
 	@GET
 	@Path("/{operatorId}/apis/{apiName}/operations/{apiOperationId}/ratedefinitions")
 	public Response getAPIOperationRates(@PathParam("operatorId") int operatorId, @PathParam("apiName") String apiName,
-			@PathParam("apiOperationId") int apiOperationId) {
+			@PathParam("apiOperationId") int apiOperationId, @QueryParam("schema") String schema) {
 
 		List<RateDefinitionDTO> rateDefinitions = null;
 		Status responseCode = null;
@@ -155,7 +155,7 @@ public class OperatorResource {
 
 		try {
 
-			rateDefinitions = rateDefinitionService.getRateDefinitions(apiOperationId, operatorId);
+			rateDefinitions = rateDefinitionService.getRateDefinitions(apiOperationId, operatorId, schema);
 
 			if (!rateDefinitions.isEmpty()) {
 

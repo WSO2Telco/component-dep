@@ -8,6 +8,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -28,7 +29,7 @@ public class RateDefinitionResource {
 	private RateDefinitionService rateDefinitionService = new RateDefinitionService();
 
 	@GET
-	public Response getRateDefinitions() {
+	public Response getRateDefinitions(@QueryParam("schema") String schema) {
 
 		List<RateDefinitionDTO> rateDefinitions = null;
 		Status responseCode = null;
@@ -36,7 +37,7 @@ public class RateDefinitionResource {
 
 		try {
 
-			rateDefinitions = rateDefinitionService.getRateDefinitions();
+			rateDefinitions = rateDefinitionService.getRateDefinitions(schema);
 
 			if (!rateDefinitions.isEmpty()) {
 
@@ -128,7 +129,7 @@ public class RateDefinitionResource {
 
 	@GET
 	@Path("/{rateDefId}")
-	public Response getRateDefinition(@PathParam("rateDefId") int rateDefId) {
+	public Response getRateDefinition(@PathParam("rateDefId") int rateDefId, @QueryParam("schema") String schema) {
 
 		RateDefinitionDTO rateDefinition = null;
 		Status responseCode = null;
@@ -136,7 +137,7 @@ public class RateDefinitionResource {
 
 		try {
 
-			rateDefinition = rateDefinitionService.getRateDefinition(rateDefId);
+			rateDefinition = rateDefinitionService.getRateDefinition(rateDefId, schema);
 
 			if (rateDefinition != null) {
 

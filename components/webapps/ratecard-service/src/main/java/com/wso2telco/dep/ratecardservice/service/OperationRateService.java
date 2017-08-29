@@ -16,7 +16,7 @@ public class OperationRateService {
 		operationRateDAO = new OperationRateDAO();
 	}
 
-	public List<OperationRateDTO> getOperationRates(String apiName) throws Exception {
+	public List<OperationRateDTO> getOperationRates(String apiName, String schema) throws Exception {
 
 		OperatorService operatorService = new OperatorService();
 		APIOperationService apiOperationService = new APIOperationService();
@@ -34,22 +34,25 @@ public class OperationRateService {
 
 		if (operationRates != null) {
 
-			for (int i = 0; i < operationRates.size(); i++) {
+			if ((schema != null && schema.trim().length() > 0) && schema.equalsIgnoreCase("full")) {
 
-				OperationRateDTO operationRate = operationRates.get(i);
+				for (int i = 0; i < operationRates.size(); i++) {
 
-				OperatorDTO operator = operatorService.getOperator(operationRate.getOperator().getOperatorId());
-				operationRate.setOperator(operator);
+					OperationRateDTO operationRate = operationRates.get(i);
 
-				APIOperationDTO apiOperation = apiOperationService
-						.getAPIOperation(operationRate.getApiOperation().getApiOperationId());
-				operationRate.setApiOperation(apiOperation);
+					OperatorDTO operator = operatorService.getOperator(operationRate.getOperator().getOperatorId());
+					operationRate.setOperator(operator);
 
-				RateDefinitionDTO rateDefinition = rateDefinitionService
-						.getRateDefinition(operationRate.getRateDefinition().getRateDefId());
-				operationRate.setRateDefinition(rateDefinition);
+					APIOperationDTO apiOperation = apiOperationService
+							.getAPIOperation(operationRate.getApiOperation().getApiOperationId(), schema);
+					operationRate.setApiOperation(apiOperation);
 
-				operationRates.set(i, operationRate);
+					RateDefinitionDTO rateDefinition = rateDefinitionService
+							.getRateDefinition(operationRate.getRateDefinition().getRateDefId(), schema);
+					operationRate.setRateDefinition(rateDefinition);
+
+					operationRates.set(i, operationRate);
+				}
 			}
 
 			return operationRates;
@@ -59,7 +62,8 @@ public class OperationRateService {
 		}
 	}
 
-	public List<OperationRateDTO> getOperationRates(String apiName, String operatorName) throws Exception {
+	public List<OperationRateDTO> getOperationRates(String apiName, String operatorName, String schema)
+			throws Exception {
 
 		OperatorService operatorService = new OperatorService();
 		APIOperationService apiOperationService = new APIOperationService();
@@ -77,22 +81,25 @@ public class OperationRateService {
 
 		if (operationRates != null) {
 
-			for (int i = 0; i < operationRates.size(); i++) {
+			if ((schema != null && schema.trim().length() > 0) && schema.equalsIgnoreCase("full")) {
 
-				OperationRateDTO operationRate = operationRates.get(i);
+				for (int i = 0; i < operationRates.size(); i++) {
 
-				OperatorDTO operator = operatorService.getOperator(operationRate.getOperator().getOperatorId());
-				operationRate.setOperator(operator);
+					OperationRateDTO operationRate = operationRates.get(i);
 
-				APIOperationDTO apiOperation = apiOperationService
-						.getAPIOperation(operationRate.getApiOperation().getApiOperationId());
-				operationRate.setApiOperation(apiOperation);
+					OperatorDTO operator = operatorService.getOperator(operationRate.getOperator().getOperatorId());
+					operationRate.setOperator(operator);
 
-				RateDefinitionDTO rateDefinition = rateDefinitionService
-						.getRateDefinition(operationRate.getRateDefinition().getRateDefId());
-				operationRate.setRateDefinition(rateDefinition);
+					APIOperationDTO apiOperation = apiOperationService
+							.getAPIOperation(operationRate.getApiOperation().getApiOperationId(), schema);
+					operationRate.setApiOperation(apiOperation);
 
-				operationRates.set(i, operationRate);
+					RateDefinitionDTO rateDefinition = rateDefinitionService
+							.getRateDefinition(operationRate.getRateDefinition().getRateDefId(), schema);
+					operationRate.setRateDefinition(rateDefinition);
+
+					operationRates.set(i, operationRate);
+				}
 			}
 
 			return operationRates;
@@ -109,7 +116,7 @@ public class OperationRateService {
 		try {
 
 			newOperationRate = operationRateDAO.addOperationRate(operationRate);
-			newOperationRate = getOperationRate(newOperationRate.getOperationRateId());
+			newOperationRate = getOperationRate(newOperationRate.getOperationRateId(), null);
 		} catch (Exception e) {
 
 			throw e;
@@ -118,7 +125,7 @@ public class OperationRateService {
 		return newOperationRate;
 	}
 
-	public OperationRateDTO getOperationRate(int operationRateId) throws Exception {
+	public OperationRateDTO getOperationRate(int operationRateId, String schema) throws Exception {
 
 		OperatorService operatorService = new OperatorService();
 		APIOperationService apiOperationService = new APIOperationService();
@@ -130,16 +137,19 @@ public class OperationRateService {
 
 			operationRate = operationRateDAO.getOperationRate(operationRateId);
 
-			OperatorDTO operator = operatorService.getOperator(operationRate.getOperator().getOperatorId());
-			operationRate.setOperator(operator);
+			if ((schema != null && schema.trim().length() > 0) && schema.equalsIgnoreCase("full")) {
 
-			APIOperationDTO apiOperation = apiOperationService
-					.getAPIOperation(operationRate.getApiOperation().getApiOperationId());
-			operationRate.setApiOperation(apiOperation);
+				OperatorDTO operator = operatorService.getOperator(operationRate.getOperator().getOperatorId());
+				operationRate.setOperator(operator);
 
-			RateDefinitionDTO rateDefinition = rateDefinitionService
-					.getRateDefinition(operationRate.getRateDefinition().getRateDefId());
-			operationRate.setRateDefinition(rateDefinition);
+				APIOperationDTO apiOperation = apiOperationService
+						.getAPIOperation(operationRate.getApiOperation().getApiOperationId(), schema);
+				operationRate.setApiOperation(apiOperation);
+
+				RateDefinitionDTO rateDefinition = rateDefinitionService
+						.getRateDefinition(operationRate.getRateDefinition().getRateDefId(), schema);
+				operationRate.setRateDefinition(rateDefinition);
+			}
 		} catch (Exception e) {
 
 			throw e;

@@ -7,6 +7,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -29,7 +30,7 @@ public class OperationRateResource {
 
 	@GET
 	public Response getAssignedRateDefinitions(@PathParam("apiName") String apiName,
-			@PathParam("apiOperationId") int apiOperationId) {
+			@PathParam("apiOperationId") int apiOperationId, @QueryParam("schema") String schema) {
 
 		List<RateDefinitionDTO> rateDefinitions = null;
 		Status responseCode = null;
@@ -39,7 +40,7 @@ public class OperationRateResource {
 
 		try {
 
-			rateDefinitions = rateDefinitionService.getAssignedRateDefinitions(apiOperationId);
+			rateDefinitions = rateDefinitionService.getAssignedRateDefinitions(apiOperationId, schema);
 
 			if (!rateDefinitions.isEmpty()) {
 

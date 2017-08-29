@@ -22,7 +22,7 @@ public class RateTaxService {
 		try {
 
 			newRateTax = rateTaxDAO.addRateTax(rateTax);
-			newRateTax = getRateTax(newRateTax.getRateTaxId());
+			newRateTax = getRateTax(newRateTax.getRateTaxId(), null);
 		} catch (Exception e) {
 
 			throw e;
@@ -31,7 +31,7 @@ public class RateTaxService {
 		return newRateTax;
 	}
 
-	public RateTaxDTO getRateTax(int rateTaxId) throws Exception {
+	public RateTaxDTO getRateTax(int rateTaxId, String schema) throws Exception {
 
 		RateDefinitionService rateDefinitionService = new RateDefinitionService();
 		TaxService taxService = new TaxService();
@@ -42,12 +42,15 @@ public class RateTaxService {
 
 			rateTax = rateTaxDAO.getRateTax(rateTaxId);
 
-			RateDefinitionDTO rateDefinition = rateDefinitionService
-					.getRateDefinition(rateTax.getRateDefinition().getRateDefId());
-			rateTax.setRateDefinition(rateDefinition);
+			if ((schema != null && schema.trim().length() > 0) && schema.equalsIgnoreCase("full")) {
+				
+				RateDefinitionDTO rateDefinition = rateDefinitionService
+						.getRateDefinition(rateTax.getRateDefinition().getRateDefId(), schema);
+				rateTax.setRateDefinition(rateDefinition);
 
-			TaxDTO tax = taxService.getTax(rateTax.getTax().getTaxId());
-			rateTax.setTax(tax);
+				TaxDTO tax = taxService.getTax(rateTax.getTax().getTaxId());
+				rateTax.setTax(tax);
+			}			
 		} catch (Exception e) {
 
 			throw e;
@@ -56,7 +59,7 @@ public class RateTaxService {
 		return rateTax;
 	}
 
-	public List<RateTaxDTO> getRateTaxes(int taxId) throws Exception {
+	public List<RateTaxDTO> getRateTaxes(int taxId, String schema) throws Exception {
 
 		RateDefinitionService rateDefinitionService = new RateDefinitionService();
 		TaxService taxService = new TaxService();
@@ -73,18 +76,21 @@ public class RateTaxService {
 
 		if (rateTaxes != null) {
 
-			for (int i = 0; i < rateTaxes.size(); i++) {
+			if ((schema != null && schema.trim().length() > 0) && schema.equalsIgnoreCase("full")) {
 
-				RateTaxDTO rateTax = rateTaxes.get(i);
+				for (int i = 0; i < rateTaxes.size(); i++) {
 
-				RateDefinitionDTO rateDefinition = rateDefinitionService
-						.getRateDefinition(rateTax.getRateDefinition().getRateDefId());
-				rateTax.setRateDefinition(rateDefinition);
+					RateTaxDTO rateTax = rateTaxes.get(i);
 
-				TaxDTO tax = taxService.getTax(rateTax.getTax().getTaxId());
-				rateTax.setTax(tax);
+					RateDefinitionDTO rateDefinition = rateDefinitionService
+							.getRateDefinition(rateTax.getRateDefinition().getRateDefId(), schema);
+					rateTax.setRateDefinition(rateDefinition);
 
-				rateTaxes.set(i, rateTax);
+					TaxDTO tax = taxService.getTax(rateTax.getTax().getTaxId());
+					rateTax.setTax(tax);
+
+					rateTaxes.set(i, rateTax);
+				}
 			}
 
 			return rateTaxes;

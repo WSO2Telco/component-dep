@@ -6,6 +6,7 @@ import javax.ws.rs.GET;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -29,7 +30,7 @@ public class OperationResource {
 	private APIOperationService apiOperationService = new APIOperationService();
 
 	@GET
-	public Response getAPIOperations(@PathParam("apiName") String apiName) {
+	public Response getAPIOperations(@PathParam("apiName") String apiName, @QueryParam("schema") String schema) {
 
 		List<APIOperationDTO> apiOperations = null;
 		Status responseCode = null;
@@ -37,7 +38,7 @@ public class OperationResource {
 
 		try {
 
-			apiOperations = apiOperationService.getAPIOperations(apiName);
+			apiOperations = apiOperationService.getAPIOperations(apiName, schema);
 
 			if (!apiOperations.isEmpty()) {
 
@@ -84,7 +85,7 @@ public class OperationResource {
 
 	@GET
 	@Path("/operationrates")
-	public Response getOperationRates(@PathParam("apiName") String apiName) {
+	public Response getOperationRates(@PathParam("apiName") String apiName, @QueryParam("schema") String schema) {
 
 		RateDTO rate = null;
 		Status responseCode = null;
@@ -94,7 +95,7 @@ public class OperationResource {
 
 		try {
 
-			rate = rateService.getOperationRates(apiName);
+			rate = rateService.getOperationRates(apiName, schema);
 
 			if (rate != null) {
 
@@ -142,7 +143,7 @@ public class OperationResource {
 	
 	@GET
 	@Path("/{apiOperationId}/ratedefinitions")
-	public Response getAPIOperationRates(@PathParam("apiName") String apiName, @PathParam("apiOperationId") int apiOperationId) {
+	public Response getAPIOperationRates(@PathParam("apiName") String apiName, @PathParam("apiOperationId") int apiOperationId, @QueryParam("schema") String schema) {
 
 		List<RateDefinitionDTO> rateDefinitions = null;
 		Status responseCode = null;
@@ -152,7 +153,7 @@ public class OperationResource {
 
 		try {
 
-			rateDefinitions = rateDefinitionService.getRateDefinitions(apiOperationId);
+			rateDefinitions = rateDefinitionService.getRateDefinitions(apiOperationId, schema);
 
 			if (!rateDefinitions.isEmpty()) {
 

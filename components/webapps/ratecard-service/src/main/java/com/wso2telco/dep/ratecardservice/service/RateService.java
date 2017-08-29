@@ -7,7 +7,7 @@ import com.wso2telco.dep.ratecardservice.dao.model.RateDTO;
 
 public class RateService {
 
-	public RateDTO getOperationRates(String apiName) throws Exception {
+	public RateDTO getOperationRates(String apiName, String schema) throws Exception {
 
 		OperationRateService operationRateService = new OperationRateService();
 
@@ -16,7 +16,7 @@ public class RateService {
 
 		try {
 
-			operationRates = operationRateService.getOperationRates(apiName);
+			operationRates = operationRateService.getOperationRates(apiName, schema);
 		} catch (Exception e) {
 
 			throw e;
@@ -116,7 +116,7 @@ public class RateService {
 		return rate;
 	}
 
-	public RateDTO getOperationRates(String apiName, String operatorName) throws Exception {
+	public RateDTO getOperationRates(String apiName, String operatorName, String schema) throws Exception {
 
 		OperationRateService operationRateService = new OperationRateService();
 
@@ -125,7 +125,7 @@ public class RateService {
 
 		try {
 
-			operationRates = operationRateService.getOperationRates(apiName, operatorName);
+			operationRates = operationRateService.getOperationRates(apiName, operatorName, schema);
 		} catch (Exception e) {
 
 			throw e;
