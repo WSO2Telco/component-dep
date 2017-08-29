@@ -40,7 +40,8 @@ public class OperationRateDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder(
+					"select operation_rateid, operator_id, api_operationid, rate_defid, createdby from ");
 			query.append(DatabaseTables.OPERATION_RATE.getTObject());
 			query.append(" operationrate, ");
 			query.append(DatabaseTables.API.getTObject());
@@ -64,9 +65,6 @@ public class OperationRateDAO {
 
 				operationRate.setOperationRateId(rs.getInt("operation_rateid"));
 				operationRate.setCreatedBy(rs.getString("createdby"));
-				operationRate.setCreatedDate(rs.getTimestamp("createddate").toString());
-				operationRate.setUpdatedBy(rs.getString("updatedby"));
-				operationRate.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 
 				OperatorDTO operator = new OperatorDTO();
 				operator.setOperatorId(rs.getInt("operator_id"));
@@ -114,7 +112,8 @@ public class OperationRateDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder(
+					"select operation_rateid, operator_id, api_operationid, rate_defid, createdby from ");
 			query.append(DatabaseTables.OPERATION_RATE.getTObject());
 			query.append(" operationrate, ");
 			query.append(DatabaseTables.API.getTObject());
@@ -141,9 +140,6 @@ public class OperationRateDAO {
 
 				operationRate.setOperationRateId(rs.getInt("operation_rateid"));
 				operationRate.setCreatedBy(rs.getString("createdby"));
-				operationRate.setCreatedDate(rs.getTimestamp("createddate").toString());
-				operationRate.setUpdatedBy(rs.getString("updatedby"));
-				operationRate.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 
 				OperatorDTO operator = new OperatorDTO();
 				operator.setOperatorId(rs.getInt("operator_id"));
@@ -253,7 +249,8 @@ public class OperationRateDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder(
+					"select operation_rateid, operator_id, api_operationid, rate_defid, createdby from ");
 			query.append(DatabaseTables.OPERATION_RATE.getTObject());
 			query.append(" where operation_rateid = ?");
 
@@ -284,9 +281,6 @@ public class OperationRateDAO {
 				operationRate.setRateDefinition(rateDefinition);
 
 				operationRate.setCreatedBy(rs.getString("createdby"));
-				operationRate.setCreatedDate(rs.getTimestamp("createddate").toString());
-				operationRate.setUpdatedBy(rs.getString("updatedby"));
-				operationRate.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 			}
 		} catch (SQLException e) {
 

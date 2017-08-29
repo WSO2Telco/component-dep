@@ -36,7 +36,7 @@ public class CurrencyDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder("select currencyid, currencycode, currencydesc, createdby from ");
 			query.append(DatabaseTables.CURRENCY.getTObject());
 
 			ps = con.prepareStatement(query.toString());
@@ -53,9 +53,6 @@ public class CurrencyDAO {
 				currency.setCurrencyCode(rs.getString("currencycode"));
 				currency.setCurrencyDescription(rs.getString("currencydesc"));
 				currency.setCreatedBy(rs.getString("createdby"));
-				currency.setCreatedDate(rs.getTimestamp("createddate").toString());
-				currency.setUpdatedBy(rs.getString("updatedby"));
-				currency.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 
 				currencies.add(currency);
 			}
@@ -129,7 +126,7 @@ public class CurrencyDAO {
 
 		return currency;
 	}
-	
+
 	public CurrencyDTO getCurrency(int currencyId) throws Exception {
 
 		CurrencyDTO currency = null;
@@ -146,7 +143,7 @@ public class CurrencyDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder("select currencyid, currencycode, currencydesc, createdby from ");
 			query.append(DatabaseTables.CURRENCY.getTObject());
 			query.append(" where currencyid = ?");
 
@@ -155,7 +152,7 @@ public class CurrencyDAO {
 			log.debug("sql query in getCurrency : " + ps);
 
 			ps.setInt(1, currencyId);
-			
+
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
@@ -166,9 +163,6 @@ public class CurrencyDAO {
 				currency.setCurrencyCode(rs.getString("currencycode"));
 				currency.setCurrencyDescription(rs.getString("currencydesc"));
 				currency.setCreatedBy(rs.getString("createdby"));
-				currency.setCreatedDate(rs.getTimestamp("createddate").toString());
-				currency.setUpdatedBy(rs.getString("updatedby"));
-				currency.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 			}
 		} catch (SQLException e) {
 

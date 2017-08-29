@@ -35,7 +35,8 @@ public class RateTypeDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder(
+					"select rate_typeid, rate_typecode, rate_typedesc, createdby from ");
 			query.append(DatabaseTables.RATE_TYPE.getTObject());
 
 			ps = con.prepareStatement(query.toString());
@@ -52,9 +53,6 @@ public class RateTypeDAO {
 				rateType.setRateTypeCode(rs.getString("rate_typecode"));
 				rateType.setRateTypeDescription(rs.getString("rate_typedesc"));
 				rateType.setCreatedBy(rs.getString("createdby"));
-				rateType.setCreatedDate(rs.getTimestamp("createddate").toString());
-				rateType.setUpdatedBy(rs.getString("updatedby"));
-				rateType.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 
 				rateTypes.add(rateType);
 			}
@@ -73,7 +71,7 @@ public class RateTypeDAO {
 
 		return rateTypes;
 	}
-	
+
 	public RateTypeDTO getRateType(int rateTypeId) throws Exception {
 
 		RateTypeDTO rateType = null;
@@ -90,7 +88,8 @@ public class RateTypeDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder(
+					"select rate_typeid, rate_typecode, rate_typedesc, createdby from ");
 			query.append(DatabaseTables.RATE_TYPE.getTObject());
 			query.append(" where rate_typeid = ?");
 
@@ -99,7 +98,7 @@ public class RateTypeDAO {
 			log.debug("sql query in getRateType : " + ps);
 
 			ps.setInt(1, rateTypeId);
-			
+
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
@@ -110,9 +109,6 @@ public class RateTypeDAO {
 				rateType.setRateTypeCode(rs.getString("rate_typecode"));
 				rateType.setRateTypeDescription(rs.getString("rate_typedesc"));
 				rateType.setCreatedBy(rs.getString("createdby"));
-				rateType.setCreatedDate(rs.getTimestamp("createddate").toString());
-				rateType.setUpdatedBy(rs.getString("updatedby"));
-				rateType.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 			}
 		} catch (SQLException e) {
 

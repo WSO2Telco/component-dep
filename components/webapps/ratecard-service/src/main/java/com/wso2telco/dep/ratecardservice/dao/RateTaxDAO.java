@@ -93,7 +93,7 @@ public class RateTaxDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder("select rate_taxesid, rate_defid, taxid, createdby from ");
 			query.append(DatabaseTables.RATE_TAX.getTObject());
 			query.append(" where rate_taxesid = ?");
 
@@ -120,9 +120,6 @@ public class RateTaxDAO {
 				rateTax.setTax(tax);
 
 				rateTax.setCreatedBy(rs.getString("createdby"));
-				rateTax.setCreatedDate(rs.getTimestamp("createddate").toString());
-				rateTax.setUpdatedBy(rs.getString("updatedby"));
-				rateTax.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 			}
 		} catch (SQLException e) {
 
@@ -156,7 +153,7 @@ public class RateTaxDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder("select rate_taxesid, rate_defid, taxid, createdby from ");
 			query.append(DatabaseTables.RATE_TAX.getTObject());
 			query.append(" where taxid = ?");
 
@@ -183,9 +180,6 @@ public class RateTaxDAO {
 				rateTax.setTax(tax);
 
 				rateTax.setCreatedBy(rs.getString("createdby"));
-				rateTax.setCreatedDate(rs.getTimestamp("createddate").toString());
-				rateTax.setUpdatedBy(rs.getString("updatedby"));
-				rateTax.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 
 				rateTaxes.add(rateTax);
 			}
@@ -204,7 +198,7 @@ public class RateTaxDAO {
 
 		return rateTaxes;
 	}
-	
+
 	public boolean deleteRateTax(int rateTaxId) throws Exception {
 
 		Connection con = null;

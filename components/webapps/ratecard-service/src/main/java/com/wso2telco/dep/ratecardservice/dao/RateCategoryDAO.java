@@ -104,7 +104,8 @@ public class RateCategoryDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder(
+					"select rate_category_id, rate_defid, parentcategoryid, childcategoryid, tariffid, createdby from ");
 			query.append(DatabaseTables.RATE_CATEGORY.getTObject());
 			query.append(" where rate_defid = ?");
 
@@ -139,9 +140,6 @@ public class RateCategoryDAO {
 				rateCategory.setTariff(tariff);
 
 				rateCategory.setCreatedBy(rs.getString("createdby"));
-				rateCategory.setCreatedDate(rs.getTimestamp("createddate").toString());
-				rateCategory.setUpdatedBy(rs.getString("updatedby"));
-				rateCategory.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 
 				rateCategories.add(rateCategory);
 			}
@@ -177,7 +175,8 @@ public class RateCategoryDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder(
+					"select rate_category_id, rate_defid, parentcategoryid, childcategoryid, tariffid, createdby from ");
 			query.append(DatabaseTables.RATE_CATEGORY.getTObject());
 			query.append(" where rate_category_id = ?");
 
@@ -212,9 +211,6 @@ public class RateCategoryDAO {
 				rateCategory.setTariff(tariff);
 
 				rateCategory.setCreatedBy(rs.getString("createdby"));
-				rateCategory.setCreatedDate(rs.getTimestamp("createddate").toString());
-				rateCategory.setUpdatedBy(rs.getString("updatedby"));
-				rateCategory.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 			}
 		} catch (SQLException e) {
 

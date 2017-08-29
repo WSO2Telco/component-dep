@@ -36,7 +36,7 @@ public class TaxDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder("select taxid, taxcode, taxname, createdby from ");
 			query.append(DatabaseTables.TAX.getTObject());
 
 			ps = con.prepareStatement(query.toString());
@@ -53,9 +53,6 @@ public class TaxDAO {
 				tax.setTaxCode(rs.getString("taxcode"));
 				tax.setTaxName(rs.getString("taxname"));
 				tax.setCreatedBy(rs.getString("createdby"));
-				tax.setCreatedDate(rs.getTimestamp("createddate").toString());
-				tax.setUpdatedBy(rs.getString("updatedby"));
-				tax.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 
 				taxes.add(tax);
 			}
@@ -146,7 +143,7 @@ public class TaxDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder("select taxid, taxcode, taxname, createdby from ");
 			query.append(DatabaseTables.TAX.getTObject());
 			query.append(" where taxid = ?");
 
@@ -166,9 +163,6 @@ public class TaxDAO {
 				tax.setTaxCode(rs.getString("taxcode"));
 				tax.setTaxName(rs.getString("taxname"));
 				tax.setCreatedBy(rs.getString("createdby"));
-				tax.setCreatedDate(rs.getTimestamp("createddate").toString());
-				tax.setUpdatedBy(rs.getString("updatedby"));
-				tax.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 			}
 		} catch (SQLException e) {
 

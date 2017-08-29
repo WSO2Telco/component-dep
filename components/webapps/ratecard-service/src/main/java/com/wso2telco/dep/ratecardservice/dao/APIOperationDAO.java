@@ -36,7 +36,7 @@ public class APIOperationDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder("select api_operation, api_operationcode, createdby from ");
 			query.append(DatabaseTables.API_OPERATION.getTObject());
 			query.append(" where api_operationid = ?");
 
@@ -51,19 +51,16 @@ public class APIOperationDAO {
 			while (rs.next()) {
 
 				apiOperation = new APIOperationDTO();
-				
+
 				apiOperation.setApiOperationId(rs.getInt("api_operationid"));
-				
+
 				APIDTO api = new APIDTO();
 				api.setApiId(rs.getInt("apiid"));
 				apiOperation.setApi(api);
-				
+
 				apiOperation.setApiOperation(rs.getString("api_operation"));
 				apiOperation.setApiOperationCode(rs.getString("api_operationcode"));
 				apiOperation.setCreatedBy(rs.getString("createdby"));
-				apiOperation.setCreatedDate(rs.getTimestamp("createddate").toString());
-				apiOperation.setUpdatedBy(rs.getString("updatedby"));
-				apiOperation.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 			}
 		} catch (SQLException e) {
 
@@ -97,7 +94,7 @@ public class APIOperationDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder("select api_operation, api_operationcode, createdby from ");
 			query.append(DatabaseTables.API_OPERATION.getTObject());
 			query.append(" apioperation, ");
 			query.append(DatabaseTables.API.getTObject());
@@ -125,9 +122,6 @@ public class APIOperationDAO {
 				apiOperation.setApiOperation(rs.getString("api_operation"));
 				apiOperation.setApiOperationCode(rs.getString("api_operationcode"));
 				apiOperation.setCreatedBy(rs.getString("createdby"));
-				apiOperation.setCreatedDate(rs.getTimestamp("createddate").toString());
-				apiOperation.setUpdatedBy(rs.getString("updatedby"));
-				apiOperation.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 
 				apiOperations.add(apiOperation);
 			}

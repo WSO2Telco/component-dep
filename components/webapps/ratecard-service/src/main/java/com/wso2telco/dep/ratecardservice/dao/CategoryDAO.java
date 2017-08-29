@@ -36,7 +36,8 @@ public class CategoryDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder(
+					"select categoryid, categoryname, categorycode, categorydesc, createdby from ");
 			query.append(DatabaseTables.CATEGORY.getTObject());
 
 			ps = con.prepareStatement(query.toString());
@@ -54,9 +55,6 @@ public class CategoryDAO {
 				category.setCategoryCode(rs.getString("categorycode"));
 				category.setCategoryDescription(rs.getString("categorydesc"));
 				category.setCreatedBy(rs.getString("createdby"));
-				category.setCreatedDate(rs.getTimestamp("createddate").toString());
-				category.setUpdatedBy(rs.getString("updatedby"));
-				category.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 
 				categories.add(category);
 			}
@@ -148,7 +146,8 @@ public class CategoryDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder(
+					"select categoryid, categoryname, categorycode, categorydesc, createdby from ");
 			query.append(DatabaseTables.CATEGORY.getTObject());
 			query.append(" where categoryid = ?");
 
@@ -169,9 +168,6 @@ public class CategoryDAO {
 				category.setCategoryCode(rs.getString("categorycode"));
 				category.setCategoryDescription(rs.getString("categorydesc"));
 				category.setCreatedBy(rs.getString("createdby"));
-				category.setCreatedDate(rs.getTimestamp("createddate").toString());
-				category.setUpdatedBy(rs.getString("updatedby"));
-				category.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 			}
 		} catch (SQLException e) {
 

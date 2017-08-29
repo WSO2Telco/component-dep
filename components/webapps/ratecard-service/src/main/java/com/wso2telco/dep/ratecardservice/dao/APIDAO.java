@@ -35,7 +35,7 @@ public class APIDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder("select apiid, apiname, apidesc, createdby from ");
 			query.append(DatabaseTables.API.getTObject());
 
 			ps = con.prepareStatement(query.toString());
@@ -52,9 +52,6 @@ public class APIDAO {
 				api.setApiName(rs.getString("apiname"));
 				api.setApiDescription(rs.getString("apidesc"));
 				api.setCreatedBy(rs.getString("createdby"));
-				api.setCreatedDate(rs.getTimestamp("createddate").toString());
-				api.setUpdatedBy(rs.getString("updatedby"));
-				api.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 
 				apis.add(api);
 			}
@@ -90,7 +87,7 @@ public class APIDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder("select apiid, apiname, apidesc, createdby from ");
 			query.append(DatabaseTables.API.getTObject());
 			query.append(" where apiid = ?");
 
@@ -110,9 +107,6 @@ public class APIDAO {
 				api.setApiName(rs.getString("apiname"));
 				api.setApiDescription(rs.getString("apidesc"));
 				api.setCreatedBy(rs.getString("createdby"));
-				api.setCreatedDate(rs.getTimestamp("createddate").toString());
-				api.setUpdatedBy(rs.getString("updatedby"));
-				api.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 			}
 		} catch (SQLException e) {
 

@@ -39,7 +39,8 @@ public class RateDefinitionDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder(
+					"select rate_defid, rate_defname, rate_defdesc, rate_defdefault, rate_defcategorybase, currencyid, rate_typeid, tariffid, createdby from ");
 			query.append(DatabaseTables.RATE_DEF.getTObject());
 
 			ps = con.prepareStatement(query.toString());
@@ -58,9 +59,6 @@ public class RateDefinitionDAO {
 				rateDefinition.setRateDefDefault(rs.getInt("rate_defdefault"));
 				rateDefinition.setRateDefCategoryBase(rs.getInt("rate_defcategorybase"));
 				rateDefinition.setCreatedBy(rs.getString("createdby"));
-				rateDefinition.setCreatedDate(rs.getTimestamp("createddate").toString());
-				rateDefinition.setUpdatedBy(rs.getString("updatedby"));
-				rateDefinition.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 
 				CurrencyDTO currency = new CurrencyDTO();
 				currency.setCurrencyId(rs.getInt("currencyid"));
@@ -169,7 +167,8 @@ public class RateDefinitionDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder(
+					"select rate_defid, rate_defname, rate_defdesc, rate_defdefault, rate_defcategorybase, currencyid, rate_typeid, tariffid, createdby from ");
 			query.append(DatabaseTables.RATE_DEF.getTObject());
 			query.append(" where rate_defid = ?");
 
@@ -191,9 +190,6 @@ public class RateDefinitionDAO {
 				rateDefinition.setRateDefDefault(rs.getInt("rate_defdefault"));
 				rateDefinition.setRateDefCategoryBase(rs.getInt("rate_defcategorybase"));
 				rateDefinition.setCreatedBy(rs.getString("createdby"));
-				rateDefinition.setCreatedDate(rs.getTimestamp("createddate").toString());
-				rateDefinition.setUpdatedBy(rs.getString("updatedby"));
-				rateDefinition.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 
 				CurrencyDTO currency = new CurrencyDTO();
 				currency.setCurrencyId(rs.getInt("currencyid"));
@@ -280,7 +276,8 @@ public class RateDefinitionDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder(
+					"select rate_defid, rate_defname, rate_defdesc, rate_defdefault, rate_defcategorybase, currencyid, rate_typeid, tariffid, createdby from ");
 			query.append(DatabaseTables.RATE_DEF.getTObject());
 			query.append(" where rate_defid NOT IN (");
 			query.append("select rate_defid from ");
@@ -305,9 +302,6 @@ public class RateDefinitionDAO {
 				rateDefinition.setRateDefDefault(rs.getInt("rate_defdefault"));
 				rateDefinition.setRateDefCategoryBase(rs.getInt("rate_defcategorybase"));
 				rateDefinition.setCreatedBy(rs.getString("createdby"));
-				rateDefinition.setCreatedDate(rs.getTimestamp("createddate").toString());
-				rateDefinition.setUpdatedBy(rs.getString("updatedby"));
-				rateDefinition.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 
 				CurrencyDTO currency = new CurrencyDTO();
 				currency.setCurrencyId(rs.getInt("currencyid"));
@@ -355,7 +349,8 @@ public class RateDefinitionDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder(
+					"select rate_defid, rate_defname, rate_defdesc, rate_defdefault, rate_defcategorybase, currencyid, rate_typeid, tariffid, createdby from ");
 			query.append(DatabaseTables.RATE_DEF.getTObject());
 			query.append(" where rate_defid NOT IN (");
 			query.append("select rate_defid from ");
@@ -381,9 +376,6 @@ public class RateDefinitionDAO {
 				rateDefinition.setRateDefDefault(rs.getInt("rate_defdefault"));
 				rateDefinition.setRateDefCategoryBase(rs.getInt("rate_defcategorybase"));
 				rateDefinition.setCreatedBy(rs.getString("createdby"));
-				rateDefinition.setCreatedDate(rs.getTimestamp("createddate").toString());
-				rateDefinition.setUpdatedBy(rs.getString("updatedby"));
-				rateDefinition.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 
 				CurrencyDTO currency = new CurrencyDTO();
 				currency.setCurrencyId(rs.getInt("currencyid"));
@@ -431,7 +423,8 @@ public class RateDefinitionDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder(
+					"select rate_defid, rate_defname, rate_defdesc, rate_defdefault, rate_defcategorybase, currencyid, rate_typeid, tariffid, createdby from ");
 			query.append(DatabaseTables.RATE_DEF.getTObject());
 			query.append(" where rate_defid IN (");
 			query.append("select rate_defid from ");
@@ -456,9 +449,6 @@ public class RateDefinitionDAO {
 				rateDefinition.setRateDefDefault(rs.getInt("rate_defdefault"));
 				rateDefinition.setRateDefCategoryBase(rs.getInt("rate_defcategorybase"));
 				rateDefinition.setCreatedBy(rs.getString("createdby"));
-				rateDefinition.setCreatedDate(rs.getTimestamp("createddate").toString());
-				rateDefinition.setUpdatedBy(rs.getString("updatedby"));
-				rateDefinition.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 
 				CurrencyDTO currency = new CurrencyDTO();
 				currency.setCurrencyId(rs.getInt("currencyid"));
@@ -506,7 +496,7 @@ public class RateDefinitionDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder("select rate_defid, rate_defname, rate_defdesc, rate_defdefault, rate_defcategorybase, currencyid, rate_typeid, tariffid, createdby from ");
 			query.append(DatabaseTables.RATE_DEF.getTObject());
 			query.append(" where rate_defid IN (");
 			query.append("select rate_defid from ");
@@ -532,9 +522,6 @@ public class RateDefinitionDAO {
 				rateDefinition.setRateDefDefault(rs.getInt("rate_defdefault"));
 				rateDefinition.setRateDefCategoryBase(rs.getInt("rate_defcategorybase"));
 				rateDefinition.setCreatedBy(rs.getString("createdby"));
-				rateDefinition.setCreatedDate(rs.getTimestamp("createddate").toString());
-				rateDefinition.setUpdatedBy(rs.getString("updatedby"));
-				rateDefinition.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 
 				CurrencyDTO currency = new CurrencyDTO();
 				currency.setCurrencyId(rs.getInt("currencyid"));

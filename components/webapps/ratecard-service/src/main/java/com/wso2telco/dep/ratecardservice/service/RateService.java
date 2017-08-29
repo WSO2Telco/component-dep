@@ -34,9 +34,6 @@ public class RateService {
 			api.setApiName(operationRate.getApiOperation().getApi().getApiName());
 			api.setApiDescription(operationRate.getApiOperation().getApi().getApiDescription());
 			api.setCreatedBy(operationRate.getApiOperation().getApi().getCreatedBy());
-			api.setCreatedDate(operationRate.getApiOperation().getApi().getCreatedDate());
-			api.setUpdatedBy(operationRate.getApiOperation().getApi().getUpdatedBy());
-			api.setUpdatedDate(operationRate.getApiOperation().getApi().getUpdatedDate());
 
 			List<RateDTO.API.APIOperation> operationList = new ArrayList<RateDTO.API.APIOperation>();
 
@@ -54,9 +51,6 @@ public class RateService {
 				operation.setApiOperationName(operationRate.getApiOperation().getApiOperation());
 				operation.setApiOperationCode(operationRate.getApiOperation().getApiOperationCode());
 				operation.setCreatedBy(operationRate.getApiOperation().getCreatedBy());
-				operation.setCreatedDate(operationRate.getApiOperation().getCreatedDate());
-				operation.setUpdatedBy(operationRate.getApiOperation().getUpdatedBy());
-				operation.setUpdatedDate(operationRate.getApiOperation().getUpdatedDate());
 
 				List<RateDTO.API.APIOperation.RateDefinition> rateDefinitionList = new ArrayList<RateDTO.API.APIOperation.RateDefinition>();
 
@@ -80,9 +74,6 @@ public class RateService {
 						rateDefinition.setRateDefCategoryBase(
 								innerOperationRate.getRateDefinition().getRateDefCategoryBase());
 						rateDefinition.setCreatedBy(innerOperationRate.getRateDefinition().getCreatedBy());
-						rateDefinition.setCreatedDate(innerOperationRate.getRateDefinition().getCreatedDate());
-						rateDefinition.setUpdatedBy(innerOperationRate.getRateDefinition().getUpdatedBy());
-						rateDefinition.setUpdatedDate(innerOperationRate.getRateDefinition().getUpdatedDate());
 
 						rateDefinition.setCurrency(innerOperationRate.getRateDefinition().getCurrency());
 
@@ -152,9 +143,6 @@ public class RateService {
 			api.setApiName(operationRate.getApiOperation().getApi().getApiName());
 			api.setApiDescription(operationRate.getApiOperation().getApi().getApiDescription());
 			api.setCreatedBy(operationRate.getApiOperation().getApi().getCreatedBy());
-			api.setCreatedDate(operationRate.getApiOperation().getApi().getCreatedDate());
-			api.setUpdatedBy(operationRate.getApiOperation().getApi().getUpdatedBy());
-			api.setUpdatedDate(operationRate.getApiOperation().getApi().getUpdatedDate());
 
 			List<RateDTO.API.APIOperation> operationList = new ArrayList<RateDTO.API.APIOperation>();
 
@@ -172,9 +160,6 @@ public class RateService {
 				operation.setApiOperationName(operationRate.getApiOperation().getApiOperation());
 				operation.setApiOperationCode(operationRate.getApiOperation().getApiOperationCode());
 				operation.setCreatedBy(operationRate.getApiOperation().getCreatedBy());
-				operation.setCreatedDate(operationRate.getApiOperation().getCreatedDate());
-				operation.setUpdatedBy(operationRate.getApiOperation().getUpdatedBy());
-				operation.setUpdatedDate(operationRate.getApiOperation().getUpdatedDate());
 
 				List<RateDTO.API.APIOperation.RateDefinition> rateDefinitionList = new ArrayList<RateDTO.API.APIOperation.RateDefinition>();
 
@@ -198,9 +183,6 @@ public class RateService {
 						rateDefinition.setRateDefCategoryBase(
 								innerOperationRate.getRateDefinition().getRateDefCategoryBase());
 						rateDefinition.setCreatedBy(innerOperationRate.getRateDefinition().getCreatedBy());
-						rateDefinition.setCreatedDate(innerOperationRate.getRateDefinition().getCreatedDate());
-						rateDefinition.setUpdatedBy(innerOperationRate.getRateDefinition().getUpdatedBy());
-						rateDefinition.setUpdatedDate(innerOperationRate.getRateDefinition().getUpdatedDate());
 
 						rateDefinition.setCurrency(innerOperationRate.getRateDefinition().getCurrency());
 

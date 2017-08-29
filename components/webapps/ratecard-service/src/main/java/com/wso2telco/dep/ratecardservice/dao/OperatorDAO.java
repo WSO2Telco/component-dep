@@ -35,7 +35,7 @@ public class OperatorDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder("select operatorId, operatorname, operatordesc, createdby from ");
 			query.append(DatabaseTables.OPERATOR.getTObject());
 			query.append(" where operatorId = ?");
 
@@ -50,14 +50,11 @@ public class OperatorDAO {
 			while (rs.next()) {
 
 				operator = new OperatorDTO();
-				
+
 				operator.setOperatorId(rs.getInt("operatorId"));
 				operator.setOperatorName(rs.getString("operatorname"));
 				operator.setOperatorDescription(rs.getString("operatordesc"));
 				operator.setCreatedBy(rs.getString("createdby"));
-				operator.setCreatedDate(rs.getTimestamp("createddate").toString());
-				operator.setUpdatedBy(rs.getString("updatedby"));
-				operator.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 			}
 		} catch (SQLException e) {
 
@@ -74,7 +71,7 @@ public class OperatorDAO {
 
 		return operator;
 	}
-	
+
 	public List<OperatorDTO> getOperators() throws Exception {
 
 		List<OperatorDTO> operators = new ArrayList<OperatorDTO>();
@@ -91,7 +88,7 @@ public class OperatorDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder("select operatorId, operatorname, operatordesc, createdby from ");
 			query.append(DatabaseTables.OPERATOR.getTObject());
 
 			ps = con.prepareStatement(query.toString());
@@ -103,14 +100,11 @@ public class OperatorDAO {
 			while (rs.next()) {
 
 				OperatorDTO operator = new OperatorDTO();
-				
+
 				operator.setOperatorId(rs.getInt("operatorId"));
 				operator.setOperatorName(rs.getString("operatorname"));
 				operator.setOperatorDescription(rs.getString("operatordesc"));
 				operator.setCreatedBy(rs.getString("createdby"));
-				operator.setCreatedDate(rs.getTimestamp("createddate").toString());
-				operator.setUpdatedBy(rs.getString("updatedby"));
-				operator.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 
 				operators.add(operator);
 			}
