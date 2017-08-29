@@ -196,7 +196,7 @@ public class RateDefinitionDAO {
 				rateDefinition.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 
 				CurrencyDTO currency = new CurrencyDTO();
-				currency.setCurrencyId(rs.getInt("currencyid"));;
+				currency.setCurrencyId(rs.getInt("currencyid"));
 				rateDefinition.setCurrency(currency);
 
 				RateTypeDTO rateType = new RateTypeDTO();
@@ -262,5 +262,307 @@ public class RateDefinitionDAO {
 		}
 
 		return true;
+	}
+
+	public List<RateDefinitionDTO> getRateDefinitions(int apiOperationId) throws Exception {
+
+		List<RateDefinitionDTO> rateDefinitions = new ArrayList<RateDefinitionDTO>();
+
+		Connection con = null;
+		ResultSet rs = null;
+		PreparedStatement ps = null;
+
+		try {
+
+			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
+			if (con == null) {
+
+				throw new Exception("Connection not found");
+			}
+
+			StringBuilder query = new StringBuilder("select * from ");
+			query.append(DatabaseTables.RATE_DEF.getTObject());
+			query.append(" where rate_defid NOT IN (");
+			query.append("select rate_defid from ");
+			query.append(DatabaseTables.OPERATION_RATE.getTObject());
+			query.append(" where api_operationid = ? and operator_id is null)");
+
+			ps = con.prepareStatement(query.toString());
+
+			log.debug("sql query in getRateDefinitions : " + ps);
+
+			ps.setInt(1, apiOperationId);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				RateDefinitionDTO rateDefinition = new RateDefinitionDTO();
+
+				rateDefinition.setRateDefId(rs.getInt("rate_defid"));
+				rateDefinition.setRateDefName(rs.getString("rate_defname"));
+				rateDefinition.setRateDefDescription(rs.getString("rate_defdesc"));
+				rateDefinition.setRateDefDefault(rs.getInt("rate_defdefault"));
+				rateDefinition.setRateDefCategoryBase(rs.getInt("rate_defcategorybase"));
+				rateDefinition.setCreatedBy(rs.getString("createdby"));
+				rateDefinition.setCreatedDate(rs.getTimestamp("createddate").toString());
+				rateDefinition.setUpdatedBy(rs.getString("updatedby"));
+				rateDefinition.setUpdatedDate(rs.getTimestamp("updateddate").toString());
+
+				CurrencyDTO currency = new CurrencyDTO();
+				currency.setCurrencyId(rs.getInt("currencyid"));
+				rateDefinition.setCurrency(currency);
+
+				RateTypeDTO rateType = new RateTypeDTO();
+				rateType.setRateTypeId(rs.getInt("rate_typeid"));
+				rateDefinition.setRateType(rateType);
+
+				TariffDTO tariff = new TariffDTO();
+				tariff.setTariffId(rs.getInt("tariffid"));
+				rateDefinition.setTariff(tariff);
+
+				rateDefinitions.add(rateDefinition);
+			}
+		} catch (SQLException e) {
+
+			log.error("database operation error in getRateDefinitions : ", e);
+			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+		} catch (Exception e) {
+
+			log.error("error in getRateDefinitions : ", e);
+			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+		} finally {
+
+			DbUtils.closeAllConnections(ps, con, rs);
+		}
+
+		return rateDefinitions;
+	}
+
+	public List<RateDefinitionDTO> getRateDefinitions(int apiOperationId, int operatorId) throws Exception {
+
+		List<RateDefinitionDTO> rateDefinitions = new ArrayList<RateDefinitionDTO>();
+
+		Connection con = null;
+		ResultSet rs = null;
+		PreparedStatement ps = null;
+
+		try {
+
+			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
+			if (con == null) {
+
+				throw new Exception("Connection not found");
+			}
+
+			StringBuilder query = new StringBuilder("select * from ");
+			query.append(DatabaseTables.RATE_DEF.getTObject());
+			query.append(" where rate_defid NOT IN (");
+			query.append("select rate_defid from ");
+			query.append(DatabaseTables.OPERATION_RATE.getTObject());
+			query.append(" where api_operationid = ? and operator_id = ?)");
+
+			ps = con.prepareStatement(query.toString());
+
+			log.debug("sql query in getRateDefinitions : " + ps);
+
+			ps.setInt(1, apiOperationId);
+			ps.setInt(2, operatorId);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				RateDefinitionDTO rateDefinition = new RateDefinitionDTO();
+
+				rateDefinition.setRateDefId(rs.getInt("rate_defid"));
+				rateDefinition.setRateDefName(rs.getString("rate_defname"));
+				rateDefinition.setRateDefDescription(rs.getString("rate_defdesc"));
+				rateDefinition.setRateDefDefault(rs.getInt("rate_defdefault"));
+				rateDefinition.setRateDefCategoryBase(rs.getInt("rate_defcategorybase"));
+				rateDefinition.setCreatedBy(rs.getString("createdby"));
+				rateDefinition.setCreatedDate(rs.getTimestamp("createddate").toString());
+				rateDefinition.setUpdatedBy(rs.getString("updatedby"));
+				rateDefinition.setUpdatedDate(rs.getTimestamp("updateddate").toString());
+
+				CurrencyDTO currency = new CurrencyDTO();
+				currency.setCurrencyId(rs.getInt("currencyid"));
+				rateDefinition.setCurrency(currency);
+
+				RateTypeDTO rateType = new RateTypeDTO();
+				rateType.setRateTypeId(rs.getInt("rate_typeid"));
+				rateDefinition.setRateType(rateType);
+
+				TariffDTO tariff = new TariffDTO();
+				tariff.setTariffId(rs.getInt("tariffid"));
+				rateDefinition.setTariff(tariff);
+
+				rateDefinitions.add(rateDefinition);
+			}
+		} catch (SQLException e) {
+
+			log.error("database operation error in getRateDefinitions : ", e);
+			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+		} catch (Exception e) {
+
+			log.error("error in getRateDefinitions : ", e);
+			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+		} finally {
+
+			DbUtils.closeAllConnections(ps, con, rs);
+		}
+
+		return rateDefinitions;
+	}
+
+	public List<RateDefinitionDTO> getAssignedRateDefinitions(int apiOperationId) throws Exception {
+
+		List<RateDefinitionDTO> rateDefinitions = new ArrayList<RateDefinitionDTO>();
+
+		Connection con = null;
+		ResultSet rs = null;
+		PreparedStatement ps = null;
+
+		try {
+
+			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
+			if (con == null) {
+
+				throw new Exception("Connection not found");
+			}
+
+			StringBuilder query = new StringBuilder("select * from ");
+			query.append(DatabaseTables.RATE_DEF.getTObject());
+			query.append(" where rate_defid IN (");
+			query.append("select rate_defid from ");
+			query.append(DatabaseTables.OPERATION_RATE.getTObject());
+			query.append(" where api_operationid = ? and operator_id is null)");
+
+			ps = con.prepareStatement(query.toString());
+
+			log.debug("sql query in getAssignedRateDefinitions : " + ps);
+
+			ps.setInt(1, apiOperationId);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				RateDefinitionDTO rateDefinition = new RateDefinitionDTO();
+
+				rateDefinition.setRateDefId(rs.getInt("rate_defid"));
+				rateDefinition.setRateDefName(rs.getString("rate_defname"));
+				rateDefinition.setRateDefDescription(rs.getString("rate_defdesc"));
+				rateDefinition.setRateDefDefault(rs.getInt("rate_defdefault"));
+				rateDefinition.setRateDefCategoryBase(rs.getInt("rate_defcategorybase"));
+				rateDefinition.setCreatedBy(rs.getString("createdby"));
+				rateDefinition.setCreatedDate(rs.getTimestamp("createddate").toString());
+				rateDefinition.setUpdatedBy(rs.getString("updatedby"));
+				rateDefinition.setUpdatedDate(rs.getTimestamp("updateddate").toString());
+
+				CurrencyDTO currency = new CurrencyDTO();
+				currency.setCurrencyId(rs.getInt("currencyid"));
+				rateDefinition.setCurrency(currency);
+
+				RateTypeDTO rateType = new RateTypeDTO();
+				rateType.setRateTypeId(rs.getInt("rate_typeid"));
+				rateDefinition.setRateType(rateType);
+
+				TariffDTO tariff = new TariffDTO();
+				tariff.setTariffId(rs.getInt("tariffid"));
+				rateDefinition.setTariff(tariff);
+
+				rateDefinitions.add(rateDefinition);
+			}
+		} catch (SQLException e) {
+
+			log.error("database operation error in getAssignedRateDefinitions : ", e);
+			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+		} catch (Exception e) {
+
+			log.error("error in getAssignedRateDefinitions : ", e);
+			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+		} finally {
+
+			DbUtils.closeAllConnections(ps, con, rs);
+		}
+
+		return rateDefinitions;
+	}
+
+	public List<RateDefinitionDTO> getAssignedRateDefinitions(int apiOperationId, int operatorId) throws Exception {
+
+		List<RateDefinitionDTO> rateDefinitions = new ArrayList<RateDefinitionDTO>();
+
+		Connection con = null;
+		ResultSet rs = null;
+		PreparedStatement ps = null;
+
+		try {
+
+			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
+			if (con == null) {
+
+				throw new Exception("Connection not found");
+			}
+
+			StringBuilder query = new StringBuilder("select * from ");
+			query.append(DatabaseTables.RATE_DEF.getTObject());
+			query.append(" where rate_defid IN (");
+			query.append("select rate_defid from ");
+			query.append(DatabaseTables.OPERATION_RATE.getTObject());
+			query.append(" where api_operationid = ? and operator_id = ?)");
+
+			ps = con.prepareStatement(query.toString());
+
+			log.debug("sql query in getAssignedRateDefinitions : " + ps);
+
+			ps.setInt(1, apiOperationId);
+			ps.setInt(2, operatorId);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				RateDefinitionDTO rateDefinition = new RateDefinitionDTO();
+
+				rateDefinition.setRateDefId(rs.getInt("rate_defid"));
+				rateDefinition.setRateDefName(rs.getString("rate_defname"));
+				rateDefinition.setRateDefDescription(rs.getString("rate_defdesc"));
+				rateDefinition.setRateDefDefault(rs.getInt("rate_defdefault"));
+				rateDefinition.setRateDefCategoryBase(rs.getInt("rate_defcategorybase"));
+				rateDefinition.setCreatedBy(rs.getString("createdby"));
+				rateDefinition.setCreatedDate(rs.getTimestamp("createddate").toString());
+				rateDefinition.setUpdatedBy(rs.getString("updatedby"));
+				rateDefinition.setUpdatedDate(rs.getTimestamp("updateddate").toString());
+
+				CurrencyDTO currency = new CurrencyDTO();
+				currency.setCurrencyId(rs.getInt("currencyid"));
+				rateDefinition.setCurrency(currency);
+
+				RateTypeDTO rateType = new RateTypeDTO();
+				rateType.setRateTypeId(rs.getInt("rate_typeid"));
+				rateDefinition.setRateType(rateType);
+
+				TariffDTO tariff = new TariffDTO();
+				tariff.setTariffId(rs.getInt("tariffid"));
+				rateDefinition.setTariff(tariff);
+
+				rateDefinitions.add(rateDefinition);
+			}
+		} catch (SQLException e) {
+
+			log.error("database operation error in getAssignedRateDefinitions : ", e);
+			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+		} catch (Exception e) {
+
+			log.error("error in getAssignedRateDefinitions : ", e);
+			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+		} finally {
+
+			DbUtils.closeAllConnections(ps, con, rs);
+		}
+
+		return rateDefinitions;
 	}
 }

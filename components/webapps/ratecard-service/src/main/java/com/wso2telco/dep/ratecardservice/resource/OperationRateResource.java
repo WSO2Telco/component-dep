@@ -1,7 +1,10 @@
 package com.wso2telco.dep.ratecardservice.resource;
 
+import java.util.ArrayList;
+import java.util.List;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
+import javax.ws.rs.POST;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -12,35 +15,40 @@ import org.apache.commons.logging.LogFactory;
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.exception.ServiceError;
 import com.wso2telco.dep.ratecardservice.dao.model.ErrorDTO;
-import com.wso2telco.dep.ratecardservice.dao.model.RateDTO;
-import com.wso2telco.dep.ratecardservice.service.RateService;
+import com.wso2telco.dep.ratecardservice.dao.model.OperationRateDTO;
+import com.wso2telco.dep.ratecardservice.dao.model.RateDefinitionDTO;
+import com.wso2telco.dep.ratecardservice.service.OperationRateService;
+import com.wso2telco.dep.ratecardservice.service.RateDefinitionService;
 
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class OperationRateResource {
 
 	private final Log log = LogFactory.getLog(OperationRateResource.class);
-	private RateService rateService = new RateService();
-	
-	@GET
-	public Response getOperationRates(@PathParam("apiName") String apiName) {
+	private OperationRateService operationRateService = new OperationRateService();
 
-		RateDTO rate = null;
+	@GET
+	public Response getAssignedRateDefinitions(@PathParam("apiName") String apiName,
+			@PathParam("apiOperationId") int apiOperationId) {
+
+		List<RateDefinitionDTO> rateDefinitions = null;
 		Status responseCode = null;
 		Object responseString = null;
 
+		RateDefinitionService rateDefinitionService = new RateDefinitionService();
+
 		try {
 
-			rate = rateService.getOperationRates(apiName);
+			rateDefinitions = rateDefinitionService.getAssignedRateDefinitions(apiOperationId);
 
-			if (rate != null) {
+			if (!rateDefinitions.isEmpty()) {
 
-				responseString = rate;
+				responseString = rateDefinitions;
 				responseCode = Response.Status.OK;
 			} else {
 
 				log.error(
-						"Error in OperationRateResource getOperationRatesByAPIName : operation rates are not found in database ");
+						"Error in OperationRateResource getAssignedRateDefinitions : assigned api operation rates are not found in database ");
 				throw new BusinessException(ServiceError.NO_RESOURCES);
 			}
 		} catch (BusinessException e) {
@@ -71,8 +79,59 @@ public class OperationRateResource {
 			responseString = errorDTO;
 		}
 
-		log.debug("OperationRateResource getOperationRatesByAPIName -> response code : " + responseCode);
-		log.debug("OperationRateResource getOperationRatesByAPIName -> response body : " + responseString);
+		log.debug("OperationRateResource getAssignedRateDefinitions -> response code : " + responseCode);
+		log.debug("OperationRateResource getAssignedRateDefinitions -> response body : " + responseString);
+
+		return Response.status(responseCode).entity(responseString).build();
+	}
+
+	@POST
+	public Response addOperationRate(List<OperationRateDTO> operationRateList) {
+
+		List<OperationRateDTO> newOperationRateList = new ArrayList<OperationRateDTO>();
+		Status responseCode = null;
+		Object responseString = null;
+
+		try {
+
+			for (int i = 0; i < operationRateList.size(); i++) {
+
+				OperationRateDTO operationRate = operationRateList.get(i);
+
+				OperationRateDTO newOperationRate = operationRateService.addOperationRate(operationRate);
+
+				newOperationRateList.add(newOperationRate);
+			}
+
+			if (!newOperationRateList.isEmpty()) {
+
+				responseString = newOperationRateList;
+				responseCode = Response.Status.CREATED;
+			} else {
+
+				log.error(
+						"Error in OperationRateResource addOperationRate : operation rate can not insert to database ");
+				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+			}
+		} catch (Exception e) {
+
+			ErrorDTO errorDTO = new ErrorDTO();
+			ErrorDTO.ServiceException serviceException = new ErrorDTO.ServiceException();
+
+			if (e instanceof BusinessException) {
+
+				BusinessException be = (BusinessException) e;
+				serviceException.setMessageId(be.getErrorType().getCode());
+				serviceException.setText(be.getErrorType().getMessage());
+				errorDTO.setServiceException(serviceException);
+			}
+
+			responseCode = Response.Status.BAD_REQUEST;
+			responseString = errorDTO;
+		}
+
+		log.debug("OperationRateResource addOperationRate -> response code : " + responseCode);
+		log.debug("OperationRateResource addOperationRate -> response body : " + responseString);
 
 		return Response.status(responseCode).entity(responseString).build();
 	}

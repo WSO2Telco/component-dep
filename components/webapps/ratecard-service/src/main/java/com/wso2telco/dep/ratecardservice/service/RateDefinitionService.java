@@ -115,4 +115,168 @@ public class RateDefinitionService {
 
 		return status;
 	}
+
+	public List<RateDefinitionDTO> getRateDefinitions(int apiOperationId) throws Exception {
+
+		CurrencyService currencyService = new CurrencyService();
+		RateTypeService rateTypeService = new RateTypeService();
+		TariffService tariffService = new TariffService();
+
+		List<RateDefinitionDTO> rateDefinitions = null;
+
+		try {
+
+			rateDefinitions = rateDefinitionDAO.getRateDefinitions(apiOperationId);
+		} catch (Exception e) {
+
+			throw e;
+		}
+
+		if (rateDefinitions != null) {
+
+			for (int i = 0; i < rateDefinitions.size(); i++) {
+
+				RateDefinitionDTO rateDefinition = rateDefinitions.get(i);
+
+				CurrencyDTO currency = currencyService.getCurrency(rateDefinition.getCurrency().getCurrencyId());
+				rateDefinition.setCurrency(currency);
+
+				RateTypeDTO rateType = rateTypeService.getRateType(rateDefinition.getRateType().getRateTypeId());
+				rateDefinition.setRateType(rateType);
+
+				TariffDTO tariff = tariffService.getTariff(rateDefinition.getTariff().getTariffId());
+				rateDefinition.setTariff(tariff);
+
+				rateDefinitions.set(i, rateDefinition);
+			}
+
+			return rateDefinitions;
+		} else {
+
+			return Collections.emptyList();
+		}
+	}
+
+	public List<RateDefinitionDTO> getRateDefinitions(int apiOperationId, int operatorId) throws Exception {
+
+		CurrencyService currencyService = new CurrencyService();
+		RateTypeService rateTypeService = new RateTypeService();
+		TariffService tariffService = new TariffService();
+
+		List<RateDefinitionDTO> rateDefinitions = null;
+
+		try {
+
+			rateDefinitions = rateDefinitionDAO.getRateDefinitions(apiOperationId, operatorId);
+		} catch (Exception e) {
+
+			throw e;
+		}
+
+		if (rateDefinitions != null) {
+
+			for (int i = 0; i < rateDefinitions.size(); i++) {
+
+				RateDefinitionDTO rateDefinition = rateDefinitions.get(i);
+
+				CurrencyDTO currency = currencyService.getCurrency(rateDefinition.getCurrency().getCurrencyId());
+				rateDefinition.setCurrency(currency);
+
+				RateTypeDTO rateType = rateTypeService.getRateType(rateDefinition.getRateType().getRateTypeId());
+				rateDefinition.setRateType(rateType);
+
+				TariffDTO tariff = tariffService.getTariff(rateDefinition.getTariff().getTariffId());
+				rateDefinition.setTariff(tariff);
+
+				rateDefinitions.set(i, rateDefinition);
+			}
+
+			return rateDefinitions;
+		} else {
+
+			return Collections.emptyList();
+		}
+	}
+
+	public List<RateDefinitionDTO> getAssignedRateDefinitions(int apiOperationId) throws Exception {
+
+		CurrencyService currencyService = new CurrencyService();
+		RateTypeService rateTypeService = new RateTypeService();
+		TariffService tariffService = new TariffService();
+
+		List<RateDefinitionDTO> rateDefinitions = null;
+
+		try {
+
+			rateDefinitions = rateDefinitionDAO.getAssignedRateDefinitions(apiOperationId);
+		} catch (Exception e) {
+
+			throw e;
+		}
+
+		if (rateDefinitions != null) {
+
+			for (int i = 0; i < rateDefinitions.size(); i++) {
+
+				RateDefinitionDTO rateDefinition = rateDefinitions.get(i);
+
+				CurrencyDTO currency = currencyService.getCurrency(rateDefinition.getCurrency().getCurrencyId());
+				rateDefinition.setCurrency(currency);
+
+				RateTypeDTO rateType = rateTypeService.getRateType(rateDefinition.getRateType().getRateTypeId());
+				rateDefinition.setRateType(rateType);
+
+				TariffDTO tariff = tariffService.getTariff(rateDefinition.getTariff().getTariffId());
+				rateDefinition.setTariff(tariff);
+
+				rateDefinitions.set(i, rateDefinition);
+			}
+
+			return rateDefinitions;
+		} else {
+
+			return Collections.emptyList();
+		}
+	}
+
+	public List<RateDefinitionDTO> getAssignedRateDefinitions(int apiOperationId, int operatorId) throws Exception {
+
+		CurrencyService currencyService = new CurrencyService();
+		RateTypeService rateTypeService = new RateTypeService();
+		TariffService tariffService = new TariffService();
+
+		List<RateDefinitionDTO> rateDefinitions = null;
+
+		try {
+
+			rateDefinitions = rateDefinitionDAO.getAssignedRateDefinitions(apiOperationId, operatorId);
+		} catch (Exception e) {
+
+			throw e;
+		}
+
+		if (rateDefinitions != null) {
+
+			for (int i = 0; i < rateDefinitions.size(); i++) {
+
+				RateDefinitionDTO rateDefinition = rateDefinitions.get(i);
+
+				CurrencyDTO currency = currencyService.getCurrency(rateDefinition.getCurrency().getCurrencyId());
+				rateDefinition.setCurrency(currency);
+
+				RateTypeDTO rateType = rateTypeService.getRateType(rateDefinition.getRateType().getRateTypeId());
+				rateDefinition.setRateType(rateType);
+
+				TariffDTO tariff = tariffService.getTariff(rateDefinition.getTariff().getTariffId());
+				rateDefinition.setTariff(tariff);
+
+				rateDefinitions.set(i, rateDefinition);
+			}
+
+			return rateDefinitions;
+		} else {
+
+			return Collections.emptyList();
+		}
+	}
 }

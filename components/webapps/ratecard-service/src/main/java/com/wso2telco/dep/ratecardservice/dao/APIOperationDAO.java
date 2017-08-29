@@ -4,6 +4,8 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.wso2telco.core.dbutils.DbUtils;
@@ -77,5 +79,71 @@ public class APIOperationDAO {
 		}
 
 		return apiOperation;
+	}
+
+	public List<APIOperationDTO> getAPIOperations(String apiName) throws Exception {
+
+		List<APIOperationDTO> apiOperations = new ArrayList<APIOperationDTO>();
+
+		Connection con = null;
+		ResultSet rs = null;
+		PreparedStatement ps = null;
+
+		try {
+
+			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
+			if (con == null) {
+
+				throw new Exception("Connection not found");
+			}
+
+			StringBuilder query = new StringBuilder("select * from ");
+			query.append(DatabaseTables.API_OPERATION.getTObject());
+			query.append(" apioperation, ");
+			query.append(DatabaseTables.API.getTObject());
+			query.append(" api ");
+			query.append(" where apioperation.apiid = api.apiid and api.apiname = ?");
+
+			ps = con.prepareStatement(query.toString());
+
+			log.debug("sql query in getAPIOperations : " + ps);
+
+			ps.setString(1, apiName);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				APIOperationDTO apiOperation = new APIOperationDTO();
+
+				apiOperation.setApiOperationId(rs.getInt("api_operationid"));
+
+				APIDTO api = new APIDTO();
+				api.setApiId(rs.getInt("apiid"));
+				apiOperation.setApi(api);
+
+				apiOperation.setApiOperation(rs.getString("api_operation"));
+				apiOperation.setApiOperationCode(rs.getString("api_operationcode"));
+				apiOperation.setCreatedBy(rs.getString("createdby"));
+				apiOperation.setCreatedDate(rs.getTimestamp("createddate").toString());
+				apiOperation.setUpdatedBy(rs.getString("updatedby"));
+				apiOperation.setUpdatedDate(rs.getTimestamp("updateddate").toString());
+
+				apiOperations.add(apiOperation);
+			}
+		} catch (SQLException e) {
+
+			log.error("database operation error in getAPIOperations : ", e);
+			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+		} catch (Exception e) {
+
+			log.error("error in getAPIOperations : ", e);
+			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+		} finally {
+
+			DbUtils.closeAllConnections(ps, con, rs);
+		}
+
+		return apiOperations;
 	}
 }
