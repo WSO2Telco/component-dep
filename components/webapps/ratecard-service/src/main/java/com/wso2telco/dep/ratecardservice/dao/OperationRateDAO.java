@@ -41,7 +41,7 @@ public class OperationRateDAO {
 			}
 
 			StringBuilder query = new StringBuilder(
-					"select operation_rateid, operator_id, api_operationid, rate_defid, createdby from ");
+					"select operationrate.operation_rateid, operationrate.operator_id, operationrate.api_operationid, operationrate.rate_defid, operationrate.createdby from ");
 			query.append(DatabaseTables.OPERATION_RATE.getTObject());
 			query.append(" operationrate, ");
 			query.append(DatabaseTables.API.getTObject());
@@ -113,7 +113,7 @@ public class OperationRateDAO {
 			}
 
 			StringBuilder query = new StringBuilder(
-					"select operation_rateid, operator_id, api_operationid, rate_defid, createdby from ");
+					"select operationrate.operation_rateid, operationrate.operator_id, operationrate.api_operationid, operationrate.rate_defid, operationrate.createdby from ");
 			query.append(DatabaseTables.OPERATION_RATE.getTObject());
 			query.append(" operationrate, ");
 			query.append(DatabaseTables.API.getTObject());

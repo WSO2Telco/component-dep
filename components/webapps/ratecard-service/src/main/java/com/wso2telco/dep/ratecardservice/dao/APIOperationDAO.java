@@ -94,7 +94,8 @@ public class APIOperationDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select api_operation, api_operationcode, createdby from ");
+			StringBuilder query = new StringBuilder(
+					"select apioperation.api_operationid, apioperation.apiid, apioperation.api_operation, apioperation.api_operationcode, apioperation.createdby from ");
 			query.append(DatabaseTables.API_OPERATION.getTObject());
 			query.append(" apioperation, ");
 			query.append(DatabaseTables.API.getTObject());

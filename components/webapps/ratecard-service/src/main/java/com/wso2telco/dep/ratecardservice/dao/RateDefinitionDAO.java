@@ -496,7 +496,8 @@ public class RateDefinitionDAO {
 				throw new Exception("Connection not found");
 			}
 
-			StringBuilder query = new StringBuilder("select rate_defid, rate_defname, rate_defdesc, rate_defdefault, rate_defcategorybase, currencyid, rate_typeid, tariffid, createdby from ");
+			StringBuilder query = new StringBuilder(
+					"select rate_defid, rate_defname, rate_defdesc, rate_defdefault, rate_defcategorybase, currencyid, rate_typeid, tariffid, createdby from ");
 			query.append(DatabaseTables.RATE_DEF.getTObject());
 			query.append(" where rate_defid IN (");
 			query.append("select rate_defid from ");
