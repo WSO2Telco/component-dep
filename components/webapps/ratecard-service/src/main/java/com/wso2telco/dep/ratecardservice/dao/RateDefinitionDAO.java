@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+ * <p>
+ * WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.wso2telco.dep.ratecardservice.dao;
 
 import java.sql.Connection;
@@ -23,7 +38,7 @@ public class RateDefinitionDAO {
 
 	private final Log log = LogFactory.getLog(RateDefinitionDAO.class);
 
-	public List<RateDefinitionDTO> getRateDefinitions() throws Exception {
+	public List<RateDefinitionDTO> getRateDefinitions() throws BusinessException {
 
 		List<RateDefinitionDTO> rateDefinitions = new ArrayList<RateDefinitionDTO>();
 
@@ -36,7 +51,8 @@ public class RateDefinitionDAO {
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 			if (con == null) {
 
-				throw new Exception("Connection not found");
+				log.error("unable to open " + DataSourceNames.WSO2TELCO_RATE_DB + " database connection");
+				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 			}
 
 			StringBuilder query = new StringBuilder(
@@ -90,7 +106,7 @@ public class RateDefinitionDAO {
 		return rateDefinitions;
 	}
 
-	public RateDefinitionDTO addRateDefinition(RateDefinitionDTO rateDefinition) throws Exception {
+	public RateDefinitionDTO addRateDefinition(RateDefinitionDTO rateDefinition) throws BusinessException {
 
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -102,7 +118,8 @@ public class RateDefinitionDAO {
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 			if (con == null) {
 
-				throw new Exception("Connection not found");
+				log.error("unable to open " + DataSourceNames.WSO2TELCO_RATE_DB + " database connection");
+				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 			}
 
 			StringBuilder query = new StringBuilder("insert into ");
@@ -151,7 +168,7 @@ public class RateDefinitionDAO {
 		return rateDefinition;
 	}
 
-	public RateDefinitionDTO getRateDefinition(int rateDefId) throws Exception {
+	public RateDefinitionDTO getRateDefinition(int rateDefId) throws BusinessException {
 
 		RateDefinitionDTO rateDefinition = null;
 
@@ -164,7 +181,8 @@ public class RateDefinitionDAO {
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 			if (con == null) {
 
-				throw new Exception("Connection not found");
+				log.error("unable to open " + DataSourceNames.WSO2TELCO_RATE_DB + " database connection");
+				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 			}
 
 			StringBuilder query = new StringBuilder(
@@ -219,7 +237,7 @@ public class RateDefinitionDAO {
 		return rateDefinition;
 	}
 
-	public boolean deleteRateDefinition(int rateDefId) throws Exception {
+	public boolean deleteRateDefinition(int rateDefId) throws BusinessException {
 
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -230,7 +248,8 @@ public class RateDefinitionDAO {
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 			if (con == null) {
 
-				throw new Exception("Connection not found");
+				log.error("unable to open " + DataSourceNames.WSO2TELCO_RATE_DB + " database connection");
+				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 			}
 
 			StringBuilder query = new StringBuilder("delete from ");
@@ -260,7 +279,7 @@ public class RateDefinitionDAO {
 		return true;
 	}
 
-	public List<RateDefinitionDTO> getRateDefinitions(int apiOperationId) throws Exception {
+	public List<RateDefinitionDTO> getRateDefinitions(int apiOperationId) throws BusinessException {
 
 		List<RateDefinitionDTO> rateDefinitions = new ArrayList<RateDefinitionDTO>();
 
@@ -273,7 +292,8 @@ public class RateDefinitionDAO {
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 			if (con == null) {
 
-				throw new Exception("Connection not found");
+				log.error("unable to open " + DataSourceNames.WSO2TELCO_RATE_DB + " database connection");
+				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 			}
 
 			StringBuilder query = new StringBuilder(
@@ -333,7 +353,7 @@ public class RateDefinitionDAO {
 		return rateDefinitions;
 	}
 
-	public List<RateDefinitionDTO> getRateDefinitions(int apiOperationId, int operatorId) throws Exception {
+	public List<RateDefinitionDTO> getRateDefinitions(int apiOperationId, int operatorId) throws BusinessException {
 
 		List<RateDefinitionDTO> rateDefinitions = new ArrayList<RateDefinitionDTO>();
 
@@ -346,7 +366,8 @@ public class RateDefinitionDAO {
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 			if (con == null) {
 
-				throw new Exception("Connection not found");
+				log.error("unable to open " + DataSourceNames.WSO2TELCO_RATE_DB + " database connection");
+				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 			}
 
 			StringBuilder query = new StringBuilder(
@@ -407,7 +428,7 @@ public class RateDefinitionDAO {
 		return rateDefinitions;
 	}
 
-	public List<RateDefinitionDTO> getAssignedRateDefinitions(int apiOperationId) throws Exception {
+	public List<RateDefinitionDTO> getAssignedRateDefinitions(int apiOperationId) throws BusinessException {
 
 		List<RateDefinitionDTO> rateDefinitions = new ArrayList<RateDefinitionDTO>();
 
@@ -420,7 +441,8 @@ public class RateDefinitionDAO {
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 			if (con == null) {
 
-				throw new Exception("Connection not found");
+				log.error("unable to open " + DataSourceNames.WSO2TELCO_RATE_DB + " database connection");
+				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 			}
 
 			StringBuilder query = new StringBuilder(
@@ -480,7 +502,7 @@ public class RateDefinitionDAO {
 		return rateDefinitions;
 	}
 
-	public List<RateDefinitionDTO> getAssignedRateDefinitions(int apiOperationId, int operatorId) throws Exception {
+	public List<RateDefinitionDTO> getAssignedRateDefinitions(int apiOperationId, int operatorId) throws BusinessException {
 
 		List<RateDefinitionDTO> rateDefinitions = new ArrayList<RateDefinitionDTO>();
 
@@ -493,7 +515,8 @@ public class RateDefinitionDAO {
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 			if (con == null) {
 
-				throw new Exception("Connection not found");
+				log.error("unable to open " + DataSourceNames.WSO2TELCO_RATE_DB + " database connection");
+				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 			}
 
 			StringBuilder query = new StringBuilder(

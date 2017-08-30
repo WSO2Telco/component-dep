@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+ * <p>
+ * WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.wso2telco.dep.ratecardservice.service;
 
 import org.apache.commons.logging.Log;
@@ -13,7 +28,7 @@ public class RateCardService {
 
 	private final Log log = LogFactory.getLog(RateCardService.class);
 
-	public RateCardDTO addRateCard(RateCardDTO rateCard) throws Exception {
+	public RateCardDTO addRateCard(RateCardDTO rateCard) throws BusinessException {
 
 		RateDefinitionService rateDefinitionService = new RateDefinitionService();
 		RateCategoryService rateCategoryService = new RateCategoryService();
@@ -22,52 +37,46 @@ public class RateCardService {
 		RateCardDTO newRateCard = null;
 		RateDefinitionDTO newRateDefinition = null;
 
+		RateDefinitionDTO rateDefinition = rateCard.getRateDefinition();
+		RateCategoryDTO[] rateCategoryArray = rateCard.getRateCategories();
+		RateTaxDTO[] rateTaxArray = rateCard.getRateTaxes();
+
+		rateDefinition.setCreatedBy(rateCard.getCreatedBy());
+		newRateDefinition = rateDefinitionService.addRateDefinition(rateDefinition);
+
 		try {
 
-			RateDefinitionDTO rateDefinition = rateCard.getRateDefinition();
-			RateCategoryDTO rateCategoryArray[] = rateCard.getRateCategories();
-			RateTaxDTO rateTaxArray[] = rateCard.getRateTaxes();
+			for (int i = 0; i < rateCategoryArray.length; i++) {
 
-			rateDefinition.setCreatedBy(rateCard.getCreatedBy());
-			newRateDefinition = rateDefinitionService.addRateDefinition(rateDefinition);
+				RateCategoryDTO rateCategory = rateCategoryArray[i];
+				rateCategory.setRateDefinition(newRateDefinition);
+				rateCategory.setCreatedBy(rateCard.getCreatedBy());
+				RateCategoryDTO newRateCategory = rateCategoryService.addRateCategory(rateCategory);
 
-			try {
-
-				for (int i = 0; i < rateCategoryArray.length; i++) {
-
-					RateCategoryDTO rateCategory = rateCategoryArray[i];
-					rateCategory.setRateDefinition(newRateDefinition);
-					rateCategory.setCreatedBy(rateCard.getCreatedBy());
-					RateCategoryDTO newRateCategory = rateCategoryService.addRateCategory(rateCategory);
-
-					rateCategoryArray[i] = newRateCategory;
-				}
-
-				for (int i = 0; i < rateTaxArray.length; i++) {
-
-					RateTaxDTO rateTax = rateTaxArray[i];
-					rateTax.setRateDefinition(newRateDefinition);
-					rateTax.setCreatedBy(rateCard.getCreatedBy());
-					RateTaxDTO newRateTax = rateTaxService.addRateTax(rateTax);
-
-					rateTaxArray[i] = newRateTax;
-				}
-			} catch (Exception e) {
-
-				rateDefinitionService.deleteRateDefinition(newRateDefinition.getRateDefId());
-				log.error("error while saving rate categories and taxes : ", e);
-				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+				rateCategoryArray[i] = newRateCategory;
 			}
 
-			newRateCard = new RateCardDTO();
+			for (int i = 0; i < rateTaxArray.length; i++) {
 
-			newRateCard.setRateDefinition(newRateDefinition);
-			newRateCard.setRateCategories(rateCategoryArray);
-			newRateCard.setRateTaxes(rateTaxArray);
+				RateTaxDTO rateTax = rateTaxArray[i];
+				rateTax.setRateDefinition(newRateDefinition);
+				rateTax.setCreatedBy(rateCard.getCreatedBy());
+				RateTaxDTO newRateTax = rateTaxService.addRateTax(rateTax);
+
+				rateTaxArray[i] = newRateTax;
+			}
 		} catch (Exception e) {
 
-			throw e;
+			rateDefinitionService.deleteRateDefinition(newRateDefinition.getRateDefId());
+			log.error("error while saving rate categories and taxes : ", e);
+			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 		}
+
+		newRateCard = new RateCardDTO();
+
+		newRateCard.setRateDefinition(newRateDefinition);
+		newRateCard.setRateCategories(rateCategoryArray);
+		newRateCard.setRateTaxes(rateTaxArray);
 
 		return newRateCard;
 	}

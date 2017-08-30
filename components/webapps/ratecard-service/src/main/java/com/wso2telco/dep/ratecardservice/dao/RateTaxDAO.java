@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+ * <p>
+ * WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.wso2telco.dep.ratecardservice.dao;
 
 import java.sql.Connection;
@@ -22,7 +37,7 @@ public class RateTaxDAO {
 
 	private final Log log = LogFactory.getLog(RateTaxDAO.class);
 
-	public RateTaxDTO addRateTax(RateTaxDTO rateTax) throws Exception {
+	public RateTaxDTO addRateTax(RateTaxDTO rateTax) throws BusinessException {
 
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -34,7 +49,8 @@ public class RateTaxDAO {
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 			if (con == null) {
 
-				throw new Exception("Connection not found");
+				log.error("unable to open " + DataSourceNames.WSO2TELCO_RATE_DB + " database connection");
+				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 			}
 
 			StringBuilder query = new StringBuilder("insert into ");
@@ -77,7 +93,7 @@ public class RateTaxDAO {
 		return rateTax;
 	}
 
-	public RateTaxDTO getRateTax(int rateTaxId) throws Exception {
+	public RateTaxDTO getRateTax(int rateTaxId) throws BusinessException {
 
 		RateTaxDTO rateTax = null;
 
@@ -90,7 +106,8 @@ public class RateTaxDAO {
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 			if (con == null) {
 
-				throw new Exception("Connection not found");
+				log.error("unable to open " + DataSourceNames.WSO2TELCO_RATE_DB + " database connection");
+				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 			}
 
 			StringBuilder query = new StringBuilder("select rate_taxesid, rate_defid, taxid, createdby from ");
@@ -137,7 +154,7 @@ public class RateTaxDAO {
 		return rateTax;
 	}
 
-	public List<RateTaxDTO> getRateTaxes(int taxId) throws Exception {
+	public List<RateTaxDTO> getRateTaxes(int taxId) throws BusinessException {
 
 		List<RateTaxDTO> rateTaxes = new ArrayList<RateTaxDTO>();
 
@@ -150,7 +167,8 @@ public class RateTaxDAO {
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 			if (con == null) {
 
-				throw new Exception("Connection not found");
+				log.error("unable to open " + DataSourceNames.WSO2TELCO_RATE_DB + " database connection");
+				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 			}
 
 			StringBuilder query = new StringBuilder("select rate_taxesid, rate_defid, taxid, createdby from ");
@@ -199,7 +217,7 @@ public class RateTaxDAO {
 		return rateTaxes;
 	}
 
-	public boolean deleteRateTax(int rateTaxId) throws Exception {
+	public boolean deleteRateTax(int rateTaxId) throws BusinessException {
 
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -210,7 +228,8 @@ public class RateTaxDAO {
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 			if (con == null) {
 
-				throw new Exception("Connection not found");
+				log.error("unable to open " + DataSourceNames.WSO2TELCO_RATE_DB + " database connection");
+				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 			}
 
 			StringBuilder query = new StringBuilder("delete from ");

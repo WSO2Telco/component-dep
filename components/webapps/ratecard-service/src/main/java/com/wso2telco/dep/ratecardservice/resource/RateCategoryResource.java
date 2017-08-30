@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+ * <p>
+ * WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.wso2telco.dep.ratecardservice.resource;
 
 import java.util.List;
@@ -24,10 +39,10 @@ public class RateCategoryResource {
 
 	private final Log log = LogFactory.getLog(RateCategoryResource.class);
 	private RateCategoryService rateCategoryService = new RateCategoryService();
-	
+
 	@POST
 	public Response addRateCategory(@PathParam("rateDefId") int rateDefId, RateCategoryDTO rateCategory) {
-		
+
 		RateCategoryDTO newRateCategory = null;
 		Status responseCode = null;
 		Object responseString = null;
@@ -45,21 +60,26 @@ public class RateCategoryResource {
 				log.error("Error in RateCategoryResource addRateCategory : rate category can not insert to database ");
 				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 			}
-		} catch (Exception e) {
+		} catch (BusinessException e) {
 
-			ErrorDTO errorDTO = new ErrorDTO();
-			ErrorDTO.ServiceException serviceException = new ErrorDTO.ServiceException();
+			ErrorDTO error = new ErrorDTO();
+			ErrorDTO.RequestError requestError = new ErrorDTO.RequestError();
+			ErrorDTO.RequestError.ServiceException serviceException = new ErrorDTO.RequestError.ServiceException();
 
-			if (e instanceof BusinessException) {
+			serviceException.setMessageId(e.getErrorType().getCode());
+			serviceException.setText(e.getErrorType().getMessage());
+			requestError.setServiceException(serviceException);
+			error.setRequestError(requestError);
 
-				BusinessException be = (BusinessException) e;
-				serviceException.setMessageId(be.getErrorType().getCode());
-				serviceException.setText(be.getErrorType().getMessage());
-				errorDTO.setServiceException(serviceException);
+			if (e.getErrorType().getCode() == ServiceError.NO_RESOURCES.getCode()) {
+
+				responseCode = Response.Status.NOT_FOUND;
+			} else {
+
+				responseCode = Response.Status.BAD_REQUEST;
 			}
 
-			responseCode = Response.Status.BAD_REQUEST;
-			responseString = errorDTO;
+			responseString = error;
 		}
 
 		log.debug("RateCategoryResource addRateCategory -> response code : " + responseCode);
@@ -67,7 +87,7 @@ public class RateCategoryResource {
 
 		return Response.status(responseCode).entity(responseString).build();
 	}
-	
+
 	@GET
 	public Response getRateCategories(@PathParam("rateDefId") int rateDefId, @QueryParam("schema") String schema) {
 
@@ -91,30 +111,24 @@ public class RateCategoryResource {
 			}
 		} catch (BusinessException e) {
 
-			ErrorDTO errorDTO = new ErrorDTO();
-			ErrorDTO.ServiceException serviceException = new ErrorDTO.ServiceException();
+			ErrorDTO error = new ErrorDTO();
+			ErrorDTO.RequestError requestError = new ErrorDTO.RequestError();
+			ErrorDTO.RequestError.ServiceException serviceException = new ErrorDTO.RequestError.ServiceException();
 
 			serviceException.setMessageId(e.getErrorType().getCode());
 			serviceException.setText(e.getErrorType().getMessage());
-			errorDTO.setServiceException(serviceException);
+			requestError.setServiceException(serviceException);
+			error.setRequestError(requestError);
 
-			responseCode = Response.Status.NOT_FOUND;
-			responseString = errorDTO;
-		} catch (Exception e) {
+			if (e.getErrorType().getCode() == ServiceError.NO_RESOURCES.getCode()) {
 
-			ErrorDTO errorDTO = new ErrorDTO();
-			ErrorDTO.ServiceException serviceException = new ErrorDTO.ServiceException();
+				responseCode = Response.Status.NOT_FOUND;
+			} else {
 
-			if (e instanceof BusinessException) {
-
-				BusinessException be = (BusinessException) e;
-				serviceException.setMessageId(be.getErrorType().getCode());
-				serviceException.setText(be.getErrorType().getMessage());
-				errorDTO.setServiceException(serviceException);
+				responseCode = Response.Status.BAD_REQUEST;
 			}
 
-			responseCode = Response.Status.BAD_REQUEST;
-			responseString = errorDTO;
+			responseString = error;
 		}
 
 		log.debug("RateCategoryResource getRateCategories -> response code : " + responseCode);
