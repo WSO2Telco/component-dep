@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.wso2telco.workflow.service;
+package com.wso2telco.workflow.api;
 
 import com.google.gson.*;
 import com.wso2telco.dep.reportingservice.southbound.SbHostObjectUtils;
@@ -33,9 +33,9 @@ import org.wso2.carbon.apimgt.api.model.Subscriber;
 import org.wso2.carbon.apimgt.impl.APIManagerFactory;
 
 @Path("/history")
-public class WorkflowHistoryService {
+public class WorkflowHistoryAPI {
 
-	private static final Logger log = Logger.getLogger(WorkflowHistoryService.class);
+	private static final Logger log = Logger.getLogger(WorkflowHistoryAPI.class);
 
 	@POST
 	@Path("/approval")

@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.wso2telco.workflow.service;
+package com.wso2telco.workflow.api;
 
 import com.wso2telco.workflow.application.ApplicationApproval;
 import com.wso2telco.workflow.application.ApplicationApprovalImpl;
@@ -30,7 +30,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("/audit")
-public class WorkflowApprovalAuditService {
+public class WorkflowApprovalAuditAPI {
 
     private WorkflowStatsDbService workflowStatsDbService =new WorkflowStatsDbService();
 

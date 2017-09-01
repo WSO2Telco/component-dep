@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.wso2telco.workflow.service;
+package com.wso2telco.workflow.api;
 
 
 import com.wso2telco.workflow.model.*;
@@ -28,7 +28,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
 @Path("/notification")
-public class NotificationService {
+public class NotificationAPI {
 
     Notification notification=new NotificationImpl();
 
