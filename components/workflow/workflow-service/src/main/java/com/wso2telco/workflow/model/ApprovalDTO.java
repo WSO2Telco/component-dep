@@ -14,7 +14,7 @@
  * limitations under the License.
  */
 
-package com.wso2telco.workflow.dao;
+package com.wso2telco.workflow.model;
 
 
 /**
@@ -29,7 +29,7 @@ package com.wso2telco.workflow.dao;
  "count": 1
  }
  */
-public class ApprovalDAO {
+public class ApprovalDTO {
 
     private String fromDate;
     private String toDate;

@@ -25,7 +25,7 @@ import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import java.util.List;
 
-import com.wso2telco.workflow.dao.ApprovalDAO;
+import com.wso2telco.workflow.model.ApprovalDTO;
 import org.apache.log4j.Logger;
 import org.wso2.carbon.apimgt.api.APIConsumer;
 import org.wso2.carbon.apimgt.api.model.Application;
@@ -41,16 +41,16 @@ public class WorkflowHistoryService {
 	@Path("/approval")
 	@Consumes (MediaType.APPLICATION_JSON)
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getApprovalHistory(ApprovalDAO approvalDAO){
+	public Response getApprovalHistory(ApprovalDTO approvalDTO){
 
-		String fromDate = approvalDAO.getFromDate();
-		String toDate = approvalDAO.getToDate();
-		String subscriber = approvalDAO.getSubscriber();
-		String api = approvalDAO.getApi();
-		int applicationId = approvalDAO.getApplicationId();
-		String operator = approvalDAO.getOperator();
-		int offset = approvalDAO.getOffset();
-		int count = approvalDAO.getCount();
+		String fromDate = approvalDTO.getFromDate();
+		String toDate = approvalDTO.getToDate();
+		String subscriber = approvalDTO.getSubscriber();
+		String api = approvalDTO.getApi();
+		int applicationId = approvalDTO.getApplicationId();
+		String operator = approvalDTO.getOperator();
+		int offset = approvalDTO.getOffset();
+		int count = approvalDTO.getCount();
 
 		String jsonPayload;
 
