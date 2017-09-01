@@ -616,6 +616,11 @@
                 <version>${activiti-version}</version>
             </dependency>
             <dependency>
+                <groupId>org.activiti</groupId>
+                <artifactId>activiti-explorer</artifactId>
+                <version>${activiti-version}</version>
+            </dependency>
+            <dependency>
                 <groupId>io.github.openfeign</groupId>
                 <artifactId>feign-core</artifactId>
                 <version>${feign.version}</version>
