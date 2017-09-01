@@ -11,8 +11,13 @@ import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.axis2.transport.http.HttpTransportProperties;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.um.ws.api.stub.RemoteUserStoreManagerServiceStub;
 import org.wso2.carbon.um.ws.api.stub.RemoteUserStoreManagerServiceUserStoreExceptionException;
+import org.wso2.carbon.user.core.UserStoreException;
+import org.wso2.carbon.user.core.UserStoreManager;
+import org.wso2.carbon.user.core.config.RealmConfiguration;
+import org.wso2.carbon.user.core.service.RealmService;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -22,21 +27,16 @@ import java.util.Map;
 public class WorkflowGroupIdentityManager extends GroupEntityManager {
 
     private static Log log = LogFactory.getLog(WorkflowGroupIdentityManager.class);
-    private RemoteUserStoreManagerServiceStub remoteUserStoreManagerServiceStub;
+
+    private UserStoreManager userStoreManager;
 
     public WorkflowGroupIdentityManager() {
         try {
-            remoteUserStoreManagerServiceStub = new RemoteUserStoreManagerServiceStub(null, "https://127.0.0.1:9443/services/RemoteUserStoreManagerService");
-
-            HttpTransportProperties.Authenticator basicAuth = new HttpTransportProperties.Authenticator();
-            basicAuth.setUsername("admin");
-            basicAuth.setPassword("admin");
-            basicAuth.setPreemptiveAuthentication(true);
-
-            remoteUserStoreManagerServiceStub._getServiceClient().getOptions().setProperty(HTTPConstants.AUTHENTICATE, basicAuth);
-        } catch (AxisFault axisFault) {
-            String errorMsg = "Error while initiating RemoteUserStoreManagerServiceStub";
-            log.error(errorMsg, axisFault);
+            RealmConfiguration config = new RealmConfiguration();
+            userStoreManager = ServicesHolder.getInstance().getRealmService().getUserRealm(config).getUserStoreManager();
+        } catch (UserStoreException e) {
+            String errorMsg = "Error while initiating UserStoreManager";
+            log.error(errorMsg, e);
         }
     }
 
@@ -68,15 +68,13 @@ public class WorkflowGroupIdentityManager extends GroupEntityManager {
         String userId = query.getUserId();
         List<Group> groupList = new ArrayList<Group>();
         try {
-            String[] roleList = remoteUserStoreManagerServiceStub.getRoleListOfUser(userId);
+            String[] roleList = userStoreManager.getRoleListOfUser(userId);
             for (int i = 0; i < roleList.length; i++) {
                 GroupEntity group = new GroupEntity(roleList[i]);
                 group.setType(roleList[i]);
                 groupList.add(group);
             }
-        } catch (RemoteException e) {
-            e.printStackTrace();
-        } catch (RemoteUserStoreManagerServiceUserStoreExceptionException e) {
+        } catch (UserStoreException e) {
             e.printStackTrace();
         }
         return groupList;
@@ -96,7 +94,7 @@ public class WorkflowGroupIdentityManager extends GroupEntityManager {
     public List<Group> findGroupsByUser(String userId) {
         List<Group> groups = new ArrayList<Group>();
         try {
-            String[] roles = remoteUserStoreManagerServiceStub.getRoleListOfUser(userId);
+            String[] roles = userStoreManager.getRoleListOfUser(userId);
             for (String role : roles) {
                 Group group = new GroupEntity(role);
                 groups.add(group);

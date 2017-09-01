@@ -15,10 +15,15 @@ import org.apache.axis2.transport.http.HttpTransportProperties;
 import org.apache.axis2.transport.http.HTTPConstants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.um.ws.api.stub.ClaimDTO;
 import org.wso2.carbon.um.ws.api.stub.RemoteUserStoreManagerServiceStub;
 import org.wso2.carbon.um.ws.api.stub.RemoteUserStoreManagerServiceUserStoreExceptionException;
+import org.wso2.carbon.user.core.UserStoreException;
+import org.wso2.carbon.user.core.UserStoreManager;
 import org.wso2.carbon.user.core.claim.Claim;
+import org.wso2.carbon.user.core.config.RealmConfiguration;
+import org.wso2.carbon.user.core.service.RealmService;
 
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -29,7 +34,7 @@ public class WorkflowUserIdentityManager extends UserEntityManager {
 
     private static Log log = LogFactory.getLog(WorkflowUserIdentityManager.class);
 
-    private RemoteUserStoreManagerServiceStub remoteUserStoreManagerServiceStub;
+    private UserStoreManager userStoreManager;
 
     //list of Claim URIs
     private static final String ID_CLAIM_URI = "urn:scim:schemas:core:1.0:id";
@@ -41,18 +46,11 @@ public class WorkflowUserIdentityManager extends UserEntityManager {
 
     public WorkflowUserIdentityManager() {
         try {
-            remoteUserStoreManagerServiceStub = new RemoteUserStoreManagerServiceStub(null, "https://127.0.0.1:9443/services/RemoteUserStoreManagerService");
-
-            HttpTransportProperties.Authenticator basicAuth = new HttpTransportProperties.Authenticator();
-            basicAuth.setUsername("admin");
-            basicAuth.setPassword("admin");
-            basicAuth.setPreemptiveAuthentication(true);
-
-            remoteUserStoreManagerServiceStub._getServiceClient().getOptions().setProperty(HTTPConstants.AUTHENTICATE, basicAuth);
-
-        } catch (AxisFault axisFault) {
-            String errorMsg = "Error while initiating RemoteUserStoreManagerServiceStub";
-            log.error(errorMsg, axisFault);
+            RealmConfiguration config = new RealmConfiguration();
+            userStoreManager = ServicesHolder.getInstance().getRealmService().getUserRealm(config).getUserStoreManager();
+        } catch (UserStoreException e) {
+            String errorMsg = "Error while initiating UserStoreManager";
+            log.error(errorMsg, e);
         }
     }
 
@@ -71,7 +69,7 @@ public class WorkflowUserIdentityManager extends UserEntityManager {
     @Override
     public UserEntity findUserById(String userId) {
         try {
-            int id = remoteUserStoreManagerServiceStub.getUserId(userId);
+            int id = userStoreManager.getUserId(userId);
 
             if (id > -1) {
                 UserEntity userEntity = new UserEntity(userId);
@@ -81,15 +79,15 @@ public class WorkflowUserIdentityManager extends UserEntityManager {
                 // set empty value for last-name by default
                 userEntity.setLastName("");
 
-                ClaimDTO[] userClaims = remoteUserStoreManagerServiceStub.getUserClaimValues(userId, null);
+                Claim[] userClaims = userStoreManager.getUserClaimValues(userId, null);
 
-                for (ClaimDTO claimDTO: userClaims) {
-                    if (FIRST_NAME_CLAIM_URI.equals(claimDTO.getClaimUri())) {
-                        userEntity.setFirstName(claimDTO.getValue());
-                    } else if (LAST_NAME_CLAIM_URI.equals(claimDTO.getClaimUri())) {
-                        userEntity.setLastName(claimDTO.getValue());
-                    } else if (EMAIL_CLAIM_URI.equals(claimDTO.getClaimUri())) {
-                        userEntity.setEmail(claimDTO.getValue());
+                for (Claim claim: userClaims) {
+                    if (FIRST_NAME_CLAIM_URI.equals(claim.getClaimUri())) {
+                        userEntity.setFirstName(claim.getValue());
+                    } else if (LAST_NAME_CLAIM_URI.equals(claim.getClaimUri())) {
+                        userEntity.setLastName(claim.getValue());
+                    } else if (EMAIL_CLAIM_URI.equals(claim.getClaimUri())) {
+                        userEntity.setEmail(claim.getValue());
                     }
                 }
 
@@ -118,144 +116,16 @@ public class WorkflowUserIdentityManager extends UserEntityManager {
             userList.add(findUserById(userQuery.getId()));
         } else {
             try {
-                String[] userIdList = remoteUserStoreManagerServiceStub.listUsers("*", -1);
+                String[] userIdList = userStoreManager.listUsers("*", -1);
                 for (int i = 0; i < userIdList.length; i++) {
                     userList.add(findUserById(userIdList[i]));
                 }
-            } catch (RemoteException e) {
-                e.printStackTrace();
-            } catch (RemoteUserStoreManagerServiceUserStoreExceptionException e) {
+            } catch (UserStoreException e) {
                 e.printStackTrace();
             }
         }
         return userList;
     }
-
-    private List<User> generateFinalUserList(List<String[]> resultUserList) {
-        List<String> mergedList = new ArrayList<>();
-        //first result list is considered as merged list first
-        for (String user : resultUserList.get(0)) {
-            mergedList.add(user);
-        }
-        for (int i = 1; i < resultUserList.size(); i++) {
-            List<String> newList = new ArrayList<>();
-            for (String user : resultUserList.get(i)) {
-                if (mergedList.contains(user)) {
-                    newList.add(user);
-                }
-            }
-            //make new list the merged list
-            mergedList = newList;
-        }
-
-        List<User> result = new ArrayList<>();
-        //prepare User list
-        for (String userName : mergedList) {
-            result.add(new UserEntity(userName));
-        }
-        return result;
-    }
-
-    private List<User> pageUserList(Page page, String[] users) {
-        List<User> userList = new ArrayList<>();
-        int resultLength = users.length;
-        int max;
-        if (page != null) {
-            if (page.getFirstResult() > resultLength) {
-                //no more result left, sending empty list
-                return new ArrayList<>();
-            }
-
-            if (page.getMaxResults() > resultLength) {
-                max = resultLength;
-            } else {
-                max = page.getMaxResults();
-            }
-            for (int i = page.getFirstResult(); i < max; i++) {
-                UserEntity userEntity = new UserEntity(users[i]);
-                userEntity.setPassword("admin");
-                userList.add(userEntity);
-            }
-        } else {
-            for (int i = 0; i < 1; i++) { // TODO: need to change with "resultLength"
-                UserEntity userEntity = new UserEntity(users[i]);
-                userEntity.setPassword("admin");
-                userList.add(userEntity);
-            }
-        }
-
-        return userList;
-    }
-
-    private List<Claim> transformQueryToClaim(UserQueryImpl userQuery) {
-        List<Claim> claimList = new ArrayList<Claim>();
-
-        if (userQuery.getEmail() != null) {
-            Claim claim = new Claim();
-            claim.setClaimUri(EMAIL_CLAIM_URI);
-            claim.setValue(userQuery.getEmail());
-            claimList.add(claim);
-        }
-
-        if (userQuery.getEmailLike() != null) {
-            Claim claim = new Claim();
-            claim.setClaimUri(EMAIL_CLAIM_URI);
-            claim.setValue("*" + userQuery.getEmailLike() + "*");
-            claimList.add(claim);
-        }
-
-        if (userQuery.getFirstName() != null) {
-            Claim claim = new Claim();
-            claim.setClaimUri(FIRST_NAME_CLAIM_URI);
-            claim.setValue(userQuery.getFirstName());
-            claimList.add(claim);
-        }
-
-        if (userQuery.getFirstNameLike() != null) {
-            Claim claim = new Claim();
-            claim.setClaimUri(FIRST_NAME_CLAIM_URI);
-            claim.setValue("*" + userQuery.getFirstNameLike() + "*");
-            claimList.add(claim);
-        }
-
-        if (userQuery.getFullNameLike() != null) {
-            Claim claim = new Claim();
-            claim.setClaimUri(FULL_NAME_CLAIM_URI);
-            claim.setValue("*" + userQuery.getFullNameLike() + "*");
-            claimList.add(claim);
-        }
-
-        if (userQuery.getGroupId() != null) {
-            Claim claim = new Claim();
-            claim.setClaimUri(ROLE_CLAIM_URI);
-            claim.setValue(userQuery.getGroupId());
-            claimList.add(claim);
-        }
-
-        if (userQuery.getId() != null) {
-            Claim claim = new Claim();
-            claim.setClaimUri(ID_CLAIM_URI);
-            claim.setValue(userQuery.getId());
-            claimList.add(claim);
-        }
-
-        if (userQuery.getLastName() != null) {
-            Claim claim = new Claim();
-            claim.setClaimUri(LAST_NAME_CLAIM_URI);
-            claim.setValue(userQuery.getLastName());
-            claimList.add(claim);
-        }
-
-        if (userQuery.getLastNameLike() != null) {
-            Claim claim = new Claim();
-            claim.setClaimUri(LAST_NAME_CLAIM_URI);
-            claim.setValue("*" + userQuery.getLastNameLike() + "*");
-            claimList.add(claim);
-        }
-
-        return claimList;
-    }
-
 
     @Override
     public long findUserCountByQueryCriteria(UserQueryImpl userQuery) {
@@ -266,7 +136,7 @@ public class WorkflowUserIdentityManager extends UserEntityManager {
     public List<Group> findGroupsByUser(String userId) {
         List<Group> groups = new ArrayList<Group>();
         try {
-            String[] roles = remoteUserStoreManagerServiceStub.getRoleListOfUser(userId);
+            String[] roles = userStoreManager.getRoleListOfUser(userId);
             for (String role : roles) {
                 Group group = new GroupEntity(role);
                 groups.add(group);
@@ -300,7 +170,7 @@ public class WorkflowUserIdentityManager extends UserEntityManager {
         boolean authStatus = false;
 
         try {
-            authStatus = remoteUserStoreManagerServiceStub.authenticate(userId, password);
+            authStatus = userStoreManager.authenticate(userId, password);
         } catch (Exception e) {
            log.error(
                     "User store exception thrown while authenticating user : " + userId, e);
