@@ -1,7 +1,23 @@
+/*******************************************************************************
+ * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+ * <p>
+ * WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.wso2telco.dep.ratecardservice.service;
 
 import java.util.Collections;
 import java.util.List;
+import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.dep.ratecardservice.dao.RateDefinitionDAO;
 import com.wso2telco.dep.ratecardservice.dao.model.CurrencyDTO;
 import com.wso2telco.dep.ratecardservice.dao.model.RateDefinitionDTO;
@@ -12,11 +28,12 @@ public class RateDefinitionService {
 
 	RateDefinitionDAO rateDefinitionDAO;
 
-	{
+	public RateDefinitionService(){
+		
 		rateDefinitionDAO = new RateDefinitionDAO();
 	}
 
-	public List<RateDefinitionDTO> getRateDefinitions() throws Exception {
+	public List<RateDefinitionDTO> getRateDefinitions(String schema) throws BusinessException {
 
 		CurrencyService currencyService = new CurrencyService();
 		RateTypeService rateTypeService = new RateTypeService();
@@ -24,30 +41,27 @@ public class RateDefinitionService {
 
 		List<RateDefinitionDTO> rateDefinitions = null;
 
-		try {
-
-			rateDefinitions = rateDefinitionDAO.getRateDefinitions();
-		} catch (Exception e) {
-
-			throw e;
-		}
+		rateDefinitions = rateDefinitionDAO.getRateDefinitions();
 
 		if (rateDefinitions != null) {
 
-			for (int i = 0; i < rateDefinitions.size(); i++) {
+			if ((schema != null && schema.trim().length() > 0) && schema.equalsIgnoreCase("full")) {
 
-				RateDefinitionDTO rateDefinition = rateDefinitions.get(i);
+				for (int i = 0; i < rateDefinitions.size(); i++) {
 
-				CurrencyDTO currency = currencyService.getCurrency(rateDefinition.getCurrency().getCurrencyId());
-				rateDefinition.setCurrency(currency);
+					RateDefinitionDTO rateDefinition = rateDefinitions.get(i);
 
-				RateTypeDTO rateType = rateTypeService.getRateType(rateDefinition.getRateType().getRateTypeId());
-				rateDefinition.setRateType(rateType);
+					CurrencyDTO currency = currencyService.getCurrency(rateDefinition.getCurrency().getCurrencyId());
+					rateDefinition.setCurrency(currency);
 
-				TariffDTO tariff = tariffService.getTariff(rateDefinition.getTariff().getTariffId());
-				rateDefinition.setTariff(tariff);
+					RateTypeDTO rateType = rateTypeService.getRateType(rateDefinition.getRateType().getRateTypeId());
+					rateDefinition.setRateType(rateType);
 
-				rateDefinitions.set(i, rateDefinition);
+					TariffDTO tariff = tariffService.getTariff(rateDefinition.getTariff().getTariffId());
+					rateDefinition.setTariff(tariff);
+
+					rateDefinitions.set(i, rateDefinition);
+				}
 			}
 
 			return rateDefinitions;
@@ -57,23 +71,17 @@ public class RateDefinitionService {
 		}
 	}
 
-	public RateDefinitionDTO addRateDefinition(RateDefinitionDTO rateDefinition) throws Exception {
+	public RateDefinitionDTO addRateDefinition(RateDefinitionDTO rateDefinition) throws BusinessException {
 
 		RateDefinitionDTO newRateDefinition = null;
 
-		try {
-
-			newRateDefinition = rateDefinitionDAO.addRateDefinition(rateDefinition);
-			newRateDefinition = getRateDefinition(newRateDefinition.getRateDefId());
-		} catch (Exception e) {
-
-			throw e;
-		}
+		newRateDefinition = rateDefinitionDAO.addRateDefinition(rateDefinition);
+		newRateDefinition = getRateDefinition(newRateDefinition.getRateDefId(), null);
 
 		return newRateDefinition;
 	}
 
-	public RateDefinitionDTO getRateDefinition(int rateDefId) throws Exception {
+	public RateDefinitionDTO getRateDefinition(int rateDefId, String schema) throws BusinessException {
 
 		CurrencyService currencyService = new CurrencyService();
 		RateTypeService rateTypeService = new RateTypeService();
@@ -81,9 +89,9 @@ public class RateDefinitionService {
 
 		RateDefinitionDTO rateDefinition = null;
 
-		try {
+		rateDefinition = rateDefinitionDAO.getRateDefinition(rateDefId);
 
-			rateDefinition = rateDefinitionDAO.getRateDefinition(rateDefId);
+		if ((schema != null && schema.trim().length() > 0) && schema.equalsIgnoreCase("full")) {
 
 			CurrencyDTO currency = currencyService.getCurrency(rateDefinition.getCurrency().getCurrencyId());
 			rateDefinition.setCurrency(currency);
@@ -93,26 +101,172 @@ public class RateDefinitionService {
 
 			TariffDTO tariff = tariffService.getTariff(rateDefinition.getTariff().getTariffId());
 			rateDefinition.setTariff(tariff);
-		} catch (Exception e) {
-
-			throw e;
 		}
 
 		return rateDefinition;
 	}
 
-	public boolean deleteRateDefinition(int rateDefId) throws Exception {
+	public boolean deleteRateDefinition(int rateDefId) throws BusinessException {
 
 		boolean status = false;
 
-		try {
-
-			status = rateDefinitionDAO.deleteRateDefinition(rateDefId);
-		} catch (Exception e) {
-
-			throw e;
-		}
+		status = rateDefinitionDAO.deleteRateDefinition(rateDefId);
 
 		return status;
+	}
+
+	public List<RateDefinitionDTO> getRateDefinitions(int apiOperationId, String schema) throws BusinessException {
+
+		CurrencyService currencyService = new CurrencyService();
+		RateTypeService rateTypeService = new RateTypeService();
+		TariffService tariffService = new TariffService();
+
+		List<RateDefinitionDTO> rateDefinitions = null;
+
+		rateDefinitions = rateDefinitionDAO.getRateDefinitions(apiOperationId);
+
+		if (rateDefinitions != null) {
+
+			if ((schema != null && schema.trim().length() > 0) && schema.equalsIgnoreCase("full")) {
+
+				for (int i = 0; i < rateDefinitions.size(); i++) {
+
+					RateDefinitionDTO rateDefinition = rateDefinitions.get(i);
+
+					CurrencyDTO currency = currencyService.getCurrency(rateDefinition.getCurrency().getCurrencyId());
+					rateDefinition.setCurrency(currency);
+
+					RateTypeDTO rateType = rateTypeService.getRateType(rateDefinition.getRateType().getRateTypeId());
+					rateDefinition.setRateType(rateType);
+
+					TariffDTO tariff = tariffService.getTariff(rateDefinition.getTariff().getTariffId());
+					rateDefinition.setTariff(tariff);
+
+					rateDefinitions.set(i, rateDefinition);
+				}
+			}
+
+			return rateDefinitions;
+		} else {
+
+			return Collections.emptyList();
+		}
+	}
+
+	public List<RateDefinitionDTO> getRateDefinitions(int apiOperationId, int operatorId, String schema)
+			throws BusinessException {
+
+		CurrencyService currencyService = new CurrencyService();
+		RateTypeService rateTypeService = new RateTypeService();
+		TariffService tariffService = new TariffService();
+
+		List<RateDefinitionDTO> rateDefinitions = null;
+
+		rateDefinitions = rateDefinitionDAO.getRateDefinitions(apiOperationId, operatorId);
+
+		if (rateDefinitions != null) {
+
+			if ((schema != null && schema.trim().length() > 0) && schema.equalsIgnoreCase("full")) {
+
+				for (int i = 0; i < rateDefinitions.size(); i++) {
+
+					RateDefinitionDTO rateDefinition = rateDefinitions.get(i);
+
+					CurrencyDTO currency = currencyService.getCurrency(rateDefinition.getCurrency().getCurrencyId());
+					rateDefinition.setCurrency(currency);
+
+					RateTypeDTO rateType = rateTypeService.getRateType(rateDefinition.getRateType().getRateTypeId());
+					rateDefinition.setRateType(rateType);
+
+					TariffDTO tariff = tariffService.getTariff(rateDefinition.getTariff().getTariffId());
+					rateDefinition.setTariff(tariff);
+
+					rateDefinitions.set(i, rateDefinition);
+				}
+			}
+
+			return rateDefinitions;
+		} else {
+
+			return Collections.emptyList();
+		}
+	}
+
+	public List<RateDefinitionDTO> getAssignedRateDefinitions(int apiOperationId, String schema)
+			throws BusinessException {
+
+		CurrencyService currencyService = new CurrencyService();
+		RateTypeService rateTypeService = new RateTypeService();
+		TariffService tariffService = new TariffService();
+
+		List<RateDefinitionDTO> rateDefinitions = null;
+
+		rateDefinitions = rateDefinitionDAO.getAssignedRateDefinitions(apiOperationId);
+
+		if (rateDefinitions != null) {
+
+			if ((schema != null && schema.trim().length() > 0) && schema.equalsIgnoreCase("full")) {
+
+				for (int i = 0; i < rateDefinitions.size(); i++) {
+
+					RateDefinitionDTO rateDefinition = rateDefinitions.get(i);
+
+					CurrencyDTO currency = currencyService.getCurrency(rateDefinition.getCurrency().getCurrencyId());
+					rateDefinition.setCurrency(currency);
+
+					RateTypeDTO rateType = rateTypeService.getRateType(rateDefinition.getRateType().getRateTypeId());
+					rateDefinition.setRateType(rateType);
+
+					TariffDTO tariff = tariffService.getTariff(rateDefinition.getTariff().getTariffId());
+					rateDefinition.setTariff(tariff);
+
+					rateDefinitions.set(i, rateDefinition);
+				}
+			}
+
+			return rateDefinitions;
+		} else {
+
+			return Collections.emptyList();
+		}
+	}
+
+	public List<RateDefinitionDTO> getAssignedRateDefinitions(int apiOperationId, int operatorId, String schema)
+			throws BusinessException {
+
+		CurrencyService currencyService = new CurrencyService();
+		RateTypeService rateTypeService = new RateTypeService();
+		TariffService tariffService = new TariffService();
+
+		List<RateDefinitionDTO> rateDefinitions = null;
+
+		rateDefinitions = rateDefinitionDAO.getAssignedRateDefinitions(apiOperationId, operatorId);
+
+		if (rateDefinitions != null) {
+
+			if ((schema != null && schema.trim().length() > 0) && schema.equalsIgnoreCase("full")) {
+
+				for (int i = 0; i < rateDefinitions.size(); i++) {
+
+					RateDefinitionDTO rateDefinition = rateDefinitions.get(i);
+
+					CurrencyDTO currency = currencyService.getCurrency(rateDefinition.getCurrency().getCurrencyId());
+					rateDefinition.setCurrency(currency);
+
+					RateTypeDTO rateType = rateTypeService.getRateType(rateDefinition.getRateType().getRateTypeId());
+					rateDefinition.setRateType(rateType);
+
+					TariffDTO tariff = tariffService.getTariff(rateDefinition.getTariff().getTariffId());
+					rateDefinition.setTariff(tariff);
+
+					rateDefinitions.set(i, rateDefinition);
+				}
+			}
+
+			return rateDefinitions;
+		} else {
+
+			return Collections.emptyList();
+		}
 	}
 }

@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+ * <p>
+ * WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.wso2telco.dep.ratecardservice.resource;
 
 import java.util.List;
@@ -23,7 +38,7 @@ public class APIResource {
 
 	private final Log log = LogFactory.getLog(APIResource.class);
 	private APIService apiService = new APIService();
-	
+
 	@GET
 	public Response getAPIs() {
 
@@ -46,30 +61,24 @@ public class APIResource {
 			}
 		} catch (BusinessException e) {
 
-			ErrorDTO errorDTO = new ErrorDTO();
-			ErrorDTO.ServiceException serviceException = new ErrorDTO.ServiceException();
+			ErrorDTO error = new ErrorDTO();
+			ErrorDTO.RequestError requestError = new ErrorDTO.RequestError();
+			ErrorDTO.RequestError.ServiceException serviceException = new ErrorDTO.RequestError.ServiceException();
 
 			serviceException.setMessageId(e.getErrorType().getCode());
 			serviceException.setText(e.getErrorType().getMessage());
-			errorDTO.setServiceException(serviceException);
+			requestError.setServiceException(serviceException);
+			error.setRequestError(requestError);
 
-			responseCode = Response.Status.NOT_FOUND;
-			responseString = errorDTO;
-		} catch (Exception e) {
+			if (e.getErrorType().getCode() == ServiceError.NO_RESOURCES.getCode()) {
 
-			ErrorDTO errorDTO = new ErrorDTO();
-			ErrorDTO.ServiceException serviceException = new ErrorDTO.ServiceException();
+				responseCode = Response.Status.NOT_FOUND;
+			} else {
 
-			if (e instanceof BusinessException) {
-
-				BusinessException be = (BusinessException) e;
-				serviceException.setMessageId(be.getErrorType().getCode());
-				serviceException.setText(be.getErrorType().getMessage());
-				errorDTO.setServiceException(serviceException);
+				responseCode = Response.Status.BAD_REQUEST;
 			}
 
-			responseCode = Response.Status.BAD_REQUEST;
-			responseString = errorDTO;
+			responseString = error;
 		}
 
 		log.debug("APIResource getAPIs -> response code : " + responseCode);
@@ -77,7 +86,7 @@ public class APIResource {
 
 		return Response.status(responseCode).entity(responseString).build();
 	}
-	
+
 	@Path("/{apiName}/operations")
 	public OperationResource getOperationResource() {
 

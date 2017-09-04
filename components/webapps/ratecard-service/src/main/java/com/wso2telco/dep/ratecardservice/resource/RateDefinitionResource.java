@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+ * <p>
+ * WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.wso2telco.dep.ratecardservice.resource;
 
 import java.util.List;
@@ -8,6 +23,7 @@ import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.PathParam;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -28,7 +44,7 @@ public class RateDefinitionResource {
 	private RateDefinitionService rateDefinitionService = new RateDefinitionService();
 
 	@GET
-	public Response getRateDefinitions() {
+	public Response getRateDefinitions(@QueryParam("schema") String schema) {
 
 		List<RateDefinitionDTO> rateDefinitions = null;
 		Status responseCode = null;
@@ -36,7 +52,7 @@ public class RateDefinitionResource {
 
 		try {
 
-			rateDefinitions = rateDefinitionService.getRateDefinitions();
+			rateDefinitions = rateDefinitionService.getRateDefinitions(schema);
 
 			if (!rateDefinitions.isEmpty()) {
 
@@ -50,30 +66,24 @@ public class RateDefinitionResource {
 			}
 		} catch (BusinessException e) {
 
-			ErrorDTO errorDTO = new ErrorDTO();
-			ErrorDTO.ServiceException serviceException = new ErrorDTO.ServiceException();
+			ErrorDTO error = new ErrorDTO();
+			ErrorDTO.RequestError requestError = new ErrorDTO.RequestError();
+			ErrorDTO.RequestError.ServiceException serviceException = new ErrorDTO.RequestError.ServiceException();
 
 			serviceException.setMessageId(e.getErrorType().getCode());
 			serviceException.setText(e.getErrorType().getMessage());
-			errorDTO.setServiceException(serviceException);
+			requestError.setServiceException(serviceException);
+			error.setRequestError(requestError);
 
-			responseCode = Response.Status.NOT_FOUND;
-			responseString = errorDTO;
-		} catch (Exception e) {
+			if (e.getErrorType().getCode() == ServiceError.NO_RESOURCES.getCode()) {
 
-			ErrorDTO errorDTO = new ErrorDTO();
-			ErrorDTO.ServiceException serviceException = new ErrorDTO.ServiceException();
+				responseCode = Response.Status.NOT_FOUND;
+			} else {
 
-			if (e instanceof BusinessException) {
-
-				BusinessException be = (BusinessException) e;
-				serviceException.setMessageId(be.getErrorType().getCode());
-				serviceException.setText(be.getErrorType().getMessage());
-				errorDTO.setServiceException(serviceException);
+				responseCode = Response.Status.BAD_REQUEST;
 			}
 
-			responseCode = Response.Status.BAD_REQUEST;
-			responseString = errorDTO;
+			responseString = error;
 		}
 
 		log.debug("RateDefinitionResource getRateDefinitions -> response code : " + responseCode);
@@ -103,21 +113,26 @@ public class RateDefinitionResource {
 						"Error in RateDefinitionResource addRateDefinition : rate definition can not insert to database ");
 				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 			}
-		} catch (Exception e) {
+		} catch (BusinessException e) {
 
-			ErrorDTO errorDTO = new ErrorDTO();
-			ErrorDTO.ServiceException serviceException = new ErrorDTO.ServiceException();
+			ErrorDTO error = new ErrorDTO();
+			ErrorDTO.RequestError requestError = new ErrorDTO.RequestError();
+			ErrorDTO.RequestError.ServiceException serviceException = new ErrorDTO.RequestError.ServiceException();
 
-			if (e instanceof BusinessException) {
+			serviceException.setMessageId(e.getErrorType().getCode());
+			serviceException.setText(e.getErrorType().getMessage());
+			requestError.setServiceException(serviceException);
+			error.setRequestError(requestError);
 
-				BusinessException be = (BusinessException) e;
-				serviceException.setMessageId(be.getErrorType().getCode());
-				serviceException.setText(be.getErrorType().getMessage());
-				errorDTO.setServiceException(serviceException);
+			if (e.getErrorType().getCode() == ServiceError.NO_RESOURCES.getCode()) {
+
+				responseCode = Response.Status.NOT_FOUND;
+			} else {
+
+				responseCode = Response.Status.BAD_REQUEST;
 			}
 
-			responseCode = Response.Status.BAD_REQUEST;
-			responseString = errorDTO;
+			responseString = error;
 		}
 
 		log.debug("RateDefinitionResource addRateDefinition -> response code : " + responseCode);
@@ -128,7 +143,7 @@ public class RateDefinitionResource {
 
 	@GET
 	@Path("/{rateDefId}")
-	public Response getRateDefinition(@PathParam("rateDefId") int rateDefId) {
+	public Response getRateDefinition(@PathParam("rateDefId") int rateDefId, @QueryParam("schema") String schema) {
 
 		RateDefinitionDTO rateDefinition = null;
 		Status responseCode = null;
@@ -136,7 +151,7 @@ public class RateDefinitionResource {
 
 		try {
 
-			rateDefinition = rateDefinitionService.getRateDefinition(rateDefId);
+			rateDefinition = rateDefinitionService.getRateDefinition(rateDefId, schema);
 
 			if (rateDefinition != null) {
 
@@ -150,30 +165,24 @@ public class RateDefinitionResource {
 			}
 		} catch (BusinessException e) {
 
-			ErrorDTO errorDTO = new ErrorDTO();
-			ErrorDTO.ServiceException serviceException = new ErrorDTO.ServiceException();
+			ErrorDTO error = new ErrorDTO();
+			ErrorDTO.RequestError requestError = new ErrorDTO.RequestError();
+			ErrorDTO.RequestError.ServiceException serviceException = new ErrorDTO.RequestError.ServiceException();
 
 			serviceException.setMessageId(e.getErrorType().getCode());
 			serviceException.setText(e.getErrorType().getMessage());
-			errorDTO.setServiceException(serviceException);
+			requestError.setServiceException(serviceException);
+			error.setRequestError(requestError);
 
-			responseCode = Response.Status.NOT_FOUND;
-			responseString = errorDTO;
-		} catch (Exception e) {
+			if (e.getErrorType().getCode() == ServiceError.NO_RESOURCES.getCode()) {
 
-			ErrorDTO errorDTO = new ErrorDTO();
-			ErrorDTO.ServiceException serviceException = new ErrorDTO.ServiceException();
+				responseCode = Response.Status.NOT_FOUND;
+			} else {
 
-			if (e instanceof BusinessException) {
-
-				BusinessException be = (BusinessException) e;
-				serviceException.setMessageId(be.getErrorType().getCode());
-				serviceException.setText(be.getErrorType().getMessage());
-				errorDTO.setServiceException(serviceException);
+				responseCode = Response.Status.BAD_REQUEST;
 			}
 
-			responseCode = Response.Status.BAD_REQUEST;
-			responseString = errorDTO;
+			responseString = error;
 		}
 
 		log.debug("RateDefinitionResource getRateDefinition -> response code : " + responseCode);
@@ -181,7 +190,7 @@ public class RateDefinitionResource {
 
 		return Response.status(responseCode).entity(responseString).build();
 	}
-	
+
 	@DELETE
 	@Path("/{rateDefId}")
 	public Response deleteRateDefinition(@PathParam("rateDefId") int rateDefId) {
@@ -194,7 +203,7 @@ public class RateDefinitionResource {
 
 			status = rateDefinitionService.deleteRateDefinition(rateDefId);
 
-			if (status != false) {
+			if (status) {
 
 				responseCode = Response.Status.NO_CONTENT;
 			} else {
@@ -205,30 +214,24 @@ public class RateDefinitionResource {
 			}
 		} catch (BusinessException e) {
 
-			ErrorDTO errorDTO = new ErrorDTO();
-			ErrorDTO.ServiceException serviceException = new ErrorDTO.ServiceException();
+			ErrorDTO error = new ErrorDTO();
+			ErrorDTO.RequestError requestError = new ErrorDTO.RequestError();
+			ErrorDTO.RequestError.ServiceException serviceException = new ErrorDTO.RequestError.ServiceException();
 
 			serviceException.setMessageId(e.getErrorType().getCode());
 			serviceException.setText(e.getErrorType().getMessage());
-			errorDTO.setServiceException(serviceException);
+			requestError.setServiceException(serviceException);
+			error.setRequestError(requestError);
 
-			responseCode = Response.Status.NOT_FOUND;
-			responseString = errorDTO;
-		} catch (Exception e) {
+			if (e.getErrorType().getCode() == ServiceError.NO_RESOURCES.getCode()) {
 
-			ErrorDTO errorDTO = new ErrorDTO();
-			ErrorDTO.ServiceException serviceException = new ErrorDTO.ServiceException();
+				responseCode = Response.Status.NOT_FOUND;
+			} else {
 
-			if (e instanceof BusinessException) {
-
-				BusinessException be = (BusinessException) e;
-				serviceException.setMessageId(be.getErrorType().getCode());
-				serviceException.setText(be.getErrorType().getMessage());
-				errorDTO.setServiceException(serviceException);
+				responseCode = Response.Status.BAD_REQUEST;
 			}
 
-			responseCode = Response.Status.BAD_REQUEST;
-			responseString = errorDTO;
+			responseString = error;
 		}
 
 		log.debug("RateDefinitionResource deleteRateDefinition -> response code : " + responseCode);
