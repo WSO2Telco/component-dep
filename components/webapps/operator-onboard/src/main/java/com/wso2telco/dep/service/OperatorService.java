@@ -36,4 +36,8 @@ public class OperatorService {
 		
 		return null;	
 	}
+
+	public void fooMethod(String abc) {
+
+	}
 }
