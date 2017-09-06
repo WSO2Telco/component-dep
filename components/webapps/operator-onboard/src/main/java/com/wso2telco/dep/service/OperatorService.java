@@ -56,11 +56,12 @@ public class OperatorService {
 	public String barMethod(String abc) {
 
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(1000)
 			FileInputStream file = new FileInputStream("hard_coded_path");
 		} catch (InterruptedException e) {
 
 		} catch (FileNotFoundException e) {
+
 
 		}
 		return null;
