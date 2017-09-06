@@ -14,6 +14,9 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wso2telco.dep.model.AddOperator;
 
+import java.io.FileInputStream;
+import java.io.FileNotFoundException;
+
 @Path("/operator/v1")
 public class OperatorService {
 	
@@ -38,6 +41,15 @@ public class OperatorService {
 	}
 
 	public void fooMethod(String abc) {
+
+		try {
+			Thread.sleep(1000);
+			FileInputStream file = new FileInputStream("hard_coded_path");
+		} catch (InterruptedException e) {
+
+		} catch (FileNotFoundException e) {
+			e.printStackTrace();
+		}
 
 	}
 }
