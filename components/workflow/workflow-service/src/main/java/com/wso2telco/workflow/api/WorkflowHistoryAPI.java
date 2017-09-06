@@ -65,7 +65,7 @@ public class WorkflowHistoryAPI {
 			log.error(e);
 			return Response.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).build();
 		}
-		return Response.status(HttpServletResponse.SC_OK).header("Content-Type", "application/json").entity(jsonPayload).build();
+		return Response.status(HttpServletResponse.SC_OK).entity(jsonPayload).build();
 	}
 
     @GET
