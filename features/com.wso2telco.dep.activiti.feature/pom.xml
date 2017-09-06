@@ -189,8 +189,8 @@
                                 </copy>
 
                                 <copy todir="${tempdir}/activiti-explorer/WEB-INF/lib" overwrite="true">
-                                    <fileset dir="${project.build.directory}/../../../components/workflow/workflow-approval/target">
-                                        <include name="workflow-user-manager-${project.version}.jar" />
+                                    <fileset dir="${project.build.directory}/../../../components/workflow/workflow-user-manage/target">
+                                        <include name="workflow-user-manage-${project.version}.jar" />
                                     </fileset>
                                 </copy>
 
@@ -200,8 +200,8 @@
                                     </fileset>
                                 </copy>
                                 <copy todir="${tempdir}/activiti-rest/WEB-INF/lib" overwrite="true">
-                                    <fileset dir="${project.build.directory}/../../../components/workflow/workflow-approval/target">
-                                        <include name="workflow-user-manager-${project.version}.jar" />
+                                    <fileset dir="${project.build.directory}/../../../components/workflow/workflow-user-manage/target">
+                                        <include name="workflow-user-manage-${project.version}.jar" />
                                     </fileset>
                                 </copy>
                                 <copy todir="${tempdir}/activiti-rest/WEB-INF/lib" overwrite="true">
