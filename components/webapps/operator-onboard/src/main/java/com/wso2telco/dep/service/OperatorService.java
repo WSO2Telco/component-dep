@@ -39,4 +39,8 @@ public class OperatorService {
 		
 		return null;	
 	}
+
+	public static void ThisMethod(String foo) throws Exception {
+		throw new Exception();
+	}
 }
