@@ -58,7 +58,6 @@ public class OperatorService {
 		try {
 			Thread.sleep(1000);
 
-
 			FileInputStream file = new FileInputStream("hard_coded_path");
 		} catch (InterruptedException e) {
 
