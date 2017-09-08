@@ -19,6 +19,7 @@ import java.util.Map;
 public class WorkflowGroupIdentityManager extends GroupEntityManager {
 
     private static Log log = LogFactory.getLog(WorkflowGroupIdentityManager.class);
+    private static String METHOD_NOT_IMPLEMENTED_ERROR = "Invoked GroupIdentityManager method is not supported by WorkflowGroupIdentityManager.";
 
     private UserStoreManager userStoreManager;
 
@@ -34,20 +35,17 @@ public class WorkflowGroupIdentityManager extends GroupEntityManager {
 
     @Override
     public Group createNewGroup(String groupId) {
-        String msg = "Invoked GroupIdentityManager method is not supported by WorkflowGroupIdentityManager.";
-        throw new UnsupportedOperationException(msg);
+        throw new UnsupportedOperationException(WorkflowGroupIdentityManager.METHOD_NOT_IMPLEMENTED_ERROR);
     }
 
     @Override
     public void insertGroup(Group group) {
-        String msg = "Invoked GroupIdentityManager method is not supported by WorkflowGroupIdentityManager.";
-        throw new UnsupportedOperationException(msg);
+        throw new UnsupportedOperationException(WorkflowGroupIdentityManager.METHOD_NOT_IMPLEMENTED_ERROR);
     }
 
     @Override
     public void deleteGroup(String groupId) {
-        String msg = "Invoked GroupIdentityManager method is not supported by WorkflowGroupIdentityManager.";
-        throw new UnsupportedOperationException(msg);
+        throw new UnsupportedOperationException(WorkflowGroupIdentityManager.METHOD_NOT_IMPLEMENTED_ERROR);
     }
 
     @Override
@@ -67,7 +65,7 @@ public class WorkflowGroupIdentityManager extends GroupEntityManager {
                 groupList.add(group);
             }
         } catch (UserStoreException e) {
-            e.printStackTrace();
+            log.error("Unable to find roles for userId. UserId: " + userId);
         }
         return groupList;
     }
@@ -77,8 +75,7 @@ public class WorkflowGroupIdentityManager extends GroupEntityManager {
         if (null != query.getUserId()) {
             return findGroupsByUser(query.getUserId()).size();
         } else {
-            String msg = "Invoked GroupIdentityManager method is not supported by WorkflowGroupIdentityManager.";
-            throw new UnsupportedOperationException(msg);
+            throw new UnsupportedOperationException(WorkflowGroupIdentityManager.METHOD_NOT_IMPLEMENTED_ERROR);
         }
     }
 
@@ -101,13 +98,11 @@ public class WorkflowGroupIdentityManager extends GroupEntityManager {
     @Override
     public List<Group> findGroupsByNativeQuery(Map<String, Object> parameterMap, int firstResult,
                                                int maxResults) {
-        String msg = "Invoked GroupIdentityManager method is not supported by WorkflowGroupIdentityManager.";
-        throw new UnsupportedOperationException(msg);
+        throw new UnsupportedOperationException(WorkflowGroupIdentityManager.METHOD_NOT_IMPLEMENTED_ERROR);
     }
 
     @Override
     public long findGroupCountByNativeQuery(Map<String, Object> parameterMap) {
-        String msg = "Invoked GroupIdentityManager method is not supported by WorkflowGroupIdentityManager.";
-        throw new UnsupportedOperationException(msg);
+        throw new UnsupportedOperationException(WorkflowGroupIdentityManager.METHOD_NOT_IMPLEMENTED_ERROR);
     }
 }

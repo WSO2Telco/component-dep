@@ -13,6 +13,7 @@ public class WorkflowLoginHandler extends DefaultLoginHandler {
 
     private transient IdentityService identityService;
 
+    @Override
     public LoggedInUserImpl authenticate(String userName, String password) {
         LoggedInUserImpl loggedInUser = null;
 
@@ -50,6 +51,7 @@ public class WorkflowLoginHandler extends DefaultLoginHandler {
         return loggedInUser;
     }
 
+    @Override
     public void setIdentityService(IdentityService identityService) {
         this.identityService = identityService;
     }

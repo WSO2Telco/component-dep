@@ -24,16 +24,14 @@ import java.util.Map;
 public class WorkflowUserIdentityManager extends UserEntityManager {
 
     private static Log log = LogFactory.getLog(WorkflowUserIdentityManager.class);
+    private static String METHOD_NOT_IMPLEMENTED_ERROR = "Invoked UserIdentityManager method is not implemented in WorkflowUserIdentityManager.";
 
     private UserStoreManager userStoreManager;
 
     //list of Claim URIs
-    private static final String ID_CLAIM_URI = "urn:scim:schemas:core:1.0:id";
     private static final String FIRST_NAME_CLAIM_URI = "http://axschema.org/namePerson/first";
     private static final String LAST_NAME_CLAIM_URI = "http://wso2.org/claims/lastname";
-    private static final String FULL_NAME_CLAIM_URI = "http://wso2.org/claims/fullname";
     private static final String EMAIL_CLAIM_URI = "http://wso2.org/claims/emailaddress";
-    private static final String ROLE_CLAIM_URI = "http://wso2.org/claims/role";
 
     public WorkflowUserIdentityManager() {
         try {
@@ -47,14 +45,12 @@ public class WorkflowUserIdentityManager extends UserEntityManager {
 
     @Override
     public User createNewUser(String userId) {
-        String msg = "Invoked UserIdentityManager method is not implemented in WorkflowUserIdentityManager.";
-        throw new UnsupportedOperationException(msg);
+        throw new UnsupportedOperationException(WorkflowUserIdentityManager.METHOD_NOT_IMPLEMENTED_ERROR);
     }
 
     @Override
     public void insertUser(User user) {
-        String msg = "Invoked UserIdentityManager method is not implemented in WorkflowUserIdentityManager.";
-        throw new UnsupportedOperationException(msg);
+        throw new UnsupportedOperationException(WorkflowUserIdentityManager.METHOD_NOT_IMPLEMENTED_ERROR);
     }
 
     @Override
@@ -95,8 +91,7 @@ public class WorkflowUserIdentityManager extends UserEntityManager {
 
     @Override
     public void deleteUser(String userId) {
-        String msg = "Invoked UserIdentityManager method is not implemented in WorkflowUserIdentityManager.";
-        throw new UnsupportedOperationException(msg);
+        throw new UnsupportedOperationException(WorkflowUserIdentityManager.METHOD_NOT_IMPLEMENTED_ERROR);
     }
 
     @Override
@@ -112,7 +107,7 @@ public class WorkflowUserIdentityManager extends UserEntityManager {
                     userList.add(findUserById(userIdList[i]));
                 }
             } catch (UserStoreException e) {
-                e.printStackTrace();
+                log.error("Error while retrieving list of users.");
             }
         }
         return userList;
@@ -146,14 +141,12 @@ public class WorkflowUserIdentityManager extends UserEntityManager {
 
     @Override
     public IdentityInfoEntity findUserInfoByUserIdAndKey(String userId, String key) {
-        String msg = "Invoked UserIdentityManager method is not implemented in WorkflowUserIdentityManager.";
-        throw new UnsupportedOperationException(msg);
+        throw new UnsupportedOperationException(WorkflowUserIdentityManager.METHOD_NOT_IMPLEMENTED_ERROR);
     }
 
     @Override
     public List<String> findUserInfoKeysByUserIdAndType(String userId, String type) {
-        String msg = "Invoked UserIdentityManager method is not implemented in WorkflowUserIdentityManager.";
-        throw new UnsupportedOperationException(msg);
+        throw new UnsupportedOperationException(WorkflowUserIdentityManager.METHOD_NOT_IMPLEMENTED_ERROR);
     }
 
     @Override
@@ -179,20 +172,17 @@ public class WorkflowUserIdentityManager extends UserEntityManager {
 
     @Override
     public List<User> findPotentialStarterUsers(String processDefId) {
-        String msg = "Invoked UserIdentityManager method is not implemented in WorkflowUserIdentityManager.";
-        throw new UnsupportedOperationException(msg);
+        throw new UnsupportedOperationException(WorkflowUserIdentityManager.METHOD_NOT_IMPLEMENTED_ERROR);
     }
 
     @Override
     public List<User> findUsersByNativeQuery(Map<String, Object> parameterMap, int firstResult,
                                              int maxResults) {
-        String msg = "Invoked UserIdentityManager method is not implemented in WorkflowUserIdentityManager.";
-        throw new UnsupportedOperationException(msg);
+        throw new UnsupportedOperationException(WorkflowUserIdentityManager.METHOD_NOT_IMPLEMENTED_ERROR);
     }
 
     @Override
     public long findUserCountByNativeQuery(Map<String, Object> parameterMap) {
-        String msg = "Invoked UserIdentityManager method is not implemented in WorkflowUserIdentityManager.";
-        throw new UnsupportedOperationException(msg);
+        throw new UnsupportedOperationException(WorkflowUserIdentityManager.METHOD_NOT_IMPLEMENTED_ERROR);
     }
 }
