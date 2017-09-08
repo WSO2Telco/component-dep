@@ -40,13 +40,10 @@ public class RateService {
 
 			RateDTO.API api = new RateDTO.API();
 
-			//if ((schema != null && schema.trim().length() > 0) && schema.equalsIgnoreCase("full")) {
-
-				api.setApiId(operationRate.getApiOperation().getApi().getApiId());
-				api.setApiName(operationRate.getApiOperation().getApi().getApiName());
-				api.setApiDescription(operationRate.getApiOperation().getApi().getApiDescription());
-				api.setCreatedBy(operationRate.getApiOperation().getApi().getCreatedBy());
-			//}
+			api.setApiId(operationRate.getApiOperation().getApi().getApiId());
+			api.setApiName(operationRate.getApiOperation().getApi().getApiName());
+			api.setApiDescription(operationRate.getApiOperation().getApi().getApiDescription());
+			api.setCreatedBy(operationRate.getApiOperation().getApi().getCreatedBy());
 
 			List<RateDTO.API.APIOperation> operationList = new ArrayList<RateDTO.API.APIOperation>();
 
