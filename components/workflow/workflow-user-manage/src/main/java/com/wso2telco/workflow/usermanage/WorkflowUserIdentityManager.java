@@ -24,7 +24,7 @@ import java.util.Map;
 public class WorkflowUserIdentityManager extends UserEntityManager {
 
     private static Log log = LogFactory.getLog(WorkflowUserIdentityManager.class);
-    private static String METHOD_NOT_IMPLEMENTED_ERROR = "Invoked UserIdentityManager method is not implemented in WorkflowUserIdentityManager.";
+    private static String methodNotImplementedError = "Invoked UserIdentityManager method is not implemented in WorkflowUserIdentityManager.";
 
     private UserStoreManager userStoreManager;
 
@@ -45,12 +45,12 @@ public class WorkflowUserIdentityManager extends UserEntityManager {
 
     @Override
     public User createNewUser(String userId) {
-        throw new UnsupportedOperationException(WorkflowUserIdentityManager.METHOD_NOT_IMPLEMENTED_ERROR);
+        throw new UnsupportedOperationException(WorkflowUserIdentityManager.methodNotImplementedError);
     }
 
     @Override
     public void insertUser(User user) {
-        throw new UnsupportedOperationException(WorkflowUserIdentityManager.METHOD_NOT_IMPLEMENTED_ERROR);
+        throw new UnsupportedOperationException(WorkflowUserIdentityManager.methodNotImplementedError);
     }
 
     @Override
@@ -91,7 +91,7 @@ public class WorkflowUserIdentityManager extends UserEntityManager {
 
     @Override
     public void deleteUser(String userId) {
-        throw new UnsupportedOperationException(WorkflowUserIdentityManager.METHOD_NOT_IMPLEMENTED_ERROR);
+        throw new UnsupportedOperationException(WorkflowUserIdentityManager.methodNotImplementedError);
     }
 
     @Override
@@ -141,12 +141,12 @@ public class WorkflowUserIdentityManager extends UserEntityManager {
 
     @Override
     public IdentityInfoEntity findUserInfoByUserIdAndKey(String userId, String key) {
-        throw new UnsupportedOperationException(WorkflowUserIdentityManager.METHOD_NOT_IMPLEMENTED_ERROR);
+        throw new UnsupportedOperationException(WorkflowUserIdentityManager.methodNotImplementedError);
     }
 
     @Override
     public List<String> findUserInfoKeysByUserIdAndType(String userId, String type) {
-        throw new UnsupportedOperationException(WorkflowUserIdentityManager.METHOD_NOT_IMPLEMENTED_ERROR);
+        throw new UnsupportedOperationException(WorkflowUserIdentityManager.methodNotImplementedError);
     }
 
     @Override
@@ -172,17 +172,17 @@ public class WorkflowUserIdentityManager extends UserEntityManager {
 
     @Override
     public List<User> findPotentialStarterUsers(String processDefId) {
-        throw new UnsupportedOperationException(WorkflowUserIdentityManager.METHOD_NOT_IMPLEMENTED_ERROR);
+        throw new UnsupportedOperationException(WorkflowUserIdentityManager.methodNotImplementedError);
     }
 
     @Override
     public List<User> findUsersByNativeQuery(Map<String, Object> parameterMap, int firstResult,
                                              int maxResults) {
-        throw new UnsupportedOperationException(WorkflowUserIdentityManager.METHOD_NOT_IMPLEMENTED_ERROR);
+        throw new UnsupportedOperationException(WorkflowUserIdentityManager.methodNotImplementedError);
     }
 
     @Override
     public long findUserCountByNativeQuery(Map<String, Object> parameterMap) {
-        throw new UnsupportedOperationException(WorkflowUserIdentityManager.METHOD_NOT_IMPLEMENTED_ERROR);
+        throw new UnsupportedOperationException(WorkflowUserIdentityManager.methodNotImplementedError);
     }
 }

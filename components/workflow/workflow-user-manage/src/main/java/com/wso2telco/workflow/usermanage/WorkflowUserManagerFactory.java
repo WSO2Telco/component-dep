@@ -8,8 +8,6 @@ import org.apache.commons.logging.LogFactory;
 
 public class WorkflowUserManagerFactory implements SessionFactory {
 
-    private static Log log = LogFactory.getLog(WorkflowUserManagerFactory.class);
-
     @Override
     public Class<?> getSessionType() {
         return UserIdentityManager.class;

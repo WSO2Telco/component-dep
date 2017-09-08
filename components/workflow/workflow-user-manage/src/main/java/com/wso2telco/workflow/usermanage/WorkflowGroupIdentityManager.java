@@ -19,7 +19,7 @@ import java.util.Map;
 public class WorkflowGroupIdentityManager extends GroupEntityManager {
 
     private static Log log = LogFactory.getLog(WorkflowGroupIdentityManager.class);
-    private static String METHOD_NOT_IMPLEMENTED_ERROR = "Invoked GroupIdentityManager method is not supported by WorkflowGroupIdentityManager.";
+    private static String methodNotImplementedError = "Invoked GroupIdentityManager method is not supported by WorkflowGroupIdentityManager.";
 
     private UserStoreManager userStoreManager;
 
@@ -35,17 +35,17 @@ public class WorkflowGroupIdentityManager extends GroupEntityManager {
 
     @Override
     public Group createNewGroup(String groupId) {
-        throw new UnsupportedOperationException(WorkflowGroupIdentityManager.METHOD_NOT_IMPLEMENTED_ERROR);
+        throw new UnsupportedOperationException(WorkflowGroupIdentityManager.methodNotImplementedError);
     }
 
     @Override
     public void insertGroup(Group group) {
-        throw new UnsupportedOperationException(WorkflowGroupIdentityManager.METHOD_NOT_IMPLEMENTED_ERROR);
+        throw new UnsupportedOperationException(WorkflowGroupIdentityManager.methodNotImplementedError);
     }
 
     @Override
     public void deleteGroup(String groupId) {
-        throw new UnsupportedOperationException(WorkflowGroupIdentityManager.METHOD_NOT_IMPLEMENTED_ERROR);
+        throw new UnsupportedOperationException(WorkflowGroupIdentityManager.methodNotImplementedError);
     }
 
     @Override
@@ -75,7 +75,7 @@ public class WorkflowGroupIdentityManager extends GroupEntityManager {
         if (null != query.getUserId()) {
             return findGroupsByUser(query.getUserId()).size();
         } else {
-            throw new UnsupportedOperationException(WorkflowGroupIdentityManager.METHOD_NOT_IMPLEMENTED_ERROR);
+            throw new UnsupportedOperationException(WorkflowGroupIdentityManager.methodNotImplementedError);
         }
     }
 
@@ -98,11 +98,11 @@ public class WorkflowGroupIdentityManager extends GroupEntityManager {
     @Override
     public List<Group> findGroupsByNativeQuery(Map<String, Object> parameterMap, int firstResult,
                                                int maxResults) {
-        throw new UnsupportedOperationException(WorkflowGroupIdentityManager.METHOD_NOT_IMPLEMENTED_ERROR);
+        throw new UnsupportedOperationException(WorkflowGroupIdentityManager.methodNotImplementedError);
     }
 
     @Override
     public long findGroupCountByNativeQuery(Map<String, Object> parameterMap) {
-        throw new UnsupportedOperationException(WorkflowGroupIdentityManager.METHOD_NOT_IMPLEMENTED_ERROR);
+        throw new UnsupportedOperationException(WorkflowGroupIdentityManager.methodNotImplementedError);
     }
 }
