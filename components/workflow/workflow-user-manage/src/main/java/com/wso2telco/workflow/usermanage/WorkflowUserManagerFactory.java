@@ -3,8 +3,6 @@ package com.wso2telco.workflow.usermanage;
 import org.activiti.engine.impl.interceptor.Session;
 import org.activiti.engine.impl.interceptor.SessionFactory;
 import org.activiti.engine.impl.persistence.entity.UserIdentityManager;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 
 public class WorkflowUserManagerFactory implements SessionFactory {
 
