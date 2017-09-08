@@ -52,7 +52,7 @@ public class APIOperationDAO {
 				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 			}
 
-			StringBuilder query = new StringBuilder("select api_operation, api_operationcode, createdby from ");
+			StringBuilder query = new StringBuilder("select api_operationid, apiid, api_operation, api_operationcode, createdby from ");
 			query.append(DatabaseTables.API_OPERATION.getTObject());
 			query.append(" where api_operationid = ?");
 

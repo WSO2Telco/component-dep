@@ -27,9 +27,9 @@ import com.wso2telco.dep.ratecardservice.dao.model.RateDefinitionDTO;
 public class OperationRateService {
 
 	OperationRateDAO operationRateDAO;
-	
-	public OperationRateService(){
-		
+
+	public OperationRateService() {
+
 		operationRateDAO = new OperationRateDAO();
 	}
 
@@ -45,25 +45,22 @@ public class OperationRateService {
 
 		if (operationRates != null) {
 
-			if ((schema != null && schema.trim().length() > 0) && schema.equalsIgnoreCase("full")) {
+			for (int i = 0; i < operationRates.size(); i++) {
 
-				for (int i = 0; i < operationRates.size(); i++) {
+				OperationRateDTO operationRate = operationRates.get(i);
 
-					OperationRateDTO operationRate = operationRates.get(i);
+				OperatorDTO operator = operatorService.getOperator(operationRate.getOperator().getOperatorId());
+				operationRate.setOperator(operator);
 
-					OperatorDTO operator = operatorService.getOperator(operationRate.getOperator().getOperatorId());
-					operationRate.setOperator(operator);
+				APIOperationDTO apiOperation = apiOperationService
+						.getAPIOperation(operationRate.getApiOperation().getApiOperationId(), schema);
+				operationRate.setApiOperation(apiOperation);
 
-					APIOperationDTO apiOperation = apiOperationService
-							.getAPIOperation(operationRate.getApiOperation().getApiOperationId(), schema);
-					operationRate.setApiOperation(apiOperation);
+				RateDefinitionDTO rateDefinition = rateDefinitionService
+						.getRateDefinition(operationRate.getRateDefinition().getRateDefId(), schema);
+				operationRate.setRateDefinition(rateDefinition);
 
-					RateDefinitionDTO rateDefinition = rateDefinitionService
-							.getRateDefinition(operationRate.getRateDefinition().getRateDefId(), schema);
-					operationRate.setRateDefinition(rateDefinition);
-
-					operationRates.set(i, operationRate);
-				}
+				operationRates.set(i, operationRate);
 			}
 
 			return operationRates;
@@ -86,25 +83,22 @@ public class OperationRateService {
 
 		if (operationRates != null) {
 
-			if ((schema != null && schema.trim().length() > 0) && schema.equalsIgnoreCase("full")) {
+			for (int i = 0; i < operationRates.size(); i++) {
 
-				for (int i = 0; i < operationRates.size(); i++) {
+				OperationRateDTO operationRate = operationRates.get(i);
 
-					OperationRateDTO operationRate = operationRates.get(i);
+				OperatorDTO operator = operatorService.getOperator(operationRate.getOperator().getOperatorId());
+				operationRate.setOperator(operator);
 
-					OperatorDTO operator = operatorService.getOperator(operationRate.getOperator().getOperatorId());
-					operationRate.setOperator(operator);
+				APIOperationDTO apiOperation = apiOperationService
+						.getAPIOperation(operationRate.getApiOperation().getApiOperationId(), schema);
+				operationRate.setApiOperation(apiOperation);
 
-					APIOperationDTO apiOperation = apiOperationService
-							.getAPIOperation(operationRate.getApiOperation().getApiOperationId(), schema);
-					operationRate.setApiOperation(apiOperation);
+				RateDefinitionDTO rateDefinition = rateDefinitionService
+						.getRateDefinition(operationRate.getRateDefinition().getRateDefId(), schema);
+				operationRate.setRateDefinition(rateDefinition);
 
-					RateDefinitionDTO rateDefinition = rateDefinitionService
-							.getRateDefinition(operationRate.getRateDefinition().getRateDefId(), schema);
-					operationRate.setRateDefinition(rateDefinition);
-
-					operationRates.set(i, operationRate);
-				}
+				operationRates.set(i, operationRate);
 			}
 
 			return operationRates;
