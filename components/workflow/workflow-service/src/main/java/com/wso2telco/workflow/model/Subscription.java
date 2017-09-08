@@ -29,6 +29,7 @@ public class Subscription {
     private String operatorName;
     private String workflowRefId;
     private String selectedRate;
+    private String selectedTier;
     private String apiVersion;
     private String apiProvider;
 
@@ -112,6 +113,14 @@ public class Subscription {
 
     public void setSelectedRate(String selectedRate) {
         this.selectedRate = selectedRate;
+    }
+
+    public String getSelectedTier() {
+        return selectedTier;
+    }
+
+    public void setSelectedTier(String selectedTier) {
+        this.selectedTier = selectedTier;
     }
 
 
