@@ -24,9 +24,11 @@ import com.wso2telco.workflow.approval.model.NotificationRequest;
 import com.wso2telco.workflow.approval.subscription.rest.client.NotificationApi;
 import com.wso2telco.workflow.approval.subscription.rest.client.WorkflowCallbackErrorDecoder;
 import com.wso2telco.workflow.approval.util.AuthRequestInterceptor;
+
 import feign.Feign;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
+
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.apache.commons.logging.Log;
@@ -103,6 +105,7 @@ public class HubDataUpdater implements JavaDelegate {
         application.setApplicationID(applicationId);
         application.setStatus(status);
         application.setOperatorName(operatorName);
+        application.setSelectedTier(selectedTier);
         api.applicationApprovalHub(application);
 
         NotificationRequest notificationRequest = new NotificationRequest();
