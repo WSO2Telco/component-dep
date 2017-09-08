@@ -15,12 +15,6 @@
       <property name="databaseSchemaUpdate" value="true" />
       <property name="jobExecutorActivate" value="false" />
       <property name="transactionManager" ref="transactionManager"/>
-      <property name="customSessionFactories">
-          <list>
-              <bean class="com.wso2telco.workflow.usermanage.WorkflowUserManagerFactory"/>
-              <bean class="com.wso2telco.workflow.usermanage.WorkflowGroupManagerFactory"/>
-          </list>
-      </property>
    </bean>
   
   <!--bean id="transactionManager" class="org.springframework.transaction.jta.JtaTransactionManager"/-->
