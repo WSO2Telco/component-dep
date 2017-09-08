@@ -34,8 +34,6 @@ public class ApplicationApprovalImpl implements ApplicationApproval{
 
 	private static Log log = LogFactory.getLog(ApplicationApprovalImpl.class);
     private WorkflowDbService dbservice = null;
-    private WorkflowDAO WorkflowDAO = null;
-
 
 	public void updateDBAppHubApproval (
             Application appHUBApprovalDBUpdateRequest) throws Exception {
@@ -57,8 +55,8 @@ public class ApplicationApprovalImpl implements ApplicationApproval{
 
           //Update tier of the application
           String selectedTier = appHUBApprovalDBUpdateRequest.getSelectedTier();
-          WorkflowDAO = new WorkflowDAO();
-          WorkflowDAO.updateApplicationTier(String.valueOf(appID), selectedTier);
+          WorkflowDAO workflowDAO = new WorkflowDAO();
+          workflowDAO.updateApplicationTier(String.valueOf(appID), selectedTier);
 	}
 
 
