@@ -19,12 +19,13 @@ package com.wso2telco.workflow.application;
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.exception.GenaralError;
 import com.wso2telco.dep.operatorservice.model.Operator;
+import com.wso2telco.dep.reportingservice.dao.WorkflowDAO;
 import com.wso2telco.workflow.dao.WorkflowDbService;
 import com.wso2telco.workflow.model.Application;
 import com.wso2telco.workflow.utils.ApprovelStatus;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 
 import java.util.Iterator;
 import java.util.List;
@@ -33,7 +34,6 @@ public class ApplicationApprovalImpl implements ApplicationApproval{
 
 	private static Log log = LogFactory.getLog(ApplicationApprovalImpl.class);
     private WorkflowDbService dbservice = null;
-
 
 	public void updateDBAppHubApproval (
             Application appHUBApprovalDBUpdateRequest) throws Exception {
@@ -53,6 +53,10 @@ public class ApplicationApprovalImpl implements ApplicationApproval{
 
           dbservice.applicationEntry(new Integer(appID).intValue(), opIDs);
 
+          //Update tier of the application
+          String selectedTier = appHUBApprovalDBUpdateRequest.getSelectedTier();
+          WorkflowDAO workflowDAO = new WorkflowDAO();
+          workflowDAO.updateApplicationTier(String.valueOf(appID), selectedTier);
 	}
 
 
