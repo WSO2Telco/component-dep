@@ -64,6 +64,8 @@ public class RateService {
 
 				List<RateDTO.API.APIOperation.RateDefinition> rateDefinitionList = new ArrayList<RateDTO.API.APIOperation.RateDefinition>();
 
+				int flag = 0;
+
 				for (int j = 0; j < operationRates.size(); j++) {
 
 					OperationRateDTO innerOperationRate = operationRates.get(j);
@@ -71,6 +73,7 @@ public class RateService {
 					if (operationId == innerOperationRate.getApiOperation().getApiOperationId()
 							&& !operationRateIds.contains(innerOperationRate.getOperationRateId())) {
 
+						flag = 1;
 						operationRateIds.add(innerOperationRate.getOperationRateId());
 
 						RateDTO.API.APIOperation.RateDefinition rateDefinition = new RateDTO.API.APIOperation.RateDefinition();
@@ -95,14 +98,17 @@ public class RateService {
 					}
 				}
 
-				RateDTO.API.APIOperation.RateDefinition[] rateDef = new RateDTO.API.APIOperation.RateDefinition[rateDefinitionList
-						.size()];
+				if (flag == 1) {
 
-				rateDef = rateDefinitionList.toArray(rateDef);
+					RateDTO.API.APIOperation.RateDefinition[] rateDef = new RateDTO.API.APIOperation.RateDefinition[rateDefinitionList
+							.size()];
 
-				operation.setRates(rateDef);
+					rateDef = rateDefinitionList.toArray(rateDef);
 
-				operationList.add(operation);
+					operation.setRates(rateDef);
+
+					operationList.add(operation);
+				}
 			}
 
 			RateDTO.API.APIOperation operationindicator = operationList.get(operationList.size() - 1);
@@ -165,6 +171,8 @@ public class RateService {
 
 				List<RateDTO.API.APIOperation.RateDefinition> rateDefinitionList = new ArrayList<RateDTO.API.APIOperation.RateDefinition>();
 
+				int flag = 0;
+
 				for (int j = 0; j < operationRates.size(); j++) {
 
 					OperationRateDTO innerOperationRate = operationRates.get(j);
@@ -172,6 +180,7 @@ public class RateService {
 					if (operationId == innerOperationRate.getApiOperation().getApiOperationId()
 							&& !operationRateIds.contains(innerOperationRate.getOperationRateId())) {
 
+						flag = 1;
 						operationRateIds.add(innerOperationRate.getOperationRateId());
 
 						RateDTO.API.APIOperation.RateDefinition rateDefinition = new RateDTO.API.APIOperation.RateDefinition();
@@ -196,14 +205,17 @@ public class RateService {
 					}
 				}
 
-				RateDTO.API.APIOperation.RateDefinition[] rateDef = new RateDTO.API.APIOperation.RateDefinition[rateDefinitionList
-						.size()];
+				if (flag == 1) {
 
-				rateDef = rateDefinitionList.toArray(rateDef);
+					RateDTO.API.APIOperation.RateDefinition[] rateDef = new RateDTO.API.APIOperation.RateDefinition[rateDefinitionList
+							.size()];
 
-				operation.setRates(rateDef);
+					rateDef = rateDefinitionList.toArray(rateDef);
 
-				operationList.add(operation);
+					operation.setRates(rateDef);
+
+					operationList.add(operation);
+				}
 			}
 
 			RateDTO.API.APIOperation operationindicator = operationList.get(operationList.size() - 1);
