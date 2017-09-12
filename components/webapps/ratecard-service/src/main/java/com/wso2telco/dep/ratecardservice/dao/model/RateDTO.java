@@ -46,9 +46,6 @@ public class RateDTO {
 		private String apiDescription;
 		private APIOperation[] operations;
 		private String createdBy;
-		private String createdDate;
-		private String updatedBy;
-		private String updatedDate;
 
 		public Integer getApiId() {
 			return apiId;
@@ -90,30 +87,6 @@ public class RateDTO {
 			this.createdBy = createdBy;
 		}
 
-		public String getCreatedDate() {
-			return createdDate;
-		}
-
-		public void setCreatedDate(String createdDate) {
-			this.createdDate = createdDate;
-		}
-
-		public String getUpdatedBy() {
-			return updatedBy;
-		}
-
-		public void setUpdatedBy(String updatedBy) {
-			this.updatedBy = updatedBy;
-		}
-
-		public String getUpdatedDate() {
-			return updatedDate;
-		}
-
-		public void setUpdatedDate(String updatedDate) {
-			this.updatedDate = updatedDate;
-		}
-
 		public static class APIOperation {
 
 			private Integer apiOperationId;
@@ -121,9 +94,6 @@ public class RateDTO {
 			private String apiOperationCode;
 			private RateDefinition[] rates;
 			private String createdBy;
-			private String createdDate;
-			private String updatedBy;
-			private String updatedDate;
 
 			public Integer getApiOperationId() {
 				return apiOperationId;
@@ -165,30 +135,6 @@ public class RateDTO {
 				this.createdBy = createdBy;
 			}
 
-			public String getCreatedDate() {
-				return createdDate;
-			}
-
-			public void setCreatedDate(String createdDate) {
-				this.createdDate = createdDate;
-			}
-
-			public String getUpdatedBy() {
-				return updatedBy;
-			}
-
-			public void setUpdatedBy(String updatedBy) {
-				this.updatedBy = updatedBy;
-			}
-
-			public String getUpdatedDate() {
-				return updatedDate;
-			}
-
-			public void setUpdatedDate(String updatedDate) {
-				this.updatedDate = updatedDate;
-			}
-
 			public static class RateDefinition {
 
 				private Integer operationRateId;
@@ -201,9 +147,6 @@ public class RateDTO {
 				private Integer rateDefCategoryBase;
 				private TariffDTO tariff;
 				private String createdBy;
-				private String createdDate;
-				private String updatedBy;
-				private String updatedDate;
 
 				public Integer getOperationRateId() {
 					return operationRateId;
@@ -283,30 +226,6 @@ public class RateDTO {
 
 				public void setCreatedBy(String createdBy) {
 					this.createdBy = createdBy;
-				}
-
-				public String getCreatedDate() {
-					return createdDate;
-				}
-
-				public void setCreatedDate(String createdDate) {
-					this.createdDate = createdDate;
-				}
-
-				public String getUpdatedBy() {
-					return updatedBy;
-				}
-
-				public void setUpdatedBy(String updatedBy) {
-					this.updatedBy = updatedBy;
-				}
-
-				public String getUpdatedDate() {
-					return updatedDate;
-				}
-
-				public void setUpdatedDate(String updatedDate) {
-					this.updatedDate = updatedDate;
 				}
 			}
 		}
