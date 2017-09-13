@@ -94,9 +94,9 @@ public class OperatorResource {
 	}
 
 	@GET
-	@Path("/{operatorName}/operatorrates")
-	public Response getOperationRates(@PathParam("operatorName") String operatorName, @QueryParam("api") String apiName,
-			@QueryParam("schema") String schema) {
+	@Path("/{operatorName}/apis/{apiName}/operatorrates")
+	public Response getOperationRates(@PathParam("operatorName") String operatorName,
+			@PathParam("apiName") String apiName, @QueryParam("schema") String schema) {
 
 		RateDTO rate = null;
 		Status responseCode = null;
