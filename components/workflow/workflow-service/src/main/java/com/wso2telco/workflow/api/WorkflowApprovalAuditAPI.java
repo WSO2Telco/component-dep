@@ -16,11 +16,8 @@
 
 package com.wso2telco.workflow.api;
 
-import com.wso2telco.workflow.application.ApplicationApproval;
-import com.wso2telco.workflow.application.ApplicationApprovalImpl;
 import com.wso2telco.workflow.dao.WorkflowStatsDbService;
 import com.wso2telco.workflow.model.ApplicationApprovalAuditRecord;
-import com.wso2telco.workflow.model.Subscription;
 import com.wso2telco.workflow.model.SubscriptionApprovalAuditRecord;
 
 import javax.ws.rs.Consumes;
