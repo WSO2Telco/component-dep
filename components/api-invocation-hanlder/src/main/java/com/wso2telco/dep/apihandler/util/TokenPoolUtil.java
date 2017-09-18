@@ -15,7 +15,7 @@
  ******************************************************************************/
 package com.wso2telco.dep.apihandler.util;
 import com.google.gson.Gson;
-import com.wso2telco.dep.apihandler.dto.AddNewSpDTO;
+import com.wso2telco.dep.apihandler.dto.NewSpDTO;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.http.HttpResponse;
@@ -37,7 +37,7 @@ public class TokenPoolUtil {
 
     }
 
-    public static void callTokenPoolToAddSpToken(AddNewSpDTO spDto) {
+    public static void callTokenPoolToAddSpToken(NewSpDTO spDto) {
         try {
             Gson gson = new Gson();
             String jsonInString = gson.toJson(spDto);
@@ -54,10 +54,8 @@ public class TokenPoolUtil {
                 log.error("Error Response" + response.getStatusLine().getStatusCode());
             }
             httpClient.getConnectionManager().shutdown();
-
         } catch (ClientProtocolException e) {
             log.error("Error occurred while calling Token Pool" + e.getMessage());
-
         } catch (IOException e) {
             log.error(e.getStackTrace());
         }

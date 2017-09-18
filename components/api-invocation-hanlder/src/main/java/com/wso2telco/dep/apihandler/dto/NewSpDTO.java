@@ -16,7 +16,7 @@
 package com.wso2telco.dep.apihandler.dto;
 import java.util.List;
 
-public class AddNewSpDTO {
+public class NewSpDTO {
 
     private String ownerId;
     private static final String TOKEN_URL = "https://localhost:8243/token";

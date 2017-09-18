@@ -48,7 +48,6 @@ public class ReadPropertyFile {
                 String value = prop.getProperty(key);
                 propertyMap.put(key, value);
             }
-
         } catch (IOException ex) {
             log.error(ex.getStackTrace());
         } finally {
@@ -60,8 +59,6 @@ public class ReadPropertyFile {
                 }
             }
         }
-
         return propertyMap;
-
     }
 }
