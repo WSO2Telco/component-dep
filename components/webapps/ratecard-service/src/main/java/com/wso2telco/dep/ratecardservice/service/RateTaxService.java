@@ -107,4 +107,39 @@ public class RateTaxService {
 
 		return status;
 	}
+	
+	public List<RateTaxDTO> getRateTaxesByRateDefinition(int rateDefId, String schema) throws BusinessException {
+
+		RateDefinitionService rateDefinitionService = new RateDefinitionService();
+		TaxService taxService = new TaxService();
+
+		List<RateTaxDTO> rateTaxes = null;
+
+		rateTaxes = rateTaxDAO.getRateTaxes(rateDefId);
+
+		if (rateTaxes != null) {
+
+			if ((schema != null && schema.trim().length() > 0) && schema.equalsIgnoreCase("full")) {
+
+				for (int i = 0; i < rateTaxes.size(); i++) {
+
+					RateTaxDTO rateTax = rateTaxes.get(i);
+
+					RateDefinitionDTO rateDefinition = rateDefinitionService
+							.getRateDefinition(rateTax.getRateDefinition().getRateDefId(), schema);
+					rateTax.setRateDefinition(rateDefinition);
+
+					TaxDTO tax = taxService.getTax(rateTax.getTax().getTaxId());
+					rateTax.setTax(tax);
+
+					rateTaxes.set(i, rateTax);
+				}
+			}
+
+			return rateTaxes;
+		} else {
+
+			return Collections.emptyList();
+		}
+	}
 }

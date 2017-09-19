@@ -15,6 +15,9 @@
  ******************************************************************************/
 package com.wso2telco.dep.ratecardservice.service;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.wso2telco.core.dbutils.exception.BusinessException;
@@ -79,5 +82,47 @@ public class RateCardService {
 		newRateCard.setRateTaxes(rateTaxArray);
 
 		return newRateCard;
+	}
+
+	public List<RateCardDTO> getRateCards(String schema) throws BusinessException {
+
+		RateDefinitionService rateDefinitionService = new RateDefinitionService();
+		RateCategoryService rateCategoryService = new RateCategoryService();
+		RateTaxService rateTaxService = new RateTaxService();
+
+		List<RateCardDTO> rateCards = null;
+
+		List<RateDefinitionDTO> rateDefinitions = rateDefinitionService.getRateDefinitions(schema);
+
+		if (rateDefinitions != null) {
+
+			rateCards = new ArrayList<RateCardDTO>();
+
+			for (int i = 0; i < rateDefinitions.size(); i++) {
+
+				RateCardDTO rateCard = new RateCardDTO();
+
+				RateDefinitionDTO rateDefinition = rateDefinitions.get(i);
+
+				List<RateCategoryDTO> rateCategories = rateCategoryService
+						.getRateCategories(rateDefinition.getRateDefId(), schema);
+				RateCategoryDTO[] rateCategoryArray = new RateCategoryDTO[rateCategories.size()];
+
+				List<RateTaxDTO> rateTaxes = rateTaxService.getRateTaxesByRateDefinition(rateDefinition.getRateDefId(),
+						schema);
+				RateTaxDTO[] rateTaxArray = new RateTaxDTO[rateTaxes.size()];
+
+				rateCard.setRateDefinition(rateDefinition);
+				rateCard.setRateCategories(rateCategories.toArray(rateCategoryArray));
+				rateCard.setRateTaxes(rateTaxes.toArray(rateTaxArray));
+
+				rateCards.add(rateCard);
+			}
+
+			return rateCards;
+		} else {
+
+			return Collections.emptyList();
+		}
 	}
 }

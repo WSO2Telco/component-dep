@@ -15,10 +15,13 @@
  ******************************************************************************/
 package com.wso2telco.dep.ratecardservice.resource;
 
+import java.util.List;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -82,6 +85,55 @@ public class RateCardResource {
 
 		log.debug("RateCardResource addRateCard -> response code : " + responseCode);
 		log.debug("RateCardResource addRateCard -> response body : " + responseString);
+
+		return Response.status(responseCode).entity(responseString).build();
+	}
+
+	@GET
+	public Response getRateCard(@QueryParam("schema") String schema) {
+
+		List<RateCardDTO> rateCards = null;
+		Status responseCode = null;
+		Object responseString = null;
+
+		try {
+
+			rateCards = rateCardService.getRateCards(schema);
+
+			if (!rateCards.isEmpty()) {
+
+				responseString = rateCards;
+				responseCode = Response.Status.OK;
+			} else {
+
+				log.error(
+						"Error in RateDefinitionResource getRateDefinitions : rate definitions are not found in database ");
+				throw new BusinessException(ServiceError.NO_RESOURCES);
+			}
+		} catch (BusinessException e) {
+
+			ErrorDTO error = new ErrorDTO();
+			ErrorDTO.RequestError requestError = new ErrorDTO.RequestError();
+			ErrorDTO.RequestError.ServiceException serviceException = new ErrorDTO.RequestError.ServiceException();
+
+			serviceException.setMessageId(e.getErrorType().getCode());
+			serviceException.setText(e.getErrorType().getMessage());
+			requestError.setServiceException(serviceException);
+			error.setRequestError(requestError);
+
+			if (e.getErrorType().getCode() == ServiceError.NO_RESOURCES.getCode()) {
+
+				responseCode = Response.Status.NOT_FOUND;
+			} else {
+
+				responseCode = Response.Status.BAD_REQUEST;
+			}
+
+			responseString = error;
+		}
+
+		log.debug("RateDefinitionResource getRateDefinitions -> response code : " + responseCode);
+		log.debug("RateDefinitionResource getRateDefinitions -> response body : " + responseString);
 
 		return Response.status(responseCode).entity(responseString).build();
 	}
