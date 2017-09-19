@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+ * <p>
+ * WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.wso2telco.dep.ratecardservice.dao;
 
 import java.sql.Connection;
@@ -20,7 +35,7 @@ public class TaxDAO {
 
 	private final Log log = LogFactory.getLog(TaxDAO.class);
 
-	public List<TaxDTO> getTaxes() throws Exception {
+	public List<TaxDTO> getTaxes() throws BusinessException {
 
 		List<TaxDTO> taxes = new ArrayList<TaxDTO>();
 
@@ -33,10 +48,11 @@ public class TaxDAO {
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 			if (con == null) {
 
-				throw new Exception("Connection not found");
+				log.error("unable to open " + DataSourceNames.WSO2TELCO_RATE_DB + " database connection");
+				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder("select taxid, taxcode, taxname, createdby from ");
 			query.append(DatabaseTables.TAX.getTObject());
 
 			ps = con.prepareStatement(query.toString());
@@ -53,9 +69,6 @@ public class TaxDAO {
 				tax.setTaxCode(rs.getString("taxcode"));
 				tax.setTaxName(rs.getString("taxname"));
 				tax.setCreatedBy(rs.getString("createdby"));
-				tax.setCreatedDate(rs.getTimestamp("createddate").toString());
-				tax.setUpdatedBy(rs.getString("updatedby"));
-				tax.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 
 				taxes.add(tax);
 			}
@@ -75,7 +88,7 @@ public class TaxDAO {
 		return taxes;
 	}
 
-	public TaxDTO addTax(TaxDTO tax) throws Exception {
+	public TaxDTO addTax(TaxDTO tax) throws BusinessException {
 
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -87,7 +100,8 @@ public class TaxDAO {
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 			if (con == null) {
 
-				throw new Exception("Connection not found");
+				log.error("unable to open " + DataSourceNames.WSO2TELCO_RATE_DB + " database connection");
+				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 			}
 
 			StringBuilder query = new StringBuilder("insert into ");
@@ -130,7 +144,7 @@ public class TaxDAO {
 		return tax;
 	}
 
-	public TaxDTO getTax(int taxId) throws Exception {
+	public TaxDTO getTax(int taxId) throws BusinessException {
 
 		TaxDTO tax = null;
 
@@ -143,10 +157,11 @@ public class TaxDAO {
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 			if (con == null) {
 
-				throw new Exception("Connection not found");
+				log.error("unable to open " + DataSourceNames.WSO2TELCO_RATE_DB + " database connection");
+				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder("select taxid, taxcode, taxname, createdby from ");
 			query.append(DatabaseTables.TAX.getTObject());
 			query.append(" where taxid = ?");
 
@@ -166,9 +181,6 @@ public class TaxDAO {
 				tax.setTaxCode(rs.getString("taxcode"));
 				tax.setTaxName(rs.getString("taxname"));
 				tax.setCreatedBy(rs.getString("createdby"));
-				tax.setCreatedDate(rs.getTimestamp("createddate").toString());
-				tax.setUpdatedBy(rs.getString("updatedby"));
-				tax.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 			}
 		} catch (SQLException e) {
 

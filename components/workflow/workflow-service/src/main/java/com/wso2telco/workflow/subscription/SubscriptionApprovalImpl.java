@@ -19,13 +19,15 @@ package com.wso2telco.workflow.subscription;
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.exception.GenaralError;
 import com.wso2telco.dep.operatorservice.model.OperatorEndPointDTO;
+import org.wso2.carbon.apimgt.impl.dao.ApiMgtDAO;
+import org.wso2.carbon.apimgt.impl.dto.WorkflowDTO;
+import com.wso2telco.dep.reportingservice.dao.WorkflowDAO;
 import com.wso2telco.workflow.dao.WorkflowDbService;
 import com.wso2telco.workflow.model.Subscription;
 import com.wso2telco.workflow.model.SubscriptionValidation;
 import com.wso2telco.workflow.utils.ApprovelStatus;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-
 
 import java.util.Arrays;
 import java.util.Iterator;
@@ -71,6 +73,18 @@ public class SubscriptionApprovalImpl implements SubscriptionApproval {
             log.info("idList : " + idList);
             if (isAdd) {
                 dbservice.insertOperatorAppEndpoints(appID, idList);
+             
+                //Update tier of the subscription
+                String workflowRefId = subHUBApprovalDBUpdateRequest.getWorkflowRefId();
+                String selectedTier = subHUBApprovalDBUpdateRequest.getSelectedTier();
+
+                ApiMgtDAO apiMgtDAO = ApiMgtDAO.getInstance();
+                WorkflowDTO workflowDTO = apiMgtDAO.retrieveWorkflow(workflowRefId);
+                String subscriptionId = workflowDTO.getWorkflowReference();
+
+                WorkflowDAO workflowDAO = new WorkflowDAO();
+                workflowDAO.updateSubscriptionTier(subscriptionId, selectedTier);
+
             }
         } catch (Exception e) {
             log.error("ERROR: Error occurred while updating  hub dep db for subscription HUB approval. " + e);

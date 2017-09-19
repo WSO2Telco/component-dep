@@ -108,6 +108,7 @@ public class HubAdminDbUpdater implements JavaDelegate {
             subscription.setOperatorName(operatorName);
             subscription.setWorkflowRefId(workflowRefId);
             subscription.setSelectedRate(selectedRate);
+            subscription.setSelectedTier(selectedTier);
             subscription.setApiProvider(apiProvider);
             subscription.setApiVersion(apiVersion);
         api.subscriptionApprovalHub(subscription);

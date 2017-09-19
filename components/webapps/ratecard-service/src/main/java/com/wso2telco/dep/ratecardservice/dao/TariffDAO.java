@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+ * <p>
+ * WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.wso2telco.dep.ratecardservice.dao;
 
 import java.sql.Connection;
@@ -21,7 +36,7 @@ public class TariffDAO {
 
 	private final Log log = LogFactory.getLog(TariffDAO.class);
 
-	public List<TariffDTO> getTariffs() throws Exception {
+	public List<TariffDTO> getTariffs() throws BusinessException {
 
 		List<TariffDTO> tariffs = new ArrayList<TariffDTO>();
 
@@ -34,10 +49,12 @@ public class TariffDAO {
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 			if (con == null) {
 
-				throw new Exception("Connection not found");
+				log.error("unable to open " + DataSourceNames.WSO2TELCO_RATE_DB + " database connection");
+				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder(
+					"select tariffid, tariffname, tariffdesc, tariffdefaultval, tariffmaxcount, tariffexcessrate, tariffdefrate, tariffspcommission, tariffadscommission, tariffopcocommission, tariffsurchargeval, tariffsurchargeAds, tariffsurchargeOpco, createdby from ");
 			query.append(DatabaseTables.TARIFF.getTObject());
 
 			ps = con.prepareStatement(query.toString());
@@ -64,9 +81,6 @@ public class TariffDAO {
 				tariff.setTariffSurChargeAds(rs.getDouble("tariffsurchargeAds"));
 				tariff.setTariffSurChargeOpco(rs.getDouble("tariffsurchargeOpco"));
 				tariff.setCreatedBy(rs.getString("createdby"));
-				tariff.setCreatedDate(rs.getTimestamp("createddate").toString());
-				tariff.setUpdatedBy(rs.getString("updatedby"));
-				tariff.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 
 				tariffs.add(tariff);
 			}
@@ -86,7 +100,7 @@ public class TariffDAO {
 		return tariffs;
 	}
 
-	public TariffDTO addTariff(TariffDTO tariff) throws Exception {
+	public TariffDTO addTariff(TariffDTO tariff) throws BusinessException {
 
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -98,7 +112,8 @@ public class TariffDAO {
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 			if (con == null) {
 
-				throw new Exception("Connection not found");
+				log.error("unable to open " + DataSourceNames.WSO2TELCO_RATE_DB + " database connection");
+				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 			}
 
 			StringBuilder query = new StringBuilder("insert into ");
@@ -114,78 +129,77 @@ public class TariffDAO {
 
 			ps.setString(1, tariff.getTariffName());
 			ps.setString(2, tariff.getTariffDescription());
-			
+
 			Double tariffDefaultVal = tariff.getTariffDefaultVal();
 			if (tariffDefaultVal != null) {
 				ps.setDouble(3, tariffDefaultVal);
 			} else {
 				ps.setNull(3, Types.DOUBLE);
-			}			
-			
+			}
+
 			Integer tariffMaxCount = tariff.getTariffMaxCount();
 			if (tariffMaxCount != null) {
 				ps.setInt(4, tariffMaxCount);
 			} else {
 				ps.setNull(4, Types.INTEGER);
-			}			
-			
+			}
+
 			Double tariffExcessRate = tariff.getTariffExcessRate();
 			if (tariffExcessRate != null) {
 				ps.setDouble(5, tariffExcessRate);
 			} else {
 				ps.setNull(5, Types.DOUBLE);
 			}
-			
+
 			Double tariffDefRate = tariff.getTariffDefRate();
 			if (tariffDefRate != null) {
 				ps.setDouble(6, tariffDefRate);
 			} else {
 				ps.setNull(6, Types.DOUBLE);
 			}
-			
+
 			Double tariffSPCommission = tariff.getTariffSPCommission();
 			if (tariffSPCommission != null) {
 				ps.setDouble(7, tariffSPCommission);
 			} else {
 				ps.setNull(7, Types.DOUBLE);
-			}			
-			
+			}
+
 			Double tariffAdsCommission = tariff.getTariffAdsCommission();
 			if (tariffAdsCommission != null) {
 				ps.setDouble(8, tariffAdsCommission);
 			} else {
 				ps.setNull(8, Types.DOUBLE);
-			}			
-			
+			}
+
 			Double tariffOpcoCommission = tariff.getTariffOpcoCommission();
 			if (tariffOpcoCommission != null) {
 				ps.setDouble(9, tariffOpcoCommission);
 			} else {
 				ps.setNull(9, Types.DOUBLE);
-			}			
-			
+			}
+
 			Double tariffSurChargeval = tariff.getTariffSurChargeval();
 			if (tariffSurChargeval != null) {
 				ps.setDouble(10, tariffSurChargeval);
 			} else {
 				ps.setNull(10, Types.DOUBLE);
-			}			
-			
+			}
+
 			Double tariffSurChargeAds = tariff.getTariffSurChargeAds();
 			if (tariffSurChargeAds != null) {
 				ps.setDouble(11, tariffSurChargeAds);
 			} else {
 				ps.setNull(11, Types.DOUBLE);
 			}
-			
-			
+
 			Double tariffSurChargeOpco = tariff.getTariffSurChargeOpco();
 			if (tariffSurChargeOpco != null) {
 				ps.setDouble(12, tariffSurChargeOpco);
 			} else {
 				ps.setNull(12, Types.DOUBLE);
-			}			
-			
+			}
+
 			ps.setString(13, tariff.getCreatedBy());
 
 			ps.executeUpdate();
@@ -214,7 +228,7 @@ public class TariffDAO {
 		return tariff;
 	}
 
-	public TariffDTO getTariff(int tariffId) throws Exception {
+	public TariffDTO getTariff(int tariffId) throws BusinessException {
 
 		TariffDTO tariff = null;
 
@@ -227,17 +241,19 @@ public class TariffDAO {
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 			if (con == null) {
 
-				throw new Exception("Connection not found");
+				log.error("unable to open " + DataSourceNames.WSO2TELCO_RATE_DB + " database connection");
+				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder(
+					"select tariffid, tariffname, tariffdesc, tariffdefaultval, tariffmaxcount, tariffexcessrate, tariffdefrate, tariffspcommission, tariffadscommission, tariffopcocommission, tariffsurchargeval, tariffsurchargeAds, tariffsurchargeOpco, createdby from ");
 			query.append(DatabaseTables.TARIFF.getTObject());
 			query.append(" where tariffid = ?");
 
 			ps = con.prepareStatement(query.toString());
 
 			log.debug("sql query in getTariff : " + ps);
-			
+
 			ps.setInt(1, tariffId);
 
 			rs = ps.executeQuery();
@@ -260,9 +276,6 @@ public class TariffDAO {
 				tariff.setTariffSurChargeAds(rs.getDouble("tariffsurchargeAds"));
 				tariff.setTariffSurChargeOpco(rs.getDouble("tariffsurchargeOpco"));
 				tariff.setCreatedBy(rs.getString("createdby"));
-				tariff.setCreatedDate(rs.getTimestamp("createddate").toString());
-				tariff.setUpdatedBy(rs.getString("updatedby"));
-				tariff.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 			}
 		} catch (SQLException e) {
 
