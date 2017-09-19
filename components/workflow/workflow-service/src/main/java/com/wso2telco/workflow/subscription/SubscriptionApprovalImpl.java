@@ -18,7 +18,6 @@ package com.wso2telco.workflow.subscription;
 
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.exception.GenaralError;
-import com.wso2telco.dep.operatorservice.model.Operator;
 import com.wso2telco.dep.operatorservice.model.OperatorEndPointDTO;
 import com.wso2telco.workflow.dao.WorkflowDbService;
 import com.wso2telco.workflow.model.Subscription;
@@ -71,7 +70,7 @@ public class SubscriptionApprovalImpl implements SubscriptionApproval {
             }
             log.info("idList : " + idList);
             if (isAdd) {
-                dbservice.insertOperatorAppEndpoints(new Integer(appID).intValue(), idList);
+                dbservice.insertOperatorAppEndpoints(appID, idList);
             }
         } catch (Exception e) {
             log.error("ERROR: Error occurred while updating  hub dep db for subscription HUB approval. " + e);
@@ -93,14 +92,14 @@ public class SubscriptionApprovalImpl implements SubscriptionApproval {
             List<OperatorEndPointDTO> operatorEndpoints = dbservice.getOperatorEndpoints();
             for (Iterator iterator = operatorEndpoints.iterator(); iterator.hasNext(); ) {
                 OperatorEndPointDTO operatorendpoint = (OperatorEndPointDTO) iterator.next();
-                if (operatorendpoint.getOperatorid() == new Integer(opID).intValue() && operatorendpoint.getApi().equalsIgnoreCase(apiName)) {
+                if (operatorendpoint.getOperatorid() == opID && operatorendpoint.getApi().equalsIgnoreCase(apiName)) {
                     operatorEndpointID = operatorendpoint.getId();
                     break;
                 }
             }
             if (operatorEndpointID > 0) {
                 if (statusStr != null && statusStr.length() > 0) {
-                    dbservice.updateOperatorAppEndpointStatus(new Integer(appID).intValue(), operatorEndpointID, ApprovelStatus.valueOf(statusStr).getValue());
+                    dbservice.updateOperatorAppEndpointStatus(appID, operatorEndpointID, ApprovelStatus.valueOf(statusStr).getValue());
                 }
             }
         } catch (NumberFormatException e) {

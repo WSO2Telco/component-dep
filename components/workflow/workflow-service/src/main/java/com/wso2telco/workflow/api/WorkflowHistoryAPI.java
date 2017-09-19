@@ -59,8 +59,8 @@ public class WorkflowHistoryAPI {
         String jsonPayload;
 
 		try {
-			List<String[]> api_requests = SbHostObjectUtils.getApprovalHistory(fromDate, toDate, subscriber, api, applicationId, operator, offset, count);
-			jsonPayload = new Gson().toJson(api_requests);
+			List<String[]> apiRequests = SbHostObjectUtils.getApprovalHistory(fromDate, toDate, subscriber, api, applicationId, operator, offset, count);
+			jsonPayload = new Gson().toJson(apiRequests);
 		} catch (Exception e) {
 			log.error(e);
 			return Response.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).build();

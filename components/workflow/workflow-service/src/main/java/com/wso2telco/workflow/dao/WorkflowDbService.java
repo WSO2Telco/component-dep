@@ -42,9 +42,6 @@ public class WorkflowDbService {
     private static Log log = LogFactory.getLog(WorkflowDbService.class);
 
 
-    com.wso2telco.core.dbutils.DbUtils dbUtils = new com.wso2telco.core.dbutils.DbUtils();
-
-
     /**
      * Application entry.
      *
@@ -60,7 +57,7 @@ public class WorkflowDbService {
         Statement st = null;
 
         try {
-            con = dbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+            con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 
             if (con == null) {
                 throw new Exception("Connection not found");
@@ -82,7 +79,7 @@ public class WorkflowDbService {
         } catch (Exception e) {
             throw new BusinessException(GenaralError.UNDEFINED);
         } finally {
-            dbUtils.closeAllConnections(st, con, null);
+            DbUtils.closeAllConnections(st, con, null);
         }
 
     }
@@ -102,7 +99,7 @@ public class WorkflowDbService {
         Statement st = null;
 
         try {
-            con = dbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+            con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
             log.debug("opEndpointIDList.length : " + opEndpointIDList.length);
             con.setAutoCommit(false);
             st = con.createStatement();
@@ -122,7 +119,7 @@ public class WorkflowDbService {
         } catch (Exception e) {
             throw new BusinessException(GenaralError.UNDEFINED);
         } finally {
-            dbUtils.closeAllConnections(st, con, null);
+            DbUtils.closeAllConnections(st, con, null);
         }
     }
 
@@ -141,7 +138,7 @@ public class WorkflowDbService {
         Statement st = null;
 
         try {
-            con = dbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+            con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
             StringBuilder query = new StringBuilder();
             query.append("UPDATE endpointapps SET isactive=" + status);
             query.append(" WHERE endpointid=" + opEndpointID);
@@ -155,7 +152,7 @@ public class WorkflowDbService {
         } catch (Exception e) {
             throw new BusinessException(GenaralError.UNDEFINED);
         } finally {
-            dbUtils.closeAllConnections(st, con, null);
+            DbUtils.closeAllConnections(st, con, null);
         }
     }
 
@@ -176,7 +173,7 @@ public class WorkflowDbService {
         Statement st = null;
 
         try {
-            con = dbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+            con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
             if (con == null) {
                 throw new Exception("Connection not found.");
             }
@@ -195,7 +192,7 @@ public class WorkflowDbService {
         } catch (Exception e) {
             throw new BusinessException(GenaralError.UNDEFINED);
         } finally {
-            dbUtils.closeAllConnections(st, con, null);
+            DbUtils.closeAllConnections(st, con, null);
         }
 
         return true;
@@ -213,11 +210,10 @@ public class WorkflowDbService {
      */
     public boolean insertValidatorForSubscription(int appID, int apiID, int validatorID) throws SQLException, BusinessException {
         Connection con = null;
-        Statement st = null;
         PreparedStatement ps = null;
         try {
             if (!subscriptionIsExist(appID, apiID)) {
-                con = dbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+                con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
                 StringBuilder query = new StringBuilder();
                 query.append("INSERT INTO subscription_validator (application_id, api_id, validator_id) VALUES ");
                 query.append("(?,?,?)");
@@ -232,7 +228,7 @@ public class WorkflowDbService {
         } catch (Exception e) {
             throw new BusinessException(GenaralError.UNDEFINED);
         } finally {
-            dbUtils.closeAllConnections(st, con, null);
+            DbUtils.closeAllConnections(ps, con, null);
         }
         return true;
     }
@@ -248,7 +244,7 @@ public class WorkflowDbService {
         String operators = "";
 
         try {
-            conn = dbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+            conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
             StringBuilder query = new StringBuilder();
             query.append("SELECT OPERATOR_LIST FROM sub_approval_operators ");
             query.append("WHERE API_NAME=? AND API_VERSION=? AND API_PROVIDER=? AND APP_ID=? ");
@@ -268,7 +264,7 @@ public class WorkflowDbService {
         } catch (Exception e) {
             throw new BusinessException(GenaralError.UNDEFINED);
         } finally {
-            dbUtils.closeAllConnections(ps, conn, rs);
+            DbUtils.closeAllConnections(ps, conn, rs);
 
         }
 
@@ -289,7 +285,7 @@ public class WorkflowDbService {
         Map<String, String> apiKeyMapping = new HashMap<String, String>();
 
         try {
-            conn = dbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+            conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
             StringBuilder query = new StringBuilder();
             query.append("SELECT API_NAME, API_KEY FROM workflow_api_key_mappings");
             log.debug("SQL : " + query);
@@ -309,7 +305,7 @@ public class WorkflowDbService {
         } catch (Exception e) {
             throw new BusinessException(GenaralError.UNDEFINED);
         } finally {
-            dbUtils.closeAllConnections(ps, conn, rs);
+            DbUtils.closeAllConnections(ps, conn, rs);
         }
 
         log.debug("[END] getWorkflowAPIKeyMappings()");
@@ -330,7 +326,7 @@ public class WorkflowDbService {
         Connection con = null;
 
         try {
-            con = dbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+            con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
             if (con == null) {
                 throw new Exception("Connection not found");
             }
@@ -354,7 +350,7 @@ public class WorkflowDbService {
         } catch (Exception e) {
             throw new BusinessException(GenaralError.UNDEFINED);
         } finally {
-            dbUtils.closeAllConnections(st, con, rs);
+            DbUtils.closeAllConnections(st, con, rs);
         }
         return operators;
     }
@@ -374,7 +370,7 @@ public class WorkflowDbService {
         ResultSet rs = null;
 
         try {
-            con = dbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+            con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
             if (con == null) {
                 throw new Exception("Connection not found.");
             }
@@ -396,7 +392,7 @@ public class WorkflowDbService {
         } catch (Exception e) {
             throw new BusinessException(GenaralError.UNDEFINED);
         } finally {
-            dbUtils.closeAllConnections(st, con, rs);
+            DbUtils.closeAllConnections(st, con, rs);
         }
 
         return operatorEndpoints;
@@ -416,7 +412,7 @@ public class WorkflowDbService {
         ResultSet rs = null;
         int operatorId = 0;
         try {
-            con = dbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+            con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 
             if (con == null) {
                 throw new Exception("Connection not found");
@@ -450,7 +446,7 @@ public class WorkflowDbService {
         Boolean isExist =false;
 
         try {
-            conn = dbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+            conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
             StringBuilder query = new StringBuilder();
             query.append("SELECT id FROM endpointapps ");
             query.append("WHERE endpointid=? and applicationid=?");
@@ -470,7 +466,7 @@ public class WorkflowDbService {
             log.error(e);
             throw new BusinessException(GenaralError.UNDEFINED);
         } finally {
-            dbUtils.closeAllConnections(ps, conn, rs);
+            DbUtils.closeAllConnections(ps, conn, rs);
 
         }
 
@@ -488,7 +484,7 @@ public class WorkflowDbService {
         Boolean isExist =false;
 
         try {
-            conn = dbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+            conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
             StringBuilder query = new StringBuilder();
             query.append("SELECT application_id FROM subscription_validator ");
             query.append("WHERE application_id=? and api_id=?");
@@ -508,7 +504,7 @@ public class WorkflowDbService {
             log.error(e);
             throw new BusinessException(GenaralError.UNDEFINED);
         } finally {
-            dbUtils.closeAllConnections(ps, conn, rs);
+            DbUtils.closeAllConnections(ps, conn, rs);
 
         }
 
@@ -524,7 +520,7 @@ public class WorkflowDbService {
         Boolean isExist =false;
 
         try {
-            conn = dbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+            conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
             StringBuilder query = new StringBuilder();
             query.append("SELECT applicationid FROM operatorapps ");
             query.append("WHERE applicationid=? and operatorid=?");
@@ -544,7 +540,7 @@ public class WorkflowDbService {
             log.error(e);
             throw new BusinessException(GenaralError.UNDEFINED);
         } finally {
-            dbUtils.closeAllConnections(ps, conn, rs);
+            DbUtils.closeAllConnections(ps, conn, rs);
 
         }
 
@@ -560,7 +556,7 @@ public class WorkflowDbService {
         ResultSet rs = null;
 
         try {
-            con = dbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+            con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
             if (con == null) {
                 throw new Exception("Connection not found.");
             }
@@ -580,7 +576,7 @@ public class WorkflowDbService {
         } catch (Exception e) {
             throw new BusinessException(GenaralError.UNDEFINED);
         } finally {
-            dbUtils.closeAllConnections(ps, con, rs);
+            DbUtils.closeAllConnections(ps, con, rs);
         }
 
         return operators;

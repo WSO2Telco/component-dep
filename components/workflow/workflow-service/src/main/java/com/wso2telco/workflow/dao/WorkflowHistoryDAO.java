@@ -31,15 +31,12 @@ public class WorkflowHistoryDAO {
         try {
             conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 
-
             if (conn == null) {
                 throw new WorkflowServiceException("Unable to get DB Connection!");
             }
 
-
             String depDB = DbUtils.getDbNames().get(DataSourceNames.WSO2TELCO_DEP_DB);
             String apimgtDB = DbUtils.getDbNames().get(DataSourceNames.WSO2AM_DB);
-
 
             String sql = "SELECT app.NAME AS 'app_name'," +
                     "       o.operatorname AS 'operator_name'," +
@@ -86,14 +83,12 @@ public class WorkflowHistoryDAO {
         try {
             conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 
-
             if (conn == null) {
                 throw new WorkflowServiceException("Unable to get DB Connection!");
             }
 
             String depDB = DbUtils.getDbNames().get(DataSourceNames.WSO2TELCO_DEP_DB);
             String apimgtDB = DbUtils.getDbNames().get(DataSourceNames.WSO2AM_DB);
-
 
             String sql = "SELECT api.api_name, " +
                     "       api.api_version, " +

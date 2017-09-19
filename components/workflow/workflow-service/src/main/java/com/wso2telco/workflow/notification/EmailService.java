@@ -36,6 +36,7 @@ public class EmailService {
     public void sendEmail(final String emailAddress,final String subject,final String content) {
 
         new Thread() {
+            @Override
             public void run() {
                 Properties workflowProperties = WorkflowProperties.loadWorkflowProperties();
                 String emailHost = workflowProperties.getProperty(Constants.KEY_WORKFLOW_EMAIL_NOTIFICATION_HOST);
@@ -52,11 +53,11 @@ public class EmailService {
 
                 try {
                     Session session = Session.getDefaultInstance(props, null);
-                    InternetAddress to_address = new InternetAddress(emailAddress);
+                    InternetAddress toAddress = new InternetAddress(emailAddress);
 
                     MimeMessage message = new MimeMessage(session);
                     message.setFrom(new InternetAddress(fromEmailAddress));
-                    message.addRecipient(Message.RecipientType.TO, to_address);
+                    message.addRecipient(Message.RecipientType.TO, toAddress);
                     message.setSubject(subject);
                     message.setContent(content, "text/html; charset=UTF-8");
 
