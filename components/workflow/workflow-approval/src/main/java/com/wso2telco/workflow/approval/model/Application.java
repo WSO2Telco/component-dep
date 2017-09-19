@@ -22,6 +22,7 @@ public class Application {
     private int operatorID;
     private String operatorName;
     private String status;
+    private String selectedTier;
 
     public String getOperatorName() {
         return operatorName;
@@ -37,6 +38,14 @@ public class Application {
 
     public void setStatus(String status) {
         this.status = status;
+    }
+
+    public String getSelectedTier() {
+        return selectedTier;
+    }
+
+    public void setSelectedTier(String selectedTier) {
+        this.selectedTier = selectedTier;
     }
 
     public int getApplicationID() {

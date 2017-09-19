@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+ * <p>
+ * WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.wso2telco.dep.ratecardservice.dao;
 
 import java.sql.Connection;
@@ -24,7 +39,7 @@ public class RateCategoryDAO {
 
 	private final Log log = LogFactory.getLog(RateCategoryDAO.class);
 
-	public RateCategoryDTO addRateCategory(RateCategoryDTO rateCategory) throws Exception {
+	public RateCategoryDTO addRateCategory(RateCategoryDTO rateCategory) throws BusinessException {
 
 		Connection con = null;
 		PreparedStatement ps = null;
@@ -36,7 +51,8 @@ public class RateCategoryDAO {
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 			if (con == null) {
 
-				throw new Exception("Connection not found");
+				log.error("unable to open " + DataSourceNames.WSO2TELCO_RATE_DB + " database connection");
+				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 			}
 
 			StringBuilder query = new StringBuilder("insert into ");
@@ -88,7 +104,7 @@ public class RateCategoryDAO {
 		return rateCategory;
 	}
 
-	public List<RateCategoryDTO> getRateCategories(int rateDefId) throws Exception {
+	public List<RateCategoryDTO> getRateCategories(int rateDefId) throws BusinessException {
 
 		List<RateCategoryDTO> rateCategories = new ArrayList<RateCategoryDTO>();
 
@@ -101,10 +117,12 @@ public class RateCategoryDAO {
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 			if (con == null) {
 
-				throw new Exception("Connection not found");
+				log.error("unable to open " + DataSourceNames.WSO2TELCO_RATE_DB + " database connection");
+				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder(
+					"select rate_category_id, rate_defid, parentcategoryid, childcategoryid, tariffid, createdby from ");
 			query.append(DatabaseTables.RATE_CATEGORY.getTObject());
 			query.append(" where rate_defid = ?");
 
@@ -139,9 +157,6 @@ public class RateCategoryDAO {
 				rateCategory.setTariff(tariff);
 
 				rateCategory.setCreatedBy(rs.getString("createdby"));
-				rateCategory.setCreatedDate(rs.getTimestamp("createddate").toString());
-				rateCategory.setUpdatedBy(rs.getString("updatedby"));
-				rateCategory.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 
 				rateCategories.add(rateCategory);
 			}
@@ -161,7 +176,7 @@ public class RateCategoryDAO {
 		return rateCategories;
 	}
 
-	public RateCategoryDTO getRateCategory(int rateCategoryId) throws Exception {
+	public RateCategoryDTO getRateCategory(int rateCategoryId) throws BusinessException {
 
 		RateCategoryDTO rateCategory = null;
 
@@ -174,10 +189,12 @@ public class RateCategoryDAO {
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 			if (con == null) {
 
-				throw new Exception("Connection not found");
+				log.error("unable to open " + DataSourceNames.WSO2TELCO_RATE_DB + " database connection");
+				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 			}
 
-			StringBuilder query = new StringBuilder("select * from ");
+			StringBuilder query = new StringBuilder(
+					"select rate_category_id, rate_defid, parentcategoryid, childcategoryid, tariffid, createdby from ");
 			query.append(DatabaseTables.RATE_CATEGORY.getTObject());
 			query.append(" where rate_category_id = ?");
 
@@ -212,9 +229,6 @@ public class RateCategoryDAO {
 				rateCategory.setTariff(tariff);
 
 				rateCategory.setCreatedBy(rs.getString("createdby"));
-				rateCategory.setCreatedDate(rs.getTimestamp("createddate").toString());
-				rateCategory.setUpdatedBy(rs.getString("updatedby"));
-				rateCategory.setUpdatedDate(rs.getTimestamp("updateddate").toString());
 			}
 		} catch (SQLException e) {
 
