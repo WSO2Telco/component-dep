@@ -258,4 +258,67 @@ public class RateTaxDAO {
 
 		return true;
 	}
+	
+	public List<RateTaxDTO> getRateTaxesByRateDefinition(int rateDefId) throws BusinessException {
+
+		List<RateTaxDTO> rateTaxes = new ArrayList<RateTaxDTO>();
+
+		Connection con = null;
+		ResultSet rs = null;
+		PreparedStatement ps = null;
+
+		try {
+
+			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
+			if (con == null) {
+
+				log.error("unable to open " + DataSourceNames.WSO2TELCO_RATE_DB + " database connection");
+				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+			}
+
+			StringBuilder query = new StringBuilder("select rate_taxesid, rate_defid, taxid, createdby from ");
+			query.append(DatabaseTables.RATE_TAX.getTObject());
+			query.append(" where rate_defid = ?");
+
+			ps = con.prepareStatement(query.toString());
+
+			log.debug("sql query in getRateTaxesByRateDefinition : " + ps);
+
+			ps.setInt(1, rateDefId);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				RateTaxDTO rateTax = new RateTaxDTO();
+
+				rateTax.setRateTaxId(rs.getInt("rate_taxesid"));
+
+				RateDefinitionDTO rateDefinition = new RateDefinitionDTO();
+				rateDefinition.setRateDefId(rs.getInt("rate_defid"));
+				rateTax.setRateDefinition(rateDefinition);
+
+				TaxDTO tax = new TaxDTO();
+				tax.setTaxId(rs.getInt("taxid"));
+				rateTax.setTax(tax);
+
+				rateTax.setCreatedBy(rs.getString("createdby"));
+
+				rateTaxes.add(rateTax);
+			}
+		} catch (SQLException e) {
+
+			log.error("database operation error in getRateTaxesByRateDefinition : ", e);
+			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+		} catch (Exception e) {
+
+			log.error("error in getRateTaxesByRateDefinition : ", e);
+			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+		} finally {
+
+			DbUtils.closeAllConnections(ps, con, rs);
+		}
+
+		return rateTaxes;
+	}
 }
