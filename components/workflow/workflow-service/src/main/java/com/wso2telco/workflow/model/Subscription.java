@@ -24,8 +24,8 @@ public class Subscription {
     private int endpointID;
     private int applicationID;
     private String status;
-    private String ApiName;
-    private String OpID;
+    private String apiName;
+    private String opID;
     private String operatorName;
     private String workflowRefId;
     private String selectedRate;
@@ -68,19 +68,19 @@ public class Subscription {
     }
 
     public String getOpID() {
-        return OpID;
+        return opID;
     }
 
     public void setOpID(String opID) {
-        OpID = opID;
+        this.opID = opID;
     }
 
     public String getApiName() {
-        return ApiName;
+        return apiName;
     }
 
     public void setApiName(String apiName) {
-        ApiName = apiName;
+        this.apiName = apiName;
     }
 
     public String getStatus() {
