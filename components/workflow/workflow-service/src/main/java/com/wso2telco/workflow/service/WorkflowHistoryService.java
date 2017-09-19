@@ -6,7 +6,6 @@ import com.wso2telco.workflow.utils.WorkflowServiceException;
 
 /**
  * Business logic layer for WorkflowHistoryAPI
- * TODO: Move non-common components from reporting-service e.g: getApprovalHistory
  */
 public class WorkflowHistoryService {
 
