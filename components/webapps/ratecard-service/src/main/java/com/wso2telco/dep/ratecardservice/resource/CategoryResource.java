@@ -51,15 +51,8 @@ public class CategoryResource {
 
 			categories = categoryService.getCategories();
 
-			if (!categories.isEmpty()) {
-
-				responseString = categories;
-				responseCode = Response.Status.OK;
-			} else {
-
-				log.error("Error in CategoryResource getCategories : categories are not found in database ");
-				throw new BusinessException(ServiceError.NO_RESOURCES);
-			}
+			responseString = categories;
+			responseCode = Response.Status.OK;
 		} catch (BusinessException e) {
 
 			ErrorDTO error = new ErrorDTO();

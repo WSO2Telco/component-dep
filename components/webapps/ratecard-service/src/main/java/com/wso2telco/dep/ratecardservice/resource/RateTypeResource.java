@@ -49,16 +49,9 @@ public class RateTypeResource {
 		try {
 
 			rateTypes = rateTypeService.getRateTypes();
-			
-			if (!rateTypes.isEmpty()) {
 
-				responseString = rateTypes;
-				responseCode = Response.Status.OK;
-			} else {
-
-				log.error("Error in RateTypeResource getRateTypes : rate types are not found in database ");
-				throw new BusinessException(ServiceError.NO_RESOURCES);
-			}
+			responseString = rateTypes;
+			responseCode = Response.Status.OK;
 		} catch (BusinessException e) {
 
 			ErrorDTO error = new ErrorDTO();

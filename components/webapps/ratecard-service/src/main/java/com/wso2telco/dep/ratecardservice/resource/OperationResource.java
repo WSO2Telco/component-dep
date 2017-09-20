@@ -55,15 +55,8 @@ public class OperationResource {
 
 			apiOperations = apiOperationService.getAPIOperations(apiName, schema);
 
-			if (!apiOperations.isEmpty()) {
-
-				responseString = apiOperations;
-				responseCode = Response.Status.OK;
-			} else {
-
-				log.error("Error in OperationResource getAPIOperations : api operations are not found in database ");
-				throw new BusinessException(ServiceError.NO_RESOURCES);
-			}
+			responseString = apiOperations;
+			responseCode = Response.Status.OK;
 		} catch (BusinessException e) {
 
 			ErrorDTO error = new ErrorDTO();
@@ -106,15 +99,8 @@ public class OperationResource {
 
 			rate = rateService.getOperationRates(apiName, schema);
 
-			if (rate != null) {
-
-				responseString = rate;
-				responseCode = Response.Status.OK;
-			} else {
-
-				log.error("Error in OperationResource getOperationRates : operation rates are not found in database ");
-				throw new BusinessException(ServiceError.NO_RESOURCES);
-			}
+			responseString = rate;
+			responseCode = Response.Status.OK;
 		} catch (BusinessException e) {
 
 			ErrorDTO error = new ErrorDTO();
@@ -158,16 +144,8 @@ public class OperationResource {
 
 			rateDefinitions = rateDefinitionService.getRateDefinitions(apiOperationId, schema);
 
-			if (!rateDefinitions.isEmpty()) {
-
-				responseString = rateDefinitions;
-				responseCode = Response.Status.OK;
-			} else {
-
-				log.error(
-						"Error in OperationRateResource getAPIOperationRates : api operation rates are not found in database ");
-				throw new BusinessException(ServiceError.NO_RESOURCES);
-			}
+			responseString = rateDefinitions;
+			responseCode = Response.Status.OK;
 		} catch (BusinessException e) {
 
 			ErrorDTO error = new ErrorDTO();

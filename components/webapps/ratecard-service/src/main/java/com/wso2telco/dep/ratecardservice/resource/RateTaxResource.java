@@ -101,15 +101,8 @@ public class RateTaxResource {
 
 			rateTaxes = rateTaxService.getRateTaxes(taxId, schema);
 
-			if (!rateTaxes.isEmpty()) {
-
-				responseString = rateTaxes;
-				responseCode = Response.Status.OK;
-			} else {
-
-				log.error("Error in RateTaxResource getRateTaxes : rate taxes are not found in database ");
-				throw new BusinessException(ServiceError.NO_RESOURCES);
-			}
+			responseString = rateTaxes;
+			responseCode = Response.Status.OK;
 		} catch (BusinessException e) {
 
 			ErrorDTO error = new ErrorDTO();

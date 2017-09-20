@@ -51,15 +51,8 @@ public class CurrencyResource {
 
 			currencies = currencyService.getCurrencies();
 
-			if (!currencies.isEmpty()) {
-
-				responseString = currencies;
-				responseCode = Response.Status.OK;
-			} else {
-
-				log.error("Error in CurrencyResource getCurrencies : currencies are not found in database ");
-				throw new BusinessException(ServiceError.NO_RESOURCES);
-			}
+			responseString = currencies;
+			responseCode = Response.Status.OK;
 		} catch (BusinessException e) {
 
 			ErrorDTO error = new ErrorDTO();

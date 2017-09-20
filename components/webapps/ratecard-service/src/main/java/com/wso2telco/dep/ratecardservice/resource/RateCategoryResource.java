@@ -99,16 +99,8 @@ public class RateCategoryResource {
 
 			rateCategories = rateCategoryService.getRateCategories(rateDefId, schema);
 
-			if (!rateCategories.isEmpty()) {
-
-				responseString = rateCategories;
-				responseCode = Response.Status.OK;
-			} else {
-
-				log.error(
-						"Error in RateCategoryResource getRateCategories : rate categories are not found in database ");
-				throw new BusinessException(ServiceError.NO_RESOURCES);
-			}
+			responseString = rateCategories;
+			responseCode = Response.Status.OK;
 		} catch (BusinessException e) {
 
 			ErrorDTO error = new ErrorDTO();
