@@ -58,16 +58,8 @@ public class OperatorRateResource {
 
 			rateDefinitions = rateDefinitionService.getAssignedRateDefinitions(apiOperationId, operatorId, schema);
 
-			if (!rateDefinitions.isEmpty()) {
-
-				responseString = rateDefinitions;
-				responseCode = Response.Status.OK;
-			} else {
-
-				log.error(
-						"Error in OperatorRateResource getAssignedRateDefinitions : assigned api operation rates are not found in database ");
-				throw new BusinessException(ServiceError.NO_RESOURCES);
-			}
+			responseString = rateDefinitions;
+			responseCode = Response.Status.OK;
 		} catch (BusinessException e) {
 
 			ErrorDTO error = new ErrorDTO();

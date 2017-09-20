@@ -100,16 +100,8 @@ public class RateCardResource {
 
 			rateCards = rateCardService.getRateCards(schema);
 
-			if (!rateCards.isEmpty()) {
-
-				responseString = rateCards;
-				responseCode = Response.Status.OK;
-			} else {
-
-				log.error(
-						"Error in RateDefinitionResource getRateDefinitions : rate definitions are not found in database ");
-				throw new BusinessException(ServiceError.NO_RESOURCES);
-			}
+			responseString = rateCards;
+			responseCode = Response.Status.OK;
 		} catch (BusinessException e) {
 
 			ErrorDTO error = new ErrorDTO();

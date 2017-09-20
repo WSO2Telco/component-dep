@@ -51,15 +51,8 @@ public class TariffResource {
 
 			tariffs = tariffService.getTariffs();
 
-			if (!tariffs.isEmpty()) {
-
-				responseString = tariffs;
-				responseCode = Response.Status.OK;
-			} else {
-
-				log.error("Error in TariffResource getTariffs : tariffs are not found in database ");
-				throw new BusinessException(ServiceError.NO_RESOURCES);
-			}
+			responseString = tariffs;
+			responseCode = Response.Status.OK;
 		} catch (BusinessException e) {
 
 			ErrorDTO error = new ErrorDTO();

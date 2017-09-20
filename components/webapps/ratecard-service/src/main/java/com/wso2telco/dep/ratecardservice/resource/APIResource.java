@@ -50,15 +50,8 @@ public class APIResource {
 
 			apis = apiService.getAPIs();
 
-			if (!apis.isEmpty()) {
-
-				responseString = apis;
-				responseCode = Response.Status.OK;
-			} else {
-
-				log.error("Error in APIResource getAPIs : apis are not found in database ");
-				throw new BusinessException(ServiceError.NO_RESOURCES);
-			}
+			responseString = apis;
+			responseCode = Response.Status.OK;
 		} catch (BusinessException e) {
 
 			ErrorDTO error = new ErrorDTO();

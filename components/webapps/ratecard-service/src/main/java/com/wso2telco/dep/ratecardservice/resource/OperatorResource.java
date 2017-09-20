@@ -56,15 +56,8 @@ public class OperatorResource {
 
 			operators = operatorService.getOperators();
 
-			if (!operators.isEmpty()) {
-
-				responseString = operators;
-				responseCode = Response.Status.OK;
-			} else {
-
-				log.error("Error in OperatorResource getOperators : operators are not found in database ");
-				throw new BusinessException(ServiceError.NO_RESOURCES);
-			}
+			responseString = operators;
+			responseCode = Response.Status.OK;
 		} catch (BusinessException e) {
 
 			ErrorDTO error = new ErrorDTO();
@@ -108,15 +101,8 @@ public class OperatorResource {
 
 			rate = rateService.getOperationRates(apiName, operatorName.toUpperCase(), schema);
 
-			if (rate != null) {
-
-				responseString = rate;
-				responseCode = Response.Status.OK;
-			} else {
-
-				log.error("Error in OperatorResource getOperationRates : operation rates are not found in database ");
-				throw new BusinessException(ServiceError.NO_RESOURCES);
-			}
+			responseString = rate;
+			responseCode = Response.Status.OK;
 		} catch (BusinessException e) {
 
 			ErrorDTO error = new ErrorDTO();
@@ -160,16 +146,8 @@ public class OperatorResource {
 
 			rateDefinitions = rateDefinitionService.getRateDefinitions(apiOperationId, operatorId, schema);
 
-			if (!rateDefinitions.isEmpty()) {
-
-				responseString = rateDefinitions;
-				responseCode = Response.Status.OK;
-			} else {
-
-				log.error(
-						"Error in OperatorResource getAPIOperationRates : api operation rates are not found in database ");
-				throw new BusinessException(ServiceError.NO_RESOURCES);
-			}
+			responseString = rateDefinitions;
+			responseCode = Response.Status.OK;
 		} catch (BusinessException e) {
 
 			ErrorDTO error = new ErrorDTO();

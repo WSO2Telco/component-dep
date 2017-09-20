@@ -52,15 +52,8 @@ public class TaxResource {
 
 			taxes = taxService.getTaxes();
 
-			if (!taxes.isEmpty()) {
-
-				responseString = taxes;
-				responseCode = Response.Status.OK;
-			} else {
-
-				log.error("Error in TaxResource getTaxes : taxes are not found in database ");
-				throw new BusinessException(ServiceError.NO_RESOURCES);
-			}
+			responseString = taxes;
+			responseCode = Response.Status.OK;
 		} catch (BusinessException e) {
 
 			ErrorDTO error = new ErrorDTO();
@@ -149,15 +142,8 @@ public class TaxResource {
 
 			tax = taxService.getTax(taxId);
 
-			if (tax != null) {
-
-				responseString = tax;
-				responseCode = Response.Status.OK;
-			} else {
-
-				log.error("Error in TaxResource getTax : tax is not found in database ");
-				throw new BusinessException(ServiceError.NO_RESOURCES);
-			}
+			responseString = tax;
+			responseCode = Response.Status.OK;
 		} catch (BusinessException e) {
 
 			ErrorDTO error = new ErrorDTO();
