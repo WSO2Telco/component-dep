@@ -22,6 +22,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.exception.ServiceError;
+import com.wso2telco.dep.ratecardservice.dao.model.RateCard;
 import com.wso2telco.dep.ratecardservice.dao.model.RateCardDTO;
 import com.wso2telco.dep.ratecardservice.dao.model.RateCategoryDTO;
 import com.wso2telco.dep.ratecardservice.dao.model.RateDefinitionDTO;
@@ -115,6 +116,82 @@ public class RateCardService {
 				rateCard.setRateDefinition(rateDefinition);
 				rateCard.setRateCategories(rateCategories.toArray(rateCategoryArray));
 				rateCard.setRateTaxes(rateTaxes.toArray(rateTaxArray));
+
+				rateCards.add(rateCard);
+			}
+
+			return rateCards;
+		} else {
+
+			return Collections.emptyList();
+		}
+	}
+
+	public List<RateCard> getRateCards(String schema, String test) throws BusinessException {
+
+		RateDefinitionService rateDefinitionService = new RateDefinitionService();
+		RateCategoryService rateCategoryService = new RateCategoryService();
+		RateTaxService rateTaxService = new RateTaxService();
+
+		List<RateCard> rateCards = null;
+
+		List<RateDefinitionDTO> rateDefinitions = rateDefinitionService.getRateDefinitions(schema);
+
+		if (rateDefinitions != null) {
+
+			rateCards = new ArrayList<RateCard>();
+
+			for (int i = 0; i < rateDefinitions.size(); i++) {
+
+				RateCard rateCard = new RateCard();
+
+				RateDefinitionDTO rateDefinition = rateDefinitions.get(i);
+
+				rateCard.setRateDefId(rateDefinition.getRateDefId());
+				rateCard.setRateDefName(rateDefinition.getRateDefName());
+				rateCard.setRateDefDescription(rateDefinition.getRateDefDescription());
+				rateCard.setRateDefDefault(rateDefinition.getRateDefDefault());
+				rateCard.setCurrency(rateDefinition.getCurrency());
+				rateCard.setRateType(rateDefinition.getRateType());
+				rateCard.setRateDefCategoryBase(rateDefinition.getRateDefCategoryBase());
+				rateCard.setTariff(rateDefinition.getTariff());
+
+				List<RateCategoryDTO> rateCategories = rateCategoryService
+						.getRateCategories(rateDefinition.getRateDefId(), schema);
+				RateCard.RateCategory[] rateCategoryArray = new RateCard.RateCategory[rateCategories.size()];
+				for (int j = 0; j < rateCategories.size(); j++) {
+
+					RateCategoryDTO rateCategoryDTO = rateCategories.get(j);
+					RateCard.RateCategory rateCategory = new RateCard.RateCategory();
+
+					rateCategory.setRateCategoryId(rateCategoryDTO.getRateCategoryId());
+					rateCategory.setCategory(rateCategoryDTO.getCategory());
+					rateCategory.setSubCategory(rateCategoryDTO.getSubCategory());
+					rateCategory.setTariff(rateCategoryDTO.getTariff());
+					rateCategory.setCreatedBy(rateCategoryDTO.getCreatedBy());
+
+					rateCategoryArray[j] = rateCategory;
+				}
+
+				List<RateTaxDTO> rateTaxes = rateTaxService.getRateTaxesByRateDefinition(rateDefinition.getRateDefId(),
+						schema);
+				RateCard.RateTax[] rateTaxArray = new RateCard.RateTax[rateTaxes.size()];
+				for (int k = 0; k < rateTaxes.size(); k++) {
+
+					RateTaxDTO rateTaxDTO = rateTaxes.get(k);
+					RateCard.RateTax rateTax = new RateCard.RateTax();
+
+					rateTax.setRateTaxId(rateTaxDTO.getRateTaxId());
+					rateTax.setTax(rateTaxDTO.getTax());
+					rateTax.setCreatedBy(rateTaxDTO.getCreatedBy());
+
+					rateTaxArray[k] = rateTax;
+				}
+
+				rateCard.setRateCategories(rateCategoryArray);
+				rateCard.setRateTaxes(rateTaxArray);
+
+				rateCard.setCreatedBy(rateDefinition.getCreatedBy());
 
 				rateCards.add(rateCard);
 			}
