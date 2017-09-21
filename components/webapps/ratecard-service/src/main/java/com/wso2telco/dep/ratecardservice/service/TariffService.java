@@ -36,7 +36,7 @@ public class TariffService {
 
 		tariffs = tariffDAO.getTariffs();
 
-		if (tariffs != null) {
+		if (tariffs != null && !tariffs.isEmpty()) {
 
 			return tariffs;
 		} else {

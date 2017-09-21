@@ -25,9 +25,9 @@ import com.wso2telco.dep.ratecardservice.dao.model.RateTypeDTO;
 public class RateTypeService {
 
 	RateTypeDAO rateTypeDAO;
-	
-	public RateTypeService(){
-		
+
+	public RateTypeService() {
+
 		rateTypeDAO = new RateTypeDAO();
 	}
 
@@ -37,7 +37,7 @@ public class RateTypeService {
 
 		rateTypes = rateTypeDAO.getRateTypes();
 
-		if (rateTypes != null) {
+		if (rateTypes != null && !rateTypes.isEmpty()) {
 
 			return rateTypes;
 		} else {

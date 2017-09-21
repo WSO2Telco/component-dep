@@ -36,7 +36,7 @@ public class CategoryService {
 
 		categories = categoryDAO.getCategories();
 
-		if (categories != null) {
+		if (categories != null && !categories.isEmpty()) {
 
 			return categories;
 		} else {

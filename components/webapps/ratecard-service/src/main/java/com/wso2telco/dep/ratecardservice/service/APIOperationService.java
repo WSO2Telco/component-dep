@@ -55,7 +55,7 @@ public class APIOperationService {
 
 		apiOperations = apiOperationDAO.getAPIOperations(apiName);
 
-		if (apiOperations != null) {
+		if (apiOperations != null && !apiOperations.isEmpty()) {
 
 			if ((schema != null && schema.trim().length() > 0) && schema.equalsIgnoreCase("full")) {
 

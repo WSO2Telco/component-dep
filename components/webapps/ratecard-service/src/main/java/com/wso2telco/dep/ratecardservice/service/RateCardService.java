@@ -95,7 +95,7 @@ public class RateCardService {
 
 		List<RateDefinitionDTO> rateDefinitions = rateDefinitionService.getRateDefinitions(schema);
 
-		if (rateDefinitions != null) {
+		if (rateDefinitions != null && !rateDefinitions.isEmpty()) {
 
 			rateCards = new ArrayList<RateCardDTO>();
 
@@ -137,7 +137,7 @@ public class RateCardService {
 
 		List<RateDefinitionDTO> rateDefinitions = rateDefinitionService.getRateDefinitions(schema);
 
-		if (rateDefinitions != null) {
+		if (rateDefinitions != null && !rateDefinitions.isEmpty()) {
 
 			rateCards = new ArrayList<RateCard>();
 
