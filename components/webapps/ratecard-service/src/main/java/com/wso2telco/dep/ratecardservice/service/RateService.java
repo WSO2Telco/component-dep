@@ -32,7 +32,7 @@ public class RateService {
 
 		operationRates = operationRateService.getOperationRates(apiName, schema);
 
-		if (operationRates != null) {
+		if (operationRates != null && !operationRates.isEmpty()) {
 
 			rate = new RateDTO();
 
@@ -139,7 +139,7 @@ public class RateService {
 
 		operationRates = operationRateService.getOperationRates(apiName, operatorName, schema);
 
-		if (operationRates != null) {
+		if (operationRates != null && !operationRates.isEmpty()) {
 
 			rate = new RateDTO();
 

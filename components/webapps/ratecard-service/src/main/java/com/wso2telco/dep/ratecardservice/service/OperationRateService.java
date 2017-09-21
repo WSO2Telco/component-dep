@@ -43,7 +43,7 @@ public class OperationRateService {
 
 		operationRates = operationRateDAO.getOperationRates(apiName);
 
-		if (operationRates != null) {
+		if (operationRates != null && !operationRates.isEmpty()) {
 
 			for (int i = 0; i < operationRates.size(); i++) {
 
@@ -81,7 +81,7 @@ public class OperationRateService {
 
 		operationRates = operationRateDAO.getOperationRates(apiName, operatorName);
 
-		if (operationRates != null) {
+		if (operationRates != null && !operationRates.isEmpty()) {
 
 			for (int i = 0; i < operationRates.size(); i++) {
 

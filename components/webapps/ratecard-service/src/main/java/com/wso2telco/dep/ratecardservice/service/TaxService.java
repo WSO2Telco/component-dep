@@ -36,7 +36,7 @@ public class TaxService {
 
 		taxes = taxDAO.getTaxes();
 
-		if (taxes != null) {
+		if (taxes != null && !taxes.isEmpty()) {
 
 			return taxes;
 		} else {

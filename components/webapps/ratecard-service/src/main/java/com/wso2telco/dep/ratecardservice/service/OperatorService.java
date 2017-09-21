@@ -45,7 +45,7 @@ public class OperatorService {
 
 		operators = operatorDAO.getOperators();
 
-		if (operators != null) {
+		if (operators != null && !operators.isEmpty()) {
 
 			return operators;
 		} else {

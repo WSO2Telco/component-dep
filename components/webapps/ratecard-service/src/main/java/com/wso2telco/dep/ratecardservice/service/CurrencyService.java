@@ -36,7 +36,7 @@ public class CurrencyService {
 
 		currencies = currencyDAO.getCurrencies();
 
-		if (currencies != null) {
+		if (currencies != null && !currencies.isEmpty()) {
 
 			return currencies;
 		} else {

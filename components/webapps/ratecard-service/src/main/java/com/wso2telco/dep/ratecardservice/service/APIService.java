@@ -24,9 +24,9 @@ import com.wso2telco.dep.ratecardservice.dao.model.APIDTO;
 public class APIService {
 
 	APIDAO apiDAO;
-	
-	public APIService(){
-		
+
+	public APIService() {
+
 		apiDAO = new APIDAO();
 	}
 
@@ -36,7 +36,7 @@ public class APIService {
 
 		apis = apiDAO.getAPIs();
 
-		if (apis != null) {
+		if (apis != null && !apis.isEmpty()) {
 
 			return apis;
 		} else {

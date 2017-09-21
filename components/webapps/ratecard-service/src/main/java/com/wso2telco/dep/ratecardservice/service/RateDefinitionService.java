@@ -43,7 +43,7 @@ public class RateDefinitionService {
 
 		rateDefinitions = rateDefinitionDAO.getRateDefinitions();
 
-		if (rateDefinitions != null) {
+		if (rateDefinitions != null && !rateDefinitions.isEmpty()) {
 
 			if ((schema != null && schema.trim().length() > 0) && schema.equalsIgnoreCase("full")) {
 
@@ -125,7 +125,7 @@ public class RateDefinitionService {
 
 		rateDefinitions = rateDefinitionDAO.getRateDefinitions(apiOperationId);
 
-		if (rateDefinitions != null) {
+		if (rateDefinitions != null && !rateDefinitions.isEmpty()) {
 
 			if ((schema != null && schema.trim().length() > 0) && schema.equalsIgnoreCase("full")) {
 
@@ -164,7 +164,7 @@ public class RateDefinitionService {
 
 		rateDefinitions = rateDefinitionDAO.getRateDefinitions(apiOperationId, operatorId);
 
-		if (rateDefinitions != null) {
+		if (rateDefinitions != null && !rateDefinitions.isEmpty()) {
 
 			if ((schema != null && schema.trim().length() > 0) && schema.equalsIgnoreCase("full")) {
 
@@ -203,7 +203,7 @@ public class RateDefinitionService {
 
 		rateDefinitions = rateDefinitionDAO.getAssignedRateDefinitions(apiOperationId);
 
-		if (rateDefinitions != null) {
+		if (rateDefinitions != null && !rateDefinitions.isEmpty()) {
 
 			if ((schema != null && schema.trim().length() > 0) && schema.equalsIgnoreCase("full")) {
 
@@ -242,7 +242,7 @@ public class RateDefinitionService {
 
 		rateDefinitions = rateDefinitionDAO.getAssignedRateDefinitions(apiOperationId, operatorId);
 
-		if (rateDefinitions != null) {
+		if (rateDefinitions != null && !rateDefinitions.isEmpty()) {
 
 			if ((schema != null && schema.trim().length() > 0) && schema.equalsIgnoreCase("full")) {
 

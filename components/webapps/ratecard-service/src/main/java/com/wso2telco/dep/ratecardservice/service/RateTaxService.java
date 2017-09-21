@@ -73,7 +73,7 @@ public class RateTaxService {
 
 		rateTaxes = rateTaxDAO.getRateTaxes(taxId);
 
-		if (rateTaxes != null) {
+		if (rateTaxes != null && !rateTaxes.isEmpty()) {
 
 			if ((schema != null && schema.trim().length() > 0) && schema.equalsIgnoreCase("full")) {
 
@@ -115,9 +115,9 @@ public class RateTaxService {
 
 		List<RateTaxDTO> rateTaxes = null;
 
-		rateTaxes = rateTaxDAO.getRateTaxes(rateDefId);
+		rateTaxes = rateTaxDAO.getRateTaxesByRateDefinition(rateDefId);
 
-		if (rateTaxes != null) {
+		if (rateTaxes != null && !rateTaxes.isEmpty()) {
 
 			if ((schema != null && schema.trim().length() > 0) && schema.equalsIgnoreCase("full")) {
 

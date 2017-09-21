@@ -53,7 +53,7 @@ public class RateCategoryService {
 
 		rateCategories = rateCategoryDAO.getRateCategories(rateDefId);
 
-		if (rateCategories != null) {
+		if (rateCategories != null && !rateCategories.isEmpty()) {
 
 			if ((schema != null && schema.trim().length() > 0) && schema.equalsIgnoreCase("full")) {
 
