@@ -52,7 +52,7 @@ public class QuotaLimitDao {
 		StringBuilder sqlByServiceProvider=new StringBuilder();
 
 		if (operator.equalsIgnoreCase("_ALL_")) {
-			sqlByServiceProvider.append("SELECT * FROM sp_quota_limit where serviceProvider =? and application is null and apiName is null");
+			sqlByServiceProvider.append("SELECT * FROM sp_quota_limit where serviceProvider =? and application is null and apiName is null and operatorName is null ");
 		}else {
 			sqlByServiceProvider.append("SELECT * FROM sp_quota_limit where serviceProvider =? and application is null and apiName is null and operatorName=?;");
 		}
@@ -93,7 +93,7 @@ public class QuotaLimitDao {
 	public List<QuotaBean> getQuotaLimitInfoByApplication(String info, String operator) throws Exception {
 		StringBuilder sqlByApplication=new StringBuilder();
 		if (operator.equalsIgnoreCase("_ALL_")) {
-			sqlByApplication.append("SELECT * FROM sp_quota_limit where serviceProvider is not null and application =? and apiName is null");
+			sqlByApplication.append("SELECT * FROM sp_quota_limit where serviceProvider is not null and application =? and apiName is null and operatorName is null ");
 		}else {
 			sqlByApplication.append("SELECT * FROM sp_quota_limit where serviceProvider is not null and application =? and apiName is null and operatorName=?;");
 		}
@@ -132,7 +132,7 @@ public class QuotaLimitDao {
 	public List<QuotaBean> getQuotaLimitInfoByApi(String info, String operator) throws Exception {
 		StringBuilder sqlByApi=new StringBuilder();
 		if (operator.equalsIgnoreCase("_ALL_")) {
-			sqlByApi.append("SELECT * FROM sp_quota_limit where serviceProvider is not null and application is not null and apiName =? ");
+			sqlByApi.append("SELECT * FROM sp_quota_limit where serviceProvider is not null and application is not null and apiName =? and operatorName is null ");
 		}else {
 			sqlByApi.append("SELECT * FROM sp_quota_limit where serviceProvider is not null and application is not null and apiName =? and operatorName=?; ");
 		}
@@ -173,7 +173,7 @@ public class QuotaLimitDao {
 	public Boolean checkQuotaLimitInfoByServiceProviderWithDateRange(String info,String fromDate, String toDate, String operator) throws Exception {
 		StringBuilder sqlByServiceProvider=new StringBuilder();
 		if (operator.equalsIgnoreCase("_ALL_")) {
-			sqlByServiceProvider.append("SELECT * FROM sp_quota_limit where serviceProvider =? and application is null and apiName is null and ((? <= toDate and ? >= fromDate));");
+			sqlByServiceProvider.append("SELECT * FROM sp_quota_limit where serviceProvider =? and application is null and apiName is null and operatorName is null and ((? <= toDate and ? >= fromDate));");
 		}else {
 			sqlByServiceProvider.append("SELECT * FROM sp_quota_limit where serviceProvider =? and application is null and apiName is null and ((? <= toDate and ? >= fromDate)) and operatorName=?;");
 		}
@@ -207,7 +207,7 @@ public class QuotaLimitDao {
 	public Boolean checkQuotaLimitInfoByApplicationWithDateRange(String info,String fromDate, String toDate, String operator) throws Exception {
 		StringBuilder sqlByApplication=new StringBuilder();
 		if (operator.equalsIgnoreCase("_ALL_")) {
-			sqlByApplication.append("SELECT * FROM sp_quota_limit where serviceProvider is not null and application =? and apiName is null and ((? <= toDate and ? >= fromDate));");
+			sqlByApplication.append("SELECT * FROM sp_quota_limit where serviceProvider is not null and application =? and apiName is null and operatorName is null and ((? <= toDate and ? >= fromDate));");
 		}else {
 			sqlByApplication.append("SELECT * FROM sp_quota_limit where serviceProvider is not null and application =? and apiName is null and ((? <= toDate and ? >= fromDate)) and operatorName=?;");
 		}
@@ -240,7 +240,7 @@ public class QuotaLimitDao {
 	public Boolean checkQuotaLimitInfoByApiWithDateRange(String info,String fromDate, String toDate, String operator) throws Exception {
 		StringBuilder sqlByApi=new StringBuilder();
 		if (operator.equalsIgnoreCase("_ALL_")) {
-			sqlByApi.append("SELECT * FROM sp_quota_limit where serviceProvider is not null and application is not null and apiName =? and ((? <= toDate and ? >= fromDate)); ");
+			sqlByApi.append("SELECT * FROM sp_quota_limit where serviceProvider is not null and application is not null and operatorName is null and apiName =? and ((? <= toDate and ? >= fromDate)); ");
 		}else {
 			sqlByApi.append("SELECT * FROM sp_quota_limit where serviceProvider is not null and application is not null and apiName =? and ((? <= toDate and ? >= fromDate)) and operatorName=?; ");
 		}
