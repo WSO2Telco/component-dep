@@ -17,6 +17,8 @@
 package com.wso2telco.workflow.approval.application.servicetask;
 
 import com.wso2telco.workflow.approval.application.rest.client.HubWorkflowApi;
+import com.wso2telco.workflow.approval.approvaltask.WorkflowApprovalTask;
+import com.wso2telco.workflow.approval.approvaltask.WorkflowApprovalTaskListReader;
 import com.wso2telco.workflow.approval.exception.HubWorkflowCallbackApiErrorDecoder;
 import com.wso2telco.workflow.approval.model.Application;
 import com.wso2telco.workflow.approval.model.ApplicationApprovalAuditRecord;
@@ -41,7 +43,22 @@ import java.util.ArrayList;
 public class HubDataUpdater implements JavaDelegate {
 
 	private static final Log log = LogFactory.getLog(HubDataUpdater.class);
+	ArrayList<WorkflowApprovalTask> taskClassesObjList = null;
+	
+	public HubDataUpdater() {
+		try {
+			taskClassesObjList = WorkflowApprovalTaskListReader.getWorkflowClassObjList();
+		} catch(Exception e) {
+			log.error("error in getWorkflowClassObjList : ", e);
+		}
+	}
 
+	public void execute(DelegateExecution arg0) throws Exception {
+		for (WorkflowApprovalTask taskObj: taskClassesObjList) {
+			taskObj.executeHubAdminApplicationApproval(arg0);
+		}
+	}
+	/*
 	public void execute(DelegateExecution arg0) throws Exception {
 
 		String status =arg0.getVariable(Constants.HUB_ADMIN_APPROVAL) != null ? arg0.getVariable(Constants.HUB_ADMIN_APPROVAL).toString() :null;
@@ -121,6 +138,6 @@ public class HubDataUpdater implements JavaDelegate {
         } else {
             apiNotification.sendAppApprovalStatusSPNotification(notificationRequest);
         }
-	}
+	}*/
 
 }

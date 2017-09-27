@@ -55,6 +55,7 @@ public class HubTask extends AbstractTaskExecutor {
         api.subscriptionApprovalOperator(subscription);
         api.subscriptionApprovalValidator(subscriptionValidation);
 
+        /* REMOVE this code since this notification logic is now handled by NotifyApprovalTask.executeOperatorAdminSubscriptionApproval()
         NotificationApi apiNotification = Feign.builder()
                 .encoder(new JacksonEncoder())
                 .decoder(new JacksonDecoder())
@@ -77,7 +78,7 @@ public class HubTask extends AbstractTaskExecutor {
 
 
         apiNotification.subscriptionNotificationSp(notificationRequest);
-        
+        */
      
     }
 }

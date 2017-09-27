@@ -17,14 +17,64 @@
 package com.wso2telco.workflow.utils;
 
 import com.wso2telco.core.dbutils.fileutils.PropertyFileReader;
+
+import java.io.File;
+import java.util.HashMap;
 import java.util.Properties;
 
+import javax.xml.parsers.DocumentBuilder;
+import javax.xml.parsers.DocumentBuilderFactory;
+
+import org.w3c.dom.Document;
+import org.w3c.dom.Element;
+import org.w3c.dom.Node;
+import org.w3c.dom.NodeList;
+
 public class WorkflowProperties {
-	
+
+    private static HashMap<String, String> propertiesMap = null;
+
     public static Properties loadWorkflowProperties(){
         Properties props;
         props =PropertyFileReader.getFileReader().getProperties(Constants.WORKFLOW_PROPERTIES_FILE);
         return props;
+    }
+    
+    public static HashMap<String, String> loadWorkflowPropertiesFromXML() throws Exception {
+    	if (propertiesMap == null) {
+        	propertiesMap = new HashMap<String, String>();
+        	
+        	DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
+    		
+    		String carbonHome = System.getProperty("carbon.home");
+    		String workflowPropertiesFile = carbonHome + "/repository/conf/" + Constants.WORKFLOW_PROPERTIES_XML_FILE;
+
+    		//Document document = builder.parse(new InputSource(new StringReader(xmlString)));
+    		Document document = builder.parse(new File(workflowPropertiesFile));
+    		Element rootElement = document.getDocumentElement();
+    		
+    		NodeList nodeList = rootElement.getElementsByTagName("Property");
+    		if (nodeList != null && nodeList.getLength() > 0) {
+    			for (int i = 0; i < nodeList.getLength(); i++) {
+    				Node node = nodeList.item(i);
+    				String nodeName = node.getAttributes().getNamedItem("name").getNodeValue();
+    				if (nodeName.equalsIgnoreCase(Constants.SERVICE_HOST)
+    						|| nodeName.equalsIgnoreCase(Constants.KEY_WORKFLOW_EMAIL_NOTIFICATION_HOST)
+    						|| nodeName.equalsIgnoreCase(Constants.KEY_WORKFLOW_EMAIL_NOTIFICATION_FROM_ADDRESS)
+    						|| nodeName.equalsIgnoreCase(Constants.KEY_WORKFLOW_EMAIL_NOTIFICATION_FROM_PASSWORD)
+    						|| nodeName.equalsIgnoreCase(Constants.PUBLISHER_ROLE_START_WITH)
+    						|| nodeName.equalsIgnoreCase(Constants.PUBLISHER_ROLE_END_WITH)) {
+    					String value = ((Element)node).getTextContent();
+    					propertiesMap.put(nodeName, value);
+    				} else {
+    					//Not a matching property
+    				}
+    			}
+            }
+    	} else {
+    		//Return already loaded propertiesMap
+    	}
+    	return propertiesMap;
     }
 
 }

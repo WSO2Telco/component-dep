@@ -16,13 +16,38 @@
 
 package com.wso2telco.workflow.approval.subscription.servicetask;
 
+import java.util.ArrayList;
+
+import com.wso2telco.workflow.approval.approvaltask.WorkflowApprovalTask;
+import com.wso2telco.workflow.approval.approvaltask.WorkflowApprovalTaskListReader;
 import com.wso2telco.workflow.approval.subscription.SubscriptionTaskFactory;
 import com.wso2telco.workflow.approval.util.Constants;
+
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class OperatorAdminDbUpdater implements JavaDelegate {
 
+	private static final Log log = LogFactory.getLog(OperatorAdminDbUpdater.class);
+	ArrayList<WorkflowApprovalTask> taskClassesObjList = null;
+	
+	public OperatorAdminDbUpdater() {
+		try {
+			taskClassesObjList = WorkflowApprovalTaskListReader.getWorkflowClassObjList();
+		} catch(Exception e) {
+			log.error("error in getWorkflowClassObjList : ", e);
+		}
+	}
+
+    public void execute(DelegateExecution arg0) throws Exception {
+		for (WorkflowApprovalTask taskObj: taskClassesObjList) {
+			taskObj.executeOperatorAdminSubscriptionApproval(arg0);
+		}
+    }
+    
+    /*
     public void execute(DelegateExecution arg0) throws Exception {
         String deploymentType = arg0.getVariable(Constants.DEPLOYMENT_TYPE) != null ? arg0.getVariable(Constants.DEPLOYMENT_TYPE).toString() : null;
         try {
@@ -32,6 +57,6 @@ public class OperatorAdminDbUpdater implements JavaDelegate {
         } catch (Exception e) {
             throw new Exception(e);
         }
-    }
+    }*/
 }
 

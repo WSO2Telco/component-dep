@@ -16,6 +16,10 @@
 
 package com.wso2telco.workflow.approval.subscription.servicetask;
 
+import com.wso2telco.workflow.approval.approvaltask.NotifyApprovalTask;
+import com.wso2telco.workflow.approval.approvaltask.ProcessApprovalTask;
+import com.wso2telco.workflow.approval.approvaltask.WorkflowApprovalTask;
+import com.wso2telco.workflow.approval.approvaltask.WorkflowApprovalTaskListReader;
 import com.wso2telco.workflow.approval.model.NotificationRequest;
 import com.wso2telco.workflow.approval.model.Subscription;
 import com.wso2telco.workflow.approval.subscription.rest.client.NotificationApi;
@@ -37,6 +41,14 @@ import com.wso2telco.workflow.approval.util.Constants;
 
 
 
+
+
+
+
+
+
+
+
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -45,7 +57,26 @@ import java.util.List;
 public class HubAdminDbUpdater implements JavaDelegate {
 
 	private static final Log log = LogFactory.getLog(HubAdminDbUpdater.class);
+	private ArrayList<WorkflowApprovalTask> taskClassesObjList = null;
+	
+	public HubAdminDbUpdater() {
+		try {
+			taskClassesObjList = WorkflowApprovalTaskListReader.getWorkflowClassObjList();
+		} catch(Exception e) {
+			log.error("error in getWorkflowClassObjList : ", e);
+		}
+	}
 
+	public void execute(DelegateExecution arg0) throws Exception {
+		if (taskClassesObjList != null) {
+			for (WorkflowApprovalTask taskObj: taskClassesObjList) {
+				taskObj.executeHubAdminSubscriptionApproval(arg0);
+			}
+		} else {
+			throw new Exception("Workflow task list null");
+		}
+	}
+	/*
 	public void execute(DelegateExecution arg0) throws Exception {
 
         final String status =arg0.getVariable("status") != null ? arg0.getVariable("status").toString() :null;
@@ -138,6 +169,5 @@ public class HubAdminDbUpdater implements JavaDelegate {
             apiNotification.subscriptionNotificationSp(notificationRequest);
         }
 
-	}
-
+	}*/
 }

@@ -17,6 +17,7 @@ public class InternalGatewayTask extends AbstractTaskExecutor {
     @Override
     public void performTasks(DelegatedArgsDTO args) throws Exception {
 
+    	/* REMOVE this code since this notification logic is now handled by NotifyApprovalTask.executeOperatorAdminSubscriptionApproval()
         AuthRequestInterceptor authRequestInterceptor = new AuthRequestInterceptor();
         NotificationApi apiNotification = Feign.builder()
                 .encoder(new JacksonEncoder())
@@ -42,6 +43,6 @@ public class InternalGatewayTask extends AbstractTaskExecutor {
         } else {
           apiNotification.subscriptionNotificationSp(notificationRequest);
         }
-
+		*/
     }
 }
