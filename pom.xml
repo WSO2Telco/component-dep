@@ -376,6 +376,11 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
+                <groupId>com.wso2telco.core</groupId>
+                <artifactId>auth-filter</artifactId>
+                <version>${com.wso2telco.core.version}</version>
+            </dependency>
+            <dependency>
                 <groupId>org.json.wso2</groupId>
                 <artifactId>json</artifactId>
                 <version>${org.json.wso2.version}</version>
@@ -741,6 +746,12 @@
                 <groupId>org.hibernate</groupId>
                 <artifactId>hibernate-core</artifactId>
                 <version>${org.hibernate.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.apimgt</groupId>
+                <artifactId>org.wso2.carbon.apimgt.hostobjects</artifactId>
+                <version>${org.wso2.carbon.apimgt.version}</version>
+                <scope>provided</scope>
             </dependency>
         </dependencies>
     </dependencyManagement>
