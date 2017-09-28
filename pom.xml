@@ -33,7 +33,7 @@
     </developers>
 
     <properties>
-	<!-- WSO2.Telco versions -->
+	    <!-- WSO2.Telco versions -->
         <com.wso2telco.dep.version>2.2.8-SNAPSHOT</com.wso2telco.dep.version>
 	    <com.wso2telco.core.version>2.0.26-SNAPSHOT</com.wso2telco.core.version>
 
@@ -124,6 +124,7 @@
         <!--module>components/publish-events/publish-events-data</module>
           <module>components/publish-events/publish-events-extensions</module-->
         <module>components/workflow/workflow-approval</module>
+		<module>components/workflow/workflow-user-manage</module>
         <module>components/workflow-extensions</module>
         <module>components/workflow/workflow-service</module>
         <module>components/server-startup-observer</module>
@@ -677,6 +678,11 @@
             <dependency>
                 <groupId>org.activiti</groupId>
                 <artifactId>activiti-spring</artifactId>
+                <version>${activiti-version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.activiti</groupId>
+                <artifactId>activiti-explorer</artifactId>
                 <version>${activiti-version}</version>
             </dependency>
             <dependency>
