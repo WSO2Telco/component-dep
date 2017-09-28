@@ -28,7 +28,11 @@
 		<jaxrs:serviceBeans>
 			<ref bean="queriesBean"/>
 		</jaxrs:serviceBeans>
+		<jaxrs:providers>
+			<ref bean="authenticationFilter" />
+		</jaxrs:providers>
 	</jaxrs:server>
 
 	<bean id="queriesBean" class="com.wso2telco.services.qs.Queries"/>
+	<bean id="authenticationFilter" class="com.wso2telco.core.authfilter.BasicAuthenticationFilter"/>
 </beans>
