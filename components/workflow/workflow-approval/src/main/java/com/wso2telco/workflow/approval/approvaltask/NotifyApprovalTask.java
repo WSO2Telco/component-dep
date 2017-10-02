@@ -27,12 +27,8 @@ import feign.jackson.JacksonEncoder;
 
 import org.activiti.engine.delegate.DelegateExecution;
 
-import com.wso2telco.workflow.approval.application.ExternalGatewayTask;
-import com.wso2telco.workflow.approval.application.HubTask;
 import com.wso2telco.workflow.approval.exception.ApprovalWorkflowException;
-import com.wso2telco.workflow.approval.model.DelegatedArgsDTO;
 import com.wso2telco.workflow.approval.model.NotificationRequest;
-import com.wso2telco.workflow.approval.subscription.InternalGatewayTask;
 import com.wso2telco.workflow.approval.subscription.rest.client.NotificationApi;
 import com.wso2telco.workflow.approval.subscription.rest.client.WorkflowCallbackErrorDecoder;
 import com.wso2telco.workflow.approval.util.AuthRequestInterceptor;
