@@ -100,7 +100,9 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	        application.setSelectedTier(selectedTier);
 	        api.applicationApprovalHub(application);
 		} catch (Exception e) {
-			throw new ApprovalWorkflowException("Error in ProcessApprovalTask.executeHubAdminApplicationApproval", e);
+			String errorMessage = "Error in ProcessApprovalTask.executeHubAdminApplicationApproval";
+			log.error(errorMessage, e);
+			throw new ApprovalWorkflowException(errorMessage, e);
 		}
 	}
 
@@ -166,7 +168,9 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	            subscription.setApiVersion(apiVersion);
 	        api.subscriptionApprovalHub(subscription);
 		} catch (Exception e) {
-			throw new ApprovalWorkflowException("Error in ProcessApprovalTask.executeHubAdminSubscriptionApproval", e);
+			String errorMessage = "Error in ProcessApprovalTask.executeHubAdminSubscriptionApproval";
+			log.error(errorMessage, e);
+			throw new ApprovalWorkflowException(errorMessage, e);
 		}
 	}
 
@@ -178,7 +182,9 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	        ApplicationTask applicationTask = applicationTaskFactory.getInstance(deploymentType);
 	        applicationTask.execute(arg0);
 		} catch (Exception e) {
-			throw new ApprovalWorkflowException("Error in ProcessApprovalTask.executeOperatorAdminApplicationApproval", e);
+			String errorMessage = "Error in ProcessApprovalTask.executeOperatorAdminApplicationApproval";
+			log.error(errorMessage, e);
+			throw new ApprovalWorkflowException(errorMessage, e);
 		}
 	}
 
@@ -190,7 +196,9 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	        com.wso2telco.workflow.approval.subscription.SubscriptionTask subscriptionTask = subscriptionTaskFactory.getInstance(deploymentType);
 	        subscriptionTask.execute(arg0);
 		} catch (Exception e) {
-			throw new ApprovalWorkflowException("Error in ProcessApprovalTask.executeOperatorAdminSubscriptionApproval", e);
+			String errorMessage = "Error in ProcessApprovalTask.executeOperatorAdminSubscriptionApproval";
+			log.error(errorMessage, e);
+			throw new ApprovalWorkflowException(errorMessage, e);
 		}
 	}
 

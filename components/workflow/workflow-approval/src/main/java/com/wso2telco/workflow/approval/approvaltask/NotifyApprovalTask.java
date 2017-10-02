@@ -81,7 +81,9 @@ public class NotifyApprovalTask implements WorkflowApprovalTask {
 	            apiNotification.sendAppApprovalStatusSPNotification(notificationRequest);
 	        }
 		} catch (Exception e) {
-			throw new ApprovalWorkflowException("Error in NotifyApprovalTask.executeHubAdminApplicationApproval", e);
+			String errorMessage = "Error in NotifyApprovalTask.executeHubAdminApplicationApproval";
+			log.error(errorMessage, e);
+			throw new ApprovalWorkflowException(errorMessage, e);
 		}
 	}
 
@@ -128,7 +130,9 @@ public class NotifyApprovalTask implements WorkflowApprovalTask {
 	            apiNotification.subscriptionNotificationSp(notificationRequest);
 	        }
 		} catch (Exception e) {
-			throw new ApprovalWorkflowException("Error in NotifyApprovalTask.executeHubAdminSubscriptionApproval", e);
+			String errorMessage = "Error in NotifyApprovalTask.executeHubAdminSubscriptionApproval";
+			log.error(errorMessage, e);
+			throw new ApprovalWorkflowException(errorMessage, e);
 		}
 	}
 
@@ -168,7 +172,9 @@ public class NotifyApprovalTask implements WorkflowApprovalTask {
 	        	//No notification should be sent
 	        }
 		} catch (Exception e) {
-			throw new ApprovalWorkflowException("Error in NotifyApprovalTask.executeOperatorAdminApplicationApproval", e);
+			String errorMessage = "Error in NotifyApprovalTask.executeOperatorAdminApplicationApproval";
+			log.error(errorMessage, e);
+			throw new ApprovalWorkflowException(errorMessage, e);
 		}
 	}
 
@@ -254,7 +260,9 @@ public class NotifyApprovalTask implements WorkflowApprovalTask {
 	            apiNotification.subscriptionNotificationSp(notificationRequest);
 	        }
 		} catch (Exception e) {
-			throw new ApprovalWorkflowException("Error in NotifyApprovalTask.executeOperatorAdminSubscriptionApproval", e);
+			String errorMessage = "Error in NotifyApprovalTask.executeOperatorAdminSubscriptionApproval";
+			log.error(errorMessage, e);
+			throw new ApprovalWorkflowException(errorMessage, e);
 		}
 	}
 
