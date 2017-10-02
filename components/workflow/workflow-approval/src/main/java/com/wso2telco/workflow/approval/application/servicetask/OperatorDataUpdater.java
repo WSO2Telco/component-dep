@@ -44,21 +44,13 @@ public class OperatorDataUpdater implements JavaDelegate {
 	}
 
 	public void execute(DelegateExecution arg0) throws Exception {
-		for (WorkflowApprovalTask taskObj: taskClassesObjList) {
-			taskObj.executeOperatorAdminApplicationApproval(arg0);
+		if (taskClassesObjList != null) {
+			for (WorkflowApprovalTask taskObj: taskClassesObjList) {
+				taskObj.executeOperatorAdminApplicationApproval(arg0);
+			}
+		} else {
+			throw new Exception("Empty workflow task classes list");
 		}
 	}
-
-	/*
-	public void execute(DelegateExecution arg0) throws Exception {
-        try{
-        String deploymentType = arg0.getVariable(Constants.DEPLOYMENT_TYPE) != null ? arg0.getVariable(Constants.DEPLOYMENT_TYPE).toString() : null;
-        ApplicationTaskFactory subscriptionTaskFactory = new ApplicationTaskFactory();
-        ApplicationTask subscriptionTask = subscriptionTaskFactory.getInstance(deploymentType);
-        subscriptionTask.execute(arg0);
-        } catch (Exception e) {
-               throw new Exception(e);
-        }
-	}*/
 
 }

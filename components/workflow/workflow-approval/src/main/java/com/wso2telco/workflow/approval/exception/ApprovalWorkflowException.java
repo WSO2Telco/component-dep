@@ -14,16 +14,18 @@
  * limitations under the License.
  */
 
-package com.wso2telco.workflow.approval.approvaltask;
+package com.wso2telco.workflow.approval.exception;
 
-import org.activiti.engine.delegate.DelegateExecution;
+public class ApprovalWorkflowException extends Exception {
 
-import com.wso2telco.workflow.approval.exception.ApprovalWorkflowException;
+	private static final long serialVersionUID = -8281288328030356863L;
 
-public interface WorkflowApprovalTask {
+	public ApprovalWorkflowException(String message) {
+		super(message);
+	}
 
-	public void executeHubAdminApplicationApproval(DelegateExecution arg0) throws ApprovalWorkflowException;
-	public void executeHubAdminSubscriptionApproval(DelegateExecution arg0) throws ApprovalWorkflowException;
-	public void executeOperatorAdminApplicationApproval(DelegateExecution arg0) throws ApprovalWorkflowException;
-	public void executeOperatorAdminSubscriptionApproval(DelegateExecution arg0) throws ApprovalWorkflowException;
+	public ApprovalWorkflowException(String message, Throwable cause) {
+		super(message, cause);
+	}
+
 }

@@ -19,17 +19,20 @@ package com.wso2telco.hub.workflow.extensions.util;
 import com.wso2telco.core.dbutils.fileutils.PropertyFileReader;
 
 import java.io.File;
-import java.util.ArrayList;
+import java.io.IOException;
 import java.util.HashMap;
+import java.util.Map;
 import java.util.Properties;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 public class WorkflowProperties {
 
@@ -50,7 +53,8 @@ public class WorkflowProperties {
         return props;
     }
     
-    public static HashMap<String, String> loadWorkflowPropertiesFromXML() throws Exception {
+    public static Map<String, String> loadWorkflowPropertiesFromXML()
+    		throws ParserConfigurationException, SAXException, IOException {
     	if (propertiesMap == null) {
         	propertiesMap = new HashMap<String, String>();
         	
@@ -59,7 +63,6 @@ public class WorkflowProperties {
     		String carbonHome = System.getProperty("carbon.home");
     		String workflowPropertiesFile = carbonHome + "/repository/conf/" + WORKFLOW_PROPERTIES_XML_FILE;
 
-    		//Document document = builder.parse(new InputSource(new StringReader(xmlString)));
     		Document document = builder.parse(new File(workflowPropertiesFile));
     		Element rootElement = document.getDocumentElement();
     		

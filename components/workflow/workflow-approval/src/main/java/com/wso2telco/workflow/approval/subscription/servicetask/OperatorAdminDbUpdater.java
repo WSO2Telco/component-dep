@@ -42,21 +42,14 @@ public class OperatorAdminDbUpdater implements JavaDelegate {
 	}
 
     public void execute(DelegateExecution arg0) throws Exception {
-		for (WorkflowApprovalTask taskObj: taskClassesObjList) {
-			taskObj.executeOperatorAdminSubscriptionApproval(arg0);
+		if (taskClassesObjList != null) {
+			for (WorkflowApprovalTask taskObj: taskClassesObjList) {
+				taskObj.executeOperatorAdminSubscriptionApproval(arg0);
+			}
+		} else {
+			throw new Exception("Empty workflow task classes list");
 		}
     }
-    
-    /*
-    public void execute(DelegateExecution arg0) throws Exception {
-        String deploymentType = arg0.getVariable(Constants.DEPLOYMENT_TYPE) != null ? arg0.getVariable(Constants.DEPLOYMENT_TYPE).toString() : null;
-        try {
-            SubscriptionTaskFactory subscriptionTaskFactory = new SubscriptionTaskFactory();
-            com.wso2telco.workflow.approval.subscription.SubscriptionTask subscriptionTask = subscriptionTaskFactory.getInstance(deploymentType);
-            subscriptionTask.execute(arg0);
-        } catch (Exception e) {
-            throw new Exception(e);
-        }
-    }*/
+
 }
 

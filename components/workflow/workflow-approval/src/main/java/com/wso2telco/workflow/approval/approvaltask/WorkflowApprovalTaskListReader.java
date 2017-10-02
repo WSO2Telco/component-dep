@@ -2,26 +2,29 @@ package com.wso2telco.workflow.approval.approvaltask;
 
 import java.io.File;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.StringReader;
 import java.util.ArrayList;
-import java.util.HashMap;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
+import javax.xml.parsers.ParserConfigurationException;
 
 import org.w3c.dom.Document;
 import org.w3c.dom.Element;
 import org.w3c.dom.Node;
 import org.w3c.dom.NodeList;
+import org.xml.sax.SAXException;
 
 import com.wso2telco.workflow.approval.util.Constants;
 
 public class WorkflowApprovalTaskListReader {
 	
 	private static ArrayList<String> taskList = null;
+	
+    private WorkflowApprovalTaskListReader() {
+    }
     
-	private static ArrayList<String> getWorkflowClassList() throws Exception {
+	private static ArrayList<String> getWorkflowClassList()
+			throws ParserConfigurationException, SAXException, IOException {
 		if (taskList == null) {
 			taskList = new ArrayList<String>();
 			
@@ -30,7 +33,6 @@ public class WorkflowApprovalTaskListReader {
 			String carbonHome = System.getProperty("carbon.home");
 			String workflowPropertiesFile = carbonHome + "/repository/conf/" + Constants.WORKFLOW_PROPERTIES_XML_FILE;
 
-			//Document document = builder.parse(new InputSource(new StringReader(xmlString)));
 			Document document = builder.parse(new File(workflowPropertiesFile));
 			Element rootElement = document.getDocumentElement();
 			

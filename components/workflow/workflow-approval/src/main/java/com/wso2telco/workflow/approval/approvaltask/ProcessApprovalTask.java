@@ -33,13 +33,12 @@ import org.activiti.engine.delegate.DelegateExecution;
 import com.wso2telco.workflow.approval.application.ApplicationTask;
 import com.wso2telco.workflow.approval.application.ApplicationTaskFactory;
 import com.wso2telco.workflow.approval.application.rest.client.HubWorkflowApi;
+import com.wso2telco.workflow.approval.exception.ApprovalWorkflowException;
 import com.wso2telco.workflow.approval.exception.HubWorkflowCallbackApiErrorDecoder;
 import com.wso2telco.workflow.approval.model.Application;
 import com.wso2telco.workflow.approval.model.ApplicationApprovalAuditRecord;
-import com.wso2telco.workflow.approval.model.NotificationRequest;
 import com.wso2telco.workflow.approval.model.Subscription;
 import com.wso2telco.workflow.approval.subscription.SubscriptionTaskFactory;
-import com.wso2telco.workflow.approval.subscription.rest.client.NotificationApi;
 import com.wso2telco.workflow.approval.subscription.rest.client.SubscriptionWorkflowApi;
 import com.wso2telco.workflow.approval.subscription.rest.client.WorkflowCallbackErrorDecoder;
 import com.wso2telco.workflow.approval.util.AuthRequestInterceptor;
@@ -50,145 +49,149 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	private static final Log log = LogFactory.getLog(ProcessApprovalTask.class);
 
 	@Override
-	public void executeHubAdminApplicationApproval(DelegateExecution arg0) throws Exception {
-		
-		String status = arg0.getVariable(Constants.HUB_ADMIN_APPROVAL) != null ? arg0.getVariable(Constants.HUB_ADMIN_APPROVAL).toString() :null;
-        String operatorName = arg0.getVariable(Constants.OPERATOR) != null ? arg0.getVariable(Constants.OPERATOR).toString() : null;
-        int applicationId = arg0.getVariable(Constants.APPLICATION_ID) != null ? Integer.parseInt(arg0.getVariable(Constants.APPLICATION_ID).toString()) : null;
-        String serviceUrl = arg0.getVariable(Constants.SERVICE_URL) != null ? arg0.getVariable(Constants.SERVICE_URL).toString() : null;
-        String deploymentType = arg0.getVariable(Constants.DEPLOYMENT_TYPE) != null ? arg0.getVariable(Constants.DEPLOYMENT_TYPE).toString() : null;
-        String completedByUser = arg0.getVariable(Constants.COMPLETE_BY_USER) != null ? arg0.getVariable(Constants.COMPLETE_BY_USER).toString() : null;
-        String completedOn = arg0.getVariable(Constants.COMPLETED_ON) != null ? arg0.getVariable(Constants.COMPLETED_ON).toString() : null;
-        String applicationName = arg0.getVariable(Constants.APPLICATION_NAME) != null ? arg0.getVariable(Constants.APPLICATION_NAME).toString() : null;
-        String userName = arg0.getVariable(Constants.USER_NAME) != null ? arg0.getVariable(Constants.USER_NAME).toString() : null;
-        String adminUserName = arg0.getVariable(Constants.ADMIN_USER_NAME) != null ? arg0.getVariable(Constants.ADMIN_USER_NAME).toString() : null;
-        String adminPassword = arg0.getVariable(Constants.ADMIN_PASSWORD) != null ? arg0.getVariable(Constants.ADMIN_PASSWORD).toString() : null;
-        String operatorAdminApprovalStatus = arg0.getVariable(Constants.OPERATOR_ADMIN_APPROVAL) != null ? arg0.getVariable(Constants.OPERATOR_ADMIN_APPROVAL).toString() : null;
-        String apiVersion = arg0.getVariable(Constants.API_VERSION)!=null?arg0.getVariable(Constants.API_VERSION).toString():null;
-        String apiProvider = arg0.getVariable(Constants.API_PROVIDER)!=null?arg0.getVariable(Constants.API_PROVIDER).toString():null;
-        String apiContext = arg0.getVariable(Constants.API_CONTEXT)!=null?arg0.getVariable(Constants.API_CONTEXT).toString():null;
-        String description = arg0.getVariable(Constants.DESCRIPTION)!=null?arg0.getVariable(Constants.DESCRIPTION).toString():null;
-        String selectedTier = arg0.getVariable(Constants.SELECTED_TIER) != null ? arg0.getVariable(Constants.SELECTED_TIER).toString() : null;
-        ArrayList operatorRoles = (ArrayList)arg0.getVariable("operatorRoles");
-        String completedByRole = Constants.ADMIN_ROLE;
-        arg0.setVariable(Constants.ADMIN_SELECTED_TIER,selectedTier);
+	public void executeHubAdminApplicationApproval(DelegateExecution arg0) throws ApprovalWorkflowException {
+		try {
+			String status = arg0.getVariable(Constants.HUB_ADMIN_APPROVAL) != null ? arg0.getVariable(Constants.HUB_ADMIN_APPROVAL).toString() :null;
+	        String operatorName = arg0.getVariable(Constants.OPERATOR) != null ? arg0.getVariable(Constants.OPERATOR).toString() : null;
+	        int applicationId = arg0.getVariable(Constants.APPLICATION_ID) != null ? Integer.parseInt(arg0.getVariable(Constants.APPLICATION_ID).toString()) : null;
+	        String serviceUrl = arg0.getVariable(Constants.SERVICE_URL) != null ? arg0.getVariable(Constants.SERVICE_URL).toString() : null;
+	        String completedByUser = arg0.getVariable(Constants.COMPLETE_BY_USER) != null ? arg0.getVariable(Constants.COMPLETE_BY_USER).toString() : null;
+	        String completedOn = arg0.getVariable(Constants.COMPLETED_ON) != null ? arg0.getVariable(Constants.COMPLETED_ON).toString() : null;
+	        String applicationName = arg0.getVariable(Constants.APPLICATION_NAME) != null ? arg0.getVariable(Constants.APPLICATION_NAME).toString() : null;
+	        String userName = arg0.getVariable(Constants.USER_NAME) != null ? arg0.getVariable(Constants.USER_NAME).toString() : null;
+	        String adminUserName = arg0.getVariable(Constants.ADMIN_USER_NAME) != null ? arg0.getVariable(Constants.ADMIN_USER_NAME).toString() : null;
+	        String adminPassword = arg0.getVariable(Constants.ADMIN_PASSWORD) != null ? arg0.getVariable(Constants.ADMIN_PASSWORD).toString() : null;
+	        String selectedTier = arg0.getVariable(Constants.SELECTED_TIER) != null ? arg0.getVariable(Constants.SELECTED_TIER).toString() : null;
+	        String completedByRole = Constants.ADMIN_ROLE;
+	        arg0.setVariable(Constants.ADMIN_SELECTED_TIER,selectedTier);
 
-        log.info("In HubDataUpdater, Hub admin approval status: " + status);
+	        log.info("In HubDataUpdater, Hub admin approval status: " + status);
 
-        AuthRequestInterceptor authRequestInterceptor = new AuthRequestInterceptor();
-        HubWorkflowApi api = Feign.builder()
-                .encoder(new JacksonEncoder())
-                .decoder(new JacksonDecoder())
-                .errorDecoder(new HubWorkflowCallbackApiErrorDecoder())
-                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminUserName,adminPassword))
-                .target(HubWorkflowApi.class,serviceUrl);
+	        AuthRequestInterceptor authRequestInterceptor = new AuthRequestInterceptor();
+	        HubWorkflowApi api = Feign.builder()
+	                .encoder(new JacksonEncoder())
+	                .decoder(new JacksonDecoder())
+	                .errorDecoder(new HubWorkflowCallbackApiErrorDecoder())
+	                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminUserName,adminPassword))
+	                .target(HubWorkflowApi.class,serviceUrl);
 
-        com.wso2telco.workflow.approval.application.rest.client.WorkflowApprovalAuditApi apiAudit = Feign.builder()
-                .encoder(new JacksonEncoder())
-                .decoder(new JacksonDecoder())
-                .errorDecoder(new HubWorkflowCallbackApiErrorDecoder())
-                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminUserName, adminPassword))
-                .target(com.wso2telco.workflow.approval.application.rest.client.WorkflowApprovalAuditApi.class, serviceUrl);
+	        com.wso2telco.workflow.approval.application.rest.client.WorkflowApprovalAuditApi apiAudit = Feign.builder()
+	                .encoder(new JacksonEncoder())
+	                .decoder(new JacksonDecoder())
+	                .errorDecoder(new HubWorkflowCallbackApiErrorDecoder())
+	                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminUserName, adminPassword))
+	                .target(com.wso2telco.workflow.approval.application.rest.client.WorkflowApprovalAuditApi.class, serviceUrl);
 
-        ApplicationApprovalAuditRecord applicationApprovalAuditRecord = new ApplicationApprovalAuditRecord();
-        applicationApprovalAuditRecord.setAppApprovalType("ADMIN");
-        applicationApprovalAuditRecord.setAppCreator(userName);
-        applicationApprovalAuditRecord.setAppName(applicationName);
-        applicationApprovalAuditRecord.setAppStatus(status);
-        applicationApprovalAuditRecord.setCompletedByUser(completedByUser);
-        applicationApprovalAuditRecord.setCompletedByRole(completedByRole);
-        applicationApprovalAuditRecord.setCompletedOn(completedOn);
+	        ApplicationApprovalAuditRecord applicationApprovalAuditRecord = new ApplicationApprovalAuditRecord();
+	        applicationApprovalAuditRecord.setAppApprovalType("ADMIN");
+	        applicationApprovalAuditRecord.setAppCreator(userName);
+	        applicationApprovalAuditRecord.setAppName(applicationName);
+	        applicationApprovalAuditRecord.setAppStatus(status);
+	        applicationApprovalAuditRecord.setCompletedByUser(completedByUser);
+	        applicationApprovalAuditRecord.setCompletedByRole(completedByRole);
+	        applicationApprovalAuditRecord.setCompletedOn(completedOn);
 
-        apiAudit.applicationApprovalAudit(applicationApprovalAuditRecord);
+	        apiAudit.applicationApprovalAudit(applicationApprovalAuditRecord);
 
-        Application application = new Application();
-        application.setApplicationID(applicationId);
-        application.setStatus(status);
-        application.setOperatorName(operatorName);
-        application.setSelectedTier(selectedTier);
-        api.applicationApprovalHub(application);
+	        Application application = new Application();
+	        application.setApplicationID(applicationId);
+	        application.setStatus(status);
+	        application.setOperatorName(operatorName);
+	        application.setSelectedTier(selectedTier);
+	        api.applicationApprovalHub(application);
+		} catch (Exception e) {
+			throw new ApprovalWorkflowException("Error in ProcessApprovalTask.executeHubAdminApplicationApproval", e);
+		}
 	}
 
 	@Override
-	public void executeHubAdminSubscriptionApproval(DelegateExecution arg0) throws Exception {
+	public void executeHubAdminSubscriptionApproval(DelegateExecution arg0) throws ApprovalWorkflowException {
+		try {
+	        final String status = arg0.getVariable("status") != null ? arg0.getVariable("status").toString() :null;
+	        final String adminUserName = arg0.getVariable(Constants.ADMIN_USER_NAME) != null ? arg0.getVariable(Constants.ADMIN_USER_NAME).toString() : null;
+	        final String adminPassword = arg0.getVariable(Constants.ADMIN_PASSWORD) != null ? arg0.getVariable(Constants.ADMIN_PASSWORD).toString() : null;
+	        final String serviceUrl = arg0.getVariable(Constants.SERVICE_URL) != null ? arg0.getVariable(Constants.SERVICE_URL).toString() : null;
+	        final String apiName = arg0.getVariable(Constants.API_NAME) != null ? arg0.getVariable(Constants.API_NAME).toString() : null;
+	        final String operatorName = arg0.getVariable(Constants.OPERATOR) != null ? arg0.getVariable(Constants.OPERATOR).toString() : null;
+	        final int applicationId = arg0.getVariable(Constants.APPLICATION_ID) != null ? Integer.parseInt(arg0.getVariable(Constants.APPLICATION_ID).toString()) : 0;
+	        final String apiVersion = arg0.getVariable(Constants.API_VERSION) != null ? arg0.getVariable(Constants.API_VERSION).toString() : null;
+	        final String applicationName = arg0.getVariable(Constants.APPLICATION_NAME) != null ? arg0.getVariable(Constants.APPLICATION_NAME).toString() : null;
+	        final String subscriber = arg0.getVariable(Constants.SUBSCRIBER) != null ? arg0.getVariable(Constants.SUBSCRIBER).toString() : null;
+	        final String apiProvider = arg0.getVariable(Constants.API_PROVIDER)!=null?arg0.getVariable(Constants.API_PROVIDER).toString():null;
+	        final String selectedTier = arg0.getVariable(Constants.SELECTED_TIER)!=null? status.equalsIgnoreCase(Constants.APPROVE)?arg0.getVariable(Constants.SELECTED_TIER).toString():Constants.REJECTED_TIER:null;
+	        final String workflowRefId = arg0.getVariable(Constants.WORK_FLOW_REF)!=null?arg0.getVariable(Constants.WORK_FLOW_REF).toString():null;
+	        final String selectedRate = arg0.getVariable(Constants.SELECTED_RATE)!=null?arg0.getVariable(Constants.SELECTED_RATE).toString():null;
+	        arg0.setVariable("hubAdminApproval", status); //hub admin approval status is null. Check jag. remove before deployment.arg0.setVariable(Constants.ADMIN_SELECTED_TIER,selectedTier);
+	        arg0.setVariable(Constants.ADMIN_SELECTED_TIER,selectedTier);
 
-        final String status = arg0.getVariable("status") != null ? arg0.getVariable("status").toString() :null;
-        final String adminUserName = arg0.getVariable(Constants.ADMIN_USER_NAME) != null ? arg0.getVariable(Constants.ADMIN_USER_NAME).toString() : null;
-        final String adminPassword = arg0.getVariable(Constants.ADMIN_PASSWORD) != null ? arg0.getVariable(Constants.ADMIN_PASSWORD).toString() : null;
-        final String serviceUrl = arg0.getVariable(Constants.SERVICE_URL) != null ? arg0.getVariable(Constants.SERVICE_URL).toString() : null;
-        final String apiName = arg0.getVariable(Constants.API_NAME) != null ? arg0.getVariable(Constants.API_NAME).toString() : null;
-        final String operatorName = arg0.getVariable(Constants.OPERATOR) != null ? arg0.getVariable(Constants.OPERATOR).toString() : null;
-        final int applicationId = arg0.getVariable(Constants.APPLICATION_ID) != null ? Integer.parseInt(arg0.getVariable(Constants.APPLICATION_ID).toString()) : 0;
-        final ArrayList operatorRoles = (ArrayList)arg0.getVariable(Constants.OPERATOR_ROLES);
-        final String apiVersion = arg0.getVariable(Constants.API_VERSION) != null ? arg0.getVariable(Constants.API_VERSION).toString() : null;
-        final String applicationName = arg0.getVariable(Constants.APPLICATION_NAME) != null ? arg0.getVariable(Constants.APPLICATION_NAME).toString() : null;
-        final String description = arg0.getVariable(Constants.APPLICATION_DESCRIPTION) != null ? arg0.getVariable(Constants.APPLICATION_DESCRIPTION).toString() : null;
-        final String apiContext = arg0.getVariable(Constants.API_CONTEXT) != null ? arg0.getVariable(Constants.API_CONTEXT).toString() : null;
-        final String subscriber = arg0.getVariable(Constants.SUBSCRIBER) != null ? arg0.getVariable(Constants.SUBSCRIBER).toString() : null;
-        final String apiProvider = arg0.getVariable(Constants.API_PROVIDER)!=null?arg0.getVariable(Constants.API_PROVIDER).toString():null;
-        final String selectedTier = arg0.getVariable(Constants.SELECTED_TIER)!=null? status.equalsIgnoreCase(Constants.APPROVE)?arg0.getVariable(Constants.SELECTED_TIER).toString():Constants.REJECTED_TIER:null;
-        final String workflowRefId = arg0.getVariable(Constants.WORK_FLOW_REF)!=null?arg0.getVariable(Constants.WORK_FLOW_REF).toString():null;
-        final String selectedRate = arg0.getVariable(Constants.SELECTED_RATE)!=null?arg0.getVariable(Constants.SELECTED_RATE).toString():null;
-        arg0.setVariable("hubAdminApproval", status); //hub admin approval status is null. Check jag. remove before deployment.arg0.setVariable(Constants.ADMIN_SELECTED_TIER,selectedTier);
-        arg0.setVariable(Constants.ADMIN_SELECTED_TIER,selectedTier);
+	        AuthRequestInterceptor authRequestInterceptor = new AuthRequestInterceptor();
 
-        AuthRequestInterceptor authRequestInterceptor = new AuthRequestInterceptor();
+	        SubscriptionWorkflowApi api = Feign.builder()
+	                    .encoder(new JacksonEncoder())
+	                    .decoder(new JacksonDecoder())
+	                    .errorDecoder(new WorkflowCallbackErrorDecoder())
+	                    .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminUserName,adminPassword))
+	                    .target(SubscriptionWorkflowApi.class, serviceUrl);
+	        String operators = api.subscriptionGetOperators(apiName, apiVersion, apiProvider, applicationId);
+	        String[] operatorList = operators.split(",");
+	        Collection<String> operatorNames = new ArrayList<String>();
+	        Collection<String> operatorsRoles = new ArrayList<String>();
 
-        SubscriptionWorkflowApi api = Feign.builder()
-                    .encoder(new JacksonEncoder())
-                    .decoder(new JacksonDecoder())
-                    .errorDecoder(new WorkflowCallbackErrorDecoder())
-                    .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminUserName,adminPassword))
-                    .target(SubscriptionWorkflowApi.class, serviceUrl);
-        String operators = api.subscriptionGetOperators(apiName, apiVersion, apiProvider, applicationId);
-        String[] operatorList = operators.split(",");
-        Collection<String> operatorNames = new ArrayList<String>();
-        Collection<String> operatorsRoles = new ArrayList<String>();
+	        // Get approved or pending operator list
+	        String validOperators = api.getApplicationApprovedOrPendingOperators(applicationId);
+	        List<String> validOperatorList = Arrays.asList(validOperators.split(","));
 
-        // Get approved or pending operator list
-        String validOperators = api.getApplicationApprovedOrPendingOperators(applicationId);
-        List<String> validOperatorList = Arrays.asList(validOperators.split(","));
+	        for (String operator : operatorList) {
+	            if(validOperatorList.contains(operator)) {
+	                operatorNames.add(operator.trim().toLowerCase());
+	                operatorsRoles.add(operator.trim() + Constants.ADMIN_ROLE);
 
-        for (String operator : operatorList) {
-            if(validOperatorList.contains(operator)) {
-                operatorNames.add(operator.trim().toLowerCase());
-                operatorsRoles.add(operator.trim() + Constants.ADMIN_ROLE);
+	                log.info("Operator '" + operator.trim() + "' added to operatorList");
+	            }
+	        }
 
-                log.info("Operator '" + operator.trim() + "' added to operatorList");
-            }
-        }
+	        arg0.setVariable("operatorList", operatorNames);
+	        arg0.setVariable("operatorRoles", operatorsRoles);
+	        
+	        log.info("In HubDataUpdater, Hub admin approval status: " + status);
 
-        arg0.setVariable("operatorList", operatorNames);
-        arg0.setVariable("operatorRoles", operatorsRoles);
-        
-        log.info("In HubDataUpdater, Hub admin approval status: " + status);
-
-        Subscription subscription = new Subscription();
-            subscription.setApiName(apiName);
-            subscription.setApplicationID(applicationId);
-            subscription.setOperatorName(operatorName);
-            subscription.setWorkflowRefId(workflowRefId);
-            subscription.setSelectedRate(selectedRate);
-            subscription.setSelectedTier(selectedTier);
-            subscription.setApiProvider(apiProvider);
-            subscription.setApiVersion(apiVersion);
-        api.subscriptionApprovalHub(subscription);
+	        Subscription subscription = new Subscription();
+	            subscription.setApiName(apiName);
+	            subscription.setApplicationID(applicationId);
+	            subscription.setOperatorName(operatorName);
+	            subscription.setWorkflowRefId(workflowRefId);
+	            subscription.setSelectedRate(selectedRate);
+	            subscription.setSelectedTier(selectedTier);
+	            subscription.setApiProvider(apiProvider);
+	            subscription.setApiVersion(apiVersion);
+	        api.subscriptionApprovalHub(subscription);
+		} catch (Exception e) {
+			throw new ApprovalWorkflowException("Error in ProcessApprovalTask.executeHubAdminSubscriptionApproval", e);
+		}
 	}
 
 	@Override
-	public void executeOperatorAdminApplicationApproval(DelegateExecution arg0) throws Exception {
-		String deploymentType = arg0.getVariable(Constants.DEPLOYMENT_TYPE) != null ? arg0.getVariable(Constants.DEPLOYMENT_TYPE).toString() : null;
-        ApplicationTaskFactory applicationTaskFactory = new ApplicationTaskFactory();
-        ApplicationTask applicationTask = applicationTaskFactory.getInstance(deploymentType);
-        applicationTask.execute(arg0);
+	public void executeOperatorAdminApplicationApproval(DelegateExecution arg0) throws ApprovalWorkflowException {
+		try {
+			String deploymentType = arg0.getVariable(Constants.DEPLOYMENT_TYPE) != null ? arg0.getVariable(Constants.DEPLOYMENT_TYPE).toString() : null;
+	        ApplicationTaskFactory applicationTaskFactory = new ApplicationTaskFactory();
+	        ApplicationTask applicationTask = applicationTaskFactory.getInstance(deploymentType);
+	        applicationTask.execute(arg0);
+		} catch (Exception e) {
+			throw new ApprovalWorkflowException("Error in ProcessApprovalTask.executeOperatorAdminApplicationApproval", e);
+		}
 	}
 
 	@Override
-	public void executeOperatorAdminSubscriptionApproval(DelegateExecution arg0) throws Exception {
-		String deploymentType = arg0.getVariable(Constants.DEPLOYMENT_TYPE) != null ? arg0.getVariable(Constants.DEPLOYMENT_TYPE).toString() : null;
-        SubscriptionTaskFactory subscriptionTaskFactory = new SubscriptionTaskFactory();
-        com.wso2telco.workflow.approval.subscription.SubscriptionTask subscriptionTask = subscriptionTaskFactory.getInstance(deploymentType);
-        subscriptionTask.execute(arg0);
+	public void executeOperatorAdminSubscriptionApproval(DelegateExecution arg0) throws ApprovalWorkflowException {
+		try {
+			String deploymentType = arg0.getVariable(Constants.DEPLOYMENT_TYPE) != null ? arg0.getVariable(Constants.DEPLOYMENT_TYPE).toString() : null;
+	        SubscriptionTaskFactory subscriptionTaskFactory = new SubscriptionTaskFactory();
+	        com.wso2telco.workflow.approval.subscription.SubscriptionTask subscriptionTask = subscriptionTaskFactory.getInstance(deploymentType);
+	        subscriptionTask.execute(arg0);
+		} catch (Exception e) {
+			throw new ApprovalWorkflowException("Error in ProcessApprovalTask.executeOperatorAdminSubscriptionApproval", e);
+		}
 	}
 
 }

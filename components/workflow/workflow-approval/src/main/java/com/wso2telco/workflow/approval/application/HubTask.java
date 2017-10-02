@@ -34,24 +34,5 @@ public class HubTask extends DefaultApplicationTaskExecutor {
         application.setOperatorName(delegatedArgsDTO.getOperatorName());
         api.applicationApprovalOperator(application);
 
-        /* REMOVE this code since this notification logic is now handled by NotifyApprovalTask.executeOperatorAdminApplicationApproval()
-        NotificationApi apiNotification = Feign.builder()
-                .encoder(new JacksonEncoder())
-                .decoder(new JacksonDecoder())
-                .errorDecoder(new WorkflowCallbackErrorDecoder())
-                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(delegatedArgsDTO.getAdminUserName(),delegatedArgsDTO.getAdminPassword()))
-                .target(NotificationApi.class, delegatedArgsDTO.getServiceUrl());
-
-        NotificationRequest notificationRequest = new NotificationRequest();
-        notificationRequest.setApplicationName(delegatedArgsDTO.getApplicationName());
-        notificationRequest.setApplicationTier(delegatedArgsDTO.getAdminSelectedTier());
-        notificationRequest.setApplicationDescription(delegatedArgsDTO.getDescription());
-        notificationRequest.setUserName(delegatedArgsDTO.getAppCreatorName());
-        notificationRequest.setApprovalStatus(delegatedArgsDTO.getOperatorName().toUpperCase()+"-"+delegatedArgsDTO.getOperatorAdminApprovalStatus());
-
-        apiNotification.sendAppApprovalStatusSPNotification(notificationRequest);
-		*/
-
-
     }
 }
