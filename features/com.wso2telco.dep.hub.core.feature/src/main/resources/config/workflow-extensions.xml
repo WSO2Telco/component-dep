@@ -17,8 +17,8 @@
 <WorkFlowExtensions>
     <ApplicationCreation executor="com.wso2telco.hub.workflow.extensions.ApplicationCreationRestWorkflowExecutor">
         <Property name="serviceEndpoint">http://localhost:9763/activiti-rest/service/</Property>
-        <Property name="username">kermit</Property>
-        <Property name="password">kermit</Property>
+        <Property name="username">admin</Property>
+        <Property name="password">admin</Property>
         <Property name="callbackURL">https://localhost:9443/store</Property>
     </ApplicationCreation>
     <ProductionApplicationRegistration executor="org.wso2.carbon.apimgt.impl.workflow.ApplicationRegistrationSimpleWorkflowExecutor"/>
@@ -37,8 +37,8 @@
     </SandboxApplicationRegistration-->
     <SubscriptionCreation executor="com.wso2telco.hub.workflow.extensions.SubscriptionCreationRestWorkflowExecutor">
         <Property name="serviceEndpoint">http://localhost:9763/activiti-rest/service/</Property>
-        <Property name="username">kermit</Property>
-        <Property name="password">kermit</Property>
+        <Property name="username">admin</Property>
+        <Property name="password">admin</Property>
         <Property name="callbackURL">https://localhost:9443/store</Property>
     </SubscriptionCreation>
     <UserSignUp executor="org.wso2.carbon.apimgt.impl.workflow.UserSignUpSimpleWorkflowExecutor"/>
