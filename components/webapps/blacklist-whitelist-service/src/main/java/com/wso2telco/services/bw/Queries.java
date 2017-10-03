@@ -441,8 +441,13 @@ public class Queries {
 
 		Gson gson = new GsonBuilder().serializeNulls().create();
 		Id userID = gson.fromJson(jsonBody, Id.class);
+		String jsonString;
+		if (userID.getOperator().equals("_ALL_")) {
+			jsonString = blackListWhiteListService.getAllApplicationsByUser(userID.getId());
+		} else{
+			jsonString = blackListWhiteListService.getAllApplicationsByUserAndOperator(userID.getId(), userID.getOperator());
+		}
 
-		String jsonString = blackListWhiteListService.getAllApplicationsByUser(userID.getId());
 		return Response.status(Response.Status.OK).entity(jsonString).build();
 	}
 
