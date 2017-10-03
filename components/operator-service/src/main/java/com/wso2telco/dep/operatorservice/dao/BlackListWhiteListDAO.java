@@ -607,7 +607,7 @@ public class BlackListWhiteListDAO {
 		ResultSet result = null;
 
 		try {
-			String sqlQuery = SQLConstants.GET_APP_USER_OPERATOR_SUBSCRIPTION_SQL();
+			String sqlQuery = SQLConstants.GET_APP_USER_OPERATOR_SUBSCRIPTION_SQL;
 			connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
 
 			ps = connection.prepareStatement(sqlQuery);
