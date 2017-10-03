@@ -580,18 +580,15 @@ public class BlackListWhiteListDAO {
 			connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
 
 			ps = connection.prepareStatement(sqlQuery);
-			ps.setString(1, APIUtil.replaceEmailDomainBack(userID));
+			ps.setString(1, stripDomain(userID));
 			result = ps.executeQuery();
-
 
 			List<String> appUniqueIDList = new ArrayList<String>();
 			while (result.next()) {
 				String appName = result.getString("APPNAME");
 				int appID = result.getInt("APPLICATION_ID");
 				String appUniqueID = appID + ":" + appName;
-				if(!appUniqueIDList.contains(appUniqueID)){
-					appUniqueIDList.add(appUniqueID);
-				}
+				appUniqueIDList.add(appUniqueID);
 			}
 
 			return appUniqueIDList;
@@ -602,6 +599,38 @@ public class BlackListWhiteListDAO {
 		} finally {
             DbUtils.closeAllConnections(ps, connection, result);
         }
+	}
+
+	public List<String> getAllAplicationsByUserAndOperator(String userID, String operator) throws BusinessException {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet result = null;
+
+		try {
+			String sqlQuery = SQLConstants.GET_APP_USER_OPERATOR_SUBSCRIPTION_SQL();
+			connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+
+			ps = connection.prepareStatement(sqlQuery);
+			ps.setString(1, stripDomain(userID));
+			ps.setString(2,operator);
+			result = ps.executeQuery();
+
+			List<String> appUniqueIDList = new ArrayList<String>();
+			while (result.next()) {
+				String appName = result.getString("APPNAME");
+				int appID = result.getInt("APPLICATION_ID");
+				String appUniqueID = appID + ":" + appName;
+				appUniqueIDList.add(appUniqueID);
+			}
+
+			return appUniqueIDList;
+		} catch (SQLException e) {
+			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
+		} catch (Exception e) {
+			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
+		} finally {
+			DbUtils.closeAllConnections(ps, connection, result);
+		}
 	}
 
 
@@ -618,7 +647,6 @@ public class BlackListWhiteListDAO {
 			ps.setString(1, APIUtil.replaceEmailDomainBack(userID));
 			ps.setString(2, appID);
 			result = ps.executeQuery();
-
 
 			List<String> apiNamesList = new ArrayList<String>();
 			while (result.next()) {
@@ -694,4 +722,13 @@ public class BlackListWhiteListDAO {
 		return apiKeys;
 	}
 */
+
+	private String stripDomain(String userId){
+		String id = userId;
+		if(userId != null && userId.contains("@")){
+			id = userId.split("@")[0];
+		}
+		return id;
+	}
+
 }

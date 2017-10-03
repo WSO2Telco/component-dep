@@ -1,5 +1,8 @@
 package com.wso2telco.dep.operatorservice.util;
 
+import com.wso2telco.core.dbutils.DbUtils;
+import com.wso2telco.core.dbutils.util.DataSourceNames;
+
 public class SQLConstants {
 
 	public static final String GET_APP_API_USAGE_BY_PROVIDER_SQL =
@@ -58,12 +61,54 @@ public class SQLConstants {
 					"   AND ICA.ID = IAT.CONSUMER_KEY_ID";
 
 
-	public static final String GET_APP_USER_SUBSCRIPTION_SQL = "SELECT APP.NAME AS APPNAME, APP.APPLICATION_ID AS APPLICATION_ID " +
-			"FROM AM_SUBSCRIPTION" +
-			" SUBS, " +
-			"AM_APPLICATION APP,  AM_SUBSCRIBER SUB, AM_API API WHERE SUBS.APPLICATION_ID = APP.APPLICATION_ID AND APP" +
-			".SUBSCRIBER_ID = SUB.SUBSCRIBER_ID AND API.API_ID = SUBS.API_ID AND SUBS.SUB_STATUS != " +
-			"'BlacklistWhitelistConstants.SubscriptionStatus.REJECTED ' AND SUB.USER_ID = ? ORDER BY APP.NAME;";
+	public static final String GET_APP_USER_SUBSCRIPTION_SQL = "SELECT DISTINCT (APPNAME), APPLICATION_ID " +
+			"FROM " +
+			"  (SELECT APP.NAME AS APPNAME, " +
+			"          API.API_NAME, " +
+			"          SUB.USER_ID, " +
+			"          APP.APPLICATION_ID AS APPLICATION_ID " +
+			"   FROM AM_SUBSCRIPTION SUBS, " +
+			"        AM_APPLICATION APP, " +
+			"        AM_SUBSCRIBER SUB, " +
+			"        AM_API API " +
+			"   WHERE SUBS.APPLICATION_ID = APP.APPLICATION_ID " +
+			"     AND APP .SUBSCRIBER_ID = SUB.SUBSCRIBER_ID " +
+			"     AND API.API_ID = SUBS.API_ID " +
+			"     AND SUBS.SUB_STATUS != 'REJECTED' " +
+			"     AND SUB.USER_ID = ? " +
+			"   ORDER BY APP.NAME) AS apps";
+	public static String GET_APP_USER_OPERATOR_SUBSCRIPTION_SQL(){
+		StringBuilder query = new StringBuilder();
+		String a = "SELECT DISTINCT (APPNAME), APPLICATION_ID " +
+				"FROM " +
+				"(SELECT APP.NAME AS APPNAME, " +
+				" API.API_NAME, " +
+				" SUB.USER_ID, " +
+				"       APP.APPLICATION_ID AS APPLICATION_ID " +
+				"FROM AM_SUBSCRIPTION SUBS, " +
+				"     AM_APPLICATION APP, " +
+				"     AM_SUBSCRIBER SUB, " +
+				"     AM_API API, ";
+		query.append(a);
+		query.append(DbUtils.getDbNames().get(DataSourceNames.WSO2TELCO_DEP_DB));
+		query.append(".operators o, ");
+		query.append(".operatorapps oa ");
+		query.append(DbUtils.getDbNames().get(DataSourceNames.WSO2TELCO_DEP_DB));
+
+		String b ="WHERE SUBS.APPLICATION_ID = APP.APPLICATION_ID " +
+				"  AND APP .SUBSCRIBER_ID = SUB.SUBSCRIBER_ID " +
+				"  AND API.API_ID = SUBS.API_ID " +
+				"  AND SUBS.SUB_STATUS != 'REJECTED' " +
+				"  AND SUB.USER_ID = ? " +
+				"  AND o.ID = oa.operatorid " +
+				"  AND o.operatorname = ? " +
+				"  AND APP.APPLICATION_ID = oa.applicationid " +
+				"ORDER BY APP.NAME) AS apps";
+
+		query.append(b);
+
+		return query.toString();
+	}
 
 
 	public static final String GET_API_FOR_USER_AND_APP_SQL = "SELECT API.API_ID AS API_ID, API" +
