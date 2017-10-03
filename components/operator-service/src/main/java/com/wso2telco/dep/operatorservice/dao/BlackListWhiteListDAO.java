@@ -611,8 +611,9 @@ public class BlackListWhiteListDAO {
 			connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
 
 			ps = connection.prepareStatement(sqlQuery);
-			ps.setString(1, stripDomain(userID));
+			ps.setString(1,stripDomain(userID));
 			ps.setString(2,operator);
+
 			result = ps.executeQuery();
 
 			List<String> appUniqueIDList = new ArrayList<String>();

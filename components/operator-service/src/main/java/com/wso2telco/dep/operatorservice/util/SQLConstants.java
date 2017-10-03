@@ -78,6 +78,8 @@ public class SQLConstants {
 			"     AND SUB.USER_ID = ? " +
 			"   ORDER BY APP.NAME) AS apps";
 
+	static String DEP_DB = DbUtils.getDbNames().get(DataSourceNames.WSO2TELCO_DEP_DB);
+
 	public static final String GET_APP_USER_OPERATOR_SUBSCRIPTION_SQL = "SELECT DISTINCT (APPNAME), APPLICATION_ID " +
 			"FROM " +
 			"(SELECT APP.NAME AS APPNAME, " +
@@ -88,8 +90,8 @@ public class SQLConstants {
 			"     AM_APPLICATION APP, " +
 			"     AM_SUBSCRIBER SUB, " +
 			"     AM_API API, " +
-			"     "+ DbUtils.getDbNames().get(DataSourceNames.WSO2TELCO_DEP_DB)+".operators o, " +
-			"     "+ DbUtils.getDbNames().get(DataSourceNames.WSO2TELCO_DEP_DB)+".operatorapps oa " +
+			"     "+DEP_DB+".operators o, " +
+			"     "+DEP_DB+".operatorapps oa " +
 			"WHERE SUBS.APPLICATION_ID = APP.APPLICATION_ID " +
 			"  AND APP .SUBSCRIBER_ID = SUB.SUBSCRIBER_ID " +
 			"  AND API.API_ID = SUBS.API_ID " +
