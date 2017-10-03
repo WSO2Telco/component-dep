@@ -248,6 +248,14 @@ public class BlackListWhiteListService {
 		return gson.toJson(appUniqueIDList);
 	}
 
+	public  String getAllApplicationsByUserAndOperator(String userID, String operator) throws BusinessException {
+
+		List<String> appUniqueIDList = dao.getAllAplicationsByUserAndOperator(userID, operator);
+
+		Gson gson = new GsonBuilder().create();
+		return gson.toJson(appUniqueIDList);
+	}
+
 	public  String getAllApisByUserAndApp(String userID, String appID) throws BusinessException {
 
 		List<String> appList = dao.getAllApisByUserAndApp(userID, appID);
