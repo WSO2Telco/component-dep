@@ -1,0 +1,13 @@
+<WorkflowProperties>
+	<Property name="service.host">http://localhost:9763/workflow-service/</Property>
+	<Property name="workflow.email.notification.host">smtp.gmail.com</Property>
+	<Property name="workflow.email.notification.from.address">email@address.com</Property>
+	<Property name="workflow.email.notification.from.password">password</Property>
+	<Property name="workflow.Publisher.role.start.with">hub-</Property>
+	<Property name="workflow.Publisher.role.end.with">-publisher</Property>
+	<Property name="WorkflowApprovalTasksList">
+		<Task executor="com.wso2telco.workflow.approval.approvaltask.ProcessApprovalTask"/>
+		<Task executor="com.wso2telco.workflow.approval.approvaltask.CreditApprovalTask"/>
+		<Task executor="com.wso2telco.workflow.approval.approvaltask.NotifyApprovalTask"/>		
+	</Property>
+</WorkflowProperties>

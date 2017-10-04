@@ -16,32 +16,6 @@ public class InternalGatewayTask extends AbstractTaskExecutor {
 
     @Override
     public void performTasks(DelegatedArgsDTO args) throws Exception {
-
-        AuthRequestInterceptor authRequestInterceptor = new AuthRequestInterceptor();
-        NotificationApi apiNotification = Feign.builder()
-                .encoder(new JacksonEncoder())
-                .decoder(new JacksonDecoder())
-                .errorDecoder(new WorkflowCallbackErrorDecoder())
-                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(args.getAdminUserName(), args.getAdminPassword()))
-                .target(NotificationApi.class, args.getServiceUrl());
-
-        NotificationRequest notificationRequest = new NotificationRequest();
-        notificationRequest.setApiVersion(args.getApiVersion());
-        notificationRequest.setApiContext(args.getApiContext());
-        notificationRequest.setApiName(args.getApiName());
-        notificationRequest.setReceiverRole(args.getApiProviderRole());
-        notificationRequest.setApiProvider(args.getApiProvider());
-        notificationRequest.setSubscriber(args.getSubscriber());
-        notificationRequest.setApiPublisher(args.getApiPublisher());
-        notificationRequest.setApplicationName(args.getApplicationName());
-        notificationRequest.setApplicationDescription(args.getDescription());
-        notificationRequest.setSubscriptionTier(args.getSelectedTier());
-
-        if (args.getOperatorAdminApprovalStatus().equalsIgnoreCase(Constants.APPROVE)) {
-          apiNotification.subscriptionNotificationAdminService(notificationRequest);
-        } else {
-          apiNotification.subscriptionNotificationSp(notificationRequest);
-        }
-
+    	//No logic since notification logic is now handled by NotifyApprovalTask.executeOperatorAdminSubscriptionApproval()
     }
 }

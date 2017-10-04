@@ -54,30 +54,6 @@ public class HubTask extends AbstractTaskExecutor {
 
         api.subscriptionApprovalOperator(subscription);
         api.subscriptionApprovalValidator(subscriptionValidation);
-
-        NotificationApi apiNotification = Feign.builder()
-                .encoder(new JacksonEncoder())
-                .decoder(new JacksonDecoder())
-                .errorDecoder(new WorkflowCallbackErrorDecoder())
-                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(delegatedArgsDTO.getAdminUserName(), delegatedArgsDTO.getAdminPassword()))
-                .target(NotificationApi.class, delegatedArgsDTO.getServiceUrl());
-
-
-        NotificationRequest notificationRequest = new NotificationRequest();
-        notificationRequest.setApiContext(delegatedArgsDTO.getApiContext());
-        notificationRequest.setApiName(delegatedArgsDTO.getApiName());
-        notificationRequest.setSubscriber(delegatedArgsDTO.getSubscriber());
-        notificationRequest.setSubscriptionTier(delegatedArgsDTO.getAdminSelectedTier());
-        notificationRequest.setReceiverRole(delegatedArgsDTO.getCompletedByRole());
-        notificationRequest.setApiVersion(delegatedArgsDTO.getApiVersion());
-        notificationRequest.setApplicationDescription(delegatedArgsDTO.getDescription());
-        notificationRequest.setApiProvider(delegatedArgsDTO.getApiProvider());
-        notificationRequest.setApplicationName(delegatedArgsDTO.getApiContext());
-        notificationRequest.setApprovalStatus(delegatedArgsDTO.getOperatorName().toUpperCase()+"-"+delegatedArgsDTO.getOperatorAdminApprovalStatus());
-
-
-        apiNotification.subscriptionNotificationSp(notificationRequest);
-        
      
     }
 }

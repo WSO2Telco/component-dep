@@ -1,12 +1,12 @@
 /**
- * Copyright (c) 2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
- * <p>
+ * Copyright (c) 2017, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+ *
  * WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
+ *
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -14,25 +14,18 @@
  * limitations under the License.
  */
 
-package com.wso2telco.services.bw.entity;
+package com.wso2telco.workflow.approval.exception;
 
-public class Id {
-    private String id;
-    private String operator;
+public class ApprovalWorkflowException extends Exception {
 
-    public String getOperator() {
-        return operator;
-    }
+	private static final long serialVersionUID = -8281288328030356863L;
 
-    public void setOperator(String operator) {
-        this.operator = operator;
-    }
+	public ApprovalWorkflowException(String message) {
+		super(message);
+	}
 
-    public String getId() {
-        return id;
-    }
+	public ApprovalWorkflowException(String message, Throwable cause) {
+		super(message, cause);
+	}
 
-    public void setId(String id) {
-        this.id = id;
-    }
 }
