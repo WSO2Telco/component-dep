@@ -65,5 +65,7 @@ public class Constants {
     public static final String WORK_FLOW_REF = "workflowRefId";
     public static final String ADMIN_SELECTED_TIER = "adminSelectedTier";
     public static final String SELECTED_RATE = "selectedRate";
+    public static final String CREDIT_PLAN = "creditPlan";
+    public static final String MANDATE_SERVICE_URL = "mandateServiceURL";
 	public static final String WORKFLOW_PROPERTIES_XML_FILE = "workflow-configuration.xml";
 }
