@@ -7,7 +7,7 @@
 	<Property name="workflow.Publisher.role.end.with">-publisher</Property>
 	<Property name="WorkflowApprovalTasksList">
 		<Task executor="com.wso2telco.workflow.approval.approvaltask.ProcessApprovalTask"/>
-		<Task executor="com.wso2telco.workflow.approval.approvaltask.NotifyApprovalTask"/>
 		<Task executor="com.wso2telco.workflow.approval.approvaltask.CreditApprovalTask"/>
+		<Task executor="com.wso2telco.workflow.approval.approvaltask.NotifyApprovalTask"/>		
 	</Property>
 </WorkflowProperties>
