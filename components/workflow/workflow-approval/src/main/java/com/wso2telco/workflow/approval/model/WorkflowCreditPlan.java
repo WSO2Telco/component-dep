@@ -19,6 +19,7 @@ package com.wso2telco.workflow.approval.model;
 public class WorkflowCreditPlan {
 
 	private String appId;
+	private String appName;
 	private String sp;
 	private String creditPlan;
 	private String status;
@@ -31,6 +32,14 @@ public class WorkflowCreditPlan {
 
 	public void setAppId(String appId) {
 		this.appId = appId;
+	}
+
+	public String getAppName() {
+		return appName;
+	}
+
+	public void setAppName(String appName) {
+		this.appName = appName;
 	}
 
 	public String getSp() {

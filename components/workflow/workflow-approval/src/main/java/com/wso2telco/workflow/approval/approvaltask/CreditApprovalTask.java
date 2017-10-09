@@ -51,6 +51,8 @@ public class CreditApprovalTask implements WorkflowApprovalTask {
 					? arg0.getVariable(Constants.USER_NAME).toString() : null;
 			String creditPlan = arg0.getVariable(Constants.CREDIT_PLAN) != null
 					? arg0.getVariable(Constants.CREDIT_PLAN).toString() : null;
+			String applicationName = arg0.getVariable(Constants.APPLICATION_NAME) != null
+					? arg0.getVariable(Constants.APPLICATION_NAME).toString() : null;
 			String status = "A";
 			boolean isCooperate = false;
 			Date date = new Date();
@@ -66,6 +68,7 @@ public class CreditApprovalTask implements WorkflowApprovalTask {
 
 			WorkflowCreditPlan workflowCreditPlan = new WorkflowCreditPlan();
 			workflowCreditPlan.setAppId(String.valueOf(applicationId));
+			workflowCreditPlan.setAppName(applicationName);
 			workflowCreditPlan.setSp(serviceProvider);
 			workflowCreditPlan.setCreditPlan(creditPlan);
 			workflowCreditPlan.setStatus(status);
