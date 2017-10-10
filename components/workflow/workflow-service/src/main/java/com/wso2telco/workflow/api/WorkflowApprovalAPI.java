@@ -61,23 +61,28 @@ public class WorkflowApprovalAPI {
 			WorkflowApprovalRatePublisher workflowApprovalRatePublisher = new WorkflowApprovalRatePublisher();
 			String selectedRate = subscription.getSelectedRate();
 			int appID = subscription.getApplicationID();
+			String apiName = subscription.getApiName();
 
 			subscriptionApproval.updateDBSubHubApproval(subscription);
 
-			String[] selectedRateArray = selectedRate.split("-");
-			for (int i = 0; i < selectedRateArray.length; i++) {
-
-				String rate = selectedRateArray[i];
+			if(selectedRate != null && selectedRate.trim().length() > 0){
 				
-				if (rate != null && rate.trim().length() > 0) {
+				String selectedRateArray[] = selectedRate.split("-");
+				for (int i = 0; i < selectedRateArray.length; i++) {
 
-					int rateId = Integer.parseInt(rate);
-					if (rateId != 0) {
+					String rate = selectedRateArray[i];
+					
+					if (rate != null && rate.trim().length() > 0) {
 
-						workflowApprovalRatePublisher.publishHubAPIRate(rateId, appID);
+						int rateId = Integer.parseInt(rate);
+						if (rateId != 0) {
+
+							//workflowApprovalRatePublisher.publishHubAPIRate(rateId, appID, apiName);
+							workflowApprovalRatePublisher.publishHubAPIRate(rateId, appID);
+						}
 					}
 				}
-			}
+			}			
 
 			return Response.status(Response.Status.CREATED).build();
 		} catch (Exception e) {
@@ -109,23 +114,29 @@ public class WorkflowApprovalAPI {
 			WorkflowApprovalRatePublisher workflowApprovalRatePublisher = new WorkflowApprovalRatePublisher();
 			String selectedRate = subscription.getSelectedRate();
 			int appID = subscription.getApplicationID();
+			String operatorId = subscription.getOperatorName();
+			String operationId = subscription.getOpID();
 			
 			subscriptionApproval.updateDBSubOpApproval(subscription);
 			
-			String[] selectedRateArray = selectedRate.split("-");
-			for (int i = 0; i < selectedRateArray.length; i++) {
-
-				String rate = selectedRateArray[i];
+			if(selectedRate != null && selectedRate.trim().length() > 0){
 				
-				if (rate != null && rate.trim().length() > 0) {
+				String selectedRateArray[] = selectedRate.split("-");
+				for (int i = 0; i < selectedRateArray.length; i++) {
 
-					int rateId = Integer.parseInt(rate);
-					if (rateId != 0) {
+					String rate = selectedRateArray[i];
 					
-						workflowApprovalRatePublisher.publishOperatorAPIRate(rateId, appID);
+					if (rate != null && rate.trim().length() > 0) {
+
+						int rateId = Integer.parseInt(rate);
+						if (rateId != 0) {
+						
+							//workflowApprovalRatePublisher.publishOperatorAPIRate(rateId, appID, operatorId, operationId);
+							workflowApprovalRatePublisher.publishOperatorAPIRate(rateId, appID);
+						}
 					}
 				}
-			}			
+			}						
 			
 			return Response.status(Response.Status.CREATED).build();
 		} catch (Exception e) {
