@@ -39,6 +39,7 @@ public class Constants {
 	public static final String SERVICE_HOST = "service.host";
 	public static final String PUBLISHER_ROLE_START_WITH ="workflow.Publisher.role.start.with";
 	public static final String PUBLISHER_ROLE_END_WITH ="workflow.Publisher.role.end.with";
+	public static final String MANDATE_SERVICE_HOST = "mandate.service.host";
 	
 	// workflow.properties file entries: Remote userstore manager service configs.
 	public static final String REMOTE_USERSTORE_MANAGER_HOST = "userstoremanager.service.host";
