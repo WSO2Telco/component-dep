@@ -29,6 +29,9 @@ import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
 import com.wso2telco.dep.operatorservice.model.Operator;
+import org.wso2.carbon.apimgt.impl.dao.ApiMgtDAO;
+import org.wso2.carbon.apimgt.impl.dto.WorkflowDTO;
+import com.wso2telco.dep.reportingservice.dao.WorkflowDAO;
 
 public class SubscriptionApprovalImpl implements SubscriptionApproval {
 
@@ -96,6 +99,17 @@ public class SubscriptionApprovalImpl implements SubscriptionApproval {
             log.info("idList : " + idList);
             if (isAdd) {
                 dbservice.insertOperatorAppEndpoints(appID, idList);
+                
+                //Update tier of the subscription
+                String workflowRefId = subHUBApprovalDBUpdateRequest.getWorkflowRefId();
+                String selectedTier = subHUBApprovalDBUpdateRequest.getSelectedTier();
+
+                ApiMgtDAO apiMgtDAO = ApiMgtDAO.getInstance();
+                WorkflowDTO workflowDTO = apiMgtDAO.retrieveWorkflow(workflowRefId);
+                String subscriptionId = workflowDTO.getWorkflowReference();
+
+                WorkflowDAO workflowDAO = new WorkflowDAO();
+                workflowDAO.updateSubscriptionTier(subscriptionId, selectedTier);
             }
         } catch (Exception e) {
             log.error("ERROR: Error occurred while updating  hub dep db for subscription HUB approval. " + e);
@@ -142,17 +156,12 @@ public class SubscriptionApprovalImpl implements SubscriptionApproval {
         int appID = hUBApprovalSubValidatorRequest.getApplicationID();
         int apiID = hUBApprovalSubValidatorRequest.getApiID();
         try {
+        	
             dbservice = new WorkflowDbService();
             dbservice.insertValidatorForSubscription(appID, apiID, 1);
-
         } catch (Exception e) {
             log.error("ERROR: Exception. " + e);
             throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
         }
-
-
     }
-
-
-
 }
