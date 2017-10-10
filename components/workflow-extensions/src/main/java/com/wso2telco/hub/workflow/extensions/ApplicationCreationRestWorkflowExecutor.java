@@ -126,9 +126,9 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
                 tiersStr.append(tierName + ',');
             }
 
-            Properties workflowProperties = WorkflowProperties.loadWorkflowProperties();
-            String serviceURLString = workflowProperties.getProperty(SERVICE_HOST);
-            String mandateServiceURLString = workflowProperties.getProperty(MANDATE_SERVICE_HOST);
+            Map<String, String> workflowProperties = WorkflowProperties.loadWorkflowPropertiesFromXML();
+            String serviceURLString = workflowProperties.get(SERVICE_HOST);
+            String mandateServiceURLString = workflowProperties.get(MANDATE_SERVICE_HOST);
 
             Variable deploymentType = new Variable(DEPLOYMENT_TYPE, getDeploymentType());
             Variable applicationName = new Variable(APPLICATION_NAME, application.getName());
