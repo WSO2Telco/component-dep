@@ -61,7 +61,6 @@ public class WorkflowApprovalAPI {
 			WorkflowApprovalRatePublisher workflowApprovalRatePublisher = new WorkflowApprovalRatePublisher();
 			String selectedRate = subscription.getSelectedRate();
 			int appID = subscription.getApplicationID();
-			String apiName = subscription.getApiName();
 
 			subscriptionApproval.updateDBSubHubApproval(subscription);
 
@@ -77,7 +76,6 @@ public class WorkflowApprovalAPI {
 						int rateId = Integer.parseInt(rate);
 						if (rateId != 0) {
 
-							//workflowApprovalRatePublisher.publishHubAPIRate(rateId, appID, apiName);
 							workflowApprovalRatePublisher.publishHubAPIRate(rateId, appID);
 						}
 					}
@@ -114,8 +112,6 @@ public class WorkflowApprovalAPI {
 			WorkflowApprovalRatePublisher workflowApprovalRatePublisher = new WorkflowApprovalRatePublisher();
 			String selectedRate = subscription.getSelectedRate();
 			int appID = subscription.getApplicationID();
-			String operatorId = subscription.getOperatorName();
-			String operationId = subscription.getOpID();
 			
 			subscriptionApproval.updateDBSubOpApproval(subscription);
 			
@@ -131,7 +127,6 @@ public class WorkflowApprovalAPI {
 						int rateId = Integer.parseInt(rate);
 						if (rateId != 0) {
 						
-							//workflowApprovalRatePublisher.publishOperatorAPIRate(rateId, appID, operatorId, operationId);
 							workflowApprovalRatePublisher.publishOperatorAPIRate(rateId, appID);
 						}
 					}
