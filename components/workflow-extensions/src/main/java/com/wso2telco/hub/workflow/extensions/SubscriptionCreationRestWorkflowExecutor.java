@@ -178,10 +178,10 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
                     new CreateProcessInstanceRequest(SUBSCRIPTION_CREATION_APPROVAL_PROCESS_NAME, TENANT_ID);
             processInstanceRequest.setBusinessKey(subscriptionWorkFlowDTO.getExternalWorkflowReference());
 
-            Properties workflowProperties = WorkflowProperties.loadWorkflowProperties();
-            String serviceURLString = workflowProperties.getProperty(SERVICE_HOST);
-            String startsWith=workflowProperties.getProperty(PUBLISHER_ROLE_START_WITH);
-            String endsWith=workflowProperties.getProperty(PUBLISHER_ROLE_END_WITH);
+            Map<String, String> workflowProperties = WorkflowProperties.loadWorkflowPropertiesFromXML();
+            String serviceURLString = workflowProperties.get(SERVICE_HOST);
+            String startsWith=workflowProperties.get(PUBLISHER_ROLE_START_WITH);
+            String endsWith=workflowProperties.get(PUBLISHER_ROLE_END_WITH);
 
             Variable deploymentType = new Variable(DEPLOYMENT_TYPE, getDeploymentType());
             Variable subscribedApiName = new Variable(API_NAME, apiName);

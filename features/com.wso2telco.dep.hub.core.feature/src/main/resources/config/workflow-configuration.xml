@@ -10,4 +10,5 @@
 		<Task executor="com.wso2telco.workflow.approval.approvaltask.CreditApprovalTask"/>
 		<Task executor="com.wso2telco.workflow.approval.approvaltask.NotifyApprovalTask"/>		
 	</Property>
+    <Property name="mandate.service.host">http://localhost:9763/mandate-server/</Property>
 </WorkflowProperties>

@@ -39,40 +39,47 @@ public class CreditApprovalTask implements WorkflowApprovalTask {
 
 		try {
 
-			String mandateServiceUrl = arg0.getVariable(Constants.MANDATE_SERVICE_URL) != null
-					? arg0.getVariable(Constants.MANDATE_SERVICE_URL).toString() : null;
-			String adminUserName = arg0.getVariable(Constants.ADMIN_USER_NAME) != null
-					? arg0.getVariable(Constants.ADMIN_USER_NAME).toString() : null;
-			String adminPassword = arg0.getVariable(Constants.ADMIN_PASSWORD) != null
-					? arg0.getVariable(Constants.ADMIN_PASSWORD).toString() : null;
-			int applicationId = arg0.getVariable(Constants.APPLICATION_ID) != null
-					? Integer.parseInt(arg0.getVariable(Constants.APPLICATION_ID).toString()) : null;
-			String serviceProvider = arg0.getVariable(Constants.USER_NAME) != null
-					? arg0.getVariable(Constants.USER_NAME).toString() : null;
 			String creditPlan = arg0.getVariable(Constants.CREDIT_PLAN) != null
 					? arg0.getVariable(Constants.CREDIT_PLAN).toString() : null;
-			String status = "A";
-			boolean isCooperate = false;
-			Date date = new Date();
-			long timeMilli = date.getTime();
-			String lastModifiedTimestamp = Long.toString(timeMilli);
+			if (creditPlan != null && !creditPlan.trim().isEmpty()) {
+				String mandateServiceUrl = arg0.getVariable(Constants.MANDATE_SERVICE_URL) != null
+						? arg0.getVariable(Constants.MANDATE_SERVICE_URL).toString() : null;
+				String adminUserName = arg0.getVariable(Constants.ADMIN_USER_NAME) != null
+						? arg0.getVariable(Constants.ADMIN_USER_NAME).toString() : null;
+				String adminPassword = arg0.getVariable(Constants.ADMIN_PASSWORD) != null
+						? arg0.getVariable(Constants.ADMIN_PASSWORD).toString() : null;
+				int applicationId = arg0.getVariable(Constants.APPLICATION_ID) != null
+						? Integer.parseInt(arg0.getVariable(Constants.APPLICATION_ID).toString()) : null;
+				String serviceProvider = arg0.getVariable(Constants.USER_NAME) != null
+						? arg0.getVariable(Constants.USER_NAME).toString() : null;
+				String applicationName = arg0.getVariable(Constants.APPLICATION_NAME) != null
+						? arg0.getVariable(Constants.APPLICATION_NAME).toString() : null;
+				String status = "A";
+				boolean isCooperate = false;
+				Date date = new Date();
+				long timeMilli = date.getTime();
+				String lastModifiedTimestamp = Long.toString(timeMilli);
 
-			AuthRequestInterceptor authRequestInterceptor = new AuthRequestInterceptor();
-			CreditPlanApi creditPlanApi = Feign.builder().encoder(new JacksonEncoder()).decoder(new JacksonDecoder())
-					.errorDecoder(new HubWorkflowCallbackApiErrorDecoder())
-					.requestInterceptor(
-							authRequestInterceptor.getBasicAuthRequestInterceptor(adminUserName, adminPassword))
-					.target(CreditPlanApi.class, mandateServiceUrl);
+				AuthRequestInterceptor authRequestInterceptor = new AuthRequestInterceptor();
+				CreditPlanApi creditPlanApi = Feign.builder().encoder(new JacksonEncoder()).decoder(new JacksonDecoder())
+						.errorDecoder(new HubWorkflowCallbackApiErrorDecoder())
+						.requestInterceptor(
+								authRequestInterceptor.getBasicAuthRequestInterceptor(adminUserName, adminPassword))
+						.target(CreditPlanApi.class, mandateServiceUrl);
 
-			WorkflowCreditPlan workflowCreditPlan = new WorkflowCreditPlan();
-			workflowCreditPlan.setAppId(String.valueOf(applicationId));
-			workflowCreditPlan.setSp(serviceProvider);
-			workflowCreditPlan.setCreditPlan(creditPlan);
-			workflowCreditPlan.setStatus(status);
-			workflowCreditPlan.setCooperate(isCooperate);
-			workflowCreditPlan.setLastModifiedTimestamp(lastModifiedTimestamp);
+				WorkflowCreditPlan workflowCreditPlan = new WorkflowCreditPlan();
+				workflowCreditPlan.setAppId(String.valueOf(applicationId));
+				workflowCreditPlan.setAppName(applicationName);
+				workflowCreditPlan.setSp(serviceProvider);
+				workflowCreditPlan.setCreditPlan(creditPlan);
+				workflowCreditPlan.setStatus(status);
+				workflowCreditPlan.setCooperate(isCooperate);
+				workflowCreditPlan.setLastModifiedTimestamp(lastModifiedTimestamp);
 
-			creditPlanApi.creditPlanApprovalHub(workflowCreditPlan);
+				creditPlanApi.creditPlanApprovalHub(workflowCreditPlan);
+			} else {
+				//Do not send the request to
+			}
 		} catch (Exception e) {
 
 			String errorMessage = "Error in CreditApprovalTask.executeHubAdminApplicationApproval";
