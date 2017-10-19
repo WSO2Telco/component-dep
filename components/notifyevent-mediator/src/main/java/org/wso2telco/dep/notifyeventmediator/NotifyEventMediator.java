@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package org.wso2telco.dep.publisheventmediator;
+package org.wso2telco.dep.notifyeventmediator;
 
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.SynapseException;
@@ -36,8 +36,10 @@ import java.util.Map;
 /**
  * Mediator that extracts data from current message payload/header according to the given configuration.
  * Extracted information is sent as an event.
+ *
+ * NOTE: Borrowed generously from WSO2 PublishEvent Mediator source code.
  */
-public class PublishEventMediator extends AbstractMediator {
+public class NotifyEventMediator extends AbstractMediator {
 
     private static final String TASK_EXECUTING_TENANT_ID = "CURRENT_TASK_EXECUTING_TENANT_IDENTIFIER";
 
@@ -52,6 +54,7 @@ public class PublishEventMediator extends AbstractMediator {
     private String eventSinkName;
 
     private FaultEventHandler faultEventHandler;
+    private boolean isEnabled = true;
 
     @Override
     public boolean isContentAware() {
@@ -68,6 +71,10 @@ public class PublishEventMediator extends AbstractMediator {
      */
     @Override
     public boolean mediate(MessageContext messageContext) {
+
+        if (!isEnabled) {
+            log.warn("NotifyEvent Mediator data publishing is disabled");
+        }
 
         if (messageContext.getEnvironment().isDebuggerEnabled()) {
             if (super.divertMediationRoute(messageContext)) {
@@ -114,7 +121,7 @@ public class PublishEventMediator extends AbstractMediator {
         SynapseLog synLog = getLog(messageContext);
 
         if (synLog.isTraceOrDebugEnabled()) {
-            synLog.traceOrDebug("Start : " + PublishEventMediatorFactory.getTagName() + " mediator");
+            synLog.traceOrDebug("Start : " + NotifyEventMediatorFactory.getTagName() + " mediator");
             if (synLog.isTraceTraceEnabled()) {
                 synLog.traceTrace("Message : " + messageContext.getEnvelope());
             }
@@ -163,7 +170,7 @@ public class PublishEventMediator extends AbstractMediator {
         }
 
         if (synLog.isTraceOrDebugEnabled()) {
-            synLog.traceOrDebug("End : " + PublishEventMediatorFactory.getTagName() + " mediator");
+            synLog.traceOrDebug("End : " + NotifyEventMediatorFactory.getTagName() + " mediator");
             if (synLog.isTraceTraceEnabled()) {
                 synLog.traceTrace("Message : " + messageContext.getEnvelope());
             }
@@ -292,5 +299,13 @@ public class PublishEventMediator extends AbstractMediator {
 
     public void setFaultEventHandler(FaultEventHandler faultEventHandler) {
         this.faultEventHandler = faultEventHandler;
+    }
+
+    public boolean isEnabled() {
+        return isEnabled;
+    }
+
+    public void setEnabled(boolean enabled) {
+        isEnabled = enabled;
     }
 }

@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package org.wso2telco.dep.publisheventmediator;
+package org.wso2telco.dep.notifyeventmediator;
 
 
 import org.apache.commons.logging.Log;
@@ -25,7 +25,7 @@ import java.util.Map;
 
 public class FaultEventHandler {
 
-    static final Log failedEventLog = LogFactory.getLog(FaultEventHandler.class);
+    static final Log failedEventLog = LogFactory.getLog("NOTIFY_EVENT_LOGGER");
 
     void handleFaultEvents(String streamId, Object[] metaDataArray, Object[] correlationDataArray, Object[] payloadDataArray, Map<String, String> arbitraryDataMap) {
 

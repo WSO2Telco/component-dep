@@ -24,11 +24,11 @@
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
-    <artifactId>publishevent-mediator</artifactId>
+    <artifactId>notifyevent-mediator</artifactId>
 
     <packaging>bundle</packaging>
-    <name>WSO2.Telco Publish Event Mediator</name>
-    <description>WSO2.Telco Publish Event Mediator for Data Publishing</description>
+    <name>WSO2.Telco Notify Event Mediator</name>
+    <description>WSO2.Telco Notify Event Mediator for Data Publishing</description>
 
     <dependencies>
         <dependency>
@@ -107,7 +107,7 @@
                         <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                         <Export-Package>
-                            org.wso2telco.dep.publisheventmediator.PublishEventMediator
+                            org.wso2telco.dep.notifyeventmediator.NotifyEventMediator
                         </Export-Package>
                         <Import-Package>
                             *;resolution:=optional

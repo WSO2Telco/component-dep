@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package org.wso2telco.dep.publisheventmediator;
+package org.wso2telco.dep.notifyeventmediator;
 
 import org.apache.axiom.om.OMAttribute;
 import org.apache.axiom.om.OMElement;
@@ -33,11 +33,12 @@ import java.util.List;
 import java.util.Properties;
 
 /**
- * Creates the publishEvent mediator with given configuration
+ * Creates the notifyEvent mediator with given configuration
  */
-public class PublishEventMediatorFactory extends AbstractMediatorFactory {
+public class NotifyEventMediatorFactory extends AbstractMediatorFactory {
 	public static final QName PUBLISH_EVENT_QNAME = new QName(SynapseConstants.SYNAPSE_NAMESPACE, getTagName());
 	public static final QName EVENT_SINK_QNAME = new QName(XMLConfigConstants.SYNAPSE_NAMESPACE, "eventSink");
+	public static final QName ENABLED_QNAME = new QName(XMLConfigConstants.SYNAPSE_NAMESPACE, "enabled");
 	public static final QName STREAM_NAME_QNAME = new QName(XMLConfigConstants.SYNAPSE_NAMESPACE, "streamName");
 	public static final QName STREAM_VERSION_QNAME = new QName(XMLConfigConstants.SYNAPSE_NAMESPACE, "streamVersion");
 	public static final QName ATTRIBUTES_QNAME = new QName(XMLConfigConstants.SYNAPSE_NAMESPACE, "attributes");
@@ -50,7 +51,7 @@ public class PublishEventMediatorFactory extends AbstractMediatorFactory {
 	public static final QName DEFAULT_QNAME = new QName("defaultValue");
 
 	public static String getTagName() {
-		return "telcoPublishEvent";
+		return "notifyEvent";
 	}
 
 	@Override
@@ -59,15 +60,15 @@ public class PublishEventMediatorFactory extends AbstractMediatorFactory {
 	}
 
 	/**
-	 * Creates a publishEvent mediator instance from given OMElement xml config
+	 * Creates a notifyEvent mediator instance from given OMElement xml config
 	 *
 	 * @param omElement XML config of the mediator
 	 * @param properties
-	 * @return Created publishEvent mediator object
+	 * @return Created notifyEvent mediator object
 	 */
 	@Override
 	public Mediator createSpecificMediator(OMElement omElement, Properties properties) {
-		PublishEventMediator mediator = new PublishEventMediator();
+		NotifyEventMediator mediator = new NotifyEventMediator();
 
 		OMElement streamName = omElement.getFirstChildWithName(STREAM_NAME_QNAME);
 		if (streamName == null) {
@@ -126,6 +127,13 @@ public class PublishEventMediatorFactory extends AbstractMediatorFactory {
 			throw new SynapseException(EVENT_SINK_QNAME.getLocalPart() + " element missing");
 		}
 		mediator.setEventSinkName(eventSinkElement.getText());
+
+		boolean isEnabled = true;
+		OMElement enabledElement = omElement.getFirstChildWithName(ENABLED_QNAME);
+		if (enabledElement != null && !Boolean.parseBoolean(enabledElement.getText())) {
+			isEnabled = false;
+		}
+		mediator.setEnabled(isEnabled);
 
 		// Setting the fault handler
 		mediator.setFaultEventHandler(new FaultEventHandler());

@@ -14,7 +14,7 @@
  * limitations under the License.
  ******************************************************************************/
 
-package org.wso2telco.dep.publisheventmediator;
+package org.wso2telco.dep.notifyeventmediator;
 
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.SynapseException;
@@ -98,7 +98,7 @@ public class Property {
 			return AttributeType.LONG;
 		}
 		throw new SynapseException(
-				"Invalid attribute type '" + type + "' for " + PublishEventMediatorFactory.getTagName() +
+				"Invalid attribute type '" + type + "' for " + NotifyEventMediatorFactory.getTagName() +
 				" mediator attribute");
 	}
 
