@@ -126,6 +126,10 @@ public class PublishEventMediatorFactory extends AbstractMediatorFactory {
 			throw new SynapseException(EVENT_SINK_QNAME.getLocalPart() + " element missing");
 		}
 		mediator.setEventSinkName(eventSinkElement.getText());
+
+		// Setting the fault handler
+		mediator.setFaultEventHandler(new FaultEventHandler());
+
 		return mediator;
 	}
 

@@ -51,6 +51,8 @@ public class PublishEventMediator extends AbstractMediator {
     private EventSink eventSink;
     private String eventSinkName;
 
+    private FaultEventHandler faultEventHandler;
+
     @Override
     public boolean isContentAware() {
         return true;
@@ -143,9 +145,14 @@ public class PublishEventMediator extends AbstractMediator {
                         arbitraryProperty.extractPropertyValue(messageContext).toString());
             }
 
-            eventSink.getDataPublisher()
-                    .publish(DataBridgeCommonsUtils.generateStreamId(getStreamName(), getStreamVersion()), metaData,
+            boolean success = eventSink.getDataPublisher()
+                    .tryPublish(DataBridgeCommonsUtils.generateStreamId(getStreamName(), getStreamVersion()), metaData,
                             correlationData, payloadData, arbitraryData);
+
+            // Handling the events when fails to put into the data-bridge queue
+            if (!success)
+                faultEventHandler.handleFaultEvents(DataBridgeCommonsUtils.generateStreamId(getStreamName(), getStreamVersion()), metaData,
+                        correlationData, payloadData, arbitraryData);
 
         } catch (SynapseException e) {
             String errorMsg = "Error occurred while constructing the event: " + e.getLocalizedMessage();
@@ -277,5 +284,13 @@ public class PublishEventMediator extends AbstractMediator {
 
     public void setArbitraryProperties(List<Property> arbitraryProperties) {
         this.arbitraryProperties = arbitraryProperties;
+    }
+
+    public FaultEventHandler getFaultEventHandler() {
+        return faultEventHandler;
+    }
+
+    public void setFaultEventHandler(FaultEventHandler faultEventHandler) {
+        this.faultEventHandler = faultEventHandler;
     }
 }
