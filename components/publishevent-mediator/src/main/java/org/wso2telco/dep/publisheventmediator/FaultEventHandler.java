@@ -25,13 +25,12 @@ import java.util.Map;
 
 public class FaultEventHandler {
 
-    static final Log faultEventLog = LogFactory.getLog("FAULT_EVENT_LOGGER");
+    static final Log failedEventLog = LogFactory.getLog(FaultEventHandler.class);
 
     void handleFaultEvents(String streamId, Object[] metaDataArray, Object[] correlationDataArray, Object[] payloadDataArray, Map<String, String> arbitraryDataMap) {
 
         Event faultEvent = new Event(streamId, System.currentTimeMillis(), metaDataArray, correlationDataArray, payloadDataArray, arbitraryDataMap);
 
-        faultEventLog.info(faultEvent.toString());
-        System.out.println("Failed event: " + faultEvent);
+        failedEventLog.info(faultEvent.toString());
     }
 }
