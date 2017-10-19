@@ -50,7 +50,6 @@ public class NotifyEventMediator extends AbstractMediator {
     private List<Property> correlationProperties = new ArrayList<Property>();
     private List<Property> payloadProperties = new ArrayList<Property>();
     private List<Property> arbitraryProperties = new ArrayList<Property>();
-    private EventSink eventSink;
     private String eventSinkName;
 
     private FaultEventHandler faultEventHandler;
@@ -93,22 +92,20 @@ public class NotifyEventMediator extends AbstractMediator {
             PrivilegedCarbonContext.getThreadLocalCarbonContext().setTenantId(tenantId);
         }
 
-        // first "getEventSink() == null" check is done to avoid synchronized(this) block each time mediate()
-        // gets called (to improve performance).
-        // second "getEventSink() == null" check inside synchronized(this) block is used to ensure only one thread
-        // sets event sink.
-        if (getEventSink() == null) {
-            synchronized (this) {
-                if (getEventSink() == null) {
-                    try {
-                        setEventSink(loadEventSink());
-                    } catch (SynapseException e) {
-                        String errorMsg = "Cannot mediate message. Failed to load event sink '" + getEventSinkName() +
-                                "'. Error: " + e.getLocalizedMessage();
-                        handleException(errorMsg, e, messageContext);
-                    }
-                }
-            }
+        EventSink eventSink = null;
+
+        try {
+            eventSink = loadEventSink();
+        } catch (SynapseException e) {
+            String errorMsg = "Cannot mediate message. Failed to load event sink '" + getEventSinkName() +
+                    "'. Error: " + e.getLocalizedMessage();
+            handleException(errorMsg, e, messageContext);
+        }
+
+        if (null == eventSink) {
+            String errorMsg = "Cannot mediate message. Failed to load event sink '" + getEventSinkName() +
+                    "'. ";
+            handleException(errorMsg, messageContext);
         }
 
 		/*
@@ -229,10 +226,6 @@ public class NotifyEventMediator extends AbstractMediator {
         return attributeList;
     }
 
-    public EventSink getEventSink() {
-        return eventSink;
-    }
-
     public String getEventSinkName() {
         return eventSinkName;
     }
@@ -259,10 +252,6 @@ public class NotifyEventMediator extends AbstractMediator {
 
     public List<Property> getArbitraryProperties() {
         return arbitraryProperties;
-    }
-
-    public void setEventSink(EventSink eventSink) {
-        this.eventSink = eventSink;
     }
 
     public void setEventSinkName(String eventSinkName) {
