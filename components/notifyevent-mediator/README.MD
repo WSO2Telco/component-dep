@@ -100,7 +100,7 @@ The parameters that are available to configure an individual attribute are as fo
 In this configuration, the Notify Event mediator uses four attributes to extract information from the ESB. This information is published in an event sink in the ESB named *sample_event_sink*.
 
 ```xml
-<publishEvent>
+<notifyEvent>
   <eventSink>sample_event_sink</eventSink>
   <streamName>stream_88</streamName>
   <streamVersion>1.1.2</streamVersion>
@@ -129,5 +129,5 @@ In this configuration, the Notify Event mediator uses four attributes to extract
                    expression="$body/m0:getQuote/m0:request/m0:symbol"/>
      </payload>
   </attributes>
-</publishEvent>
+</notifyEvent>
 ```
