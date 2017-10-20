@@ -90,13 +90,11 @@
         <maven-bundle-plugin.version>2.5.3</maven-bundle-plugin.version>
         <carbon.identity.version>5.1.1</carbon.identity.version>
         <org.hibernate.version>5.2.1.Final</org.hibernate.version>
+
         <!-- Analytic Commons version-->
         <carbon.analytics.common.version>5.1.0</carbon.analytics.common.version>
-        <carbon.analytics.common.imp.pkg.version>[5.1.0, 6.0.0)</carbon.analytics.common.imp.pkg.version>
 
-        <commons-pool.version>1.5.0.wso2v1</commons-pool.version>
-        <carbon.kernel.version>4.4.7</carbon.kernel.version>
-
+        <!-- Carbon Mediation version-->
         <carbon.mediation.version>4.6.1</carbon.mediation.version>
     </properties>
 
@@ -782,16 +780,6 @@
                 <groupId>org.wso2.carbon.analytics-common</groupId>
                 <artifactId>org.wso2.carbon.databridge.commons</artifactId>
                 <version>${carbon.analytics.common.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>commons-pool.wso2</groupId>
-                <artifactId>commons-pool</artifactId>
-                <version>${commons-pool.version}</version>
-            </dependency>
-            <dependency>
-                <groupId>org.wso2.carbon</groupId>
-                <artifactId>org.wso2.carbon.logging</artifactId>
-                <version>${carbon.kernel.version}</version>
             </dependency>
             <dependency>
                 <groupId>org.wso2.carbon.mediation</groupId>
