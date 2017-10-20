@@ -50,6 +50,8 @@ public class NotifyEventMediatorFactory extends AbstractMediatorFactory {
 	public static final QName TYPE_QNAME = new QName("type");
 	public static final QName DEFAULT_QNAME = new QName("defaultValue");
 
+	private static final String ELEMENT_MISSING_ERROR = "%s element missing";
+
 	public static String getTagName() {
 		return "notifyEvent";
 	}
@@ -72,13 +74,13 @@ public class NotifyEventMediatorFactory extends AbstractMediatorFactory {
 
 		OMElement streamName = omElement.getFirstChildWithName(STREAM_NAME_QNAME);
 		if (streamName == null) {
-			throw new SynapseException(STREAM_NAME_QNAME.getLocalPart() + " element missing");
+			throw new SynapseException(String.format(ELEMENT_MISSING_ERROR, STREAM_NAME_QNAME.getLocalPart()));
 		}
 		mediator.setStreamName(streamName.getText());
 
 		OMElement streamVersion = omElement.getFirstChildWithName(STREAM_VERSION_QNAME);
 		if (streamVersion == null) {
-			throw new SynapseException(STREAM_VERSION_QNAME.getLocalPart() + " element missing");
+			throw new SynapseException(String.format(ELEMENT_MISSING_ERROR, STREAM_VERSION_QNAME.getLocalPart()));
 		}
 		mediator.setStreamVersion(streamVersion.getText());
 
@@ -124,16 +126,20 @@ public class NotifyEventMediatorFactory extends AbstractMediatorFactory {
 
 		OMElement eventSinkElement = omElement.getFirstChildWithName(EVENT_SINK_QNAME);
 		if (eventSinkElement == null) {
-			throw new SynapseException(EVENT_SINK_QNAME.getLocalPart() + " element missing");
+			throw new SynapseException(String.format(ELEMENT_MISSING_ERROR, EVENT_SINK_QNAME.getLocalPart()));
 		}
 		mediator.setEventSinkName(eventSinkElement.getText());
 
 		boolean isEnabled = true;
-		OMElement enabledElement = omElement.getFirstChildWithName(ENABLED_QNAME);
-		if (enabledElement != null && !Boolean.parseBoolean(enabledElement.getText())) {
-			isEnabled = false;
+
+		try {
+			OMElement enabledElement = omElement.getFirstChildWithName(ENABLED_QNAME);
+			if (enabledElement != null && !Boolean.parseBoolean(enabledElement.getText())) {
+				isEnabled = false;
+			}
+		} finally {
+			mediator.setEnabled(isEnabled);
 		}
-		mediator.setEnabled(isEnabled);
 
 		// Setting the fault handler
 		mediator.setFaultEventHandler(new FaultEventHandler());

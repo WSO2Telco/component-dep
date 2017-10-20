@@ -34,6 +34,10 @@ public class ActivityIDSetter {
 	private static final String ACTIVITY_ID = "activityID";
 	private static final Log log = LogFactory.getLog(ActivityIDSetter.class);
 
+	private ActivityIDSetter() {
+		throw new IllegalStateException("Utility class");
+	}
+
 	/**
 	 * Sets a unique Activity ID to the transport header and synapse context.
 	 * This is useful when tracking the message when it passes through different systems.

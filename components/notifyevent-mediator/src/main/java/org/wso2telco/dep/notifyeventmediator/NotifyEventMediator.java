@@ -87,12 +87,6 @@ public class NotifyEventMediator extends AbstractMediator {
             return true;
         }
 
-        if (messageContext.getEnvironment().isDebuggerEnabled()) {
-            if (super.divertMediationRoute(messageContext)) {
-                return true;
-            }
-        }
-
 		/*
 		 Following will get the tenant-id if it's in the message context
 		 This is useful when injecting the message via a Scheduled Task, etc. which uses threads that are not tenant aware
@@ -187,7 +181,7 @@ public class NotifyEventMediator extends AbstractMediator {
      *
      * @return Found EventSink
      */
-    private EventSink loadEventSink() throws SynapseException {
+    private EventSink loadEventSink() {
         if (eventSinkService == null) {
             Object serviceObject = PrivilegedCarbonContext
                     .getThreadLocalCarbonContext().getOSGiService(EventSinkService.class);
@@ -239,7 +233,7 @@ public class NotifyEventMediator extends AbstractMediator {
      * @param propertyList List of properties for which attribute list should be created.
      * @return Created data-bridge attribute list.
      */
-    private List<Attribute> generateAttributeList(List<Property> propertyList) throws SynapseException {
+    private List<Attribute> generateAttributeList(List<Property> propertyList) {
         List<Attribute> attributeList = new ArrayList<Attribute>();
         for (Property property : propertyList) {
             attributeList.add(new Attribute(property.getKey(), property.getDatabridgeAttributeType()));

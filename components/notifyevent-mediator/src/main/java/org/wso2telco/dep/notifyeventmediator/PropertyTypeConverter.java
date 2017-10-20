@@ -23,11 +23,17 @@ import org.apache.synapse.SynapseException;
  */
 public class PropertyTypeConverter {
 
+	private static String errorMsg = "Cannot convert '%s' to a %s";
+
+	private PropertyTypeConverter() {
+		throw new IllegalStateException("Utility class");
+	}
+
 	public static int convertToInt(String string) throws SynapseException {
 		try {
 			return Integer.parseInt(string);
 		} catch (NumberFormatException e) {
-			throw new SynapseException("Cannot convert '" + string + "' to an integer", e);
+			throw new SynapseException(String.format(errorMsg, string, "integer"), e);
 		}
 	}
 
@@ -35,7 +41,7 @@ public class PropertyTypeConverter {
 		try {
 			return Float.parseFloat(string);
 		} catch (NumberFormatException e) {
-			throw new SynapseException("Cannot convert '" + string + "' to float", e);
+			throw new SynapseException(String.format(errorMsg, string, "float"), e);
 		}
 	}
 
@@ -43,7 +49,7 @@ public class PropertyTypeConverter {
 		try {
 			return Double.parseDouble(string);
 		} catch (NumberFormatException e) {
-			throw new SynapseException("Cannot convert '" + string + "' to double", e);
+			throw new SynapseException(String.format(errorMsg, string, "double"), e);
 		}
 	}
 
@@ -51,7 +57,7 @@ public class PropertyTypeConverter {
 		try {
 			return Long.parseLong(string);
 		} catch (NumberFormatException e) {
-			throw new SynapseException("Cannot convert '" + string + "' to long", e);
+			throw new SynapseException(String.format(errorMsg, string, "long"), e);
 		}
 	}
 
@@ -59,7 +65,7 @@ public class PropertyTypeConverter {
 		try {
 			return Boolean.parseBoolean(string);
 		} catch (Exception e) {
-			throw new SynapseException("Cannot convert '" + string + "' to boolean", e);
+			throw new SynapseException(String.format(errorMsg, string, "boolean"), e);
 		}
 	}
 }
