@@ -210,7 +210,7 @@ public class NotifyEventMediator extends AbstractMediator {
 
             synchronized (this) {
 
-                log.info("New event sink has identified: " + eventSinkHash);
+                log.info("New event sink has identified: " + eventSink.getName());
                 this.lastKnownEventSinkHash = eventSinkHash;
 
                 // Check whether current stream definition complies with the new event-sink's stream definition
