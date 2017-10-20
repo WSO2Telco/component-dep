@@ -97,7 +97,7 @@ The parameters that are available to configure an individual attribute are as fo
 | Type             | The data type of the attribute. |
 
 ## Example
-In this configuration, the Notify Event mediator uses four attributes to extract information from the ESB. This information is published in an event sink in the ESB named *sample_event_sink*.
+In this configuration, the Notify Event mediator uses four attributes to extract information from the message. This information is published in an event sink in the product named *sample_event_sink*.
 
 ```xml
 <notifyEvent>
