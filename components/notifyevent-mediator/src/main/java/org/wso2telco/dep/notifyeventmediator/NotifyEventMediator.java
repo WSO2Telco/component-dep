@@ -55,6 +55,9 @@ public class NotifyEventMediator extends AbstractMediator {
     private FaultEventHandler faultEventHandler;
     private boolean isEnabled = true;
 
+    private long lastMediatorDisabledTime = 0L;
+    private Object lastKnownEventSinkHash = null;
+
     @Override
     public boolean isContentAware() {
         return true;
@@ -71,8 +74,17 @@ public class NotifyEventMediator extends AbstractMediator {
     @Override
     public boolean mediate(MessageContext messageContext) {
 
+        // Show data-publishing disabled message every 10 seconds
         if (!isEnabled) {
-            log.warn("NotifyEvent Mediator data publishing is disabled");
+            synchronized (this) {
+                long currentTime = System.currentTimeMillis();
+                if (currentTime - lastMediatorDisabledTime > 10000L) {
+                    log.warn("NotifyEvent Mediator data publishing is disabled");
+                    lastMediatorDisabledTime = currentTime;
+                }
+            }
+
+            return true;
         }
 
         if (messageContext.getEnvironment().isDebuggerEnabled()) {
@@ -100,12 +112,6 @@ public class NotifyEventMediator extends AbstractMediator {
             String errorMsg = "Cannot mediate message. Failed to load event sink '" + getEventSinkName() +
                     "'. Error: " + e.getLocalizedMessage();
             handleException(errorMsg, e, messageContext);
-        }
-
-        if (null == eventSink) {
-            String errorMsg = "Cannot mediate message. Failed to load event sink '" + getEventSinkName() +
-                    "'. ";
-            handleException(errorMsg, messageContext);
         }
 
 		/*
@@ -197,18 +203,33 @@ public class NotifyEventMediator extends AbstractMediator {
             throw new SynapseException("Event sink \"" + getEventSinkName() + "\" not found");
         }
 
-        try {
-            StreamDefinition streamDef = new StreamDefinition(getStreamName(), getStreamVersion());
-            streamDef.setCorrelationData(generateAttributeList(getCorrelationProperties()));
-            streamDef.setMetaData(generateAttributeList(getMetaProperties()));
-            streamDef.setPayloadData(generateAttributeList(getPayloadProperties()));
-        } catch (MalformedStreamDefinitionException e) {
-            String errorMsg = "Failed to set stream definition. Malformed Stream Definition: " + e.getMessage();
-            throw new SynapseException(errorMsg, e);
-        } catch (Exception e) {
-            String errorMsg = "Error occurred while creating the Stream Definition: " + e.getMessage();
-            throw new SynapseException(errorMsg, e);
+        Object eventSinkHash = eventSink.hashCode();
+
+        // Compare hash codes to identify a new event-sink deployment
+        if (null == lastKnownEventSinkHash || !lastKnownEventSinkHash.equals(eventSinkHash)) {
+
+            synchronized (this) {
+
+                log.info("New event sink has identified: " + eventSinkHash);
+                this.lastKnownEventSinkHash = eventSinkHash;
+
+                // Check whether current stream definition complies with the new event-sink's stream definition
+                try {
+                    StreamDefinition streamDef = new StreamDefinition(getStreamName(), getStreamVersion());
+                    streamDef.setCorrelationData(generateAttributeList(getCorrelationProperties()));
+                    streamDef.setMetaData(generateAttributeList(getMetaProperties()));
+                    streamDef.setPayloadData(generateAttributeList(getPayloadProperties()));
+                } catch (MalformedStreamDefinitionException e) {
+                    String errorMsg = "Failed to set stream definition. Malformed Stream Definition: " + e.getMessage();
+                    throw new SynapseException(errorMsg, e);
+                } catch (Exception e) {
+                    String errorMsg = "Error occurred while creating the Stream Definition: " + e.getMessage();
+                    throw new SynapseException(errorMsg, e);
+                }
+            }
+
         }
+
         return eventSink;
     }
 
