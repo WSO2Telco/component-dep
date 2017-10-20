@@ -10,6 +10,13 @@ Events which fails at data-bridge queue can be preserved through a logger.
 The Notify Event mediator is a content-aware mediator.
 ```
 
+```
+NOTE:
+Use this mediator where it is really necessary.
+This mediator allows mediation logic to perform seamlessly incase of anaytics server failure.
+However incase of analytic server performance issue, optimizing the analytic server is essential.
+```
+
 ## Configuring Mediator
 Build this repository with maven
 
@@ -19,6 +26,8 @@ Add following .jar files to *CARBON_HOME/repository/components/dropins*
 
 ## Configuring Logging
 Following configuration is required to dump failing events to a desired location.
+
+Make sure to use proper set of configurations based on the rate of failing events.
 
 Add following segment to the end of file *CARBON_HOME/repository/conf/log4j.properties*
 
