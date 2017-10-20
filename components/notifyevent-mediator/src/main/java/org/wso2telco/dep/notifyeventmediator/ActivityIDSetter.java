@@ -46,9 +46,8 @@ public class ActivityIDSetter {
 	 * If non of either synapse context or transport header had activity id set, new unique id is generated
 	 *
 	 * @param messageContext message context of message
-	 * @throws SynapseException
 	 */
-	public static void setActivityIdInTransportHeader(MessageContext messageContext) throws SynapseException {
+	public static void setActivityIdInTransportHeader(MessageContext messageContext) {
 		try {
 			//get the unique ID used for correlating messages for BAM activity monitoring
 			String idString = getUniqueId();

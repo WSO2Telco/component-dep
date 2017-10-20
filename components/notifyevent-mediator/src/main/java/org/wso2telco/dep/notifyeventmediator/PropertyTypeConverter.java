@@ -29,7 +29,7 @@ public class PropertyTypeConverter {
 		throw new IllegalStateException("Utility class");
 	}
 
-	public static int convertToInt(String string) throws SynapseException {
+	public static int convertToInt(String string) {
 		try {
 			return Integer.parseInt(string);
 		} catch (NumberFormatException e) {
@@ -37,7 +37,7 @@ public class PropertyTypeConverter {
 		}
 	}
 
-	public static float convertToFloat(String string) throws SynapseException  {
+	public static float convertToFloat(String string) {
 		try {
 			return Float.parseFloat(string);
 		} catch (NumberFormatException e) {
@@ -45,7 +45,7 @@ public class PropertyTypeConverter {
 		}
 	}
 
-	public static double convertToDouble(String string) throws SynapseException  {
+	public static double convertToDouble(String string) {
 		try {
 			return Double.parseDouble(string);
 		} catch (NumberFormatException e) {
@@ -53,7 +53,7 @@ public class PropertyTypeConverter {
 		}
 	}
 
-	public static long convertToLong(String string) throws SynapseException  {
+	public static long convertToLong(String string) {
 		try {
 			return Long.parseLong(string);
 		} catch (NumberFormatException e) {
@@ -61,7 +61,7 @@ public class PropertyTypeConverter {
 		}
 	}
 
-	public static boolean convertToBoolean(String string) throws SynapseException {
+	public static boolean convertToBoolean(String string) {
 		try {
 			return Boolean.parseBoolean(string);
 		} catch (Exception e) {

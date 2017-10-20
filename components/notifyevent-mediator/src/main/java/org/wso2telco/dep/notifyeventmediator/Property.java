@@ -78,7 +78,7 @@ public class Property {
 	 *
 	 * @return Data bridge attribute type of this object
 	 */
-	public AttributeType getDatabridgeAttributeType() throws SynapseException {
+	public AttributeType getDatabridgeAttributeType() {
 		if (DATA_TYPE_STRING.equals(type)) {
 			return AttributeType.STRING;
 		}
@@ -112,7 +112,7 @@ public class Property {
 	 * @param messageContext Message context from which the value should be extracted
 	 * @return Extracted property value
 	 */
-	public Object extractPropertyValue(MessageContext messageContext) throws SynapseException {
+	public Object extractPropertyValue(MessageContext messageContext) {
 		String stringProperty;
 		if (expression != null) {
 			stringProperty = expression.stringValueOf(messageContext);
