@@ -441,7 +441,8 @@ INSERT INTO `operatorendpoints` (`ID`, `operatorid`, `api`, `isactive`, `endpoin
   (1, 1, 'smsmessaging', 1, 'http://localhost:8081/mifesandbox/SandboxController/smsmessaging/1', NULL, '2014-03-04 11:36:23', NULL, NULL),
   (2, 1, 'payment', 1, 'http://localhost:8081/mifesandbox/SandboxController/payment/1', NULL, '2014-03-04 11:36:58', NULL, NULL),
   (3, 1, 'location', 1, 'http://localhost:8081/mifesandbox/SandboxController/location/1', NULL, '2014-10-02 10:33:41', NULL, NULL),
-  (4, 1, 'ussd', 1, 'http://localhost:8081/mifesandbox/SandboxController/ussd/1', NULL, '2014-10-02 10:33:41', NULL, NULL);
+  (4, 1, 'ussd', 1, 'http://localhost:8081/mifesandbox/SandboxController/ussd/1', NULL, '2014-10-02 10:33:41', NULL, NULL),
+  (5, 1, 'subscription', 1, 'http://localhost:8081/mifesandbox/SandboxController/subscription/1', NULL, '2014-10-02 10:33:45', NULL, NULL);
 
 --
 -- Initial Metadata script for table `workflow_api_key_mappings`
