@@ -21,7 +21,7 @@
     <groupId>com.wso2telco.dep</groupId>
     <artifactId>component-dep</artifactId>
     <packaging>pom</packaging>
-    <version>2.2.8-SNAPSHOT</version>
+    <version>2.3.2-SNAPSHOT</version>
     <name>WSO2Telco -Digital Enable Platform Component</name>
     <description>WSO2Telco DEP Aggregate Pom</description>
     <url>http://wso2telco.com</url>
@@ -34,8 +34,8 @@
 
     <properties>
 	    <!-- WSO2.Telco versions -->
-        <com.wso2telco.dep.version>2.2.8-SNAPSHOT</com.wso2telco.dep.version>
-	    <com.wso2telco.core.version>2.0.26-SNAPSHOT</com.wso2telco.core.version>
+        <com.wso2telco.dep.version>2.3.2-SNAPSHOT</com.wso2telco.dep.version>
+	<com.wso2telco.core.version>2.3.1-SNAPSHOT</com.wso2telco.core.version>
 
         <log4j.version>1.2.13</log4j.version>
         <com.google.code.gson.version>2.3.1</com.google.code.gson.version>
@@ -90,6 +90,12 @@
         <maven-bundle-plugin.version>2.5.3</maven-bundle-plugin.version>
         <carbon.identity.version>5.1.1</carbon.identity.version>
         <org.hibernate.version>5.2.1.Final</org.hibernate.version>
+
+        <!-- Analytic Commons version-->
+        <carbon.analytics.common.version>5.1.0</carbon.analytics.common.version>
+
+        <!-- Carbon Mediation version-->
+        <carbon.mediation.version>4.6.1</carbon.mediation.version>
     </properties>
 
     <prerequisites>
@@ -138,6 +144,7 @@
         <module>components/billing/billing-extension</module>
         <module>components/billing/billing-service</module>
         <module>components/nashorn-mediator</module>
+        <module>components/notifyevent-mediator</module>
         <module>components/logging-extension</module>
         <module>components/operator-onboarding</module>
         <module>components/webapps/ratecard-service</module>
@@ -727,6 +734,11 @@
             </dependency>
             <dependency>
                 <groupId>org.slf4j</groupId>
+                <artifactId>slf4j-log4j12</artifactId>
+                <version>${slf4j.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.slf4j</groupId>
                 <artifactId>slf4j-jdk14</artifactId>
                 <version>${slf4j.version}</version>
             </dependency>
@@ -758,6 +770,21 @@
                 <artifactId>org.wso2.carbon.apimgt.hostobjects</artifactId>
                 <version>${org.wso2.carbon.apimgt.version}</version>
                 <scope>provided</scope>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.analytics-common</groupId>
+                <artifactId>org.wso2.carbon.databridge.agent</artifactId>
+                <version>${carbon.analytics.common.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.analytics-common</groupId>
+                <artifactId>org.wso2.carbon.databridge.commons</artifactId>
+                <version>${carbon.analytics.common.version}</version>
+            </dependency>
+            <dependency>
+                <groupId>org.wso2.carbon.mediation</groupId>
+                <artifactId>org.wso2.carbon.event.sink</artifactId>
+                <version>${carbon.mediation.version}</version>
             </dependency>
         </dependencies>
     </dependencyManagement>
