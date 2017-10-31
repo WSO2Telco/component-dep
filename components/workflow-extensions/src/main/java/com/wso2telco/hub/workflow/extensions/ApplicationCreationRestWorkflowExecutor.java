@@ -97,6 +97,8 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
         return WorkflowConstants.WF_TYPE_AM_APPLICATION_CREATION;
     }
 
+    
+   
     public WorkflowResponse execute(WorkflowDTO workflowDTO) throws WorkflowException {
 
         OperatorApi operatorApi = new OperatorImpl();
@@ -323,6 +325,7 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
     }
 
     public void setServiceEndpoint(String serviceEndpoint) {
+    	WorkFlowHealper.getInstance().setAppCreationServiceEndPoint(serviceEndpoint);
         this.serviceEndpoint = serviceEndpoint;
     }
 

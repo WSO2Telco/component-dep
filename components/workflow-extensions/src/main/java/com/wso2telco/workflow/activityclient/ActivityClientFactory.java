@@ -19,7 +19,6 @@ import feign.jackson.JacksonEncoder;
 
 public class ActivityClientFactory {
 	private  Log    log = LogFactory.getLog(ActivityClientFactory.class);
-	private  String serviceEndpoint;
 	private  String username;
 	private   String password;
 	private  RestClient appClient;
@@ -61,11 +60,12 @@ public class ActivityClientFactory {
 	 */
 	public RestClient getClient() {
 		if(appClient==null) {
-			appClient = Feign.builder().encoder(new JacksonEncoder()).decoder(new JacksonDecoder())
-				.errorDecoder(new WorkflowErrorDecoder())
-				.requestInterceptor(new BasicAuthRequestInterceptor(username, password))
-				.requestInterceptor(new ProcessTypeInterCeptor(	DeploymentTypes.getByName( WorkFlowHealper.getDeploymentType()).getAppProcessType()))
-				.target(RestClient.class, serviceEndpoint);
+			appClient = Feign.builder().encoder(new JacksonEncoder())
+					.decoder(new JacksonDecoder())
+					.errorDecoder(new WorkflowErrorDecoder())
+					.requestInterceptor(new BasicAuthRequestInterceptor(username, password))
+					.requestInterceptor(new ProcessTypeInterCeptor(	DeploymentTypes.getByName( WorkFlowHealper.getDeploymentType()).getAppProcessType()))
+					.target(RestClient.class, WorkFlowHealper.getInstance().getWorkflowServiceEndPoint());
 		}
 		return appClient;
 	}

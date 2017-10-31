@@ -10,6 +10,7 @@ import com.wso2telco.workflow.activityclient.ProcessSearchRequest;
 import com.wso2telco.workflow.activityclient.RestClient;
 import com.wso2telco.workflow.model.TaskList;
 import com.wso2telco.workflow.model.TaskSerchDTO;
+import com.wso2telco.workflow.model.TaskVariableResponse;
 import com.wso2telco.workflow.service.app.QueryBuilderFactory;
 
 
@@ -22,6 +23,9 @@ public class ApplicationService {
 		RestClient activityClient= ActivityClientFactory.getInstance().getClient();
 		try {
 			TaskList taskList = activityClient.getTasks(searchRequest);
+			for (TaskList.Task task : taskList.getData()) {
+				TaskVariableResponse[] vars = activityClient.getVariables(String.valueOf( task.getId()));
+			}  
 		} catch (WorkflowExtensionException e) {
 			throw new BusinessException(e);
 		}
