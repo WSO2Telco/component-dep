@@ -28,6 +28,8 @@ import com.wso2telco.hub.workflow.extensions.impl.OperatorImpl;
 import com.wso2telco.hub.workflow.extensions.interfaces.OperatorApi;
 import com.wso2telco.hub.workflow.extensions.rest.client.BusinessProcessApi;
 import com.wso2telco.hub.workflow.extensions.util.WorkflowProperties;
+import com.wso2telco.workflow.util.WorkFlowHealper;
+
 import feign.Feign;
 import feign.auth.BasicAuthRequestInterceptor;
 import feign.jackson.JacksonDecoder;
@@ -57,22 +59,27 @@ import java.util.*;
 
 public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
 
-    private static final Log log = LogFactory.getLog(ApplicationCreationRestWorkflowExecutor.class);
+    /**
+	 * 
+	 */
+	private static final long serialVersionUID = 2480996304691515065L;
+
+	private static final Log log = LogFactory.getLog(ApplicationCreationRestWorkflowExecutor.class);
 
     private static final String TENANT_ID = "-1234";
     private static final String APPLICATION_CREATION_APPROVAL_PROCESS_NAME = "application_creation_approval_process";
-    private static final String APPLICATION_NAME = "applicationName";
+    public static final String APPLICATION_NAME = "applicationName";
     private static final String APPLICATION_ID = "applicationId";
     private static final String WORKFLOW_REF_ID = "workflowRefId";
     private static final String CALL_BACK_URL = "callBackUrl";
     private static final String OPERATORS = "operators";
     private static final String DEPLOYMENT_TYPE = "deployment_type";
     private static final String OPERATORS_SYSTEM_PARAM = "OPERATORS";
-    private static final String DEPLOYMENT_TYPE_SYSTEM_PARAM = "DEPLOYMENT_TYPE";
-    private static final String TIER = "tier";
+    
+    public static final String TIER = "tier";
     private static final String DESCRIPTION = "description";
     private static final String TENANT_DOMAIN = "tenantDomain";
-    private static final String USER_NAME = "userName";
+    public static final String USER_NAME = "userName";
     private static final String EXTERNAL_REFERENCE = "externalWorkflowReferenc";
     private static final String TIERS_STR = "tiersStr";
     private static final String ADMIN_USER = "adminUserName";
@@ -296,9 +303,13 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
                 workflowExtRef + " deleted successfully");
 
     }
-
+    /**\
+     * replaced by WorkFlowHealper.getDeploymentType()
+     * @return
+     */
+    @Deprecated
     private String getDeploymentType() {
-        return System.getProperty(DEPLOYMENT_TYPE_SYSTEM_PARAM, "hub");
+        return WorkFlowHealper.getDeploymentType();
     }
 
 

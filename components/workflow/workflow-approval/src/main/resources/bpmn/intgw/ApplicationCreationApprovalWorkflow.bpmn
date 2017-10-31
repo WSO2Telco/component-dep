@@ -1,0 +1,98 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
+  <process id="app_approval_process_intgw" name="INT-GW App Approval Process" isExecutable="true">
+    <startEvent id="startevent1" name="Start">
+      <extensionElements>
+        <activiti:formProperty id="deployment_type" name="Deployment Type" type="string" variable="deployment_type"></activiti:formProperty>
+        <activiti:formProperty id="applicationName" name="Application Name" type="string" variable="applicationName" required="true"></activiti:formProperty>
+        <activiti:formProperty id="workflowRefId" name="Workflow reference ID" type="string" variable="workflowRefId" required="true"></activiti:formProperty>
+        <activiti:formProperty id="callBackUrl" name="Callback URL" type="string" variable="callBackUrl" required="true"></activiti:formProperty>
+        <activiti:formProperty id="operators" name="Operator Names" type="string" variable="operators" required="true"></activiti:formProperty>
+        <activiti:formProperty id="applicationId" name="Application ID" type="string" variable="applicationId" required="true"></activiti:formProperty>
+        <activiti:formProperty id="tier" name="Tier" variable="tier"></activiti:formProperty>
+        <activiti:formProperty id="description" name="Description" variable="description"></activiti:formProperty>
+        <activiti:formProperty id="tenantDomain" name="Tenant Domain" variable="tenantDomain"></activiti:formProperty>
+        <activiti:formProperty id="userName" name="User Name" variable="userName"></activiti:formProperty>
+        <activiti:formProperty id="externalWorkflowReference" name="External Workflow Reference" variable="externalWorkflowReference"></activiti:formProperty>
+        <activiti:formProperty id="tiers" name="Tiers" variable="tiers"></activiti:formProperty>
+        <activiti:formProperty id="adminPassword" name="admin Password" variable="adminPassword"></activiti:formProperty>
+        <activiti:formProperty id="serviceURL" name="serviceURL" variable="serviceURL"></activiti:formProperty>
+        <activiti:formProperty id="adminUserName" name="Admin User Name" variable="adminUserName" required="true"></activiti:formProperty>
+      </extensionElements>
+    </startEvent>
+    <endEvent id="endevent3" name="End"></endEvent>
+    <sequenceFlow id="flow21" sourceRef="admin_approval_transaction" targetRef="endevent3"></sequenceFlow>
+    <transaction id="admin_approval_transaction" name="Admin Approval Transaction">
+      <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="${operatorList}" activiti:elementVariable="operator"></multiInstanceLoopCharacteristics>
+      <startEvent id="startevent2" name="Start"></startEvent>
+      <sequenceFlow id="flow18" sourceRef="startevent2" targetRef="usertask1"></sequenceFlow>
+      <userTask id="usertask1" name="Operator Admin Approval" activiti:candidateGroups="${deployment_type.equals(&quot;hub&quot;) ? operator.concat('-admin-role') : 'admin'}">
+        <extensionElements>
+          <activiti:formProperty id="operatorAdminApproval" name="Approve / Reject" type="enum" variable="operatorAdminApproval" required="true">
+            <activiti:value id="APPROVED" name="Approve"></activiti:value>
+            <activiti:value id="REJECTED" name="Reject"></activiti:value>
+          </activiti:formProperty>
+        </extensionElements>
+      </userTask>
+      <sequenceFlow id="flow19" sourceRef="usertask1" targetRef="operator_admin_data_update"></sequenceFlow>
+      <serviceTask id="operator_admin_data_update" name="Operator Admin Data Update" activiti:class="com.wso2telco.workflow.approval.application.servicetask.OperatorDataUpdater"></serviceTask>
+      <sequenceFlow id="flow25" sourceRef="operator_admin_data_update" targetRef="servicetask3"></sequenceFlow>
+      <serviceTask id="servicetask3" name="Operator Callback" activiti:class="com.wso2telco.workflow.approval.application.servicetask.OperatorWorkflowCallback"></serviceTask>
+      <sequenceFlow id="flow20" sourceRef="servicetask3" targetRef="endevent4"></sequenceFlow>
+      <endEvent id="endevent4" name="End"></endEvent>
+    </transaction>
+    <sequenceFlow id="flow26" sourceRef="startevent1" targetRef="admin_approval_transaction"></sequenceFlow>
+  </process>
+  <bpmndi:BPMNDiagram id="BPMNDiagram_app_approval_process_intgw">
+    <bpmndi:BPMNPlane bpmnElement="app_approval_process_intgw" id="BPMNPlane_app_approval_process_intgw">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
+        <omgdc:Bounds height="35.0" width="35.0" x="760.0" y="320.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent3" id="BPMNShape_endevent3">
+        <omgdc:Bounds height="35.0" width="35.0" x="760.0" y="20.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="admin_approval_transaction" id="BPMNShape_admin_approval_transaction">
+        <omgdc:Bounds height="205.0" width="611.0" x="472.0" y="70.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startevent2" id="BPMNShape_startevent2">
+        <omgdc:Bounds height="35.0" width="35.0" x="502.0" y="157.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask1" id="BPMNShape_usertask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="572.0" y="147.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="operator_admin_data_update" id="BPMNShape_operator_admin_data_update">
+        <omgdc:Bounds height="55.0" width="105.0" x="722.0" y="147.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask3" id="BPMNShape_servicetask3">
+        <omgdc:Bounds height="55.0" width="105.0" x="852.0" y="147.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent4" id="BPMNShape_endevent4">
+        <omgdc:Bounds height="35.0" width="35.0" x="1012.0" y="157.0"></omgdc:Bounds>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow21" id="BPMNEdge_flow21">
+        <omgdi:waypoint x="777.0" y="70.0"></omgdi:waypoint>
+        <omgdi:waypoint x="777.0" y="55.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow18" id="BPMNEdge_flow18">
+        <omgdi:waypoint x="537.0" y="174.0"></omgdi:waypoint>
+        <omgdi:waypoint x="572.0" y="174.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow19" id="BPMNEdge_flow19">
+        <omgdi:waypoint x="677.0" y="174.0"></omgdi:waypoint>
+        <omgdi:waypoint x="722.0" y="174.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow25" id="BPMNEdge_flow25">
+        <omgdi:waypoint x="827.0" y="174.0"></omgdi:waypoint>
+        <omgdi:waypoint x="852.0" y="174.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow20" id="BPMNEdge_flow20">
+        <omgdi:waypoint x="957.0" y="174.0"></omgdi:waypoint>
+        <omgdi:waypoint x="1012.0" y="174.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow26" id="BPMNEdge_flow26">
+        <omgdi:waypoint x="777.0" y="320.0"></omgdi:waypoint>
+        <omgdi:waypoint x="777.0" y="275.0"></omgdi:waypoint>
+      </bpmndi:BPMNEdge>
+    </bpmndi:BPMNPlane>
+  </bpmndi:BPMNDiagram>
+</definitions>
