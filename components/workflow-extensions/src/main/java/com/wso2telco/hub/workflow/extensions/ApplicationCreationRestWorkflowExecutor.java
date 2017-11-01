@@ -16,26 +16,17 @@
 
 package com.wso2telco.hub.workflow.extensions;
 
-import com.wso2telco.dep.operatorservice.dao.WorkflowDAO;
-import com.wso2telco.dep.operatorservice.model.WorkflowReferenceDTO;
-import com.wso2telco.hub.workflow.extensions.beans.CreateProcessInstanceRequest;
-import com.wso2telco.hub.workflow.extensions.beans.CreateProcessInstanceResponse;
-import com.wso2telco.hub.workflow.extensions.beans.ProcessInstanceData;
-import com.wso2telco.hub.workflow.extensions.beans.Variable;
-import com.wso2telco.hub.workflow.extensions.exceptions.WorkflowErrorDecoder;
-import com.wso2telco.hub.workflow.extensions.exceptions.WorkflowExtensionException;
-import com.wso2telco.hub.workflow.extensions.impl.OperatorImpl;
-import com.wso2telco.hub.workflow.extensions.interfaces.OperatorApi;
-import com.wso2telco.hub.workflow.extensions.rest.client.BusinessProcessApi;
-import com.wso2telco.hub.workflow.extensions.util.WorkflowProperties;
-import com.wso2telco.workflow.util.WorkFlowHealper;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
 
-import feign.Feign;
-import feign.auth.BasicAuthRequestInterceptor;
-import feign.jackson.JacksonDecoder;
-import feign.jackson.JacksonEncoder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.workflow.core.WorkflowErrorDecoder;
+import org.workflow.core.execption.WorkflowExtensionException;
+import org.workflow.core.util.WorkFlowHealper;
 import org.wso2.carbon.apimgt.api.APIConsumer;
 import org.wso2.carbon.apimgt.api.APIManagementException;
 import org.wso2.carbon.apimgt.api.WorkflowResponse;
@@ -55,7 +46,21 @@ import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.user.api.UserStoreException;
 
-import java.util.*;
+import com.wso2telco.dep.operatorservice.dao.WorkflowDAO;
+import com.wso2telco.dep.operatorservice.model.WorkflowReferenceDTO;
+import com.wso2telco.hub.workflow.extensions.beans.CreateProcessInstanceRequest;
+import com.wso2telco.hub.workflow.extensions.beans.CreateProcessInstanceResponse;
+import com.wso2telco.hub.workflow.extensions.beans.ProcessInstanceData;
+import com.wso2telco.hub.workflow.extensions.beans.Variable;
+import com.wso2telco.hub.workflow.extensions.impl.OperatorImpl;
+import com.wso2telco.hub.workflow.extensions.interfaces.OperatorApi;
+import com.wso2telco.hub.workflow.extensions.rest.client.BusinessProcessApi;
+import com.wso2telco.hub.workflow.extensions.util.WorkflowProperties;
+
+import feign.Feign;
+import feign.auth.BasicAuthRequestInterceptor;
+import feign.jackson.JacksonDecoder;
+import feign.jackson.JacksonEncoder;
 
 public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
 

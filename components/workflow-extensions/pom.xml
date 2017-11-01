@@ -30,6 +30,11 @@
     <name>WSO2 Telco Workflow Extensions</name>
 
     <dependencies>
+     <dependency>
+           <groupId>com.wso2telco.dep</groupId>
+           <artifactId>workflow-core</artifactId>
+            <scope>provided</scope>
+        </dependency>
         <dependency>
             <groupId>org.wso2.carbon.apimgt</groupId>
             <artifactId>org.wso2.carbon.apimgt.impl</artifactId>
