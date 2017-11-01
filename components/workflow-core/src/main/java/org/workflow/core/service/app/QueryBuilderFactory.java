@@ -1,10 +1,13 @@
 package org.workflow.core.service.app;
 
 import org.workflow.core.service.RequestBuilder;
+import org.workflow.core.service.WorkFlow;
 import org.workflow.core.util.DeploymentTypes;
 import org.workflow.core.util.WorkFlowHealper;
 
-public final class QueryBuilderFactory {
+import com.wso2telco.core.dbutils.exception.BusinessException;
+
+public final class QueryBuilderFactory  implements WorkFlow{
 	private QueryBuilderFactory() {
 	}
 
@@ -17,7 +20,7 @@ public final class QueryBuilderFactory {
 		return instance;
 	}
 	
-	public RequestBuilder loadQueryBuilder() {
+	public RequestBuilder loadQueryBuilder() throws BusinessException {
 		DeploymentTypes depType =DeploymentTypes.getByName( WorkFlowHealper.getDeploymentType());
 		RequestBuilder queryBuilder=null;
 		switch (depType) {
@@ -28,7 +31,7 @@ public final class QueryBuilderFactory {
 			queryBuilder =  DefaultAppRequestBuilder.getInstace();
 			break;
 		case INTERNAL_GATEWAY:
-			queryBuilder =  INTGWQueryBuilder.getInstace();
+			queryBuilder =  DefaultAppRequestBuilder.getInstace();
 			break;
 		default:
 			queryBuilder =  DefaultAppRequestBuilder.getInstace();
