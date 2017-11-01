@@ -1,12 +1,12 @@
-package com.wso2telco.workflow.service;
+package org.workflow.core.service;
 
 import java.util.Map;
 
+import org.workflow.core.activity.ProcessSearchRequest;
+import org.workflow.core.model.TaskSerchDTO;
+
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.model.UserProfileDTO;
-import com.wso2telco.workflow.activityclient.ProcessSearchRequest;
-import com.wso2telco.workflow.model.TaskList;
-import com.wso2telco.workflow.model.TaskSerchDTO;
 
 public interface RequestBuilder {
 //	TaskList getApprovePendingTaskList(final TaskSerchDTO serchD,UserProfileDTO userProfile) throws BusinessException;

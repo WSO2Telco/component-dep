@@ -1,8 +1,8 @@
-package com.wso2telco.workflow.service.app;
+package org.workflow.core.service.app;
 
-import com.wso2telco.hub.workflow.extensions.util.DeploymentTypes;
-import com.wso2telco.workflow.service.RequestBuilder;
-import com.wso2telco.workflow.util.WorkFlowHealper;
+import org.workflow.core.service.RequestBuilder;
+import org.workflow.core.util.DeploymentTypes;
+import org.workflow.core.util.WorkFlowHealper;
 
 public final class QueryBuilderFactory {
 	private QueryBuilderFactory() {

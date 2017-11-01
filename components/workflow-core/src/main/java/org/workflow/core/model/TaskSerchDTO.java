@@ -1,4 +1,4 @@
-package com.wso2telco.workflow.model;
+package org.workflow.core.model;
 
 public class TaskSerchDTO {
 	private byte batchSize = 10;

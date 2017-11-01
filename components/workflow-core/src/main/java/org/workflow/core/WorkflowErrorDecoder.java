@@ -14,7 +14,9 @@
  * limitations under the License.
  */
 
-package com.wso2telco.hub.workflow.extensions.exceptions;
+package org.workflow.core;
+
+import org.workflow.core.execption.WorkflowExtensionException;
 
 import feign.FeignException;
 import feign.Response;

@@ -1,4 +1,4 @@
-package com.wso2telco.workflow.model;
+package org.workflow.core.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;

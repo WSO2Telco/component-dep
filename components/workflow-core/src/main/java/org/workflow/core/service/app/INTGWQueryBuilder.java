@@ -1,13 +1,13 @@
-package com.wso2telco.workflow.service.app;
+package org.workflow.core.service.app;
 
 import java.util.Map;
 
 import org.apache.commons.logging.LogFactory;
+import org.workflow.core.model.TaskSerchDTO;
+import org.workflow.core.service.RequestBuilder;
 
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.model.UserProfileDTO;
-import com.wso2telco.workflow.model.TaskSerchDTO;
-import com.wso2telco.workflow.service.RequestBuilder;
 
 final class INTGWQueryBuilder extends AbsractQueryBuilder {
 	{

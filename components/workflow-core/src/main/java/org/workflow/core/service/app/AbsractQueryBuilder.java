@@ -1,15 +1,15 @@
-package com.wso2telco.workflow.service.app;
+package org.workflow.core.service.app;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
+import org.workflow.core.activity.ProcessSearchRequest;
+import org.workflow.core.model.TaskSerchDTO;
+import org.workflow.core.service.RequestBuilder;
 
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.model.UserProfileDTO;
-import com.wso2telco.workflow.activityclient.ProcessSearchRequest;
-import com.wso2telco.workflow.model.TaskSerchDTO;
-import com.wso2telco.workflow.service.RequestBuilder;
 
 abstract class AbsractQueryBuilder  implements RequestBuilder {
 	protected Log LOG ;

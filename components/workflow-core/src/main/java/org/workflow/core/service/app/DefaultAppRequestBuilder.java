@@ -1,18 +1,18 @@
-package com.wso2telco.workflow.service.app;
+package org.workflow.core.service.app;
 
 import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.LogFactory;
+import org.workflow.core.activity.ProcessSearchRequest;
+import org.workflow.core.model.TaskSerchDTO;
+import org.workflow.core.model.Variable;
+import org.workflow.core.util.AppVariable;
+import org.workflow.core.util.DeploymentTypes;
+import org.workflow.core.util.WorkFlowHealper;
 
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.model.UserProfileDTO;
-import com.wso2telco.hub.workflow.extensions.ApplicationCreationRestWorkflowExecutor;
-import com.wso2telco.hub.workflow.extensions.beans.Variable;
-import com.wso2telco.hub.workflow.extensions.util.DeploymentTypes;
-import com.wso2telco.workflow.activityclient.ProcessSearchRequest;
-import com.wso2telco.workflow.model.TaskSerchDTO;
-import com.wso2telco.workflow.util.WorkFlowHealper;
 
 class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 	{
@@ -21,12 +21,12 @@ class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 	private static final   Map<String,String> FILTERMAP ;
 	static{
 		FILTERMAP = new HashMap<String, String>();
-		FILTERMAP.put("name", ApplicationCreationRestWorkflowExecutor.APPLICATION_NAME);
-		FILTERMAP.put("applicationname", ApplicationCreationRestWorkflowExecutor.APPLICATION_NAME);
-		FILTERMAP.put("appname",ApplicationCreationRestWorkflowExecutor.APPLICATION_NAME);
-		FILTERMAP.put("tier", ApplicationCreationRestWorkflowExecutor.TIER );
-		FILTERMAP.put("createdby", ApplicationCreationRestWorkflowExecutor.USER_NAME);
-		FILTERMAP.put("owner",  ApplicationCreationRestWorkflowExecutor.USER_NAME);
+		FILTERMAP.put("name", AppVariable.NAME.key());
+		FILTERMAP.put("applicationname",  AppVariable.NAME.key());
+		FILTERMAP.put("appname", AppVariable.NAME.key());
+		FILTERMAP.put("tier", AppVariable.TIER.key() );
+		FILTERMAP.put("createdby",AppVariable.USERNAME.key());
+		FILTERMAP.put("owner",  AppVariable.USERNAME.key());
 		
 		
 	}

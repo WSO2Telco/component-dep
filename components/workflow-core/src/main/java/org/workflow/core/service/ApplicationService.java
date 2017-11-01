@@ -1,16 +1,18 @@
-package com.wso2telco.workflow.service;
+package org.workflow.core.service;
 
 import javax.ws.rs.core.Response;
 
+import org.workflow.core.activity.ActivityClientFactory;
+import org.workflow.core.activity.ProcessSearchRequest;
+import org.workflow.core.activity.RestClient;
+import org.workflow.core.execption.WorkflowExtensionException;
+import org.workflow.core.model.TaskList;
+import org.workflow.core.model.TaskSerchDTO;
+import org.workflow.core.model.TaskVariableResponse;
+import org.workflow.core.service.app.QueryBuilderFactory;
+
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.model.UserProfileDTO;
-import com.wso2telco.hub.workflow.extensions.exceptions.WorkflowExtensionException;
-import com.wso2telco.workflow.activityclient.ActivityClientFactory;
-import com.wso2telco.workflow.activityclient.ProcessSearchRequest;
-import com.wso2telco.workflow.activityclient.RestClient;
-import com.wso2telco.workflow.model.TaskList;
-import com.wso2telco.workflow.model.TaskSerchDTO;
-import com.wso2telco.workflow.service.app.QueryBuilderFactory;
 
 
 
@@ -22,6 +24,9 @@ public class ApplicationService {
 		RestClient activityClient= ActivityClientFactory.getInstance().getClient();
 		try {
 			TaskList taskList = activityClient.getTasks(searchRequest);
+			for (TaskList.Task task : taskList.getData()) {
+				TaskVariableResponse[] vars = activityClient.getVariables(String.valueOf( task.getId()));
+			}  
 		} catch (WorkflowExtensionException e) {
 			throw new BusinessException(e);
 		}

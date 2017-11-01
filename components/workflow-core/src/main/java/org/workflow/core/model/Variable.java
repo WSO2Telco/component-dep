@@ -14,15 +14,32 @@
  * limitations under the License.
  */
 
-package com.wso2telco.hub.workflow.extensions.exceptions;
+package org.workflow.core.model;
 
-public class WorkflowExtensionException extends Exception {
+public class Variable {
 
-    public WorkflowExtensionException(String message) {
-        super(message);
+    private String name;
+
+    private String value;
+
+    public Variable (String name, String value) {
+        this.name = name;
+        this.value = value;
     }
 
-    public WorkflowExtensionException(String message, Throwable cause) {
-        super(message, cause);
+    public String getName() {
+        return name;
+    }
+
+    public void setName(String name) {
+        this.name = name;
+    }
+
+    public String getValue() {
+        return value;
+    }
+
+    public void setValue(String value) {
+        this.value = value;
     }
 }

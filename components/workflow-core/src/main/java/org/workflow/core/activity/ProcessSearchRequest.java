@@ -1,9 +1,9 @@
-package com.wso2telco.workflow.activityclient;
+package org.workflow.core.activity;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import com.wso2telco.hub.workflow.extensions.beans.Variable;
+import org.workflow.core.model.Variable;
 
 public class ProcessSearchRequest {
 
