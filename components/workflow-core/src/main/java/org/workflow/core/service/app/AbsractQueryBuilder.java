@@ -1,6 +1,5 @@
 package org.workflow.core.service.app;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -12,32 +11,19 @@ import org.workflow.core.model.TaskList;
 import org.workflow.core.model.TaskSerchDTO;
 import org.workflow.core.model.TaskVariableResponse;
 import org.workflow.core.model.Variable;
-import org.workflow.core.service.RequestBuilder;
+import org.workflow.core.service.WorkFlowProcessor;
 import org.workflow.core.util.DeploymentTypes;
 
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.model.UserProfileDTO;
 import com.wso2telco.core.dbutils.util.Callback;
 
-abstract class AbsractQueryBuilder implements RequestBuilder {
+abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 	protected Log LOG;
 	protected RestClient activityClient = null;
 	
 	AbsractQueryBuilder() throws BusinessException {
 		activityClient = ActivityClientFactory.getInstance().getClient();
-	}
-
-	@Override
-	public Map<String, Object> toMap(TaskSerchDTO dto, UserProfileDTO userProfile) throws BusinessException {
-		LOG.debug("toMap :" + dto + " userProfile:" + userProfile);
-		Map<String, Object> queryMap = new HashMap<String, Object>();
-
-		queryMap.put("size", dto.getBatchSize());
-		queryMap.put("start", dto.getStart());
-		queryMap.put("order", dto.getOrderBy());
-		queryMap.put("sort", dto.getSortBy());
-
-		return queryMap;
 	}
 
 	protected abstract DeploymentTypes getDeployementType() ; 

@@ -18,7 +18,7 @@ public class ActivityProcessFactory {
 
 	}
 	
-	public WorkFlow getWorkFlow(WorkFlowType type) {
+	public WorkFlow getWorkFlowFactory(WorkFlowType type) {
 		WorkFlow wf = null;
 		switch (type) {
 		case APPLICATION:

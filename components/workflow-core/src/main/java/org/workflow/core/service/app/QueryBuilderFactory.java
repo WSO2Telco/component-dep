@@ -1,6 +1,6 @@
 package org.workflow.core.service.app;
 
-import org.workflow.core.service.RequestBuilder;
+import org.workflow.core.service.WorkFlowProcessor;
 import org.workflow.core.service.WorkFlow;
 import org.workflow.core.util.DeploymentTypes;
 import org.workflow.core.util.WorkFlowHealper;
@@ -20,9 +20,9 @@ public final class QueryBuilderFactory  implements WorkFlow{
 		return instance;
 	}
 	
-	public RequestBuilder loadQueryBuilder() throws BusinessException {
+	public WorkFlowProcessor getWorkFlowProcessor() throws BusinessException {
 		DeploymentTypes depType =DeploymentTypes.getByName( WorkFlowHealper.getDeploymentType());
-		RequestBuilder queryBuilder=null;
+		WorkFlowProcessor queryBuilder=null;
 		switch (depType) {
 		case EXTERNAL_GATEWAY:
 			queryBuilder =  DefaultAppRequestBuilder.getInstace();
