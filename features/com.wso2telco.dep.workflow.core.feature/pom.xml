@@ -30,7 +30,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
 
 
     <artifactId>com.wso2telco.dep.workflow.core.feature</artifactId>
-    <packaging>bundle</packaging>
+    <packaging>pom</packaging>
     <name>WSO2.Telco Workflow Core Service</name>
     <description>This feature contains the server bundles required for workflow core service</description>
 
