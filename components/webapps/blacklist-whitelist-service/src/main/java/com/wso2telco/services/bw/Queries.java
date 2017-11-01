@@ -210,7 +210,7 @@ public class Queries {
 	 *
 	 * {empty request body}
 	 */
-	@POST
+	@GET
 	@Path("/GetBlacklistPerApi/{apiId}")
 	@Consumes("application/json")
 	@Produces("text/plain")
@@ -423,7 +423,7 @@ public class Queries {
 
 
 
-	@POST
+	@GET
 	@Path("/subscribers")
 	@Produces("application/json")
 	public Response getAllSubscribers() throws SQLException, BusinessException {
@@ -451,23 +451,22 @@ public class Queries {
 	}
 
 
-	@POST
-	@Path("/apis")
+	@GET
+	@Path("/apis/{operator}/{appId}")
 	@Consumes("application/json")
 	@Produces("application/json")
-	public Response getAllApisByUserAndApp(String jsonBody) throws SQLException, BusinessException {
-
+	public Response getAllApisByUserAndApp(@PathParam("operator") String operator,@PathParam("appId") String appId) throws SQLException, BusinessException {
 		Gson gson = new GsonBuilder().serializeNulls().create();
-		Id subscriptionUserID = gson.fromJson(jsonBody, Id.class);
-
-		String[] subscriptionUserIDArray = subscriptionUserID.getId().split("[|]");
-		if(subscriptionUserIDArray.length == 2){
-			String jsonString = blackListWhiteListService.getAllApisByUserAndApp(subscriptionUserIDArray[0],
-					subscriptionUserIDArray[1]);
+		if (operator!=null && appId!=null) {
+			String jsonString = blackListWhiteListService.getAllApisByUserAndApp(operator,appId);
 			return Response.status(Response.Status.OK).entity(jsonString).build();
 		}
-
 		return Response.status(Response.Status.BAD_REQUEST).build();
+		//Id subscriptionUserID = gson.fromJson(jsonBody, Id.class);
+		//String[] subscriptionUserIDArray = subscriptionUserID.getId().split("[|]");
+		//if(subscriptionUserIDArray.length == 2){
+			//String jsonString = blackListWhiteListService.getAllApisByUserAndApp(subscriptionUserIDArray[0],subscriptionUserIDArray[1]);
+		//}
 	}
 
 	@GET
