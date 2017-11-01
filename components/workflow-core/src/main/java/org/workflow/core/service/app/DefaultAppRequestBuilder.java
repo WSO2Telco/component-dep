@@ -13,7 +13,6 @@ import org.apache.commons.logging.LogFactory;
 import org.workflow.core.model.TaskList;
 import org.workflow.core.model.TaskSerchDTO;
 import org.workflow.core.model.TaskVariableResponse;
-import org.workflow.core.model.Variable;
 import org.workflow.core.service.ReturnableResponse;
 import org.workflow.core.util.AppVariable;
 import org.workflow.core.util.DeploymentTypes;
@@ -70,6 +69,7 @@ class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 			public String getFilterBy() {
 				return searchDTO.getFilterBy();
 			}
+			
 
 			@Override
 			public String getOrderBy() {
@@ -108,6 +108,10 @@ class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 							public String getTier() {
 								return varMap.get(AppVariable.TIER).getValue() ;
 							}
+							
+							public String getAssinee() {
+								return task.getAssignee();
+							}
 					 };
 					 
 					 temptaskList.add(responseTask);
@@ -123,8 +127,20 @@ class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 	@Override
 	protected Callback buildResponse(TaskSerchDTO searchDTO, TaskList taskList, UserProfileDTO userProfile)
 			throws BusinessException {
-		// TODO Auto-generated method stub
-		return null;
+		ReturnableResponse payload;
+		Callback returnCall;
+		try {
+			payload = generateResponse( searchDTO,taskList, userProfile);
+			returnCall= new Callback().setPayload(payload)
+					.setSuccess(true)
+					.setMessage("Application Taks listed success ");
+		} catch (ParseException e) {
+			returnCall= new Callback().setPayload(null)
+					.setSuccess(false)
+					.setMessage("Application Taks listed fail ");
+		}
+		
+		 return returnCall;
 	}
 
 	@Override
