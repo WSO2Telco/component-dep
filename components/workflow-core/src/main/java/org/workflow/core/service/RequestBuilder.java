@@ -12,4 +12,5 @@ public interface RequestBuilder {
 //	TaskList getApprovePendingTaskList(final TaskSerchDTO serchD,UserProfileDTO userProfile) throws BusinessException;
 	Map<String, Object> toMap(TaskSerchDTO dto,UserProfileDTO userProfile) throws BusinessException;
 	ProcessSearchRequest buildSearchRequest(final TaskSerchDTO searchDTO,final UserProfileDTO userProfile) throws BusinessException;
+	
 }

@@ -24,9 +24,7 @@ public class ApplicationService {
 		RestClient activityClient= ActivityClientFactory.getInstance().getClient();
 		try {
 			TaskList taskList = activityClient.getTasks(searchRequest);
-			for (TaskList.Task task : taskList.getData()) {
-				TaskVariableResponse[] vars = activityClient.getVariables(String.valueOf( task.getId()));
-			}  
+		 
 		} catch (WorkflowExtensionException e) {
 			throw new BusinessException(e);
 		}
