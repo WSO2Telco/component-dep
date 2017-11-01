@@ -26,7 +26,6 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
         <version>2.3.2-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
-    <modelVersion>4.0.0</modelVersion>
 
     <artifactId>com.wso2telco.dep.workflow.core.feature</artifactId>
     <packaging>pom</packaging>
