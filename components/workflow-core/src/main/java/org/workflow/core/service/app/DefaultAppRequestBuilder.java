@@ -37,12 +37,6 @@ class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 		return instance;
 	}
 
-	@Override
-	public Map<String, Object> toMap(TaskSerchDTO dto, UserProfileDTO userProfile) throws BusinessException {
-		Map<String, Object> queryMap = super.toMap(dto, userProfile);
-		queryMap.put("assignee", userProfile.getUserName());
-		return queryMap;
-	}
 
 	private ReturnableResponse generateResponse(final TaskSerchDTO searchDTO,final TaskList taskList ,final UserProfileDTO userProfile) throws ParseException {
 
