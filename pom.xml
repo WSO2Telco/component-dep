@@ -7,8 +7,7 @@
 	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
 	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
 	the specific language governing permissions and limitations under the License.
-   	-->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+   	--><project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
     <modelVersion>4.0.0</modelVersion>
 
@@ -150,7 +149,8 @@
         <module>components/webapps/ratecard-service</module>
 		<module>components/webapps/quota-service</module>
         <module>features</module>
-    </modules>
+    <module>components/workflow-core</module>
+  </modules>
 
     <scm>
         <url>https://github.com/WSO2Telco/component-dep.git</url>
@@ -259,7 +259,7 @@
                                 <license implementation="org.apache.rat.analysis.license.SimplePatternBasedLicense">
                                     <licenseFamilyCategory>WSO2Telco</licenseFamilyCategory>
                                     <licenseFamilyName>WSO2Telco License 1.0</licenseFamilyName>
-                                    <notes />
+                                    <notes/>
                                     <patterns>
                                         <pattern>WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved
                                         </pattern>
@@ -667,6 +667,11 @@
                 <artifactId>billing-extension</artifactId>
                 <version>${com.wso2telco.dep.version}</version>
             </dependency>
+			<dependency>
+				<groupId>com.wso2telco.dep</groupId>
+				<artifactId>workflow-core</artifactId>
+				 <version>${com.wso2telco.dep.version}</version>
+			</dependency>
 			<dependency>
                 <groupId>com.wso2telco.dep</groupId>
                 <artifactId>billing-service</artifactId>
