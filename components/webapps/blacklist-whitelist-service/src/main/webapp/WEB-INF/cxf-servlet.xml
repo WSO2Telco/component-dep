@@ -34,5 +34,5 @@
 	</jaxrs:server>
 	
 	<bean id="queriesBean" class="com.wso2telco.services.bw.Queries"/> 
-	<bean id="authenticationFilter" class="com.wso2telco.core.authfilter.BasicAuthenticationFilter"/>
+	<bean id="authenticationFilter" class="com.wso2telco.core.authfilter.Authentication"/>
 </beans>
