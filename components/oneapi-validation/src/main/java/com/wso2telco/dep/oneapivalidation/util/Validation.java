@@ -98,7 +98,7 @@ public class Validation {
 
             if (useCustomRegex.equals("true") && !customRegex.equals("")) {
 
-                telFormatTemp = customRegex;
+                telFormatTemp = customRegex.trim();
                 logger.info("Read custom validation from config file: " + telFormatTemp);
 
             } else {
