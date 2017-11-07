@@ -23,11 +23,32 @@ public class ValidationMediator extends AbstractMediator {
     @Override
     public boolean mediate(MessageContext mc) {
 
+        String valid = "";
+        String invald = "";
+        boolean result = false;
+
         try {
 
             String msisdn = mc.getProperty("MSISDN").toString();
-            boolean result = Validation.isCorrectlyFormattedNumber(msisdn);
+
+            if (msisdn.contains(",")) {
+                String msisdns[] = msisdn.split(",");
+                result =true;
+                for (String string : msisdns) {
+                    if (Validation.isCorrectlyFormattedNumber(string)) {
+                        valid += string.concat(",");
+                    }else {
+                        result = false;
+                        invald += string.concat(",");
+                    }
+                }
+            } else {
+                result = Validation.isCorrectlyFormattedNumber(msisdn);
+            }
+
             mc.setProperty("isValidMsisdn", result);
+            mc.setProperty("validMsisdn", valid.replaceAll(",$", ""));
+            mc.setProperty("invalidMsisdn", invald.replaceAll(",$", ""));
 
         } catch (Exception e) {
             log.error("Error Validating MSISDN", e);
