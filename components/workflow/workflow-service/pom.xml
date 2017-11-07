@@ -92,6 +92,10 @@
             <groupId>com.wso2telco.dep</groupId>
             <artifactId>reporting-service</artifactId>
         </dependency>
+        <dependency>
+            <groupId>com.wso2telco.dep</groupId>
+            <artifactId>workflow-core</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

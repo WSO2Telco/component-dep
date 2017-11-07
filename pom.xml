@@ -347,6 +347,12 @@
                 <scope>provided</scope>
             </dependency>
             <dependency>
+                <groupId>com.wso2telco.dep</groupId>
+                <artifactId>workflow-core</artifactId>
+                <version>${com.wso2telco.dep.version}</version>
+                <scope>provided</scope>
+            </dependency>			
+            <dependency>
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
                 <version>${log4j.version}</version>
