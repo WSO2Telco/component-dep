@@ -33,7 +33,7 @@
 		</init-param>
 		<init-param>
 			<param-name>javax.ws.rs.container.ContainerRequestFilter</param-name>
-			<param-value>com.wso2telco.core.authfilter.BasicAuthenticationFilter</param-value>
+			<param-value>com.wso2telco.core.authfilter.Authentication</param-value>
 		</init-param>
 		<load-on-startup>1</load-on-startup>
 	</servlet>
