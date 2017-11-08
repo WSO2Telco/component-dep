@@ -24,6 +24,12 @@ import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.workflow.core.model.TaskSerchDTO;
+import org.workflow.core.service.WorkFlowDelegator;
+
+import com.wso2telco.core.dbutils.model.UserProfileDTO;
+import com.wso2telco.core.dbutils.util.Callback;
+
 
 @Path("/applications")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -31,9 +37,21 @@ import javax.ws.rs.core.Response;
 public class ApplicationRest {
 	 @GET
 	 @Path("/search")
-	    public Response load(@HeaderParam("authorization") String authHeader) {
-	       /* Callback callback = applicationDetailService.getDetails(authHeader, detailRequestDAO);
-	        return Response.status(Response.Status.OK).entity(callback).build();*/
-		 return null;
-	    }
+	 public Response load(@HeaderParam("authorization") String authHeader) {
+		 System.out.println("++++++++++++++++++++++++++++++++ ApplicationRest:applications/search STARTED");
+		        try {
+		    	WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
+		    	TaskSerchDTO serchD = new TaskSerchDTO();
+		    	UserProfileDTO UserProfileDTO = new UserProfileDTO();
+		    	Callback callback = workFlowDelegator.getPendingApplicationApprovals(serchD, UserProfileDTO);
+		    	/* Callback callback = applicationDetailService.getDetails(authHeader, detailRequestDAO);
+		    	return Response.status(Response.Status.OK).entity(callback).build();*/
+		     System.out.println("++++++++++++++++++++++++++++++++ ApplicationRest:applications/search ENDED");
+		            return Response.status(Response.Status.OK).build();
+		        } catch(Exception e) {
+		            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		        }
+		 //return null;
+		 }
+
 }

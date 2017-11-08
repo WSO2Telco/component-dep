@@ -65,7 +65,7 @@ import feign.jackson.JacksonEncoder;
 public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
 
     /**
-	 * 
+	 *
 	 */
 	private static final long serialVersionUID = 2480996304691515065L;
 
@@ -80,7 +80,7 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
     private static final String OPERATORS = "operators";
     private static final String DEPLOYMENT_TYPE = "deployment_type";
     private static final String OPERATORS_SYSTEM_PARAM = "OPERATORS";
-    
+
     public static final String TIER = "tier";
     private static final String DESCRIPTION = "description";
     private static final String TENANT_DOMAIN = "tenantDomain";
@@ -102,8 +102,8 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
         return WorkflowConstants.WF_TYPE_AM_APPLICATION_CREATION;
     }
 
-    
-   
+
+
     public WorkflowResponse execute(WorkflowDTO workflowDTO) throws WorkflowException {
 
         OperatorApi operatorApi = new OperatorImpl();
@@ -113,6 +113,7 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
         }
         super.execute(workflowDTO);
         try {
+        	WorkFlowHealper.getInstance().setAppCreationServiceEndPoint(serviceEndpoint);
             BusinessProcessApi api = Feign.builder()
                     .encoder(new JacksonEncoder())
                     .decoder(new JacksonDecoder())
@@ -330,7 +331,7 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
     }
 
     public void setServiceEndpoint(String serviceEndpoint) {
-    	WorkFlowHealper.getInstance().setAppCreationServiceEndPoint(serviceEndpoint);
+    	//WorkFlowHealper.getInstance().setAppCreationServiceEndPoint(serviceEndpoint);
         this.serviceEndpoint = serviceEndpoint;
     }
 
