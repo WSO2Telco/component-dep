@@ -15,17 +15,27 @@ public class WorkFlowDelegator {
 										.getInstance()
 										.getWorkFlowFactory(WorkFlowType.APPLICATION)
 										.getWorkFlowProcessor();
-		
+
 		return queryBuilder.searchPending(serchD, userProfile);
 	}
-	
+
 	public Callback getPendingSubscriptionApprovals(final TaskSerchDTO serchD,UserProfileDTO userProfile) throws BusinessException {
 		WorkFlowProcessor queryBuilder =ActivityProcessFactory
 										.getInstance()
 										.getWorkFlowFactory(WorkFlowType.SUBSCRIPTION)
 										.getWorkFlowProcessor();
-		
+
 		return queryBuilder.searchPending(serchD, userProfile);
+	}
+
+	public Callback getApplicationGraphData(UserProfileDTO userProfile)throws BusinessException{
+		WorkFlowProcessor queryBuilder = ActivityProcessFactory
+                                        .getInstance()
+                                        .getWorkFlowFactory(WorkFlowType.APPLICATION)
+                                        .getWorkFlowProcessor();
+
+		return queryBuilder.getGraphData(userProfile);
+
 	}
 
 }

@@ -10,6 +10,8 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.logging.LogFactory;
+import org.workflow.core.execption.WorkflowExtensionException;
+import org.workflow.core.model.Range;
 import org.workflow.core.model.TaskList;
 import org.workflow.core.model.TaskSerchDTO;
 import org.workflow.core.model.TaskVariableResponse;
@@ -154,6 +156,28 @@ class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 		filter.put("owner", AppVariable.USERNAME.key());
 		return filter;
 
+	}
+
+	@Override
+	protected List<Integer> getHistoricalData(String authHeader, String type, String user, List<Range> months) {
+		String process = (type.equals("applications")) ? "application_creation_approval_process" : "subscription_approval_process";
+		List<Integer> data = new ArrayList<>();
+
+		TaskList taskList = null;
+
+		for (Range month : months) {
+
+			try {
+				taskList = activityClient.getHistoricTasks(month.getStart(), month.getEnd(), process, user);
+				data.add(taskList.getTotal());
+
+			} catch (WorkflowExtensionException e) {
+				LOG.error("", e);
+				throw new BusinessException(e);
+			}
+		}
+
+		return data;
 	}
 
 }

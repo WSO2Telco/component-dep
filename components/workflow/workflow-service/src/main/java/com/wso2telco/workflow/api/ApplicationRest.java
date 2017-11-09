@@ -16,11 +16,10 @@
 
 package com.wso2telco.workflow.api;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
+import com.wso2telco.core.dbutils.util.Callback;
+import com.wso2telco.workflow.service.ApplicationDetailService;
+
+import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
@@ -28,12 +27,22 @@ import javax.ws.rs.core.Response;
 @Path("/applications")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
+
+
 public class ApplicationRest {
 	 @GET
 	 @Path("/search")
 	    public Response load(@HeaderParam("authorization") String authHeader) {
-	       /* Callback callback = applicationDetailService.getDetails(authHeader, detailRequestDAO);
-	        return Response.status(Response.Status.OK).entity(callback).build();*/
+//	       	Callback callback = applicationDetailService.getDetails(authHeader, detailRequestDAO);
+//	        return Response.status(Response.Status.OK).entity(callback).build();
 		 return null;
 	    }
+
+	@GET
+	@Path("/graph/{user}")
+	public Response loadGraph(@HeaderParam("authorization") String authHeader, @PathParam("user") String user) {
+		ApplicationDetailService applicationDetailService = new ApplicationDetailService();
+		Callback callback = applicationDetailService.getGraphDetails(authHeader, user);
+		return Response.status(Response.Status.OK).entity(callback).build();
+	}
 }
