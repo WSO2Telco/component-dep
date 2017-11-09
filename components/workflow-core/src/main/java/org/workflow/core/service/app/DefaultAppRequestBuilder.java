@@ -27,8 +27,7 @@ class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 	private static DefaultAppRequestBuilder instance;
 
 	private DefaultAppRequestBuilder() throws BusinessException {
-		super.LOG = LogFactory.getLog(DefaultAppRequestBuilder.class);
-
+		super.log = LogFactory.getLog(DefaultAppRequestBuilder.class);
 	}
 
 	public static DefaultAppRequestBuilder getInstace() throws BusinessException {

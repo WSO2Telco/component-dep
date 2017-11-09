@@ -19,7 +19,7 @@ import com.wso2telco.core.dbutils.model.UserProfileDTO;
 import com.wso2telco.core.dbutils.util.Callback;
 
 public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
-	protected Log LOG;
+	protected Log log;
 	protected RestClient activityClient = null;
 	
 	public AbsractQueryBuilder() throws BusinessException {
@@ -45,7 +45,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 			}
 
 		} catch (WorkflowExtensionException e) {
-			LOG.error("", e);
+			log.error("", e);
 			throw new BusinessException(e);
 		}
 		return buildResponse(searchDTO, taskList, userProfile);
