@@ -148,8 +148,8 @@
         <module>components/operator-onboarding</module>
         <module>components/webapps/ratecard-service</module>
 		<module>components/webapps/quota-service</module>
+		<module>components/workflow-core</module>
         <module>features</module>
-    <module>components/workflow-core</module>
   </modules>
 
     <scm>
@@ -346,6 +346,12 @@
                 <version>${com.wso2telco.dep.version}</version>
                 <scope>provided</scope>
             </dependency>
+            <dependency>
+                <groupId>com.wso2telco.dep</groupId>
+                <artifactId>workflow-core</artifactId>
+                <version>${com.wso2telco.dep.version}</version>
+                <scope>provided</scope>
+            </dependency>			
             <dependency>
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>

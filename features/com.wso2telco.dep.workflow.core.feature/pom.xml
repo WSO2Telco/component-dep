@@ -28,6 +28,7 @@ http://maven.apache.org/xsd/maven-4.0.0.xsd">
     </parent>
     <modelVersion>4.0.0</modelVersion>
 
+
     <artifactId>com.wso2telco.dep.workflow.core.feature</artifactId>
     <packaging>pom</packaging>
     <name>WSO2.Telco Workflow Core Service</name>
