@@ -1,4 +1,4 @@
-package org.workflow.core.service.app;
+package org.workflow.core.service;
 
 import java.util.Map;
 
@@ -18,11 +18,11 @@ import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.model.UserProfileDTO;
 import com.wso2telco.core.dbutils.util.Callback;
 
-abstract class AbsractQueryBuilder implements WorkFlowProcessor {
+public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 	protected Log LOG;
 	protected RestClient activityClient = null;
 	
-	AbsractQueryBuilder() throws BusinessException {
+	public AbsractQueryBuilder() throws BusinessException {
 		activityClient = ActivityClientFactory.getInstance().getClient();
 	}
 
