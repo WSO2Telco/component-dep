@@ -16,6 +16,7 @@ import org.workflow.core.model.TaskVariableResponse;
 import org.workflow.core.service.ReturnableResponse;
 import org.workflow.core.util.AppVariable;
 import org.workflow.core.util.DeploymentTypes;
+import org.workflow.core.service.AbsractQueryBuilder;
 
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.model.UserProfileDTO;
@@ -26,8 +27,7 @@ class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 	private static DefaultAppRequestBuilder instance;
 
 	private DefaultAppRequestBuilder() throws BusinessException {
-		super.LOG = LogFactory.getLog(DefaultAppRequestBuilder.class);
-
+		super.log = LogFactory.getLog(DefaultAppRequestBuilder.class);
 	}
 
 	public static DefaultAppRequestBuilder getInstace() throws BusinessException {
