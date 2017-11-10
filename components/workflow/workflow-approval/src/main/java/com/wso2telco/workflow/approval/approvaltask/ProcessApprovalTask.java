@@ -154,7 +154,7 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 
 	        arg0.setVariable("operatorList", operatorNames);
 	        arg0.setVariable("operatorRoles", operatorsRoles);
-	        
+
 	        log.info("In HubDataUpdater, Hub admin approval status: " + status);
 
 	        Subscription subscription = new Subscription();
