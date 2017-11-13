@@ -8,9 +8,9 @@ public class QuotaBean {
 	private String applicationName;
 	private String apiName;
 	private String quotaLimit;
-
 	private String fromDate;
 	private String toDate;
+	private String createdBy;
 
 	public String getOperator() {
 		return operator;
@@ -66,5 +66,13 @@ public class QuotaBean {
 
 	public void setToDate(String toDate) {
 		this.toDate = toDate;
+	}
+
+	public String getCreatedBy() {
+		return createdBy;
+	}
+
+	public void setCreatedBy(String createdBy) {
+		this.createdBy = createdBy;
 	}
 }

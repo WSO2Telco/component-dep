@@ -469,5 +469,9 @@ CREATE TABLE IF NOT EXISTS `sp_quota_limit` (
   `quota_limit` int(11) DEFAULT NULL,
   `fromDate` date DEFAULT NULL,
   `toDate` date DEFAULT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
+  `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  `updatedby` varchar(255) DEFAULT NULL,
+  `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`idsp_quota_limit`)
 ) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
