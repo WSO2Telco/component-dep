@@ -15,17 +15,25 @@
  */
 package com.wso2telco.dep.operatorservice.dao;
 
-import com.wso2telco.core.dbutils.DbUtils;
-import com.wso2telco.core.dbutils.util.DataSourceNames;
-import com.wso2telco.dep.operatorservice.model.Operator;
-import com.wso2telco.dep.operatorservice.model.WorkflowReferenceDTO;
-import com.wso2telco.dep.operatorservice.util.OparatorTable;
+import java.sql.Array;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.PersistenceException;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import java.sql.*;
-import java.util.ArrayList;
-import java.util.List;
+import com.wso2telco.core.dbutils.DbUtils;
+import com.wso2telco.core.dbutils.util.DataSourceNames;
+import com.wso2telco.dep.operatorservice.model.WorkflowReferenceDTO;
 
 
 public class WorkflowDAO {
@@ -175,6 +183,53 @@ public class WorkflowDAO {
 
     }
 
+    public Map<String,Boolean> getAppStatusByOparator(List<Integer>  applicationDIds,String operatorName)          throws  Exception {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Map<String,Boolean> returnMap = new HashMap<String,Boolean>() ;
+
+        try {
+            
+			conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+			
+            StringBuilder query = new StringBuilder();
+            query.append("SELECT applicationid,isactive ");
+            query.append(" FROM operatorapps opapp ,");
+            query.append("   ");
+            query.append(" WHERE ");
+            query.append("  EXISTS (");
+            query.append("   	SELECT 1 FROM operators op ");
+            query.append("  		WHERE op.id=opapp.operatorid ");
+            query.append(" 			AND op.operatorname=?");
+            query.append("   	)  ");
+            query.append(" AND opapp.applicationid in(?)");
+            ps = conn.prepareStatement(query.toString());
+           
+            Array array = conn.createArrayOf("VARCHAR", applicationDIds.toArray(new Integer[applicationDIds.size()] ));
+            ps.setArray( 2,array );
+            ps.setString(1, operatorName);
+
+            rs = ps.executeQuery();
+           
+            while (rs.next()) {
+            	returnMap.put(rs.getString("applicationid"), rs.getBoolean("isactive"));
+				
+			}
+
+        } catch (Exception e) {
+        	  log.error("getAppStatus",e);
+        	  throw e;
+		}
+        finally {
+            DbUtils.closeAllConnections(ps, conn, rs);
+
+        }
+
+        return returnMap;
+
+    }
+    
     /**
      * Gets the operator if by name.
      *
