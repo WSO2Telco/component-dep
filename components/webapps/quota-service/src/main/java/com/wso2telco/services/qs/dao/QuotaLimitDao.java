@@ -20,7 +20,7 @@ public class QuotaLimitDao {
 
 	public void addQuotaLimit(QuotaBean quotaBean) throws SQLException, Exception {
 		StringBuilder sql = new StringBuilder();
-		sql.append("INSERT INTO `sp_quota_limit` (`serviceProvider`,`operatorName`,`application`,`apiName`,`quota_limit`,`fromDate`,`toDate`) VALUES (?,?,?,?,?,?,?);");
+		sql.append("INSERT INTO `sp_quota_limit` (`serviceProvider`,`operatorName`,`application`,`apiName`,`quota_limit`,`fromDate`,`toDate`,`createdby`) VALUES (?,?,?,?,?,?,?,?);");
 		Connection conn = null;
 		PreparedStatement ps = null;
 		try {
@@ -35,6 +35,7 @@ public class QuotaLimitDao {
 			ps.setString(5, quotaBean.getQuotaLimit());
 			ps.setString(6, quotaBean.getFromDate());
 			ps.setString(7, quotaBean.getToDate());
+			ps.setString(8, quotaBean.getCreatedBy());
 
 			ps.executeUpdate();
 			conn.commit();
