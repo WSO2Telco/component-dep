@@ -16,6 +16,24 @@
 
 package com.wso2telco.services.bw;
 
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
+
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.PathParam;
+import javax.ws.rs.Produces;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+
+import org.apache.log4j.Logger;
+
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wso2telco.core.dbutils.exception.BusinessException;
@@ -30,27 +48,9 @@ import com.wso2telco.dep.operatorservice.service.OparatorService;
 import com.wso2telco.dep.operatorservice.util.APIError;
 import com.wso2telco.services.bw.entity.BlackList;
 import com.wso2telco.services.bw.entity.BlackListBulk;
-import com.wso2telco.services.bw.entity.Id;
 import com.wso2telco.services.bw.entity.RemoveRequest;
 import com.wso2telco.services.bw.entity.WhiteList;
 import com.wso2telco.services.bw.entity.WhiteListBulk;
-import org.apache.log4j.Logger;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-import java.util.StringTokenizer;
 
 @Path("/queries")
 public class Queries {
@@ -139,19 +139,6 @@ public class Queries {
 		BlackListBulk blackListReq = gson.fromJson(jsonBody, BlackListBulk.class);
 
 		int apiId = Integer.parseInt(blackListReq.getAPIID());
-
-/*		String apiName = blackListReq.getAPIName();
-		String[] apiNameArray = apiName.split("[:]");
-
-		if(apiNameArray.length != 3){
-			return Response.status(Response.Status.BAD_REQUEST).entity(APIError.INVALID_API_NAME).build();
-		}*/
-/*
-		int apiId = blackListWhiteListService.getAPIId(apiNameArray[0], apiNameArray[1],
-				apiNameArray[2]);*/
-
-
-
 
 		if(apiId == -1){
 			return Response.status(Response.Status.BAD_REQUEST).entity(APIError.INVALID_API_NAME).build();
@@ -432,19 +419,18 @@ public class Queries {
 		return Response.status(Response.Status.OK).entity(jsonString).build();
 	}
 
-	@POST
-	@Path("/apps")
-	@Consumes("application/json")
+	@GET
+	@Path("/apps/{userId}/{operatorId}")
 	@Produces("application/json")
-	public Response getAllApplicationsByUser(String jsonBody) throws SQLException, BusinessException {
+	public Response getAllApplicationsByUser(@PathParam("userId") String userId,@PathParam("operatorId") String operatorId) throws SQLException, BusinessException {
 
-		Gson gson = new GsonBuilder().serializeNulls().create();
-		Id userID = gson.fromJson(jsonBody, Id.class);
+		//Gson gson = new GsonBuilder().serializeNulls().create();
+		//Id userID = gson.fromJson(jsonBody, Id.class);
 		String jsonString;
-		if (userID.getOperator().equals("_ALL_")) {
-			jsonString = blackListWhiteListService.getAllApplicationsByUser(userID.getId());
+		if (operatorId.equals("_ALL_")) {
+			jsonString = blackListWhiteListService.getAllApplicationsByUser(userId);
 		} else{
-			jsonString = blackListWhiteListService.getAllApplicationsByUserAndOperator(userID.getId(), userID.getOperator());
+			jsonString = blackListWhiteListService.getAllApplicationsByUserAndOperator(userId, operatorId);
 		}
 
 		return Response.status(Response.Status.OK).entity(jsonString).build();
@@ -452,125 +438,35 @@ public class Queries {
 
 
 	@GET
-	@Path("/apis/{operator}/{appId}")
-	@Consumes("application/json")
+	@Path("/apis/{userId}/{appId}")
 	@Produces("application/json")
-	public Response getAllApisByUserAndApp(@PathParam("operator") String operator,@PathParam("appId") String appId) throws SQLException, BusinessException {
-		Gson gson = new GsonBuilder().serializeNulls().create();
-		if (operator!=null && appId!=null) {
-			String jsonString = blackListWhiteListService.getAllApisByUserAndApp(operator,appId);
+	public Response getAllApisByUserAndApp(@PathParam("userId") String userId,@PathParam("appId") String appId) throws SQLException, BusinessException {
+		//Gson gson = new GsonBuilder().serializeNulls().create();
+		if (userId!=null && appId!=null) {
+			String jsonString = blackListWhiteListService.getAllApisByUserAndApp(userId,appId);
 			return Response.status(Response.Status.OK).entity(jsonString).build();
 		}
 		return Response.status(Response.Status.BAD_REQUEST).build();
-		//Id subscriptionUserID = gson.fromJson(jsonBody, Id.class);
-		//String[] subscriptionUserIDArray = subscriptionUserID.getId().split("[|]");
-		//if(subscriptionUserIDArray.length == 2){
-			//String jsonString = blackListWhiteListService.getAllApisByUserAndApp(subscriptionUserIDArray[0],subscriptionUserIDArray[1]);
-		//}
 	}
 
 	@GET
 	@Path("/apis")
 	@Produces("application/json")
 	public Response getAllApi() throws SQLException, BusinessException {
-
-
-		/*Gson gson = new GsonBuilder().serializeNulls().create();
-		Id subscriptionUserID = gson.fromJson(jsonBody, Id.class);
-
-		String[] subscriptionUserIDArray = subscriptionUserID.getId().split("[|]");
-		if(subscriptionUserIDArray.length == 2){
-			String jsonString = blackListWhiteListService.getAllApisByUserAndApp(subscriptionUserIDArray[0],
-					subscriptionUserIDArray[1]);
-			return Response.status(Response.Status.OK).entity(jsonString).build();
-		}*/
-
 		String jsonString = blackListWhiteListService.getAllAPIs();
 		return Response.status(Response.Status.OK).entity(jsonString).build();
 	}
 
 
-	/*	*//**
-			 * get all subscribers
-			 *//*
-			 * @POST
-			 *
-			 * @Path("/getSubscribers")
-			 *
-			 * @Consumes("application/json")
-			 *
-			 * @Produces("application/json") public Response
-			 * getSubscribers(String jsonBody) { try { LOG.debug(
-			 * "getSubscribers Triggerd  jsonBody :" + jsonBody);
-			 *
-			 * String subscribersJson = DatabaseUtils.getSubscribers(); return
-			 * Response.status(Response.Status.OK).entity(subscribersJson).build
-			 * (); } catch (Exception ex) {
-			 * java.util.logging.Logger.getLogger(Queries.class.getName()).log(
-			 * Level.SEVERE, null, ex); return
-			 * Response.status(Response.Status.BAD_REQUEST).entity(
-			 * "{\"error\":\"true\"}").build(); } }
-			 */
-	/**
-	 * get all apps of subscriber
-	 */
-	/*
-	 * @POST
-	 *
-	 * @Path("/getApps")
-	 *
-	 * @Consumes("application/json")
-	 *
-	 * @Produces("application/json") public Response getApps(String jsonBody) {
-	 * try { LOG.debug("getApps Triggerd  msisdn :" + jsonBody);
-	 *
-	 * Gson gson = new GsonBuilder().serializeNulls().create(); Id whiteListReq
-	 * = gson.fromJson(jsonBody, Id.class);
-	 *
-	 * String subscriberId = whiteListReq.getId(); String json =
-	 * DatabaseUtils.getApps(subscriberId); return
-	 * Response.status(Response.Status.OK).entity(json).build(); } catch
-	 * (Exception ex) {
-	 * java.util.logging.Logger.getLogger(Queries.class.getName()).log(Level.
-	 * SEVERE, null, ex); return
-	 * Response.status(Response.Status.BAD_REQUEST).entity(
-	 * "{\"error\":\"true\"}").build(); } }
-	 */
-
-	/**
-	 * get apis of app
-	 *//*
-		 * @POST
-		 *
-		 * @Path("/getApis")
-		 *
-		 * @Consumes("application/json")
-		 *
-		 * @Produces("application/json") public Response getApis(String
-		 * jsonBody) { try { Gson gson = new
-		 * GsonBuilder().serializeNulls().create(); Id whiteListReq =
-		 * gson.fromJson(jsonBody, Id.class);
-		 *
-		 * String appId = whiteListReq.getId(); String json =
-		 * DatabaseUtils.getApis(appId); return
-		 * Response.status(Response.Status.OK).entity(json).build(); } catch
-		 * (Exception ex) {
-		 * java.util.logging.Logger.getLogger(Queries.class.getName()).log(Level
-		 * .SEVERE, null, ex); return
-		 * Response.status(Response.Status.BAD_REQUEST).entity(
-		 * "{\"error\":\"true\"}").build(); } }
-		 */
-
-	@POST
-	@Path("/GetWhiteList")
-	@Consumes("application/json")
-	@Produces("text/plain")
-	public Response getWhiteListNumbers() throws SQLException {
+	@GET
+	@Path("/GetWhiteList/{userId}/{apiId}/{appId}")
+	@Produces("application/json")
+	public Response getWhiteListNumbers(@PathParam("userId")String userId,@PathParam("apiId")String apiId,@PathParam("appId")String appId) throws SQLException {
 
 		Gson gson = new Gson();
 
 		try {
-			String[] whiteListNumbers = blackListWhiteListService.getWhiteListNumbers();
+			String[] whiteListNumbers = blackListWhiteListService.getWhiteListNumbers(userId,apiId,appId);
 
 			StringBuilder successMSG = new StringBuilder();
 			successMSG.append("{\"Success\":{\"messageId\":\"Whitelist result\",\"text\":\"");

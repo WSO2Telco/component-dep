@@ -23,6 +23,7 @@ import java.util.Map;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -38,6 +39,7 @@ import com.wso2telco.dep.operatorservice.model.BlackListDTO;
 import com.wso2telco.dep.operatorservice.model.MSISDNSearchDTO;
 import com.wso2telco.dep.operatorservice.model.WhiteListDTO;
 import com.wso2telco.dep.operatorservice.model.WhiteListMSISDNSearchDTO;
+
 import org.wso2.carbon.apimgt.api.dto.UserApplicationAPIUsage;
 import org.wso2.carbon.apimgt.api.model.APIIdentifier;
 import org.wso2.carbon.apimgt.api.model.SubscribedAPI;
@@ -202,9 +204,9 @@ public class BlackListWhiteListService {
 		}
 	}
 
-	public String[] getWhiteListNumbers() throws BusinessException {
+	public String[] getWhiteListNumbers(String userId, String apiId, String appId) throws BusinessException {
 		try {
-			List<String> result = dao.getWhiteListNumbers();
+			List<String> result = dao.getWhiteListNumbers(userId,apiId,appId);
 			if (result == null || result.isEmpty()) {
 				return null;
 			}
