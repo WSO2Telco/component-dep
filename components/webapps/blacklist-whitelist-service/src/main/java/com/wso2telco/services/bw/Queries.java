@@ -282,7 +282,7 @@ public class Queries {
 				jsonreturn.append("Blacklist number successfully removed ").append("\",").append("\"variables\":\"")
 						.append(msisdn).append("\"").append("}}");
 
-				return Response.status(Response.Status.OK).entity(jsonreturn).build();
+				return Response.status(Response.Status.OK).entity(jsonreturn.toString()).build();
 			} catch (BusinessException e) {
 				LOG.error("", e);
 
