@@ -32,7 +32,7 @@ abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 
     protected abstract Map<String, String> getFilterMap();
 
-    protected abstract List<Integer> getHistoricalData(String authHeader, String type, String user, List<Range> months);
+    protected abstract List<Integer> getHistoricalData(String user, List<Range> months) throws BusinessException;
 
     public Callback searchPending(TaskSerchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException {
         ProcessSearchRequest processRequest = buildSearchRequest(searchDTO, userProfile);
@@ -129,12 +129,12 @@ abstract class AbsractQueryBuilder implements WorkFlowProcessor {
             xAxisLabels.add(monthFormat.format(start));
         }
 
-        List<Integer> data = getHistoricalData(type, user, months);
+        List<Integer> data = getHistoricalData(userProfile.getUserName(), months);
         if (!data.isEmpty()) {
             GraphData graphData = new GraphData();
             graphData.setData(data);
-            graphData.setLabel(type.toUpperCase());
-            List<GraphData> graphDataList = new ArrayList<>();
+            graphData.setLabel("applications");
+            List<GraphData> graphDataList = new ArrayList();
             graphDataList.add(graphData);
             GraphResponse graphResponse = new GraphResponse();
             graphResponse.setXAxisLabels(xAxisLabels);

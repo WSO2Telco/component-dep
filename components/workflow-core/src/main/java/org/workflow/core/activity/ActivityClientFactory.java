@@ -55,7 +55,6 @@ public class ActivityClientFactory {
 	}
 	/**
 	 * return a feign http client with for activity  workflow
-	 * @param authHeader
 	 * @return
 	 */
 	public RestClient getClient() {

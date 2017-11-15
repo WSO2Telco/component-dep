@@ -1,6 +1,9 @@
 package com.wso2telco.workflow.service;
 
+import com.wso2telco.core.dbutils.exception.BusinessException;
+import com.wso2telco.core.dbutils.model.UserProfileDTO;
 import com.wso2telco.core.dbutils.util.Callback;
+import org.workflow.core.service.WorkFlowDelegator;
 
 /**
  * Copyright (c) 2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
@@ -19,7 +22,12 @@ import com.wso2telco.core.dbutils.util.Callback;
  */
 public class ApplicationDetailService {
 
-    public Callback getGraphDetails(String authHeader, String user){
-        return null;
+    public Callback getGraphDetails(String authHeader, String user) throws BusinessException{
+
+        //how to delcare method to get userprofile and autentication method
+        WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
+        UserProfileDTO userProfileDTO = new UserProfileDTO();
+        userProfileDTO.setUserName(user);
+        return workFlowDelegator.getApplicationGraphData(userProfileDTO);
     }
 }

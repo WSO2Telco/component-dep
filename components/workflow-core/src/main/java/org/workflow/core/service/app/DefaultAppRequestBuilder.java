@@ -1,16 +1,9 @@
 package org.workflow.core.service.app;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
+import com.wso2telco.core.dbutils.exception.BusinessException;
+import com.wso2telco.core.dbutils.model.UserProfileDTO;
+import com.wso2telco.core.dbutils.util.Callback;
 import org.apache.commons.logging.LogFactory;
-import org.workflow.core.execption.WorkflowExtensionException;
 import org.workflow.core.model.Range;
 import org.workflow.core.model.TaskList;
 import org.workflow.core.model.TaskSerchDTO;
@@ -19,9 +12,10 @@ import org.workflow.core.service.ReturnableResponse;
 import org.workflow.core.util.AppVariable;
 import org.workflow.core.util.DeploymentTypes;
 
-import com.wso2telco.core.dbutils.exception.BusinessException;
-import com.wso2telco.core.dbutils.model.UserProfileDTO;
-import com.wso2telco.core.dbutils.util.Callback;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 
@@ -159,22 +153,16 @@ class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 	}
 
 	@Override
-	protected List<Integer> getHistoricalData(String authHeader, String type, String user, List<Range> months) {
-		String process = (type.equals("applications")) ? "application_creation_approval_process" : "subscription_approval_process";
-		List<Integer> data = new ArrayList<>();
+	protected List<Integer> getHistoricalData(String user, List<Range> months) throws BusinessException {
+		String process = "application_creation_approval_process";
+		List<Integer> data = new ArrayList();
 
 		TaskList taskList = null;
 
 		for (Range month : months) {
+			taskList = activityClient.getHistoricTasks(month.getStart(), month.getEnd(), process, user);
+			data.add(taskList.getTotal());
 
-			try {
-				taskList = activityClient.getHistoricTasks(month.getStart(), month.getEnd(), process, user);
-				data.add(taskList.getTotal());
-
-			} catch (WorkflowExtensionException e) {
-				LOG.error("", e);
-				throw new BusinessException(e);
-			}
 		}
 
 		return data;

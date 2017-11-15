@@ -16,6 +16,7 @@
 
 package com.wso2telco.workflow.api;
 
+import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.util.Callback;
 import com.wso2telco.workflow.service.ApplicationDetailService;
 
@@ -40,7 +41,7 @@ public class ApplicationRest {
 
 	@GET
 	@Path("/graph/{user}")
-	public Response loadGraph(@HeaderParam("authorization") String authHeader, @PathParam("user") String user) {
+	public Response loadGraph(@HeaderParam("authorization") String authHeader, @PathParam("user") String user) throws BusinessException {
 		ApplicationDetailService applicationDetailService = new ApplicationDetailService();
 		Callback callback = applicationDetailService.getGraphDetails(authHeader, user);
 		return Response.status(Response.Status.OK).entity(callback).build();

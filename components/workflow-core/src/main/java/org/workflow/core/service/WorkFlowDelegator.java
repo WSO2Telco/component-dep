@@ -35,7 +35,6 @@ public class WorkFlowDelegator {
                                         .getWorkFlowProcessor();
 
 		return queryBuilder.getGraphData(userProfile);
-
 	}
 
 }
