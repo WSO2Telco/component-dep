@@ -307,6 +307,17 @@ CREATE TABLE `rate_type` (
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
+-- Dumping data for table `rate_type`
+--
+
+LOCK TABLES `rate_type` WRITE;
+/*!40000 ALTER TABLE `rate_type` DISABLE KEYS */;
+INSERT INTO `rate_type` VALUES (1,'CONSTANT','Constant Charge Per Month',NULL,'2017-09-22 14:27:29',NULL,'2017-09-22 14:27:29'),(2,'QUOTA','Quota Based Charging per Month',NULL,'2017-09-22 14:27:29',NULL,'2017-09-22 14:27:29'),(3,'PERCENTAGE','Revenue Share Charging',NULL,'2017-09-22 14:27:30',NULL,'2017-09-22 14:27:30'),(4,'PER_REQUEST','Request Based Charging',NULL,'2017-09-22 14:27:30',NULL,'2017-09-22 14:27:30');
+/*!40000 ALTER TABLE `rate_type` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
+
+--
 -- Table structure for table `sub_rate_nb`
 --
 
