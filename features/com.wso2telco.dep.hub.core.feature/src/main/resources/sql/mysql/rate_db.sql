@@ -136,7 +136,9 @@ CREATE TABLE `category` (
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`categoryid`)
+  PRIMARY KEY (`categoryid`),
+  CONSTRAINT `CategorynameK` Unique KEY (`categoryname`),
+  CONSTRAINT `CategorycodeK` Unique KEY (`categorycode`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -155,7 +157,8 @@ CREATE TABLE `currency` (
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`currencyid`)
+  PRIMARY KEY (`currencyid`),
+  CONSTRAINT `CurrencyK` Unique KEY (`currencycode`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -255,6 +258,7 @@ CREATE TABLE `rate_def` (
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`rate_defid`),
+  CONSTRAINT `Rate_defK` Unique KEY (`rate_defname`),
   KEY `fk_rate_def_1_idx` (`rate_typeid`),
   KEY `fk_rate_def_2_idx` (`currencyid`),
   KEY `fk_rate_def_3_idx` (`tariffid`),
@@ -302,7 +306,8 @@ CREATE TABLE `rate_type` (
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`rate_typeid`)
+  PRIMARY KEY (`rate_typeid`),
+  CONSTRAINT `Rate_typeK` Unique KEY (`rate_typecode`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -388,7 +393,8 @@ CREATE TABLE `tariff` (
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`tariffid`)
+  PRIMARY KEY (`tariffid`),
+  CONSTRAINT `Rate_tariffK` Unique KEY (`tariffname`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -407,7 +413,8 @@ CREATE TABLE `tax` (
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`taxid`)
+  PRIMARY KEY (`taxid`),
+  CONSTRAINT `TaxK` Unique KEY (`taxname`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
