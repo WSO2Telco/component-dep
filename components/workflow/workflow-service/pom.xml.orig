@@ -13,12 +13,21 @@
 
 	<modelVersion>4.0.0</modelVersion>
 
+<<<<<<< HEAD
+    <parent>
+        <groupId>com.wso2telco.dep</groupId>
+        <artifactId>component-dep</artifactId>
+        <version>2.3.2-SNAPSHOT</version>
+        <relativePath>../../../pom.xml</relativePath>
+    </parent>
+=======
 	<parent>
 		<groupId>com.wso2telco.dep</groupId>
 		<artifactId>component-dep</artifactId>
-        <version>2.3.2-SNAPSHOT</version>
+		<version>2.3.0</version>
 		<relativePath>../../../pom.xml</relativePath>
 	</parent>
+>>>>>>> 42fc2fa... DEPAM-231
 
 	<artifactId>workflow-service</artifactId>
 	<packaging>war</packaging>
