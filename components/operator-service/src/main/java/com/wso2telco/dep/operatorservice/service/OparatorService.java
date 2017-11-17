@@ -17,6 +17,7 @@
 package com.wso2telco.dep.operatorservice.service;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang.StringUtils;
@@ -245,24 +246,116 @@ public class OparatorService {
           return dao.retrieveOperatorList();
     }
 
-    public Map<Integer, Map<String, Map<String,String>>> getOperatorApprovedSubscriptionsByApplicationId(int appId) throws Exception {
+    public Map<Integer, Map<String, Map<String, String>>> getOperatorApprovedSubscriptionsByApplicationId(int appId) throws Exception {
 
-		Map<Integer, Map<String, Map<String,String>>> historyDetails = null;
+		Map<Integer, Map<String, Map<String, String>>> historyDetails = null;
+		Map<Integer, Map<String, List<String>>> subscribedOperators = null;
 
-		try {
+		historyDetails = dao.getOperatorApprovedSubscriptionsByApplicationId(appId);
+		subscribedOperators = dao.getSubscribedOperatorsByApplicationId(appId);
+		
+		Iterator<Map.Entry<Integer, Map<String, Map<String, String>>>> sub = historyDetails.entrySet().iterator();
+		
+		while (sub.hasNext()) {
+			
+			Map.Entry<Integer, Map<String, Map<String, String>>> entry = sub.next();
 
-			historyDetails = dao.getOperatorApprovedSubscriptionsByApplicationId(appId);
-		} catch (Exception e) {
-
-			throw e;
+			Map<String, Map<String, String>> subInfo = entry.getValue();
+			
+			for(Map.Entry<String, Map<String, String>> details : subInfo.entrySet()){
+				
+				String historyAPIName = details.getKey();
+				Map<String, String> detailsInfo = details.getValue();				
+				
+				for(Map.Entry<String, String> opcoStatus : detailsInfo.entrySet()){
+					
+					String opcoStatusKey = opcoStatus.getKey();
+					
+					if (opcoStatusKey.equals("operatorname")){
+						
+						String historyOpcoName = opcoStatus.getValue();
+						
+						for(Map.Entry<Integer, Map<String, List<String>>> subscribedOpco : subscribedOperators.entrySet()){
+							
+							Map<String, List<String>> subscribedOpcoDetails = subscribedOpco.getValue();
+							
+							for(Map.Entry<String, List<String>> opcoDetails : subscribedOpcoDetails.entrySet()){
+								
+								String opcoAPI = opcoDetails.getKey();
+								List<String> opcoList = opcoDetails.getValue();
+								
+								if(historyAPIName.equalsIgnoreCase(opcoAPI)){
+									
+									int status = 0;
+									
+									for (String opcoName : opcoList) {
+										
+										if(historyOpcoName.equalsIgnoreCase(opcoName)){
+											
+											status = 1;
+											break;
+										}
+									}
+									
+									if (status != 1){
+										
+										sub.remove();
+									}
+								}
+							}
+						}
+					}	
+				}
+			}
 		}
+		
+		/*for (Map.Entry<Integer, Map<String, Map<String, String>>> sub : historyDetails.entrySet()) {
 
-		if (historyDetails != null) {
-
-			return historyDetails;
-		} else {
-
-			return Collections.emptyMap();
-		}
+			Integer rootIndex = sub.getKey();
+			Map<String, Map<String, String>> subInfo = sub.getValue();
+			
+			for(Map.Entry<String, Map<String, String>> details : subInfo.entrySet()){
+				
+				String historyAPIName = details.getKey();
+				Map<String, String> detailsInfo = details.getValue();				
+				
+				for(Map.Entry<String, String> opcoStatus : detailsInfo.entrySet()){
+					
+					String historyOpcoName = opcoStatus.getKey();
+					
+					for(Map.Entry<Integer, Map<String, List<String>>> subscribedOpco : subscribedOperators.entrySet()){
+						
+						Map<String, List<String>> subscribedOpcoDetails = subscribedOpco.getValue();
+						
+						for(Map.Entry<String, List<String>> opcoDetails : subscribedOpcoDetails.entrySet()){
+							
+							String opcoAPI = opcoDetails.getKey();
+							List<String> opcoList = opcoDetails.getValue();
+							
+							if(historyAPIName.equalsIgnoreCase(opcoAPI)){
+								
+								int status = 0;
+								
+								for (String opcoName : opcoList) {
+									
+									if(historyOpcoName.equalsIgnoreCase(opcoName)){
+										
+										status = 1;
+										break;
+									}
+								}
+								
+								if (status != 1){
+									
+									historyDetails.remove(rootIndex);
+								}
+							}
+						}
+					}
+				}
+			}
+		}*/
+		
+		return historyDetails;
 	}
 }

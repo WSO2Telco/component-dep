@@ -40,7 +40,16 @@ CREATE TABLE `api` (
 
 LOCK TABLES `api` WRITE;
 /*!40000 ALTER TABLE `api` DISABLE KEYS */;
-INSERT INTO `api` (`apiid`, `apiname`, `apidesc`, `createdby`) VALUES (1,'payment','payment','admin'),(2,'smsmessaging','smsmessaging','admin'),(3,'location','location','admin'),(4,'ussd','ussd','admin');
+INSERT INTO `api` 
+(`apiid`, `apiname`, `apidesc`, `createdby`) VALUES 
+(1,'payment','payment','admin'),
+(2,'smsmessaging','smsmessaging','admin'),
+(3,'location','location','admin'),
+(4,'ussd','ussd','admin'),
+(5,'credit','credit','admin'),
+(6,'customerinfo','customerinfo','admin'),
+(7,'provisioning','provisioning','admin'),
+(8,'wallet','wallet','admin');
 /*!40000 ALTER TABLE `api` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -72,7 +81,42 @@ CREATE TABLE `api_operation` (
 
 LOCK TABLES `api_operation` WRITE;
 /*!40000 ALTER TABLE `api_operation` DISABLE KEYS */;
-INSERT INTO `api_operation` (`api_operationid`, `apiid`, `api_operation`, `api_operationcode`, `createdby`) VALUES (1,1,'Charge','Charge','admin'),(6,1,'ChargeAgainstReservation','ChargeAgainstReservation','admin'),(7,1,'ListChargeOperations','ListChargeOperations','admin'),(2,1,'Refund','Refund','admin'),(3,1,'ReleaseReservation','ReleaseReservation','admin'),(4,1,'ReserveAdditionalAmount','ReserveAdditionalAmount','admin'),(5,1,'ReserveAmount','ReserveAmount','admin'),(10,2,'deliveryInfo','deliveryInfo','admin'),(9,2,'receiveSMS','receiveSMS','admin'),(8,2,'sendsms','sendsms','admin'),(12,2,'StopSubscriptionToDeliveryNotifications','StopSubscriptionToDeliveryNotifications','admin'),(14,2,'StopSubscriptionToMessageNotifcations','StopSubscriptionToMessageNotifcations','admin'),(11,2,'SubscribeToDeliveryNotifications','SubscribeToDeliveryNotifications','admin'),(13,2,'SubscribetoMessageNotifcations','SubscribetoMessageNotifcations','admin'),(15,3,'Location','Location','admin'),(16,4,'USSDInboundCont','USSDInboundCont','admin'),(18,4,'USSDInboundFin','USSDInboundFin','admin'),(17,4,'USSDInboundInit','USSDInboundInit','admin'),(19,4,'USSDOutboundCont','USSDOutboundCont','admin'),(20,4,'USSDOutboundFin','USSDOutboundFin','admin'),(21,4,'USSDOutboundInit','USSDOutboundInit','admin'),(22,4,'USSDSubscription','USSDSubscription','admin');
+INSERT INTO `api_operation` 
+(`api_operationid`, `apiid`, `api_operation`, `api_operationcode`, `createdby`) VALUES 
+(1,1,'Charge','Charge','admin'),
+(2,1,'Refund','Refund','admin'),
+(3,1,'ReleaseReservation','ReleaseReservation','admin'),
+(4,1,'ReserveAdditionalAmount','ReserveAdditionalAmount','admin'),
+(5,1,'ReserveAmount','ReserveAmount','admin'),
+(6,1,'ChargeAgainstReservation','ChargeAgainstReservation','admin'),
+(7,1,'ListChargeOperations','ListChargeOperations','admin'),
+(8,2,'SendSMS','SendSMS','admin'),
+(9,2,'ReceiveSMS','ReceiveSMS','admin'),
+(10,2,'DeliveryInfo','DeliveryInfo','admin'),
+(11,2,'SubscribeToDeliveryNotifications','SubscribeToDeliveryNotifications','admin'),
+(12,2,'StopSubscriptionToDeliveryNotifications','StopSubscriptionToDeliveryNotifications','admin'),
+(13,2,'SubscribetoMessageNotifcations','SubscribetoMessageNotifcations','admin'),
+(14,2,'StopSubscriptionToMessageNotifcations','StopSubscriptionToMessageNotifcations','admin'),
+(15,3,'Location','Location','admin'),
+(16,4,'USSDInboundCont','USSDInboundCont','admin'),
+(17,4,'USSDInboundInit','USSDInboundInit','admin'),
+(18,4,'USSDInboundFin','USSDInboundFin','admin'),
+(19,4,'USSDOutboundCont','USSDOutboundCont','admin'),
+(20,4,'USSDOutboundFin','USSDOutboundFin','admin'),
+(21,4,'USSDOutboundInit','USSDOutboundInit','admin'),
+(22,4,'USSDSubscription','USSDSubscription','admin'),
+(23,5,'ApplyCredit','ApplyCredit','admin'),
+(24,5,'PartialRefund','PartialRefund','admin'),
+(25,6,'GetProfile','GetProfile','admin'),
+(26,6,'GetAttributes','GetAttributes','admin'),
+(27,7,'QueryApplicableServices','QueryApplicableServices','admin'),
+(28,7,'ProvisionService','ProvisionService','admin'),
+(29,7,'Un-ProvisionService','Un-ProvisionService','admin'),
+(30,7,'ListServiceByCustomer','ListServiceByCustomer','admin'),
+(31,8,'MakePayment','MakePayment','admin'),
+(32,8,'ListTransactions','ListTransactions','admin'),
+(33,8,'RefundUser','RefundUser','admin'),
+(34,8,'BalanceLookup','BalanceLookup','admin');
 /*!40000 ALTER TABLE `api_operation` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -261,6 +305,17 @@ CREATE TABLE `rate_type` (
   PRIMARY KEY (`rate_typeid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `rate_type`
+--
+
+LOCK TABLES `rate_type` WRITE;
+/*!40000 ALTER TABLE `rate_type` DISABLE KEYS */;
+INSERT INTO `rate_type` VALUES (1,'CONSTANT','Constant Charge Per Month',NULL,'2017-09-22 14:27:29',NULL,'2017-09-22 14:27:29'),(2,'QUOTA','Quota Based Charging per Month',NULL,'2017-09-22 14:27:29',NULL,'2017-09-22 14:27:29'),(3,'PERCENTAGE','Revenue Share Charging',NULL,'2017-09-22 14:27:30',NULL,'2017-09-22 14:27:30'),(4,'PER_REQUEST','Request Based Charging',NULL,'2017-09-22 14:27:30',NULL,'2017-09-22 14:27:30');
+/*!40000 ALTER TABLE `rate_type` ENABLE KEYS */;
+UNLOCK TABLES;
+/*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
 
 --
 -- Table structure for table `sub_rate_nb`
