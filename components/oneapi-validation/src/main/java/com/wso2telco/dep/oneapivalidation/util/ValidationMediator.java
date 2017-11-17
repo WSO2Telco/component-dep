@@ -15,40 +15,39 @@
  ******************************************************************************/
 package com.wso2telco.dep.oneapivalidation.util;
 
+import com.google.gson.Gson;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.mediators.AbstractMediator;
+
+import java.sql.Array;
+import java.util.ArrayList;
+import java.util.List;
+
+import static com.wso2telco.dep.oneapivalidation.util.Validation.getValidationRegex;
 
 public class ValidationMediator extends AbstractMediator {
 
     @Override
     public boolean mediate(MessageContext mc) {
 
-        String valid = "";
-        String invald = "";
-        boolean result = false;
+        List<String> validMsisdnList = new ArrayList<String>();
+        List<String> invalidMsisdnList = new ArrayList<String>();
+        Gson gson = new Gson();
 
         try {
+            String msisdns = mc.getProperty("MSISDN").toString();
+            String msisdnList[] = msisdns.split(",");
 
-            String msisdn = mc.getProperty("MSISDN").toString();
-
-            if (msisdn.contains(",")) {
-                String msisdns[] = msisdn.split(",");
-                result =true;
-                for (String string : msisdns) {
-                    if (Validation.isCorrectlyFormattedNumber(string)) {
-                        valid += string.concat(",");
+                for (String msisdn : msisdnList) {
+                    if (Validation.isCorrectlyFormattedNumber(msisdn)) {
+                            validMsisdnList.add(msisdn);
                     }else {
-                        result = false;
-                        invald += string.concat(",");
+                        invalidMsisdnList.add(msisdn);
                     }
-                }
-            } else {
-                result = Validation.isCorrectlyFormattedNumber(msisdn);
             }
-
-            mc.setProperty("isValidMsisdn", result);
-            mc.setProperty("validMsisdn", valid.replaceAll(",$", ""));
-            mc.setProperty("invalidMsisdn", invald.replaceAll(",$", ""));
+                mc.setProperty("validMsisdns", gson.toJson(validMsisdnList));
+                mc.setProperty("invalidMsisdns", gson.toJson(invalidMsisdnList));
+                mc.setProperty("validationRegex", getValidationRegex());
 
         } catch (Exception e) {
             log.error("Error Validating MSISDN", e);

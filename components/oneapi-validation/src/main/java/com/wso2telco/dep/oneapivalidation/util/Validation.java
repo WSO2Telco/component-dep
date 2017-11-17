@@ -125,7 +125,10 @@ public class Validation {
         return matched;
     }
 
-     
+    public static String getValidationRegex() {
+        return telFormats;
+    }
+
     /**
      * Check duplicated address.
      *
