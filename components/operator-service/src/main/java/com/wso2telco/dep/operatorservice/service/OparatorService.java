@@ -259,8 +259,7 @@ public class OparatorService {
 		while (sub.hasNext()) {
 			
 			Map.Entry<Integer, Map<String, Map<String, String>>> entry = sub.next();
-			
-			Integer rootIndex = entry.getKey();
+
 			Map<String, Map<String, String>> subInfo = entry.getValue();
 			
 			for(Map.Entry<String, Map<String, String>> details : subInfo.entrySet()){
