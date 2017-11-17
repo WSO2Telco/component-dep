@@ -393,19 +393,20 @@ public class Queries {
 				succMSG.append("\"variables\":").append(gson.toJson(msisdnList)).append("}}");
 
 				return Response.status(Response.Status.OK).entity(succMSG.toString()).build();
-			}catch( InvalidMSISDNException e1){
-				return Response.status(Response.Status.BAD_REQUEST).entity(e1.getErrorType()).build();
+			}catch( InvalidMSISDNException ex){
+				StringBuilder errorMessage=new StringBuilder("{ \"Failed\": { \"messageId\": \"Whitelist Numbers\", \"text\": \"Whitelist Numbers could not be added to the system\", \"variables\":  \""+ex.getErrorType().toString()+"\" } }");
+				return Response.status(Response.Status.BAD_REQUEST).entity(errorMessage.toString()).build();
 			}
 			catch (BusinessException ex) {
-				return Response.status(Response.Status.BAD_REQUEST).entity(ex.getErrorType()).build();
-			} catch (Exception e) {
-				e.printStackTrace();
+				StringBuilder errorMessage=new StringBuilder("{ \"Failed\": { \"messageId\": \"Whitelist Numbers\", \"text\": \"Whitelist Numbers could not be added to the system\", \"variables\": \""+ex.getErrorType().toString()+"\" } }");
+				return Response.status(Response.Status.BAD_REQUEST).entity(errorMessage.toString()).build();
+			} catch (Exception ex) {
+				StringBuilder errorMessage=new StringBuilder("{ \"Failed\": { \"messageId\": \"Whitelist Numbers\", \"text\": \"Whitelist Numbers could not be added to the system\", \"variables\": \""+ex.getMessage()+"\" } }");
+				return Response.status(Response.Status.BAD_REQUEST).entity(errorMessage.toString()).build();
 			}
 		} else {
 			return Response.status(Response.Status.BAD_REQUEST).entity(errorMSG.toString()).build();
 		}
-
-		return Response.status(Response.Status.OK).build();
 	}
 
 

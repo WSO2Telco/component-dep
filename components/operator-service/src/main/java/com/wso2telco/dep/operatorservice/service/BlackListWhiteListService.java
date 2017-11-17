@@ -180,7 +180,7 @@ public class BlackListWhiteListService {
 
 		// All numbers already white listed then throw exception
 		if (msisdnArrayList.isEmpty()) {
-			LOG.debug(" All the numbers already black listed");
+			LOG.debug("All the numbers already blacklisted");
 			throw new SubscriptionWhiteListException(SubscriptionWhiteListErrorType.SUBSCRIPTION_ALREADY_WHITELISTED);
 		}
 		// persistence goes hare
