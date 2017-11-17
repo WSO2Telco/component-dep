@@ -309,53 +309,6 @@ public class OparatorService {
 			}
 		}
 		
-		/*for (Map.Entry<Integer, Map<String, Map<String, String>>> sub : historyDetails.entrySet()) {
-
-			Integer rootIndex = sub.getKey();
-			Map<String, Map<String, String>> subInfo = sub.getValue();
-			
-			for(Map.Entry<String, Map<String, String>> details : subInfo.entrySet()){
-				
-				String historyAPIName = details.getKey();
-				Map<String, String> detailsInfo = details.getValue();				
-				
-				for(Map.Entry<String, String> opcoStatus : detailsInfo.entrySet()){
-					
-					String historyOpcoName = opcoStatus.getKey();
-					
-					for(Map.Entry<Integer, Map<String, List<String>>> subscribedOpco : subscribedOperators.entrySet()){
-						
-						Map<String, List<String>> subscribedOpcoDetails = subscribedOpco.getValue();
-						
-						for(Map.Entry<String, List<String>> opcoDetails : subscribedOpcoDetails.entrySet()){
-							
-							String opcoAPI = opcoDetails.getKey();
-							List<String> opcoList = opcoDetails.getValue();
-							
-							if(historyAPIName.equalsIgnoreCase(opcoAPI)){
-								
-								int status = 0;
-								
-								for (String opcoName : opcoList) {
-									
-									if(historyOpcoName.equalsIgnoreCase(opcoName)){
-										
-										status = 1;
-										break;
-									}
-								}
-								
-								if (status != 1){
-									
-									historyDetails.remove(rootIndex);
-								}
-							}
-						}
-					}
-				}
-			}
-		}*/
-		
 		return historyDetails;
 	}
 }
