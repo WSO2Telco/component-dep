@@ -36,11 +36,11 @@ public class SQLConstants {
 
 
 	public static final String GET_APP_API_USER_SQL =
-			" SELECT SUB.USER_ID AS USER_ID FROM AM_SUBSCRIPTION SUBS, AM_APPLICATION APP,  " +
+			" SELECT distinct(SUB.USER_ID) AS USER_ID FROM AM_SUBSCRIPTION SUBS, AM_APPLICATION APP,  " +
 					"AM_SUBSCRIBER SUB, AM_API API WHERE SUBS.APPLICATION_ID = APP.APPLICATION_ID " +
 					"AND APP.SUBSCRIBER_ID = SUB.SUBSCRIBER_ID AND API.API_ID = SUBS.API_ID " +
-					"AND SUBS.SUB_STATUS != 'BlacklistWhitelistConstants.SubscriptionStatus.REJECTED ' " +
-					"ORDER BY APP.NAME";
+					"AND SUBS.SUB_STATUS != '"+BlacklistWhitelistConstants.SubscriptionStatus.REJECTED +"' " +
+					"";
 
 
 	public static final String GET_KEY_SQL_OF_SUBSCRIPTION_ID_PREFIX =
@@ -106,7 +106,7 @@ public class SQLConstants {
 			"AS API_NAME, API.API_VERSION AS API_VERSION FROM AM_SUBSCRIPTION  SUBS, AM_APPLICATION APP,  " +
 			"AM_SUBSCRIBER SUB, AM_API API WHERE SUBS.APPLICATION_ID = APP.APPLICATION_ID " +
 			"AND APP.SUBSCRIBER_ID = SUB.SUBSCRIBER_ID AND API.API_ID = SUBS.API_ID AND SUBS.SUB_STATUS != " +
-			"'BlacklistWhitelistConstants.SubscriptionStatus.REJECTED ' AND SUB.USER_ID = ? AND APP.APPLICATION_ID = " +
+			"'"+BlacklistWhitelistConstants.SubscriptionStatus.REJECTED +"' AND SUB.USER_ID = ? AND APP.APPLICATION_ID = " +
 			"? ORDER BY APP.NAME";
 
 
@@ -121,7 +121,7 @@ public class SQLConstants {
 	public static final String GET_SUBSCRIPTION_ID_FOR_API_AND_APP_SQL = "SELECT SUBS.SUBSCRIPTION_ID AS " +
 			"SUBSCRIPTION_ID FROM AM_SUBSCRIPTION SUBS, AM_APPLICATION APP, AM_API API WHERE API.API_ID = ? " +
 			"AND APP.APPLICATION_ID = ? AND SUBS.APPLICATION_ID = APP.APPLICATION_ID AND API.API_ID = SUBS.API_ID " +
-			"AND SUBS.SUB_STATUS != 'BlacklistWhitelistConstants.SubscriptionStatus.REJECTED ' ORDER BY APP.NAME";
+			"AND SUBS.SUB_STATUS != '"+BlacklistWhitelistConstants.SubscriptionStatus.REJECTED+ "' ORDER BY APP.NAME";
 
 	public static final String GET_WHITE_LIST_MSISDNS_FOR_SUBSCRIPTION = "SELECT msisdn from subscription_WhiteList " +
 			"WHERE subscriptionID = ?";
@@ -133,5 +133,10 @@ public class SQLConstants {
 
 	public static final String GET_API_INFO_SQL =
 			" SELECT API_PROVIDER, API_NAME, API_VERSION FROM  AM_API WHERE API_ID = ?";
+
+
+	public static final String GET_MSISDN_FOR_WHITELIST =
+			"SELECT wh.msisdn FROM subscription_whitelist wh,"+DbUtils.getDbNames().get(DataSourceNames.WSO2AM_DB)+".AM_SUBSCRIPTION sub " +
+			"where sub.created_by=? and wh.api_id=? and wh.application_id=? and wh.subscriptionId=sub.subscription_Id ";
 
 }
