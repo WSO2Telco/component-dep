@@ -348,7 +348,7 @@ public class Queries {
 
 			}catch( InvalidMSISDNException e1){
 				return Response.status(Response.Status.BAD_REQUEST).entity(e1.getErrorType()).build();
-				
+
 			} catch (BusinessException e) {
 				return Response.status(Response.Status.BAD_REQUEST).entity(e.getErrorType()).build();
 			} catch (Exception e) {
@@ -409,7 +409,7 @@ public class Queries {
 				return Response.status(Response.Status.OK).entity(succMSG.toString()).build();
 			}catch( InvalidMSISDNException e1){
 				return Response.status(Response.Status.BAD_REQUEST).entity(e1.getErrorType()).build();
-			} 
+			}
 			catch (BusinessException ex) {
 				return Response.status(Response.Status.BAD_REQUEST).entity(ex.getErrorType()).build();
 			} catch (Exception e) {
@@ -424,7 +424,7 @@ public class Queries {
 
 
 
-	@POST
+	@GET
 	@Path("/subscribers")
 	@Produces("application/json")
 	public Response getAllSubscribers() throws SQLException, BusinessException {
@@ -492,76 +492,7 @@ public class Queries {
 	}
 
 
-	/*	*//**
-			 * get all subscribers
-			 *//*
-			 * @POST
-			 * 
-			 * @Path("/getSubscribers")
-			 * 
-			 * @Consumes("application/json")
-			 * 
-			 * @Produces("application/json") public Response
-			 * getSubscribers(String jsonBody) { try { LOG.debug(
-			 * "getSubscribers Triggerd  jsonBody :" + jsonBody);
-			 * 
-			 * String subscribersJson = DatabaseUtils.getSubscribers(); return
-			 * Response.status(Response.Status.OK).entity(subscribersJson).build
-			 * (); } catch (Exception ex) {
-			 * java.util.logging.Logger.getLogger(Queries.class.getName()).log(
-			 * Level.SEVERE, null, ex); return
-			 * Response.status(Response.Status.BAD_REQUEST).entity(
-			 * "{\"error\":\"true\"}").build(); } }
-			 */
-	/**
-	 * get all apps of subscriber
-	 */
-	/*
-	 * @POST
-	 * 
-	 * @Path("/getApps")
-	 * 
-	 * @Consumes("application/json")
-	 * 
-	 * @Produces("application/json") public Response getApps(String jsonBody) {
-	 * try { LOG.debug("getApps Triggerd  msisdn :" + jsonBody);
-	 * 
-	 * Gson gson = new GsonBuilder().serializeNulls().create(); Id whiteListReq
-	 * = gson.fromJson(jsonBody, Id.class);
-	 * 
-	 * String subscriberId = whiteListReq.getId(); String json =
-	 * DatabaseUtils.getApps(subscriberId); return
-	 * Response.status(Response.Status.OK).entity(json).build(); } catch
-	 * (Exception ex) {
-	 * java.util.logging.Logger.getLogger(Queries.class.getName()).log(Level.
-	 * SEVERE, null, ex); return
-	 * Response.status(Response.Status.BAD_REQUEST).entity(
-	 * "{\"error\":\"true\"}").build(); } }
-	 */
 
-	/**
-	 * get apis of app
-	 *//*
-		 * @POST
-		 * 
-		 * @Path("/getApis")
-		 * 
-		 * @Consumes("application/json")
-		 * 
-		 * @Produces("application/json") public Response getApis(String
-		 * jsonBody) { try { Gson gson = new
-		 * GsonBuilder().serializeNulls().create(); Id whiteListReq =
-		 * gson.fromJson(jsonBody, Id.class);
-		 * 
-		 * String appId = whiteListReq.getId(); String json =
-		 * DatabaseUtils.getApis(appId); return
-		 * Response.status(Response.Status.OK).entity(json).build(); } catch
-		 * (Exception ex) {
-		 * java.util.logging.Logger.getLogger(Queries.class.getName()).log(Level
-		 * .SEVERE, null, ex); return
-		 * Response.status(Response.Status.BAD_REQUEST).entity(
-		 * "{\"error\":\"true\"}").build(); } }
-		 */
 
 	@POST
 	@Path("/GetWhiteList")

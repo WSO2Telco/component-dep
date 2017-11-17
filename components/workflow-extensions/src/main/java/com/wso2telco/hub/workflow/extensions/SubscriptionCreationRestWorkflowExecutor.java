@@ -124,7 +124,8 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
             super.execute(workflowDTO);
 
             BusinessProcessApi httpClient = Feign.builder().encoder(new JacksonEncoder()).decoder(new JacksonDecoder())
-                    .errorDecoder(new WorkflowErrorDecoder()).requestInterceptor(
+                    //.errorDecoder(new WorkflowErrorDecoder())
+                    .requestInterceptor(
                             new BasicAuthRequestInterceptor(username, password))
                     .target(BusinessProcessApi.class, serviceEndpoint);
 
@@ -331,7 +332,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
 
     public void cleanUpPendingTask(String workflowExtRef) throws WorkflowException {
         BusinessProcessApi api = Feign.builder().encoder(new JacksonEncoder()).decoder(new JacksonDecoder())
-                .errorDecoder(new WorkflowErrorDecoder())
+                //.errorDecoder(new WorkflowErrorDecoder())
                 .requestInterceptor(new BasicAuthRequestInterceptor(username, password))
                 .target(BusinessProcessApi.class, serviceEndpoint);
 
