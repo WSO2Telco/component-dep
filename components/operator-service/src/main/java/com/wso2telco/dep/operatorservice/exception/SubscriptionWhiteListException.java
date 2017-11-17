@@ -33,7 +33,7 @@ public class SubscriptionWhiteListException extends BusinessException {
 	public enum SubscriptionWhiteListErrorType implements ThrowableError  {
 		
 		NULL_SUBSCRIPTION("SWE0001", "No valid subscription id found "),
-		SUBSCRIPTION_ALREADY_WHITELISTED("SWE0002", "Subscription allready whitelisted");
+		SUBSCRIPTION_ALREADY_WHITELISTED("SWE0002", "Subscription already whitelisted");
 		
 		//all the msisdns already white listed for the given subscription
 		SubscriptionWhiteListErrorType(final String code, final String msg) {
@@ -58,8 +58,7 @@ public class SubscriptionWhiteListException extends BusinessException {
 
 	@Override
 	public String toString() {
-		return "SubscriptionWhiteListException [getErrorType()=" + getErrorType() + ", getMessage()=" + getMessage()
-				+ "]";
+		return "SubscriptionWhiteListException [getErrorType()=" + getErrorType() + ", getMessage()=" + getMessage()+ "]";
 	}
 	
 

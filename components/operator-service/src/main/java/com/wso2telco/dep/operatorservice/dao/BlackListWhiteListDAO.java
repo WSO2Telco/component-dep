@@ -378,13 +378,9 @@ public class BlackListWhiteListDAO {
 	}
 
 
-	public List<String> getWhiteListNumbers() throws Exception {
+	public List<String> getWhiteListNumbers(String userId, String apiId, String appId) throws Exception {
 
-		StringBuilder sql = new StringBuilder();
-		sql.append("SELECT MSISDN FROM ");
-		sql.append(OparatorTable.SUBSCRIPTION_WHITELIST.getTObject());
-
-
+		String sql = SQLConstants.GET_MSISDN_FOR_WHITELIST;
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -392,7 +388,10 @@ public class BlackListWhiteListDAO {
 
 		try {
 			conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
-			ps = conn.prepareStatement(sql.toString());
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, userId);
+			ps.setString(2, apiId);
+			ps.setString(3, appId);
 			rs = ps.executeQuery();
 
 			while (rs.next()) {

@@ -202,9 +202,9 @@ public class BlackListWhiteListService {
 		}
 	}
 
-	public String[] getWhiteListNumbers() throws BusinessException {
+	public String[] getWhiteListNumbers(String userId, String apiId, String appId) throws BusinessException {
 		try {
-			List<String> result = dao.getWhiteListNumbers();
+			List<String> result = dao.getWhiteListNumbers(userId,apiId,appId);
 			if (result == null || result.isEmpty()) {
 				return null;
 			}
