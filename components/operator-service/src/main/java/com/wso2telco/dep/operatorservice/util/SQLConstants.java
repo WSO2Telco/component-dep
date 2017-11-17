@@ -40,7 +40,7 @@ public class SQLConstants {
 					"AM_SUBSCRIBER SUB, AM_API API WHERE SUBS.APPLICATION_ID = APP.APPLICATION_ID " +
 					"AND APP.SUBSCRIBER_ID = SUB.SUBSCRIBER_ID AND API.API_ID = SUBS.API_ID " +
 					"AND SUBS.SUB_STATUS != '"+BlacklistWhitelistConstants.SubscriptionStatus.REJECTED +"' " +
-					"ORDER BY APP.NAME";
+					"";
 
 
 	public static final String GET_KEY_SQL_OF_SUBSCRIPTION_ID_PREFIX =
