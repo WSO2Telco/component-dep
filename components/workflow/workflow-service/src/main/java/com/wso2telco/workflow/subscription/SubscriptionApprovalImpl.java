@@ -57,7 +57,7 @@ public class SubscriptionApprovalImpl implements SubscriptionApproval {
             
             List<OperatorEndPointDTO> operatorEndpoints = dbservice.getOperatorEndpoints();
             
-            if(deploymentType == "hub"){
+            if(deploymentType.equals("hub")){
             	
             	String selectedOperators=dbservice.getSubApprovalOperators(apiName, subHUBApprovalDBUpdateRequest.getApiVersion(), subHUBApprovalDBUpdateRequest.getApiProvider(), appID);
                 List<String> operatorList =  Arrays.asList(selectedOperators.split("\\s*,\\s*"));
