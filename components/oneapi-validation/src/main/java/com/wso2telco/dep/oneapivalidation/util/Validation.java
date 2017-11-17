@@ -21,7 +21,9 @@ import org.apache.log4j.Logger;
 import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.File;
-import java.util.*;
+import java.util.HashSet;
+import java.util.Map;
+import java.util.Set;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -68,10 +70,8 @@ public class Validation {
     /** The dump request and response. */
     public static boolean dumpRequestAndResponse = false;
 
-    public static ArrayList<String> customRegex = null;
-
     /** The Constant telFormats. */
-    private static String[] telFormats = readCustomRegex();
+    private static String telFormats = readCustomRegex();
 
     /** The Constant urlFormats. */
     private static final String[] urlFormats = {"http\\:\\/\\/.+", "https\\:\\/\\/.+"};
@@ -84,8 +84,8 @@ public class Validation {
      */
 
 
-    static String[] readCustomRegex() {
-        String[] telFormatsTemp = null;
+    static String readCustomRegex() {
+        String telFormatTemp = null;
 
         FileReader fileReader = new FileReader();
         String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
@@ -93,43 +93,35 @@ public class Validation {
 
         try {
             Map<String, String> oneAPIValidationConfMap = fileReader.readPropertyFile(file);
-            String customeRegexs = oneAPIValidationConfMap.get("validation.regex");
+            String customRegex = oneAPIValidationConfMap.get("validation.regex");
             String useCustomRegex = oneAPIValidationConfMap.get("customValidation");
 
-            if (useCustomRegex.equals("true")) {
-                if (!customeRegexs.equals("")) {
-                    customRegex = new ArrayList<String>();
-                    String customRegexArray[] = customeRegexs.split(",");
+            if (useCustomRegex.equals("true") && !customRegex.equals("")) {
 
-                    for (String reg : customRegexArray) {
-                        customRegex.add(reg.trim());
-                    }
-                    telFormatsTemp = customRegex.toArray(new String[customRegex.size()]);
-                    logger.info("Read custom validation from config file: " + Arrays.toString(telFormatsTemp));
-                }
+                telFormatTemp = customRegex;
+                logger.info("Read custom validation from config file: " + telFormatTemp);
+
             } else {
-                telFormatsTemp = new String[]{"tel\\:\\+[a-zA-Z0-9]+", "tel\\:[a-zA-Z0-9]+", "\\+[a-zA-Z0-9]+"};
+                telFormatTemp = "^((((tel:){1}(\\+){0,1})|((tel:){0,1}(\\+){1}))([a-zA-Z0-9]+))$";
             }
 
         } catch (Exception e) {
             logger.error("Error while reading custom custom regex. Default validation will be used.", e);
-            telFormatsTemp = new String[]{"tel\\:\\+[a-zA-Z0-9]+", "tel\\:[a-zA-Z0-9]+", "\\+[a-zA-Z0-9]+"};
+            telFormatTemp = "^((((tel:){1}(\\+){0,1})|((tel:){0,1}(\\+){1}))([a-zA-Z0-9]+))$";
         }
 
-        return telFormatsTemp;
+        return telFormatTemp;
     }
 
     public static boolean isCorrectlyFormattedNumber(String tel) {
         boolean matched = false;
 
-            if (tel != null) {
-                for (int i = 0; i < telFormats.length && !matched; i++) {
-                    if (tel.matches(telFormats[i])) {
-                        matched = true;
-                    }
-                    logger.debug("Number=" + tel + " matches regex=" + telFormats[i] + " = " + matched);
-                }
+        if (tel != null) {
+            if (tel.matches(telFormats)) {
+                matched = true;
+                logger.debug("MSISDN:  " + tel + " matches regex: " + telFormats);
             }
+        }
         return matched;
     }
 
