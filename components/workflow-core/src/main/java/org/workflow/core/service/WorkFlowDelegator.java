@@ -11,20 +11,12 @@ import com.wso2telco.core.dbutils.util.Callback;
 
 public class WorkFlowDelegator {
 	public Callback getPendingApplicationApprovals(final TaskSerchDTO serchD,UserProfileDTO userProfile) throws BusinessException {
-		WorkFlowProcessor queryBuilder =ActivityProcessFactory
-										.getInstance()
-										.getWorkFlowFactory(WorkFlowType.APPLICATION)
-										.getWorkFlowProcessor();
-		
+		WorkFlowProcessor queryBuilder =ActivityProcessFactory.getInstance().getWorkFlowFactory(WorkFlowType.APPLICATION).getWorkFlowProcessor();
 		return queryBuilder.searchPending(serchD, userProfile);
 	}
-	
+
 	public Callback getPendingSubscriptionApprovals(final TaskSerchDTO serchD,UserProfileDTO userProfile) throws BusinessException {
-		WorkFlowProcessor queryBuilder =ActivityProcessFactory
-										.getInstance()
-										.getWorkFlowFactory(WorkFlowType.SUBSCRIPTION)
-										.getWorkFlowProcessor();
-		
+		WorkFlowProcessor queryBuilder =ActivityProcessFactory.getInstance().getWorkFlowFactory(WorkFlowType.SUBSCRIPTION).getWorkFlowProcessor();
 		return queryBuilder.searchPending(serchD, userProfile);
 	}
 
