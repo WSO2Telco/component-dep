@@ -55,7 +55,7 @@ log4j.appender.FAILED_NOTIFY_EVENT_APPENDER.threshold=DEBUG
 ## Syntax
 
 ```xml
-<publishEvent>
+<notifyEvent>
     <eventSink>String</eventSink>
     <streamName>String</streamName>
     <streamVersion>String</streamVersion>
@@ -74,7 +74,7 @@ log4j.appender.FAILED_NOTIFY_EVENT_APPENDER.threshold=DEBUG
              <attribute name="string" type="dataType" default="" value="literal" />
         </arbitrary>
     </attributes>
-</publishEvent>
+</notifyEvent>
 ```
 
 Parameters that can be configured for the Notify Event mediator are as follows.
