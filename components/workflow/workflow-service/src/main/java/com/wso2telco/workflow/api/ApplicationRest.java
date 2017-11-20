@@ -37,8 +37,12 @@ import com.wso2telco.core.dbutils.util.Callback;
 public class ApplicationRest {
 	 @GET
 	 @Path("/search")
-	 public Response load(@HeaderParam("authorization") String authHeader) {
-		 System.out.println("++++++++++++++++++++++++++++++++ ApplicationRest:applications/search STARTED");
+	 public Response load(@HeaderParam("authorization") String authHeader,
+						 @QueryParam ("batchSize") byte batchSize,
+						 @QueryParam ("start") int start,
+						 @QueryParam ("orderBy")String  orderBy,
+						 @QueryParam ("sortBy")String  sortBy,
+						 @QueryParam ("filterBy")String  filterBy) {
 		        try {
 		    	WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
 		    	TaskSerchDTO serchD = new TaskSerchDTO();
@@ -46,7 +50,6 @@ public class ApplicationRest {
 		    	Callback callback = workFlowDelegator.getPendingApplicationApprovals(serchD, UserProfileDTO);
 		    	/* Callback callback = applicationDetailService.getDetails(authHeader, detailRequestDAO);
 		    	return Response.status(Response.Status.OK).entity(callback).build();*/
-		     System.out.println("++++++++++++++++++++++++++++++++ ApplicationRest:applications/search ENDED");
 		            return Response.status(Response.Status.OK).build();
 		        } catch(Exception e) {
 		            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
