@@ -38,20 +38,16 @@ public class ApplicationRest {
 	 @GET
 	 @Path("/search")
 	 public Response load(@HeaderParam("authorization") String authHeader) {
-		 System.out.println("++++++++++++++++++++++++++++++++ ApplicationRest:applications/search STARTED");
-		        try {
+		 try {
 		    	WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
 		    	TaskSerchDTO serchD = new TaskSerchDTO();
-		    	UserProfileDTO UserProfileDTO = new UserProfileDTO();
-		    	Callback callback = workFlowDelegator.getPendingApplicationApprovals(serchD, UserProfileDTO);
-		    	/* Callback callback = applicationDetailService.getDetails(authHeader, detailRequestDAO);
-		    	return Response.status(Response.Status.OK).entity(callback).build();*/
-		     System.out.println("++++++++++++++++++++++++++++++++ ApplicationRest:applications/search ENDED");
-		            return Response.status(Response.Status.OK).build();
-		        } catch(Exception e) {
+		    	UserProfileDTO userProfileDTO = new UserProfileDTO();
+		    	userProfileDTO.setUserName("admin");
+		    	Callback callback = workFlowDelegator.getPendingApplicationApprovals(serchD, userProfileDTO);
+		        return Response.status(Response.Status.OK).build();
+		 } catch(Exception e) {
 		            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-		        }
-		 //return null;
 		 }
+	}
 
 }
