@@ -19,6 +19,7 @@ package com.wso2telco.workflow.api;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.HeaderParam;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.core.MediaType;
@@ -37,7 +38,12 @@ public class SubscriptionRest {
 
 	@GET
 	@Path("/search")
-	public Response load(@HeaderParam("authorization") String authHeader) {
+	public Response load(@HeaderParam("authorization") String authHeader,
+			 @QueryParam ("batchSize") byte batchSize,
+			 @QueryParam ("start") int start,
+			 @QueryParam ("orderBy")String  orderBy,
+			 @QueryParam ("sortBy")String  sortBy,
+			 @QueryParam ("filterBy")String  filterBy) {
 		try {
 			WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
 			TaskSerchDTO serchD = new TaskSerchDTO();
