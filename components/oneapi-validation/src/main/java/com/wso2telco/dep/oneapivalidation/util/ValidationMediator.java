@@ -15,13 +15,13 @@
  ******************************************************************************/
 package com.wso2telco.dep.oneapivalidation.util;
 
-import com.google.gson.Gson;
+import com.google.gson.*;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.mediators.AbstractMediator;
-
-import java.sql.Array;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 import static com.wso2telco.dep.oneapivalidation.util.Validation.getValidationRegex;
 
@@ -30,30 +30,57 @@ public class ValidationMediator extends AbstractMediator {
     @Override
     public boolean mediate(MessageContext mc) {
 
+        String validationRegex = getValidationRegex();
+        List<MsisdnDTO> tempValidMsisdnList = new ArrayList<MsisdnDTO>();
         List<String> validMsisdnList = new ArrayList<String>();
         List<String> invalidMsisdnList = new ArrayList<String>();
+        Pattern pattern = Pattern.compile(validationRegex);
+        Matcher matcher;
         Gson gson = new Gson();
 
         try {
-            String msisdns = mc.getProperty("MSISDN").toString();
-            String msisdnList[] = msisdns.split(",");
 
-                for (String msisdn : msisdnList) {
-                    if (Validation.isCorrectlyFormattedNumber(msisdn)) {
-                            validMsisdnList.add(msisdn);
-                    }else {
-                        invalidMsisdnList.add(msisdn);
+            JsonArray msisdns = new JsonParser().parse(mc.getProperty("MSISDN").toString()).getAsJsonArray();
+
+            for (int i=0;i<msisdns.size();i++) {
+                matcher = pattern.matcher(msisdns.get(i).getAsString());
+
+                if (matcher.matches()) {
+                    MsisdnDTO msisdn = new MsisdnDTO(matcher.group(2), matcher.group(9));
+
+                    if (!tempValidMsisdnList.contains(msisdn)) {
+                        tempValidMsisdnList.add(msisdn);
                     }
+                } else {
+                    invalidMsisdnList.add(msisdns.get(i).getAsString());
+                }
             }
-                mc.setProperty("validMsisdns", gson.toJson(validMsisdnList));
-                mc.setProperty("invalidMsisdns", gson.toJson(invalidMsisdnList));
-                mc.setProperty("validationRegex", getValidationRegex());
+
+            for(MsisdnDTO msisdn : tempValidMsisdnList){
+                validMsisdnList.add(msisdn.toString());
+            }
+
+            mc.setProperty("validMsisdns", gson.toJson(validMsisdnList));
+            mc.setProperty("invalidMsisdns", gson.toJson(invalidMsisdnList));
+            mc.setProperty("validationRegex", validationRegex);
 
         } catch (Exception e) {
             log.error("Error Validating MSISDN", e);
+            setErrorInContext(mc,"SVC0001",e.getMessage(),"","400","SERVICE_EXCEPTION");
+            mc.setProperty("INTERNAL_ERROR","true");
         }
 
         return true;
     }
 
+    private void setErrorInContext(MessageContext synContext, String messageId,
+                                   String errorText, String errorVariable, String httpStatusCode,
+                                   String exceptionType) {
+
+        synContext.setProperty("messageId", messageId);
+        synContext.setProperty("errorText", errorText);
+        synContext.setProperty("errorVariable", errorVariable);
+        synContext.setProperty("httpStatusCode", httpStatusCode);
+        synContext.setProperty("exceptionType", exceptionType);
+    }
 }
