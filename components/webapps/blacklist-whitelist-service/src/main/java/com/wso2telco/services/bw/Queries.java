@@ -75,6 +75,7 @@ public class Queries {
 	 * @return an HTTP response with content of the created resource
 	 * @throws Exception
 	 */
+	@Deprecated
 	@POST
 	@Path("/Blacklist/{MSISDN}")
 	@Consumes("application/json")
@@ -287,6 +288,7 @@ public class Queries {
 	 *            representation for the new resource
 	 * @return an HTTP response with content of the created resource
 	 */
+	@Deprecated
 	@POST
 	@Path("/whitelist/{MSISDN}")
 	@Consumes("application/json")
