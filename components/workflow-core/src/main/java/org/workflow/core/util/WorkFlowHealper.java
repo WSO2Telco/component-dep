@@ -1,5 +1,8 @@
 package org.workflow.core.util;
 
+import java.util.Map;
+import java.util.Properties;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.CarbonContext;
@@ -33,7 +36,8 @@ public class WorkFlowHealper {
 	}
 
 	public String getWorkflowServiceEndPoint() {
-		return wrorkflowServiceEndPoint;
+		Map<String, String> workflowProperties=WorkflowProperties.loadWorkflowPropertiesFromXML();
+		return  workflowProperties.get(WorkflowProperties.ACTIVITI_SERVICE_HOST);
 	}
 
 	public void setAppCreationServiceEndPoint(String appCreationServiceEndPoint) {
