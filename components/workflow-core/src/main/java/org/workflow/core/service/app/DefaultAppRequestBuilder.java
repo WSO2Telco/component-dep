@@ -24,15 +24,18 @@ import com.wso2telco.core.dbutils.util.Callback;
 
 class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 
+	private DeploymentTypes  depType;
+	
 	private static DefaultAppRequestBuilder instance;
 
-	private DefaultAppRequestBuilder() throws BusinessException {
+	private DefaultAppRequestBuilder(DeploymentTypes  depType) throws BusinessException {
 		super.log = LogFactory.getLog(DefaultAppRequestBuilder.class);
+		this.depType =depType;
 	}
 
-	public static DefaultAppRequestBuilder getInstace() throws BusinessException {
+	public static DefaultAppRequestBuilder getInstace(DeploymentTypes  depType) throws BusinessException {
 		if (instance == null) {
-			instance = new DefaultAppRequestBuilder();
+			instance = new DefaultAppRequestBuilder(depType);
 		}
 		return instance;
 	}
@@ -140,7 +143,7 @@ class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 	@Override
 	protected DeploymentTypes getDeployementType() {
 		// TODO Auto-generated method stub
-		return null;
+		return depType;
 	}
 
 	@Override

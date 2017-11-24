@@ -15,7 +15,26 @@
  */
 package com.wso2telco.dep.operatorservice.dao;
 
+<<<<<<< HEAD
+=======
+import java.sql.Array;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.sql.Statement;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import javax.persistence.PersistenceException;
+
 import org.apache.commons.lang.StringUtils;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+>>>>>>> 42fc2fa... DEPAM-231
 import com.wso2telco.core.dbutils.DbUtils;
 import com.wso2telco.core.dbutils.util.DataSourceNames;
 import com.wso2telco.dep.operatorservice.model.Operator;
@@ -176,6 +195,8 @@ public class WorkflowDAO {
 
     }
 
+<<<<<<< HEAD
+=======
     public List<String> getOparatorApprovedApp(String []  applicationDIds)          throws  Exception {
         Connection conn = null;
         PreparedStatement ps = null;
@@ -215,6 +236,7 @@ public class WorkflowDAO {
 
     }
     
+>>>>>>> 42fc2fa... DEPAM-231
     /**
      * Gets the operator if by name.
      *
