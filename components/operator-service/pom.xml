@@ -96,6 +96,10 @@
             <artifactId>org.wso2.carbon.apimgt.hostobjects</artifactId>
             <version>${org.wso2.carbon.apimgt.version}</version>
         </dependency>
+        <dependency>
+            <groupId>com.wso2telco.dep</groupId>
+            <artifactId>oneapi-validation</artifactId>
+        </dependency>
 
     </dependencies>
 

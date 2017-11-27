@@ -16,46 +16,53 @@
 
 package com.wso2telco.dep.operatorservice.service;
 
+import com.google.gson.Gson;
+import com.google.gson.GsonBuilder;
+import com.wso2telco.core.dbutils.exception.BusinessException;
+import com.wso2telco.core.dbutils.exception.GenaralError;
+import com.wso2telco.core.msisdnvalidator.MSISDN;
+import com.wso2telco.core.msisdnvalidator.MSISDNUtil;
+import com.wso2telco.dep.oneapivalidation.util.MsisdnDTO;
+import com.wso2telco.dep.operatorservice.dao.BlackListWhiteListDAO;
+import com.wso2telco.dep.operatorservice.exception.NumberBlackListException;
+import com.wso2telco.dep.operatorservice.exception.SubscriptionWhiteListException;
+import com.wso2telco.dep.operatorservice.exception.SubscriptionWhiteListException.SubscriptionWhiteListErrorType;
+import com.wso2telco.dep.operatorservice.model.*;
+import edu.emory.mathcs.backport.java.util.Arrays;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.apache.http.HttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.entity.StringEntity;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.util.EntityUtils;
+import org.wso2.carbon.apimgt.api.dto.UserApplicationAPIUsage;
+import org.wso2.carbon.apimgt.api.model.APIIdentifier;
+import org.wso2.carbon.apimgt.api.model.SubscribedAPI;
+import org.wso2.carbon.apimgt.hostobjects.internal.HostObjectComponent;
+import org.wso2.carbon.apimgt.impl.APIManagerConfiguration;
+
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import com.wso2telco.core.dbutils.exception.BusinessException;
-import com.wso2telco.core.dbutils.exception.GenaralError;
-import com.wso2telco.core.msisdnvalidator.MSISDN;
-import com.wso2telco.core.msisdnvalidator.MSISDNUtil;
-import com.wso2telco.dep.operatorservice.dao.BlackListWhiteListDAO;
-import com.wso2telco.dep.operatorservice.exception.NumberBlackListException;
-import com.wso2telco.dep.operatorservice.exception.SubscriptionWhiteListException;
-import com.wso2telco.dep.operatorservice.exception.SubscriptionWhiteListException.SubscriptionWhiteListErrorType;
-import com.wso2telco.dep.operatorservice.model.BlackListDTO;
-import com.wso2telco.dep.operatorservice.model.MSISDNSearchDTO;
-import com.wso2telco.dep.operatorservice.model.WhiteListDTO;
-import com.wso2telco.dep.operatorservice.model.WhiteListMSISDNSearchDTO;
-
-import org.wso2.carbon.apimgt.api.dto.UserApplicationAPIUsage;
-import org.wso2.carbon.apimgt.api.model.APIIdentifier;
-import org.wso2.carbon.apimgt.api.model.SubscribedAPI;
-
 public class BlackListWhiteListService {
 	Log LOG = LogFactory.getLog(BlackListWhiteListService.class);
 	private BlackListWhiteListDAO dao;
+    private MSISDNUtil phoneNumberValidationUtil_;
+    private APIManagerConfiguration apiManagerConfiguration;
 
-	private MSISDNUtil phoneNumberValidationUtil_;
-
+	public BlackListWhiteListService()
 	{
 		dao = new BlackListWhiteListDAO();
 		phoneNumberValidationUtil_ = new MSISDNUtil();
+        apiManagerConfiguration = HostObjectComponent.getAPIManagerConfiguration();
 	}
 
-	/**
+    /**
 	 * validate the MSISDN s and black list . The MSISDN need to provided with +
 	 * sign if not all the process fails. The entire process run as a single
 	 * transaction .
@@ -63,47 +70,44 @@ public class BlackListWhiteListService {
 	public void blacklist(BlackListDTO dto) throws BusinessException {
 
 		String[] msisdns = dto.getUserMSISDN();
-		List<MSISDN> numberA = new ArrayList<MSISDN>();
-		MSISDNSearchDTO mSISDNSearchDTO = new MSISDNSearchDTO();
-		try {
-			for (String msisdn : msisdns) {
+        Gson gson = new Gson();
 
-				//The number format should be telco:phonenumber
-				int charIndex = msisdn.indexOf('+');
-				String prefix = msisdn.substring(0, charIndex);
-				msisdn = msisdn.substring(msisdn.indexOf('+'));
-				MSISDN msisdnDTO = phoneNumberValidationUtil_.parse(msisdn);
-				msisdnDTO.setPrefix(prefix);
-				numberA.add(msisdnDTO);
-				mSISDNSearchDTO.addMSISDN2Search(msisdnDTO);
-			}
+		try {
+
+           MSISDNValidationDTO msisdnValidationDTO = new MSISDNValidationDTO();
+           msisdnValidationDTO.setValid(Arrays.asList(msisdns));
+           msisdnValidationDTO.setValidationRegex(dto.getValidationRegex());
+           msisdnValidationDTO.setValidationPrefixGroup(dto.getValidationPrefixGroup());
+           msisdnValidationDTO.setValidationDigitsGroup(dto.getValidationDigitsGroup());
+           msisdnValidationDTO.process();
 
 			final String apiID_ = dto.getApiID();
 			final String apiName_ = dto.getApiName();
 			final String userId_ = dto.getUserID();
 
 			// load already black listed numbers
-			mSISDNSearchDTO.setApiID(apiID_);
-			List<MSISDN> alreadyBlacklisted;
+			List<MsisdnDTO> alreadyBlacklisted;
 
-			alreadyBlacklisted = dao.loadAlreadyBlacklisted(mSISDNSearchDTO);
+			alreadyBlacklisted = dao.getBlacklisted(apiID_);
 
 			// Remove already black listed from the list
-			for (MSISDN msisdn : alreadyBlacklisted) {
+			for (MsisdnDTO msisdn : alreadyBlacklisted) {
+                    msisdnValidationDTO.getValidProcessed().remove(msisdn);
+            }
 
-				numberA.remove(msisdn);
-			}
-
-			if (numberA.isEmpty()) {
+			if (msisdnValidationDTO.getValidProcessed().isEmpty()) {
 				LOG.debug(" All the numbers already black listed");
 				return;
 			}
-			dao.blacklist(numberA, apiID_, apiName_, userId_);
-		} catch (Exception e) {
+			dao.blacklist(msisdnValidationDTO, apiID_, apiName_, userId_);
+		} catch(IOException e) {
+			LOG.error("Error occured while trying to connect to "+ apiManagerConfiguration.getFirstProperty("msisdnValidationURL"), e.getCause());
+			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
+		}catch   (Exception e) {
 			LOG.error("blacklist ", e);
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
-	}
+    }
 
 	public String[] loadBlacklisted(MSISDNSearchDTO searchDTO) throws BusinessException {
 		try {

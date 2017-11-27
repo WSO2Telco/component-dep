@@ -25,36 +25,63 @@ public class BlackListBulk {
     private String apiName;
     private String userID;
     private String[] msisdnList;
-    
-    public String getAPIID(){
-        return this.apiID;
+    private String validationRegex;
+    private int validationPrefixGroup;
+    private int validationDigitsGroup;
+
+    public String getApiID() {
+        return apiID;
     }
-    
-    public String setAPIID(String apiID){
-        return this.apiID = apiID;
+
+    public void setApiID(String apiID) {
+        this.apiID = apiID;
     }
-    
-    public String getAPIName(){
-        return this.apiName;
+
+    public String getApiName() {
+        return apiName;
     }
-    
-    public String setAPIName(String apiName){
-        return this.apiName = apiName;
+
+    public void setApiName(String apiName) {
+        this.apiName = apiName;
     }
-    
-    public String getUserID(){
-        return this.userID;
+
+    public String getUserID() {
+        return userID;
     }
-    
-    public String setUserID(String userID){
-        return this.userID = userID;
+
+    public void setUserID(String userID) {
+        this.userID = userID;
     }
-    
-    public String[] getMsisdnList(){
-        return this.msisdnList;
+
+    public String[] getMsisdnList() {
+        return msisdnList;
     }
-    
-    public String[] setMsisdnList(String[] msisdnList){
-        return this.msisdnList = msisdnList;
+
+    public void setMsisdnList(String[] msisdnList) {
+        this.msisdnList = msisdnList;
+    }
+
+    public String getValidationRegex() {
+        return validationRegex;
+    }
+
+    public void setValidationRegex(String validationRegex) {
+        this.validationRegex = validationRegex;
+    }
+
+    public int getValidationPrefixGroup() {
+        return validationPrefixGroup;
+    }
+
+    public void setValidationPrefixGroup(int validationPrefixGroup) {
+        this.validationPrefixGroup = validationPrefixGroup;
+    }
+
+    public int getValidationDigitsGroup() {
+        return validationDigitsGroup;
+    }
+
+    public void setValidationDigitsGroup(int validationDigitsGroup) {
+        this.validationDigitsGroup = validationDigitsGroup;
     }
 }

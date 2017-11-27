@@ -119,10 +119,10 @@ public class Queries {
 
 				return Response.status(Response.Status.OK).entity(jsonreturn.toString()).build();
 			} catch (BusinessException msisdnEx) {
-				return Response.status(Response.Status.BAD_REQUEST).entity(msisdnEx.getErrorType()).build();
+				return Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson(msisdnEx.getMessage().toString())).build();
 			}
 		} else {
-			return Response.status(Response.Status.BAD_REQUEST).entity(errorMSG.toString()).build();
+			return Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson(errorMSG.toString())).build();
 		}
 
 	}
@@ -139,7 +139,7 @@ public class Queries {
 
 		BlackListBulk blackListReq = gson.fromJson(jsonBody, BlackListBulk.class);
 
-		int apiId = Integer.parseInt(blackListReq.getAPIID());
+		int apiId = Integer.parseInt(blackListReq.getApiID());
 
 		if(apiId == -1){
 			return Response.status(Response.Status.BAD_REQUEST).entity(APIError.INVALID_API_NAME).build();
@@ -172,17 +172,21 @@ public class Queries {
 				blackListDTO.setApiName(apiInfoArray[0]+":"+ apiInfoArray[1] + ":" + apiInfoArray[2]);
 				blackListDTO.setUserID(userID);
 				blackListDTO.setUserMSISDN(msisdnList);
+				blackListDTO.setValidationRegex(blackListReq.getValidationRegex());
+				blackListDTO.setValidationPrefixGroup(blackListReq.getValidationPrefixGroup());
+				blackListDTO.setValidationDigitsGroup(blackListReq.getValidationDigitsGroup());
+
 
 				blackListWhiteListService.blacklist(blackListDTO);
 
 				return Response.status(Response.Status.OK).entity(successMSG.toString()).build();
 
 			} catch (BusinessException msisdnEx) {
-				return Response.status(Response.Status.BAD_REQUEST).entity(msisdnEx.getErrorType()).build();
+				return Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson(msisdnEx.getErrorType())).build();
 			}
 
 		} else {
-			return Response.status(Response.Status.BAD_REQUEST).entity(errorMSG.toString()).build();
+			return Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson(errorMSG.toString())).build();
 		}
 
 	}
