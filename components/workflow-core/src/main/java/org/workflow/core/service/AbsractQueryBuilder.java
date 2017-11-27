@@ -14,6 +14,7 @@ import org.workflow.core.model.Variable;
 import org.workflow.core.service.WorkFlowProcessor;
 import org.workflow.core.util.DeploymentTypes;
 
+import com.google.gson.Gson;
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.model.UserProfileDTO;
 import com.wso2telco.core.dbutils.util.Callback;
@@ -21,20 +22,23 @@ import com.wso2telco.core.dbutils.util.Callback;
 public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 	protected Log log;
 	protected RestClient activityClient = null;
-	
+
 	public AbsractQueryBuilder() throws BusinessException {
 		activityClient = ActivityClientFactory.getInstance().getClient();
 	}
 
-	protected abstract DeploymentTypes getDeployementType() ; 
+	protected abstract DeploymentTypes getDeployementType() ;
 
 	protected abstract  Callback buildResponse(final TaskSerchDTO searchDTO, final TaskList taskList,
 			final UserProfileDTO userProfile) throws BusinessException;
 
 	protected  abstract Map<String,String> getFilterMap() ;
-	
+
 	public Callback searchPending(TaskSerchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException {
 		ProcessSearchRequest processRequest = buildSearchRequest(searchDTO, userProfile);
+		Gson gson=new Gson();
+		String processRequestString=gson.toJson(processRequest);//TODO Added 'coz testing purpose
+
 		TaskList taskList = null;
 		try {
 			taskList = activityClient.getTasks(processRequest);
@@ -59,9 +63,9 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 		request.setSize(searchDTO.getBatchSize());
 		request.setStart(searchDTO.getStart());
 		request.setSort(searchDTO.getSortBy());
-		
+
 		request.setProcessDefinitionKey(getDeployementType().getAppProcessType());
-		
+
 		String filterStr = searchDTO.getFilterBy();
 		/**
 		 * if the request need to be filtered the string must be formated as
@@ -85,7 +89,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 						&& getFilterMap().containsKey(critiraarry[0].trim())) {
 					/**
 					 * add process variable ,
-					 * 
+					 *
 					 */
 
 					Variable var = new Variable(getFilterMap().get(critiraarry[0]), critiraarry[1]);

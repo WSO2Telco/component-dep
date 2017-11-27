@@ -17,7 +17,11 @@ public class WorkFlowHealper {
 	Log log = LogFactory.getLog(WorkFlowHealper.class);
 
 	private static WorkFlowHealper instance;
-	private String wrorkflowServiceEndPoint;
+	private String workflowServiceEndPoint;
+
+	public void setWorkflowServiceEndPoint(String workflowServiceEndPoint) {
+		this.workflowServiceEndPoint = workflowServiceEndPoint;
+	}
 
 	public static WorkFlowHealper getInstance() {
 		if (instance == null) {
@@ -36,12 +40,8 @@ public class WorkFlowHealper {
 	}
 
 	public String getWorkflowServiceEndPoint() {
-		Map<String, String> workflowProperties=WorkflowProperties.loadWorkflowPropertiesFromXML();
-		return  workflowProperties.get(WorkflowProperties.ACTIVITI_SERVICE_HOST);
-	}
-
-	public void setAppCreationServiceEndPoint(String appCreationServiceEndPoint) {
-		this.wrorkflowServiceEndPoint = appCreationServiceEndPoint;
+		ActivitiBean activitiBean=WorkflowProperties.loadWorkflowPropertiesFromXML();
+		return  activitiBean.getValue();
 	}
 
 	public String getAdmin() throws BusinessException {

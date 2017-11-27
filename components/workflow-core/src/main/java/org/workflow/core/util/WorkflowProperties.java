@@ -1,8 +1,6 @@
 package org.workflow.core.util;
 
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
 
 import javax.xml.parsers.DocumentBuilder;
 import javax.xml.parsers.DocumentBuilderFactory;
@@ -16,18 +14,18 @@ import org.w3c.dom.NodeList;
 
 public class WorkflowProperties {
 
-	public static final String WORKFLOW_PROPERTIES_XML_FILE = "workflow-configuration.xml";
-	public static final String ACTIVITI_SERVICE_HOST = "activiti.service.host";
-    private static HashMap<String, String> propertiesMap = null;
+	public static final String WORKFLOW_PROPERTIES_XML_FILE = "workflow-extensions.xml";
+	public static final String ACTIVITI_SERVICE_HOST = "serviceEndpoint";
+    private static ActivitiBean activitiBean = null;
 	private static final Log log = LogFactory.getLog(WorkflowProperties.class);
 
-    public static Map<String, String> loadWorkflowPropertiesFromXML() {
-    	if (propertiesMap == null) {
+    public static ActivitiBean loadWorkflowPropertiesFromXML() {
+    	if (activitiBean == null) {
     		try {
-            	propertiesMap = new HashMap<String, String>();
+    			activitiBean = new ActivitiBean();
             	DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
         		String carbonHome = System.getProperty("carbon.home");
-        		String workflowPropertiesFile = carbonHome + "/repository/conf/" + WORKFLOW_PROPERTIES_XML_FILE;
+        		String workflowPropertiesFile = carbonHome + "/repository/resources/" + WORKFLOW_PROPERTIES_XML_FILE;
         		Document document = builder.parse(new File(workflowPropertiesFile));
         		Element rootElement = document.getDocumentElement();
 
@@ -38,7 +36,9 @@ public class WorkflowProperties {
         				String nodeName = node.getAttributes().getNamedItem("name").getNodeValue();
         				if (nodeName.equalsIgnoreCase(ACTIVITI_SERVICE_HOST)) {
         					String value = ((Element)node).getTextContent();
-        					propertiesMap.put(nodeName, value);
+        					activitiBean.setTag(nodeName);
+        					activitiBean.setValue(value);
+        					//propertiesMap.put(nodeName, value);
         				}
         			}
                 }
@@ -49,6 +49,6 @@ public class WorkflowProperties {
     	} else {
     		//Return already loaded propertiesMap
     	}
-    	return propertiesMap;
+    	return activitiBean;
     }
 }
