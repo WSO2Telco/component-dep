@@ -16,24 +16,6 @@
 
 package com.wso2telco.services.bw;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-
-import org.apache.log4j.Logger;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wso2telco.core.dbutils.exception.BusinessException;
@@ -46,11 +28,18 @@ import com.wso2telco.dep.operatorservice.model.WhiteListDTO;
 import com.wso2telco.dep.operatorservice.service.BlackListWhiteListService;
 import com.wso2telco.dep.operatorservice.service.OparatorService;
 import com.wso2telco.dep.operatorservice.util.APIError;
-import com.wso2telco.services.bw.entity.BlackList;
-import com.wso2telco.services.bw.entity.BlackListBulk;
-import com.wso2telco.services.bw.entity.RemoveRequest;
-import com.wso2telco.services.bw.entity.WhiteList;
-import com.wso2telco.services.bw.entity.WhiteListBulk;
+import com.wso2telco.services.bw.entity.*;
+import org.apache.log4j.Logger;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 @Path("/queries")
 public class Queries {
@@ -141,7 +130,7 @@ public class Queries {
 
 		int apiId = Integer.parseInt(blackListReq.getApiID());
 
-		if(apiId == -1){
+		if (apiId == -1) {
 			return Response.status(Response.Status.BAD_REQUEST).entity(APIError.INVALID_API_NAME).build();
 		}
 
@@ -169,7 +158,7 @@ public class Queries {
 			try {
 				BlackListDTO blackListDTO = new BlackListDTO();
 				blackListDTO.setApiID(String.valueOf(apiId));
-				blackListDTO.setApiName(apiInfoArray[0]+":"+ apiInfoArray[1] + ":" + apiInfoArray[2]);
+				blackListDTO.setApiName(apiInfoArray[0] + ":" + apiInfoArray[1] + ":" + apiInfoArray[2]);
 				blackListDTO.setUserID(userID);
 				blackListDTO.setUserMSISDN(msisdnList);
 				blackListDTO.setValidationRegex(blackListReq.getValidationRegex());
@@ -181,8 +170,9 @@ public class Queries {
 
 				return Response.status(Response.Status.OK).entity(successMSG.toString()).build();
 
-			} catch (BusinessException msisdnEx) {
-				return Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson(msisdnEx.getErrorType())).build();
+			} catch (BusinessException ex) {
+				StringBuilder errorMessage = new StringBuilder("{ \"Failed\": { \"messageId\": \"Blacklist Numbers\", \"text\": \"Blacklist Numbers could not be added to the system\", \"variables\": \"" + ex.getErrorType().toString() + "\" } }");
+				return Response.status(Response.Status.BAD_REQUEST).entity(errorMessage.toString()).build();
 			}
 
 		} else {

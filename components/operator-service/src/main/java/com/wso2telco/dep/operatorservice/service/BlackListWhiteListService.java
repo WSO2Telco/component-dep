@@ -23,6 +23,7 @@ import com.wso2telco.core.dbutils.exception.GenaralError;
 import com.wso2telco.core.msisdnvalidator.MSISDNUtil;
 import com.wso2telco.dep.oneapivalidation.util.MsisdnDTO;
 import com.wso2telco.dep.operatorservice.dao.BlackListWhiteListDAO;
+import com.wso2telco.dep.operatorservice.exception.BlacklistException;
 import com.wso2telco.dep.operatorservice.exception.NumberBlackListException;
 import com.wso2telco.dep.operatorservice.exception.SubscriptionWhiteListException;
 import com.wso2telco.dep.operatorservice.exception.SubscriptionWhiteListException.SubscriptionWhiteListErrorType;
@@ -66,40 +67,47 @@ public class BlackListWhiteListService {
 	public void blacklist(BlackListDTO dto) throws BusinessException {
 
 		String[] msisdns = dto.getUserMSISDN();
+		MSISDNValidationDTO msisdnValidationDTO = new MSISDNValidationDTO();
         Gson gson = new Gson();
 
-		try {
+		final String apiID_ = dto.getApiID();
+		final String apiName_ = dto.getApiName();
+		final String userId_ = dto.getUserID();
 
-           MSISDNValidationDTO msisdnValidationDTO = new MSISDNValidationDTO();
-           msisdnValidationDTO.setValid(Arrays.asList(msisdns));
-           msisdnValidationDTO.setValidationRegex(dto.getValidationRegex());
-           msisdnValidationDTO.setValidationPrefixGroup(dto.getValidationPrefixGroup());
-           msisdnValidationDTO.setValidationDigitsGroup(dto.getValidationDigitsGroup());
-           msisdnValidationDTO.process();
 
-			final String apiID_ = dto.getApiID();
-			final String apiName_ = dto.getApiName();
-			final String userId_ = dto.getUserID();
+			try{
 
-			// load already black listed numbers
-			List<MsisdnDTO> alreadyBlacklisted;
+				msisdnValidationDTO.setValid(Arrays.asList(msisdns));
+				msisdnValidationDTO.setValidationRegex(dto.getValidationRegex());
+				msisdnValidationDTO.setValidationPrefixGroup(dto.getValidationPrefixGroup());
+				msisdnValidationDTO.setValidationDigitsGroup(dto.getValidationDigitsGroup());
+				msisdnValidationDTO.process();
 
-			alreadyBlacklisted = dao.getBlacklisted(apiID_);
 
-			// Remove already black listed from the list
-			for (MsisdnDTO msisdn : alreadyBlacklisted) {
-                    msisdnValidationDTO.getValidProcessed().remove(msisdn);
-            }
+				// load already black listed numbers
+				List<MsisdnDTO> alreadyBlacklisted;
+
+				alreadyBlacklisted = dao.getBlacklisted(apiID_);
+
+				// Remove already black listed from the list
+				for (MsisdnDTO msisdn : alreadyBlacklisted) {
+					msisdnValidationDTO.getValidProcessed().remove(msisdn);
+				}
+
+			} catch (Exception e){
+				LOG.error("Error while getting already blacklisted users",e);
+				throw new BlacklistException(BlacklistException.BlacklistErrorType.INTERNAL_SERVER_ERROR);
+			}
+
 
 			if (msisdnValidationDTO.getValidProcessed().isEmpty()) {
 				LOG.debug(" All the numbers already black listed");
-				return;
+				throw new BlacklistException(BlacklistException.BlacklistErrorType.USER_ALREADY_BLACKLISTED);
 			}
+
+		try {
 			dao.blacklist(msisdnValidationDTO, apiID_, apiName_, userId_);
-		} catch(IOException e) {
-			LOG.error("Error occured while trying to connect to "+ apiManagerConfiguration.getFirstProperty("msisdnValidationURL"), e.getCause());
-			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
-		}catch   (Exception e) {
+		} catch (Exception e) {
 			LOG.error("blacklist ", e);
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
