@@ -27,16 +27,16 @@ public class SubscriptionProcessorFactory implements WorkFlow {
 		WorkFlowProcessor workflowProcessor = null;
 		switch(deploymentType) {
 		case EXTERNAL_GATEWAY:
-			workflowProcessor = DefaultSubRequestBuilder.getInstace();
+			workflowProcessor = DefaultSubRequestBuilder.getInstace(DeploymentTypes.EXTERNAL_GATEWAY);
 			break;
 		case HUB:
-			workflowProcessor = HubSubRequestBuilder.getInstace();
+			workflowProcessor = HubSubRequestBuilder.getInstace(DeploymentTypes.HUB);
 			break;
 		case INTERNAL_GATEWAY:
-			workflowProcessor = DefaultSubRequestBuilder.getInstace();
+			workflowProcessor = DefaultSubRequestBuilder.getInstace(DeploymentTypes.INTERNAL_GATEWAY);
 			break;
 		default:
-			workflowProcessor = DefaultSubRequestBuilder.getInstace();
+			workflowProcessor = DefaultSubRequestBuilder.getInstace(DeploymentTypes.EXTERNAL_GATEWAY);
 			break;
 		}
 		return workflowProcessor;

@@ -24,15 +24,17 @@ import com.wso2telco.core.dbutils.util.Callback;
 
 class DefaultSubRequestBuilder extends AbsractQueryBuilder {
 
+	private DeploymentTypes depType;
 	private static DefaultSubRequestBuilder instance;
 
-	private DefaultSubRequestBuilder() throws BusinessException {
+	private DefaultSubRequestBuilder(DeploymentTypes depType) throws BusinessException {
 		super.log = LogFactory.getLog(DefaultSubRequestBuilder.class);
+		this.depType = depType;
 	}
 
-	public static DefaultSubRequestBuilder getInstace() throws BusinessException {
+	public static DefaultSubRequestBuilder getInstace(DeploymentTypes depType) throws BusinessException {
 		if (instance == null) {
-			instance = new DefaultSubRequestBuilder();
+			instance = new DefaultSubRequestBuilder(depType);
 		}
 		return instance;
 	}
@@ -63,7 +65,6 @@ class DefaultSubRequestBuilder extends AbsractQueryBuilder {
 			public String getFilterBy() {
 				return searchDTO.getFilterBy();
 			}
-			
 
 			@Override
 			public String getOrderBy() {
@@ -76,46 +77,44 @@ class DefaultSubRequestBuilder extends AbsractQueryBuilder {
 				
 				for ( final TaskList.Task task : taskList.getData()) {
 					final Map<AppVariable,TaskVariableResponse> varMap = new HashMap<AppVariable, TaskVariableResponse>();
-					 for (final TaskVariableResponse var : task.getVars()) {
-							varMap.put( AppVariable.getByKey(var.getName()),var);
+					for (final TaskVariableResponse var : task.getVars()) {
+						varMap.put(AppVariable.getByKey(var.getName()), var);
+					}
+					 
+					ReturnableTaskResponse responseTask = new ReturnableTaskResponse() {
+						/**
+						 * return task ID
+						 */
+						public int getID() {
+							return task.getId();
 						}
-					 
-					 ReturnableTaskResponse responseTask= new ReturnableTaskResponse() {
-						 /**
-							 * return task ID
-							 */ 
-							public int getID() {
-								return task.getId();
-							}
-							
-							public String getName() {
-								return varMap.get(AppVariable.NAME).getValue() ;
-							}
-							public String getDescription() {
-								return varMap.get(AppVariable.DESCRIPTION).getValue() ;
-							}
-							
-							public String getCreatedDate() {
-								return format.format( task.getCreateTime());
-							}
-							
-							public String getTier() {
-								return varMap.get(AppVariable.TIER).getValue() ;
-							}
-							
-							public String getAssinee() {
-								return task.getAssignee();
-							}
-					 };
-					 
-					 temptaskList.add(responseTask);
-					
+
+						public String getName() {
+							return varMap.get(AppVariable.NAME).getValue();
+						}
+
+						public String getDescription() {
+							return varMap.get(AppVariable.DESCRIPTION)
+									.getValue();
+						}
+
+						public String getCreatedDate() {
+							return format.format(task.getCreateTime());
+						}
+
+						public String getTier() {
+							return varMap.get(AppVariable.TIER).getValue();
+						}
+
+						public String getAssinee() {
+							return task.getAssignee();
+						}
+					};
+					temptaskList.add(responseTask);
 				}
-				
 				return temptaskList;
 			}
-			  
-		  };
+		};
 	}
 	
 	@Override
@@ -140,7 +139,7 @@ class DefaultSubRequestBuilder extends AbsractQueryBuilder {
 	@Override
 	protected DeploymentTypes getDeployementType() {
 		// TODO Auto-generated method stub
-		return null;
+		return depType;
 	}
 
 	@Override

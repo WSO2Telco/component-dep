@@ -24,15 +24,17 @@ import com.wso2telco.core.dbutils.util.Callback;
 
 class HubSubRequestBuilder extends AbsractQueryBuilder {
 
+	private DeploymentTypes depType;
 	private static HubSubRequestBuilder instance;
 
-	private HubSubRequestBuilder() throws BusinessException {
+	private HubSubRequestBuilder(DeploymentTypes depType) throws BusinessException {
 		super.log = LogFactory.getLog(HubSubRequestBuilder.class);
+		this.depType = depType;
 	}
 
-	public static HubSubRequestBuilder getInstace() throws BusinessException {
+	public static HubSubRequestBuilder getInstace(DeploymentTypes depType) throws BusinessException {
 		if (instance == null) {
-			instance = new HubSubRequestBuilder();
+			instance = new HubSubRequestBuilder(depType);
 		}
 		return instance;
 	}
@@ -136,7 +138,7 @@ class HubSubRequestBuilder extends AbsractQueryBuilder {
 	@Override
 	protected DeploymentTypes getDeployementType() {
 		// TODO Auto-generated method stub
-		return null;
+		return depType;
 	}
 
 	@Override
