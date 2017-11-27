@@ -366,7 +366,6 @@ public class Queries {
 
 		String appId = whiteListReq.getAppId();//lbs-payment-app
 		String apiId = whiteListReq.getApiId();//admin:LBS:v1.0
-		// String apiName = whiteListReq.getAPIName();
 		String userID = whiteListReq.getUserID();//admin
 		String[] msisdnList = whiteListReq.getMsisdnList();
 
@@ -377,8 +376,6 @@ public class Queries {
 
 		gson = new Gson();
 
-		// if (apiID != null && apiName != null && userID != null && msisdnList
-		// != null) {
 		if (userID != null && msisdnList != null) {
 			msisdnList = removeNullMsisdnValues(msisdnList);
 
@@ -388,6 +385,9 @@ public class Queries {
 				whiteListDTO.setApiID(apiId);
 				whiteListDTO.setApplicationID(appId);
 				whiteListDTO.setUserMSISDN(msisdnList);
+				whiteListDTO.setValidationRegex(whiteListReq.getValidationRegex());
+				whiteListDTO.setValidationPrefixGroup(whiteListReq.getValidationPrefixGroup());
+				whiteListDTO.setValidationDigitsGroup(whiteListReq.getValidationDigitsGroup());
 				//whiteListDTO.setSubscriptionID(userID);
 
 				blackListWhiteListService.whiteListSubscription(whiteListDTO);

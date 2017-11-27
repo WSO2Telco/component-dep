@@ -23,7 +23,6 @@ import com.wso2telco.core.msisdnvalidator.MSISDN;
 import com.wso2telco.dep.oneapivalidation.util.MsisdnDTO;
 import com.wso2telco.dep.operatorservice.model.MSISDNSearchDTO;
 import com.wso2telco.dep.operatorservice.model.MSISDNValidationDTO;
-import com.wso2telco.dep.operatorservice.util.BlacklistWhitelistUtils;
 import com.wso2telco.dep.operatorservice.util.OparatorError;
 import com.wso2telco.dep.operatorservice.util.OparatorTable;
 import com.wso2telco.dep.operatorservice.util.SQLConstants;
@@ -110,14 +109,14 @@ public class BlackListWhiteListDAO {
 		return Collections.EMPTY_LIST;
 	}
 
-	public List<MSISDN> loadSubscriptionsForAlreadyWhiteListedMSISDN(String subscriptionID) throws SQLException {
-
-
+	public List<MsisdnDTO> loadSubscriptionsForAlreadyWhiteListedMSISDN(String subscriptionID) throws SQLException {
 		String sql = SQLConstants.GET_WHITE_LIST_MSISDNS_FOR_SUBSCRIPTION;
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		String msisdnString = "";
+		List<MsisdnDTO> returnList_ = new ArrayList<MsisdnDTO>();
+
 		try {
 			conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
 			ps = conn.prepareStatement(sql);
@@ -125,17 +124,9 @@ public class BlackListWhiteListDAO {
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
-				if(msisdnString.isEmpty()) {
-					msisdnString = rs.getString("msisdn");
-				} else {
-					msisdnString += "," + rs.getString("msisdn");
-				}
+				returnList_.add(new MsisdnDTO(rs.getString("prefix"), rs.getString("msisdn")));
 			}
 
-			if(msisdnString != null && msisdnString.length() <= 0){
-				return new ArrayList<MSISDN>();
-			}
-			return BlacklistWhitelistUtils.getMSISDNList(msisdnString);
 		} catch (SQLException e) {
 			System.out.println(e.toString());
 			throw e;
@@ -143,10 +134,9 @@ public class BlackListWhiteListDAO {
 			e.printStackTrace();
 		} finally {
 			DbUtils.closeAllConnections(ps, conn, rs);
-
 		}
 
-		return null;
+		return returnList_;
 	}
 
 //	/**
@@ -291,13 +281,13 @@ public class BlackListWhiteListDAO {
 	 * @throws SQLException
 	 * @throws Exception
 	 */
-	public void whitelist(List<MSISDN> userMSISDNs, String SubscriptionID, String apiID, String applicationID) throws SQLException, Exception {
+	public void whitelist(MSISDNValidationDTO msisdns, String SubscriptionID, String apiID, String applicationID) throws SQLException, Exception {
 
 		StringBuilder sql = new StringBuilder();
 		sql.append("INSERT INTO ");
 		sql.append(OparatorTable.SUBSCRIPTION_WHITELIST.getTObject());
-		sql.append(" (MSISDN,subscriptionID,api_id,application_id)");
-		sql.append(" VALUES (?,?,?,?);");
+		sql.append(" (subscriptionID, prefix, msisdn, api_id, application_id, validation_regex)");
+		sql.append(" VALUES (?,?,?,?,?,?);");
 
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -307,13 +297,15 @@ public class BlackListWhiteListDAO {
 			ps = conn.prepareStatement(sql.toString());
 
 			conn.setAutoCommit(false);
-			for (MSISDN msisdn : userMSISDNs) {
+			for (MsisdnDTO msisdn : msisdns.getValidProcessed()) {
 
-				ps.setString(1, msisdn.getPrefix() + "+" + String.valueOf(msisdn.getCountryCode()).intern() + String
-						.valueOf(msisdn.getNationalNumber()));
-				ps.setString(2, SubscriptionID);
-				ps.setString(3, apiID);
-				ps.setString(4, applicationID);
+
+				ps.setString(1, SubscriptionID);
+				ps.setString(2, msisdn.getPrefix());
+				ps.setString(3, msisdn.getDigits());
+				ps.setString(4, apiID);
+				ps.setString(5, applicationID);
+				ps.setString(6, msisdns.getValidationRegex());
 
 				ps.addBatch();
 			}
