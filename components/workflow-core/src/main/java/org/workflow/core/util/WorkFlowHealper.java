@@ -1,5 +1,8 @@
 package org.workflow.core.util;
 
+import java.util.Map;
+import java.util.Properties;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.CarbonContext;
@@ -14,7 +17,11 @@ public class WorkFlowHealper {
 	Log log = LogFactory.getLog(WorkFlowHealper.class);
 
 	private static WorkFlowHealper instance;
-	private String wrorkflowServiceEndPoint;
+	private String workflowServiceEndPoint;
+
+	public void setWorkflowServiceEndPoint(String workflowServiceEndPoint) {
+		this.workflowServiceEndPoint = workflowServiceEndPoint;
+	}
 
 	public static WorkFlowHealper getInstance() {
 		if (instance == null) {
@@ -33,11 +40,8 @@ public class WorkFlowHealper {
 	}
 
 	public String getWorkflowServiceEndPoint() {
-		return wrorkflowServiceEndPoint;
-	}
-
-	public void setAppCreationServiceEndPoint(String appCreationServiceEndPoint) {
-		this.wrorkflowServiceEndPoint = appCreationServiceEndPoint;
+		ActivitiBean activitiBean=WorkflowProperties.loadWorkflowPropertiesFromXML();
+		return  activitiBean.getValue();
 	}
 
 	public String getAdmin() throws BusinessException {
