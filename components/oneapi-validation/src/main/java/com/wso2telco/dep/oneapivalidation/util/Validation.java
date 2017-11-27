@@ -73,19 +73,74 @@ public class Validation {
     /** The Constant telFormats. */
     private static String telFormats = readCustomRegex();
 
+    private static int prefixGroup = readCustomRegexPrefixGroup();
+
+    private static int digitsGroup = readCustomRegexDigitsGroup();
+
     /** The Constant urlFormats. */
     private static final String[] urlFormats = {"http\\:\\/\\/.+", "https\\:\\/\\/.+"};
 
-    /**
-     * Checks if is correctly formatted number.
-     *
-     * @param tel the tel
-     * @return true, if is correctly formatted number
-     */
+    static int readCustomRegexPrefixGroup() {
+        String prefixGroupTemp = null;
+        String defaultGroup = "2";
 
+        FileReader fileReader = new FileReader();
+        String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
+                + FileNames.ONEAPI_VALIDATION_CONF_FILE.getFileName();
+
+        try {
+            Map<String, String> oneAPIValidationConfMap = fileReader.readPropertyFile(file);
+            String group = oneAPIValidationConfMap.get("validation.regex.prefix.group");
+            String useCustomRegex = oneAPIValidationConfMap.get("customValidation");
+
+            if (useCustomRegex.equals("true") && !group.equals("")) {
+
+                prefixGroupTemp = group.trim();
+                logger.info("Read custom validation from config file: " + prefixGroupTemp);
+
+            } else {
+                prefixGroupTemp = defaultGroup;
+            }
+        } catch (Exception e) {
+            logger.error("Error while reading regex capture group for prefix. Default group ("+defaultGroup+") will be used.", e);
+            prefixGroupTemp = defaultGroup;
+        }
+
+        return Integer.parseInt(prefixGroupTemp);
+    }
+
+    static int readCustomRegexDigitsGroup() {
+        String digitsGroupTemp = null;
+        String defaultGroup = "9";
+
+        FileReader fileReader = new FileReader();
+        String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
+                + FileNames.ONEAPI_VALIDATION_CONF_FILE.getFileName();
+
+        try {
+            Map<String, String> oneAPIValidationConfMap = fileReader.readPropertyFile(file);
+            String group = oneAPIValidationConfMap.get("validation.regex.digits.group");
+            String useCustomRegex = oneAPIValidationConfMap.get("customValidation");
+
+            if (useCustomRegex.equals("true") && !group.equals("")) {
+
+                digitsGroupTemp = group.trim();
+                logger.info("Read capture group from config file: " + digitsGroupTemp);
+
+            } else {
+                digitsGroupTemp = defaultGroup;
+            }
+        } catch (Exception e) {
+            logger.error("Error while reading regex capture group for digits. Default group ("+defaultGroup+") will be used.", e);
+            digitsGroupTemp = defaultGroup;
+        }
+
+        return Integer.parseInt(digitsGroupTemp);
+    }
 
     static String readCustomRegex() {
         String telFormatTemp = null;
+        String defaultRegex = "^((((tel:){1}(\\+){0,1})|((tel:){0,1}(\\+){1}))([a-zA-Z0-9]+))$";
 
         FileReader fileReader = new FileReader();
         String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
@@ -98,20 +153,27 @@ public class Validation {
 
             if (useCustomRegex.equals("true") && !customRegex.equals("")) {
 
-                telFormatTemp = customRegex;
-                logger.info("Read custom validation from config file: " + telFormatTemp);
+                telFormatTemp = customRegex.trim();
+                logger.info("Read capture group from config file: " + telFormatTemp);
 
             } else {
-                telFormatTemp = "^((((tel:){1}(\\+){0,1})|((tel:){0,1}(\\+){1}))([a-zA-Z0-9]+))$";
+                telFormatTemp = defaultRegex;
             }
 
         } catch (Exception e) {
-            logger.error("Error while reading custom custom regex. Default validation will be used.", e);
-            telFormatTemp = "^((((tel:){1}(\\+){0,1})|((tel:){0,1}(\\+){1}))([a-zA-Z0-9]+))$";
+            logger.error("Error while reading custom regex. Default validation will be used.", e);
+            telFormatTemp = defaultRegex;
         }
 
         return telFormatTemp;
     }
+
+    /**
+     * Checks if is correctly formatted number.
+     *
+     * @param tel the tel
+     * @return true, if is correctly formatted number
+     */
 
     public static boolean isCorrectlyFormattedNumber(String tel) {
         boolean matched = false;
@@ -125,7 +187,18 @@ public class Validation {
         return matched;
     }
 
-     
+    public static String getValidationRegex() {
+        return telFormats;
+    }
+
+    public static int getPrefixGroup(){
+        return prefixGroup;
+    }
+
+    public static int getDigitsGroup(){
+        return digitsGroup;
+    }
+
     /**
      * Check duplicated address.
      *

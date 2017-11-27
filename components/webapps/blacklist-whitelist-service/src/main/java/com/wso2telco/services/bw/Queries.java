@@ -16,24 +16,6 @@
 
 package com.wso2telco.services.bw;
 
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collections;
-import java.util.List;
-
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.Context;
-import javax.ws.rs.core.Response;
-import javax.ws.rs.core.UriInfo;
-
-import org.apache.log4j.Logger;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wso2telco.core.dbutils.exception.BusinessException;
@@ -46,11 +28,18 @@ import com.wso2telco.dep.operatorservice.model.WhiteListDTO;
 import com.wso2telco.dep.operatorservice.service.BlackListWhiteListService;
 import com.wso2telco.dep.operatorservice.service.OparatorService;
 import com.wso2telco.dep.operatorservice.util.APIError;
-import com.wso2telco.services.bw.entity.BlackList;
-import com.wso2telco.services.bw.entity.BlackListBulk;
-import com.wso2telco.services.bw.entity.RemoveRequest;
-import com.wso2telco.services.bw.entity.WhiteList;
-import com.wso2telco.services.bw.entity.WhiteListBulk;
+import com.wso2telco.services.bw.entity.*;
+import org.apache.log4j.Logger;
+
+import javax.ws.rs.*;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.Response;
+import javax.ws.rs.core.UriInfo;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collections;
+import java.util.List;
 
 @Path("/queries")
 public class Queries {
@@ -75,6 +64,7 @@ public class Queries {
 	 * @return an HTTP response with content of the created resource
 	 * @throws Exception
 	 */
+	@Deprecated
 	@POST
 	@Path("/Blacklist/{MSISDN}")
 	@Consumes("application/json")
@@ -118,10 +108,10 @@ public class Queries {
 
 				return Response.status(Response.Status.OK).entity(jsonreturn.toString()).build();
 			} catch (BusinessException msisdnEx) {
-				return Response.status(Response.Status.BAD_REQUEST).entity(msisdnEx.getErrorType()).build();
+				return Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson(msisdnEx.getMessage().toString())).build();
 			}
 		} else {
-			return Response.status(Response.Status.BAD_REQUEST).entity(errorMSG.toString()).build();
+			return Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson(errorMSG.toString())).build();
 		}
 
 	}
@@ -138,9 +128,9 @@ public class Queries {
 
 		BlackListBulk blackListReq = gson.fromJson(jsonBody, BlackListBulk.class);
 
-		int apiId = Integer.parseInt(blackListReq.getAPIID());
+		int apiId = Integer.parseInt(blackListReq.getApiID());
 
-		if(apiId == -1){
+		if (apiId == -1) {
 			return Response.status(Response.Status.BAD_REQUEST).entity(APIError.INVALID_API_NAME).build();
 		}
 
@@ -168,20 +158,25 @@ public class Queries {
 			try {
 				BlackListDTO blackListDTO = new BlackListDTO();
 				blackListDTO.setApiID(String.valueOf(apiId));
-				blackListDTO.setApiName(apiInfoArray[0]+":"+ apiInfoArray[1] + ":" + apiInfoArray[2]);
+				blackListDTO.setApiName(apiInfoArray[0] + ":" + apiInfoArray[1] + ":" + apiInfoArray[2]);
 				blackListDTO.setUserID(userID);
 				blackListDTO.setUserMSISDN(msisdnList);
+				blackListDTO.setValidationRegex(blackListReq.getValidationRegex());
+				blackListDTO.setValidationPrefixGroup(blackListReq.getValidationPrefixGroup());
+				blackListDTO.setValidationDigitsGroup(blackListReq.getValidationDigitsGroup());
+
 
 				blackListWhiteListService.blacklist(blackListDTO);
 
 				return Response.status(Response.Status.OK).entity(successMSG.toString()).build();
 
-			} catch (BusinessException msisdnEx) {
-				return Response.status(Response.Status.BAD_REQUEST).entity(msisdnEx.getErrorType()).build();
+			} catch (BusinessException ex) {
+				StringBuilder errorMessage = new StringBuilder("{ \"Failed\": { \"messageId\": \"Blacklist Numbers\", \"text\": \"Blacklist Numbers could not be added to the system\", \"variables\": \"" + ex.getErrorType().toString() + "\" } }");
+				return Response.status(Response.Status.BAD_REQUEST).entity(errorMessage.toString()).build();
 			}
 
 		} else {
-			return Response.status(Response.Status.BAD_REQUEST).entity(errorMSG.toString()).build();
+			return Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson(errorMSG.toString())).build();
 		}
 
 	}
@@ -287,6 +282,7 @@ public class Queries {
 	 *            representation for the new resource
 	 * @return an HTTP response with content of the created resource
 	 */
+	@Deprecated
 	@POST
 	@Path("/whitelist/{MSISDN}")
 	@Consumes("application/json")
@@ -360,7 +356,6 @@ public class Queries {
 
 		String appId = whiteListReq.getAppId();//lbs-payment-app
 		String apiId = whiteListReq.getApiId();//admin:LBS:v1.0
-		// String apiName = whiteListReq.getAPIName();
 		String userID = whiteListReq.getUserID();//admin
 		String[] msisdnList = whiteListReq.getMsisdnList();
 
@@ -371,8 +366,6 @@ public class Queries {
 
 		gson = new Gson();
 
-		// if (apiID != null && apiName != null && userID != null && msisdnList
-		// != null) {
 		if (userID != null && msisdnList != null) {
 			msisdnList = removeNullMsisdnValues(msisdnList);
 
@@ -382,6 +375,9 @@ public class Queries {
 				whiteListDTO.setApiID(apiId);
 				whiteListDTO.setApplicationID(appId);
 				whiteListDTO.setUserMSISDN(msisdnList);
+				whiteListDTO.setValidationRegex(whiteListReq.getValidationRegex());
+				whiteListDTO.setValidationPrefixGroup(whiteListReq.getValidationPrefixGroup());
+				whiteListDTO.setValidationDigitsGroup(whiteListReq.getValidationDigitsGroup());
 				//whiteListDTO.setSubscriptionID(userID);
 
 				blackListWhiteListService.whiteListSubscription(whiteListDTO);
