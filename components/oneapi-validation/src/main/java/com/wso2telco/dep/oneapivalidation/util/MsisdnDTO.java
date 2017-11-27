@@ -25,6 +25,14 @@ public class MsisdnDTO {
         return digits;
     }
 
+    public void setPrefix(String prefix) {
+        this.prefix = prefix;
+    }
+
+    public void setDigits(String digits) {
+        this.digits = digits;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

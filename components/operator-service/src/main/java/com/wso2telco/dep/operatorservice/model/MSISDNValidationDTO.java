@@ -1,11 +1,12 @@
 package com.wso2telco.dep.operatorservice.model;
 
 
+import com.wso2telco.dep.oneapivalidation.util.MsisdnDTO;
+
 import java.util.ArrayList;
 import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
-import com.wso2telco.dep.oneapivalidation.util.MsisdnDTO;
 
 public class MSISDNValidationDTO {
 
@@ -63,11 +64,15 @@ public class MSISDNValidationDTO {
             valid_temp = new ArrayList<MsisdnDTO>();
             Pattern pattern = Pattern.compile(validationRegex);
             Matcher matcher;
+            MsisdnDTO msisdnDTO = new MsisdnDTO("", "");
 
-            for(String msisdn : valid){
+            for (String msisdn : valid) {
                 matcher = pattern.matcher(msisdn);
-                if(matcher.matches()){
-                    valid_temp.add(new MsisdnDTO(matcher.group(validationPrefixGroup),matcher.group(validationDigitsGroup)));
+                if (matcher.matches()) {
+                    msisdnDTO.setDigits(matcher.group(validationDigitsGroup));
+                    if (!valid_temp.contains(msisdnDTO)) {
+                        valid_temp.add(new MsisdnDTO(matcher.group(validationPrefixGroup), matcher.group(validationDigitsGroup)));
+                    }
                 }
             }
         }
