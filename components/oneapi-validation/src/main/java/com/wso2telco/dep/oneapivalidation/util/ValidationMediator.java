@@ -23,6 +23,8 @@ import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
+import static com.wso2telco.dep.oneapivalidation.util.Validation.getDigitsGroup;
+import static com.wso2telco.dep.oneapivalidation.util.Validation.getPrefixGroup;
 import static com.wso2telco.dep.oneapivalidation.util.Validation.getValidationRegex;
 
 public class ValidationMediator extends AbstractMediator {
@@ -31,6 +33,8 @@ public class ValidationMediator extends AbstractMediator {
     public boolean mediate(MessageContext mc) {
 
         String validationRegex = getValidationRegex();
+        int prefixGroup = getPrefixGroup();
+        int digitsGroup = getDigitsGroup();
         List<MsisdnDTO> tempValidMsisdnList = new ArrayList<MsisdnDTO>();
         List<String> validMsisdnList = new ArrayList<String>();
         List<String> invalidMsisdnList = new ArrayList<String>();
@@ -46,7 +50,7 @@ public class ValidationMediator extends AbstractMediator {
                 matcher = pattern.matcher(msisdns.get(i).getAsString());
 
                 if (matcher.matches()) {
-                    MsisdnDTO msisdn = new MsisdnDTO(matcher.group(2), matcher.group(9));
+                    MsisdnDTO msisdn = new MsisdnDTO(matcher.group(prefixGroup), matcher.group(digitsGroup));
 
                     if (!tempValidMsisdnList.contains(msisdn)) {
                         tempValidMsisdnList.add(msisdn);
@@ -63,6 +67,8 @@ public class ValidationMediator extends AbstractMediator {
             mc.setProperty("validMsisdns", gson.toJson(validMsisdnList));
             mc.setProperty("invalidMsisdns", gson.toJson(invalidMsisdnList));
             mc.setProperty("validationRegex", validationRegex);
+            mc.setProperty("validationPrefixGroup",prefixGroup);
+            mc.setProperty("validationDigitsGroup",digitsGroup);
 
         } catch (Exception e) {
             log.error("Error Validating MSISDN", e);
