@@ -11,18 +11,18 @@ public class ProcessSearchRequest {
 		private int start = 0;
 		private String order = "desc";
 		private String sort = "createTime";
-		private String processDefinitionKey="application_cretion_approval_process";
+		//private String processDefinitionKey="application_cretion_approval_process";
 		private String candidateGroup="admin";
 		private static final byte MINBATCHSIZE = 0;
 		private static final byte MAXBATCHSIZE = 0;
 
 		private static final int MINSTARTINDEX = 0;
 		private List<Variable>processInstanceVariables = new ArrayList<Variable>();
-		
+
 		public void addProcessVariable(Variable var) {
 			processInstanceVariables.add(var);
 		}
-		
+
 		public List<Variable> getProcessInstanceVariables() {
 			return processInstanceVariables;
 		}
@@ -31,13 +31,13 @@ public class ProcessSearchRequest {
 			this.processInstanceVariables = processInstanceVariables;
 		}
 
-		public String getProcessDefinitionKey() {
+		/*public String getProcessDefinitionKey() {
 			return processDefinitionKey;
 		}
 
 		public void setProcessDefinitionKey(String processDefinitionKey) {
 			this.processDefinitionKey = processDefinitionKey;
-		}
+		}*/
 
 		public String getCandidateGroup() {
 			return candidateGroup;
@@ -73,9 +73,9 @@ public class ProcessSearchRequest {
 		}
 
 		public void setOrder(String orderBy) {
-			if (orderBy!=null 
-					&& !orderBy.isEmpty() 
-					&& (orderBy.trim().equalsIgnoreCase("desc") 
+			if (orderBy!=null
+					&& !orderBy.isEmpty()
+					&& (orderBy.trim().equalsIgnoreCase("desc")
 							|| orderBy.trim().equalsIgnoreCase("asc"))) {
 				this.order = orderBy;
 			}
@@ -86,7 +86,7 @@ public class ProcessSearchRequest {
 		}
 
 		public void setSort(String sortBy) {
-			if(sortBy!=null 
+			if(sortBy!=null
 					&& !sortBy.isEmpty()
 					&& (sortBy.equalsIgnoreCase("createTime"))) {
 				this.sort = sortBy;
