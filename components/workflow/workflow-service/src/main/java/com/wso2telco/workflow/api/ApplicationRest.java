@@ -18,6 +18,7 @@ package com.wso2telco.workflow.api;
 
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.model.UserProfileDTO;
+import com.wso2telco.core.dbutils.util.AppAssignRequest;
 import com.wso2telco.core.dbutils.util.Callback;
 import com.wso2telco.core.dbutils.util.AppApprovalRequest;
 import org.workflow.core.model.TaskSerchDTO;
@@ -34,31 +35,25 @@ import javax.ws.rs.core.Response;
 
 
 public class ApplicationRest {
-    @GET
-    @Path("/search")
-    public Response load(@HeaderParam("authorization") String authHeader,
-                         @QueryParam("batchSize") byte batchSize,
-                         @QueryParam("start") int start,
-                         @QueryParam("orderBy") String orderBy,
-                         @QueryParam("sortBy") String sortBy,
-                         @QueryParam("filterBy") String filterBy) {
-        try {
-            WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
-            TaskSerchDTO serchD = new TaskSerchDTO();
-            UserProfileDTO UserProfileDTO = new UserProfileDTO();
-            Callback callback = workFlowDelegator.getPendingApplicationApprovals(serchD, UserProfileDTO);
-                /* Callback callback = applicationDetailService.getDetails(authHeader, detailRequestDAO);
-                return Response.status(Response.Status.OK).entity(callback).build();*/
-            return Response.status(Response.Status.OK).build();
-        } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
-        //return null;
-    }
+
+	 @GET
+	 @Path("/search")
+	 public Response load(@HeaderParam("authorization") String authHeader) {
+		 try {
+		    	WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
+		    	TaskSerchDTO serchD = new TaskSerchDTO();
+		    	UserProfileDTO userProfileDTO = new UserProfileDTO();
+		    	userProfileDTO.setUserName("admin");
+		    	Callback callback = workFlowDelegator.getPendingApplicationApprovals(serchD, userProfileDTO);
+		        return Response.status(Response.Status.OK).entity(callback).build();
+		 } catch(Exception e) {
+		            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		 }
+	}
 
     @GET
-    @Path("/graph/{user}")
-    public Response loadGraph(@HeaderParam("authorization") String authHeader, @PathParam("user") String user)  {
+    @Path("/graph")
+    public Response loadGraph(@HeaderParam("authorization") String authHeader)  {
         try {
             WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
             TaskSerchDTO serchD = new TaskSerchDTO();
@@ -72,12 +67,28 @@ public class ApplicationRest {
     }
 
     @POST
+    @Path("/assign")
+    public Response assign(@HeaderParam("authorization") String authHeader, AppAssignRequest appAssignRequest)  {
+        try {
+            WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
+            TaskSerchDTO serchD = new TaskSerchDTO();
+            UserProfileDTO userProfileDTO = new UserProfileDTO();
+            userProfileDTO.setUserName("admin");
+            Callback callback = workFlowDelegator.assignApplication(appAssignRequest);
+            return Response.status(Response.Status.OK).entity(callback).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @POST
     @Path("/approve")
     public Response approve(@HeaderParam("authorization") String authHeader, AppApprovalRequest appApprovalRequest )  {
         try {
             WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
             TaskSerchDTO serchD = new TaskSerchDTO();
             UserProfileDTO userProfileDTO = new UserProfileDTO();
+            userProfileDTO.setUserName("admin");
             Callback callback = workFlowDelegator.approveApplication(appApprovalRequest);
             return Response.status(Response.Status.OK).entity(callback).build();
         } catch (Exception e) {

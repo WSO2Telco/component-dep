@@ -3,12 +3,10 @@ package org.workflow.core.service;
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.model.UserProfileDTO;
 import com.wso2telco.core.dbutils.util.AppApprovalRequest;
+import com.wso2telco.core.dbutils.util.AppAssignRequest;
 import com.wso2telco.core.dbutils.util.Callback;
 import org.apache.commons.logging.Log;
-import org.workflow.core.activity.ActivityClientFactory;
-import org.workflow.core.activity.ApplicationApprovalRequest;
-import org.workflow.core.activity.ProcessSearchRequest;
-import org.workflow.core.activity.RestClient;
+import org.workflow.core.activity.*;
 import org.workflow.core.execption.WorkflowExtensionException;
 import org.workflow.core.model.*;
 import org.workflow.core.util.DeploymentTypes;
@@ -18,85 +16,91 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
-	protected Log log;
-	protected RestClient activityClient = null;
-	
-	public AbsractQueryBuilder() throws BusinessException {
-		activityClient = ActivityClientFactory.getInstance().getClient();
-	}
+    protected Log log;
 
-	protected abstract DeploymentTypes getDeployementType() ; 
+    protected RestClient activityClient = null;
 
-	protected abstract  Callback buildResponse(final TaskSerchDTO searchDTO, final TaskList taskList,
-			final UserProfileDTO userProfile) throws BusinessException;
+    public AbsractQueryBuilder() throws BusinessException {
+        activityClient = ActivityClientFactory.getInstance().getClient();
+    }
 
-	protected  abstract Map<String,String> getFilterMap() ;
+    protected abstract DeploymentTypes getDeployementType();
+
+    protected abstract Callback buildResponse(final TaskSerchDTO searchDTO, final TaskList taskList,
+                                              final UserProfileDTO userProfile) throws BusinessException;
+
+    protected abstract Map<String, String> getFilterMap();
 
     protected abstract List<Integer> getHistoricalData(String user, List<Range> months) throws BusinessException;
 
-	public Callback searchPending(TaskSerchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException {
-		ProcessSearchRequest processRequest = buildSearchRequest(searchDTO, userProfile);
-		TaskList taskList = null;
-		try {
-			taskList = activityClient.getTasks(processRequest);
+    protected abstract ApplicationApprovalRequest buildApprovalRequest(final AppApprovalRequest appApprovalRequest) throws BusinessException;
 
-			for (TaskList.Task task : taskList.getData()) {
-				TaskVariableResponse[] vars = activityClient.getVariables(String.valueOf(task.getId()));
-				task.setVariable(vars);
-			}
+    public Callback searchPending(TaskSerchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException {
+        ProcessSearchRequest processRequest = buildSearchRequest(searchDTO, userProfile);
+        //Map<String, Object> queryMap=new HashMap<String, Object>();
+        //queryMap.put("processDefinitionKey", "");
+        String appParam = "application_creation_approval_process";
+        TaskList taskList = null;
+        try {
+            taskList = activityClient.getTasks(appParam, processRequest);
 
-		} catch (WorkflowExtensionException e) {
-			log.error("", e);
-			throw new BusinessException(e);
-		}
-		return buildResponse(searchDTO, taskList, userProfile);
+            for (Task task : taskList.getData()) {
+                TaskVariableResponse[] vars = activityClient.getVariables(String.valueOf(task.getId()));
+                task.setVariable(vars);
+            }
 
-	}
+        } catch (WorkflowExtensionException e) {
+            log.error("", e);
+            throw new BusinessException(e);
+        }
+        return buildResponse(searchDTO, taskList, userProfile);
 
-	@Override
-	public ProcessSearchRequest buildSearchRequest(TaskSerchDTO searchDTO, final UserProfileDTO userProfile)
-			throws BusinessException {
-		ProcessSearchRequest request = new ProcessSearchRequest();
-		request.setSize(searchDTO.getBatchSize());
-		request.setStart(searchDTO.getStart());
-		request.setSort(searchDTO.getSortBy());
-		
-		request.setProcessDefinitionKey(getDeployementType().getAppProcessType());
-		
-		String filterStr = searchDTO.getFilterBy();
-		/**
-		 * if the request need to be filtered the string must be formated as
-		 * filterby:value,filterby2:value
-		 */
-		if (filterStr != null && !filterStr.trim().isEmpty()) {
-			/**
-			 * split the multiple filter criteria by ,
-			 */
-			final String[] filterCritias = filterStr.split(",");
-			for (String critira : filterCritias) {
-				/**
-				 * split the criteria by : to separate out the name and value ,
-				 */
-				String[] critiraarry = critira.split(":");
-				/**
-				 * validate name and value. Both should not be null. and filer name should be
-				 * defined at the filter map .if not ignore adding.
-				 */
-				if (critiraarry.length == 2 && !critiraarry[0].trim().isEmpty() && !critiraarry[1].trim().isEmpty()
-						&& getFilterMap().containsKey(critiraarry[0].trim())) {
-					/**
-					 * add process variable ,
-					 * 
-					 */
+    }
 
-					Variable var = new Variable(getFilterMap().get(critiraarry[0]), critiraarry[1]);
-					request.addProcessVariable(var);
-				}
-			}
-		}
+    @Override
+    public ProcessSearchRequest buildSearchRequest(TaskSerchDTO searchDTO, final UserProfileDTO userProfile)
+            throws BusinessException {
+        ProcessSearchRequest request = new ProcessSearchRequest();
+        request.setSize(searchDTO.getBatchSize());
+        request.setStart(searchDTO.getStart());
+        request.setSort(searchDTO.getSortBy());
 
-		return request;
-	}
+        //request.setProcessDefinitionKey(getDeployementType().getAppProcessType());
+
+        String filterStr = searchDTO.getFilterBy();
+        /**
+         * if the request need to be filtered the string must be formated as
+         * filterby:value,filterby2:value
+         */
+        if (filterStr != null && !filterStr.trim().isEmpty()) {
+            /**
+             * split the multiple filter criteria by ,
+             */
+            final String[] filterCritias = filterStr.split(",");
+            for (String critira : filterCritias) {
+                /**
+                 * split the criteria by : to separate out the name and value ,
+                 */
+                String[] critiraarry = critira.split(":");
+                /**
+                 * validate name and value. Both should not be null. and filer name should be
+                 * defined at the filter map .if not ignore adding.
+                 */
+                if (critiraarry.length == 2 && !critiraarry[0].trim().isEmpty() && !critiraarry[1].trim().isEmpty()
+                        && getFilterMap().containsKey(critiraarry[0].trim())) {
+                    /**
+                     * add process variable ,
+                     *
+                     */
+
+                    Variable var = new Variable(getFilterMap().get(critiraarry[0]), critiraarry[1]);
+                    request.addProcessVariable(var);
+                }
+            }
+        }
+
+        return request;
+    }
 
     @Override
     public Callback getGraphData(UserProfileDTO userProfile) throws BusinessException {
@@ -146,19 +150,31 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 
     }
 
-	@Override
-	public Callback approveApplication(AppApprovalRequest appApprovalRequest) throws BusinessException {
-		ApplicationApprovalRequest request = buildApprovalRequest(appApprovalRequest);
-//		try {
-//			activityClient.approveApplication(appApprovalRequest.getTaskId(), request);
-//
-//		} catch (WorkflowExtensionException e) {
-//			log.error("", e);
-//			throw new BusinessException(e);
-//		}
-		return null;
-	}
+    @Override
+    public Callback approveApplication(AppApprovalRequest appApprovalRequest) throws BusinessException {
+        ApplicationApprovalRequest request = buildApprovalRequest(appApprovalRequest);
+        try {
+            activityClient.approveApplication(appApprovalRequest.getTaskId(), request);
+            return new Callback().setPayload(null).setSuccess(true).setMessage("Application Approved Successfully");
+        } catch (WorkflowExtensionException e) {
+            log.error("", e);
+            throw new BusinessException(e);
+        }
+    }
 
-	protected abstract  ApplicationApprovalRequest buildApprovalRequest(final AppApprovalRequest appApprovalRequest) throws BusinessException;
+    @Override
+    public Callback assignApplication(AppAssignRequest appAssignRequest) throws BusinessException {
+        String assignee = "admin";
+        ApplicationAssignRequest assignRequest = new ApplicationAssignRequest();
+        assignRequest.setAction("claim");
+        assignRequest.setAssignee(assignee.toLowerCase());
+        try {
+            activityClient.assignApplication(appAssignRequest.getTaskId(), assignRequest);
+            return new Callback().setPayload(null).setSuccess(true).setMessage("Application Assigned Successfully");
+        } catch (WorkflowExtensionException e) {
+            log.error("", e);
+            throw new BusinessException(e);
+        }
+    }
 
 }

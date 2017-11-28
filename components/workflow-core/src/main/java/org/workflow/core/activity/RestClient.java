@@ -10,9 +10,10 @@ import org.workflow.core.model.TaskVariableResponse;
 
 public interface RestClient {
 
+
+    @RequestLine("POST query/tasks?processDefinitionKey={appParam}")
     @Headers("Content-Type: application/json")
-    @RequestLine("POST query/tasks")
-    TaskList getTasks(ProcessSearchRequest request) throws WorkflowExtensionException;
+    TaskList getTasks(@Param("appParam") String appParam, ProcessSearchRequest request) throws WorkflowExtensionException;
 
     @RequestLine("GET runtime/tasks/{taskId}/variables")
     TaskVariableResponse[] getVariables(@Param("taskId") String taskId) throws WorkflowExtensionException;
@@ -20,7 +21,15 @@ public interface RestClient {
     @RequestLine("GET history/historic-task-instances?taskCreatedAfter={start}&taskCreatedBefore={end}&processDefinitionKey={process}&taskAssignee={user}")
     TaskDetailsResponse getHistoricTasks(@Param("start") String start, @Param("end") String end, @Param("process") String process, @Param("user") String user);
 
-//    @RequestLine("POST  runtime/tasks/{taskId}")
-//    @Headers("Content-Type: application/json")
-//    TaskList approveApplication(@Param("tasId") String taskId, ApplicationApprovalRequest request) throws WorkflowExtensionException;
+    @RequestLine("POST runtime/tasks/{taskId}")
+    @Headers("Content-Type: application/json")
+    void approveApplication(@Param("taskId") String taskId, ApplicationApprovalRequest request) throws WorkflowExtensionException;
+
+    @RequestLine("POST runtime/tasks/{taskId}")
+    @Headers("Content-Type: application/json")
+    void assignApplication(@Param("taskId") String taskId, ApplicationAssignRequest assignRequest) throws WorkflowExtensionException;
+
 }
+
+
+
