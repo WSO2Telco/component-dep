@@ -49,7 +49,7 @@ public class SubscriptionRest {
 			TaskSerchDTO serchD = new TaskSerchDTO();
 			UserProfileDTO UserProfileDTO = new UserProfileDTO();
 			Callback callback = workFlowDelegator.getPendingSubscriptionApprovals(serchD, UserProfileDTO);
-			return Response.status(Response.Status.OK).build();
+			return Response.status(Response.Status.OK).entity(callback).build();
 		} catch (Exception e) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}

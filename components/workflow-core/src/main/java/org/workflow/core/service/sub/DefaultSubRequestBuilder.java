@@ -11,12 +11,13 @@ import java.util.Map;
 
 import org.apache.commons.logging.LogFactory;
 import org.workflow.core.model.TaskList;
+import org.workflow.core.model.Task;
 import org.workflow.core.model.TaskSerchDTO;
 import org.workflow.core.model.TaskVariableResponse;
 import org.workflow.core.service.ReturnableResponse;
 import org.workflow.core.util.AppVariable;
 import org.workflow.core.util.DeploymentTypes;
-import org.workflow.core.service.AbsractQueryBuilder;
+import org.workflow.core.service.sub.AbsractQueryBuilder;
 
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.model.UserProfileDTO;
@@ -75,7 +76,7 @@ class DefaultSubRequestBuilder extends AbsractQueryBuilder {
 			public List<ReturnableTaskResponse> getTasks() {
 				List<ReturnableTaskResponse> temptaskList =new ArrayList<ReturnableResponse.ReturnableTaskResponse>();
 				
-				for ( final TaskList.Task task : taskList.getData()) {
+				for ( final Task task : taskList.getData()) {
 					final Map<AppVariable,TaskVariableResponse> varMap = new HashMap<AppVariable, TaskVariableResponse>();
 					for (final TaskVariableResponse var : task.getVars()) {
 						varMap.put(AppVariable.getByKey(var.getName()), var);
