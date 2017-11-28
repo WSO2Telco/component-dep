@@ -14,14 +14,14 @@ public class MSISDNValidationDTO {
     private String validationRegex = null;
     private int validationPrefixGroup = 0;
     private int validationDigitsGroup = 0;
-    private transient List<MsisdnDTO> valid_temp = null;
+    private transient List<MsisdnDTO> validTemp = null;
 
     /**
      * Ensure .process() method is called first!
      * @return
      */
     public List<MsisdnDTO> getValidProcessed() {
-        return valid_temp;
+        return validTemp;
     }
 
     public List<String> getValid() {
@@ -60,8 +60,8 @@ public class MSISDNValidationDTO {
      * This method should be called if you need the prefix and digits separately
      */
     public void process() {
-        if (valid != null && valid_temp == null) {
-            valid_temp = new ArrayList<MsisdnDTO>();
+        if (valid != null && validTemp == null) {
+            validTemp = new ArrayList<MsisdnDTO>();
             Pattern pattern = Pattern.compile(validationRegex);
             Matcher matcher;
             MsisdnDTO msisdnDTO = new MsisdnDTO("", "");
@@ -70,8 +70,8 @@ public class MSISDNValidationDTO {
                 matcher = pattern.matcher(msisdn);
                 if (matcher.matches()) {
                     msisdnDTO.setDigits(matcher.group(validationDigitsGroup));
-                    if (!valid_temp.contains(msisdnDTO)) {
-                        valid_temp.add(new MsisdnDTO(matcher.group(validationPrefixGroup), matcher.group(validationDigitsGroup)));
+                    if (!validTemp.contains(msisdnDTO)) {
+                        validTemp.add(new MsisdnDTO(matcher.group(validationPrefixGroup), matcher.group(validationDigitsGroup)));
                     }
                 }
             }

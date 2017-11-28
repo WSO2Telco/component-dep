@@ -60,7 +60,6 @@ public class BlackListWhiteListService {
 
 		String[] msisdns = dto.getUserMSISDN();
 		MSISDNValidationDTO msisdnValidationDTO = new MSISDNValidationDTO();
-        Gson gson = new Gson();
 
 		final String apiID_ = dto.getApiID();
 		final String apiName_ = dto.getApiName();
@@ -105,7 +104,7 @@ public class BlackListWhiteListService {
 		}
     }
 
-	public List<String> loadBlacklisted(MSISDNSearchDTO searchDTO) throws BusinessException {
+	public String[] loadBlacklisted(MSISDNSearchDTO searchDTO) throws BusinessException {
 		try {
 			return dao.getBlacklisted(searchDTO);
 		} catch (Exception e) {

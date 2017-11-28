@@ -108,7 +108,7 @@ public class Queries {
 
 				return Response.status(Response.Status.OK).entity(jsonreturn.toString()).build();
 			} catch (BusinessException msisdnEx) {
-				return Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson(msisdnEx.getMessage().toString())).build();
+				return Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson(msisdnEx.getMessage())).build();
 			}
 		} else {
 			return Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson(errorMSG.toString())).build();
@@ -211,7 +211,7 @@ public class Queries {
 				MSISDNSearchDTO searchDTO = new MSISDNSearchDTO();
 				//searchDTO.setApiName(apiId);
 				searchDTO.setApiID(apiId);
-				List<String> blacklist = blackListWhiteListService.loadBlacklisted(searchDTO);
+				String[] blacklist = blackListWhiteListService.loadBlacklisted(searchDTO);
 				StringBuilder successMSG = new StringBuilder();
 
 				successMSG.append("{").append("\"Success\":").append("{").append("\"messageId\":\"")
