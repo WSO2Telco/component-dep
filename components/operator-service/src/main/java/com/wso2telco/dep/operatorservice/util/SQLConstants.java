@@ -123,7 +123,7 @@ public class SQLConstants {
 			"AND APP.APPLICATION_ID = ? AND SUBS.APPLICATION_ID = APP.APPLICATION_ID AND API.API_ID = SUBS.API_ID " +
 			"AND SUBS.SUB_STATUS != '"+BlacklistWhitelistConstants.SubscriptionStatus.REJECTED+ "' ORDER BY APP.NAME";
 
-	public static final String GET_WHITE_LIST_MSISDNS_FOR_SUBSCRIPTION = "SELECT msisdn from subscription_WhiteList " +
+	public static final String GET_WHITE_LIST_MSISDNS_FOR_SUBSCRIPTION = "SELECT prefix, msisdn from subscription_WhiteList " +
 			"WHERE subscriptionID = ?";
 
 	public static final String GET_API_ID_SQL =
