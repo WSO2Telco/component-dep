@@ -44,7 +44,7 @@ public class ApplicationRest {
 		    	UserProfileDTO userProfileDTO = new UserProfileDTO();
 		    	userProfileDTO.setUserName("admin");
 		    	Callback callback = workFlowDelegator.getPendingApplicationApprovals(serchD, userProfileDTO);
-		        return Response.status(Response.Status.OK).build();
+		        return Response.status(Response.Status.OK).entity(callback).build();
 		 } catch(Exception e) {
 		            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		 }
