@@ -1,12 +1,12 @@
 /**
  * Copyright (c) 2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
- *
+ * <p>
  * WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -20,7 +20,6 @@ import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.exception.GenaralError;
-import com.wso2telco.core.msisdnvalidator.MSISDNUtil;
 import com.wso2telco.dep.oneapivalidation.util.MsisdnDTO;
 import com.wso2telco.dep.operatorservice.dao.BlackListWhiteListDAO;
 import com.wso2telco.dep.operatorservice.exception.BlacklistException;
@@ -37,10 +36,7 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.apimgt.api.dto.UserApplicationAPIUsage;
 import org.wso2.carbon.apimgt.api.model.APIIdentifier;
 import org.wso2.carbon.apimgt.api.model.SubscribedAPI;
-import org.wso2.carbon.apimgt.hostobjects.internal.HostObjectComponent;
-import org.wso2.carbon.apimgt.impl.APIManagerConfiguration;
 
-import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -49,14 +45,10 @@ import java.util.Map;
 public class BlackListWhiteListService {
 	Log LOG = LogFactory.getLog(BlackListWhiteListService.class);
 	private BlackListWhiteListDAO dao;
-    private MSISDNUtil phoneNumberValidationUtil_;
-    private APIManagerConfiguration apiManagerConfiguration;
 
 	public BlackListWhiteListService()
 	{
 		dao = new BlackListWhiteListDAO();
-		phoneNumberValidationUtil_ = new MSISDNUtil();
-        apiManagerConfiguration = HostObjectComponent.getAPIManagerConfiguration();
 	}
 
     /**
@@ -113,7 +105,7 @@ public class BlackListWhiteListService {
 		}
     }
 
-	public String[] loadBlacklisted(MSISDNSearchDTO searchDTO) throws BusinessException {
+	public List<String> loadBlacklisted(MSISDNSearchDTO searchDTO) throws BusinessException {
 		try {
 			return dao.getBlacklisted(searchDTO);
 		} catch (Exception e) {

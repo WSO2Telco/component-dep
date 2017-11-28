@@ -154,7 +154,7 @@ public class Queries {
 
 		//gson = new Gson();
 		String[] apiInfoArray = blackListWhiteListService.getAPIInfo(apiId);
-		if (userID != null && msisdnList != null && apiInfoArray != null && apiInfoArray.length == 3) {
+		if (userID != null && msisdnList != null && apiInfoArray.length != 0 && apiInfoArray.length == 3) {
 			try {
 				BlackListDTO blackListDTO = new BlackListDTO();
 				blackListDTO.setApiID(String.valueOf(apiId));
@@ -211,7 +211,7 @@ public class Queries {
 				MSISDNSearchDTO searchDTO = new MSISDNSearchDTO();
 				//searchDTO.setApiName(apiId);
 				searchDTO.setApiID(apiId);
-				String[] blacklist = blackListWhiteListService.loadBlacklisted(searchDTO);
+				List<String> blacklist = blackListWhiteListService.loadBlacklisted(searchDTO);
 				StringBuilder successMSG = new StringBuilder();
 
 				successMSG.append("{").append("\"Success\":").append("{").append("\"messageId\":\"")
