@@ -28,6 +28,9 @@ public class WhiteListDTO extends AbstractWBDTO implements Serializable {
 
 	private String subscriptionID = null;
 	private String applicationID = null;
+	private String validationRegex;
+	private int validationPrefixGroup;
+	private int validationDigitsGroup;
 
 	public String getSubscriptionID() {
 		return subscriptionID;
@@ -56,6 +59,29 @@ public class WhiteListDTO extends AbstractWBDTO implements Serializable {
 		}
 	}
 
+	public String getValidationRegex() {
+		return validationRegex;
+	}
+
+	public void setValidationRegex(String validationRegex) {
+		this.validationRegex = validationRegex;
+	}
+
+	public int getValidationPrefixGroup() {
+		return validationPrefixGroup;
+	}
+
+	public void setValidationPrefixGroup(int validationPrefixGroup) {
+		this.validationPrefixGroup = validationPrefixGroup;
+	}
+
+	public int getValidationDigitsGroup() {
+		return validationDigitsGroup;
+	}
+
+	public void setValidationDigitsGroup(int validationDigitsGroup) {
+		this.validationDigitsGroup = validationDigitsGroup;
+	}
 
 	@Override
 	public String toString() {
