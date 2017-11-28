@@ -10,6 +10,7 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.logging.LogFactory;
+import org.workflow.core.model.Task;
 import org.workflow.core.model.TaskList;
 import org.workflow.core.model.TaskSerchDTO;
 import org.workflow.core.model.TaskVariableResponse;
@@ -25,7 +26,7 @@ import com.wso2telco.core.dbutils.util.Callback;
 class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 
 	private DeploymentTypes  depType;
-	
+
 	private static DefaultAppRequestBuilder instance;
 
 	private DefaultAppRequestBuilder(DeploymentTypes  depType) throws BusinessException {
@@ -46,7 +47,7 @@ class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 		return  new ReturnableResponse() {
 
 			DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX",Locale.ENGLISH);
-			
+
 			@Override
 			public int getTotal() {
 				return taskList.getTotal();
@@ -66,7 +67,7 @@ class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 			public String getFilterBy() {
 				return searchDTO.getFilterBy();
 			}
-			
+
 
 			@Override
 			public String getOrderBy() {
@@ -76,51 +77,51 @@ class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 			@Override
 			public List<ReturnableTaskResponse> getTasks() {
 				List<ReturnableTaskResponse> temptaskList =new ArrayList<ReturnableResponse.ReturnableTaskResponse>();
-				
-				for ( final TaskList.Task task : taskList.getData()) {
+
+				for ( final Task task : taskList.getData()) {
 					final Map<AppVariable,TaskVariableResponse> varMap = new HashMap<AppVariable, TaskVariableResponse>();
 					 for (final TaskVariableResponse var : task.getVars()) {
 							varMap.put( AppVariable.getByKey(var.getName()),var);
 						}
-					 
+
 					 ReturnableTaskResponse responseTask= new ReturnableTaskResponse() {
 						 /**
 							 * return task ID
-							 */ 
+							 */
 							public int getID() {
 								return task.getId();
 							}
-							
+
 							public String getName() {
 								return varMap.get(AppVariable.NAME).getValue() ;
 							}
 							public String getDescription() {
 								return varMap.get(AppVariable.DESCRIPTION).getValue() ;
 							}
-							
+
 							public String getCreatedDate() {
 								return format.format( task.getCreateTime());
 							}
-							
+
 							public String getTier() {
 								return varMap.get(AppVariable.TIER).getValue() ;
 							}
-							
+
 							public String getAssinee() {
 								return task.getAssignee();
 							}
 					 };
-					 
+
 					 temptaskList.add(responseTask);
-					
+
 				}
-				
+
 				return temptaskList;
 			}
-			  
+
 		  };
 	}
-	
+
 	@Override
 	protected Callback buildResponse(TaskSerchDTO searchDTO, TaskList taskList, UserProfileDTO userProfile)
 			throws BusinessException {
@@ -136,7 +137,7 @@ class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 					.setSuccess(false)
 					.setMessage("Application Taks listed fail ");
 		}
-		
+
 		 return returnCall;
 	}
 

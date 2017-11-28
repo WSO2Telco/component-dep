@@ -8,6 +8,7 @@ import org.workflow.core.activity.ActivityClientFactory;
 import org.workflow.core.activity.ProcessSearchRequest;
 import org.workflow.core.activity.RestClient;
 import org.workflow.core.execption.WorkflowExtensionException;
+import org.workflow.core.model.Task;
 import org.workflow.core.model.TaskList;
 import org.workflow.core.model.TaskSerchDTO;
 import org.workflow.core.model.TaskVariableResponse;
@@ -46,7 +47,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 		try {
 			taskList = activityClient.getTasks(appParam,processRequest);
 
-			for (TaskList.Task task : taskList.getData()) {
+			for (Task task : taskList.getData()) {
 				TaskVariableResponse[] vars = activityClient.getVariables(String.valueOf(task.getId()));
 				task.setVariable(vars);
 			}
