@@ -41,10 +41,10 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 	public Callback searchPending(TaskSerchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException {
 		ProcessSearchRequest processRequest = buildSearchRequest(searchDTO, userProfile);
 
-		String appParam="subscription_approval_process";
+		//String appParam="subscription_approval_process";
 		TaskList taskList = null;
 		try {
-			taskList = activityClient.getTasks(appParam,processRequest);
+			taskList = activityClient.getTasks(processRequest);
 
 			for (Task task : taskList.getData()) {
 				TaskVariableResponse[] vars = activityClient.getVariables(String.valueOf(task.getId()));
@@ -67,7 +67,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 		request.setStart(searchDTO.getStart());
 		request.setSort(searchDTO.getSortBy());
 
-		//request.setProcessDefinitionKey(getDeployementType().getAppProcessType());
+		request.setProcessDefinitionKey(getDeployementType().getSubscriptoinProcessType());
 
 		String filterStr = searchDTO.getFilterBy();
 		/**

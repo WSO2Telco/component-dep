@@ -9,9 +9,9 @@ import feign.Param;
 import feign.RequestLine;
 
 public interface RestClient {
-		@RequestLine("POST query/tasks?processDefinitionKey={appParam}")
+		@RequestLine("POST query/tasks")
 		@Headers("Content-Type: application/json")
-		TaskList getTasks(@Param("appParam") String appParam,ProcessSearchRequest request) throws WorkflowExtensionException;
+		TaskList getTasks(ProcessSearchRequest request) throws WorkflowExtensionException;
 
 		@RequestLine("GET runtime/tasks/{taskId}/variables")
 		TaskVariableResponse[] getVariables(@Param("taskId") String taskId) throws WorkflowExtensionException;

@@ -139,7 +139,6 @@ class DefaultSubRequestBuilder extends AbsractQueryBuilder {
 
 	@Override
 	protected DeploymentTypes getDeployementType() {
-		// TODO Auto-generated method stub
 		return depType;
 	}
 
