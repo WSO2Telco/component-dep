@@ -11,6 +11,7 @@ import com.wso2telco.core.dbutils.util.Callback;
 
 public class WorkFlowDelegator {
 	public Callback getPendingApplicationApprovals(final TaskSerchDTO serchD,UserProfileDTO userProfile) throws BusinessException {
+		//serchD.setFilterBy("applicationName");
 		WorkFlowProcessor queryBuilder =ActivityProcessFactory.getInstance().getWorkFlowFactory(WorkFlowType.APPLICATION).getWorkFlowProcessor();
 		return queryBuilder.searchPending(serchD, userProfile);
 	}

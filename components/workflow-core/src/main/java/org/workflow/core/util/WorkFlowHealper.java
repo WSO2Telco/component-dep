@@ -1,15 +1,11 @@
 package org.workflow.core.util;
 
-import java.util.Map;
-import java.util.Properties;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.user.api.UserStoreException;
 
 import com.wso2telco.core.dbutils.exception.BusinessException;
-import com.wso2telco.core.dbutils.exception.GenaralError;
 import com.wso2telco.core.dbutils.exception.ThrowableError;
 
 public class WorkFlowHealper {
@@ -18,6 +14,15 @@ public class WorkFlowHealper {
 
 	private static WorkFlowHealper instance;
 	private String workflowServiceEndPoint;
+
+	public void setAppCreationServiceEndPoint(String appCreationServiceEndPoint) {
+		this.workflowServiceEndPoint = appCreationServiceEndPoint;
+	}
+
+	public String getWorkflowServiceEndPoint() {
+		ActivitiBean activitiBean=WorkflowProperties.loadWorkflowPropertiesFromXML();
+		return  activitiBean.getValue();
+	}
 
 	public void setWorkflowServiceEndPoint(String workflowServiceEndPoint) {
 		this.workflowServiceEndPoint = workflowServiceEndPoint;
@@ -39,10 +44,7 @@ public class WorkFlowHealper {
 		return System.getProperty(DEPLOYMENT_TYPE_SYSTEM_PARAM, "hub");
 	}
 
-	public String getWorkflowServiceEndPoint() {
-		ActivitiBean activitiBean=WorkflowProperties.loadWorkflowPropertiesFromXML();
-		return  activitiBean.getValue();
-	}
+
 
 	public String getAdmin() throws BusinessException {
 		String adminUser = null;
