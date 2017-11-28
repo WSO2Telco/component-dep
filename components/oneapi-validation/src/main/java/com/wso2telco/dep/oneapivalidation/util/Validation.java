@@ -15,14 +15,14 @@
  ******************************************************************************/
 package com.wso2telco.dep.oneapivalidation.util;
 
-import com.wso2telco.core.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import org.apache.log4j.Logger;
 import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 // TODO: Auto-generated Javadoc
@@ -77,6 +77,8 @@ public class Validation {
 
     private static int digitsGroup = readCustomRegexDigitsGroup();
 
+    private static Properties oneAPIValidationConfMap = readOneApiValidationConfig();
+
     /** The Constant urlFormats. */
     private static final String[] urlFormats = {"http\\:\\/\\/.+", "https\\:\\/\\/.+"};
 
@@ -84,14 +86,10 @@ public class Validation {
         String prefixGroupTemp = null;
         String defaultGroup = "2";
 
-        FileReader fileReader = new FileReader();
-        String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
-                + FileNames.ONEAPI_VALIDATION_CONF_FILE.getFileName();
-
         try {
-            Map<String, String> oneAPIValidationConfMap = fileReader.readPropertyFile(file);
-            String group = oneAPIValidationConfMap.get("validation.regex.prefix.group");
-            String useCustomRegex = oneAPIValidationConfMap.get("customValidation");
+
+            String group = oneAPIValidationConfMap.getProperty("validation.regex.prefix.group");
+            String useCustomRegex = oneAPIValidationConfMap.getProperty("customValidation");
 
             if (useCustomRegex.equals("true") && !group.equals("")) {
 
@@ -102,7 +100,7 @@ public class Validation {
                 prefixGroupTemp = defaultGroup;
             }
         } catch (Exception e) {
-            logger.error("Error while reading regex capture group for prefix. Default group ("+defaultGroup+") will be used.", e);
+            logger.error("Error while reading regex capture group for prefix. Default group (" + defaultGroup + ") will be used.", e);
             prefixGroupTemp = defaultGroup;
         }
 
@@ -113,14 +111,9 @@ public class Validation {
         String digitsGroupTemp = null;
         String defaultGroup = "9";
 
-        FileReader fileReader = new FileReader();
-        String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
-                + FileNames.ONEAPI_VALIDATION_CONF_FILE.getFileName();
-
         try {
-            Map<String, String> oneAPIValidationConfMap = fileReader.readPropertyFile(file);
-            String group = oneAPIValidationConfMap.get("validation.regex.digits.group");
-            String useCustomRegex = oneAPIValidationConfMap.get("customValidation");
+            String group = oneAPIValidationConfMap.getProperty("validation.regex.digits.group");
+            String useCustomRegex = oneAPIValidationConfMap.getProperty("customValidation");
 
             if (useCustomRegex.equals("true") && !group.equals("")) {
 
@@ -131,7 +124,7 @@ public class Validation {
                 digitsGroupTemp = defaultGroup;
             }
         } catch (Exception e) {
-            logger.error("Error while reading regex capture group for digits. Default group ("+defaultGroup+") will be used.", e);
+            logger.error("Error while reading regex capture group for digits. Default group (" + defaultGroup + ") will be used.", e);
             digitsGroupTemp = defaultGroup;
         }
 
@@ -142,14 +135,9 @@ public class Validation {
         String telFormatTemp = null;
         String defaultRegex = "^((((tel:){1}(\\+){0,1})|((tel:){0,1}(\\+){1}))([a-zA-Z0-9]+))$";
 
-        FileReader fileReader = new FileReader();
-        String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
-                + FileNames.ONEAPI_VALIDATION_CONF_FILE.getFileName();
-
         try {
-            Map<String, String> oneAPIValidationConfMap = fileReader.readPropertyFile(file);
-            String customRegex = oneAPIValidationConfMap.get("validation.regex");
-            String useCustomRegex = oneAPIValidationConfMap.get("customValidation");
+            String customRegex = oneAPIValidationConfMap.getProperty("validation.regex");
+            String useCustomRegex = oneAPIValidationConfMap.getProperty("customValidation");
 
             if (useCustomRegex.equals("true") && !customRegex.equals("")) {
 
@@ -166,6 +154,20 @@ public class Validation {
         }
 
         return telFormatTemp;
+    }
+
+    static Properties readOneApiValidationConfig() {
+        Properties oneAPIValidationConfMap = new Properties();
+        String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
+                + FileNames.ONEAPI_VALIDATION_CONF_FILE.getFileName();
+
+        try {
+            oneAPIValidationConfMap.load(new FileInputStream(file));
+        } catch (Exception e) {
+            logger.error("Failed to read oneapi-validation.properties", e);
+        }
+
+        return oneAPIValidationConfMap;
     }
 
     /**
