@@ -9,7 +9,7 @@ import feign.Param;
 import feign.RequestLine;
 
 public interface RestClient {
-		@RequestLine("POST /query/tasks?processDefinitionKey={appParam}")
+		@RequestLine("POST query/tasks?processDefinitionKey={appParam}")
 		@Headers("Content-Type: application/json")
 		TaskList getTasks(@Param("appParam") String appParam,ProcessSearchRequest request) throws WorkflowExtensionException;
 
