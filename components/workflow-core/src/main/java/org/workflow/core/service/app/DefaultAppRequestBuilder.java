@@ -2,15 +2,15 @@ package org.workflow.core.service.app;
 
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.model.UserProfileDTO;
+import com.wso2telco.core.dbutils.util.AppApprovalRequest;
 import com.wso2telco.core.dbutils.util.Callback;
 import org.apache.commons.logging.LogFactory;
-import org.workflow.core.model.Range;
-import org.workflow.core.model.TaskList;
-import org.workflow.core.model.TaskSerchDTO;
-import org.workflow.core.model.TaskVariableResponse;
+import org.workflow.core.activity.ApplicationApprovalRequest;
+import org.workflow.core.model.*;
 import org.workflow.core.service.ReturnableResponse;
 import org.workflow.core.util.AppVariable;
 import org.workflow.core.util.DeploymentTypes;
+import org.workflow.core.service.AbsractQueryBuilder;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -19,16 +19,18 @@ import java.util.*;
 
 class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 
+	private DeploymentTypes  depType;
+	
 	private static DefaultAppRequestBuilder instance;
 
-	private DefaultAppRequestBuilder() throws BusinessException {
-		super.LOG = LogFactory.getLog(DefaultAppRequestBuilder.class);
-
+	private DefaultAppRequestBuilder(DeploymentTypes  depType) throws BusinessException {
+		super.log = LogFactory.getLog(DefaultAppRequestBuilder.class);
+		this.depType =depType;
 	}
 
-	public static DefaultAppRequestBuilder getInstace() throws BusinessException {
+	public static DefaultAppRequestBuilder getInstace(DeploymentTypes  depType) throws BusinessException {
 		if (instance == null) {
-			instance = new DefaultAppRequestBuilder();
+			instance = new DefaultAppRequestBuilder(depType);
 		}
 		return instance;
 	}
@@ -136,7 +138,7 @@ class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 	@Override
 	protected DeploymentTypes getDeployementType() {
 		// TODO Auto-generated method stub
-		return null;
+		return depType;
 	}
 
 	@Override
@@ -157,7 +159,7 @@ class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 		String process = "application_creation_approval_process";
 		List<Integer> data = new ArrayList();
 
-		TaskList taskList = null;
+		TaskDetailsResponse taskList = null;
 
 		for (Range month : months) {
 			taskList = activityClient.getHistoricTasks(month.getStart(), month.getEnd(), process, user);
@@ -168,4 +170,33 @@ class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 		return data;
 	}
 
+	@Override
+	protected ApplicationApprovalRequest buildApprovalRequest(AppApprovalRequest request) throws BusinessException {
+		List<RequestVariable> variables = new ArrayList();
+
+		boolean isAdmin = true; //dummy variable
+		final String type = "string";
+		final String user = "admin";
+
+		if (isAdmin) {
+			variables.add(new RequestVariable().setName("hubAdminApproval").setValue(request.getStatus()).setType(type));
+			variables.add(new RequestVariable().setName("completedByUser").setValue(user).setType(type));
+			variables.add(new RequestVariable().setName("status").setValue(request.getStatus()).setType(type));
+			variables.add(new RequestVariable().setName("completedOn").setValue(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.ENGLISH).format(new Date())).setType(type));
+			variables.add(new RequestVariable().setName("description").setValue(request.getDescription()).setType(type));
+			variables.add(new RequestVariable().setName("selectedTier").setValue(request.getSelectedTier()).setType(type));
+			variables.add(new RequestVariable().setName("creditPlan").setValue(request.getCreditPlan()).setType(type));
+		} else {
+			variables.add(new RequestVariable().setName("operatorAdminApproval").setValue(request.getStatus()).setType(type));
+			variables.add(new RequestVariable().setName("completedByUser").setValue(user).setType(type));
+			variables.add(new RequestVariable().setName("status").setValue(request.getStatus()).setType(type));
+			variables.add(new RequestVariable().setName("completedOn").setValue(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.ENGLISH).format(new Date())).setType(type));
+			variables.add(new RequestVariable().setName("description").setValue(request.getDescription()).setType(type));
+		}
+
+		ApplicationApprovalRequest applicationApprovalRequest= new ApplicationApprovalRequest();
+		applicationApprovalRequest.setAction("complete");
+		applicationApprovalRequest.setVariables(variables);
+		return null;
+	}
 }

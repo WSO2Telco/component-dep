@@ -17,6 +17,7 @@
 package com.wso2telco.workflow.api;
 
 import com.google.gson.Gson;
+import com.wso2telco.dep.operatorservice.service.OparatorService;
 import com.wso2telco.dep.reportingservice.southbound.SbHostObjectUtils;
 import com.wso2telco.workflow.model.ApplicationStatusDTO;
 import com.wso2telco.workflow.model.ApprovalDTO;
@@ -134,6 +135,21 @@ public class WorkflowHistoryAPI {
         }
         return Response.status(HttpServletResponse.SC_OK).header("Content-Type", "application/json").entity(jsonPayload).build();
     }
+    
+    @GET
+	@Path("/operator/approved/apps")
+	@Produces(MediaType.APPLICATION_JSON)
+	public Response getPendingSubscriptions(@QueryParam("appids") String appIds ) {
+        String jsonPayload;
+    	try {
+
+			List<String> OparatorApprovedApps = new OparatorService().getOparatorApprovedApp(appIds);
+			 jsonPayload = new Gson().toJson(OparatorApprovedApps);
+			return Response.status(Response.Status.OK).header("Content-Type", "application/json").entity(jsonPayload).build();
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+	}
 
 
     @GET
@@ -153,5 +169,7 @@ public class WorkflowHistoryAPI {
 
         return Response.status(HttpServletResponse.SC_OK).header("Content-Type", "application/json").entity(jsonPayload).build();
     }
+    
+	
 
 }

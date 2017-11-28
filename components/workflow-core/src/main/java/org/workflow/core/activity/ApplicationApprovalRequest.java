@@ -1,4 +1,11 @@
-package com.wso2telco.workflow.model;
+package org.workflow.core.activity;
+
+import com.fasterxml.jackson.annotation.*;
+import org.workflow.core.model.RequestVariable;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Copyright (c) 2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
@@ -15,60 +22,39 @@ package com.wso2telco.workflow.model;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-import com.fasterxml.jackson.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
-        "payload",
-        "success",
-        "message"
+        "action",
+        "variables"
 })
-public class Callback {
+public class ApplicationApprovalRequest {
 
-    @JsonProperty("payload")
-    private Object payload;
-    @JsonProperty("success")
-    private Boolean success;
-    @JsonProperty("message")
-    private String message;
+    @JsonProperty("action")
+    private String action;
+    @JsonProperty("variables")
+    private List<RequestVariable> variables = null;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
-    @JsonProperty("payload")
-    public Object getPayload() {
-        return payload;
+    @JsonProperty("action")
+    public String getAction() {
+        return action;
     }
 
-    @JsonProperty("payload")
-    public Callback setPayload(Object payload) {
-        this.payload = payload;
-        return this;
+    @JsonProperty("action")
+    public void setAction(String action) {
+        this.action = action;
     }
 
-    @JsonProperty("success")
-    public Boolean getSuccess() {
-        return success;
+    @JsonProperty("variables")
+    public List<RequestVariable> getVariables() {
+        return variables;
     }
 
-    @JsonProperty("success")
-    public Callback setSuccess(Boolean success) {
-        this.success = success;
-        return this;
-
-    }
-
-    @JsonProperty("message")
-    public String getMessage() {
-        return message;
-    }
-
-    @JsonProperty("message")
-    public Callback setMessage(String message) {
-        this.message = message;
-        return this;
+    @JsonProperty("variables")
+    public void setVariables(List<RequestVariable> variables) {
+        this.variables = variables;
     }
 
     @JsonAnyGetter

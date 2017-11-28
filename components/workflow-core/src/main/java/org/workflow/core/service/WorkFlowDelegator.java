@@ -1,5 +1,6 @@
 package org.workflow.core.service;
 
+import com.wso2telco.core.dbutils.util.AppApprovalRequest;
 import org.workflow.core.model.TaskSerchDTO;
 import org.workflow.core.util.WorkFlowType;
 
@@ -8,33 +9,34 @@ import com.wso2telco.core.dbutils.model.UserProfileDTO;
 import com.wso2telco.core.dbutils.util.Callback;
 
 
-
 public class WorkFlowDelegator {
-	public Callback getPendingApplicationApprovals(final TaskSerchDTO serchD,UserProfileDTO userProfile) throws BusinessException {
-		WorkFlowProcessor queryBuilder =ActivityProcessFactory
-										.getInstance()
-										.getWorkFlowFactory(WorkFlowType.APPLICATION)
-										.getWorkFlowProcessor();
+    public Callback getPendingApplicationApprovals(final TaskSerchDTO serchD, UserProfileDTO userProfile) throws BusinessException {
 
-		return queryBuilder.searchPending(serchD, userProfile);
-	}
+        WorkFlowProcessor queryBuilder = ActivityProcessFactory.getInstance().getWorkFlowFactory(WorkFlowType.APPLICATION).getWorkFlowProcessor();
+        return queryBuilder.searchPending(serchD, userProfile);
+    }
 
-	public Callback getPendingSubscriptionApprovals(final TaskSerchDTO serchD,UserProfileDTO userProfile) throws BusinessException {
-		WorkFlowProcessor queryBuilder =ActivityProcessFactory
-										.getInstance()
-										.getWorkFlowFactory(WorkFlowType.SUBSCRIPTION)
-										.getWorkFlowProcessor();
+    public Callback getPendingSubscriptionApprovals(final TaskSerchDTO serchD, UserProfileDTO userProfile) throws BusinessException {
+        WorkFlowProcessor queryBuilder = ActivityProcessFactory.getInstance().getWorkFlowFactory(WorkFlowType.SUBSCRIPTION).getWorkFlowProcessor();
+        return queryBuilder.searchPending(serchD, userProfile);
+    }
 
-		return queryBuilder.searchPending(serchD, userProfile);
-	}
+    public Callback getApplicationGraphData(UserProfileDTO userProfile) throws BusinessException {
+        WorkFlowProcessor queryBuilder = ActivityProcessFactory
+                .getInstance()
+                .getWorkFlowFactory(WorkFlowType.APPLICATION)
+                .getWorkFlowProcessor();
 
-	public Callback getApplicationGraphData(UserProfileDTO userProfile)throws BusinessException{
-		WorkFlowProcessor queryBuilder = ActivityProcessFactory
-                                        .getInstance()
-                                        .getWorkFlowFactory(WorkFlowType.APPLICATION)
-                                        .getWorkFlowProcessor();
+        return queryBuilder.getGraphData(userProfile);
+    }
 
-		return queryBuilder.getGraphData(userProfile);
-	}
+    public Callback approveApplication(AppApprovalRequest appApprovalRequest)throws BusinessException {
+        WorkFlowProcessor queryBuilder = ActivityProcessFactory
+                .getInstance()
+                .getWorkFlowFactory(WorkFlowType.APPLICATION)
+                .getWorkFlowProcessor();
+
+        return queryBuilder.approveApplication(appApprovalRequest);
+    }
 
 }

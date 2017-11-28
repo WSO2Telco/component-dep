@@ -26,4 +26,5 @@ public interface SubscriptionApproval {
 	void updateDBSubOpApproval(Subscription subOpApprovalDBUpdateRequest) throws Exception;
 	
 	void insertValidatorForSubscription(SubscriptionValidation hUBApprovalSubValidatorRequest)throws Exception;
+	
 }
