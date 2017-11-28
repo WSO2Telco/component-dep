@@ -165,7 +165,7 @@ public class BlackListWhiteListDAO {
 		sql.append(" FROM ");
 		sql.append(OparatorTable.BLACKLIST_MSISDN.getTObject());
 		sql.append(" WHERE 1=1 ");
-		if (!apiId.equals(null)) {
+		if (apiId != null) {
 			sql.append(" AND  API_ID =? ");
 		}
 
@@ -178,7 +178,7 @@ public class BlackListWhiteListDAO {
 			conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
 
 			ps = conn.prepareStatement(sql.toString());
-			if (!apiId.equals(null)) {
+			if (apiId != null) {
 				ps.setInt(1, Integer.parseInt(apiId));
 			}
 
@@ -572,7 +572,7 @@ public class BlackListWhiteListDAO {
 		Connection connection = null;
 		PreparedStatement ps = null;
 		ResultSet resultSet = null;
-		String[] result = new String[];
+		String[] result = new String[0];
 
 		try {
 

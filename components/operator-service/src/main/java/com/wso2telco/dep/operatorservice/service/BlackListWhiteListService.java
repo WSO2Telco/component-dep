@@ -105,7 +105,7 @@ public class BlackListWhiteListService {
 		}
     }
 
-	public List<String> loadBlacklisted(MSISDNSearchDTO searchDTO) throws BusinessException {
+	public String[] loadBlacklisted(MSISDNSearchDTO searchDTO) throws BusinessException {
 		try {
 			return dao.getBlacklisted(searchDTO);
 		} catch (Exception e) {
