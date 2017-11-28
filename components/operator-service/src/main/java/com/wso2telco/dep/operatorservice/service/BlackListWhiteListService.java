@@ -60,7 +60,6 @@ public class BlackListWhiteListService {
 
 		String[] msisdns = dto.getUserMSISDN();
 		MSISDNValidationDTO msisdnValidationDTO = new MSISDNValidationDTO();
-        Gson gson = new Gson();
 
 		final String apiID_ = dto.getApiID();
 		final String apiName_ = dto.getApiName();
