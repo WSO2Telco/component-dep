@@ -29,6 +29,9 @@ public class WhiteListBulk implements Serializable{
     private String apiName;
     private String userID;
     private String[] msisdnList;
+    private String validationRegex;
+    private int validationPrefixGroup;
+    private int validationDigitsGroup;
     
     
     public String getAPIName(){
@@ -71,7 +74,19 @@ public class WhiteListBulk implements Serializable{
 		this.appId = appId;
 	}
 
-	@Override
+    public String getValidationRegex() {
+        return validationRegex;
+    }
+
+    public int getValidationPrefixGroup() {
+        return validationPrefixGroup;
+    }
+
+    public int getValidationDigitsGroup() {
+        return validationDigitsGroup;
+    }
+
+    @Override
 	public String toString() {
 		return "WhiteListBulk [apiId=" + apiId + ", appId=" + appId + ", apiName=" + apiName + ", userID=" + userID
 				+ ", msisdnList=" + Arrays.toString(msisdnList) + "]";
