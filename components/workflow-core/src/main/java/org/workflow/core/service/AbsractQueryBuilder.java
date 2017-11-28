@@ -44,7 +44,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 		String appParam="application_creation_approval_process";
 		TaskList taskList = null;
 		try {
-			taskList = activityClient.getTasks(processRequest,appParam);
+			taskList = activityClient.getTasks(appParam,processRequest);
 
 			for (TaskList.Task task : taskList.getData()) {
 				TaskVariableResponse[] vars = activityClient.getVariables(String.valueOf(task.getId()));
