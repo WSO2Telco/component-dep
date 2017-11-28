@@ -1,4 +1,4 @@
-package org.workflow.core.service;
+package org.workflow.core.service.sub;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -40,9 +40,8 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 
 	public Callback searchPending(TaskSerchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException {
 		ProcessSearchRequest processRequest = buildSearchRequest(searchDTO, userProfile);
-		//Map<String, Object> queryMap=new HashMap<String, Object>();
-		//queryMap.put("processDefinitionKey", "");
-		//String appParam="application_creation_approval_process";
+
+		//String appParam="subscription_approval_process";
 		TaskList taskList = null;
 		try {
 			taskList = activityClient.getTasks(processRequest);
@@ -68,7 +67,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 		request.setStart(searchDTO.getStart());
 		request.setSort(searchDTO.getSortBy());
 
-		request.setProcessDefinitionKey(getDeployementType().getAppProcessType());
+		request.setProcessDefinitionKey(getDeployementType().getSubscriptoinProcessType());
 
 		String filterStr = searchDTO.getFilterBy();
 		/**

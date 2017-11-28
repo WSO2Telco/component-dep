@@ -31,24 +31,28 @@ import org.workflow.core.service.WorkFlowDelegator;
 import com.wso2telco.core.dbutils.model.UserProfileDTO;
 import com.wso2telco.core.dbutils.util.Callback;
 
-
-@Path("/applications")
+@Path("/subscriptions")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-public class ApplicationRest {
-	 @GET
-	 @Path("/search")
-	 public Response load(@HeaderParam("authorization") String authHeader) {
-		 try {
-		    	WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
-		    	TaskSerchDTO serchD = new TaskSerchDTO();
-		    	UserProfileDTO userProfileDTO = new UserProfileDTO();
-		    	userProfileDTO.setUserName("admin");
-		    	Callback callback = workFlowDelegator.getPendingApplicationApprovals(serchD, userProfileDTO);
-		        return Response.status(Response.Status.OK).entity(callback).build();
-		 } catch(Exception e) {
-		            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-		 }
+public class SubscriptionRest {
+
+	@GET
+	@Path("/search")
+	public Response load(@HeaderParam("authorization") String authHeader,
+			 @QueryParam ("batchSize") byte batchSize,
+			 @QueryParam ("start") int start,
+			 @QueryParam ("orderBy")String  orderBy,
+			 @QueryParam ("sortBy")String  sortBy,
+			 @QueryParam ("filterBy")String  filterBy) {
+		try {
+			WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
+			TaskSerchDTO serchD = new TaskSerchDTO();
+			UserProfileDTO UserProfileDTO = new UserProfileDTO();
+			Callback callback = workFlowDelegator.getPendingSubscriptionApprovals(serchD, UserProfileDTO);
+			return Response.status(Response.Status.OK).entity(callback).build();
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
 	}
 
 }

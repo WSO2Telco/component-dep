@@ -1,4 +1,4 @@
-package org.workflow.core.service.app;
+package org.workflow.core.service.sub;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -10,33 +10,32 @@ import java.util.Locale;
 import java.util.Map;
 
 import org.apache.commons.logging.LogFactory;
-import org.workflow.core.model.Task;
 import org.workflow.core.model.TaskList;
+import org.workflow.core.model.Task;
 import org.workflow.core.model.TaskSerchDTO;
 import org.workflow.core.model.TaskVariableResponse;
 import org.workflow.core.service.ReturnableResponse;
 import org.workflow.core.util.AppVariable;
 import org.workflow.core.util.DeploymentTypes;
-import org.workflow.core.service.AbsractQueryBuilder;
+import org.workflow.core.service.sub.AbsractQueryBuilder;
 
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.model.UserProfileDTO;
 import com.wso2telco.core.dbutils.util.Callback;
 
-class DefaultAppRequestBuilder extends AbsractQueryBuilder {
+class HubSubRequestBuilder extends AbsractQueryBuilder {
 
-	private DeploymentTypes  depType;
+	private DeploymentTypes depType;
+	private static HubSubRequestBuilder instance;
 
-	private static DefaultAppRequestBuilder instance;
-
-	private DefaultAppRequestBuilder(DeploymentTypes  depType) throws BusinessException {
-		super.log = LogFactory.getLog(DefaultAppRequestBuilder.class);
-		this.depType =depType;
+	private HubSubRequestBuilder(DeploymentTypes depType) throws BusinessException {
+		super.log = LogFactory.getLog(HubSubRequestBuilder.class);
+		this.depType = depType;
 	}
 
-	public static DefaultAppRequestBuilder getInstace(DeploymentTypes  depType) throws BusinessException {
+	public static HubSubRequestBuilder getInstace(DeploymentTypes depType) throws BusinessException {
 		if (instance == null) {
-			instance = new DefaultAppRequestBuilder(depType);
+			instance = new HubSubRequestBuilder(depType);
 		}
 		return instance;
 	}
@@ -47,7 +46,7 @@ class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 		return  new ReturnableResponse() {
 
 			DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX",Locale.ENGLISH);
-
+			
 			@Override
 			public int getTotal() {
 				return taskList.getTotal();
@@ -68,7 +67,6 @@ class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 				return searchDTO.getFilterBy();
 			}
 
-
 			@Override
 			public String getOrderBy() {
 				return searchDTO.getOrderBy();
@@ -76,52 +74,49 @@ class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 
 			@Override
 			public List<ReturnableTaskResponse> getTasks() {
-				List<ReturnableTaskResponse> temptaskList =new ArrayList<ReturnableResponse.ReturnableTaskResponse>();
+				List<ReturnableTaskResponse> temptaskList = new ArrayList<ReturnableResponse.ReturnableTaskResponse>();
 
-				for ( final Task task : taskList.getData()) {
-					final Map<AppVariable,TaskVariableResponse> varMap = new HashMap<AppVariable, TaskVariableResponse>();
-					 for (final TaskVariableResponse var : task.getVars()) {
-							varMap.put( AppVariable.getByKey(var.getName()),var);
+				for (final Task task : taskList.getData()) {
+					final Map<AppVariable, TaskVariableResponse> varMap = new HashMap<AppVariable, TaskVariableResponse>();
+					for (final TaskVariableResponse var : task.getVars()) {
+						varMap.put(AppVariable.getByKey(var.getName()), var);
+					}
+
+					ReturnableTaskResponse responseTask = new ReturnableTaskResponse() {
+						/**
+						 * return task ID
+						 */
+						public int getID() {
+							return task.getId();
 						}
 
-					 ReturnableTaskResponse responseTask= new ReturnableTaskResponse() {
-						 /**
-							 * return task ID
-							 */
-							public int getID() {
-								return task.getId();
-							}
+						public String getName() {
+							return varMap.get(AppVariable.NAME).getValue();
+						}
 
-							public String getName() {
-								return varMap.get(AppVariable.NAME).getValue() ;
-							}
-							public String getDescription() {
-								return varMap.get(AppVariable.DESCRIPTION).getValue() ;
-							}
+						public String getDescription() {
+							return varMap.get(AppVariable.DESCRIPTION).getValue();
+						}
 
-							public String getCreatedDate() {
-								return format.format( task.getCreateTime());
-							}
+						public String getCreatedDate() {
+							return format.format(task.getCreateTime());
+						}
 
-							public String getTier() {
-								return varMap.get(AppVariable.TIER).getValue() ;
-							}
+						public String getTier() {
+							return varMap.get(AppVariable.TIER).getValue();
+						}
 
-							public String getAssinee() {
-								return task.getAssignee();
-							}
-					 };
-
-					 temptaskList.add(responseTask);
-
+						public String getAssinee() {
+							return task.getAssignee();
+						}
+					};
+					temptaskList.add(responseTask);
 				}
-
 				return temptaskList;
 			}
-
-		  };
+		};
 	}
-
+	
 	@Override
 	protected Callback buildResponse(TaskSerchDTO searchDTO, TaskList taskList, UserProfileDTO userProfile)
 			throws BusinessException {
@@ -131,19 +126,18 @@ class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 			payload = generateResponse( searchDTO,taskList, userProfile);
 			returnCall= new Callback().setPayload(payload)
 					.setSuccess(true)
-					.setMessage("Application Taks listed success ");
+					.setMessage("Subscription Taks listed success ");
 		} catch (ParseException e) {
 			returnCall= new Callback().setPayload(null)
 					.setSuccess(false)
-					.setMessage("Application Taks listed fail ");
+					.setMessage("Subscription Taks listed fail ");
 		}
-
+		
 		 return returnCall;
 	}
 
 	@Override
 	protected DeploymentTypes getDeployementType() {
-		// TODO Auto-generated method stub
 		return depType;
 	}
 
