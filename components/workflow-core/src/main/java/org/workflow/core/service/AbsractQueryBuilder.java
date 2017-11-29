@@ -2,8 +2,8 @@ package org.workflow.core.service;
 
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.model.UserProfileDTO;
-import com.wso2telco.core.dbutils.util.AppApprovalRequest;
-import com.wso2telco.core.dbutils.util.AppAssignRequest;
+import com.wso2telco.core.dbutils.util.ApprovalRequest;
+import com.wso2telco.core.dbutils.util.AssignRequest;
 import com.wso2telco.core.dbutils.util.Callback;
 import org.apache.commons.logging.Log;
 import org.workflow.core.activity.*;
@@ -21,7 +21,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
     protected RestClient activityClient = null;
     protected DeploymentTypes depType;
 
-    public AbsractQueryBuilder() throws BusinessException {
+    public void initialize() throws BusinessException {
         activityClient = ActivityClientFactory.getInstance().getClient(getProcessDefinitionKey());
     }
 
@@ -34,9 +34,9 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 
     protected abstract Map<String, String> getFilterMap();
 
-    protected abstract List<Integer> getHistoricalData(String user, List<Range> months) throws BusinessException;
+    protected abstract Callback getHistoricalData(String user, List<Range> months, List<String> xAxisLabels) throws BusinessException;
 
-    protected abstract ApplicationApprovalRequest buildApprovalRequest(final AppApprovalRequest appApprovalRequest) throws BusinessException;
+    protected abstract Callback buildApprovalRequest(final ApprovalRequest approvalRequest) throws BusinessException;
 
     public Callback searchPending(TaskSerchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException {
         ProcessSearchRequest processRequest = buildSearchRequest(searchDTO, userProfile);
@@ -133,47 +133,27 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
             xAxisLabels.add(monthFormat.format(stop));
         }
 
-        List<Integer> data = getHistoricalData(userProfile.getUserName(), months);
-        if (!data.isEmpty()) {
-            GraphData graphData = new GraphData();
-            graphData.setData(data);
-            graphData.setLabel("applications");
-            List<GraphData> graphDataList = new ArrayList();
-            graphDataList.add(graphData);
-            GraphResponse graphResponse = new GraphResponse();
-            graphResponse.setXAxisLabels(xAxisLabels);
-            graphResponse.setGraphData(graphDataList);
-            return new Callback().setPayload(graphResponse).setSuccess(true).setMessage("History Loaded Successfully");
-        } else {
-            return new Callback().setPayload(Collections.emptyList()).setSuccess(false).setMessage("Error Loading Approval History");
-        }
+        return getHistoricalData(userProfile.getUserName(), months, xAxisLabels);
 
     }
 
     @Override
-    public Callback approveApplication(AppApprovalRequest appApprovalRequest) throws BusinessException {
-        ApplicationApprovalRequest request = buildApprovalRequest(appApprovalRequest);
-        try {
-            activityClient.approveApplication(appApprovalRequest.getTaskId(), request);
-            return new Callback().setPayload(null).setSuccess(true).setMessage("Application Approved Successfully");
-        } catch (WorkflowExtensionException e) {
-            log.error("", e);
-            throw new BusinessException(e);
-        }
+    public Callback approveTask(ApprovalRequest approvalRequest) throws BusinessException {
+        return buildApprovalRequest(approvalRequest);
     }
 
     @Override
-    public Callback assignApplication(AppAssignRequest appAssignRequest) throws BusinessException {
+    public Callback assignTask(AssignRequest assignRequest) throws BusinessException {
         String assignee = "admin";
-        ApplicationAssignRequest assignRequest = new ApplicationAssignRequest();
-        assignRequest.setAction("claim");
-        assignRequest.setAssignee(assignee.toLowerCase());
+        ApplicationAssignRequest request = new ApplicationAssignRequest();
+        request.setAction("claim");
+        request.setAssignee(assignee.toLowerCase());
         try {
-            activityClient.assignApplication(appAssignRequest.getTaskId(), assignRequest);
-            return new Callback().setPayload(null).setSuccess(true).setMessage("Application Assigned Successfully");
+            activityClient.assignTask(assignRequest.getTaskId(), request);
+            return new Callback().setPayload(null).setSuccess(true).setMessage("Task Assigned Successfully");
         } catch (WorkflowExtensionException e) {
             log.error("", e);
-            throw new BusinessException(e);
+            return new Callback().setPayload(null).setSuccess(false).setMessage("Task Assigned Not Successfully");
         }
     }
 }
