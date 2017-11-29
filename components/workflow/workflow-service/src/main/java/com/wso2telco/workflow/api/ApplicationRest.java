@@ -38,7 +38,9 @@ public class ApplicationRest {
 
 	 @GET
 	 @Path("/search")
-	 public Response load(@HeaderParam("authorization") String authHeader) {
+	 public Response load(@HeaderParam("authorization") String authHeader,@QueryParam("batchSize") int batchSize,
+			 						@QueryParam("start") int start,@QueryParam("orderBy") String orderBy,
+			 						@QueryParam("sortBy") String sortBy,@QueryParam("filterBy")String filterBy ) {
 		 try {
 		    	WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
 		    	TaskSerchDTO serchD = new TaskSerchDTO();
