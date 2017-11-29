@@ -23,19 +23,19 @@ import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.model.UserProfileDTO;
 import com.wso2telco.core.dbutils.util.Callback;
 
-class HubSubRequestBuilder extends AbsractQueryBuilder {
+class DefaultSubRequestBuilder extends AbsractQueryBuilder {
 
 	private DeploymentTypes depType;
-	private static HubSubRequestBuilder instance;
+	private static DefaultSubRequestBuilder instance;
 
-	private HubSubRequestBuilder(DeploymentTypes depType) throws BusinessException {
-		super.log = LogFactory.getLog(HubSubRequestBuilder.class);
+	private DefaultSubRequestBuilder(DeploymentTypes depType) throws BusinessException {
+		super.log = LogFactory.getLog(DefaultSubRequestBuilder.class);
 		this.depType = depType;
 	}
 
-	public static HubSubRequestBuilder getInstace(DeploymentTypes depType) throws BusinessException {
+	public static DefaultSubRequestBuilder getInstace(DeploymentTypes depType) throws BusinessException {
 		if (instance == null) {
-			instance = new HubSubRequestBuilder(depType);
+			instance = new DefaultSubRequestBuilder(depType);
 		}
 		return instance;
 	}
@@ -74,14 +74,14 @@ class HubSubRequestBuilder extends AbsractQueryBuilder {
 
 			@Override
 			public List<ReturnableTaskResponse> getTasks() {
-				List<ReturnableTaskResponse> temptaskList = new ArrayList<ReturnableResponse.ReturnableTaskResponse>();
-
-				for (final Task task : taskList.getData()) {
-					final Map<AppVariable, TaskVariableResponse> varMap = new HashMap<AppVariable, TaskVariableResponse>();
+				List<ReturnableTaskResponse> temptaskList =new ArrayList<ReturnableResponse.ReturnableTaskResponse>();
+				
+				for ( final Task task : taskList.getData()) {
+					final Map<AppVariable,TaskVariableResponse> varMap = new HashMap<AppVariable, TaskVariableResponse>();
 					for (final TaskVariableResponse var : task.getVars()) {
 						varMap.put(AppVariable.getByKey(var.getName()), var);
 					}
-
+					 
 					ReturnableTaskResponse responseTask = new ReturnableTaskResponse() {
 						/**
 						 * return task ID
@@ -95,7 +95,8 @@ class HubSubRequestBuilder extends AbsractQueryBuilder {
 						}
 
 						public String getDescription() {
-							return varMap.get(AppVariable.DESCRIPTION).getValue();
+							return varMap.get(AppVariable.DESCRIPTION)
+									.getValue();
 						}
 
 						public String getCreatedDate() {
@@ -126,14 +127,19 @@ class HubSubRequestBuilder extends AbsractQueryBuilder {
 			payload = generateResponse( searchDTO,taskList, userProfile);
 			returnCall= new Callback().setPayload(payload)
 					.setSuccess(true)
-					.setMessage("Subscription Taks listed success ");
+					.setMessage("Application Taks listed success ");
 		} catch (ParseException e) {
 			returnCall= new Callback().setPayload(null)
 					.setSuccess(false)
-					.setMessage("Subscription Taks listed fail ");
+					.setMessage("Application Taks listed fail ");
 		}
 		
 		 return returnCall;
+	}
+
+	@Override
+	protected String getProcessDefinitionKey() {
+		return null;
 	}
 
 	@Override
@@ -178,9 +184,4 @@ class HubSubRequestBuilder extends AbsractQueryBuilder {
 	public Callback assignApplication(AppAssignRequest appAssignRequest) throws BusinessException {
 		return null;
 	}
-
-	protected String getProcessDefinitionKey() {
-		return depType.getSubscriptoinProcessType();
-	}
-
 }

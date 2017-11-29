@@ -1,15 +1,12 @@
 package org.workflow.core.service.app;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
+import com.wso2telco.core.dbutils.exception.BusinessException;
+import com.wso2telco.core.dbutils.model.UserProfileDTO;
+import com.wso2telco.core.dbutils.util.AppApprovalRequest;
+import com.wso2telco.core.dbutils.util.Callback;
 import org.apache.commons.logging.LogFactory;
+import org.workflow.core.activity.ApplicationApprovalRequest;
+import org.workflow.core.model.*;
 import org.workflow.core.model.Task;
 import org.workflow.core.model.TaskList;
 import org.workflow.core.model.TaskSerchDTO;
@@ -20,9 +17,10 @@ import org.workflow.core.util.DeploymentTypes;
 import org.workflow.core.util.WorkFlowHealper;
 import org.workflow.core.service.AbsractQueryBuilder;
 
-import com.wso2telco.core.dbutils.exception.BusinessException;
-import com.wso2telco.core.dbutils.model.UserProfileDTO;
-import com.wso2telco.core.dbutils.util.Callback;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 
@@ -171,6 +169,51 @@ class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 	}
 
 	@Override
+	protected List<Integer> getHistoricalData(String user, List<Range> months) throws BusinessException {
+		String process = "application_creation_approval_process";
+		List<Integer> data = new ArrayList();
+
+		TaskDetailsResponse taskList = null;
+
+		for (Range month : months) {
+			taskList = activityClient.getHistoricTasks(month.getStart(), month.getEnd(), process, user);
+			data.add(taskList.getTotal());
+
+		}
+
+		return data;
+	}
+
+	@Override
+	protected ApplicationApprovalRequest buildApprovalRequest(AppApprovalRequest request) throws BusinessException {
+		List<RequestVariable> variables = new ArrayList();
+
+		boolean isAdmin = true; //dummy variable
+		final String type = "string";
+		final String user = "admin";
+
+		if (isAdmin) {
+			variables.add(new RequestVariable().setName("hubAdminApproval").setValue(request.getStatus()).setType(type));
+			variables.add(new RequestVariable().setName("completedByUser").setValue(user).setType(type));
+			variables.add(new RequestVariable().setName("status").setValue(request.getStatus()).setType(type));
+			variables.add(new RequestVariable().setName("completedOn").setValue(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.ENGLISH).format(new Date())).setType(type));
+			variables.add(new RequestVariable().setName("description").setValue(request.getDescription()).setType(type));
+			variables.add(new RequestVariable().setName("selectedTier").setValue(request.getSelectedTier()).setType(type));
+			variables.add(new RequestVariable().setName("creditPlan").setValue(request.getCreditPlan()).setType(type));
+		} else {
+			variables.add(new RequestVariable().setName("operatorAdminApproval").setValue(request.getStatus()).setType(type));
+			variables.add(new RequestVariable().setName("completedByUser").setValue(user).setType(type));
+			variables.add(new RequestVariable().setName("status").setValue(request.getStatus()).setType(type));
+			variables.add(new RequestVariable().setName("completedOn").setValue(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.ENGLISH).format(new Date())).setType(type));
+			variables.add(new RequestVariable().setName("description").setValue(request.getDescription()).setType(type));
+		}
+
+		ApplicationApprovalRequest applicationApprovalRequest= new ApplicationApprovalRequest();
+		applicationApprovalRequest.setAction("complete");
+		applicationApprovalRequest.setVariables(variables);
+		return applicationApprovalRequest;
+	}
+
 	protected String getProcessDefinitionKey() {
 		return depType.getAppProcessType();
 	}
