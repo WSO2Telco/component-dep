@@ -1,19 +1,17 @@
 package org.workflow.core.service;
 
-import com.wso2telco.core.dbutils.util.AppApprovalRequest;
-import com.wso2telco.core.dbutils.util.AppAssignRequest;
-import org.workflow.core.model.TaskSerchDTO;
-import org.workflow.core.util.WorkFlowType;
-
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.model.UserProfileDTO;
+import com.wso2telco.core.dbutils.util.ApprovalRequest;
+import com.wso2telco.core.dbutils.util.AssignRequest;
 import com.wso2telco.core.dbutils.util.Callback;
+import org.workflow.core.model.TaskSerchDTO;
+import org.workflow.core.util.WorkFlowType;
 
 
 public class WorkFlowDelegator {
 
     public Callback getPendingApplicationApprovals(final TaskSerchDTO serchD,UserProfileDTO userProfile) throws BusinessException {
-        //serchD.setFilterBy("applicationName");
         WorkFlowProcessor queryBuilder =ActivityProcessFactory.getInstance().getWorkFlowFactory(WorkFlowType.APPLICATION).getWorkFlowProcessor();
         return queryBuilder.searchPending(serchD, userProfile);
     }
@@ -32,22 +30,49 @@ public class WorkFlowDelegator {
         return queryBuilder.getGraphData(userProfile);
     }
 
-    public Callback approveApplication(AppApprovalRequest appApprovalRequest)throws BusinessException {
+    public Callback getSubscriptionGraphData(UserProfileDTO userProfile) throws BusinessException {
         WorkFlowProcessor queryBuilder = ActivityProcessFactory
                 .getInstance()
-                .getWorkFlowFactory(WorkFlowType.APPLICATION)
+                .getWorkFlowFactory(WorkFlowType.SUBSCRIPTION)
                 .getWorkFlowProcessor();
 
-        return queryBuilder.approveApplication(appApprovalRequest);
+        return queryBuilder.getGraphData(userProfile);
     }
 
-    public Callback assignApplication(AppAssignRequest appAssignRequest)throws BusinessException {
+    public Callback approveApplication(ApprovalRequest approvalRequest)throws BusinessException {
         WorkFlowProcessor queryBuilder = ActivityProcessFactory
                 .getInstance()
                 .getWorkFlowFactory(WorkFlowType.APPLICATION)
                 .getWorkFlowProcessor();
 
-        return queryBuilder.assignApplication(appAssignRequest);
+        return queryBuilder.approveTask(approvalRequest);
+    }
+
+    public Callback approveSubscription(ApprovalRequest approvalRequest)throws BusinessException {
+        WorkFlowProcessor queryBuilder = ActivityProcessFactory
+                .getInstance()
+                .getWorkFlowFactory(WorkFlowType.SUBSCRIPTION)
+                .getWorkFlowProcessor();
+
+        return queryBuilder.approveTask(approvalRequest);
+    }
+
+    public Callback assignApplicationTask(AssignRequest assignRequest)throws BusinessException {
+        WorkFlowProcessor queryBuilder = ActivityProcessFactory
+                .getInstance()
+                .getWorkFlowFactory(WorkFlowType.APPLICATION)
+                .getWorkFlowProcessor();
+
+        return queryBuilder.assignTask(assignRequest);
+    }
+
+    public Callback assignSubscriptionTask(AssignRequest assignRequest)throws BusinessException {
+        WorkFlowProcessor queryBuilder = ActivityProcessFactory
+                .getInstance()
+                .getWorkFlowFactory(WorkFlowType.SUBSCRIPTION)
+                .getWorkFlowProcessor();
+
+        return queryBuilder.assignTask(assignRequest);
     }
 
 }

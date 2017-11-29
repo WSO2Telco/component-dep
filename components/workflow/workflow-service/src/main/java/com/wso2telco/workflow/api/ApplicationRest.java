@@ -18,8 +18,8 @@ package com.wso2telco.workflow.api;
 
 
 import com.wso2telco.core.dbutils.model.UserProfileDTO;
-import com.wso2telco.core.dbutils.util.AppApprovalRequest;
-import com.wso2telco.core.dbutils.util.AppAssignRequest;
+import com.wso2telco.core.dbutils.util.ApprovalRequest;
+import com.wso2telco.core.dbutils.util.AssignRequest;
 import com.wso2telco.core.dbutils.util.Callback;
 import org.workflow.core.model.TaskSerchDTO;
 import org.workflow.core.service.WorkFlowDelegator;
@@ -36,26 +36,26 @@ import javax.ws.rs.core.Response;
 
 public class ApplicationRest {
 
-	 @GET
-	 @Path("/search")
-	 public Response load(@HeaderParam("authorization") String authHeader,@QueryParam("batchSize") int batchSize,
-			 						@QueryParam("start") int start,@QueryParam("orderBy") String orderBy,
-			 						@QueryParam("sortBy") String sortBy,@QueryParam("filterBy")String filterBy ) {
-		 try {
-		    	WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
-		    	TaskSerchDTO serchD = new TaskSerchDTO();
-		    	UserProfileDTO userProfileDTO = new UserProfileDTO();
-		    	userProfileDTO.setUserName("admin");
-		    	Callback callback = workFlowDelegator.getPendingApplicationApprovals(serchD, userProfileDTO);
-		        return Response.status(Response.Status.OK).entity(callback).build();
-		 } catch(Exception e) {
-		            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-		 }
-	}
+    @GET
+    @Path("/search")
+    public Response load(@HeaderParam("authorization") String authHeader, @QueryParam("batchSize") int batchSize,
+                         @QueryParam("start") int start, @QueryParam("orderBy") String orderBy,
+                         @QueryParam("sortBy") String sortBy, @QueryParam("filterBy") String filterBy) {
+        try {
+            WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
+            TaskSerchDTO serchD = new TaskSerchDTO();
+            UserProfileDTO userProfileDTO = new UserProfileDTO();
+            userProfileDTO.setUserName("admin");
+            Callback callback = workFlowDelegator.getPendingApplicationApprovals(serchD, userProfileDTO);
+            return Response.status(Response.Status.OK).entity(callback).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
     @GET
     @Path("/graph")
-    public Response loadGraph(@HeaderParam("authorization") String authHeader)  {
+    public Response loadGraph(@HeaderParam("authorization") String authHeader) {
         try {
             WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
             TaskSerchDTO serchD = new TaskSerchDTO();
@@ -70,13 +70,13 @@ public class ApplicationRest {
 
     @POST
     @Path("/assign")
-    public Response assign(@HeaderParam("authorization") String authHeader, AppAssignRequest appAssignRequest)  {
+    public Response assign(@HeaderParam("authorization") String authHeader, AssignRequest assignRequest) {
         try {
             WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
             TaskSerchDTO serchD = new TaskSerchDTO();
             UserProfileDTO userProfileDTO = new UserProfileDTO();
             userProfileDTO.setUserName("admin");
-            Callback callback = workFlowDelegator.assignApplication(appAssignRequest);
+            Callback callback = workFlowDelegator.assignApplicationTask(assignRequest);
             return Response.status(Response.Status.OK).entity(callback).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
@@ -85,13 +85,13 @@ public class ApplicationRest {
 
     @POST
     @Path("/approve")
-    public Response approve(@HeaderParam("authorization") String authHeader, AppApprovalRequest appApprovalRequest )  {
+    public Response approve(@HeaderParam("authorization") String authHeader, ApprovalRequest approvalRequest) {
         try {
             WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
             TaskSerchDTO serchD = new TaskSerchDTO();
             UserProfileDTO userProfileDTO = new UserProfileDTO();
             userProfileDTO.setUserName("admin");
-            Callback callback = workFlowDelegator.approveApplication(appApprovalRequest);
+            Callback callback = workFlowDelegator.approveApplication(approvalRequest);
             return Response.status(Response.Status.OK).entity(callback).build();
         } catch (Exception e) {
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

@@ -1,36 +1,33 @@
 package org.workflow.core.service.sub;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import com.wso2telco.core.dbutils.util.AppApprovalRequest;
-import com.wso2telco.core.dbutils.util.AppAssignRequest;
+import com.wso2telco.core.dbutils.exception.BusinessException;
+import com.wso2telco.core.dbutils.model.UserProfileDTO;
+import com.wso2telco.core.dbutils.util.ApprovalRequest;
+import com.wso2telco.core.dbutils.util.Callback;
 import org.apache.commons.logging.LogFactory;
 import org.workflow.core.activity.ApplicationApprovalRequest;
+import org.workflow.core.execption.WorkflowExtensionException;
 import org.workflow.core.model.*;
 import org.workflow.core.service.AbsractQueryBuilder;
 import org.workflow.core.service.ReturnableResponse;
 import org.workflow.core.util.AppVariable;
 import org.workflow.core.util.DeploymentTypes;
 
-import com.wso2telco.core.dbutils.exception.BusinessException;
-import com.wso2telco.core.dbutils.model.UserProfileDTO;
-import com.wso2telco.core.dbutils.util.Callback;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 class HubSubRequestBuilder extends AbsractQueryBuilder {
 
-	private DeploymentTypes depType;
 	private static HubSubRequestBuilder instance;
+	{
+		log = LogFactory.getLog(HubSubRequestBuilder.class);
+	}
 
 	private HubSubRequestBuilder(DeploymentTypes depType) throws BusinessException {
-		super.log = LogFactory.getLog(HubSubRequestBuilder.class);
-		this.depType = depType;
+		super.depType = depType;
+		super.initialize();
 	}
 
 	public static HubSubRequestBuilder getInstace(DeploymentTypes depType) throws BusinessException {
@@ -155,28 +152,69 @@ class HubSubRequestBuilder extends AbsractQueryBuilder {
 	}
 
 	@Override
-	protected List<Integer> getHistoricalData(String user, List<Range> months) throws BusinessException {
-		return null;
+	protected Callback getHistoricalData(String user, List<Range> months, List<String> xAxisLabels) throws BusinessException {
+		String process = "subscription_approval_process";
+		List<Integer> data = new ArrayList();
+
+		TaskDetailsResponse taskList = null;
+
+		for (Range month : months) {
+			taskList = activityClient.getHistoricTasks(month.getStart(), month.getEnd(), process, user);
+			data.add(taskList.getTotal());
+
+		}
+
+		if (!data.isEmpty()) {
+			GraphData graphData = new GraphData();
+			graphData.setData(data);
+			graphData.setLabel("subscriptions".toUpperCase());
+			List<GraphData> graphDataList = new ArrayList();
+			graphDataList.add(graphData);
+			GraphResponse graphResponse = new GraphResponse();
+			graphResponse.setXAxisLabels(xAxisLabels);
+			graphResponse.setGraphData(graphDataList);
+			return new Callback().setPayload(graphResponse).setSuccess(true).setMessage("Subscription Approval History Loaded Successfully");
+		} else {
+			return new Callback().setPayload(Collections.emptyList()).setSuccess(false).setMessage("Error Loading Subscription Approval History");
+		}
 	}
 
 	@Override
-	protected ApplicationApprovalRequest buildApprovalRequest(AppApprovalRequest appApprovalRequest) throws BusinessException {
-		return null;
-	}
+	protected Callback buildApprovalRequest(ApprovalRequest request) throws BusinessException {
+		List<RequestVariable> variables = new ArrayList();
 
-	@Override
-	public Callback getGraphData(UserProfileDTO userProfile) throws BusinessException {
-		return null;
-	}
+		boolean isAdmin = true; //dummy variable
+		final String type = "string";
+		final String user = "admin";
 
-	@Override
-	public Callback approveApplication(AppApprovalRequest appApprovalRequest) throws BusinessException {
-		return null;
-	}
+		if (isAdmin) {
+			variables.add(new RequestVariable().setName("hubAdminApproval").setValue(request.getStatus()).setType(type));
+			variables.add(new RequestVariable().setName("completedByUser").setValue(user).setType(type));
+			variables.add(new RequestVariable().setName("status").setValue(request.getStatus()).setType(type));
+			variables.add(new RequestVariable().setName("completedOn").setValue(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.ENGLISH).format(new Date())).setType(type));
+			variables.add(new RequestVariable().setName("description").setValue(request.getDescription()).setType(type));
+			variables.add(new RequestVariable().setName("selectedTier").setValue(request.getSelectedTier()).setType(type));
+			variables.add(new RequestVariable().setName("selectedRate").setValue(request.getSelectedRate()).setType(type));
+		} else {
+			variables.add(new RequestVariable().setName("operatorAdminApproval").setValue(request.getStatus()).setType(type));
+			variables.add(new RequestVariable().setName("completedByUser").setValue(user).setType(type));
+			variables.add(new RequestVariable().setName("status").setValue(request.getStatus()).setType(type));
+			variables.add(new RequestVariable().setName("completedOn").setValue(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.ENGLISH).format(new Date())).setType(type));
+			variables.add(new RequestVariable().setName("description").setValue(request.getDescription()).setType(type));
+			variables.add(new RequestVariable().setName("selectedRate").setValue(request.getSelectedRate()).setType(type));
+		}
 
-	@Override
-	public Callback assignApplication(AppAssignRequest appAssignRequest) throws BusinessException {
-		return null;
+		ApplicationApprovalRequest applicationApprovalRequest = new ApplicationApprovalRequest();
+		applicationApprovalRequest.setAction("complete");
+		applicationApprovalRequest.setVariables(variables);
+
+		try {
+			activityClient.approveTask(request.getTaskId(), applicationApprovalRequest);
+			return new Callback().setPayload(null).setSuccess(true).setMessage("Subscription Approved Successfully");
+		} catch (WorkflowExtensionException e) {
+			log.error("", e);
+			return new Callback().setPayload(null).setSuccess(false).setMessage("Error While Subscription Approval");
+		}
 	}
 
 	protected String getProcessDefinitionKey() {

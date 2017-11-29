@@ -16,20 +16,16 @@
 
 package com.wso2telco.workflow.api;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.HeaderParam;
-import javax.ws.rs.QueryParam;
-import javax.ws.rs.Path;
-import javax.ws.rs.Produces;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
-
+import com.wso2telco.core.dbutils.model.UserProfileDTO;
+import com.wso2telco.core.dbutils.util.ApprovalRequest;
+import com.wso2telco.core.dbutils.util.AssignRequest;
+import com.wso2telco.core.dbutils.util.Callback;
 import org.workflow.core.model.TaskSerchDTO;
 import org.workflow.core.service.WorkFlowDelegator;
 
-import com.wso2telco.core.dbutils.model.UserProfileDTO;
-import com.wso2telco.core.dbutils.util.Callback;
+import javax.ws.rs.*;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
 
 @Path("/subscriptions")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -49,6 +45,51 @@ public class SubscriptionRest {
 			TaskSerchDTO serchD = new TaskSerchDTO();
 			UserProfileDTO UserProfileDTO = new UserProfileDTO();
 			Callback callback = workFlowDelegator.getPendingSubscriptionApprovals(serchD, UserProfileDTO);
+			return Response.status(Response.Status.OK).entity(callback).build();
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+	@GET
+	@Path("/graph")
+	public Response loadGraph(@HeaderParam("authorization") String authHeader)  {
+		try {
+			WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
+			TaskSerchDTO serchD = new TaskSerchDTO();
+			UserProfileDTO userProfileDTO = new UserProfileDTO();
+			userProfileDTO.setUserName("admin");
+			Callback callback = workFlowDelegator.getSubscriptionGraphData(userProfileDTO);
+			return Response.status(Response.Status.OK).entity(callback).build();
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+	@POST
+	@Path("/assign")
+	public Response assign(@HeaderParam("authorization") String authHeader, AssignRequest assignRequest)  {
+		try {
+			WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
+			TaskSerchDTO serchD = new TaskSerchDTO();
+			UserProfileDTO userProfileDTO = new UserProfileDTO();
+			userProfileDTO.setUserName("admin");
+			Callback callback = workFlowDelegator.assignSubscriptionTask(assignRequest);
+			return Response.status(Response.Status.OK).entity(callback).build();
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+	@POST
+	@Path("/approve")
+	public Response approve(@HeaderParam("authorization") String authHeader, ApprovalRequest approvalRequest )  {
+		try {
+			WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
+			TaskSerchDTO serchD = new TaskSerchDTO();
+			UserProfileDTO userProfileDTO = new UserProfileDTO();
+			userProfileDTO.setUserName("admin");
+			Callback callback = workFlowDelegator.approveSubscription(approvalRequest);
 			return Response.status(Response.Status.OK).entity(callback).build();
 		} catch (Exception e) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
