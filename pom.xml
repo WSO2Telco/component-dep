@@ -138,6 +138,7 @@
         <module>components/webapps/operator-onboard</module>
         <module>components/jaggery-apps/manage</module>
         <module>components/jaggery-apps/publisher</module>
+		<module>components/jaggery-apps/admin</module>
         <module>components/jaggery-apps/sandbox</module>
         <module>components/jaggery-apps/store</module>
         <module>components/billing/billing-extension</module>
@@ -298,6 +299,7 @@
                                 <!-- TODO: add license headers for Jaggery files -->
                                 <exclude>**/*.jag</exclude>
                                 <exclude>**/manage/**/*</exclude>
+								<exclude>**/admin/**/*</exclude>
                                 <exclude>**/publisher/**/*</exclude>
                                 <exclude>**/sandbox/**/*</exclude>
                                 <exclude>**/store/**/*</exclude>
@@ -346,12 +348,6 @@
                 <version>${com.wso2telco.dep.version}</version>
                 <scope>provided</scope>
             </dependency>
-            <dependency>
-                <groupId>com.wso2telco.dep</groupId>
-                <artifactId>workflow-core</artifactId>
-                <version>${com.wso2telco.dep.version}</version>
-                <scope>provided</scope>
-            </dependency>			
             <dependency>
                 <groupId>log4j</groupId>
                 <artifactId>log4j</artifactId>
