@@ -58,7 +58,7 @@ class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 
 			@Override
 			public int getBatchSize() {
-				return taskList.getSizel();
+				return taskList.getSize();
 			}
 
 			@Override

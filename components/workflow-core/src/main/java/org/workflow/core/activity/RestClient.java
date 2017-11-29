@@ -10,6 +10,9 @@ import org.workflow.core.model.TaskVariableResponse;
 
 public interface RestClient {
 
+    @RequestLine("POST query/tasks")
+    @Headers("Content-Type: application/json")
+    TaskList getTasks(ProcessSearchRequest request) throws WorkflowExtensionException;
 
     @RequestLine("POST query/tasks?processDefinitionKey={appParam}")
     @Headers("Content-Type: application/json")
@@ -28,7 +31,6 @@ public interface RestClient {
     @RequestLine("POST runtime/tasks/{taskId}")
     @Headers("Content-Type: application/json")
     void assignApplication(@Param("taskId") String taskId, ApplicationAssignRequest assignRequest) throws WorkflowExtensionException;
-
 }
 
 

@@ -39,10 +39,10 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
         ProcessSearchRequest processRequest = buildSearchRequest(searchDTO, userProfile);
         //Map<String, Object> queryMap=new HashMap<String, Object>();
         //queryMap.put("processDefinitionKey", "");
-        String appParam = "application_creation_approval_process";
+        //String appParam="application_creation_approval_process";
         TaskList taskList = null;
         try {
-            taskList = activityClient.getTasks(appParam, processRequest);
+            taskList = activityClient.getTasks(processRequest);
 
             for (Task task : taskList.getData()) {
                 TaskVariableResponse[] vars = activityClient.getVariables(String.valueOf(task.getId()));
@@ -65,7 +65,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
         request.setStart(searchDTO.getStart());
         request.setSort(searchDTO.getSortBy());
 
-        //request.setProcessDefinitionKey(getDeployementType().getAppProcessType());
+        request.setProcessDefinitionKey(getDeployementType().getAppProcessType());
 
         String filterStr = searchDTO.getFilterBy();
         /**
@@ -176,5 +176,4 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
             throw new BusinessException(e);
         }
     }
-
 }
