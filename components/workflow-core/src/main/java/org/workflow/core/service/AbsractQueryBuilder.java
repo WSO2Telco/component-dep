@@ -1,6 +1,5 @@
 package org.workflow.core.service;
 
-import java.util.HashMap;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -13,15 +12,11 @@ import org.workflow.core.model.TaskList;
 import org.workflow.core.model.TaskSerchDTO;
 import org.workflow.core.model.TaskVariableResponse;
 import org.workflow.core.model.Variable;
-import org.workflow.core.service.WorkFlowProcessor;
 import org.workflow.core.util.DeploymentTypes;
 
-import com.google.gson.Gson;
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.model.UserProfileDTO;
 import com.wso2telco.core.dbutils.util.Callback;
-
-import feign.QueryMap;
 
 public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 	protected Log log;
@@ -40,9 +35,6 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 
 	public Callback searchPending(TaskSerchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException {
 		ProcessSearchRequest processRequest = buildSearchRequest(searchDTO, userProfile);
-		//Map<String, Object> queryMap=new HashMap<String, Object>();
-		//queryMap.put("processDefinitionKey", "");
-		//String appParam="application_creation_approval_process";
 		TaskList taskList = null;
 		try {
 			taskList = activityClient.getTasks(processRequest);
@@ -68,7 +60,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 		request.setStart(searchDTO.getStart());
 		request.setSort(searchDTO.getSortBy());
 
-		request.setProcessDefinitionKey(getDeployementType().getAppProcessType());
+//		request.setProcessDefinitionKey(getDeployementType().getAppProcessType());
 
 		String filterStr = searchDTO.getFilterBy();
 		/**

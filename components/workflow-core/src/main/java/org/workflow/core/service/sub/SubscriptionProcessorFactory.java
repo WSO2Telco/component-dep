@@ -2,7 +2,6 @@ package org.workflow.core.service.sub;
 
 import org.workflow.core.service.WorkFlowProcessor;
 import org.workflow.core.service.WorkFlow;
-import org.workflow.core.service.sub.DefaultSubRequestBuilder;
 import org.workflow.core.util.DeploymentTypes;
 import org.workflow.core.util.WorkFlowHealper;
 
@@ -27,16 +26,16 @@ public class SubscriptionProcessorFactory implements WorkFlow {
 		WorkFlowProcessor workflowProcessor = null;
 		switch(deploymentType) {
 		case EXTERNAL_GATEWAY:
-			workflowProcessor = DefaultSubRequestBuilder.getInstace(DeploymentTypes.EXTERNAL_GATEWAY);
+			workflowProcessor = HubSubRequestBuilder.getInstace(deploymentType);
 			break;
 		case HUB:
-			workflowProcessor = HubSubRequestBuilder.getInstace(DeploymentTypes.HUB);
+			workflowProcessor = HubSubRequestBuilder.getInstace(deploymentType);
 			break;
 		case INTERNAL_GATEWAY:
-			workflowProcessor = DefaultSubRequestBuilder.getInstace(DeploymentTypes.INTERNAL_GATEWAY);
+			workflowProcessor = HubSubRequestBuilder.getInstace(deploymentType);
 			break;
 		default:
-			workflowProcessor = DefaultSubRequestBuilder.getInstace(DeploymentTypes.EXTERNAL_GATEWAY);
+			workflowProcessor = HubSubRequestBuilder.getInstace(deploymentType);
 			break;
 		}
 		return workflowProcessor;

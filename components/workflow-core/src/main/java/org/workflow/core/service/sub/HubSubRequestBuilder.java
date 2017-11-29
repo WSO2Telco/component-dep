@@ -14,10 +14,10 @@ import org.workflow.core.model.TaskList;
 import org.workflow.core.model.Task;
 import org.workflow.core.model.TaskSerchDTO;
 import org.workflow.core.model.TaskVariableResponse;
+import org.workflow.core.service.AbsractQueryBuilder;
 import org.workflow.core.service.ReturnableResponse;
 import org.workflow.core.util.AppVariable;
 import org.workflow.core.util.DeploymentTypes;
-import org.workflow.core.service.sub.AbsractQueryBuilder;
 
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.model.UserProfileDTO;
