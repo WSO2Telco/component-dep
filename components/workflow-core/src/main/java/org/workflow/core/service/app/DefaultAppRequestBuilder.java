@@ -17,6 +17,7 @@ import org.workflow.core.model.TaskVariableResponse;
 import org.workflow.core.service.ReturnableResponse;
 import org.workflow.core.util.AppVariable;
 import org.workflow.core.util.DeploymentTypes;
+import org.workflow.core.util.WorkFlowHealper;
 import org.workflow.core.service.AbsractQueryBuilder;
 
 import com.wso2telco.core.dbutils.exception.BusinessException;
@@ -25,13 +26,13 @@ import com.wso2telco.core.dbutils.util.Callback;
 
 class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 
-	private DeploymentTypes depType;
+	
 
 	private static DefaultAppRequestBuilder instance;
 
 	private DefaultAppRequestBuilder(DeploymentTypes depType) throws BusinessException {
 		super.log = LogFactory.getLog(DefaultAppRequestBuilder.class);
-		this.depType = depType;
+		super.depType = depType;
 	}
 
 	public static DefaultAppRequestBuilder getInstace(DeploymentTypes depType) throws BusinessException {
@@ -167,6 +168,11 @@ class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 		filter.put("owner", AppVariable.USERNAME.key());
 		return filter;
 
+	}
+
+	@Override
+	protected String getProcessDefinitionKey() {
+		return depType.getAppProcessType();
 	}
 
 }

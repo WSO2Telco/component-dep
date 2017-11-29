@@ -21,11 +21,13 @@ import com.wso2telco.core.dbutils.util.Callback;
 public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 	protected Log log;
 	protected RestClient activityClient = null;
-
+	protected DeploymentTypes depType;
+	
 	public AbsractQueryBuilder() throws BusinessException {
-		activityClient = ActivityClientFactory.getInstance().getClient();
+		activityClient = ActivityClientFactory.getInstance().getClient(getProcessDefinitionKey());
 	}
-
+	protected abstract String getProcessDefinitionKey();
+	
 	protected abstract DeploymentTypes getDeployementType() ;
 
 	protected abstract  Callback buildResponse(final TaskSerchDTO searchDTO, final TaskList taskList,

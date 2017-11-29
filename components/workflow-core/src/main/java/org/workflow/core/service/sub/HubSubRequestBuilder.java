@@ -154,4 +154,9 @@ class HubSubRequestBuilder extends AbsractQueryBuilder {
 
 	}
 
+	@Override
+	protected String getProcessDefinitionKey() {
+		return depType.getSubscriptoinProcessType();
+	}
+
 }
