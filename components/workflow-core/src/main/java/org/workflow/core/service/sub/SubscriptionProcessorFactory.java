@@ -2,6 +2,8 @@ package org.workflow.core.service.sub;
 
 import org.workflow.core.service.WorkFlowProcessor;
 import org.workflow.core.service.WorkFlow;
+import org.workflow.core.util.DeploymentTypes;
+import org.workflow.core.util.WorkFlowHealper;
 
 import com.wso2telco.core.dbutils.exception.BusinessException;
 
@@ -9,7 +11,6 @@ public class SubscriptionProcessorFactory implements WorkFlow {
 	private static SubscriptionProcessorFactory instance;
 
 	private SubscriptionProcessorFactory() {
-
 	}
 
 	public static SubscriptionProcessorFactory getInstance() {
@@ -21,7 +22,22 @@ public class SubscriptionProcessorFactory implements WorkFlow {
 
 	@Override
 	public WorkFlowProcessor getWorkFlowProcessor() throws BusinessException {
-		// TODO Auto-generated method stub
-		return null;
+		DeploymentTypes deploymentType = DeploymentTypes.getByName(WorkFlowHealper.getDeploymentType());
+		WorkFlowProcessor workflowProcessor = null;
+		switch(deploymentType) {
+		case EXTERNAL_GATEWAY:
+			workflowProcessor = HubSubRequestBuilder.getInstace(deploymentType);
+			break;
+		case HUB:
+			workflowProcessor = HubSubRequestBuilder.getInstace(deploymentType);
+			break;
+		case INTERNAL_GATEWAY:
+			workflowProcessor = HubSubRequestBuilder.getInstace(deploymentType);
+			break;
+		default:
+			workflowProcessor = HubSubRequestBuilder.getInstace(deploymentType);
+			break;
+		}
+		return workflowProcessor;
 	}
 }

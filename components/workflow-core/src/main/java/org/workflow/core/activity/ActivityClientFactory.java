@@ -1,5 +1,6 @@
 package org.workflow.core.activity;
 
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.workflow.core.WorkflowErrorDecoder;
@@ -11,6 +12,7 @@ import org.wso2.carbon.user.api.UserStoreException;
 import com.wso2telco.core.dbutils.exception.BusinessException;
 
 import feign.Feign;
+import feign.Logger;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import feign.auth.BasicAuthRequestInterceptor;
@@ -55,16 +57,17 @@ public class ActivityClientFactory {
 	}
 	/**
 	 * return a feign http client with for activity  workflow
-	 * @param authHeader
 	 * @return
 	 */
-	public RestClient getClient() {
+	public RestClient getClient(final String processDefinitionKey) {
 		if(appClient==null) {
 			appClient = Feign.builder().encoder(new JacksonEncoder())
 					.decoder(new JacksonDecoder())
 					.errorDecoder(new WorkflowErrorDecoder())
 					.requestInterceptor(new BasicAuthRequestInterceptor(username, password))
-					.requestInterceptor(new ProcessTypeInterCeptor(	DeploymentTypes.getByName( WorkFlowHealper.getDeploymentType()).getAppProcessType()))
+//					.logger(new Logger.JavaLogger().appendToFile("/install/wso2telcohub-2.2.1-SNAPSHOT/repository/logs/wso2carbon.log"))
+//                    .logLevel(feign.Logger.Level.FULL)
+					.requestInterceptor(new ProcessTypeInterCeptor(processDefinitionKey))
 					.target(RestClient.class, WorkFlowHealper.getInstance().getWorkflowServiceEndPoint());
 		}
 		return appClient;
@@ -82,7 +85,7 @@ public class ActivityClientFactory {
 
 		@Override
 		public void apply(RequestTemplate template) {
-			template.query("processDefinitionKey", this.processDefinitionKey);
+			template.query("processDefinitionKey",this.processDefinitionKey );
 			
 		}
 

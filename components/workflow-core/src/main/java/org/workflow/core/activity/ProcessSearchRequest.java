@@ -11,7 +11,7 @@ public class ProcessSearchRequest {
 		private int start = 0;
 		private String order = "desc";
 		private String sort = "createTime";
-		//private String processDefinitionKey="application_cretion_approval_process";
+//		private String processDefinitionKey="application_cretion_approval_process";
 		private String candidateGroup="admin";
 		private static final byte MINBATCHSIZE = 0;
 		private static final byte MAXBATCHSIZE = 0;
@@ -30,14 +30,14 @@ public class ProcessSearchRequest {
 		public void setProcessInstanceVariables(List<Variable> processInstanceVariables) {
 			this.processInstanceVariables = processInstanceVariables;
 		}
-
-		/*public String getProcessDefinitionKey() {
-			return processDefinitionKey;
-		}
-
-		public void setProcessDefinitionKey(String processDefinitionKey) {
-			this.processDefinitionKey = processDefinitionKey;
-		}*/
+//
+//		public String getProcessDefinitionKey() {
+//			return processDefinitionKey;
+//		}
+//
+//		public void setProcessDefinitionKey(String processDefinitionKey) {
+//			this.processDefinitionKey = processDefinitionKey;
+//		}
 
 		public String getCandidateGroup() {
 			return candidateGroup;

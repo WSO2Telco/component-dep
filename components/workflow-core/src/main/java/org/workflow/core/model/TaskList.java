@@ -15,7 +15,7 @@ public class TaskList implements Serializable {
 	private int start;
 	private String sort;
 	private String order;
-	private int sizel;
+	private int size;
 	private List<Task> data = new ArrayList<Task>();
 
 	public int getTotal() {
@@ -50,12 +50,12 @@ public class TaskList implements Serializable {
 		this.order = order;
 	}
 
-	public int getSizel() {
-		return sizel;
+	public int getSize() {
+		return size;
 	}
 
-	public void setSizel(int sizel) {
-		this.sizel = sizel;
+	public void setSize(int size) {
+		this.size = size;
 	}
 
 	public List<Task> getData() {
