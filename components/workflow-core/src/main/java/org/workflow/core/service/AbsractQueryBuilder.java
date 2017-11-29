@@ -16,13 +16,16 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
-    protected Log log;
 
+    protected Log log;
     protected RestClient activityClient = null;
+    protected DeploymentTypes depType;
 
     public AbsractQueryBuilder() throws BusinessException {
-        activityClient = ActivityClientFactory.getInstance().getClient();
+        activityClient = ActivityClientFactory.getInstance().getClient(getProcessDefinitionKey());
     }
+
+    protected abstract String getProcessDefinitionKey();
 
     protected abstract DeploymentTypes getDeployementType();
 

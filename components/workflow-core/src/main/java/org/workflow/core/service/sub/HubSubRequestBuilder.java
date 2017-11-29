@@ -178,4 +178,9 @@ class HubSubRequestBuilder extends AbsractQueryBuilder {
 	public Callback assignApplication(AppAssignRequest appAssignRequest) throws BusinessException {
 		return null;
 	}
+
+	protected String getProcessDefinitionKey() {
+		return depType.getSubscriptoinProcessType();
+	}
+
 }

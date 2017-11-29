@@ -59,7 +59,7 @@ public class ActivityClientFactory {
 	 * return a feign http client with for activity  workflow
 	 * @return
 	 */
-	public RestClient getClient() {
+	public RestClient getClient(final String processDefinitionKey) {
 		if(appClient==null) {
 			appClient = Feign.builder().encoder(new JacksonEncoder())
 					.decoder(new JacksonDecoder())
@@ -67,7 +67,7 @@ public class ActivityClientFactory {
 					.requestInterceptor(new BasicAuthRequestInterceptor(username, password))
 //					.logger(new Logger.JavaLogger().appendToFile("/install/wso2telcohub-2.2.1-SNAPSHOT/repository/logs/wso2carbon.log"))
 //                    .logLevel(feign.Logger.Level.FULL)
-					.requestInterceptor(new ProcessTypeInterCeptor(	DeploymentTypes.getByName( WorkFlowHealper.getDeploymentType()).getAppProcessType()))
+					.requestInterceptor(new ProcessTypeInterCeptor(processDefinitionKey))
 					.target(RestClient.class, WorkFlowHealper.getInstance().getWorkflowServiceEndPoint());
 		}
 		return appClient;

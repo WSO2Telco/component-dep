@@ -14,6 +14,7 @@ import org.workflow.core.model.TaskVariableResponse;
 import org.workflow.core.service.ReturnableResponse;
 import org.workflow.core.util.AppVariable;
 import org.workflow.core.util.DeploymentTypes;
+import org.workflow.core.util.WorkFlowHealper;
 import org.workflow.core.service.AbsractQueryBuilder;
 
 import java.text.DateFormat;
@@ -23,13 +24,13 @@ import java.util.*;
 
 class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 
-	private DeploymentTypes depType;
+	
 
 	private static DefaultAppRequestBuilder instance;
 
 	private DefaultAppRequestBuilder(DeploymentTypes depType) throws BusinessException {
 		super.log = LogFactory.getLog(DefaultAppRequestBuilder.class);
-		this.depType = depType;
+		super.depType = depType;
 	}
 
 	public static DefaultAppRequestBuilder getInstace(DeploymentTypes depType) throws BusinessException {
@@ -212,4 +213,9 @@ class DefaultAppRequestBuilder extends AbsractQueryBuilder {
 		applicationApprovalRequest.setVariables(variables);
 		return applicationApprovalRequest;
 	}
+
+	protected String getProcessDefinitionKey() {
+		return depType.getAppProcessType();
+	}
+
 }

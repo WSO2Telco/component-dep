@@ -138,6 +138,11 @@ class DefaultSubRequestBuilder extends AbsractQueryBuilder {
 	}
 
 	@Override
+	protected String getProcessDefinitionKey() {
+		return null;
+	}
+
+	@Override
 	protected DeploymentTypes getDeployementType() {
 		return depType;
 	}
