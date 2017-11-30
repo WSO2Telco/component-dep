@@ -9,6 +9,7 @@ import org.apache.commons.logging.Log;
 import org.workflow.core.activity.*;
 import org.workflow.core.execption.WorkflowExtensionException;
 import org.workflow.core.model.*;
+import org.workflow.core.util.AppVariable;
 import org.workflow.core.util.DeploymentTypes;
 
 import java.text.DateFormat;
@@ -27,8 +28,6 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 
     protected abstract Callback buildResponse(final TaskSerchDTO searchDTO, final TaskList taskList,
                                               final UserProfileDTO userProfile) throws BusinessException;
-
-    protected abstract Map<String, String> getFilterMap();
 
     protected abstract Callback getHistoricalData(String user, List<Range> months, List<String> xAxisLabels) throws BusinessException;
 
@@ -98,6 +97,17 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
         }
 
         return request;
+    }
+
+    protected Map<String, String> getFilterMap() {
+        Map<String, String> filter = new HashMap<String, String>();
+        filter.put("name", AppVariable.NAME.key());
+        filter.put("applicationname", AppVariable.NAME.key());
+        filter.put("appname", AppVariable.NAME.key());
+        filter.put("tier", AppVariable.TIER.key());
+        filter.put("createdby", AppVariable.USERNAME.key());
+        filter.put("owner", AppVariable.USERNAME.key());
+        return filter;
     }
 
     @Override
