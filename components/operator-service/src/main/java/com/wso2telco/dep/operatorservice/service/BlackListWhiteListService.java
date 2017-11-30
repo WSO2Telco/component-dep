@@ -32,8 +32,8 @@ import com.wso2telco.dep.operatorservice.model.BlackListDTO;
 import com.wso2telco.dep.operatorservice.model.MSISDNSearchDTO;
 import com.wso2telco.dep.operatorservice.model.MSISDNValidationDTO;
 import com.wso2telco.dep.operatorservice.model.WhiteListDTO;
-import com.wso2telco.dep.operatorservice.model.WhiteListMSISDNSearchDTO;
 import com.wso2telco.dep.operatorservice.service.adminService.AdminServiceClient;
+import edu.emory.mathcs.backport.java.util.Arrays;
 import org.apache.axis2.client.Options;
 import org.apache.axis2.client.ServiceClient;
 import org.apache.commons.codec.binary.Base64;
@@ -46,9 +46,6 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClientBuilder;
 import org.apache.http.message.BasicNameValuePair;
-import edu.emory.mathcs.backport.java.util.Arrays;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.apimgt.api.dto.UserApplicationAPIUsage;
 import org.wso2.carbon.apimgt.api.model.APIIdentifier;
 import org.wso2.carbon.apimgt.api.model.SubscribedAPI;
@@ -59,19 +56,13 @@ import org.wso2.carbon.identity.mgt.stub.UserIdentityManagementAdminServiceStub;
 import org.wso2.carbon.identity.oauth.stub.OAuthAdminServiceStub;
 import org.wso2.carbon.identity.oauth.stub.dto.OAuthConsumerAppDTO;
 
-import java.net.URL;
-import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
 public class BlackListWhiteListService {
-	Log LOG = LogFactory.getLog(BlackListWhiteListService.class);
+	Log log = LogFactory.getLog(BlackListWhiteListService.class);
 	private BlackListWhiteListDAO dao;
 
 	public BlackListWhiteListService()
@@ -114,20 +105,20 @@ public class BlackListWhiteListService {
 				}
 
 			} catch (Exception e){
-				LOG.error("Error while getting already blacklisted users",e);
+				log.error("Error while getting already blacklisted users",e);
 				throw new BlacklistException(BlacklistException.BlacklistErrorType.INTERNAL_SERVER_ERROR);
 			}
 
 
 			if (msisdnValidationDTO.getValidProcessed().isEmpty()) {
-				LOG.debug(" All the numbers already black listed");
+				log.debug(" All the numbers already black listed");
 				throw new BlacklistException(BlacklistException.BlacklistErrorType.USER_ALREADY_BLACKLISTED);
 			}
 
 		try {
 			dao.blacklist(msisdnValidationDTO, apiID_, apiName_, userId_);
 		} catch (Exception e) {
-			LOG.error("blacklist ", e);
+			log.error("blacklist ", e);
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
     }
@@ -136,7 +127,7 @@ public class BlackListWhiteListService {
 		try {
 			return dao.getBlacklisted(searchDTO);
 		} catch (Exception e) {
-			LOG.error("loadBlacklisted", e);
+			log.error("loadBlacklisted", e);
 			throw new NumberBlackListException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -145,7 +136,7 @@ public class BlackListWhiteListService {
 		try {
 			dao.removeBlacklist(apiId, userMSISDN);
 		} catch (Exception e) {
-			LOG.error("removeBlacklist", e);
+			log.error("removeBlacklist", e);
 			throw new NumberBlackListException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -190,13 +181,13 @@ public class BlackListWhiteListService {
 				msisdnValidationDTO.getValidProcessed().remove(msisdn);
 			}
 		} catch (SQLException e) {
-			LOG.error("whiteListSubscription, calling dao.loadSubscriptionsForAlreadyWhiteListedMSISDN(", e);
+			log.error("whiteListSubscription, calling dao.loadSubscriptionsForAlreadyWhiteListedMSISDN(", e);
 			throw new SubscriptionWhiteListException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
 
 		// All numbers already white listed then throw exception
 		if (msisdnValidationDTO.getValidProcessed().isEmpty()) {
-			LOG.debug("All the numbers already whitelisted");
+			log.debug("All the numbers already whitelisted");
 			throw new SubscriptionWhiteListException(SubscriptionWhiteListErrorType.SUBSCRIPTION_ALREADY_WHITELISTED);
 		}
 		// persistence goes hare
@@ -204,7 +195,7 @@ public class BlackListWhiteListService {
 			dao.whitelist(msisdnValidationDTO, subscriptionID, apiID, applicationID);
 
 		} catch (Exception e) {
-			LOG.error("whiteListSubscription. caling dao.whitelist", e);
+			log.error("whiteListSubscription. caling dao.whitelist", e);
 			throw new SubscriptionWhiteListException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
 
@@ -215,7 +206,7 @@ public class BlackListWhiteListService {
 		try {
 			dao.removeWhitelistNumber(userMSISDN);
 		} catch (Exception e) {
-			LOG.error("removeWhitelistNumber", e);
+			log.error("removeWhitelistNumber", e);
 			throw new SubscriptionWhiteListException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -223,12 +214,10 @@ public class BlackListWhiteListService {
 	public String[] getWhiteListNumbers(String userId, String apiId, String appId) throws BusinessException {
 		try {
 			List<String> result = dao.getWhiteListNumbers(userId,apiId,appId);
-			if (result == null || result.isEmpty()) {
-				return null;
-			}
+
 			return result.toArray(new String[result.size()]);
 		} catch (Exception e) {
-			LOG.error("getWhiteListNumbers", e);
+			log.error("getWhiteListNumbers", e);
 			throw new SubscriptionWhiteListException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -245,7 +234,6 @@ public class BlackListWhiteListService {
 			}
 		}
 		Gson gson = new GsonBuilder().create();
-		//return gson.toJson(userApplicationAPIUsageArrayList);
 		return gson.toJson(subsscriberList);
 	}
 
@@ -306,7 +294,6 @@ public class BlackListWhiteListService {
 		}
 
 		Gson gson = new GsonBuilder().create();
-		//return gson.toJson(userApplicationAPIUsageArrayList);
 		return gson.toJson(apiNameList);
 	}
 
@@ -325,15 +312,15 @@ public class BlackListWhiteListService {
         try {
             Gson gson = new GsonBuilder().create();
             List<String> adminUsers = dao.getAdminUsers();
-            List<String> SPs = dao.generateSPNameList();
+            List<String> serviceProviders = dao.generateSPNameList();
 
             for (String name : adminUsers) {
-                if (SPs.contains(name)) {
-                    SPs.remove(name);
+                if (serviceProviders.contains(name)) {
+                    serviceProviders.remove(name);
                 }
             }
 
-            return gson.toJson(SPs);
+            return gson.toJson(serviceProviders);
         } catch (Exception e) {
             throw new OperatorServiceException(e);
         }
@@ -349,9 +336,9 @@ public class BlackListWhiteListService {
 		}
 	}
 
-	public void blacklistSP(String SPname) throws OperatorServiceException {
+	public void blacklistSP(String spName) throws OperatorServiceException {
 		try {
-			List<AppObject> appList = dao.getSPApps(SPname);
+			List<AppObject> appList = dao.getSPApps(spName);
 			APIManagerConfiguration config = HostObjectComponent.getAPIManagerConfiguration();
 			String serviceEndpoint = config.getFirstProperty(APIConstants.AUTH_MANAGER_URL) + "UserIdentityManagementAdminService";
 
@@ -372,7 +359,7 @@ public class BlackListWhiteListService {
 			options.setManageSession(true);
 			options.setProperty(org.apache.axis2.transport.http.HTTPConstants.COOKIE_STRING, adminService.getSessionCookie());
 
-			stub.lockUserAccount(SPname);
+			stub.lockUserAccount(spName);
 			adminService.logOut();
 		} catch (Exception e) {
 			throw new OperatorServiceException(e);
@@ -385,12 +372,12 @@ public class BlackListWhiteListService {
 	 * See <a href="https://docs.wso2.com/display/IS530/User+Account+Locking+and+Account+Disabling#UserAccountLockingandAccountDisabling-Unlockingauseraccountusingtheadminservice">User unlock admin service</a>
 	 * for detail on email notification
 	 */
-	public void removeblacklistedSP(String SPname) throws OperatorServiceException {
+	public void removeblacklistedSP(String spName) throws OperatorServiceException {
 
 		try {
 			List<String> blacklistedSpList = dao.getBlacklistedSPList();
 
-			if(!blacklistedSpList.contains(SPname)){
+			if(!blacklistedSpList.contains(spName)){
 				throw new OperatorServiceException("SP not blacklisted!");
 			}
 
@@ -400,7 +387,7 @@ public class BlackListWhiteListService {
 			AdminServiceClient adminService = new AdminServiceClient();
 			UserIdentityManagementAdminServiceStub stub = new UserIdentityManagementAdminServiceStub(serviceEndpoint);
 
-			List<AppObject> blacklistedSpApps = dao.getBlacklistedSpApps(SPname);
+			List<AppObject> blacklistedSpApps = dao.getBlacklistedSpApps(spName);
             restoreGrantTypes(blacklistedSpApps);
 
 			ServiceClient sc = stub._getServiceClient();
@@ -409,7 +396,7 @@ public class BlackListWhiteListService {
 			options.setManageSession(true);
 			options.setProperty(org.apache.axis2.transport.http.HTTPConstants.COOKIE_STRING, adminService.getSessionCookie());
 
-			stub.unlockUserAccount(SPname, null);
+			stub.unlockUserAccount(spName, null);
 
 			adminService.logOut();
 		} catch (Exception e) {
@@ -442,7 +429,7 @@ public class BlackListWhiteListService {
 					appDTO.setGrantTypes(null);
 					stub.updateConsumerApplication(appDTO);
 				} catch (Exception e) {
-					LOG.error("Error removing grant types for application: " + app.getApp_name() + "of SP: " + app.getSp_name(), e);
+					log.error("Error removing grant types for application: " + app.getApp_name() + "of SP: " + app.getSp_name(), e);
 				}
 			}
 			adminService.logOut();
@@ -469,7 +456,7 @@ public class BlackListWhiteListService {
 
 			for (AppObject app : appList) {
 				try {
-				    appDTO.setOAuthVersion("OAuth-2.0");
+					appDTO.setOAuthVersion("OAuth-2.0");
 					appDTO.setApplicationName(app.getApp_name());
 					appDTO.setUsername(app.getSp_name());
 					appDTO.setOauthConsumerKey(app.getConsumer_key());
@@ -477,7 +464,7 @@ public class BlackListWhiteListService {
 					appDTO.setGrantTypes("refresh_token urn:ietf:params:oauth:grant-type:saml2-bearer password iwa:ntlm client_credentials");
 					stub.updateConsumerApplication(appDTO);
 				} catch (Exception e) {
-					LOG.error("Error restoring grant types for application: " + app.getApp_name() + "of SP: " + app.getSp_name(), e);
+					log.error("Error restoring grant types for application: " + app.getApp_name() + "of SP: " + app.getSp_name(), e);
 				}
 			}
 			adminService.logOut();
@@ -491,7 +478,7 @@ public class BlackListWhiteListService {
         APIManagerConfiguration config = HostObjectComponent.getAPIManagerConfiguration();
 		String revokeURL = config.getFirstProperty(APIConstants.REVOKE_API_URL);
 
-		String auth_token;
+		String authToken;
 		List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
 		CloseableHttpClient client = null;
 
@@ -504,18 +491,18 @@ public class BlackListWhiteListService {
 			HttpResponse response;
 			for (AppObject app : appList) {
 				try {
-					auth_token = new String(Base64.encodeBase64((app.getConsumer_key() + ":" + app.getConsmer_secret()).getBytes()));
-					post.setHeader("Authorization", "Basic " + auth_token);
+					authToken = new String(Base64.encodeBase64((app.getConsumer_key() + ":" + app.getConsmer_secret()).getBytes()));
+					post.setHeader("Authorization", "Basic " + authToken);
 					urlParameters.add(new BasicNameValuePair("token", app.getAccess_token()));
 					post.setEntity(new UrlEncodedFormEntity(urlParameters));
 
 					response = client.execute(post);
-					LOG.debug("Token revoke response code for app: " + app.getApp_name() + " :"
+					log.debug("Token revoke response code for app: " + app.getApp_name() + " :"
 							+ response.getStatusLine().getStatusCode());
 					post.reset();
 					urlParameters.clear();
 				} catch (Exception e) {
-					LOG.error("Error revoking token for application: " + app.getApp_name() + "of SP: " + app.getSp_name(), e);
+					log.error("Error revoking token for application: " + app.getApp_name() + "of SP: " + app.getSp_name(), e);
 				}
 			}
 			client.close();

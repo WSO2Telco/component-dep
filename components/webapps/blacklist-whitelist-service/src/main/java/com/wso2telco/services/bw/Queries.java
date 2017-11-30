@@ -29,8 +29,6 @@ import com.wso2telco.dep.operatorservice.service.BlackListWhiteListService;
 import com.wso2telco.dep.operatorservice.service.OparatorService;
 import com.wso2telco.dep.operatorservice.util.APIError;
 import com.wso2telco.services.bw.entity.*;
-import org.apache.log4j.Logger;
-import com.wso2telco.services.bw.entity.*;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -61,8 +59,8 @@ public class Queries {
 	}
 
 	/**
+	 * @deprecated
 	 * GET method for creating an instance of QueriesResource
-	 *
 	 * @param address,requestedAccuracy
 	 *            representation for the new resource
 	 * @return an HTTP response with content of the created resource
@@ -186,7 +184,7 @@ public class Queries {
 	}
 
 	private String[] removeNullMsisdnValues(String[] msisdnList) {
-		List<String> list = new ArrayList<String>(Arrays.asList(msisdnList));
+		List<String> list = new ArrayList<>(Arrays.asList(msisdnList));
 		list.removeAll(Collections.singleton(null));
 		return list.toArray(new String[list.size()]);
 	}
@@ -280,6 +278,7 @@ public class Queries {
 	}
 
 	/**
+	 * @deprecated
 	 * GET method for creating an instance of QueriesResource
 	 *
 	 * @param address,requestedAccuracy
@@ -461,7 +460,7 @@ public class Queries {
 	@GET
 	@Path("/sp/list")
 	@Produces("application/json")
-	public Response getSPNameList() throws Exception {
+	public Response getSPNameList() throws OperatorServiceException {
 
 		return Response.status(Response.Status.OK).entity(blackListWhiteListService.getSPNameList()).build();
 	}
@@ -469,7 +468,7 @@ public class Queries {
 	@GET
 	@Path("/sp/blacklist")
 	@Produces("application/json")
-	public Response getBlacklistedSpList() throws Exception {
+	public Response getBlacklistedSpList() throws OperatorServiceException {
 
 		return Response.status(Response.Status.OK).entity(blackListWhiteListService.getBlacklistedSPList()).build();
 	}
@@ -478,7 +477,7 @@ public class Queries {
 	@Path("/sp/blacklist")
 	@Consumes("application/json")
 	@Produces("application/json")
-	public Response blacklistSP(String jsonBody) throws Exception {
+	public Response blacklistSP(String jsonBody) throws OperatorServiceException {
 		Gson gson = new Gson();
 		try {
 			JsonElement jelement = new JsonParser().parse(jsonBody);
@@ -500,7 +499,7 @@ public class Queries {
 	@Path("/sp/blacklist/remove")
 	@Consumes("application/json")
 	@Produces("application/json")
-	public Response removeBlacklistedSP(String jsonBody) throws Exception {
+	public Response removeBlacklistedSP(String jsonBody) throws OperatorServiceException {
 		Gson gson = new Gson();
 		try {
 			JsonElement jelement = new JsonParser().parse(jsonBody);
