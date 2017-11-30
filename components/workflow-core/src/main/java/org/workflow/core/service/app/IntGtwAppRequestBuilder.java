@@ -1,5 +1,11 @@
 package org.workflow.core.service.app;
 
+import com.wso2telco.core.dbutils.exception.BusinessException;
+import com.wso2telco.core.dbutils.util.ApprovalRequest;
+import com.wso2telco.core.dbutils.util.Callback;
+import org.apache.commons.logging.LogFactory;
+import org.workflow.core.util.DeploymentTypes;
+
 /**
  * Copyright (c) 2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
  * <p>
@@ -15,5 +21,26 @@ package org.workflow.core.service.app;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class IntGtwAppRequestBuilder {
+public class IntGtwAppRequestBuilder extends DefaultAppRequestBuilder {
+    private static IntGtwAppRequestBuilder instance;
+
+    {
+        log = LogFactory.getLog(DefaultAppRequestBuilder.class);
+    }
+
+    private IntGtwAppRequestBuilder(DeploymentTypes depType) throws BusinessException {
+        super.depType = depType;
+    }
+
+    public static IntGtwAppRequestBuilder getInstace(DeploymentTypes depType) throws BusinessException {
+        if (instance == null) {
+            instance = new IntGtwAppRequestBuilder(depType);
+        }
+        return instance;
+    }
+
+    @Override
+    protected Callback buildApprovalRequest(ApprovalRequest approvalRequest) throws BusinessException {
+        return null;
+    }
 }

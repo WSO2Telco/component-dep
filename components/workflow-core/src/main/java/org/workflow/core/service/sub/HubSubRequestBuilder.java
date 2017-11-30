@@ -139,29 +139,14 @@ class HubSubRequestBuilder extends AbsractQueryBuilder {
 	}
 
 	@Override
-	protected Map<String, String> getFilterMap() {
-		Map<String, String> filter = new HashMap<String, String>();
-		filter.put("name", AppVariable.NAME.key());
-		filter.put("applicationname", AppVariable.NAME.key());
-		filter.put("appname", AppVariable.NAME.key());
-		filter.put("tier", AppVariable.TIER.key());
-		filter.put("createdby", AppVariable.USERNAME.key());
-		filter.put("owner", AppVariable.USERNAME.key());
-		return filter;
-
-	}
-
-	@Override
 	protected Callback getHistoricalData(String user, List<Range> months, List<String> xAxisLabels) throws BusinessException {
-		String process = "subscription_approval_process";
 		List<Integer> data = new ArrayList();
 		 RestClient activityClient = ActivityClientFactory.getInstance().getClient(getProcessDefinitionKey());
 		TaskDetailsResponse taskList = null;
 
 		for (Range month : months) {
-			taskList = activityClient.getHistoricTasks(month.getStart(), month.getEnd(), process, user);
+			taskList = activityClient.getHistoricTasks(month.getStart(), month.getEnd(), getProcessDefinitionKey(), user);
 			data.add(taskList.getTotal());
-
 		}
 
 		if (!data.isEmpty()) {
