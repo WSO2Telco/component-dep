@@ -5,7 +5,9 @@ import com.wso2telco.core.dbutils.model.UserProfileDTO;
 import com.wso2telco.core.dbutils.util.ApprovalRequest;
 import com.wso2telco.core.dbutils.util.Callback;
 import org.apache.commons.logging.LogFactory;
+import org.workflow.core.activity.ActivityClientFactory;
 import org.workflow.core.activity.ApplicationApprovalRequest;
+import org.workflow.core.activity.RestClient;
 import org.workflow.core.execption.WorkflowExtensionException;
 import org.workflow.core.model.*;
 import org.workflow.core.service.AbsractQueryBuilder;
@@ -24,15 +26,13 @@ class HubSubRequestBuilder extends AbsractQueryBuilder {
 	{
 		log = LogFactory.getLog(HubSubRequestBuilder.class);
 	}
+	 HubSubRequestBuilder(){
+		 super.depType = DeploymentTypes.HUB;
+	 }
 
-	private HubSubRequestBuilder(DeploymentTypes depType) throws BusinessException {
-		super.depType = depType;
-		super.initialize();
-	}
-
-	public static HubSubRequestBuilder getInstace(DeploymentTypes depType) throws BusinessException {
+	public static HubSubRequestBuilder getInstace() throws BusinessException {
 		if (instance == null) {
-			instance = new HubSubRequestBuilder(depType);
+			instance = new HubSubRequestBuilder();
 		}
 		return instance;
 	}
@@ -155,7 +155,7 @@ class HubSubRequestBuilder extends AbsractQueryBuilder {
 	protected Callback getHistoricalData(String user, List<Range> months, List<String> xAxisLabels) throws BusinessException {
 		String process = "subscription_approval_process";
 		List<Integer> data = new ArrayList();
-
+		 RestClient activityClient = ActivityClientFactory.getInstance().getClient(getProcessDefinitionKey());
 		TaskDetailsResponse taskList = null;
 
 		for (Range month : months) {
@@ -182,7 +182,7 @@ class HubSubRequestBuilder extends AbsractQueryBuilder {
 	@Override
 	protected Callback buildApprovalRequest(ApprovalRequest request) throws BusinessException {
 		List<RequestVariable> variables = new ArrayList();
-
+		 RestClient activityClient = ActivityClientFactory.getInstance().getClient(getProcessDefinitionKey());
 		boolean isAdmin = true; //dummy variable
 		final String type = "string";
 		final String user = "admin";
@@ -218,7 +218,7 @@ class HubSubRequestBuilder extends AbsractQueryBuilder {
 	}
 
 	protected String getProcessDefinitionKey() {
-		return depType.getSubscriptoinProcessType();
+		return DeploymentTypes.HUB.getSubscriptoinProcessType();
 	}
 
 }

@@ -18,12 +18,8 @@ import java.util.*;
 public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 
     protected Log log;
-    protected RestClient activityClient = null;
     protected DeploymentTypes depType;
 
-    public void initialize() throws BusinessException {
-        activityClient = ActivityClientFactory.getInstance().getClient(getProcessDefinitionKey());
-    }
 
     protected abstract String getProcessDefinitionKey();
 
@@ -41,6 +37,8 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
     public Callback searchPending(TaskSerchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException {
         ProcessSearchRequest processRequest = buildSearchRequest(searchDTO, userProfile);
         TaskList taskList = null;
+        
+        RestClient activityClient = ActivityClientFactory.getInstance().getClient(getProcessDefinitionKey());
         try {
             taskList = activityClient.getTasks(processRequest);
 
@@ -148,6 +146,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
         ApplicationAssignRequest request = new ApplicationAssignRequest();
         request.setAction("claim");
         request.setAssignee(assignee.toLowerCase());
+        RestClient activityClient = ActivityClientFactory.getInstance().getClient(getProcessDefinitionKey());
         try {
             activityClient.assignTask(assignRequest.getTaskId(), request);
             return new Callback().setPayload(null).setSuccess(true).setMessage("Task Assigned Successfully");
