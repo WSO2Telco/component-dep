@@ -1,4 +1,4 @@
-package org.workflow.core.service.app;
+package org.workflow.core.service.sub;
 
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.util.ApprovalRequest;
@@ -21,24 +21,24 @@ import org.workflow.core.util.DeploymentTypes;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class IntGtwAppRequestBuilder extends AbstractAppRequestBuilder {
-    private static IntGtwAppRequestBuilder instance;
+public class ExtGtwSubRequestBuilder extends AbstractSubRequestBuilder {
+
+    private static ExtGtwSubRequestBuilder instance;
 
     {
-        log = LogFactory.getLog(AbstractAppRequestBuilder.class);
+        log = LogFactory.getLog(ExtGtwSubRequestBuilder.class);
     }
 
-    private IntGtwAppRequestBuilder(DeploymentTypes depType) throws BusinessException {
-        super.depType = depType;
+    ExtGtwSubRequestBuilder() {
+        super.depType = DeploymentTypes.HUB;
     }
 
-    public static IntGtwAppRequestBuilder getInstace(DeploymentTypes depType) throws BusinessException {
+    public static ExtGtwSubRequestBuilder getInstace() throws BusinessException {
         if (instance == null) {
-            instance = new IntGtwAppRequestBuilder(depType);
+            instance = new ExtGtwSubRequestBuilder();
         }
         return instance;
     }
-
     @Override
     protected Callback buildApprovalRequest(ApprovalRequest approvalRequest) throws BusinessException {
         return null;

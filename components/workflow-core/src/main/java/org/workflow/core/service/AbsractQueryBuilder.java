@@ -11,6 +11,7 @@ import org.workflow.core.execption.WorkflowExtensionException;
 import org.workflow.core.model.*;
 import org.workflow.core.util.AppVariable;
 import org.workflow.core.util.DeploymentTypes;
+import org.workflow.core.util.Messages;
 
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -20,7 +21,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 
     protected Log log;
     protected DeploymentTypes depType;
-    final static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssXXX";
+    static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssXXX";
 
 
     protected abstract String getProcessDefinitionKey();
@@ -160,10 +161,10 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
         RestClient activityClient = ActivityClientFactory.getInstance().getClient(getProcessDefinitionKey());
         try {
             activityClient.assignTask(assignRequest.getTaskId(), request);
-            return new Callback().setPayload(null).setSuccess(true).setMessage("Task Assigned Successfully");
+            return new Callback().setPayload(null).setSuccess(true).setMessage(Messages.TASK_APPROVAL_SUCCESS.getValue());
         } catch (WorkflowExtensionException e) {
             log.error("", e);
-            return new Callback().setPayload(null).setSuccess(false).setMessage("Task Assigned Not Successfully");
+            return new Callback().setPayload(null).setSuccess(false).setMessage(Messages.TASK_APPROVAL_FAILED.getValue());
         }
     }
 }

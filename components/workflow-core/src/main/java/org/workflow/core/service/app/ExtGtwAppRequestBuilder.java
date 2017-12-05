@@ -21,11 +21,11 @@ import org.workflow.core.util.DeploymentTypes;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class ExtGtwAppRequestBuilder extends DefaultAppRequestBuilder {
+public class ExtGtwAppRequestBuilder extends AbstractAppRequestBuilder {
     private static ExtGtwAppRequestBuilder instance;
 
     {
-        log = LogFactory.getLog(DefaultAppRequestBuilder.class);
+        log = LogFactory.getLog(AbstractAppRequestBuilder.class);
     }
 
     private ExtGtwAppRequestBuilder(DeploymentTypes depType) throws BusinessException {

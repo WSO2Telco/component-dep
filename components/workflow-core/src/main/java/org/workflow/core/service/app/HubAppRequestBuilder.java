@@ -10,6 +10,7 @@ import org.workflow.core.activity.RestClient;
 import org.workflow.core.execption.WorkflowExtensionException;
 import org.workflow.core.model.RequestVariable;
 import org.workflow.core.util.DeploymentTypes;
+import org.workflow.core.util.Messages;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -32,12 +33,12 @@ import java.util.Locale;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
-public class HubAppRequestBuilder extends DefaultAppRequestBuilder {
+public class HubAppRequestBuilder extends AbstractAppRequestBuilder {
 
     private static HubAppRequestBuilder instance;
 
     {
-        log = LogFactory.getLog(DefaultAppRequestBuilder.class);
+        log = LogFactory.getLog(AbstractAppRequestBuilder.class);
     }
 
     private HubAppRequestBuilder(DeploymentTypes depType) throws BusinessException {
@@ -90,10 +91,10 @@ public class HubAppRequestBuilder extends DefaultAppRequestBuilder {
 
         try {
             activityClient.approveTask(request.getTaskId(), applicationApprovalRequest);
-            return new Callback().setPayload(null).setSuccess(true).setMessage("Application Approved Successfully");
+            return new Callback().setPayload(null).setSuccess(true).setMessage(Messages.APPLICATION_APPROVAL_SUCCESS.getValue());
         } catch (WorkflowExtensionException e) {
             log.error("", e);
-            return new Callback().setPayload(null).setSuccess(false).setMessage("Error While Application Approval");
+            return new Callback().setPayload(null).setSuccess(false).setMessage(Messages.APPLICATION_APPROVAL_FAILED.getValue());
         }
     }
 }
