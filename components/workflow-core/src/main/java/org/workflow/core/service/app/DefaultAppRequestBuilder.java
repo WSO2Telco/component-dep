@@ -5,9 +5,7 @@ import com.wso2telco.core.dbutils.model.UserProfileDTO;
 import com.wso2telco.core.dbutils.util.ApprovalRequest;
 import com.wso2telco.core.dbutils.util.Callback;
 import org.workflow.core.activity.ActivityClientFactory;
-import org.workflow.core.activity.ApplicationApprovalRequest;
 import org.workflow.core.activity.RestClient;
-import org.workflow.core.execption.WorkflowExtensionException;
 import org.workflow.core.model.*;
 import org.workflow.core.service.AbsractQueryBuilder;
 import org.workflow.core.service.ReturnableResponse;
@@ -20,23 +18,6 @@ import java.text.SimpleDateFormat;
 import java.util.*;
 
 abstract class DefaultAppRequestBuilder extends AbsractQueryBuilder {
-
-//    private static DefaultAppRequestBuilder instance;
-//
-//    {
-//        log = LogFactory.getLog(DefaultAppRequestBuilder.class);
-//    }
-//
-//    private DefaultAppRequestBuilder(DeploymentTypes depType) throws BusinessException {
-//        super.depType = depType;
-//    }
-//
-//    public static DefaultAppRequestBuilder getInstace(DeploymentTypes depType) throws BusinessException {
-//        if (instance == null) {
-//            instance = new DefaultAppRequestBuilder(depType);
-//        }
-//        return instance;
-//    }
 
     private ReturnableResponse generateResponse(final TaskSerchDTO searchDTO, final TaskList taskList,
                                                 final UserProfileDTO userProfile) throws ParseException {
@@ -75,7 +56,7 @@ abstract class DefaultAppRequestBuilder extends AbsractQueryBuilder {
                 List<ReturnableTaskResponse> temptaskList = new ArrayList<ReturnableResponse.ReturnableTaskResponse>();
 
                 for (final Task task : taskList.getData()) {
-                    final Map<AppVariable, TaskVariableResponse> varMap = new HashMap<AppVariable, TaskVariableResponse>();
+                    final Map<AppVariable, TaskVariableResponse> varMap =  new HashMap<AppVariable, TaskVariableResponse>();
                     for (final TaskVariableResponse var : task.getVars()) {
                         varMap.put(AppVariable.getByKey(var.getName()), var);
                     }
