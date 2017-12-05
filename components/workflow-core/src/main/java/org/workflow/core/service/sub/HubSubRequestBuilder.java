@@ -5,12 +5,13 @@ import com.wso2telco.core.dbutils.util.ApprovalRequest;
 import com.wso2telco.core.dbutils.util.Callback;
 import org.apache.commons.logging.LogFactory;
 import org.workflow.core.activity.ActivityClientFactory;
-import org.workflow.core.activity.ApplicationApprovalRequest;
+import org.workflow.core.activity.TaskApprovalRequest;
 import org.workflow.core.activity.RestClient;
 import org.workflow.core.execption.WorkflowExtensionException;
 import org.workflow.core.model.RequestVariable;
 import org.workflow.core.util.DeploymentTypes;
 import org.workflow.core.util.Messages;
+import org.workflow.core.util.WorkFlowVariables;
 
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -26,13 +27,13 @@ class HubSubRequestBuilder extends AbstractSubRequestBuilder {
         log = LogFactory.getLog(HubSubRequestBuilder.class);
     }
 
-    HubSubRequestBuilder() {
-        super.depType = DeploymentTypes.HUB;
+    private HubSubRequestBuilder(DeploymentTypes depType) {
+        super.depType = depType;
     }
 
-    public static HubSubRequestBuilder getInstace() throws BusinessException {
+    public static HubSubRequestBuilder getInstace(DeploymentTypes depType) throws BusinessException {
         if (instance == null) {
-            instance = new HubSubRequestBuilder();
+            instance = new HubSubRequestBuilder(depType);
         }
         return instance;
     }
@@ -46,24 +47,24 @@ class HubSubRequestBuilder extends AbstractSubRequestBuilder {
         final String user = "admin";
 
         if (isAdmin) {
-            variables.add(new RequestVariable().setName("hubAdminApproval").setValue(request.getStatus()).setType(type));
-            variables.add(new RequestVariable().setName("completedByUser").setValue(user).setType(type));
-            variables.add(new RequestVariable().setName("status").setValue(request.getStatus()).setType(type));
-            variables.add(new RequestVariable().setName("completedOn").setValue(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.ENGLISH).format(new Date())).setType(type));
-            variables.add(new RequestVariable().setName("description").setValue(request.getDescription()).setType(type));
-            variables.add(new RequestVariable().setName("selectedTier").setValue(request.getSelectedTier()).setType(type));
-            variables.add(new RequestVariable().setName("selectedRate").setValue(request.getSelectedRate()).setType(type));
+            variables.add(new RequestVariable().setName(WorkFlowVariables.HUB_ADMIN_APPROVAL.getValue()).setValue(request.getStatus()).setType(type));
+            variables.add(new RequestVariable().setName(WorkFlowVariables.COMPLETED_BY.getValue()).setValue(user).setType(type));
+            variables.add(new RequestVariable().setName(WorkFlowVariables.STATUS.getValue()).setValue(request.getStatus()).setType(type));
+            variables.add(new RequestVariable().setName(WorkFlowVariables.COMPLETED_ON.getValue()).setValue(new SimpleDateFormat(WorkFlowVariables.DATE_FORMAT.getValue(), Locale.ENGLISH).format(new Date())).setType(type));
+            variables.add(new RequestVariable().setName(WorkFlowVariables.DESCRIPTION.getValue()).setValue(request.getDescription()).setType(type));
+            variables.add(new RequestVariable().setName(WorkFlowVariables.SELECTGED_TIER.getValue()).setValue(request.getSelectedTier()).setType(type));
+            variables.add(new RequestVariable().setName(WorkFlowVariables.SLECTED_RATE.getValue()).setValue(request.getSelectedRate()).setType(type));
         } else {
-            variables.add(new RequestVariable().setName("operatorAdminApproval").setValue(request.getStatus()).setType(type));
-            variables.add(new RequestVariable().setName("completedByUser").setValue(user).setType(type));
-            variables.add(new RequestVariable().setName("status").setValue(request.getStatus()).setType(type));
-            variables.add(new RequestVariable().setName("completedOn").setValue(new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.ENGLISH).format(new Date())).setType(type));
-            variables.add(new RequestVariable().setName("description").setValue(request.getDescription()).setType(type));
-            variables.add(new RequestVariable().setName("selectedRate").setValue(request.getSelectedRate()).setType(type));
+            variables.add(new RequestVariable().setName(WorkFlowVariables.OPERATOR_ADMIN_APPROVAL.getValue()).setValue(request.getStatus()).setType(type));
+            variables.add(new RequestVariable().setName(WorkFlowVariables.COMPLETED_BY.getValue()).setValue(user).setType(type));
+            variables.add(new RequestVariable().setName(WorkFlowVariables.STATUS.getValue()).setValue(request.getStatus()).setType(type));
+            variables.add(new RequestVariable().setName(WorkFlowVariables.COMPLETED_ON.getValue()).setValue(new SimpleDateFormat(WorkFlowVariables.DATE_FORMAT.getValue(), Locale.ENGLISH).format(new Date())).setType(type));
+            variables.add(new RequestVariable().setName(WorkFlowVariables.DESCRIPTION.getValue()).setValue(request.getDescription()).setType(type));
+            variables.add(new RequestVariable().setName(WorkFlowVariables.SLECTED_RATE.getValue()).setValue(request.getSelectedRate()).setType(type));
         }
 
-        ApplicationApprovalRequest applicationApprovalRequest = new ApplicationApprovalRequest();
-        applicationApprovalRequest.setAction("complete");
+        TaskApprovalRequest applicationApprovalRequest = new TaskApprovalRequest();
+        applicationApprovalRequest.setAction(WorkFlowVariables.ACTION.getValue());
         applicationApprovalRequest.setVariables(variables);
 
         try {

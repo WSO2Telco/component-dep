@@ -26,11 +26,11 @@ public interface RestClient {
 
     @RequestLine("POST runtime/tasks/{taskId}")
     @Headers("Content-Type: application/json")
-    void approveTask(@Param("taskId") String taskId, ApplicationApprovalRequest request) throws WorkflowExtensionException;
+    void approveTask(@Param("taskId") String taskId, TaskApprovalRequest request) throws WorkflowExtensionException;
 
     @RequestLine("POST runtime/tasks/{taskId}")
     @Headers("Content-Type: application/json")
-    void assignTask(@Param("taskId") String taskId, ApplicationAssignRequest assignRequest) throws WorkflowExtensionException;
+    void assignTask(@Param("taskId") String taskId, TaskAssignRequest assignRequest) throws WorkflowExtensionException;
 }
 
 

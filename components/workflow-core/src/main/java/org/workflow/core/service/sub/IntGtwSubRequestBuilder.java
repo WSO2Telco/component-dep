@@ -29,13 +29,13 @@ public class IntGtwSubRequestBuilder extends AbstractSubRequestBuilder {
         log = LogFactory.getLog(IntGtwSubRequestBuilder.class);
     }
 
-    IntGtwSubRequestBuilder() {
-        super.depType = DeploymentTypes.HUB;
+    IntGtwSubRequestBuilder(DeploymentTypes depType) {
+        super.depType = depType;
     }
 
-    public static IntGtwSubRequestBuilder getInstace() throws BusinessException {
+    public static IntGtwSubRequestBuilder getInstace(DeploymentTypes depType) throws BusinessException {
         if (instance == null) {
-            instance = new IntGtwSubRequestBuilder();
+            instance = new IntGtwSubRequestBuilder(depType);
         }
         return instance;
     }

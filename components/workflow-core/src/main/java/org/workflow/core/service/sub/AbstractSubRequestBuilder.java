@@ -20,6 +20,8 @@ import java.util.*;
 
 abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
 
+    private static final String GRAPH_LABEL = "SUBSCRIPTIONS";
+
     private ReturnableResponse generateResponse(final TaskSerchDTO searchDTO,final TaskList taskList ,final UserProfileDTO userProfile) throws ParseException {
 
         return  new ReturnableResponse() {
@@ -134,7 +136,7 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
         if (!data.isEmpty()) {
             GraphData graphData = new GraphData();
             graphData.setData(data);
-            graphData.setLabel("subscriptions".toUpperCase());
+            graphData.setLabel(GRAPH_LABEL.toUpperCase());
             List<GraphData> graphDataList = new ArrayList();
             graphDataList.add(graphData);
             GraphResponse graphResponse = new GraphResponse();

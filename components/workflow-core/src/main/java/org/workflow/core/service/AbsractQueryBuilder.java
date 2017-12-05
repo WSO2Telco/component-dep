@@ -22,6 +22,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
     protected Log log;
     protected DeploymentTypes depType;
     static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssXXX";
+    static final String MONTH_FORMAT = "MMM";
 
 
     protected abstract String getProcessDefinitionKey();
@@ -116,7 +117,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
     public Callback getGraphData(UserProfileDTO userProfile) throws BusinessException {
 
         DateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
-        DateFormat monthFormat = new SimpleDateFormat("MMM", Locale.ENGLISH);
+        DateFormat monthFormat = new SimpleDateFormat(MONTH_FORMAT, Locale.ENGLISH);
 
         List<Range> months = new ArrayList();
         List<String> xAxisLabels = new ArrayList();
@@ -155,7 +156,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
     @Override
     public Callback assignTask(AssignRequest assignRequest) throws BusinessException {
         String assignee = "admin";
-        ApplicationAssignRequest request = new ApplicationAssignRequest();
+        TaskAssignRequest request = new TaskAssignRequest();
         request.setAction("claim");
         request.setAssignee(assignee.toLowerCase());
         RestClient activityClient = ActivityClientFactory.getInstance().getClient(getProcessDefinitionKey());

@@ -4,7 +4,16 @@ import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.util.ApprovalRequest;
 import com.wso2telco.core.dbutils.util.Callback;
 import org.apache.commons.logging.LogFactory;
+import org.workflow.core.activity.TaskApprovalRequest;
+import org.workflow.core.model.RequestVariable;
 import org.workflow.core.util.DeploymentTypes;
+import org.workflow.core.util.WorkFlowVariables;
+
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
+import java.util.Locale;
 
 /**
  * Copyright (c) 2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
@@ -40,7 +49,31 @@ public class ExtGtwAppRequestBuilder extends AbstractAppRequestBuilder {
     }
 
     @Override
-    protected Callback buildApprovalRequest(ApprovalRequest approvalRequest) throws BusinessException {
-        return null;
+    protected Callback buildApprovalRequest(ApprovalRequest request) throws BusinessException {
+        List<RequestVariable> variables = new ArrayList();
+        final String type = "string";
+        final String user = "admin";
+
+
+        variables
+                .add(new RequestVariable().setName(WorkFlowVariables.OPERATOR_ADMIN_APPROVAL.getValue()).setValue(request.getStatus()).setType(type));
+        variables.add(new RequestVariable().setName(WorkFlowVariables.COMPLETED_BY.getValue()).setValue(user).setType(type));
+        variables.add(new RequestVariable().setName(WorkFlowVariables.STATUS.getValue()).setValue(request.getStatus()).setType(type));
+        variables.add(new RequestVariable().setName(WorkFlowVariables.COMPLETED_ON.getValue())
+                .setValue(new SimpleDateFormat(WorkFlowVariables.DATE_FORMAT.getValue(), Locale.ENGLISH).format(new Date()))
+                .setType(type));
+        variables
+                .add(new RequestVariable().setName(WorkFlowVariables.DESCRIPTION.getValue()).setValue(request.getDescription()).setType(type));
+        variables.add(
+                new RequestVariable().setName(WorkFlowVariables.SELECTGED_TIER.getValue()).setValue(request.getSelectedTier()).setType(type));
+        variables.add(new RequestVariable().setName(WorkFlowVariables.CREDIT_PLAN.getValue()).setValue(request.getCreditPlan()).setType(type));
+
+
+        TaskApprovalRequest approvalRequest = new TaskApprovalRequest();
+        approvalRequest.setAction(WorkFlowVariables.ACTION.getValue());
+        approvalRequest.setVariables(variables);
+
+        return super.executeTaskApprovalRequest(approvalRequest, request);
+
     }
 }
