@@ -22,11 +22,11 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
 
     private static final String GRAPH_LABEL = "SUBSCRIPTIONS";
 
-    private ReturnableResponse generateResponse(final TaskSerchDTO searchDTO,final TaskList taskList ,final UserProfileDTO userProfile) throws ParseException {
+    private ReturnableResponse generateResponse(final TaskSerchDTO searchDTO, final TaskList taskList, final UserProfileDTO userProfile) throws ParseException {
 
-        return  new ReturnableResponse() {
+        return new ReturnableResponse() {
 
-            DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX",Locale.ENGLISH);
+            DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.ENGLISH);
 
             @Override
             public int getTotal() {
@@ -104,12 +104,12 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
         ReturnableResponse payload;
         Callback returnCall;
         try {
-            payload = generateResponse( searchDTO,taskList, userProfile);
-            returnCall= new Callback().setPayload(payload)
+            payload = generateResponse(searchDTO, taskList, userProfile);
+            returnCall = new Callback().setPayload(payload)
                     .setSuccess(true)
                     .setMessage("Subscription Taks listed success ");
         } catch (ParseException e) {
-            returnCall= new Callback().setPayload(null)
+            returnCall = new Callback().setPayload(null)
                     .setSuccess(false)
                     .setMessage("Subscription Taks listed fail ");
         }
@@ -136,7 +136,7 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
         if (!data.isEmpty()) {
             GraphData graphData = new GraphData();
             graphData.setData(data);
-            graphData.setLabel(GRAPH_LABEL.toUpperCase());
+            graphData.setLabel("subscriptions".toUpperCase());
             List<GraphData> graphDataList = new ArrayList();
             graphDataList.add(graphData);
             GraphResponse graphResponse = new GraphResponse();
@@ -152,7 +152,7 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
     protected abstract Callback buildApprovalRequest(ApprovalRequest approvalRequest) throws BusinessException;
 
     @Override
-	protected String getProcessDefinitionKey() {
-		return null;
-	}
+    protected String getProcessDefinitionKey() {
+        return null;
+    }
 }

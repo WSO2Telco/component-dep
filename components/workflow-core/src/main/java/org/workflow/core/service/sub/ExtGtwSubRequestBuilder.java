@@ -36,9 +36,11 @@ public class ExtGtwSubRequestBuilder extends AbstractSubRequestBuilder {
     public static ExtGtwSubRequestBuilder getInstace(DeploymentTypes depType) throws BusinessException {
         if (instance == null) {
             instance = new ExtGtwSubRequestBuilder(depType);
+
         }
         return instance;
     }
+
     @Override
     protected Callback buildApprovalRequest(ApprovalRequest approvalRequest) throws BusinessException {
         return null;

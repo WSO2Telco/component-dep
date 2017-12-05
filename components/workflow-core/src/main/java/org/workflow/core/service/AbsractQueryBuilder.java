@@ -39,7 +39,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
     public Callback searchPending(TaskSerchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException {
         ProcessSearchRequest processRequest = buildSearchRequest(searchDTO, userProfile);
         TaskList taskList = null;
-        
+
         RestClient activityClient = ActivityClientFactory.getInstance().getClient(getProcessDefinitionKey());
         try {
             taskList = activityClient.getTasks(processRequest);
