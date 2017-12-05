@@ -20,6 +20,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 
     protected Log log;
     protected DeploymentTypes depType;
+    final static String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssXXX";
 
 
     protected abstract String getProcessDefinitionKey();
@@ -113,7 +114,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
     @Override
     public Callback getGraphData(UserProfileDTO userProfile) throws BusinessException {
 
-        DateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ssXXX", Locale.ENGLISH);
+        DateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
         DateFormat monthFormat = new SimpleDateFormat("MMM", Locale.ENGLISH);
 
         List<Range> months = new ArrayList();
