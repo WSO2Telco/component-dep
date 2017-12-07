@@ -21,7 +21,7 @@ import com.wso2telco.core.dbutils.model.UserProfileDTO;
 import com.wso2telco.core.dbutils.util.ApprovalRequest;
 import com.wso2telco.core.dbutils.util.AssignRequest;
 import com.wso2telco.core.dbutils.util.Callback;
-import org.workflow.core.model.TaskSerchDTO;
+import org.workflow.core.model.TaskSearchDTO;
 import org.workflow.core.service.WorkFlowDelegator;
 
 import javax.ws.rs.*;
@@ -43,7 +43,7 @@ public class ApplicationRest {
                          @QueryParam("sortBy") String sortBy, @QueryParam("filterBy") String filterBy) {
         try {
             WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
-            TaskSerchDTO serchD = new TaskSerchDTO();
+            TaskSearchDTO serchD = new TaskSearchDTO();
             UserProfileDTO userProfileDTO = new UserProfileDTO();
             userProfileDTO.setUserName("admin");
             Callback callback = workFlowDelegator.getPendingApplicationApprovals(serchD, userProfileDTO);
@@ -58,7 +58,7 @@ public class ApplicationRest {
     public Response loadGraph(@HeaderParam("authorization") String authHeader) {
         try {
             WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
-            TaskSerchDTO serchD = new TaskSerchDTO();
+            TaskSearchDTO serchD = new TaskSearchDTO();
             UserProfileDTO userProfileDTO = new UserProfileDTO();
             userProfileDTO.setUserName("admin");
             Callback callback = workFlowDelegator.getApplicationGraphData(userProfileDTO);
@@ -73,7 +73,7 @@ public class ApplicationRest {
     public Response assign(@HeaderParam("authorization") String authHeader, AssignRequest assignRequest) {
         try {
             WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
-            TaskSerchDTO serchD = new TaskSerchDTO();
+            TaskSearchDTO serchD = new TaskSearchDTO();
             UserProfileDTO userProfileDTO = new UserProfileDTO();
             userProfileDTO.setUserName("admin");
             Callback callback = workFlowDelegator.assignApplicationTask(assignRequest);
@@ -88,7 +88,7 @@ public class ApplicationRest {
     public Response approve(@HeaderParam("authorization") String authHeader, ApprovalRequest approvalRequest) {
         try {
             WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
-            TaskSerchDTO serchD = new TaskSerchDTO();
+            TaskSearchDTO serchD = new TaskSearchDTO();
             UserProfileDTO userProfileDTO = new UserProfileDTO();
             userProfileDTO.setUserName("admin");
             Callback callback = workFlowDelegator.approveApplication(approvalRequest);

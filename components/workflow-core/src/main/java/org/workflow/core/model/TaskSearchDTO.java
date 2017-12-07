@@ -1,6 +1,6 @@
 package org.workflow.core.model;
 
-public class TaskSerchDTO {
+public class TaskSearchDTO {
 	private byte batchSize = 10;
 	private int start = 0;
 	private String orderBy = "desc";

@@ -26,9 +26,9 @@ public class ActivityClientFactory {
 	private   String password;
 	private Map<String,RestClient> restClientMap ;
 	private static ActivityClientFactory instance;
-	
+
 	/**
-	 * private constructor limits the unwonted object creation.Admin username & password 
+	 * private constructor limits the unwonted object creation.Admin username & password
 	 * are initialize at the object creation
 	 * @throws UserStoreException
 	 */
@@ -38,7 +38,7 @@ public class ActivityClientFactory {
 			         .getThreadLocalCarbonContext()
 			         .getUserRealm()
 			         .getRealmConfiguration().getAdminUserName();
-		
+
 			password= CarbonContext
 			         .getThreadLocalCarbonContext()
 			         .getUserRealm()
@@ -61,6 +61,7 @@ public class ActivityClientFactory {
 	 * return a feign http client with for activity  workflow
 	 * @return
 	 */
+
 	public RestClient getClient(final String processDefinitionKey) {
 		if(restClientMap.containsKey(processDefinitionKey.trim() )) {
 			return restClientMap.get( processDefinitionKey.trim());
@@ -73,11 +74,11 @@ public class ActivityClientFactory {
 //                    .logLevel(feign.Logger.Level.FULL)
 					.requestInterceptor(new ProcessTypeInterCeptor(processDefinitionKey))
 					.target(RestClient.class, WorkFlowHealper.getInstance().getWorkflowServiceEndPoint());
+
 			restClientMap.put( processDefinitionKey.trim(), appClient);
 			
 			return appClient;
 		}
-		
 	}
 		/**
 		 * feign intercepter for injecting process type
@@ -93,7 +94,7 @@ public class ActivityClientFactory {
 		@Override
 		public void apply(RequestTemplate template) {
 			template.query("processDefinitionKey",this.processDefinitionKey );
-			
+
 		}
 
 	}

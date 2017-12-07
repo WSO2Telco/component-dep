@@ -6,6 +6,8 @@ import com.wso2telco.core.dbutils.util.ApprovalRequest;
 import com.wso2telco.core.dbutils.util.Callback;
 import org.workflow.core.activity.ActivityClientFactory;
 import org.workflow.core.activity.RestClient;
+import org.workflow.core.activity.TaskApprovalRequest;
+import org.workflow.core.execption.WorkflowExtensionException;
 import org.workflow.core.model.*;
 import org.workflow.core.service.AbsractQueryBuilder;
 import org.workflow.core.service.ReturnableResponse;
@@ -20,7 +22,9 @@ import java.util.*;
 
 abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
 
-    private ReturnableResponse generateResponse(final TaskSerchDTO searchDTO, final TaskList taskList,
+    private static final String GRAPH_LABEL = "APPLICATIONS";
+
+    private ReturnableResponse generateResponse(final TaskSearchDTO searchDTO, final TaskList taskList,
                                                 final UserProfileDTO userProfile) throws ParseException {
 
         return new ReturnableResponse() {
@@ -57,7 +61,7 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
                 List<ReturnableTaskResponse> temptaskList = new ArrayList<ReturnableResponse.ReturnableTaskResponse>();
 
                 for (final Task task : taskList.getData()) {
-                    final Map<AppVariable, TaskVariableResponse> varMap =  new HashMap<AppVariable, TaskVariableResponse>();
+                    final Map<AppVariable, TaskVariableResponse> varMap = new HashMap<AppVariable, TaskVariableResponse>();
                     for (final TaskVariableResponse var : task.getVars()) {
                         varMap.put(AppVariable.getByKey(var.getName()), var);
                     }
@@ -114,7 +118,7 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
     }
 
     @Override
-    protected Callback buildResponse(TaskSerchDTO searchDTO, TaskList taskList, UserProfileDTO userProfile)
+    protected Callback buildResponse(TaskSearchDTO searchDTO, TaskList taskList, UserProfileDTO userProfile)
             throws BusinessException {
         ReturnableResponse payload;
         Callback returnCall;
@@ -136,8 +140,7 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
     }
 
     @Override
-    protected Callback getHistoricalData(String user, List<Range> months, List<String> xAxisLabels)
-            throws BusinessException {
+    protected Callback getHistoricalData(String user, List<Range> months, List<String> xAxisLabels) throws BusinessException {
         List<Integer> data = new ArrayList();
         RestClient activityClient = ActivityClientFactory.getInstance().getClient(getProcessDefinitionKey());
         TaskDetailsResponse taskList = null;
@@ -151,7 +154,7 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
         if (!data.isEmpty()) {
             GraphData graphData = new GraphData();
             graphData.setData(data);
-            graphData.setLabel("applications".toUpperCase());
+            graphData.setLabel(GRAPH_LABEL.toUpperCase());
             List<GraphData> graphDataList = new ArrayList();
             graphDataList.add(graphData);
             GraphResponse graphResponse = new GraphResponse();
@@ -161,6 +164,17 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
         } else {
             return new Callback().setPayload(Collections.emptyList()).setSuccess(false)
                     .setMessage(Messages.APPLICATION_HISTORY_FAILED.getValue());
+        }
+    }
+
+    protected Callback executeTaskApprovalRequest(TaskApprovalRequest approvalRequest, ApprovalRequest request) throws BusinessException {
+        RestClient activityClient = ActivityClientFactory.getInstance().getClient(getProcessDefinitionKey());
+        try {
+            activityClient.approveTask(request.getTaskId(), approvalRequest);
+            return new Callback().setPayload(null).setSuccess(true).setMessage(Messages.APPLICATION_APPROVAL_SUCCESS.getValue());
+        } catch (WorkflowExtensionException e) {
+            log.error("", e);
+            return new Callback().setPayload(null).setSuccess(false).setMessage(Messages.APPLICATION_APPROVAL_FAILED.getValue());
         }
     }
 

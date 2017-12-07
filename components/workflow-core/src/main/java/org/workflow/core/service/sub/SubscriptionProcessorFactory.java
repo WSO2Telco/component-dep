@@ -21,23 +21,22 @@ public class SubscriptionProcessorFactory implements WorkFlow {
 	}
 
 	@Override
-	//TODO: it need to implement subscription bulder for EXT-GW,INT-gw as well
 	public WorkFlowProcessor getWorkFlowProcessor() throws BusinessException {
 		DeploymentTypes deploymentType = DeploymentTypes.getByName(WorkFlowHealper.getDeploymentType());
 		WorkFlowProcessor workflowProcessor = null;
 		switch(deploymentType) {
-		/*case EXTERNAL_GATEWAY:
-			workflowProcessor = HubSubRequestBuilder.getInstace(deploymentType);
-			break;*/
-		case HUB:
-			workflowProcessor = HubSubRequestBuilder.getInstace();
+		case EXTERNAL_GATEWAY:
+			workflowProcessor = ExtGtwSubRequestBuilder.getInstace(deploymentType);
 			break;
-		/*case INTERNAL_GATEWAY:
+		case HUB:
 			workflowProcessor = HubSubRequestBuilder.getInstace(deploymentType);
-			break;*/
-		/*default:
+			break;
+		case INTERNAL_GATEWAY:
+			workflowProcessor = IntGtwSubRequestBuilder.getInstace(deploymentType);
+			break;
+		default:
 			workflowProcessor = HubSubRequestBuilder.getInstace(deploymentType);
-			break;*/
+			break;
 		}
 		return workflowProcessor;
 	}

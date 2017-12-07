@@ -1,8 +1,10 @@
 package org.workflow.core.activity;
 
 import com.fasterxml.jackson.annotation.*;
+import org.workflow.core.model.RequestVariable;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -20,17 +22,18 @@ import java.util.Map;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "action",
-        "assignee"
+        "variables"
 })
-public class ApplicationAssignRequest {
+public class TaskApprovalRequest {
 
     @JsonProperty("action")
     private String action;
-    @JsonProperty("assignee")
-    private String assignee;
+    @JsonProperty("variables")
+    private List<RequestVariable> variables = null;
     @JsonIgnore
     private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
@@ -44,14 +47,14 @@ public class ApplicationAssignRequest {
         this.action = action;
     }
 
-    @JsonProperty("assignee")
-    public String getAssignee() {
-        return assignee;
+    @JsonProperty("variables")
+    public List<RequestVariable> getVariables() {
+        return variables;
     }
 
-    @JsonProperty("assignee")
-    public void setAssignee(String assignee) {
-        this.assignee = assignee;
+    @JsonProperty("variables")
+    public void setVariables(List<RequestVariable> variables) {
+        this.variables = variables;
     }
 
     @JsonAnyGetter

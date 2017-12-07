@@ -22,23 +22,24 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
     protected Log log;
     protected DeploymentTypes depType;
     static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssXXX";
+    static final String MONTH_FORMAT = "MMM";
 
 
     protected abstract String getProcessDefinitionKey();
 
     protected abstract DeploymentTypes getDeployementType();
 
-    protected abstract Callback buildResponse(final TaskSerchDTO searchDTO, final TaskList taskList,
+    protected abstract Callback buildResponse(final TaskSearchDTO searchDTO, final TaskList taskList,
                                               final UserProfileDTO userProfile) throws BusinessException;
 
     protected abstract Callback getHistoricalData(String user, List<Range> months, List<String> xAxisLabels) throws BusinessException;
 
     protected abstract Callback buildApprovalRequest(final ApprovalRequest approvalRequest) throws BusinessException;
 
-    public Callback searchPending(TaskSerchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException {
+    public Callback searchPending(TaskSearchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException {
         ProcessSearchRequest processRequest = buildSearchRequest(searchDTO, userProfile);
         TaskList taskList = null;
-        
+
         RestClient activityClient = ActivityClientFactory.getInstance().getClient(getProcessDefinitionKey());
         try {
             taskList = activityClient.getTasks(processRequest);
@@ -57,14 +58,11 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
     }
 
     @Override
-    public ProcessSearchRequest buildSearchRequest(TaskSerchDTO searchDTO, final UserProfileDTO userProfile)
-            throws BusinessException {
+    public ProcessSearchRequest buildSearchRequest(TaskSearchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException {
         ProcessSearchRequest request = new ProcessSearchRequest();
         request.setSize(searchDTO.getBatchSize());
         request.setStart(searchDTO.getStart());
         request.setSort(searchDTO.getSortBy());
-
-//		request.setProcessDefinitionKey(getDeployementType().getAppProcessType());
 
         String filterStr = searchDTO.getFilterBy();
         /**
@@ -116,7 +114,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
     public Callback getGraphData(UserProfileDTO userProfile) throws BusinessException {
 
         DateFormat simpleDateFormat = new SimpleDateFormat(DATE_FORMAT, Locale.ENGLISH);
-        DateFormat monthFormat = new SimpleDateFormat("MMM", Locale.ENGLISH);
+        DateFormat monthFormat = new SimpleDateFormat(MONTH_FORMAT, Locale.ENGLISH);
 
         List<Range> months = new ArrayList();
         List<String> xAxisLabels = new ArrayList();
@@ -131,7 +129,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 
             Date start = calendar.getTime();
 
-            calendar.add(Calendar.MONTH, 2);
+            calendar.add(Calendar.MONTH, 1);
             calendar.set(Calendar.DATE, -1);
             calendar.set(Calendar.HOUR, 23);
             calendar.set(Calendar.MINUTE, 59);
@@ -155,7 +153,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
     @Override
     public Callback assignTask(AssignRequest assignRequest) throws BusinessException {
         String assignee = "admin";
-        ApplicationAssignRequest request = new ApplicationAssignRequest();
+        TaskAssignRequest request = new TaskAssignRequest();
         request.setAction("claim");
         request.setAssignee(assignee.toLowerCase());
         RestClient activityClient = ActivityClientFactory.getInstance().getClient(getProcessDefinitionKey());

@@ -29,16 +29,18 @@ public class ExtGtwSubRequestBuilder extends AbstractSubRequestBuilder {
         log = LogFactory.getLog(ExtGtwSubRequestBuilder.class);
     }
 
-    ExtGtwSubRequestBuilder() {
-        super.depType = DeploymentTypes.HUB;
+    ExtGtwSubRequestBuilder(DeploymentTypes depType) {
+        super.depType = depType;
     }
 
-    public static ExtGtwSubRequestBuilder getInstace() throws BusinessException {
+    public static ExtGtwSubRequestBuilder getInstace(DeploymentTypes depType) throws BusinessException {
         if (instance == null) {
-            instance = new ExtGtwSubRequestBuilder();
+            instance = new ExtGtwSubRequestBuilder(depType);
+
         }
         return instance;
     }
+
     @Override
     protected Callback buildApprovalRequest(ApprovalRequest approvalRequest) throws BusinessException {
         return null;
