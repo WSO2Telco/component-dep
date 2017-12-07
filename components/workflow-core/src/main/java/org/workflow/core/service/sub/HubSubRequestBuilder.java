@@ -42,7 +42,7 @@ class HubSubRequestBuilder extends AbstractSubRequestBuilder {
     @Override
     protected Callback buildApprovalRequest(ApprovalRequest request) throws BusinessException {
         List<RequestVariable> variables = new ArrayList();
-        RestClient activityClient = ActivityClientFactory.getInstance().getSubscriptionClient(getProcessDefinitionKey());
+        RestClient activityClient = ActivityClientFactory.getInstance().getClient(getProcessDefinitionKey());
         boolean isAdmin = true; //dummy variable
         final String type = "string";
         final String user = "admin";

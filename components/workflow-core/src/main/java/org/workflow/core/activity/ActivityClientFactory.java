@@ -80,21 +80,6 @@ public class ActivityClientFactory {
 			return appClient;
 		}
 	}
-
-	public RestClient getSubscriptionClient(final String processDefinitionKey) {
-        if(subscriptionClient==null) {
-            subscriptionClient = Feign.builder().encoder(new JacksonEncoder())
-                    .decoder(new JacksonDecoder())
-                    .errorDecoder(new WorkflowErrorDecoder())
-                    .requestInterceptor(new BasicAuthRequestInterceptor(username, password))
-//					.logger(new Logger.JavaLogger().appendToFile("/install/wso2telcohub-2.2.1-SNAPSHOT/repository/logs/wso2carbon.log"))
-//                    .logLevel(feign.Logger.Level.FULL)
-                    .requestInterceptor(new ProcessTypeInterCeptor(processDefinitionKey))
-                    .target(RestClient.class, WorkFlowHealper.getInstance().getWorkflowServiceEndPoint());
-        }
-        return subscriptionClient;
-
-    }
 		/**
 		 * feign intercepter for injecting process type
 		 *

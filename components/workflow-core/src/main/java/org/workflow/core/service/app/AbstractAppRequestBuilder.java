@@ -142,7 +142,7 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
     @Override
     protected Callback getHistoricalData(String user, List<Range> months, List<String> xAxisLabels) throws BusinessException {
         List<Integer> data = new ArrayList();
-        RestClient activityClient = ActivityClientFactory.getInstance().getAppClient(getProcessDefinitionKey());
+        RestClient activityClient = ActivityClientFactory.getInstance().getClient(getProcessDefinitionKey());
         TaskDetailsResponse taskList = null;
 
         for (Range month : months) {
@@ -168,7 +168,7 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
     }
 
     protected Callback executeTaskApprovalRequest(TaskApprovalRequest approvalRequest, ApprovalRequest request) throws BusinessException {
-        RestClient activityClient = ActivityClientFactory.getInstance().getAppClient(getProcessDefinitionKey());
+        RestClient activityClient = ActivityClientFactory.getInstance().getClient(getProcessDefinitionKey());
         try {
             activityClient.approveTask(request.getTaskId(), approvalRequest);
             return new Callback().setPayload(null).setSuccess(true).setMessage(Messages.APPLICATION_APPROVAL_SUCCESS.getValue());

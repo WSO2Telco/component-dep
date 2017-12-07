@@ -125,7 +125,7 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
     @Override
     protected Callback getHistoricalData(String user, List<Range> months, List<String> xAxisLabels) throws BusinessException {
         List<Integer> data = new ArrayList();
-        RestClient activityClient = ActivityClientFactory.getInstance().getSubscriptionClient(getProcessDefinitionKey());
+        RestClient activityClient = ActivityClientFactory.getInstance().getClient(getProcessDefinitionKey());
         TaskDetailsResponse taskList = null;
 
         for (Range month : months) {
