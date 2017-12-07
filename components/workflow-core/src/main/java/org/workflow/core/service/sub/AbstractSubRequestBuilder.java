@@ -136,7 +136,7 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
         if (!data.isEmpty()) {
             GraphData graphData = new GraphData();
             graphData.setData(data);
-            graphData.setLabel("subscriptions".toUpperCase());
+            graphData.setLabel(GRAPH_LABEL.toUpperCase());
             List<GraphData> graphDataList = new ArrayList();
             graphDataList.add(graphData);
             GraphResponse graphResponse = new GraphResponse();

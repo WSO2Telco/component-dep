@@ -64,8 +64,6 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
         request.setStart(searchDTO.getStart());
         request.setSort(searchDTO.getSortBy());
 
-//		request.setProcessDefinitionKey(getDeployementType().getAppProcessType());
-
         String filterStr = searchDTO.getFilterBy();
         /**
          * if the request need to be filtered the string must be formated as
