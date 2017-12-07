@@ -1,10 +1,12 @@
 package org.workflow.core.activity;
 
 
+import java.util.HashMap;
+import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.workflow.core.WorkflowErrorDecoder;
-import org.workflow.core.util.DeploymentTypes;
 import org.workflow.core.util.WorkFlowHealper;
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.user.api.UserStoreException;
@@ -12,7 +14,6 @@ import org.wso2.carbon.user.api.UserStoreException;
 import com.wso2telco.core.dbutils.exception.BusinessException;
 
 import feign.Feign;
-import feign.Logger;
 import feign.RequestInterceptor;
 import feign.RequestTemplate;
 import feign.auth.BasicAuthRequestInterceptor;
@@ -23,9 +24,7 @@ public class ActivityClientFactory {
 	private  Log    log = LogFactory.getLog(ActivityClientFactory.class);
 	private  String username;
 	private   String password;
-	private  RestClient appClient;
-	private  RestClient subscriptionClient;
-
+	private Map<String,RestClient> restClientMap ;
 	private static ActivityClientFactory instance;
 
 	/**
@@ -44,6 +43,9 @@ public class ActivityClientFactory {
 			         .getThreadLocalCarbonContext()
 			         .getUserRealm()
 			         .getRealmConfiguration().getAdminPassword();
+			
+			
+			restClientMap = new HashMap<String,RestClient> ();
 		} catch (UserStoreException e) {
 			log.error("error at static initializer ActivityClientFactory ",e);
 			throw new BusinessException(e);
@@ -59,9 +61,12 @@ public class ActivityClientFactory {
 	 * return a feign http client with for activity  workflow
 	 * @return
 	 */
-	public RestClient getAppClient(final String processDefinitionKey) {
-		if(appClient==null) {
-			appClient = Feign.builder().encoder(new JacksonEncoder())
+
+	public RestClient getClient(final String processDefinitionKey) {
+		if(restClientMap.containsKey(processDefinitionKey.trim() )) {
+			return restClientMap.get( processDefinitionKey.trim());
+		}else {
+			RestClient appClient = Feign.builder().encoder(new JacksonEncoder())
 					.decoder(new JacksonDecoder())
 					.errorDecoder(new WorkflowErrorDecoder())
 					.requestInterceptor(new BasicAuthRequestInterceptor(username, password))
@@ -69,8 +74,11 @@ public class ActivityClientFactory {
 //                    .logLevel(feign.Logger.Level.FULL)
 					.requestInterceptor(new ProcessTypeInterCeptor(processDefinitionKey))
 					.target(RestClient.class, WorkFlowHealper.getInstance().getWorkflowServiceEndPoint());
-        }
-        return appClient;
+
+			restClientMap.put( processDefinitionKey.trim(), appClient);
+			
+			return appClient;
+		}
 	}
 
 	public RestClient getSubscriptionClient(final String processDefinitionKey) {
