@@ -70,6 +70,8 @@ public class Validation {
     /** The dump request and response. */
     public static boolean dumpRequestAndResponse = false;
 
+    private static Properties oneAPIValidationConfMap = readOneApiValidationConfig();
+
     /** The Constant telFormats. */
     private static String telFormats = readCustomRegex();
 
@@ -77,7 +79,7 @@ public class Validation {
 
     private static int digitsGroup = readCustomRegexDigitsGroup();
 
-    private static Properties oneAPIValidationConfMap = readOneApiValidationConfig();
+    static final String CUSTOM_VALIDATION = "customValidation";
 
     /** The Constant urlFormats. */
     private static final String[] urlFormats = {"http\\:\\/\\/.+", "https\\:\\/\\/.+"};
@@ -89,7 +91,7 @@ public class Validation {
         try {
 
             String group = oneAPIValidationConfMap.getProperty("validation.regex.prefix.group");
-            String useCustomRegex = oneAPIValidationConfMap.getProperty("customValidation");
+            String useCustomRegex = oneAPIValidationConfMap.getProperty(CUSTOM_VALIDATION);
 
             if (useCustomRegex.equals("true") && !group.equals("")) {
 
@@ -113,7 +115,7 @@ public class Validation {
 
         try {
             String group = oneAPIValidationConfMap.getProperty("validation.regex.digits.group");
-            String useCustomRegex = oneAPIValidationConfMap.getProperty("customValidation");
+            String useCustomRegex = oneAPIValidationConfMap.getProperty(CUSTOM_VALIDATION);
 
             if (useCustomRegex.equals("true") && !group.equals("")) {
 
@@ -137,7 +139,7 @@ public class Validation {
 
         try {
             String customRegex = oneAPIValidationConfMap.getProperty("validation.regex");
-            String useCustomRegex = oneAPIValidationConfMap.getProperty("customValidation");
+            String useCustomRegex = oneAPIValidationConfMap.getProperty(CUSTOM_VALIDATION);
 
             if (useCustomRegex.equals("true") && !customRegex.equals("")) {
 
