@@ -22,7 +22,7 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
 
     private static final String GRAPH_LABEL = "SUBSCRIPTIONS";
 
-    private ReturnableResponse generateResponse(final TaskSerchDTO searchDTO, final TaskList taskList, final UserProfileDTO userProfile) throws ParseException {
+    private ReturnableResponse generateResponse(final TaskSearchDTO searchDTO, final TaskList taskList, final UserProfileDTO userProfile) throws ParseException {
 
         return new ReturnableResponse() {
 
@@ -99,7 +99,7 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
     }
 
     @Override
-    protected Callback buildResponse(TaskSerchDTO searchDTO, TaskList taskList, UserProfileDTO userProfile)
+    protected Callback buildResponse(TaskSearchDTO searchDTO, TaskList taskList, UserProfileDTO userProfile)
             throws BusinessException {
         ReturnableResponse payload;
         Callback returnCall;
@@ -125,7 +125,7 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
     @Override
     protected Callback getHistoricalData(String user, List<Range> months, List<String> xAxisLabels) throws BusinessException {
         List<Integer> data = new ArrayList();
-        RestClient activityClient = ActivityClientFactory.getInstance().getClient(getProcessDefinitionKey());
+        RestClient activityClient = ActivityClientFactory.getInstance().getSubscriptionClient(getProcessDefinitionKey());
         TaskDetailsResponse taskList = null;
 
         for (Range month : months) {
@@ -153,6 +153,6 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
 
     @Override
     protected String getProcessDefinitionKey() {
-        return null;
+        return depType.getSubscriptoinProcessType();
     }
 }

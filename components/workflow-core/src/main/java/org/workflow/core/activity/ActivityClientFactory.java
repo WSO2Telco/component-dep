@@ -25,11 +25,11 @@ public class ActivityClientFactory {
 	private   String password;
 	private  RestClient appClient;
 	private  RestClient subscriptionClient;
-	
+
 	private static ActivityClientFactory instance;
-	
+
 	/**
-	 * private constructor limits the unwonted object creation.Admin username & password 
+	 * private constructor limits the unwonted object creation.Admin username & password
 	 * are initialize at the object creation
 	 * @throws UserStoreException
 	 */
@@ -39,7 +39,7 @@ public class ActivityClientFactory {
 			         .getThreadLocalCarbonContext()
 			         .getUserRealm()
 			         .getRealmConfiguration().getAdminUserName();
-		
+
 			password= CarbonContext
 			         .getThreadLocalCarbonContext()
 			         .getUserRealm()
@@ -59,7 +59,7 @@ public class ActivityClientFactory {
 	 * return a feign http client with for activity  workflow
 	 * @return
 	 */
-	public RestClient getClient(final String processDefinitionKey) {
+	public RestClient getAppClient(final String processDefinitionKey) {
 		if(appClient==null) {
 			appClient = Feign.builder().encoder(new JacksonEncoder())
 					.decoder(new JacksonDecoder())
@@ -69,9 +69,24 @@ public class ActivityClientFactory {
 //                    .logLevel(feign.Logger.Level.FULL)
 					.requestInterceptor(new ProcessTypeInterCeptor(processDefinitionKey))
 					.target(RestClient.class, WorkFlowHealper.getInstance().getWorkflowServiceEndPoint());
-		}
-		return appClient;
+        }
+        return appClient;
 	}
+
+	public RestClient getSubscriptionClient(final String processDefinitionKey) {
+        if(subscriptionClient==null) {
+            subscriptionClient = Feign.builder().encoder(new JacksonEncoder())
+                    .decoder(new JacksonDecoder())
+                    .errorDecoder(new WorkflowErrorDecoder())
+                    .requestInterceptor(new BasicAuthRequestInterceptor(username, password))
+//					.logger(new Logger.JavaLogger().appendToFile("/install/wso2telcohub-2.2.1-SNAPSHOT/repository/logs/wso2carbon.log"))
+//                    .logLevel(feign.Logger.Level.FULL)
+                    .requestInterceptor(new ProcessTypeInterCeptor(processDefinitionKey))
+                    .target(RestClient.class, WorkFlowHealper.getInstance().getWorkflowServiceEndPoint());
+        }
+        return subscriptionClient;
+
+    }
 		/**
 		 * feign intercepter for injecting process type
 		 *
@@ -86,7 +101,7 @@ public class ActivityClientFactory {
 		@Override
 		public void apply(RequestTemplate template) {
 			template.query("processDefinitionKey",this.processDefinitionKey );
-			
+
 		}
 
 	}

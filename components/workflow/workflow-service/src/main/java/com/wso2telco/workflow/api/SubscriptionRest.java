@@ -20,7 +20,7 @@ import com.wso2telco.core.dbutils.model.UserProfileDTO;
 import com.wso2telco.core.dbutils.util.ApprovalRequest;
 import com.wso2telco.core.dbutils.util.AssignRequest;
 import com.wso2telco.core.dbutils.util.Callback;
-import org.workflow.core.model.TaskSerchDTO;
+import org.workflow.core.model.TaskSearchDTO;
 import org.workflow.core.service.WorkFlowDelegator;
 
 import javax.ws.rs.*;
@@ -42,7 +42,7 @@ public class SubscriptionRest {
 			 @QueryParam ("filterBy")String  filterBy) {
 		try {
 			WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
-			TaskSerchDTO serchD = new TaskSerchDTO();
+			TaskSearchDTO serchD = new TaskSearchDTO();
 			UserProfileDTO UserProfileDTO = new UserProfileDTO();
 			Callback callback = workFlowDelegator.getPendingSubscriptionApprovals(serchD, UserProfileDTO);
 			return Response.status(Response.Status.OK).entity(callback).build();
@@ -56,7 +56,7 @@ public class SubscriptionRest {
 	public Response loadGraph(@HeaderParam("authorization") String authHeader)  {
 		try {
 			WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
-			TaskSerchDTO serchD = new TaskSerchDTO();
+			TaskSearchDTO serchD = new TaskSearchDTO();
 			UserProfileDTO userProfileDTO = new UserProfileDTO();
 			userProfileDTO.setUserName("admin");
 			Callback callback = workFlowDelegator.getSubscriptionGraphData(userProfileDTO);
@@ -71,7 +71,7 @@ public class SubscriptionRest {
 	public Response assign(@HeaderParam("authorization") String authHeader, AssignRequest assignRequest)  {
 		try {
 			WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
-			TaskSerchDTO serchD = new TaskSerchDTO();
+			TaskSearchDTO serchD = new TaskSearchDTO();
 			UserProfileDTO userProfileDTO = new UserProfileDTO();
 			userProfileDTO.setUserName("admin");
 			Callback callback = workFlowDelegator.assignSubscriptionTask(assignRequest);
@@ -86,7 +86,7 @@ public class SubscriptionRest {
 	public Response approve(@HeaderParam("authorization") String authHeader, ApprovalRequest approvalRequest )  {
 		try {
 			WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
-			TaskSerchDTO serchD = new TaskSerchDTO();
+			TaskSearchDTO serchD = new TaskSearchDTO();
 			UserProfileDTO userProfileDTO = new UserProfileDTO();
 			userProfileDTO.setUserName("admin");
 			Callback callback = workFlowDelegator.approveSubscription(approvalRequest);

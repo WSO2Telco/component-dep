@@ -5,18 +5,18 @@ import com.wso2telco.core.dbutils.model.UserProfileDTO;
 import com.wso2telco.core.dbutils.util.ApprovalRequest;
 import com.wso2telco.core.dbutils.util.AssignRequest;
 import com.wso2telco.core.dbutils.util.Callback;
-import org.workflow.core.model.TaskSerchDTO;
+import org.workflow.core.model.TaskSearchDTO;
 import org.workflow.core.util.WorkFlowType;
 
 
 public class WorkFlowDelegator {
 
-    public Callback getPendingApplicationApprovals(final TaskSerchDTO serchD,UserProfileDTO userProfile) throws BusinessException {
+    public Callback getPendingApplicationApprovals(final TaskSearchDTO serchD, UserProfileDTO userProfile) throws BusinessException {
         WorkFlowProcessor queryBuilder =ActivityProcessFactory.getInstance().getWorkFlowFactory(WorkFlowType.APPLICATION).getWorkFlowProcessor();
         return queryBuilder.searchPending(serchD, userProfile);
     }
 
-    public Callback getPendingSubscriptionApprovals(final TaskSerchDTO serchD,UserProfileDTO userProfile) throws BusinessException {
+    public Callback getPendingSubscriptionApprovals(final TaskSearchDTO serchD, UserProfileDTO userProfile) throws BusinessException {
         WorkFlowProcessor queryBuilder =ActivityProcessFactory.getInstance().getWorkFlowFactory(WorkFlowType.SUBSCRIPTION).getWorkFlowProcessor();
         return queryBuilder.searchPending(serchD, userProfile);
     }

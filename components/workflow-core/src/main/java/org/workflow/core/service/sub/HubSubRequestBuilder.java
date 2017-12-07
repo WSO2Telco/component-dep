@@ -42,7 +42,7 @@ class HubSubRequestBuilder extends AbstractSubRequestBuilder {
     @Override
     protected Callback buildApprovalRequest(ApprovalRequest request) throws BusinessException {
         List<RequestVariable> variables = new ArrayList();
-        RestClient activityClient = ActivityClientFactory.getInstance().getClient(getProcessDefinitionKey());
+        RestClient activityClient = ActivityClientFactory.getInstance().getSubscriptionClient(getProcessDefinitionKey());
         boolean isAdmin = true; //dummy variable
         final String type = "string";
         final String user = "admin";
@@ -64,12 +64,12 @@ class HubSubRequestBuilder extends AbstractSubRequestBuilder {
             variables.add(new RequestVariable().setName(WorkFlowVariables.SLECTED_RATE.getValue()).setValue(request.getSelectedRate()).setType(type));
         }
 
-        TaskApprovalRequest applicationApprovalRequest = new TaskApprovalRequest();
-        applicationApprovalRequest.setAction(WorkFlowVariables.ACTION.getValue());
-        applicationApprovalRequest.setVariables(variables);
+        TaskApprovalRequest approvalRequest = new TaskApprovalRequest();
+        approvalRequest.setAction(WorkFlowVariables.ACTION.getValue());
+        approvalRequest.setVariables(variables);
 
         try {
-            activityClient.approveTask(request.getTaskId(), applicationApprovalRequest);
+            activityClient.approveTask(request.getTaskId(), approvalRequest);
             return new Callback().setPayload(null).setSuccess(true).setMessage(Messages.SUBSCRIPTION_APPROVAL_SUCCESS.getValue());
         } catch (WorkflowExtensionException e) {
             log.error("", e);

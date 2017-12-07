@@ -29,18 +29,18 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 
     protected abstract DeploymentTypes getDeployementType();
 
-    protected abstract Callback buildResponse(final TaskSerchDTO searchDTO, final TaskList taskList,
+    protected abstract Callback buildResponse(final TaskSearchDTO searchDTO, final TaskList taskList,
                                               final UserProfileDTO userProfile) throws BusinessException;
 
     protected abstract Callback getHistoricalData(String user, List<Range> months, List<String> xAxisLabels) throws BusinessException;
 
     protected abstract Callback buildApprovalRequest(final ApprovalRequest approvalRequest) throws BusinessException;
 
-    public Callback searchPending(TaskSerchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException {
+    public Callback searchPending(TaskSearchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException {
         ProcessSearchRequest processRequest = buildSearchRequest(searchDTO, userProfile);
         TaskList taskList = null;
 
-        RestClient activityClient = ActivityClientFactory.getInstance().getClient(getProcessDefinitionKey());
+        RestClient activityClient = ActivityClientFactory.getInstance().getAppClient(getProcessDefinitionKey());
         try {
             taskList = activityClient.getTasks(processRequest);
 
@@ -58,8 +58,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
     }
 
     @Override
-    public ProcessSearchRequest buildSearchRequest(TaskSerchDTO searchDTO, final UserProfileDTO userProfile)
-            throws BusinessException {
+    public ProcessSearchRequest buildSearchRequest(TaskSearchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException {
         ProcessSearchRequest request = new ProcessSearchRequest();
         request.setSize(searchDTO.getBatchSize());
         request.setStart(searchDTO.getStart());
@@ -132,7 +131,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 
             Date start = calendar.getTime();
 
-            calendar.add(Calendar.MONTH, 2);
+            calendar.add(Calendar.MONTH, 1);
             calendar.set(Calendar.DATE, -1);
             calendar.set(Calendar.HOUR, 23);
             calendar.set(Calendar.MINUTE, 59);
@@ -159,7 +158,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
         TaskAssignRequest request = new TaskAssignRequest();
         request.setAction("claim");
         request.setAssignee(assignee.toLowerCase());
-        RestClient activityClient = ActivityClientFactory.getInstance().getClient(getProcessDefinitionKey());
+        RestClient activityClient = ActivityClientFactory.getInstance().getAppClient(getProcessDefinitionKey());
         try {
             activityClient.assignTask(assignRequest.getTaskId(), request);
             return new Callback().setPayload(null).setSuccess(true).setMessage(Messages.TASK_APPROVAL_SUCCESS.getValue());

@@ -24,7 +24,7 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
 
     private static final String GRAPH_LABEL = "APPLICATIONS";
 
-    private ReturnableResponse generateResponse(final TaskSerchDTO searchDTO, final TaskList taskList,
+    private ReturnableResponse generateResponse(final TaskSearchDTO searchDTO, final TaskList taskList,
                                                 final UserProfileDTO userProfile) throws ParseException {
 
         return new ReturnableResponse() {
@@ -118,7 +118,7 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
     }
 
     @Override
-    protected Callback buildResponse(TaskSerchDTO searchDTO, TaskList taskList, UserProfileDTO userProfile)
+    protected Callback buildResponse(TaskSearchDTO searchDTO, TaskList taskList, UserProfileDTO userProfile)
             throws BusinessException {
         ReturnableResponse payload;
         Callback returnCall;
@@ -140,10 +140,9 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
     }
 
     @Override
-    protected Callback getHistoricalData(String user, List<Range> months, List<String> xAxisLabels)
-            throws BusinessException {
+    protected Callback getHistoricalData(String user, List<Range> months, List<String> xAxisLabels) throws BusinessException {
         List<Integer> data = new ArrayList();
-        RestClient activityClient = ActivityClientFactory.getInstance().getClient(getProcessDefinitionKey());
+        RestClient activityClient = ActivityClientFactory.getInstance().getAppClient(getProcessDefinitionKey());
         TaskDetailsResponse taskList = null;
 
         for (Range month : months) {
@@ -168,8 +167,8 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
         }
     }
 
-    protected Callback executeTaskApprovalRequest(TaskApprovalRequest approvalRequest, ApprovalRequest request) throws BusinessException{
-        RestClient activityClient = ActivityClientFactory.getInstance().getClient(getProcessDefinitionKey());
+    protected Callback executeTaskApprovalRequest(TaskApprovalRequest approvalRequest, ApprovalRequest request) throws BusinessException {
+        RestClient activityClient = ActivityClientFactory.getInstance().getAppClient(getProcessDefinitionKey());
         try {
             activityClient.approveTask(request.getTaskId(), approvalRequest);
             return new Callback().setPayload(null).setSuccess(true).setMessage(Messages.APPLICATION_APPROVAL_SUCCESS.getValue());
