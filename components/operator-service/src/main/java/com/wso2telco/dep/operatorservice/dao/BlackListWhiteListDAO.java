@@ -21,7 +21,6 @@ import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.util.DataSourceNames;
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.dep.oneapivalidation.util.MsisdnDTO;
-import com.wso2telco.core.msisdnvalidator.MSISDN;
 import com.wso2telco.dep.operatorservice.AppObject;
 import com.wso2telco.dep.operatorservice.exception.OperatorServiceException;
 import com.wso2telco.dep.operatorservice.model.MSISDNSearchDTO;
@@ -667,13 +666,25 @@ public class BlackListWhiteListDAO {
         Connection connection = null;
         PreparedStatement ps = null;
         ResultSet results = null;
-        String sql = SQLConstants.GET_ADMIN_USERS;
+
+        StringBuilder sqlBuff = new StringBuilder();
+        sqlBuff.append("SELECT usr.um_user_name " );
+		sqlBuff.append("		FROM " ).append(  OparatorTable.UM_USER.getTObject() ).append(  " usr, ");
+		sqlBuff.append(  OparatorTable.UM_USER_ROLE.getTObject()).append(  " usr_role " );
+		sqlBuff.append("WHERE usr.UM_ID = usr_role.UM_USER_ID ");
+		sqlBuff.append("  AND usr_role.UM_ROLE_ID = ");
+		sqlBuff.append("    (SELECT role.UM_ID " );
+		sqlBuff.append("     FROM " ).append(  OparatorTable.UM_ROLE.getTObject() ).append(  " role ");
+		sqlBuff.append("     WHERE role.UM_ROLE_NAME =?)");
+
+        String sql = sqlBuff.toString();
 
         ArrayList<String> adminUserList = new ArrayList<String>();
 
         try {
             connection =DbUtils.getDbConnection(DataSourceNames.WSO2UM_DB);
             ps = connection.prepareStatement(sql);
+			ps.setString(1,"admin");
             results = ps.executeQuery();
             while (results.next()) {
                 adminUserList.add(results.getString("um_user_name"));
@@ -706,11 +717,11 @@ public class BlackListWhiteListDAO {
 			results = ps.executeQuery();
 			while (results.next()) {
 				AppObject app = new AppObject();
-				app.setApp_id(results.getInt("application_id"));
-				app.setApp_name(results.getString("APP_NAME"));
-				app.setAccess_token(results.getString("ACCESS_TOKEN"));
-				app.setConsumer_key(results.getString("consumer_key"));
-				app.setConsmer_secret(results.getString("consumer_secret"));
+				app.setAppId(results.getInt("application_id"));
+				app.setAppName(results.getString("APP_NAME"));
+				app.setAccessToken(results.getString("ACCESS_TOKEN"));
+				app.setConsumerKey(results.getString("consumer_key"));
+				app.setConsmerSecret(results.getString("consumer_secret"));
 				appList.add(app);
 			}
 			return appList;
@@ -735,10 +746,10 @@ public class BlackListWhiteListDAO {
 			results = ps.executeQuery();
 			while (results.next()) {
 				AppObject app = new AppObject();
-				app.setApp_id(results.getInt("application_id"));
-				app.setApp_name(results.getString("APP_NAME"));
-				app.setConsumer_key(results.getString("consumer_key"));
-				app.setConsmer_secret(results.getString("consumer_secret"));
+				app.setAppId(results.getInt("application_id"));
+				app.setAppName(results.getString("APP_NAME"));
+				app.setConsumerKey(results.getString("consumer_key"));
+				app.setConsmerSecret(results.getString("consumer_secret"));
 				appList.add(app);
 			}
 			return appList;
