@@ -139,4 +139,55 @@ public class SQLConstants {
 			"SELECT wh.msisdn FROM subscription_whitelist wh,"+DbUtils.getDbNames().get(DataSourceNames.WSO2AM_DB)+".AM_SUBSCRIPTION sub " +
 			"where sub.created_by=? and wh.api_id=? and wh.application_id=? and wh.subscriptionId=sub.subscription_Id ";
 
+	public static final String GET_SP_NAMES = "SELECT distinct(authz_user) from" +
+			"  (SELECT ac.authz_user" +
+			"   FROM " + OparatorTable.IDN_OAUTH2_ACCESS_TOKEN + " ac, " + OparatorTable.IDN_OAUTH_CONSUMER_APPS + " ca, " +
+			OparatorTable.AM_APPLICATION.getTObject() + " am, " +
+			OparatorTable.AM_APPLICATION_KEY_MAPPING.getTObject() + " km" +
+			"   WHERE ac .CONSUMER_KEY_ID = ca.ID" +
+			"     AND km .application_id = am.application_id" +
+			"     AND km .consumer_key = ca.consumer_key" +
+			"     AND ac .authz_user = ca.username" +
+			"     AND user_type = 'APPLICATION'" +
+			"     AND token_State = 'Active') AS dummy";
+
+	public static final String GET_ADMIN_USERS = "SELECT usr.um_user_name " +
+			"FROM " + OparatorTable.UM_USER.getTObject() + " usr, " + OparatorTable.UM_USER_ROLE.getTObject() + " usr_role " +
+			"WHERE usr.UM_ID = usr_role.UM_USER_ID " +
+			"  AND usr_role.UM_ROLE_ID = " +
+			"    (SELECT role.UM_ID " +
+			"     FROM " + OparatorTable.UM_ROLE.getTObject() + " role " +
+			"     WHERE role.UM_ROLE_NAME = 'admin')";
+
+	public static final String GET_SP_APPS = "select am.application_id,ca.APP_NAME,ac.authz_user,ac.ACCESS_TOKEN," +
+			"ca.consumer_key,ca.consumer_secret from " +
+			OparatorTable.IDN_OAUTH2_ACCESS_TOKEN.getTObject() + " ac, " +
+			OparatorTable.IDN_OAUTH_CONSUMER_APPS.getTObject() + " ca, " +
+			OparatorTable.AM_APPLICATION.getTObject() + " am, " +
+			OparatorTable.AM_APPLICATION_KEY_MAPPING + " km " +
+			"where ac.consumer_key_id=ca.id and km.application_id=am.application_id  " +
+			"and km.consumer_key=ca.consumer_key and ac.authz_user=ca.username and user_type='APPLICATION' " +
+			"and token_State='Active' and authz_user = ?";
+
+	public  static final  String GET_BLACKLISTED_SP_LIST = "SELECT DISTINCT ( username ) " +
+			"FROM   ((SELECT ca.username " +
+			"         FROM   idn_identity_user_data iud, " +
+			"                idn_oauth_consumer_apps ca " +
+			"         WHERE  data_key = 'http://wso2.org/claims/identity/accountlocked' " +
+            "                AND iud.DATA_VALUE = 'true'                                " +
+			"                AND ca.username = iud.user_name " +
+			"                AND ca.grant_types = '')) AS r ";
+
+	public static final String GET_BLACKLISTED_SP_APPS = "SELECT am.application_id, " +
+			"       ca.app_name, " +
+			"       ca.consumer_key, " +
+			"       ca.consumer_secret " +
+			"FROM   idn_oauth_consumer_apps ca, " +
+			"       am_application am, " +
+			"       am_application_key_mapping km " +
+			"WHERE  km.application_id = am.application_id " +
+			"       AND km.consumer_key = ca.consumer_key " +
+			"       AND ca.grant_types = '' " +
+			"       AND ca.username = ? ";
+
 }

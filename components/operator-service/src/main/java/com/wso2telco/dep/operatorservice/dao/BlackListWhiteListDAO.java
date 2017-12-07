@@ -21,6 +21,8 @@ import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.util.DataSourceNames;
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.dep.oneapivalidation.util.MsisdnDTO;
+import com.wso2telco.dep.operatorservice.AppObject;
+import com.wso2telco.dep.operatorservice.exception.OperatorServiceException;
 import com.wso2telco.dep.operatorservice.model.MSISDNSearchDTO;
 import com.wso2telco.dep.operatorservice.model.MSISDNValidationDTO;
 import com.wso2telco.dep.operatorservice.util.BlacklistWhitelistConstants;
@@ -40,10 +42,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class BlackListWhiteListDAO {
 
@@ -104,7 +103,6 @@ public class BlackListWhiteListDAO {
 
 	}
 
-
 	public List<MsisdnDTO> loadSubscriptionsForAlreadyWhiteListedMSISDN(String subscriptionID) throws SQLException {
 		String sql = SQLConstants.GET_WHITE_LIST_MSISDNS_FOR_SUBSCRIPTION;
 		Connection conn = null;
@@ -129,11 +127,11 @@ public class BlackListWhiteListDAO {
 			log.error(e);
 		} finally {
 			DbUtils.closeAllConnections(ps, conn, rs);
+
 		}
 
 		return returnList;
 	}
-
 
 	public List<MsisdnDTO> getBlacklisted(String apiId) throws Exception {
 
@@ -441,6 +439,7 @@ public class BlackListWhiteListDAO {
 			ps = connection.prepareStatement(sqlQuery);
 			result = ps.executeQuery();
 
+
 			List<String> subscriberList = new ArrayList<String>();
 			while (result.next()) {
 				String userId = result.getString("USER_ID");
@@ -628,6 +627,160 @@ public class BlackListWhiteListDAO {
 		} finally {
             DbUtils.closeAllConnections(ps, connection, result);
         }
+	}
+
+	/**
+	 * Generate sp list.
+	 *
+	 * @return the array list
+	 * @throws Exception the exception
+	 */
+	public List<String> generateSPNameList() throws Exception {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet results = null;
+		String sql = SQLConstants.GET_SP_NAMES;
+
+		ArrayList<String> spList = new ArrayList<String>();
+
+		try {
+			connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+			ps = connection.prepareStatement(sql);
+			results = ps.executeQuery();
+			while (results.next()) {
+			    spList.add(results.getString("authz_user"));
+			}
+			return spList;
+		} catch (Exception e) {
+			throw new BusinessException(OparatorError.INTERNAL_SERVER_ERROR);
+		} finally {
+			DbUtils.closeAllConnections(ps, connection, results);
+		}
+	}
+
+    /**
+     * Gets list of users with manage-app-admin role assigned to them
+     */
+
+    public List<String> getAdminUsers() throws Exception {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet results = null;
+
+        StringBuilder sqlBuff = new StringBuilder();
+        sqlBuff.append("SELECT usr.um_user_name " );
+		sqlBuff.append("		FROM " ).append(  OparatorTable.UM_USER.getTObject() ).append(  " usr, ");
+		sqlBuff.append(  OparatorTable.UM_USER_ROLE.getTObject()).append(  " usr_role " );
+		sqlBuff.append("WHERE usr.UM_ID = usr_role.UM_USER_ID ");
+		sqlBuff.append("  AND usr_role.UM_ROLE_ID = ");
+		sqlBuff.append("    (SELECT role.UM_ID " );
+		sqlBuff.append("     FROM " ).append(  OparatorTable.UM_ROLE.getTObject() ).append(  " role ");
+		sqlBuff.append("     WHERE role.UM_ROLE_NAME =?)");
+
+        String sql = sqlBuff.toString();
+
+        ArrayList<String> adminUserList = new ArrayList<String>();
+
+        try {
+            connection =DbUtils.getDbConnection(DataSourceNames.WSO2UM_DB);
+            ps = connection.prepareStatement(sql);
+			ps.setString(1,"admin");
+            results = ps.executeQuery();
+            while (results.next()) {
+                adminUserList.add(results.getString("um_user_name"));
+            }
+            return adminUserList;
+        } catch (Exception e) {
+            throw new BusinessException(OparatorError.INTERNAL_SERVER_ERROR);
+        } finally {
+            DbUtils.closeAllConnections(ps, connection, results);
+        }
+    }
+
+	/**
+	 * Gets the list of apps belonging to a particular SP
+	 *
+	 * @param spName Service Provider's name
+	 */
+
+	public List<AppObject> getSPApps(String spName) throws OperatorServiceException {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet results = null;
+		String sql = SQLConstants.GET_SP_APPS;
+		List<AppObject> appList = new ArrayList<AppObject>();
+
+		try {
+			connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+			ps = connection.prepareStatement(sql);
+			ps.setString(1, spName);
+			results = ps.executeQuery();
+			while (results.next()) {
+				AppObject app = new AppObject();
+				app.setAppId(results.getInt("application_id"));
+				app.setAppName(results.getString("APP_NAME"));
+				app.setAccessToken(results.getString("ACCESS_TOKEN"));
+				app.setConsumerKey(results.getString("consumer_key"));
+				app.setConsmerSecret(results.getString("consumer_secret"));
+				appList.add(app);
+			}
+			return appList;
+		} catch (Exception e) {
+			throw new OperatorServiceException(e);
+		} finally {
+			DbUtils.closeAllConnections(ps, connection, results);
+		}
+	}
+
+	public List<AppObject> getBlacklistedSpApps(String spName) throws OperatorServiceException {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet results = null;
+		String sql = SQLConstants.GET_BLACKLISTED_SP_APPS;
+		List<AppObject> appList = new ArrayList<AppObject>();
+
+		try {
+			connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+			ps = connection.prepareStatement(sql);
+			ps.setString(1, spName);
+			results = ps.executeQuery();
+			while (results.next()) {
+				AppObject app = new AppObject();
+				app.setAppId(results.getInt("application_id"));
+				app.setAppName(results.getString("APP_NAME"));
+				app.setConsumerKey(results.getString("consumer_key"));
+				app.setConsmerSecret(results.getString("consumer_secret"));
+				appList.add(app);
+			}
+			return appList;
+		} catch (Exception e) {
+			throw new OperatorServiceException(e);
+		} finally {
+			DbUtils.closeAllConnections(ps, connection, results);
+		}
+	}
+
+	public List<String> getBlacklistedSPList() throws OperatorServiceException {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet results = null;
+		String sql = SQLConstants.GET_BLACKLISTED_SP_LIST;
+
+		ArrayList<String> blacklistedSpList = new ArrayList<String>();
+
+		try {
+			connection =DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+			ps = connection.prepareStatement(sql);
+			results = ps.executeQuery();
+			while (results.next()) {
+				blacklistedSpList.add(results.getString("USERNAME"));
+			}
+			return blacklistedSpList;
+		} catch (Exception e) {
+			throw new OperatorServiceException(e);
+		} finally {
+			DbUtils.closeAllConnections(ps, connection, results);
+		}
 	}
 
 	private String stripDomain(String userId){

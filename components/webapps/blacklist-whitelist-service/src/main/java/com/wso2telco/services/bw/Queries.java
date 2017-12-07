@@ -16,11 +16,11 @@
 
 package com.wso2telco.services.bw;
 
-import com.google.gson.Gson;
-import com.google.gson.GsonBuilder;
+import com.google.gson.*;
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.msisdnvalidator.InvalidMSISDNException;
 import com.wso2telco.dep.bw.model.RequestError;
+import com.wso2telco.dep.operatorservice.exception.OperatorServiceException;
 import com.wso2telco.dep.operatorservice.model.BlackListDTO;
 import com.wso2telco.dep.operatorservice.model.MSISDNSearchDTO;
 import com.wso2telco.dep.operatorservice.model.ProvisionReq;
@@ -29,7 +29,8 @@ import com.wso2telco.dep.operatorservice.service.BlackListWhiteListService;
 import com.wso2telco.dep.operatorservice.service.OparatorService;
 import com.wso2telco.dep.operatorservice.util.APIError;
 import com.wso2telco.services.bw.entity.*;
-import org.apache.log4j.Logger;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
@@ -44,7 +45,8 @@ import java.util.List;
 @Path("/queries")
 public class Queries {
 
-	private static final Logger LOG = Logger.getLogger(Queries.class.getName());
+	private static final Log LOG = LogFactory.getLog(Queries.class);
+
 	@Context
 	private UriInfo context;
 
@@ -57,8 +59,8 @@ public class Queries {
 	}
 
 	/**
+	 * @deprecated
 	 * GET method for creating an instance of QueriesResource
-	 *
 	 * @param address,requestedAccuracy
 	 *            representation for the new resource
 	 * @return an HTTP response with content of the created resource
@@ -182,7 +184,7 @@ public class Queries {
 	}
 
 	private String[] removeNullMsisdnValues(String[] msisdnList) {
-		List<String> list = new ArrayList<String>(Arrays.asList(msisdnList));
+		List<String> list = new ArrayList<>(Arrays.asList(msisdnList));
 		list.removeAll(Collections.singleton(null));
 		return list.toArray(new String[list.size()]);
 	}
@@ -276,6 +278,7 @@ public class Queries {
 	}
 
 	/**
+	 * @deprecated
 	 * GET method for creating an instance of QueriesResource
 	 *
 	 * @param address,requestedAccuracy
@@ -454,6 +457,64 @@ public class Queries {
 		return Response.status(Response.Status.OK).entity(jsonString).build();
 	}
 
+	@GET
+	@Path("/sp/list")
+	@Produces("application/json")
+	public Response getSPNameList() throws OperatorServiceException {
+
+		return Response.status(Response.Status.OK).entity(blackListWhiteListService.getSPNameList()).build();
+	}
+
+	@GET
+	@Path("/sp/blacklist")
+	@Produces("application/json")
+	public Response getBlacklistedSpList() throws OperatorServiceException {
+
+		return Response.status(Response.Status.OK).entity(blackListWhiteListService.getBlacklistedSPList()).build();
+	}
+
+	@POST
+	@Path("/sp/blacklist")
+	@Consumes("application/json")
+	@Produces("application/json")
+	public Response blacklistSP(String jsonBody) throws OperatorServiceException {
+		Gson gson = new Gson();
+		try {
+			JsonElement jelement = new JsonParser().parse(jsonBody);
+			JsonObject jobject = jelement.getAsJsonObject();
+			if (jobject.has("SPName")) {
+				blackListWhiteListService.blacklistSP(jobject.get("SPName").getAsString());
+			} else {
+				return Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson("Invalid request")).build();
+			}
+			return Response.status(Response.Status.OK).build();
+
+		} catch (OperatorServiceException e) {
+			LOG.error("",e);
+			return Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson(e)).build();
+		}
+	}
+
+	@POST
+	@Path("/sp/blacklist/remove")
+	@Consumes("application/json")
+	@Produces("application/json")
+	public Response removeBlacklistedSP(String jsonBody) throws OperatorServiceException {
+		Gson gson = new Gson();
+		try {
+			JsonElement jelement = new JsonParser().parse(jsonBody);
+			JsonObject jobject = jelement.getAsJsonObject();
+			if (jobject.has("SPName")) {
+				blackListWhiteListService.removeblacklistedSP(jobject.get("SPName").getAsString());
+			} else {
+				return Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson("Invalid request")).build();
+			}
+			return Response.status(Response.Status.OK).build();
+		} catch (OperatorServiceException e) {
+			LOG.error("",e);
+			return Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson(e)).build();
+		}
+	}
 
 	@GET
 	@Path("/GetWhiteList/{userId}/{apiId}/{appId}")
