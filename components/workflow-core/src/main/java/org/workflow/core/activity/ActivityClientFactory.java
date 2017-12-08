@@ -7,7 +7,9 @@ import java.util.Map;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.workflow.core.WorkflowErrorDecoder;
+import org.workflow.core.restclient.RateRestClient;
 import org.workflow.core.util.WorkFlowHealper;
+import org.wso2.carbon.apimgt.impl.APIManagerConfiguration;
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.user.api.UserStoreException;
 
@@ -26,6 +28,8 @@ public class ActivityClientFactory {
 	private   String password;
 	private Map<String,RestClient> restClientMap ;
 	private static ActivityClientFactory instance;
+	final private String defaultHost="http://localhost";
+	final private String defaultPort;
 
 	/**
 	 * private constructor limits the unwonted object creation.Admin username & password
@@ -44,8 +48,9 @@ public class ActivityClientFactory {
 			         .getUserRealm()
 			         .getRealmConfiguration().getAdminPassword();
 			
-			
 			restClientMap = new HashMap<String,RestClient> ();
+			defaultPort = System.getProperty("carbon.http.port");
+			
 		} catch (UserStoreException e) {
 			log.error("error at static initializer ActivityClientFactory ",e);
 			throw new BusinessException(e);
@@ -57,6 +62,31 @@ public class ActivityClientFactory {
 		}
 		return instance;
 	}
+	
+	
+	/**
+	 * return a feign http client with for activity  workflow
+	 * @return
+	 */
+
+	public RateRestClient getRateClient() {
+
+		RateRestClient appClient = Feign.builder().encoder(new JacksonEncoder())
+				.decoder(new JacksonDecoder())
+				.errorDecoder(new WorkflowErrorDecoder())
+				.requestInterceptor(new BasicAuthRequestInterceptor(username, password))
+//				.logger(new Logger.JavaLogger().appendToFile("/install/wso2telcohub-2.2.1-SNAPSHOT/repository/logs/wso2carbon.log"))
+//                .logLevel(feign.Logger.Level.FULL)
+				.target(RateRestClient.class,defaultHost+":"+defaultPort);
+		
+
+		
+		return appClient;
+	
+	}
+	
+	
+	
 	/**
 	 * return a feign http client with for activity  workflow
 	 * @return
@@ -74,6 +104,7 @@ public class ActivityClientFactory {
 //                    .logLevel(feign.Logger.Level.FULL)
 					.requestInterceptor(new ProcessTypeInterCeptor(processDefinitionKey))
 					.target(RestClient.class, WorkFlowHealper.getInstance().getWorkflowServiceEndPoint());
+			
 
 			restClientMap.put( processDefinitionKey.trim(), appClient);
 			
