@@ -6,9 +6,9 @@ import com.wso2telco.core.dbutils.util.ApprovalRequest;
 import com.wso2telco.core.dbutils.util.AssignRequest;
 import com.wso2telco.core.dbutils.util.Callback;
 import org.apache.commons.logging.Log;
-import org.workflow.core.activity.ActivityClientFactory;
+import org.workflow.core.activity.ActivityRestClient;
 import org.workflow.core.activity.ProcessSearchRequest;
-import org.workflow.core.activity.RestClient;
+import org.workflow.core.activity.RestClientFactory;
 import org.workflow.core.activity.TaskAssignRequest;
 import org.workflow.core.execption.WorkflowExtensionException;
 import org.workflow.core.model.*;
@@ -59,8 +59,9 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
     }
 
     public TaskList executeRequest(ProcessSearchRequest processRequest) throws BusinessException {
-        RestClient activityClient = ActivityClientFactory.getInstance().getClient(getProcessDefinitionKey());
         TaskList taskList = null;
+        ActivityRestClient activityClient = RestClientFactory.getInstance().getClient(getProcessDefinitionKey());
+
         try {
             taskList = activityClient.getTasks(processRequest);
 
@@ -177,7 +178,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
         TaskAssignRequest request = new TaskAssignRequest();
         request.setAction("claim");
         request.setAssignee(assignee.toLowerCase());
-        RestClient activityClient = ActivityClientFactory.getInstance().getClient(getProcessDefinitionKey());
+        ActivityRestClient activityClient = RestClientFactory.getInstance().getClient(getProcessDefinitionKey());
         try {
             activityClient.assignTask(assignRequest.getTaskId(), request);
             return new Callback().setPayload(null).setSuccess(true).setMessage(Messages.TASK_APPROVAL_SUCCESS.getValue());

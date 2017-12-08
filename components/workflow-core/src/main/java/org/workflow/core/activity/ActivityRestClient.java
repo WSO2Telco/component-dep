@@ -8,7 +8,7 @@ import org.workflow.core.model.TaskDetailsResponse;
 import org.workflow.core.model.TaskList;
 import org.workflow.core.model.TaskVariableResponse;
 
-public interface RestClient {
+public interface ActivityRestClient {
 
     @RequestLine("POST query/tasks")
     @Headers("Content-Type: application/json")
