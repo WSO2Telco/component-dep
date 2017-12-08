@@ -4,9 +4,9 @@ import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.util.ApprovalRequest;
 import com.wso2telco.core.dbutils.util.Callback;
 import org.apache.commons.logging.LogFactory;
-import org.workflow.core.activity.ActivityClientFactory;
+import org.workflow.core.activity.RestClientFactory;
 import org.workflow.core.activity.TaskApprovalRequest;
-import org.workflow.core.activity.RestClient;
+import org.workflow.core.activity.ActivityRestClient;
 import org.workflow.core.execption.WorkflowExtensionException;
 import org.workflow.core.model.RequestVariable;
 import org.workflow.core.util.DeploymentTypes;
@@ -42,7 +42,7 @@ class HubSubRequestBuilder extends AbstractSubRequestBuilder {
     @Override
     protected Callback buildApprovalRequest(ApprovalRequest request) throws BusinessException {
         List<RequestVariable> variables = new ArrayList();
-        RestClient activityClient = ActivityClientFactory.getInstance().getClient(getProcessDefinitionKey());
+        ActivityRestClient activityClient = RestClientFactory.getInstance().getClient(getProcessDefinitionKey());
         boolean isAdmin = true; //dummy variable
         final String type = "string";
         final String user = "admin";

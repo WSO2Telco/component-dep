@@ -22,12 +22,12 @@ import feign.auth.BasicAuthRequestInterceptor;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
 
-public class ActivityClientFactory {
-	private  Log    log = LogFactory.getLog(ActivityClientFactory.class);
+public class RestClientFactory {
+	private  Log    log = LogFactory.getLog(RestClientFactory.class);
 	private  String username;
 	private   String password;
-	private Map<String,RestClient> restClientMap ;
-	private static ActivityClientFactory instance;
+	private Map<String,ActivityRestClient> restClientMap ;
+	private static RestClientFactory instance;
 	final private String defaultHost="http://localhost";
 	final private String defaultPort;
 
@@ -36,7 +36,7 @@ public class ActivityClientFactory {
 	 * are initialize at the object creation
 	 * @throws UserStoreException
 	 */
-	private ActivityClientFactory() throws BusinessException{
+	private RestClientFactory() throws BusinessException{
 		try {
 			username=  CarbonContext
 			         .getThreadLocalCarbonContext()
@@ -48,7 +48,7 @@ public class ActivityClientFactory {
 			         .getUserRealm()
 			         .getRealmConfiguration().getAdminPassword();
 			
-			restClientMap = new HashMap<String,RestClient> ();
+			restClientMap = new HashMap<String,ActivityRestClient> ();
 			defaultPort = System.getProperty("carbon.http.port");
 			
 		} catch (UserStoreException e) {
@@ -56,9 +56,9 @@ public class ActivityClientFactory {
 			throw new BusinessException(e);
 		}
 	}
-	public static ActivityClientFactory getInstance() throws BusinessException {
+	public static RestClientFactory getInstance() throws BusinessException {
 		if(instance==null) {
-			instance =new ActivityClientFactory();
+			instance =new RestClientFactory();
 		}
 		return instance;
 	}
@@ -92,18 +92,18 @@ public class ActivityClientFactory {
 	 * @return
 	 */
 
-	public RestClient getClient(final String processDefinitionKey) {
+	public ActivityRestClient getClient(final String processDefinitionKey) {
 		if(restClientMap.containsKey(processDefinitionKey.trim() )) {
 			return restClientMap.get( processDefinitionKey.trim());
 		}else {
-			RestClient appClient = Feign.builder().encoder(new JacksonEncoder())
+			ActivityRestClient appClient = Feign.builder().encoder(new JacksonEncoder())
 					.decoder(new JacksonDecoder())
 					.errorDecoder(new WorkflowErrorDecoder())
 					.requestInterceptor(new BasicAuthRequestInterceptor(username, password))
 //					.logger(new Logger.JavaLogger().appendToFile("/install/wso2telcohub-2.2.1-SNAPSHOT/repository/logs/wso2carbon.log"))
 //                    .logLevel(feign.Logger.Level.FULL)
 					.requestInterceptor(new ProcessTypeInterCeptor(processDefinitionKey))
-					.target(RestClient.class, WorkFlowHealper.getInstance().getWorkflowServiceEndPoint());
+					.target(ActivityRestClient.class, WorkFlowHealper.getInstance().getWorkflowServiceEndPoint());
 			
 
 			restClientMap.put( processDefinitionKey.trim(), appClient);
