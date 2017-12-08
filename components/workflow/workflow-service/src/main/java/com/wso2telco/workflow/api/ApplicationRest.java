@@ -54,6 +54,23 @@ public class ApplicationRest {
     }
 
     @GET
+    @Path("/search/{assignee}")
+    public Response load(@HeaderParam("authorization") String authHeader, @QueryParam("batchSize") int batchSize,
+                         @QueryParam("start") int start, @QueryParam("orderBy") String orderBy,
+                         @QueryParam("sortBy") String sortBy, @QueryParam("filterBy") String filterBy, @PathParam("assignee") String assignee) {
+        try {
+            WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
+            TaskSearchDTO serchD = new TaskSearchDTO();
+            UserProfileDTO userProfileDTO = new UserProfileDTO();
+            userProfileDTO.setUserName("admin");
+            Callback callback = workFlowDelegator.getPendingAssignedApplicationApprovals(serchD, userProfileDTO, assignee);
+            return Response.status(Response.Status.OK).entity(callback).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @GET
     @Path("/graph")
     public Response loadGraph(@HeaderParam("authorization") String authHeader) {
         try {

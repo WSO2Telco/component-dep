@@ -6,7 +6,10 @@ import com.wso2telco.core.dbutils.util.ApprovalRequest;
 import com.wso2telco.core.dbutils.util.AssignRequest;
 import com.wso2telco.core.dbutils.util.Callback;
 import org.apache.commons.logging.Log;
-import org.workflow.core.activity.*;
+import org.workflow.core.activity.ActivityClientFactory;
+import org.workflow.core.activity.ProcessSearchRequest;
+import org.workflow.core.activity.RestClient;
+import org.workflow.core.activity.TaskAssignRequest;
 import org.workflow.core.execption.WorkflowExtensionException;
 import org.workflow.core.model.*;
 import org.workflow.core.util.AppVariable;
@@ -29,7 +32,10 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 
     protected abstract DeploymentTypes getDeployementType();
 
-    protected abstract Callback buildResponse(final TaskSearchDTO searchDTO, final TaskList taskList,
+    protected abstract Callback buildMyTaskResponse(final TaskSearchDTO searchDTO, final TaskList taskList,
+                                              final UserProfileDTO userProfile) throws BusinessException;
+
+    protected abstract Callback buildAllTaskResponse(final TaskSearchDTO searchDTO, final TaskList taskList,
                                               final UserProfileDTO userProfile) throws BusinessException;
 
     protected abstract Callback getHistoricalData(String user, List<Range> months, List<String> xAxisLabels) throws BusinessException;
@@ -38,23 +44,37 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 
     public Callback searchPending(TaskSearchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException {
         ProcessSearchRequest processRequest = buildSearchRequest(searchDTO, userProfile);
-        TaskList taskList = null;
+        processRequest.setCandidateGroup("admin");
+        TaskList taskList = executeRequest(processRequest);
+        return buildMyTaskResponse(searchDTO, taskList, userProfile);
 
+    }
+
+    @Override
+    public Callback searchPending(TaskSearchDTO searchDTO, UserProfileDTO userProfile, String assigenee) throws BusinessException {
+        ProcessSearchRequest processRequest = buildSearchRequest(searchDTO, userProfile);
+        processRequest.setAssignee(assigenee);
+        TaskList taskList = executeRequest(processRequest);
+        return buildAllTaskResponse(searchDTO, taskList, userProfile);
+    }
+
+    public TaskList executeRequest(ProcessSearchRequest processRequest) throws BusinessException {
         RestClient activityClient = ActivityClientFactory.getInstance().getClient(getProcessDefinitionKey());
+        TaskList taskList = null;
         try {
             taskList = activityClient.getTasks(processRequest);
 
             for (Task task : taskList.getData()) {
                 TaskVariableResponse[] vars = activityClient.getVariables(String.valueOf(task.getId()));
-                task.setVariable(vars);
+                task.setVariables(vars);
             }
 
         } catch (WorkflowExtensionException e) {
             log.error("", e);
             throw new BusinessException(e);
         }
-        return buildResponse(searchDTO, taskList, userProfile);
 
+        return taskList;
     }
 
     @Override
@@ -63,6 +83,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
         request.setSize(searchDTO.getBatchSize());
         request.setStart(searchDTO.getStart());
         request.setSort(searchDTO.getSortBy());
+        request.setProcessDefinitionKey(getProcessDefinitionKey());
 
         String filterStr = searchDTO.getFilterBy();
         /**

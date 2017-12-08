@@ -2,7 +2,6 @@ package org.workflow.core.model;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 
 public class TaskList implements Serializable {

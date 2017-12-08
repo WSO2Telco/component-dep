@@ -11,6 +11,7 @@ import org.workflow.core.model.TaskSearchDTO;
 public interface WorkFlowProcessor {
 	ProcessSearchRequest buildSearchRequest(final TaskSearchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException;
 	public Callback searchPending(TaskSearchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException ;
+	public Callback searchPending(TaskSearchDTO searchDTO, final UserProfileDTO userProfile, String assigenee) throws BusinessException ;
 	public Callback getGraphData(final UserProfileDTO userProfile) throws BusinessException;
 	public Callback approveTask(final ApprovalRequest approvalRequest) throws BusinessException;
 	public Callback assignTask(final AssignRequest assignRequest) throws BusinessException;
