@@ -17,6 +17,7 @@ package com.wso2telco.dep.verificationhandler.verifier;
 
 
 import com.google.gson.Gson;
+import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.dep.verificationhandler.model.smsmessaging.SMSMessagingRequestWrap;
 import com.wso2telco.dep.verificationhandler.model.ussd.InboundUSSDMessageRequestWrap;
 import com.wso2telco.dep.verificationhandler.model.ussd.OutboundUSSDRequestWrap;
@@ -25,6 +26,7 @@ import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.OMFactory;
 import org.apache.axiom.om.OMNamespace;
 import org.apache.axis2.Constants;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.ManagedLifecycle;
@@ -45,6 +47,7 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import java.util.regex.Matcher;
@@ -102,6 +105,17 @@ public class BlacklistHandler extends AbstractHandler implements ManagedLifecycl
 	//Entry point for the blacklist Module
 	public boolean handleRequest(MessageContext messageContext) {
 
+		ValidationRegexDTO validationRegexDTO = null;
+
+		try {
+			validationRegexDTO = ValidationRegexClient.getValidationRegex();
+		} catch (BusinessException e) {
+			log.error("Error in retrieving validation Regex", e);
+			return false;
+		}
+
+		String msisdnRegex = validationRegexDTO.getValidationRegex();
+
 		String resourceUrl = (String) messageContext.getProperty("REST_FULL_REQUEST_PATH");
 
 		String acr = null;
@@ -151,7 +165,8 @@ public class BlacklistHandler extends AbstractHandler implements ManagedLifecycl
 				SMSMessagingRequestWrap sms = gson.fromJson(jsonPayloadToString, SMSMessagingRequestWrap.class);
 				acr = sms.getOutboundSMSMessageRequest().getAddress().get(0);
 				log.info("API : SMS ; MSISDN : " + acr);
-				if (!ACRModule.getMSISDNFromACR(acr).equals(ACRModule.getMSISDNFromACR(urlMSISDN))) {
+
+				if (!FormatMsisdn.getInstance().splitMsisdn(acr).equalsIgnoreCase(FormatMsisdn.getInstance().splitMsisdn(urlMSISDN))) {
 					log.warn("URL MSISDN not match Body " + urlMSISDN + ":" + acr);
 				}
 
@@ -200,8 +215,19 @@ public class BlacklistHandler extends AbstractHandler implements ManagedLifecycl
 			log.info("Undefined API URL obtained:" + resourceUrl);
 		}
 
-		String userMSISDN = ACRModule.getMSISDNFromACR(acr);
-		log.info("Get MSISDN for Blacklist Handle: " + userMSISDN);
+		Pattern pattern = Pattern.compile(msisdnRegex);
+		Matcher matcher = pattern.matcher(acr);
+
+		String formattedPhoneNumber = null;
+		if (matcher.matches()) {
+			formattedPhoneNumber = matcher.group(Integer.parseInt(validationRegexDTO.getDigitsGroup()));
+		} else {
+			log.error("Entered Msisdn does not match with given regex: " + validationRegexDTO.getValidationRegex());
+			handleValidationResponse(messageContext, validationRegexDTO.getValidationRegex());
+			return false;
+		}
+
+		log.info("Get MSISDN for Blacklist Handle: " + formattedPhoneNumber);
 		String appID = messageContext.getProperty("api.ut.application.id").toString();
 
 		String apiID = null;
@@ -218,23 +244,40 @@ public class BlacklistHandler extends AbstractHandler implements ManagedLifecycl
 
 		//If blacklisted number error response is sent in the response
 		try {
-			if (isBlackListNumber(userMSISDN, apiID)) {
-				log.info(userMSISDN + " is BlackListed number for " + apiName + " API");
-				hadleBlakListResponse(messageContext);
-			} else if (msisdns != null) {
-				try {
-					log.info("Multiple MSISDN");
-					for (String cur : msisdns) {
-						cur = ACRModule.getMSISDNFromACR(cur);
-						if (isBlackListNumber(cur, apiID)) {
-							log.info("BlackListed number : " + cur);
-							hadleBlakListResponse(messageContext);
-							break;
-						}
-					}
-				} catch (Exception e) {
-					log.error("Multiple MSISDN ERROR " + e.getMessage());
+
+			if (msisdns != null || formattedPhoneNumber != null) {
+				log.info(formattedPhoneNumber + " is BlackListed number for " + apiName + " API");
+
+				List<String> tempMSISDNLIST = new ArrayList<String>();
+
+				if(formattedPhoneNumber!=null && formattedPhoneNumber.trim().length()>0){
+					tempMSISDNLIST.add(formattedPhoneNumber.trim());
 				}
+
+				if(msisdns!=null && !msisdns.isEmpty()){
+					for (String cur: msisdns) {
+						Matcher numbers = pattern.matcher(cur);
+						if (numbers.matches()) {
+							cur =  numbers.group(Integer.parseInt(validationRegexDTO.getDigitsGroup()));
+						} else {
+							log.error("Entered Msisdn does not match with given regex: " + validationRegexDTO.getValidationRegex());
+							handleValidationResponse(messageContext, validationRegexDTO.getValidationRegex());
+							return false;
+						}
+						tempMSISDNLIST.add(cur);
+					}
+				}
+
+				String cvsMSisdn= StringUtils.join(tempMSISDNLIST,",");
+
+				Set<String> blacklisted = DatabaseUtils.getInstance().getblacklisted(apiID,cvsMSisdn);
+
+				tempMSISDNLIST.forEach((item)->{
+
+					if(blacklisted.contains(item)){
+						hadleBlakListResponse(messageContext);
+					}
+				});
 
 			} else {
 				log.info("MSISDN/MSISDNs not blacklisted ");
@@ -281,6 +324,35 @@ public class BlacklistHandler extends AbstractHandler implements ManagedLifecycl
 		Utils.sendFault(messageContext, status);
 	}
 
+	/**
+	 * Handling Error Validaiton Error Response
+	 * @param messageContext
+	 * @param message
+	 */
+	private void handleValidationResponse(MessageContext messageContext, String message) {
+		messageContext.setProperty(SynapseConstants.ERROR_CODE, "POL0001:");
+		messageContext.setProperty(SynapseConstants.ERROR_MESSAGE, "Internal Server Error. Validation Service");
+		int status = 500;
+		OMElement errorPayload = PayloadFactory.getInstance().getErrorPayload(status, message, "Validation Regex Does not matched");
+
+		org.apache.axis2.context.MessageContext axis2MC = ((Axis2MessageContext) messageContext)
+				.getAxis2MessageContext();
+		try {
+			RelayUtils.buildMessage(axis2MC);
+		} catch (IOException | XMLStreamException e) {
+			log.error("Error occurred while building the message", e);
+		}
+		axis2MC.setProperty(Constants.Configuration.MESSAGE_TYPE, "application/soap+xml");
+		if (messageContext.isDoingPOX() || messageContext.isDoingGET()) {
+			Utils.setFaultPayload(messageContext, errorPayload);
+		} else {
+			Utils.setSOAPFault(messageContext, "Client", "Authentication Failure", "Not a whitelisted Number");
+		}
+
+		messageContext.setProperty("error_message_type", "application/json");
+		Utils.sendFault(messageContext, status);
+	}
+
 
 	/**
 	 * Checks if is black list number.
@@ -291,6 +363,7 @@ public class BlacklistHandler extends AbstractHandler implements ManagedLifecycl
 	 * @throws SQLException    the SQL exception
 	 * @throws NamingException the naming exception
 	 */
+	@Deprecated
 	private boolean isBlackListNumber(String msisdn, String apiId) throws SQLException, NamingException {
 		if (blacklistNumbers != null) {
 			blacklistNumbers.clear();

@@ -20,7 +20,9 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.HashSet;
 import java.util.List;
+import java.util.Set;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 import javax.naming.Context;
@@ -40,6 +42,10 @@ import org.wso2.carbon.apimgt.impl.utils.APIMgtDBUtil;
  * The Class DatabaseUtils.
  */
 public class DatabaseUtils {
+
+   private DatabaseUtils(){}
+
+   private static DatabaseUtils instance;
 
     /** The stat datasource. */
     private static volatile DataSource statDatasource = null;
@@ -90,6 +96,14 @@ public class DatabaseUtils {
         }
     }
 
+
+    public static DatabaseUtils getInstance(){
+        if(instance == null) {
+            instance = new DatabaseUtils();
+        }
+        return instance;
+
+    }
     /**
      * Initialize am data source.
      *
@@ -259,7 +273,9 @@ public class DatabaseUtils {
      * @return the list
      * @throws SQLException the SQL exception
      * @throws NamingException the naming exception
+     * @deprecated
      */
+    @Deprecated
     public static List<String> ReadBlacklistNumbers(String apiId) throws SQLException, NamingException {
 
         String sql = "select * from blacklistmsisdn where API_ID = ?";
@@ -296,6 +312,44 @@ public class DatabaseUtils {
         return msisdn;
 
 
+    }
+
+
+    public Set<String> getblacklisted(String apiId, final  String  cvsMsisdns) throws SQLException, NamingException {
+
+        StringBuilder sql = new StringBuilder("select * from blacklistmsisdn ");
+        sql.append(" where API_ID = ?");
+        sql.append(" AND MSISDN in( ").append(cvsMsisdns).append(")");
+
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+
+        Set<String> returnSet= new HashSet<String>();
+
+        try {
+            conn = getStatsDBConnection();
+            ps = conn.prepareStatement(sql.toString());
+            ps.setString(1, apiId);
+
+            rs = ps.executeQuery();
+
+            if (rs != null) {
+                while (rs.next()) {
+                    returnSet.add( rs.getString("MSISDN").trim());
+                }
+            }
+
+        } catch (SQLException e) {
+            log.error("Error occurred while writing southbound record.", e);
+            throw e;
+        } catch (NamingException e) {
+            log.error("Error while finding the Datasource..", e);
+            throw e;
+        } finally {
+            APIMgtDBUtil.closeAllConnections(ps, conn, rs);
+        }
+        return returnSet;
     }
 
     /**
@@ -420,11 +474,6 @@ public class DatabaseUtils {
 
                     whiteListResult = new WhiteListResult();
                     String msisdnTable = rs.getString("msisdn");
-                    if (msisdnTable != null) {
-                        msisdnTable = msisdnTable.replace("tel3A+", "");
-                        msisdnTable = msisdnTable.replace("tel:+", "");
-                        msisdnTable = msisdnTable.replace("tel:", "");
-                    }
 
                     whiteListResult.setApi_id(rs.getString("api_id"));
                     whiteListResult.setApplication_id(rs.getString("application_id"));
