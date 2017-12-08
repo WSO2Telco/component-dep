@@ -52,7 +52,6 @@ public class FormatMsisdn {
         if (matcher.matches()) {
             // extract msisdn without the prefix
             msisdn = matcher.group(Integer.parseInt(validationRegexDTO.getDigitsGroup()));
-            return msisdn;
         }
 
         return msisdn;

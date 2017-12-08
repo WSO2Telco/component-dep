@@ -362,6 +362,7 @@ public class BlacklistHandler extends AbstractHandler implements ManagedLifecycl
 	 * @return true, if is black list number
 	 * @throws SQLException    the SQL exception
 	 * @throws NamingException the naming exception
+	 * @deprecated
 	 */
 	@Deprecated
 	private boolean isBlackListNumber(String msisdn, String apiId) throws SQLException, NamingException {

@@ -334,11 +334,9 @@ public class DatabaseUtils {
 
             rs = ps.executeQuery();
 
-            if (rs != null) {
                 while (rs.next()) {
                     returnSet.add( rs.getString("MSISDN").trim());
                 }
-            }
 
         } catch (SQLException e) {
             log.error("Error occurred while writing southbound record.", e);
