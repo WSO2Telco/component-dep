@@ -16,16 +16,23 @@
 
 package com.wso2telco.workflow.api;
 
-import com.wso2telco.core.dbutils.model.UserProfileDTO;
-import com.wso2telco.core.dbutils.util.ApprovalRequest;
-import com.wso2telco.core.dbutils.util.AssignRequest;
-import com.wso2telco.core.dbutils.util.Callback;
+import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
+import javax.ws.rs.HeaderParam;
+import javax.ws.rs.POST;
+import javax.ws.rs.Path;
+import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.MediaType;
+import javax.ws.rs.core.Response;
+
 import org.workflow.core.model.TaskSearchDTO;
 import org.workflow.core.service.WorkFlowDelegator;
 
-import javax.ws.rs.*;
-import javax.ws.rs.core.MediaType;
-import javax.ws.rs.core.Response;
+import com.wso2telco.core.dbutils.util.ApprovalRequest;
+import com.wso2telco.core.dbutils.util.AssignRequest;
+import com.wso2telco.core.dbutils.util.Callback;
+import com.wso2telco.core.userprofile.dto.UserProfileDTO;
 
 @Path("/subscriptions")
 @Consumes(MediaType.APPLICATION_JSON)

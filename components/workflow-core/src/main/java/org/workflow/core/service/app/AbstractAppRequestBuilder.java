@@ -1,24 +1,37 @@
 package org.workflow.core.service.app;
 
-import com.wso2telco.core.dbutils.exception.BusinessException;
-import com.wso2telco.core.dbutils.model.UserProfileDTO;
-import com.wso2telco.core.dbutils.util.ApprovalRequest;
-import com.wso2telco.core.dbutils.util.Callback;
-import org.workflow.core.activity.RestClientFactory;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Locale;
+import java.util.Map;
+
 import org.workflow.core.activity.ActivityRestClient;
+import org.workflow.core.activity.RestClientFactory;
 import org.workflow.core.activity.TaskApprovalRequest;
 import org.workflow.core.execption.WorkflowExtensionException;
-import org.workflow.core.model.*;
+import org.workflow.core.model.GraphData;
+import org.workflow.core.model.GraphResponse;
+import org.workflow.core.model.Range;
+import org.workflow.core.model.Task;
+import org.workflow.core.model.TaskDetailsResponse;
+import org.workflow.core.model.TaskList;
+import org.workflow.core.model.TaskSearchDTO;
+import org.workflow.core.model.TaskVariableResponse;
 import org.workflow.core.service.AbsractQueryBuilder;
 import org.workflow.core.service.ReturnableResponse;
 import org.workflow.core.util.AppVariable;
 import org.workflow.core.util.DeploymentTypes;
 import org.workflow.core.util.Messages;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import com.wso2telco.core.dbutils.exception.BusinessException;
+import com.wso2telco.core.dbutils.util.ApprovalRequest;
+import com.wso2telco.core.dbutils.util.Callback;
+import com.wso2telco.core.userprofile.dto.UserProfileDTO;
 
 abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
 
