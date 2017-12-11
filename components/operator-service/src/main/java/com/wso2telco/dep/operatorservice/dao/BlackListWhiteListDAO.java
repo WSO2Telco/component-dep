@@ -21,6 +21,8 @@ import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.util.DataSourceNames;
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.dep.oneapivalidation.util.MsisdnDTO;
+import com.wso2telco.dep.operatorservice.AppObject;
+import com.wso2telco.dep.operatorservice.exception.OperatorServiceException;
 import com.wso2telco.dep.operatorservice.model.MSISDNSearchDTO;
 import com.wso2telco.dep.operatorservice.model.MSISDNValidationDTO;
 import com.wso2telco.dep.operatorservice.util.BlacklistWhitelistConstants;
@@ -40,10 +42,7 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Map;
-import java.util.TreeMap;
+import java.util.*;
 
 public class BlackListWhiteListDAO {
 
@@ -104,7 +103,6 @@ public class BlackListWhiteListDAO {
 
 	}
 
-
 	public List<MsisdnDTO> loadSubscriptionsForAlreadyWhiteListedMSISDN(String subscriptionID) throws SQLException {
 		String sql = SQLConstants.GET_WHITE_LIST_MSISDNS_FOR_SUBSCRIPTION;
 		Connection conn = null;
@@ -129,11 +127,11 @@ public class BlackListWhiteListDAO {
 			log.error(e);
 		} finally {
 			DbUtils.closeAllConnections(ps, conn, rs);
+
 		}
 
 		return returnList;
 	}
-
 
 	public List<MsisdnDTO> getBlacklisted(String apiId) throws Exception {
 
@@ -435,7 +433,14 @@ public class BlackListWhiteListDAO {
 		ResultSet result = null;
 
 		try {
-			java.lang.String sqlQuery = SQLConstants.GET_APP_API_USER_SQL;
+			String sqlQuery = new StringBuilder()
+					.append(" SELECT distinct(SUB.USER_ID) AS USER_ID FROM AM_SUBSCRIPTION SUBS, AM_APPLICATION APP,  ")
+					.append("AM_SUBSCRIBER SUB, AM_API API WHERE SUBS.APPLICATION_ID = APP.APPLICATION_ID ")
+					.append("AND APP.SUBSCRIBER_ID = SUB.SUBSCRIBER_ID AND API.API_ID = SUBS.API_ID ")
+					.append("AND SUBS.SUB_STATUS != '")
+					.append(BlacklistWhitelistConstants.SubscriptionStatus.REJECTED)
+					.append("' ")
+					.toString();
 			connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
 
 			ps = connection.prepareStatement(sqlQuery);
@@ -628,6 +633,211 @@ public class BlackListWhiteListDAO {
 		} finally {
             DbUtils.closeAllConnections(ps, connection, result);
         }
+	}
+
+	/**
+	 * Generate sp list.
+	 *
+	 * @return the array list
+	 * @throws Exception the exception
+	 */
+	public List<String> generateSPNameList() throws Exception {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet results = null;
+		String sql = new StringBuilder().append("SELECT distinct(authz_user) from")
+				.append("  (SELECT ac.authz_user")
+				.append("   FROM ")
+				.append(OparatorTable.IDN_OAUTH2_ACCESS_TOKEN)
+				.append(" ac, ")
+				.append(OparatorTable.IDN_OAUTH_CONSUMER_APPS)
+				.append(" ca, ")
+				.append(OparatorTable.AM_APPLICATION.getTObject())
+				.append(" am, ")
+				.append(OparatorTable.AM_APPLICATION_KEY_MAPPING.getTObject())
+				.append(" km")
+				.append("   WHERE ac .CONSUMER_KEY_ID = ca.ID")
+				.append("     AND km .application_id = am.application_id")
+				.append("     AND km .consumer_key = ca.consumer_key")
+				.append("     AND ac .authz_user = ca.username")
+				.append("     AND user_type = 'APPLICATION'")
+				.append("     AND token_State = 'Active') AS dummy")
+				.toString();
+
+		ArrayList<String> spList = new ArrayList<String>();
+
+		try {
+			connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+			ps = connection.prepareStatement(sql);
+			results = ps.executeQuery();
+			while (results.next()) {
+			    spList.add(results.getString("authz_user"));
+			}
+			return spList;
+		} catch (Exception e) {
+			throw new BusinessException(OparatorError.INTERNAL_SERVER_ERROR);
+		} finally {
+			DbUtils.closeAllConnections(ps, connection, results);
+		}
+	}
+
+    /**
+     * Gets list of users with manage-app-admin role assigned to them
+     */
+
+    public List<String> getAdminUsers() throws Exception {
+        Connection connection = null;
+        PreparedStatement ps = null;
+        ResultSet results = null;
+        String sql = new StringBuilder()
+				.append("SELECT usr.um_user_name ")
+				.append("		FROM ").append(OparatorTable.UM_USER.getTObject()).append(" usr, ")
+				.append(OparatorTable.UM_USER_ROLE.getTObject())
+				.append(" usr_role ")
+				.append("WHERE usr.UM_ID = usr_role.UM_USER_ID ")
+				.append("  AND usr_role.UM_ROLE_ID = ")
+				.append("    (SELECT role.UM_ID ")
+				.append("     FROM ")
+				.append(OparatorTable.UM_ROLE.getTObject())
+				.append(" role ")
+				.append("     WHERE role.UM_ROLE_NAME =?)")
+				.toString();
+
+        ArrayList<String> adminUserList = new ArrayList<String>();
+
+        try {
+            connection =DbUtils.getDbConnection(DataSourceNames.WSO2UM_DB);
+            ps = connection.prepareStatement(sql);
+            results = ps.executeQuery();
+            while (results.next()) {
+                adminUserList.add(results.getString("um_user_name"));
+            }
+            return adminUserList;
+        } catch (Exception e) {
+            throw new BusinessException(OparatorError.INTERNAL_SERVER_ERROR);
+        } finally {
+            DbUtils.closeAllConnections(ps, connection, results);
+        }
+    }
+
+	/**
+	 * Gets the list of apps belonging to a particular SP
+	 *
+	 * @param spName Service Provider's name
+	 */
+
+	public List<AppObject> getSPApps(String spName) throws OperatorServiceException {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet results = null;
+		String sql = new StringBuilder().append("select am.application_id,ca.APP_NAME,ac.authz_user,ac.ACCESS_TOKEN,")
+				.append("ca.consumer_key,ca.consumer_secret from ")
+				.append(OparatorTable.IDN_OAUTH2_ACCESS_TOKEN.getTObject())
+				.append(" ac, ")
+				.append(OparatorTable.IDN_OAUTH_CONSUMER_APPS.getTObject())
+				.append(" ca, ")
+				.append(OparatorTable.AM_APPLICATION.getTObject())
+				.append(" am, ")
+				.append(OparatorTable.AM_APPLICATION_KEY_MAPPING)
+				.append(" km ")
+				.append("where ac.consumer_key_id=ca.id and km.application_id=am.application_id  ")
+				.append("and km.consumer_key=ca.consumer_key and ac.authz_user=ca.username and user_type='APPLICATION' ")
+				.append("and token_State='Active' and authz_user = ?")
+				.toString();
+
+		List<AppObject> appList = new ArrayList<AppObject>();
+
+		try {
+			connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+			ps = connection.prepareStatement(sql);
+			ps.setString(1, spName);
+			results = ps.executeQuery();
+			while (results.next()) {
+				AppObject app = new AppObject();
+				app.setAppId(results.getInt("application_id"));
+				app.setAppName(results.getString("APP_NAME"));
+				app.setAccessToken(results.getString("ACCESS_TOKEN"));
+				app.setConsumerKey(results.getString("consumer_key"));
+				app.setConsumerSecret(results.getString("consumer_secret"));
+				appList.add(app);
+			}
+			return appList;
+		} catch (Exception e) {
+			throw new OperatorServiceException(e);
+		} finally {
+			DbUtils.closeAllConnections(ps, connection, results);
+		}
+	}
+
+	public List<AppObject> getBlacklistedSpApps(String spName) throws OperatorServiceException {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet results = null;
+		String sql = new StringBuilder().append("SELECT am.application_id, ")
+				.append("       ca.app_name, ")
+				.append("       ca.consumer_key, ")
+				.append("       ca.consumer_secret ")
+				.append("FROM   idn_oauth_consumer_apps ca, ")
+				.append("       am_application am, ")
+				.append("       am_application_key_mapping km ")
+				.append("WHERE  km.application_id = am.application_id ")
+				.append("       AND km.consumer_key = ca.consumer_key ")
+				.append("       AND ca.grant_types = '' ")
+				.append("       AND ca.username = ? ")
+				.toString();
+
+		List<AppObject> appList = new ArrayList<AppObject>();
+
+		try {
+			connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+			ps = connection.prepareStatement(sql);
+			ps.setString(1, spName);
+			results = ps.executeQuery();
+			while (results.next()) {
+				AppObject app = new AppObject();
+				app.setAppId(results.getInt("application_id"));
+				app.setAppName(results.getString("APP_NAME"));
+				app.setConsumerKey(results.getString("consumer_key"));
+				app.setConsumerSecret(results.getString("consumer_secret"));
+				appList.add(app);
+			}
+			return appList;
+		} catch (Exception e) {
+			throw new OperatorServiceException(e);
+		} finally {
+			DbUtils.closeAllConnections(ps, connection, results);
+		}
+	}
+
+	public List<String> getBlacklistedSPList() throws OperatorServiceException {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet results = null;
+		String sql = new StringBuilder().append("SELECT DISTINCT ( username ) ")
+				.append("FROM   ((SELECT ca.username ")
+				.append("         FROM   idn_identity_user_data iud, ")
+				.append("                idn_oauth_consumer_apps ca ")
+				.append("         WHERE  data_key = 'http://wso2.org/claims/identity/accountlocked' ")
+				.append("                AND iud.DATA_VALUE = 'true'                                ")
+				.append("                AND ca.username = iud.user_name ")
+				.append("                AND ca.grant_types = '')) AS r ")
+				.toString();
+
+		ArrayList<String> blacklistedSpList = new ArrayList<String>();
+
+		try {
+			connection =DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+			ps = connection.prepareStatement(sql);
+			results = ps.executeQuery();
+			while (results.next()) {
+				blacklistedSpList.add(results.getString("USERNAME"));
+			}
+			return blacklistedSpList;
+		} catch (Exception e) {
+			throw new OperatorServiceException(e);
+		} finally {
+			DbUtils.closeAllConnections(ps, connection, results);
+		}
 	}
 
 	private String stripDomain(String userId){
