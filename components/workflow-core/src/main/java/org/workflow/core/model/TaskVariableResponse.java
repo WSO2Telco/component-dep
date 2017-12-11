@@ -1,10 +1,9 @@
 package org.workflow.core.model;
 
 
-import com.fasterxml.jackson.annotation.*;
-
-import java.util.HashMap;
-import java.util.Map;
+import com.fasterxml.jackson.annotation.JsonInclude;
+import com.fasterxml.jackson.annotation.JsonProperty;
+import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
@@ -26,8 +25,6 @@ public class TaskVariableResponse {
     private String scope;
     @JsonProperty("valueUrl")
     private String valueUrl;
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     @JsonProperty("name")
     public String getName() {
@@ -77,16 +74,6 @@ public class TaskVariableResponse {
     @JsonProperty("valueUrl")
     public void setValueUrl(String valueUrl) {
         this.valueUrl = valueUrl;
-    }
-
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
     }
 
 }

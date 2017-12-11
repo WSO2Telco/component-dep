@@ -1,97 +1,108 @@
 package org.workflow.core.activity;
 
+import org.workflow.core.model.Variable;
+
 import java.util.ArrayList;
 import java.util.List;
 
-import org.workflow.core.model.Variable;
-
 public class ProcessSearchRequest {
 
-		private byte size = 10;
-		private int start = 0;
-		private String order = "desc";
-		private String sort = "createTime";
-//		private String processDefinitionKey="application_cretion_approval_process";
-		private String candidateGroup="admin";
-		private static final byte MINBATCHSIZE = 0;
-		private static final byte MAXBATCHSIZE = 0;
+    private byte size = 10;
+    private int start = 0;
+    private String order = "desc";
+    private String sort = "createTime";
+    private String candidateGroup;
+    private  String processDefinitionKey;
 
-		private static final int MINSTARTINDEX = 0;
-		private List<Variable>processInstanceVariables = new ArrayList<Variable>();
+    public String getProcessDefinitionKey() {
+        return processDefinitionKey;
+    }
 
-		public void addProcessVariable(Variable var) {
-			processInstanceVariables.add(var);
-		}
+    public void setProcessDefinitionKey(String processDefinitionKey) {
+        this.processDefinitionKey = processDefinitionKey;
+    }
 
-		public List<Variable> getProcessInstanceVariables() {
-			return processInstanceVariables;
-		}
+    private String assignee;
 
-		public void setProcessInstanceVariables(List<Variable> processInstanceVariables) {
-			this.processInstanceVariables = processInstanceVariables;
-		}
-//
-//		public String getProcessDefinitionKey() {
-//			return processDefinitionKey;
-//		}
-//
-//		public void setProcessDefinitionKey(String processDefinitionKey) {
-//			this.processDefinitionKey = processDefinitionKey;
-//		}
+    private static final byte MINBATCHSIZE = 0;
+    private static final byte MAXBATCHSIZE = 0;
 
-		public String getCandidateGroup() {
-			return candidateGroup;
-		}
+    private static final int MINSTARTINDEX = 0;
+    private List<Variable> processInstanceVariables = new ArrayList<Variable>();
 
-		public void setCandidateGroup(String candidateGroup) {
-			this.candidateGroup = candidateGroup;
-		}
+    public void addProcessVariable(Variable var) {
+        processInstanceVariables.add(var);
+    }
 
-		public byte getSize() {
-			return size;
-		}
+    public List<Variable> getProcessInstanceVariables() {
+        return processInstanceVariables;
+    }
 
-		public void setSize(byte batchSize) {
-			if (batchSize > MINBATCHSIZE && batchSize < MAXBATCHSIZE) {
-				this.size = batchSize;
-			}
-		}
+    public void setProcessInstanceVariables(List<Variable> processInstanceVariables) {
+        this.processInstanceVariables = processInstanceVariables;
+    }
 
-		public int getStart() {
+    public String getCandidateGroup() {
+        return candidateGroup;
+    }
 
-			return start;
-		}
+    public void setCandidateGroup(String candidateGroup) {
+        this.candidateGroup = candidateGroup;
+    }
 
-		public void setStart(int start) {
-			if (start > MINSTARTINDEX) {
-				this.start = start;
-			}
-		}
+    public byte getSize() {
+        return size;
+    }
 
-		public String getOrder() {
-			return order;
-		}
+    public void setSize(byte batchSize) {
+        if (batchSize > MINBATCHSIZE && batchSize < MAXBATCHSIZE) {
+            this.size = batchSize;
+        }
+    }
 
-		public void setOrder(String orderBy) {
-			if (orderBy!=null
-					&& !orderBy.isEmpty()
-					&& (orderBy.trim().equalsIgnoreCase("desc")
-							|| orderBy.trim().equalsIgnoreCase("asc"))) {
-				this.order = orderBy;
-			}
-		}
+    public int getStart() {
 
-		public String getSort() {
-			return sort;
-		}
+        return start;
+    }
 
-		public void setSort(String sortBy) {
-			if(sortBy!=null
-					&& !sortBy.isEmpty()
-					&& (sortBy.equalsIgnoreCase("createTime"))) {
-				this.sort = sortBy;
-			}
-		}
+    public void setStart(int start) {
+        if (start > MINSTARTINDEX) {
+            this.start = start;
+        }
+    }
+
+    public String getOrder() {
+        return order;
+    }
+
+    public void setOrder(String orderBy) {
+        if (orderBy != null
+                && !orderBy.isEmpty()
+                && (orderBy.trim().equalsIgnoreCase("desc")
+                || orderBy.trim().equalsIgnoreCase("asc"))) {
+            this.order = orderBy;
+        }
+    }
+
+    public String getSort() {
+        return sort;
+    }
+
+    public void setSort(String sortBy) {
+        if (sortBy != null
+                && !sortBy.isEmpty()
+                && (sortBy.equalsIgnoreCase("createTime"))) {
+            this.sort = sortBy;
+        }
+    }
+
+    public String getAssignee() {
+        return assignee;
+    }
+
+    public void setAssignee(String assignee) {
+        this.assignee = assignee;
+    }
 
 
 }

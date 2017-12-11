@@ -77,7 +77,7 @@ public class RestClientFactory {
 				.requestInterceptor(new BasicAuthRequestInterceptor(username, password))
 //				.logger(new Logger.JavaLogger().appendToFile("/install/wso2telcohub-2.2.1-SNAPSHOT/repository/logs/wso2carbon.log"))
 //                .logLevel(feign.Logger.Level.FULL)
-				.target(RateRestClient.class,defaultHost+":"+defaultPort);
+				.target(RateRestClient.class,defaultHost+":"+defaultPort + "/ratecard-service/ratecardservice/");
 		
 
 		

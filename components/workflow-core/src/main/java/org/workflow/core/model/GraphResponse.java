@@ -32,8 +32,6 @@ public class GraphResponse {
     private List<GraphData> graphData = null;
     @JsonProperty("xAxisLabels")
     private List<String> xAxisLabels = null;
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     @JsonProperty("graphData")
     public List<GraphData> getGraphData() {
@@ -54,15 +52,4 @@ public class GraphResponse {
     public void setXAxisLabels(List<String> xAxisLabels) {
         this.xAxisLabels = xAxisLabels;
     }
-
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
-    }
-
 }

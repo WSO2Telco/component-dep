@@ -11,12 +11,18 @@ public enum AppVariable {
 	OPARATOR("operators"),
 	ID("applicationId"),
     TIER("tier"),
+	TIER_NAME("tierName"),
+	TIER_STRING("tiersStr"),
     DESCRIPTION("description"),
+	APPLICATION_DESCRIPTION("applicationDescription"),
     USERNAME("userName"),
     TIERS("tiers"),
     SERVICEURL("serviceURL"),
     ADMINUSER("adminUserName"),
-    MANDATESERVICEURL("mandateServiceURL");
+    MANDATESERVICEURL("mandateServiceURL"),
+	SUBSCRIBER("subscriber"),
+	API_NAME("apiName"),
+	API_TIERS("apiTiers");
 	
 	private String varName;
 	AppVariable(String paramName){

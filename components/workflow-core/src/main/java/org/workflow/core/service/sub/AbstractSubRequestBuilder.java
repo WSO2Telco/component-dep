@@ -1,133 +1,243 @@
 package org.workflow.core.service.sub;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Collections;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
-import org.workflow.core.activity.ActivityRestClient;
-import org.workflow.core.activity.RestClientFactory;
-import org.workflow.core.model.GraphData;
-import org.workflow.core.model.GraphResponse;
-import org.workflow.core.model.Range;
-import org.workflow.core.model.Task;
-import org.workflow.core.model.TaskDetailsResponse;
-import org.workflow.core.model.TaskList;
-import org.workflow.core.model.TaskSearchDTO;
-import org.workflow.core.model.TaskVariableResponse;
-import org.workflow.core.service.AbsractQueryBuilder;
-import org.workflow.core.service.ReturnableResponse;
-import org.workflow.core.util.AppVariable;
-import org.workflow.core.util.DeploymentTypes;
-import org.workflow.core.util.Messages;
-
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.util.ApprovalRequest;
 import com.wso2telco.core.dbutils.util.Callback;
 import com.wso2telco.core.userprofile.dto.UserProfileDTO;
+import org.workflow.core.activity.ActivityRestClient;
+import org.workflow.core.activity.RestClientFactory;
+import org.workflow.core.execption.WorkflowExtensionException;
+import org.workflow.core.model.*;
+import org.workflow.core.model.rate.RateDefinition;
+import org.workflow.core.restclient.RateRestClient;
+import org.workflow.core.service.AbsractQueryBuilder;
+import org.workflow.core.util.AppVariable;
+import org.workflow.core.util.DeploymentTypes;
+import org.workflow.core.util.Messages;
+import org.workflow.core.util.WorkFlowVariables;
+
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
 
     private static final String GRAPH_LABEL = "SUBSCRIPTIONS";
 
-    private ReturnableResponse generateResponse(final TaskSearchDTO searchDTO, final TaskList taskList, final UserProfileDTO userProfile) throws ParseException {
+    private SearchResponse generateResponse(final TaskSearchDTO searchDTO, final TaskList taskList,
+                                            final UserProfileDTO userProfile) throws ParseException {
 
-        return new ReturnableResponse() {
+        DateFormat format = new SimpleDateFormat(WorkFlowVariables.DATE_FORMAT.getValue(), Locale.ENGLISH);
+        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MMM-yyyy");
+        SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm:ss");
+        SimpleDateFormat offsetFormatter = new SimpleDateFormat("XXX");
 
-            DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.ENGLISH);
+        TaskMetadata metadata = new TaskMetadata();
+        metadata.setOrder(taskList.getOrder());
+        metadata.setSize(taskList.getSize());
+        metadata.setSort(taskList.getSort());
+        metadata.setStart(taskList.getStart());
+        metadata.setTotal(taskList.getTotal());
 
-            @Override
-            public int getTotal() {
-                return taskList.getTotal();
+        List<ApplicationTask> applicationTasks = new ArrayList();
+
+        for (int k = 0; k < taskList.getData().size(); k++) {
+
+            Task task = taskList.getData().get(k);
+            CreateTime createTime = new CreateTime();
+            List<RelevantRate> relevantRates = new ArrayList<RelevantRate>();
+            List<Operation> operationRates;
+
+            if (task.getCreateTime() != null) {
+                Date date = format.parse(task.getCreateTime());
+                createTime.setDate(dateFormatter.format(date));
+                createTime.setTime(timeFormatter.format(date));
+                createTime.setOffset(offsetFormatter.format(date));
+                createTime.setUnformatted(task.getCreateTime());
+            } else {
+                createTime.setDate("");
+                createTime.setTime("");
+                createTime.setOffset("");
+                createTime.setUnformatted("");
             }
 
-            @Override
-            public int getStrat() {
-                return taskList.getStart();
+            final Map<AppVariable, TaskVariableResponse> varMap = new HashMap<AppVariable, TaskVariableResponse>();
+            for (final TaskVariableResponse var : task.getVariables()) {
+                varMap.put(AppVariable.getByKey(var.getName()), var);
             }
 
-            @Override
-            public int getBatchSize() {
-                return taskList.getSize();
-            }
+            if (task.getOperationRates() != null && task.getOperationRates().getApi() != null) {
 
-            @Override
-            public String getFilterBy() {
-                return searchDTO.getFilterBy();
-            }
+                operationRates = task.getOperationRates().getApi().getOperations();
 
-            @Override
-            public String getOrderBy() {
-                return searchDTO.getOrderBy();
-            }
+                for (Operation operation : operationRates) {
 
-            @Override
-            public List<ReturnableTaskResponse> getTasks() {
-                List<ReturnableTaskResponse> temptaskList = new ArrayList<ReturnableResponse.ReturnableTaskResponse>();
+                    RelevantRate relevantRate = new RelevantRate();
+                    List<RateDefinition> rateDefinitions = new ArrayList<RateDefinition>();
+                    for (RateDefinition rateDefinition : operation.getRates()) {
 
-                for (final Task task : taskList.getData()) {
-                    final Map<AppVariable, TaskVariableResponse> varMap = new HashMap<AppVariable, TaskVariableResponse>();
-                    for (final TaskVariableResponse var : task.getVars()) {
-                        varMap.put(AppVariable.getByKey(var.getName()), var);
+                        RateDefinition tempDef = new RateDefinition();
+                        tempDef.setRateDefId(rateDefinition.getOperationRateId());
+                        tempDef.setRateDefName(rateDefinition.getRateDefName());
+                        tempDef.setRateDefDescription(rateDefinition.getRateDefDescription());
+
+                        rateDefinitions.add(tempDef);
                     }
+                    relevantRate.setApiOperation(operation.getApiOperationName());
+                    relevantRate.setRateDefinitions(rateDefinitions);
 
-                    ReturnableTaskResponse responseTask = new ReturnableTaskResponse() {
-                        /**
-                         * return task ID
-                         */
-                        public int getID() {
-                            return task.getId();
-                        }
-
-                        public String getName() {
-                            return varMap.get(AppVariable.NAME).getValue();
-                        }
-
-                        public String getDescription() {
-                            return varMap.get(AppVariable.DESCRIPTION).getValue();
-                        }
-
-                        public String getCreatedDate() {
-                            return format.format(task.getCreateTime());
-                        }
-
-                        public String getTier() {
-                            return varMap.get(AppVariable.TIER).getValue();
-                        }
-
-                        public String getAssinee() {
-                            return task.getAssignee();
-                        }
-                    };
-                    temptaskList.add(responseTask);
+                    relevantRates.add(relevantRate);
                 }
-                return temptaskList;
             }
-        };
+
+            String description;
+            String tier;
+            String applicationId;
+            String applicationName;
+            String operators;
+            String assignee;
+            List<String> tiersStr;
+
+            if (varMap.containsKey(AppVariable.APPLICATION_DESCRIPTION)) {
+                description = varMap.get(AppVariable.APPLICATION_DESCRIPTION).getValue();
+            } else {
+                description = "";
+            }
+
+            if (varMap.containsKey(AppVariable.TIER_NAME)) {
+                tier = varMap.get(AppVariable.TIER_NAME).getValue();
+            } else {
+                tier = "";
+            }
+
+            if (varMap.containsKey(AppVariable.ID)) {
+                applicationId = varMap.get(AppVariable.ID).getValue();
+            } else {
+                applicationId = "";
+            }
+
+            if (varMap.containsKey(AppVariable.NAME)) {
+                applicationName = varMap.get(AppVariable.NAME).getValue();
+            } else {
+                applicationName = "";
+            }
+
+            if (varMap.containsKey(AppVariable.OPARATOR)) {
+                operators = varMap.get(AppVariable.OPARATOR).getValue();
+            } else {
+                operators = "";
+            }
+
+            if (varMap.containsKey(AppVariable.API_TIERS)) {
+                tiersStr = new ArrayList<String>(Arrays.asList(varMap.get(AppVariable.API_TIERS).getValue().split(",")));
+            } else {
+                tiersStr = Collections.emptyList();
+            }
+
+            if (task.getAssignee() == null) {
+                assignee = "";
+            } else {
+                assignee = task.getAssignee();
+            }
+
+            ApplicationTask applicationTask = new ApplicationTask();
+
+            applicationTask.setId(task.getId());
+            applicationTask.setAssignee(assignee);
+            applicationTask.setCreateTime(createTime);
+            applicationTask.setTaskDescription(task.getDescription());
+            applicationTask.setApplicationId(applicationId);
+            applicationTask.setApplicationName(applicationName);
+            applicationTask.setApplicationDescription(description);
+            applicationTask.setOperators(operators);
+            applicationTask.setTier(tier);
+            applicationTask.setTiersStr(tiersStr);
+            applicationTask.setUserName(varMap.get(AppVariable.SUBSCRIBER).getValue());
+            applicationTask.setApiName(varMap.get(AppVariable.API_NAME).getValue());
+
+            applicationTask.setRelevantRates(relevantRates);
+            applicationTask.setSelectedRate("");
+            applicationTask.setCreditPlan("");
+
+            applicationTasks.add(applicationTask);
+        }
+
+        SearchResponse searchResponse = new SearchResponse();
+
+        searchResponse.setMetadata(metadata);
+        searchResponse.setApplicationTasks(applicationTasks);
+
+        return searchResponse;
     }
 
     @Override
-    protected Callback buildResponse(TaskSearchDTO searchDTO, TaskList taskList, UserProfileDTO userProfile)
-            throws BusinessException {
-        ReturnableResponse payload;
+    protected Callback buildMyTaskResponse(TaskSearchDTO searchDTO, TaskList taskList, UserProfileDTO userProfile) throws BusinessException {
+
+        taskList = getOperationRates(taskList);
+        SearchResponse payload;
         Callback returnCall;
         try {
             payload = generateResponse(searchDTO, taskList, userProfile);
-            returnCall = new Callback().setPayload(payload)
-                    .setSuccess(true)
-                    .setMessage("Subscription Taks listed success ");
+            returnCall = new Callback().setPayload(payload).setSuccess(true).setMessage(Messages.MY_SUBSCRIPTION_LOAD_SUCCESS.getValue());
         } catch (ParseException e) {
-            returnCall = new Callback().setPayload(null)
-                    .setSuccess(false)
-                    .setMessage("Subscription Taks listed fail ");
+            returnCall = new Callback().setPayload(null).setSuccess(false).setMessage(Messages.MY_SUBSCRIPTION_LOAD_FAIL.getValue());
         }
 
         return returnCall;
+    }
+
+    @Override
+    protected Callback buildAllTaskResponse(TaskSearchDTO searchDTO, TaskList taskList, UserProfileDTO userProfile) throws BusinessException {
+
+        //apply the filter here
+        taskList = getOperationRates(taskList);
+        SearchResponse payload;
+        Callback returnCall;
+        try {
+            payload = generateResponse(searchDTO, taskList, userProfile);
+            returnCall = new Callback().setPayload(payload).setSuccess(true).setMessage(Messages.ALL_SUBSCRIPTION_LOAD_SUCCESS.getValue());
+        } catch (ParseException e) {
+            returnCall = new Callback().setPayload(null).setSuccess(false).setMessage(Messages.ALL_SUBSCRIPTION_LOAD_FAIL.getValue());
+        }
+
+        return returnCall;
+    }
+
+    public TaskList getOperationRates(TaskList taskList) throws BusinessException {
+
+        List<OperationRateResponse> operationRateResponses = new ArrayList<OperationRateResponse>();
+        RateRestClient rateRestClient = RestClientFactory.getInstance().getRateClient();
+
+        boolean isAdmin = true;
+
+        for (int i = 0; i < taskList.getData().size(); i++) {
+
+            OperationRateResponse operationRateResponse;
+            Task task = taskList.getData().get(i);
+
+            final Map<AppVariable, TaskVariableResponse> varMap = new HashMap<AppVariable, TaskVariableResponse>();
+            for (final TaskVariableResponse var : task.getVariables()) {
+                varMap.put(AppVariable.getByKey(var.getName()), var);
+            }
+
+            String apiName = varMap.get(AppVariable.API_NAME).getValue();
+
+            try {
+                if(isAdmin){
+                    OperationRateResponse rateResponse = rateRestClient.getAdminOperationRates(apiName);
+                    taskList.getData().get(i).setOperationRates(rateResponse);
+                }else {
+                    OperationRateResponse rateResponse = rateRestClient.getAdminOperationRates(apiName);
+                    taskList.getData().get(i).setOperationRates(rateResponse);
+                }
+            } catch (WorkflowExtensionException e) {
+                log.error("", e);
+                throw new BusinessException(e);
+            }
+        }
+
+        return taskList;
     }
 
     @Override

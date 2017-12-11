@@ -34,8 +34,6 @@ public class RequestVariable {
     private String value;
     @JsonProperty("type")
     private String type;
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     @JsonProperty("name")
     public String getName() {
@@ -68,16 +66,6 @@ public class RequestVariable {
     public RequestVariable setType(String type) {
         this.type = type;
         return this;
-    }
-
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
     }
 
 }
