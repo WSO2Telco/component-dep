@@ -3,62 +3,62 @@ package com.wso2telco.dep.operatorservice;
 public class AppObject {
     /**
      * DTO to store the following application related information:
-     * application_id, name, SP_name, access_token, consumer_key and consumer_secret
+     * application_id, name, SP_name, accessToken, consumerKey and consumer_secret
      */
 
-    private int app_id;
-    private String app_name;
-    private String sp_name;
-    private String access_token;
-    private String consumer_key;
-    private String consmer_secret;
+    private int appId;
+    private String appName;
+    private String spName;
+    private String accessToken;
+    private String consumerKey;
+    private String consumerSecret;
 
 
-    public int getApp_id() {
-        return app_id;
+    public int getAppId() {
+        return appId;
     }
 
-    public void setApp_id(int app_id) {
-        this.app_id = app_id;
+    public void setAppId(int appId) {
+        this.appId = appId;
     }
 
-    public String getApp_name() {
-        return app_name;
+    public String getAppName() {
+        return appName;
     }
 
-    public void setApp_name(String app_name) {
-        this.app_name = app_name;
+    public void setAppName(String appName) {
+        this.appName = appName;
     }
 
-    public String getSp_name() {
-        return sp_name;
+    public String getSpName() {
+        return spName;
     }
 
-    public void setSp_name(String sp_name) {
-        this.sp_name = sp_name;
+    public void setSpName(String spName) {
+        this.spName = spName;
     }
 
-    public String getAccess_token() {
-        return access_token;
+    public String getAccessToken() {
+        return accessToken;
     }
 
-    public void setAccess_token(String access_token) {
-        this.access_token = access_token;
+    public void setAccessToken(String accessToken) {
+        this.accessToken = accessToken;
     }
 
-    public String getConsumer_key() {
-        return consumer_key;
+    public String getConsumerKey() {
+        return consumerKey;
     }
 
-    public void setConsumer_key(String consumer_key) {
-        this.consumer_key = consumer_key;
+    public void setConsumerKey(String consumerKey) {
+        this.consumerKey = consumerKey;
     }
 
-    public String getConsmer_secret() {
-        return consmer_secret;
+    public String getConsumerSecret() {
+        return consumerSecret;
     }
 
-    public void setConsmer_secret(String consmer_secret) {
-        this.consmer_secret = consmer_secret;
+    public void setConsumerSecret(String consumerSecret) {
+        this.consumerSecret = consumerSecret;
     }
 }

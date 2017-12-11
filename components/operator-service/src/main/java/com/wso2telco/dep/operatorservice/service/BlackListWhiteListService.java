@@ -422,14 +422,14 @@ public class BlackListWhiteListService {
 			for (AppObject app : appList) {
 				try {
 					appDTO.setOAuthVersion("OAuth-2.0");
-					appDTO.setApplicationName(app.getApp_name());
-					appDTO.setUsername(app.getSp_name());
-					appDTO.setOauthConsumerKey(app.getConsumer_key());
-					appDTO.setOauthConsumerSecret(app.getConsmer_secret());
+					appDTO.setApplicationName(app.getAppName());
+					appDTO.setUsername(app.getSpName());
+					appDTO.setOauthConsumerKey(app.getConsumerKey());
+					appDTO.setOauthConsumerSecret(app.getConsumerSecret());
 					appDTO.setGrantTypes(null);
 					stub.updateConsumerApplication(appDTO);
 				} catch (Exception e) {
-					log.error("Error removing grant types for application: " + app.getApp_name() + "of SP: " + app.getSp_name(), e);
+					log.error("Error removing grant types for application: " + app.getAppName() + "of SP: " + app.getSpName(), e);
 				}
 			}
 			adminService.logOut();
@@ -457,14 +457,14 @@ public class BlackListWhiteListService {
 			for (AppObject app : appList) {
 				try {
 					appDTO.setOAuthVersion("OAuth-2.0");
-					appDTO.setApplicationName(app.getApp_name());
-					appDTO.setUsername(app.getSp_name());
-					appDTO.setOauthConsumerKey(app.getConsumer_key());
-					appDTO.setOauthConsumerSecret(app.getConsmer_secret());
+					appDTO.setApplicationName(app.getAppName());
+					appDTO.setUsername(app.getSpName());
+					appDTO.setOauthConsumerKey(app.getConsumerKey());
+					appDTO.setOauthConsumerSecret(app.getConsumerSecret());
 					appDTO.setGrantTypes("refresh_token urn:ietf:params:oauth:grant-type:saml2-bearer password iwa:ntlm client_credentials");
 					stub.updateConsumerApplication(appDTO);
 				} catch (Exception e) {
-					log.error("Error restoring grant types for application: " + app.getApp_name() + "of SP: " + app.getSp_name(), e);
+					log.error("Error restoring grant types for application: " + app.getAppName() + "of SP: " + app.getSpName(), e);
 				}
 			}
 			adminService.logOut();
@@ -491,18 +491,18 @@ public class BlackListWhiteListService {
 			HttpResponse response;
 			for (AppObject app : appList) {
 				try {
-					authToken = new String(Base64.encodeBase64((app.getConsumer_key() + ":" + app.getConsmer_secret()).getBytes()));
+					authToken = new String(Base64.encodeBase64((app.getConsumerKey() + ":" + app.getConsumerSecret()).getBytes()));
 					post.setHeader("Authorization", "Basic " + authToken);
-					urlParameters.add(new BasicNameValuePair("token", app.getAccess_token()));
+					urlParameters.add(new BasicNameValuePair("token", app.getAccessToken()));
 					post.setEntity(new UrlEncodedFormEntity(urlParameters));
 
 					response = client.execute(post);
-					log.debug("Token revoke response code for app: " + app.getApp_name() + " :"
+					log.debug("Token revoke response code for app: " + app.getAppName() + " :"
 							+ response.getStatusLine().getStatusCode());
 					post.reset();
 					urlParameters.clear();
 				} catch (Exception e) {
-					log.error("Error revoking token for application: " + app.getApp_name() + "of SP: " + app.getSp_name(), e);
+					log.error("Error revoking token for application: " + app.getAppName() + "of SP: " + app.getSpName(), e);
 				}
 			}
 			client.close();
