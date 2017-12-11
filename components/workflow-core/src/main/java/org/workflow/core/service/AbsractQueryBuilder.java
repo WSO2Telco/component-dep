@@ -46,7 +46,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
         ProcessSearchRequest processRequest = buildSearchRequest(searchDTO, userProfile);
         processRequest.setCandidateGroup("admin");
         TaskList taskList = executeRequest(processRequest);
-        return buildMyTaskResponse(searchDTO, taskList, userProfile);
+        return buildAllTaskResponse(searchDTO, taskList, userProfile);
 
     }
 
@@ -55,7 +55,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
         ProcessSearchRequest processRequest = buildSearchRequest(searchDTO, userProfile);
         processRequest.setAssignee(assigenee);
         TaskList taskList = executeRequest(processRequest);
-        return buildAllTaskResponse(searchDTO, taskList, userProfile);
+        return buildMyTaskResponse(searchDTO, taskList, userProfile);
     }
 
     public TaskList executeRequest(ProcessSearchRequest processRequest) throws BusinessException {

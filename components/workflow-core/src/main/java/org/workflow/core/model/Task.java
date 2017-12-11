@@ -31,7 +31,8 @@ import java.util.List;
         "processInstanceUrl",
         "processDefinitionId",
         "processDefinitionUrl",
-        "variables"
+        "variables",
+        "operationRates"
 })
 public class Task {
 
@@ -83,6 +84,8 @@ public class Task {
     private String processDefinitionUrl;
     @JsonProperty("variables")
     private TaskVariableResponse[] variables = null;
+    @JsonProperty("operationRates")
+    private OperationRateResponse operationRates = null;
 
     @JsonProperty("id")
     public String getId() {
@@ -322,6 +325,16 @@ public class Task {
     @JsonProperty("variables")
     public void setVariables(TaskVariableResponse[] variables) {
         this.variables = variables;
+    }
+
+    @JsonProperty("operationRates")
+    public OperationRateResponse getOperationRates() {
+        return operationRates;
+    }
+
+    @JsonProperty("operationRates")
+    public void setOperationRates(OperationRateResponse operationRates) {
+        this.operationRates = operationRates;
     }
 
 }

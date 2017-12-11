@@ -4,9 +4,12 @@ import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.model.UserProfileDTO;
 import com.wso2telco.core.dbutils.util.ApprovalRequest;
 import com.wso2telco.core.dbutils.util.Callback;
-import org.workflow.core.activity.RestClientFactory;
 import org.workflow.core.activity.ActivityRestClient;
+import org.workflow.core.activity.RestClientFactory;
+import org.workflow.core.execption.WorkflowExtensionException;
 import org.workflow.core.model.*;
+import org.workflow.core.model.rate.RateDefinition;
+import org.workflow.core.restclient.RateRestClient;
 import org.workflow.core.service.AbsractQueryBuilder;
 import org.workflow.core.util.AppVariable;
 import org.workflow.core.util.DeploymentTypes;
@@ -21,82 +24,6 @@ import java.util.*;
 abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
 
     private static final String GRAPH_LABEL = "SUBSCRIPTIONS";
-
-//    private ReturnableResponse generateResponse(final TaskSearchDTO searchDTO, final TaskList taskList, final UserProfileDTO userProfile) throws ParseException {
-//
-//        return new ReturnableResponse() {
-//
-//            DateFormat format = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSSXXX", Locale.ENGLISH);
-//
-//            @Override
-//            public int getTotal() {
-//                return taskList.getTotal();
-//            }
-//
-//            @Override
-//            public int getStrat() {
-//                return taskList.getStart();
-//            }
-//
-//            @Override
-//            public int getBatchSize() {
-//                return taskList.getSize();
-//            }
-//
-//            @Override
-//            public String getFilterBy() {
-//                return searchDTO.getFilterBy();
-//            }
-//
-//            @Override
-//            public String getOrderBy() {
-//                return searchDTO.getOrderBy();
-//            }
-//
-//            @Override
-//            public List<ReturnableTaskResponse> getTasks() {
-//                List<ReturnableTaskResponse> temptaskList = new ArrayList<ReturnableResponse.ReturnableTaskResponse>();
-//
-//                for (final Task task : taskList.getData()) {
-//                    final Map<AppVariable, TaskVariableResponse> varMap = new HashMap<AppVariable, TaskVariableResponse>();
-//                    for (final TaskVariableResponse var : task.getVariables()) {
-//                        varMap.put(AppVariable.getByKey(var.getName()), var);
-//                    }
-//
-//                    ReturnableTaskResponse responseTask = new ReturnableTaskResponse() {
-//                        /**
-//                         * return task ID
-//                         */
-//                        public String getID() {
-//                            return task.getId();
-//                        }
-//
-//                        public String getName() {
-//                            return varMap.get(AppVariable.NAME).getValue();
-//                        }
-//
-//                        public String getDescription() {
-//                            return varMap.get(AppVariable.DESCRIPTION).getValue();
-//                        }
-//
-//                        public String getCreatedDate() {
-//                            return format.format(task.getCreateTime());
-//                        }
-//
-//                        public String getTier() {
-//                            return varMap.get(AppVariable.TIER).getValue();
-//                        }
-//
-//                        public String getAssinee() {
-//                            return task.getAssignee();
-//                        }
-//                    };
-//                    temptaskList.add(responseTask);
-//                }
-//                return temptaskList;
-//            }
-//        };
-//    }
 
     private SearchResponse generateResponse(final TaskSearchDTO searchDTO, final TaskList taskList,
                                             final UserProfileDTO userProfile) throws ParseException {
@@ -119,6 +46,8 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
 
             Task task = taskList.getData().get(k);
             CreateTime createTime = new CreateTime();
+            List<RelevantRate> relevantRates = new ArrayList<RelevantRate>();
+            List<Operation> operationRates;
 
             if (task.getCreateTime() != null) {
                 Date date = format.parse(task.getCreateTime());
@@ -138,6 +67,30 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
                 varMap.put(AppVariable.getByKey(var.getName()), var);
             }
 
+            if (task.getOperationRates() != null && task.getOperationRates().getApi() != null) {
+
+                operationRates = task.getOperationRates().getApi().getOperations();
+
+                for (Operation operation : operationRates) {
+
+                    RelevantRate relevantRate = new RelevantRate();
+                    List<RateDefinition> rateDefinitions = new ArrayList<RateDefinition>();
+                    for (RateDefinition rateDefinition : operation.getRates()) {
+
+                        RateDefinition tempDef = new RateDefinition();
+                        tempDef.setRateDefId(rateDefinition.getOperationRateId());
+                        tempDef.setRateDefName(rateDefinition.getRateDefName());
+                        tempDef.setRateDefDescription(rateDefinition.getRateDefDescription());
+
+                        rateDefinitions.add(tempDef);
+                    }
+                    relevantRate.setApiOperation(operation.getApiOperationName());
+                    relevantRate.setRateDefinitions(rateDefinitions);
+
+                    relevantRates.add(relevantRate);
+                }
+            }
+
             String description;
             String tier;
             String applicationId;
@@ -146,14 +99,14 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
             String assignee;
             List<String> tiersStr;
 
-            if (varMap.containsKey(AppVariable.DESCRIPTION)) {
-                description = varMap.get(AppVariable.DESCRIPTION).getValue();
+            if (varMap.containsKey(AppVariable.APPLICATION_DESCRIPTION)) {
+                description = varMap.get(AppVariable.APPLICATION_DESCRIPTION).getValue();
             } else {
                 description = "";
             }
 
-            if (varMap.containsKey(AppVariable.TIER)) {
-                tier = varMap.get(AppVariable.TIER).getValue();
+            if (varMap.containsKey(AppVariable.TIER_NAME)) {
+                tier = varMap.get(AppVariable.TIER_NAME).getValue();
             } else {
                 tier = "";
             }
@@ -176,8 +129,8 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
                 operators = "";
             }
 
-            if (varMap.containsKey(AppVariable.TIER_STRING)) {
-                tiersStr = new ArrayList<String>(Arrays.asList(varMap.get(AppVariable.TIER_STRING).getValue().split(",")));
+            if (varMap.containsKey(AppVariable.API_TIERS)) {
+                tiersStr = new ArrayList<String>(Arrays.asList(varMap.get(AppVariable.API_TIERS).getValue().split(",")));
             } else {
                 tiersStr = Collections.emptyList();
             }
@@ -200,12 +153,12 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
             applicationTask.setOperators(operators);
             applicationTask.setTier(tier);
             applicationTask.setTiersStr(tiersStr);
-            applicationTask.setUserName(varMap.get(AppVariable.USERNAME).getValue());
-            applicationTask.setCreditPlan("");
+            applicationTask.setUserName(varMap.get(AppVariable.SUBSCRIBER).getValue());
+            applicationTask.setApiName(varMap.get(AppVariable.API_NAME).getValue());
 
-            applicationTask.setRelevantRates(Collections.<String>emptyList());
+            applicationTask.setRelevantRates(relevantRates);
             applicationTask.setSelectedRate("");
-            applicationTask.setApiName("");
+            applicationTask.setCreditPlan("");
 
             applicationTasks.add(applicationTask);
         }
@@ -219,8 +172,9 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
     }
 
     @Override
-    protected Callback buildMyTaskResponse(TaskSearchDTO searchDTO, TaskList taskList, UserProfileDTO userProfile)
-            throws BusinessException {
+    protected Callback buildMyTaskResponse(TaskSearchDTO searchDTO, TaskList taskList, UserProfileDTO userProfile) throws BusinessException {
+
+        taskList = getOperationRates(taskList);
         SearchResponse payload;
         Callback returnCall;
         try {
@@ -235,6 +189,9 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
 
     @Override
     protected Callback buildAllTaskResponse(TaskSearchDTO searchDTO, TaskList taskList, UserProfileDTO userProfile) throws BusinessException {
+
+        //apply the filter here
+        taskList = getOperationRates(taskList);
         SearchResponse payload;
         Callback returnCall;
         try {
@@ -247,46 +204,41 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
         return returnCall;
     }
 
-//    public TaskList getOperationRates(TaskList taskList) {
-//        StringBuilder url = new StringBuilder("http://localhost:9763/ratecard-service/ratecardservice/");
-//        List<OperationRateResponse> operationRateResponses = new ArrayList<>();
-//
-//        for (int i = 0; i < applicationDetailsList.size(); i++) {
-//
-//            OperationRateResponse operationRateResponse;
-//
-//            Map<String, String> appDetails = new HashMap<>();
-//            for (final ApplicationDetailsResponse choice : Arrays.asList(applicationDetailsList.get(i))) {
-//                appDetails.put(choice.getName(), choice.getValue());
-//            }
-//
-//            if (request.getIsAdmin()) {
-//                url.append("apis/" + appDetails.get(API_NAME) + "/operations/operationrates");
-//            } else {
-//                url.append("http://localhost:9763/ratecard-service/ratecardservice/" + "operators/" + request.getOperator() + "/apis/" + appDetails.get(API_NAME) + "/operatorrates");
-//            }
-//
-//            httpGet = new HttpGet(url.toString());
-//            /** add headers */
-//            httpGet.setHeader(AUTHORIZATION, authHeader);
-//
-//            try {
-//                response = client.execute(httpGet);
-//                if (response.getStatusLine().getStatusCode() == 200) {
-//                    operationRateResponse = mapper.readValue(response.getEntity().getContent(), OperationRateResponse.class);
-//                    operationRateResponses.add(operationRateResponse);
-//                } else {
-//                    log.error(response.getStatusLine().getStatusCode() + " Error loading operation rates from hub");
-//                    return null;
-//                }
-//            } catch (IOException e) {
-//                log.error(" Exception while loading operation rates from  hub " + e);
-//                return null;
-//            }
-//        }
-//
-//        return operationRateResponses;
-//    }
+    public TaskList getOperationRates(TaskList taskList) throws BusinessException {
+
+        List<OperationRateResponse> operationRateResponses = new ArrayList<OperationRateResponse>();
+        RateRestClient rateRestClient = RestClientFactory.getInstance().getRateClient();
+
+        boolean isAdmin = true;
+
+        for (int i = 0; i < taskList.getData().size(); i++) {
+
+            OperationRateResponse operationRateResponse;
+            Task task = taskList.getData().get(i);
+
+            final Map<AppVariable, TaskVariableResponse> varMap = new HashMap<AppVariable, TaskVariableResponse>();
+            for (final TaskVariableResponse var : task.getVariables()) {
+                varMap.put(AppVariable.getByKey(var.getName()), var);
+            }
+
+            String apiName = varMap.get(AppVariable.API_NAME).getValue();
+
+            try {
+                if(isAdmin){
+                    OperationRateResponse rateResponse = rateRestClient.getAdminOperationRates(apiName);
+                    taskList.getData().get(i).setOperationRates(rateResponse);
+                }else {
+                    OperationRateResponse rateResponse = rateRestClient.getAdminOperationRates(apiName);
+                    taskList.getData().get(i).setOperationRates(rateResponse);
+                }
+            } catch (WorkflowExtensionException e) {
+                log.error("", e);
+                throw new BusinessException(e);
+            }
+        }
+
+        return taskList;
+    }
 
     @Override
     protected DeploymentTypes getDeployementType() {

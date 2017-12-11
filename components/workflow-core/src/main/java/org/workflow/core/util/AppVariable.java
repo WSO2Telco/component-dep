@@ -20,7 +20,9 @@ public enum AppVariable {
     SERVICEURL("serviceURL"),
     ADMINUSER("adminUserName"),
     MANDATESERVICEURL("mandateServiceURL"),
-	SUBSCRIBER("subscriber");
+	SUBSCRIBER("subscriber"),
+	API_NAME("apiName"),
+	API_TIERS("apiTiers");
 	
 	private String varName;
 	AppVariable(String paramName){

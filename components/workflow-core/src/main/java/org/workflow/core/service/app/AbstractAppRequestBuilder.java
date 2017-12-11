@@ -128,7 +128,7 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
             applicationTask.setUserName(varMap.get(AppVariable.USERNAME).getValue());
             applicationTask.setCreditPlan("");
 
-            applicationTask.setRelevantRates(Collections.<String>emptyList());
+            applicationTask.setRelevantRates(Collections.<RelevantRate>emptyList());
             applicationTask.setSelectedRate("");
             applicationTask.setApiName("");
 

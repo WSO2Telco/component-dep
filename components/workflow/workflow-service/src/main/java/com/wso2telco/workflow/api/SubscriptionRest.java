@@ -27,7 +27,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
-@Path("/subscriptions")
+@Path("/m")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
 public class SubscriptionRest {
@@ -45,6 +45,23 @@ public class SubscriptionRest {
 			TaskSearchDTO serchD = new TaskSearchDTO();
 			UserProfileDTO UserProfileDTO = new UserProfileDTO();
 			Callback callback = workFlowDelegator.getPendingSubscriptionApprovals(serchD, UserProfileDTO);
+			return Response.status(Response.Status.OK).entity(callback).build();
+		} catch (Exception e) {
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+	}
+
+	@GET
+	@Path("/search/{assignee}")
+	public Response load(@HeaderParam("authorization") String authHeader, @QueryParam("batchSize") int batchSize,
+						 @QueryParam("start") int start, @QueryParam("orderBy") String orderBy,
+						 @QueryParam("sortBy") String sortBy, @QueryParam("filterBy") String filterBy, @PathParam("assignee") String assignee) {
+		try {
+			WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
+			TaskSearchDTO serchD = new TaskSearchDTO();
+			UserProfileDTO userProfileDTO = new UserProfileDTO();
+			userProfileDTO.setUserName("admin");
+			Callback callback = workFlowDelegator.getPendingAssignedSubscriptionApprovals(serchD, userProfileDTO, assignee);
 			return Response.status(Response.Status.OK).entity(callback).build();
 		} catch (Exception e) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();

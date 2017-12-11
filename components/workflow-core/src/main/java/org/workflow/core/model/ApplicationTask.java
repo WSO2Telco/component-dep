@@ -58,7 +58,7 @@ public class ApplicationTask {
     @JsonProperty("subscriber")
     private String subscriber;
     @JsonProperty("relevantRates")
-    private List<String> relevantRates = null;
+    private List<RelevantRate> relevantRates = null;
     @JsonProperty("selectedRate")
     private String selectedRate;
     @JsonProperty("creditPlan")
@@ -205,12 +205,12 @@ public class ApplicationTask {
     }
 
     @JsonProperty("relevantRates")
-    public List<String> getRelevantRates() {
+    public List<RelevantRate> getRelevantRates() {
         return relevantRates;
     }
 
     @JsonProperty("relevantRates")
-    public void setRelevantRates(List<String> relevantRates) {
+    public void setRelevantRates(List<RelevantRate> relevantRates) {
         this.relevantRates = relevantRates;
     }
 
