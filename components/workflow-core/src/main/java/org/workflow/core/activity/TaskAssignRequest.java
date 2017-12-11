@@ -31,8 +31,6 @@ public class TaskAssignRequest {
     private String action;
     @JsonProperty("assignee")
     private String assignee;
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     @JsonProperty("action")
     public String getAction() {
@@ -52,16 +50,6 @@ public class TaskAssignRequest {
     @JsonProperty("assignee")
     public void setAssignee(String assignee) {
         this.assignee = assignee;
-    }
-
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
     }
 
 }

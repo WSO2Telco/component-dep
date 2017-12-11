@@ -1,12 +1,13 @@
 package org.workflow.core.service;
 
+import org.workflow.core.model.TaskSearchDTO;
+import org.workflow.core.util.WorkFlowType;
+
 import com.wso2telco.core.dbutils.exception.BusinessException;
-import com.wso2telco.core.dbutils.model.UserProfileDTO;
 import com.wso2telco.core.dbutils.util.ApprovalRequest;
 import com.wso2telco.core.dbutils.util.AssignRequest;
 import com.wso2telco.core.dbutils.util.Callback;
-import org.workflow.core.model.TaskSearchDTO;
-import org.workflow.core.util.WorkFlowType;
+import com.wso2telco.core.userprofile.dto.UserProfileDTO;
 
 
 public class WorkFlowDelegator {

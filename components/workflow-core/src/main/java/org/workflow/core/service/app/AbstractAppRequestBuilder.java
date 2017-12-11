@@ -1,11 +1,12 @@
 package org.workflow.core.service.app;
 
-import com.wso2telco.core.dbutils.exception.BusinessException;
-import com.wso2telco.core.dbutils.model.UserProfileDTO;
-import com.wso2telco.core.dbutils.util.ApprovalRequest;
-import com.wso2telco.core.dbutils.util.Callback;
-import org.workflow.core.activity.RestClientFactory;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
+
 import org.workflow.core.activity.ActivityRestClient;
+import org.workflow.core.activity.RestClientFactory;
 import org.workflow.core.activity.TaskApprovalRequest;
 import org.workflow.core.execption.WorkflowExtensionException;
 import org.workflow.core.model.*;
@@ -15,10 +16,10 @@ import org.workflow.core.util.DeploymentTypes;
 import org.workflow.core.util.Messages;
 import org.workflow.core.util.WorkFlowVariables;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
+import com.wso2telco.core.dbutils.exception.BusinessException;
+import com.wso2telco.core.dbutils.util.ApprovalRequest;
+import com.wso2telco.core.dbutils.util.Callback;
+import com.wso2telco.core.userprofile.dto.UserProfileDTO;
 
 abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
 

@@ -21,8 +21,6 @@ public class SearchResponse {
     private List<ApplicationTask> applicationTasks = null;
     @JsonProperty("metadata")
     private TaskMetadata metadata;
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     @JsonProperty("applicationTasks")
     public List<ApplicationTask> getApplicationTasks() {
@@ -43,17 +41,6 @@ public class SearchResponse {
     public void setMetadata(TaskMetadata metadata) {
         this.metadata = metadata;
     }
-
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
-    }
-
 }
 
 

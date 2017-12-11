@@ -31,8 +31,6 @@ public class Range {
     private String start;
     @JsonProperty("end")
     private String end;
-    @JsonIgnore
-    private Map<String, Object> additionalProperties = new HashMap<String, Object>();
 
     @JsonProperty("start")
     public String getStart() {
@@ -55,15 +53,4 @@ public class Range {
         this.end = end;
         return this;
     }
-
-    @JsonAnyGetter
-    public Map<String, Object> getAdditionalProperties() {
-        return this.additionalProperties;
-    }
-
-    @JsonAnySetter
-    public void setAdditionalProperty(String name, Object value) {
-        this.additionalProperties.put(name, value);
-    }
-
 }

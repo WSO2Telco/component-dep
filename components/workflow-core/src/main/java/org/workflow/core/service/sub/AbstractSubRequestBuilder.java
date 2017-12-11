@@ -1,9 +1,9 @@
 package org.workflow.core.service.sub;
 
 import com.wso2telco.core.dbutils.exception.BusinessException;
-import com.wso2telco.core.dbutils.model.UserProfileDTO;
 import com.wso2telco.core.dbutils.util.ApprovalRequest;
 import com.wso2telco.core.dbutils.util.Callback;
+import com.wso2telco.core.userprofile.dto.UserProfileDTO;
 import org.workflow.core.activity.ActivityRestClient;
 import org.workflow.core.activity.RestClientFactory;
 import org.workflow.core.execption.WorkflowExtensionException;
