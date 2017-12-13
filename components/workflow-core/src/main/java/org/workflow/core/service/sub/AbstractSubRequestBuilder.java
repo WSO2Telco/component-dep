@@ -4,6 +4,7 @@ import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.util.ApprovalRequest;
 import com.wso2telco.core.dbutils.util.Callback;
 import com.wso2telco.core.userprofile.dto.UserProfileDTO;
+import com.wso2telco.dep.operatorservice.service.OparatorService;
 import org.workflow.core.activity.ActivityRestClient;
 import org.workflow.core.activity.RestClientFactory;
 import org.workflow.core.execption.WorkflowExtensionException;
@@ -14,11 +15,8 @@ import org.workflow.core.service.AbsractQueryBuilder;
 import org.workflow.core.util.AppVariable;
 import org.workflow.core.util.DeploymentTypes;
 import org.workflow.core.util.Messages;
-import org.workflow.core.util.WorkFlowVariables;
 
-import java.text.DateFormat;
 import java.text.ParseException;
-import java.text.SimpleDateFormat;
 import java.util.*;
 
 abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
@@ -27,11 +25,6 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
 
     private SearchResponse generateResponse(final TaskSearchDTO searchDTO, final TaskList taskList,
                                             final UserProfileDTO userProfile) throws ParseException {
-
-        DateFormat format = new SimpleDateFormat(WorkFlowVariables.DATE_FORMAT.getValue(), Locale.ENGLISH);
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MMM-yyyy");
-        SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm:ss");
-        SimpleDateFormat offsetFormatter = new SimpleDateFormat("XXX");
 
         TaskMetadata metadata = new TaskMetadata();
         metadata.setOrder(taskList.getOrder());
@@ -45,22 +38,9 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
         for (int k = 0; k < taskList.getData().size(); k++) {
 
             Task task = taskList.getData().get(k);
-            CreateTime createTime = new CreateTime();
+            CreateTime createTime = getCreatedTime(task);
             List<RelevantRate> relevantRates = new ArrayList<RelevantRate>();
             List<Operation> operationRates;
-
-            if (task.getCreateTime() != null) {
-                Date date = format.parse(task.getCreateTime());
-                createTime.setDate(dateFormatter.format(date));
-                createTime.setTime(timeFormatter.format(date));
-                createTime.setOffset(offsetFormatter.format(date));
-                createTime.setUnformatted(task.getCreateTime());
-            } else {
-                createTime.setDate("");
-                createTime.setTime("");
-                createTime.setOffset("");
-                createTime.setUnformatted("");
-            }
 
             final Map<AppVariable, TaskVariableResponse> varMap = new HashMap<AppVariable, TaskVariableResponse>();
             for (final TaskVariableResponse var : task.getVariables()) {
@@ -174,7 +154,7 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
     @Override
     protected Callback buildMyTaskResponse(TaskSearchDTO searchDTO, TaskList taskList, UserProfileDTO userProfile) throws BusinessException {
 
-        taskList = getOperationRates(taskList);
+        taskList = getOperationRates(taskList, userProfile);
         SearchResponse payload;
         Callback returnCall;
         try {
@@ -190,8 +170,10 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
     @Override
     protected Callback buildAllTaskResponse(TaskSearchDTO searchDTO, TaskList taskList, UserProfileDTO userProfile) throws BusinessException {
 
-        //apply the filter here
-        taskList = getOperationRates(taskList);
+        if (!isAdmin(userProfile)) {
+            taskList = filterOperatorApprovedApps(taskList);
+        }
+        taskList = getOperationRates(taskList, userProfile);
         SearchResponse payload;
         Callback returnCall;
         try {
@@ -204,16 +186,59 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
         return returnCall;
     }
 
-    public TaskList getOperationRates(TaskList taskList) throws BusinessException {
+    public TaskList filterOperatorApprovedApps(TaskList taskList) {
 
-        List<OperationRateResponse> operationRateResponses = new ArrayList<OperationRateResponse>();
+        String appIds = "";
+        List<String> operatorApprovedApps = new ArrayList<String>();
+        List<Task> tasks = new ArrayList<Task>();
+
+        for (Task task : taskList.getData()) {
+            final Map<AppVariable, TaskVariableResponse> varMap = new HashMap<AppVariable, TaskVariableResponse>();
+            for (final TaskVariableResponse var : task.getVariables()) {
+                varMap.put(AppVariable.getByKey(var.getName()), var);
+            }
+            if (varMap.containsKey(AppVariable.ID)) {
+                appIds = appIds.concat(varMap.get(AppVariable.ID).getValue() + ",");
+            }
+        }
+
+        try {
+            operatorApprovedApps = new OparatorService().getOparatorApprovedApp(appIds);
+        } catch (BusinessException e) {
+            e.printStackTrace();
+        }
+
+        if (!operatorApprovedApps.isEmpty()) {
+            for (Task task : taskList.getData()) {
+                final Map<AppVariable, TaskVariableResponse> varMap = new HashMap<AppVariable, TaskVariableResponse>();
+                for (final TaskVariableResponse var : task.getVariables()) {
+                    varMap.put(AppVariable.getByKey(var.getName()), var);
+                }
+                for (String appId : operatorApprovedApps) {
+                    if (varMap.get(AppVariable.ID).getValue().trim().equals(appId)) {
+                        tasks.add(task);
+                    }
+                }
+            }
+
+            taskList.setData(tasks);
+            taskList.setSize(tasks.size());
+
+        } else {
+            taskList.setData(tasks);
+            taskList.setSize(tasks.size());
+        }
+
+
+        return taskList;
+    }
+
+    public TaskList getOperationRates(TaskList taskList, UserProfileDTO userProfile) throws BusinessException {
+
         RateRestClient rateRestClient = RestClientFactory.getInstance().getRateClient();
-
-        boolean isAdmin = true;
 
         for (int i = 0; i < taskList.getData().size(); i++) {
 
-            OperationRateResponse operationRateResponse;
             Task task = taskList.getData().get(i);
 
             final Map<AppVariable, TaskVariableResponse> varMap = new HashMap<AppVariable, TaskVariableResponse>();
@@ -224,11 +249,11 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
             String apiName = varMap.get(AppVariable.API_NAME).getValue();
 
             try {
-                if(isAdmin){
+                if (isAdmin(userProfile)) {
                     OperationRateResponse rateResponse = rateRestClient.getAdminOperationRates(apiName);
                     taskList.getData().get(i).setOperationRates(rateResponse);
-                }else {
-                    OperationRateResponse rateResponse = rateRestClient.getAdminOperationRates(apiName);
+                } else {
+                    OperationRateResponse rateResponse = rateRestClient.getOperatorOperationRates(apiName, userProfile.getUserName());
                     taskList.getData().get(i).setOperationRates(rateResponse);
                 }
             } catch (WorkflowExtensionException e) {
@@ -272,7 +297,7 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
     }
 
     @Override
-    protected abstract Callback buildApprovalRequest(ApprovalRequest approvalRequest) throws BusinessException;
+    protected abstract Callback buildApprovalRequest(ApprovalRequest approvalRequest, UserProfileDTO userProfile) throws BusinessException;
 
     @Override
     protected String getProcessDefinitionKey() {

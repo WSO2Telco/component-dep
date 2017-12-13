@@ -1,10 +1,9 @@
 package org.workflow.core.service.app;
 
-import java.text.DateFormat;
-import java.text.ParseException;
-import java.text.SimpleDateFormat;
-import java.util.*;
-
+import com.wso2telco.core.dbutils.exception.BusinessException;
+import com.wso2telco.core.dbutils.util.ApprovalRequest;
+import com.wso2telco.core.dbutils.util.Callback;
+import com.wso2telco.core.userprofile.dto.UserProfileDTO;
 import org.workflow.core.activity.ActivityRestClient;
 import org.workflow.core.activity.RestClientFactory;
 import org.workflow.core.activity.TaskApprovalRequest;
@@ -14,23 +13,15 @@ import org.workflow.core.service.AbsractQueryBuilder;
 import org.workflow.core.util.AppVariable;
 import org.workflow.core.util.DeploymentTypes;
 import org.workflow.core.util.Messages;
-import org.workflow.core.util.WorkFlowVariables;
 
-import com.wso2telco.core.dbutils.exception.BusinessException;
-import com.wso2telco.core.dbutils.util.ApprovalRequest;
-import com.wso2telco.core.dbutils.util.Callback;
-import com.wso2telco.core.userprofile.dto.UserProfileDTO;
+import java.text.ParseException;
+import java.util.*;
 
 abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
 
     private static final String GRAPH_LABEL = "APPLICATIONS";
 
-    private SearchResponse generateResponse(final TaskSearchDTO searchDTO, final TaskList taskList, final UserProfileDTO userProfile) throws ParseException {
-
-        DateFormat format = new SimpleDateFormat(WorkFlowVariables.DATE_FORMAT.getValue(), Locale.ENGLISH);
-        SimpleDateFormat dateFormatter = new SimpleDateFormat("dd-MMM-yyyy");
-        SimpleDateFormat timeFormatter = new SimpleDateFormat("HH:mm:ss");
-        SimpleDateFormat offsetFormatter = new SimpleDateFormat("XXX");
+    private SearchResponse generateResponse(final TaskList taskList) throws ParseException {
 
         TaskMetadata metadata = new TaskMetadata();
         metadata.setOrder(taskList.getOrder());
@@ -44,20 +35,7 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
         for (int k = 0; k < taskList.getData().size(); k++) {
 
             Task task = taskList.getData().get(k);
-            CreateTime createTime = new CreateTime();
-
-            if (task.getCreateTime() != null) {
-                Date date = format.parse(task.getCreateTime());
-                createTime.setDate(dateFormatter.format(date));
-                createTime.setTime(timeFormatter.format(date));
-                createTime.setOffset(offsetFormatter.format(date));
-                createTime.setUnformatted(task.getCreateTime());
-            } else {
-                createTime.setDate("");
-                createTime.setTime("");
-                createTime.setOffset("");
-                createTime.setUnformatted("");
-            }
+            CreateTime createTime = getCreatedTime(task);
 
             final Map<AppVariable, TaskVariableResponse> varMap = new HashMap<AppVariable, TaskVariableResponse>();
             for (final TaskVariableResponse var : task.getVariables()) {
@@ -150,7 +128,7 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
         SearchResponse payload;
         Callback returnCall;
         try {
-            payload = generateResponse(searchDTO, taskList, userProfile);
+            payload = generateResponse(taskList);
             returnCall = new Callback().setPayload(payload).setSuccess(true).setMessage(Messages.MY_APPLICATION_LOAD_SUCCESS.getValue());
         } catch (ParseException e) {
             returnCall = new Callback().setPayload(null).setSuccess(false).setMessage(Messages.MY_APPLICATION_LOAD_FAIL.getValue());
@@ -165,7 +143,7 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
         SearchResponse payload;
         Callback returnCall;
         try {
-            payload = generateResponse(searchDTO, taskList, userProfile);
+            payload = generateResponse(taskList);
             returnCall = new Callback().setPayload(payload).setSuccess(true).setMessage(Messages.ALL_APPLICATION_LOAD_SUCCESS.getValue());
         } catch (ParseException e) {
             returnCall = new Callback().setPayload(null).setSuccess(false).setMessage(Messages.ALL_APPLICATION_LOAD_FAIL.getValue());
@@ -219,7 +197,7 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
     }
 
     @Override
-    protected abstract Callback buildApprovalRequest(ApprovalRequest approvalRequest) throws BusinessException;
+    protected abstract Callback buildApprovalRequest(ApprovalRequest approvalRequest, UserProfileDTO userProfile) throws BusinessException;
 
     protected String getProcessDefinitionKey() {
         return depType.getAppProcessType();

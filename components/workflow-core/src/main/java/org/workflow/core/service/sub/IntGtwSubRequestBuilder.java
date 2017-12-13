@@ -3,6 +3,7 @@ package org.workflow.core.service.sub;
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.util.ApprovalRequest;
 import com.wso2telco.core.dbutils.util.Callback;
+import com.wso2telco.core.userprofile.dto.UserProfileDTO;
 import org.apache.commons.logging.LogFactory;
 import org.workflow.core.util.DeploymentTypes;
 
@@ -25,15 +26,12 @@ public class IntGtwSubRequestBuilder extends AbstractSubRequestBuilder {
 
     private static IntGtwSubRequestBuilder instance;
 
-    {
-        log = LogFactory.getLog(IntGtwSubRequestBuilder.class);
-    }
-
     IntGtwSubRequestBuilder(DeploymentTypes depType) {
+        log = LogFactory.getLog(IntGtwSubRequestBuilder.class);
         super.depType = depType;
     }
 
-    public static IntGtwSubRequestBuilder getInstace(DeploymentTypes depType) throws BusinessException {
+    public static IntGtwSubRequestBuilder getInstace(DeploymentTypes depType) {
         if (instance == null) {
             instance = new IntGtwSubRequestBuilder(depType);
         }
@@ -41,7 +39,7 @@ public class IntGtwSubRequestBuilder extends AbstractSubRequestBuilder {
     }
     
     @Override
-    protected Callback buildApprovalRequest(ApprovalRequest approvalRequest) throws BusinessException {
+    protected Callback buildApprovalRequest(ApprovalRequest approvalRequest, UserProfileDTO userProfile) throws BusinessException {
         return null;
     }
 }

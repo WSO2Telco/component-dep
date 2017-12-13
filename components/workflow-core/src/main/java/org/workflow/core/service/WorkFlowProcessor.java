@@ -1,5 +1,6 @@
 package org.workflow.core.service;
 
+import org.apache.commons.scxml.model.Final;
 import org.workflow.core.activity.ProcessSearchRequest;
 import org.workflow.core.model.TaskSearchDTO;
 
@@ -14,6 +15,6 @@ public interface WorkFlowProcessor {
 	public Callback searchPending(TaskSearchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException ;
 	public Callback searchPending(TaskSearchDTO searchDTO, final UserProfileDTO userProfile, String assigenee) throws BusinessException ;
 	public Callback getGraphData(final UserProfileDTO userProfile) throws BusinessException;
-	public Callback approveTask(final ApprovalRequest approvalRequest) throws BusinessException;
-	public Callback assignTask(final AssignRequest assignRequest) throws BusinessException;
+	public Callback approveTask(final ApprovalRequest approvalRequest, final UserProfileDTO userProfile) throws BusinessException;
+	public Callback assignTask(final AssignRequest assignRequest, final UserProfileDTO userProfile) throws BusinessException;
 }

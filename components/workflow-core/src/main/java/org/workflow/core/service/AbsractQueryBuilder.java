@@ -1,36 +1,26 @@
 package org.workflow.core.service;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Calendar;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Locale;
-import java.util.Map;
-
+import com.wso2telco.core.dbutils.exception.BusinessException;
+import com.wso2telco.core.dbutils.util.ApprovalRequest;
+import com.wso2telco.core.dbutils.util.AssignRequest;
+import com.wso2telco.core.dbutils.util.Callback;
+import com.wso2telco.core.userprofile.dto.UserProfileDTO;
 import org.apache.commons.logging.Log;
 import org.workflow.core.activity.ActivityRestClient;
 import org.workflow.core.activity.ProcessSearchRequest;
 import org.workflow.core.activity.RestClientFactory;
 import org.workflow.core.activity.TaskAssignRequest;
 import org.workflow.core.execption.WorkflowExtensionException;
-import org.workflow.core.model.Range;
-import org.workflow.core.model.Task;
-import org.workflow.core.model.TaskList;
-import org.workflow.core.model.TaskSearchDTO;
-import org.workflow.core.model.TaskVariableResponse;
-import org.workflow.core.model.Variable;
+import org.workflow.core.model.*;
 import org.workflow.core.util.AppVariable;
 import org.workflow.core.util.DeploymentTypes;
 import org.workflow.core.util.Messages;
+import org.workflow.core.util.WorkFlowVariables;
 
-import com.wso2telco.core.dbutils.exception.BusinessException;
-import com.wso2telco.core.dbutils.util.ApprovalRequest;
-import com.wso2telco.core.dbutils.util.AssignRequest;
-import com.wso2telco.core.dbutils.util.Callback;
-import com.wso2telco.core.userprofile.dto.UserProfileDTO;
+import java.text.DateFormat;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
+import java.util.*;
 
 public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 
@@ -52,14 +42,18 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 
     protected abstract Callback getHistoricalData(String user, List<Range> months, List<String> xAxisLabels) throws BusinessException;
 
-    protected abstract Callback buildApprovalRequest(final ApprovalRequest approvalRequest) throws BusinessException;
+    protected abstract Callback buildApprovalRequest(final ApprovalRequest approvalRequest, final UserProfileDTO userProfile) throws BusinessException;
 
     public Callback searchPending(TaskSearchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException {
         ProcessSearchRequest processRequest = buildSearchRequest(searchDTO, userProfile);
-        processRequest.setCandidateGroup("admin");
+        if(isAdmin(userProfile)){
+            processRequest.setCandidateGroup(WorkFlowVariables.HUB_ADMI_ROLE.getValue());
+        }else {
+            processRequest.setCandidateGroup(WorkFlowVariables.OPERATOR_ADMIN_ROLE.getValue());
+        }
+
         TaskList taskList = executeRequest(processRequest);
         return buildAllTaskResponse(searchDTO, taskList, userProfile);
-
     }
 
     @Override
@@ -107,24 +101,24 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
             /**
              * split the multiple filter criteria by ,
              */
-            final String[] filterCritias = filterStr.split(",");
-            for (String critira : filterCritias) {
+            final String[] filterCriterias = filterStr.split(",");
+            for (String criteria : filterCriterias) {
                 /**
                  * split the criteria by : to separate out the name and value ,
                  */
-                String[] critiraarry = critira.split(":");
+                String[] criteriaArray = criteria.split(":");
                 /**
                  * validate name and value. Both should not be null. and filer name should be
                  * defined at the filter map .if not ignore adding.
                  */
-                if (critiraarry.length == 2 && !critiraarry[0].trim().isEmpty() && !critiraarry[1].trim().isEmpty()
-                        && getFilterMap().containsKey(critiraarry[0].trim())) {
+                if (criteriaArray.length == 2 && !criteriaArray[0].trim().isEmpty() && !criteriaArray[1].trim().isEmpty()
+                        && getFilterMap().containsKey(criteriaArray[0].trim().toLowerCase())) {
                     /**
                      * add process variable ,
                      *
                      */
 
-                    Variable var = new Variable(getFilterMap().get(critiraarry[0]), critiraarry[1]);
+                    Variable var = new Variable(getFilterMap().get(criteriaArray[0].toLowerCase()), criteriaArray[1]);
                     request.addProcessVariable(var);
                 }
             }
@@ -135,12 +129,16 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 
     protected Map<String, String> getFilterMap() {
         Map<String, String> filter = new HashMap<String, String>();
-        filter.put("name", AppVariable.NAME.key());
+        filter.put("username", AppVariable.USERNAME.key());
+        filter.put("name", AppVariable.USERNAME.key());
+        filter.put("subscriber", AppVariable.SUBSCRIBER.key());
         filter.put("applicationname", AppVariable.NAME.key());
         filter.put("appname", AppVariable.NAME.key());
+        filter.put("applicationid", AppVariable.ID.key());
+        filter.put("appid", AppVariable.ID.key());
         filter.put("tier", AppVariable.TIER.key());
-        filter.put("createdby", AppVariable.USERNAME.key());
-        filter.put("owner", AppVariable.USERNAME.key());
+        filter.put("apiname", AppVariable.API_NAME.key());
+        filter.put("api", AppVariable.API_NAME.key());
         return filter;
     }
 
@@ -157,17 +155,17 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
             Calendar calendar = Calendar.getInstance();
             calendar.add(Calendar.MONTH, i);
             calendar.set(Calendar.DATE, 1);
-            calendar.set(Calendar.HOUR, -12);
+            calendar.set(Calendar.HOUR, 0);
             calendar.set(Calendar.MINUTE, 0);
             calendar.set(Calendar.SECOND, 0);
 
             Date start = calendar.getTime();
 
             calendar.add(Calendar.MONTH, 1);
-            calendar.set(Calendar.DATE, -1);
-            calendar.set(Calendar.HOUR, 23);
-            calendar.set(Calendar.MINUTE, 59);
-            calendar.set(Calendar.SECOND, 59);
+            calendar.set(Calendar.DATE, 0);
+            calendar.set(Calendar.HOUR, 0);
+            calendar.set(Calendar.MINUTE, 0);
+            calendar.set(Calendar.SECOND, 0);
 
             Date stop = calendar.getTime();
 
@@ -180,16 +178,15 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
     }
 
     @Override
-    public Callback approveTask(ApprovalRequest approvalRequest) throws BusinessException {
-        return buildApprovalRequest(approvalRequest);
+    public Callback approveTask(ApprovalRequest approvalRequest, UserProfileDTO userProfile) throws BusinessException {
+        return buildApprovalRequest(approvalRequest, userProfile);
     }
 
     @Override
-    public Callback assignTask(AssignRequest assignRequest) throws BusinessException {
-        String assignee = "admin";
+    public Callback assignTask(AssignRequest assignRequest, UserProfileDTO userProfile) throws BusinessException {
         TaskAssignRequest request = new TaskAssignRequest();
-        request.setAction("claim");
-        request.setAssignee(assignee.toLowerCase());
+        request.setAction(WorkFlowVariables.ASSIGN_ACTION.getValue());
+        request.setAssignee(userProfile.getUserName().toLowerCase());
         ActivityRestClient activityClient = RestClientFactory.getInstance().getClient(getProcessDefinitionKey());
         try {
             activityClient.assignTask(assignRequest.getTaskId(), request);
@@ -198,5 +195,39 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
             log.error("", e);
             return new Callback().setPayload(null).setSuccess(false).setMessage(Messages.TASK_APPROVAL_FAILED.getValue());
         }
+    }
+
+    public CreateTime getCreatedTime(Task task) throws ParseException {
+
+        DateFormat format = new SimpleDateFormat(WorkFlowVariables.DATE_FORMAT.getValue(), Locale.ENGLISH);
+        SimpleDateFormat dateFormatter = new SimpleDateFormat(WorkFlowVariables.DATE_FORMAT2.getValue());
+        SimpleDateFormat timeFormatter = new SimpleDateFormat(WorkFlowVariables.TIME_FORMAT.getValue());
+        SimpleDateFormat offsetFormatter = new SimpleDateFormat(WorkFlowVariables.OFFSET_FORMAT.getValue());
+        CreateTime createTime = new CreateTime();
+
+        if (task.getCreateTime() != null) {
+            Date date = format.parse(task.getCreateTime());
+            createTime.setDate(dateFormatter.format(date));
+            createTime.setTime(timeFormatter.format(date));
+            createTime.setOffset(offsetFormatter.format(date));
+            createTime.setUnformatted(task.getCreateTime());
+        } else {
+            createTime.setDate("");
+            createTime.setTime("");
+            createTime.setOffset("");
+            createTime.setUnformatted("");
+        }
+
+        return createTime;
+    }
+
+    protected boolean isAdmin(UserProfileDTO userProfile) {
+        String[] userRoles = userProfile.getUserRoles();
+        for(String role: userRoles){
+            if(role.trim().equals(WorkFlowVariables.ADMIN_ROLE.getValue())){
+                return true;
+            }
+        }
+        return false;
     }
 }

@@ -13,6 +13,11 @@ public class ProcessSearchRequest {
     private String sort = "createTime";
     private String candidateGroup;
     private  String processDefinitionKey;
+    private String assignee;
+    private static final byte MINBATCHSIZE = 0;
+    private static final byte MAXBATCHSIZE = 0;
+    private static final int MINSTARTINDEX = 0;
+    private List<Variable> processInstanceVariables = new ArrayList<Variable>();
 
     public String getProcessDefinitionKey() {
         return processDefinitionKey;
@@ -21,14 +26,6 @@ public class ProcessSearchRequest {
     public void setProcessDefinitionKey(String processDefinitionKey) {
         this.processDefinitionKey = processDefinitionKey;
     }
-
-    private String assignee;
-
-    private static final byte MINBATCHSIZE = 0;
-    private static final byte MAXBATCHSIZE = 0;
-
-    private static final int MINSTARTINDEX = 0;
-    private List<Variable> processInstanceVariables = new ArrayList<Variable>();
 
     public void addProcessVariable(Variable var) {
         processInstanceVariables.add(var);

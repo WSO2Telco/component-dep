@@ -31,7 +31,6 @@ public class TaskSearchDTO {
 	}
 
 	public int getStart() {
-
 		return start;
 	}
 
