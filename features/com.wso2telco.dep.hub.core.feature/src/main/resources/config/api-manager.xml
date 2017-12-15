@@ -556,7 +556,6 @@
         <EnableQueryParamConditions>false</EnableQueryParamConditions>
     </ThrottlingConfigurations>
 
-    <!--MSISDN validation service endpoint - deployed via common gw/hub capps-->
-<msisdnValidationURL>http://localhost:8281/services/msisdnValidation</msisdnValidationURL>
-
+    <!--Validation Regex service endpoint - deployed via common gw/hub capps-->
+    <ValidationRegexURL>http://localhost:8281/services/validationRegex</ValidationRegexURL>
 </APIManager>
