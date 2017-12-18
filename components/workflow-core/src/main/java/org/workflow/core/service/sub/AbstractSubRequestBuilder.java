@@ -135,6 +135,7 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
             applicationTask.setTiersStr(tiersStr);
             applicationTask.setUserName(varMap.get(AppVariable.SUBSCRIBER).getValue());
             applicationTask.setApiName(varMap.get(AppVariable.API_NAME).getValue());
+            applicationTask.setApiVersion(varMap.get(AppVariable.API_VERSION).getValue());
 
             applicationTask.setRelevantRates(relevantRates);
             applicationTask.setSelectedRate("");
