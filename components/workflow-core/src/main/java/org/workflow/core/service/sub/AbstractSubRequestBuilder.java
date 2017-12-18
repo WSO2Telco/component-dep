@@ -276,6 +276,7 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
         List<Integer> data = new ArrayList();
         ActivityRestClient activityClient = RestClientFactory.getInstance().getClient(getProcessDefinitionKey());
         TaskDetailsResponse taskList = null;
+        Callback returnCall;
 
         for (Range month : months) {
             taskList = activityClient.getHistoricTasks(month.getStart(), month.getEnd(), getProcessDefinitionKey(), user);
@@ -291,10 +292,12 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
             GraphResponse graphResponse = new GraphResponse();
             graphResponse.setXAxisLabels(xAxisLabels);
             graphResponse.setGraphData(graphDataList);
-            return new Callback().setPayload(graphResponse).setSuccess(true).setMessage(Messages.SUBSCRIPTION_HISTORY_SUCCESS.getValue());
+            returnCall = new Callback().setPayload(graphResponse).setSuccess(true).setMessage(Messages.SUBSCRIPTION_HISTORY_SUCCESS.getValue());
         } else {
-            return new Callback().setPayload(Collections.emptyList()).setSuccess(false).setMessage(Messages.SUBSCRIPTION_HISTORY_FALIED.getValue());
+            returnCall = new Callback().setPayload(Collections.emptyList()).setSuccess(false).setMessage(Messages.SUBSCRIPTION_HISTORY_FALIED.getValue());
         }
+
+        return returnCall;
     }
 
     @Override

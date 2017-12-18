@@ -81,6 +81,6 @@ public class HubAppRequestBuilder extends AbstractAppRequestBuilder {
         approvalRequest.setAction(WorkFlowVariables.ACTION.getValue());
         approvalRequest.setVariables(variables);
 
-        return super.executeTaskApprovalRequest(approvalRequest, request);
+        return executeTaskApprovalRequest(approvalRequest, request);
     }
 }

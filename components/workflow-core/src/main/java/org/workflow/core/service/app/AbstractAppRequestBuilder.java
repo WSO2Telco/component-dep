@@ -162,6 +162,7 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
         List<Integer> data = new ArrayList();
         ActivityRestClient activityClient = RestClientFactory.getInstance().getClient(getProcessDefinitionKey());
         TaskDetailsResponse taskList = null;
+        Callback returnCall;
 
         for (Range month : months) {
             taskList = activityClient.getHistoricTasks(month.getStart(), month.getEnd(), getProcessDefinitionKey(), user);
@@ -178,22 +179,26 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
             GraphResponse graphResponse = new GraphResponse();
             graphResponse.setXAxisLabels(xAxisLabels);
             graphResponse.setGraphData(graphDataList);
-            return new Callback().setPayload(graphResponse).setSuccess(true).setMessage(Messages.APPLICATION_HISTORY_SUCCESS.getValue());
+            returnCall = new Callback().setPayload(graphResponse).setSuccess(true).setMessage(Messages.APPLICATION_HISTORY_SUCCESS.getValue());
         } else {
-            return new Callback().setPayload(Collections.emptyList()).setSuccess(false)
+            returnCall = new Callback().setPayload(Collections.emptyList()).setSuccess(false)
                     .setMessage(Messages.APPLICATION_HISTORY_FAILED.getValue());
         }
+
+        return returnCall;
     }
 
     protected Callback executeTaskApprovalRequest(TaskApprovalRequest approvalRequest, ApprovalRequest request) throws BusinessException {
         ActivityRestClient activityClient = RestClientFactory.getInstance().getClient(getProcessDefinitionKey());
+        Callback returnCall;
         try {
             activityClient.approveTask(request.getTaskId(), approvalRequest);
-            return new Callback().setPayload(null).setSuccess(true).setMessage(Messages.APPLICATION_APPROVAL_SUCCESS.getValue());
+            returnCall = new Callback().setPayload(null).setSuccess(true).setMessage(Messages.APPLICATION_APPROVAL_SUCCESS.getValue());
         } catch (WorkflowExtensionException e) {
             log.error("", e);
-            return new Callback().setPayload(null).setSuccess(false).setMessage(Messages.APPLICATION_APPROVAL_FAILED.getValue());
+            returnCall = new Callback().setPayload(null).setSuccess(false).setMessage(Messages.APPLICATION_APPROVAL_FAILED.getValue());
         }
+        return returnCall;
     }
 
     @Override
