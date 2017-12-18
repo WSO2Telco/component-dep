@@ -23,8 +23,7 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
 
     private static final String GRAPH_LABEL = "SUBSCRIPTIONS";
 
-    private SearchResponse generateResponse(final TaskSearchDTO searchDTO, final TaskList taskList,
-                                            final UserProfileDTO userProfile) throws ParseException {
+    private SearchResponse generateResponse(final TaskList taskList) throws ParseException {
 
         TaskMetadata metadata = new TaskMetadata();
         metadata.setOrder(taskList.getOrder());
@@ -155,11 +154,11 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
     @Override
     protected Callback buildMyTaskResponse(TaskSearchDTO searchDTO, TaskList taskList, UserProfileDTO userProfile) throws BusinessException {
 
-        taskList = getOperationRates(taskList, userProfile);
+        TaskList myTaskList = getOperationRates(taskList, userProfile);
         SearchResponse payload;
         Callback returnCall;
         try {
-            payload = generateResponse(searchDTO, taskList, userProfile);
+            payload = generateResponse(myTaskList);
             returnCall = new Callback().setPayload(payload).setSuccess(true).setMessage(Messages.MY_SUBSCRIPTION_LOAD_SUCCESS.getValue());
         } catch (ParseException e) {
             returnCall = new Callback().setPayload(null).setSuccess(false).setMessage(Messages.MY_SUBSCRIPTION_LOAD_FAIL.getValue());
@@ -171,14 +170,15 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
     @Override
     protected Callback buildAllTaskResponse(TaskSearchDTO searchDTO, TaskList taskList, UserProfileDTO userProfile) throws BusinessException {
 
+        TaskList allTaskList = taskList;
         if (!isAdmin(userProfile)) {
-            taskList = filterOperatorApprovedApps(taskList);
+            allTaskList = filterOperatorApprovedApps(taskList);
         }
-        taskList = getOperationRates(taskList, userProfile);
+        allTaskList = getOperationRates(allTaskList, userProfile);
         SearchResponse payload;
         Callback returnCall;
         try {
-            payload = generateResponse(searchDTO, taskList, userProfile);
+            payload = generateResponse(allTaskList);
             returnCall = new Callback().setPayload(payload).setSuccess(true).setMessage(Messages.ALL_SUBSCRIPTION_LOAD_SUCCESS.getValue());
         } catch (ParseException e) {
             returnCall = new Callback().setPayload(null).setSuccess(false).setMessage(Messages.ALL_SUBSCRIPTION_LOAD_FAIL.getValue());
@@ -206,7 +206,7 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
         try {
             operatorApprovedApps = new OparatorService().getOparatorApprovedApp(appIds);
         } catch (BusinessException e) {
-            e.printStackTrace();
+            log.error("", e);
         }
 
         if (!operatorApprovedApps.isEmpty()) {

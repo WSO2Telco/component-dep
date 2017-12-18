@@ -188,13 +188,19 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
         request.setAction(WorkFlowVariables.ASSIGN_ACTION.getValue());
         request.setAssignee(userProfile.getUserName().toLowerCase());
         ActivityRestClient activityClient = RestClientFactory.getInstance().getClient(getProcessDefinitionKey());
+        boolean success;
+        String message;
         try {
             activityClient.assignTask(assignRequest.getTaskId(), request);
-            return new Callback().setPayload(null).setSuccess(true).setMessage(Messages.TASK_APPROVAL_SUCCESS.getValue());
+            success = true;
+            message = Messages.TASK_APPROVAL_SUCCESS.getValue();
         } catch (WorkflowExtensionException e) {
             log.error("", e);
-            return new Callback().setPayload(null).setSuccess(false).setMessage(Messages.TASK_APPROVAL_FAILED.getValue());
+            success = false;
+            message = Messages.TASK_APPROVAL_FAILED.getValue();
         }
+
+        return new Callback().setPayload(null).setSuccess(success).setMessage(message);
     }
 
     public CreateTime getCreatedTime(Task task) throws ParseException {
@@ -223,11 +229,12 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 
     protected boolean isAdmin(UserProfileDTO userProfile) {
         String[] userRoles = userProfile.getUserRoles();
+        boolean isAdmin = false;
         for(String role: userRoles){
             if(role.trim().equals(WorkFlowVariables.ADMIN_ROLE.getValue())){
-                return true;
+                isAdmin = true;
             }
         }
-        return false;
+        return isAdmin;
     }
 }

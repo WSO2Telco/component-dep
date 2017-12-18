@@ -42,6 +42,8 @@ public class ApplicationRest {
     public Response load(@HeaderParam("user-name") String userName, @QueryParam("batchSize") int batchSize,
                          @QueryParam("start") int start, @QueryParam("orderBy") String orderBy,
                          @QueryParam("sortBy") String sortBy, @QueryParam("filterBy") String filterBy) {
+
+        Response response;
         try {
             WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
             TaskSearchDTO searchD = new TaskSearchDTO();
@@ -50,10 +52,11 @@ public class ApplicationRest {
             UserProfileRetriever userProfileRetriever = new UserProfileRetriever();
             UserProfileDTO userProfile = userProfileRetriever.getUserProfile(userName);
             Callback callback = workFlowDelegator.getPendingApplicationApprovals(searchD, userProfile);
-            return Response.status(Response.Status.OK).entity(callback).build();
+            response = Response.status(Response.Status.OK).entity(callback).build();
         } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            response =  Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
+        return response;
     }
 
     @GET
@@ -61,6 +64,8 @@ public class ApplicationRest {
     public Response load(@HeaderParam("user-name") String userName, @QueryParam("batchSize") int batchSize,
                          @QueryParam("start") int start, @QueryParam("orderBy") String orderBy,
                          @QueryParam("sortBy") String sortBy, @QueryParam("filterBy") String filterBy, @PathParam("assignee") String assignee) {
+
+        Response response;
         try {
             WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
             TaskSearchDTO searchD = new TaskSearchDTO();
@@ -69,52 +74,61 @@ public class ApplicationRest {
             UserProfileRetriever userProfileRetriever = new UserProfileRetriever();
             UserProfileDTO userProfile = userProfileRetriever.getUserProfile(userName);
             Callback callback = workFlowDelegator.getPendingAssignedApplicationApprovals(searchD, userProfile, assignee);
-            return Response.status(Response.Status.OK).entity(callback).build();
+            response = Response.status(Response.Status.OK).entity(callback).build();
         } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
+        return response;
     }
 
     @GET
     @Path("/graph")
     public Response loadGraph(@HeaderParam("user-name") String userName) {
+
+        Response response;
         try {
             WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
             UserProfileRetriever userProfileRetriever = new UserProfileRetriever();
             UserProfileDTO userProfile = userProfileRetriever.getUserProfile(userName);
             Callback callback = workFlowDelegator.getApplicationGraphData(userProfile);
-            return Response.status(Response.Status.OK).entity(callback).build();
+            response = Response.status(Response.Status.OK).entity(callback).build();
         } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
+
+        return response;
     }
 
     @POST
     @Path("/assign")
     public Response assign(@HeaderParam("user-name") String userName, AssignRequest assignRequest) {
+        Response response;
         try {
             WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
             UserProfileRetriever userProfileRetriever = new UserProfileRetriever();
             UserProfileDTO userProfileDTO = userProfileRetriever.getUserProfile(userName);
             Callback callback = workFlowDelegator.assignApplicationTask(assignRequest, userProfileDTO);
-            return Response.status(Response.Status.OK).entity(callback).build();
+            response = Response.status(Response.Status.OK).entity(callback).build();
         } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
+        return response;
     }
 
     @POST
     @Path("/approve")
     public Response approve(@HeaderParam("user-name") String userName, ApprovalRequest approvalRequest) {
+        Response response;
         try {
             WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
             UserProfileRetriever userProfileRetriever = new UserProfileRetriever();
             UserProfileDTO userProfile = userProfileRetriever.getUserProfile(userName);
             Callback callback = workFlowDelegator.approveApplication(approvalRequest, userProfile);
-            return Response.status(Response.Status.OK).entity(callback).build();
+            response = Response.status(Response.Status.OK).entity(callback).build();
         } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
+        return response;
     }
 
 }
