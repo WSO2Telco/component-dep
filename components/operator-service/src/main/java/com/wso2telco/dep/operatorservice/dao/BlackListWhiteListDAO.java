@@ -691,16 +691,16 @@ public class BlackListWhiteListDAO {
         ResultSet results = null;
         String sql = new StringBuilder()
 				.append("SELECT usr.um_user_name ")
-				.append("		FROM ").append(OparatorTable.UM_USER.getTObject()).append(" usr, ")
+				.append(" FROM ").append(OparatorTable.UM_USER.getTObject()).append(" usr, ")
 				.append(OparatorTable.UM_USER_ROLE.getTObject())
 				.append(" usr_role ")
 				.append("WHERE usr.UM_ID = usr_role.UM_USER_ID ")
 				.append("  AND usr_role.UM_ROLE_ID = ")
-				.append("    (SELECT role.UM_ID ")
-				.append("     FROM ")
+				.append(" (SELECT role.UM_ID ")
+				.append(" FROM ")
 				.append(OparatorTable.UM_ROLE.getTObject())
 				.append(" role ")
-				.append("     WHERE role.UM_ROLE_NAME =?)")
+				.append(" WHERE role.UM_ROLE_NAME = 'admin')")
 				.toString();
 
         ArrayList<String> adminUserList = new ArrayList<String>();
