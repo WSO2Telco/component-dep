@@ -26,53 +26,43 @@ public class TaskMetadata {
     @JsonProperty("total")
     private Integer total;
 
+    public TaskMetadata(TaskList taskList) {
+
+        this.order = taskList.getOrder();
+        this.size = taskList.getSize();
+        this.sort = taskList.getSort();
+        this.start = taskList.getStart();
+        this.total = taskList.getTotal();
+
+    }
+
     @JsonProperty("order")
     public String getOrder() {
         return order;
     }
 
-    @JsonProperty("order")
-    public void setOrder(String order) {
-        this.order = order;
-    }
 
     @JsonProperty("size")
     public Integer getSize() {
         return size;
     }
 
-    @JsonProperty("size")
-    public void setSize(Integer size) {
-        this.size = size;
-    }
 
     @JsonProperty("sort")
     public String getSort() {
         return sort;
     }
 
-    @JsonProperty("sort")
-    public void setSort(String sort) {
-        this.sort = sort;
-    }
 
     @JsonProperty("start")
     public Integer getStart() {
         return start;
     }
 
-    @JsonProperty("start")
-    public void setStart(Integer start) {
-        this.start = start;
-    }
 
     @JsonProperty("total")
     public Integer getTotal() {
         return total;
     }
 
-    @JsonProperty("total")
-    public void setTotal(Integer total) {
-        this.total = total;
-    }
 }

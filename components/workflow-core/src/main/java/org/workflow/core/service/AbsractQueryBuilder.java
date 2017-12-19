@@ -28,7 +28,10 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
     protected DeploymentTypes depType;
     static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssXXX";
     static final String MONTH_FORMAT = "MMM";
-
+    private  DateFormat format = new SimpleDateFormat(WorkFlowVariables.DATE_FORMAT.getValue(), Locale.ENGLISH);
+    private SimpleDateFormat dateFormatter = new SimpleDateFormat(WorkFlowVariables.DATE_FORMAT2.getValue());
+    private SimpleDateFormat timeFormatter = new SimpleDateFormat(WorkFlowVariables.TIME_FORMAT.getValue());
+    private SimpleDateFormat offsetFormatter = new SimpleDateFormat(WorkFlowVariables.OFFSET_FORMAT.getValue());
 
     protected abstract String getProcessDefinitionKey();
 
@@ -203,16 +206,16 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
         return new Callback().setPayload(null).setSuccess(success).setMessage(message);
     }
 
-    public CreateTime getCreatedTime(Task task) throws ParseException {
+    public CreateTime getCreatedTime(Task task)  {
+        try {
 
-        DateFormat format = new SimpleDateFormat(WorkFlowVariables.DATE_FORMAT.getValue(), Locale.ENGLISH);
-        SimpleDateFormat dateFormatter = new SimpleDateFormat(WorkFlowVariables.DATE_FORMAT2.getValue());
-        SimpleDateFormat timeFormatter = new SimpleDateFormat(WorkFlowVariables.TIME_FORMAT.getValue());
-        SimpleDateFormat offsetFormatter = new SimpleDateFormat(WorkFlowVariables.OFFSET_FORMAT.getValue());
         CreateTime createTime = new CreateTime();
 
         if (task.getCreateTime() != null) {
-            Date date = format.parse(task.getCreateTime());
+            Date date = null;
+
+                date = format.parse(task.getCreateTime());
+
             createTime.setDate(dateFormatter.format(date));
             createTime.setTime(timeFormatter.format(date));
             createTime.setOffset(offsetFormatter.format(date));
@@ -225,6 +228,9 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
         }
 
         return createTime;
+        } catch (ParseException e) {
+           return null;
+        }
     }
 
     protected boolean isAdmin(UserProfileDTO userProfile) {

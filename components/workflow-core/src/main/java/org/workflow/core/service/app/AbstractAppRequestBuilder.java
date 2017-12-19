@@ -14,108 +14,43 @@ import org.workflow.core.util.AppVariable;
 import org.workflow.core.util.DeploymentTypes;
 import org.workflow.core.util.Messages;
 
-import java.text.ParseException;
 import java.util.*;
 
 abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
 
     private static final String GRAPH_LABEL = "APPLICATIONS";
 
-    private SearchResponse generateResponse(final TaskList taskList) throws ParseException {
+    private AppSearchResponse generateResponse(final TaskList taskList) throws BusinessException {
 
-        TaskMetadata metadata = new TaskMetadata();
-        metadata.setOrder(taskList.getOrder());
-        metadata.setSize(taskList.getSize());
-        metadata.setSort(taskList.getSort());
-        metadata.setStart(taskList.getStart());
-        metadata.setTotal(taskList.getTotal());
-
+        TaskMetadata metadata = new TaskMetadata(taskList);
         List<ApplicationTask> applicationTasks = new ArrayList();
+        final Map<AppVariable, TaskVariableResponse> varMap = new HashMap<AppVariable, TaskVariableResponse>();
 
-        for (int k = 0; k < taskList.getData().size(); k++) {
-
-            Task task = taskList.getData().get(k);
+        for (Task task : taskList.getData()) {
             CreateTime createTime = getCreatedTime(task);
-
-            final Map<AppVariable, TaskVariableResponse> varMap = new HashMap<AppVariable, TaskVariableResponse>();
+            varMap.clear();
             for (final TaskVariableResponse var : task.getVariables()) {
                 varMap.put(AppVariable.getByKey(var.getName()), var);
             }
 
-            String description;
-            String tier;
-            String applicationId;
-            String applicationName;
-            String operators;
-            String assignee;
-            List<String> tiersStr;
-
-            if (varMap.containsKey(AppVariable.DESCRIPTION)) {
-                description = varMap.get(AppVariable.DESCRIPTION).getValue();
-            } else {
-                description = "";
-            }
-
-            if (varMap.containsKey(AppVariable.TIER)) {
-                tier = varMap.get(AppVariable.TIER).getValue();
-            } else {
-                tier = "";
-            }
-
-            if (varMap.containsKey(AppVariable.ID)) {
-                applicationId = varMap.get(AppVariable.ID).getValue();
-            } else {
-                applicationId = "";
-            }
-
-            if (varMap.containsKey(AppVariable.NAME)) {
-                applicationName = varMap.get(AppVariable.NAME).getValue();
-            } else {
-                applicationName = "";
-            }
-
-            if (varMap.containsKey(AppVariable.OPARATOR)) {
-                operators = varMap.get(AppVariable.OPARATOR).getValue();
-            } else {
-                operators = "";
-            }
+            List<String> tiersStr = Collections.emptyList();
 
             if (varMap.containsKey(AppVariable.TIER_STRING)) {
                 tiersStr = new ArrayList<String>(Arrays.asList(varMap.get(AppVariable.TIER_STRING).getValue().split(",")));
-            } else {
-                tiersStr = Collections.emptyList();
             }
 
-            if (task.getAssignee() == null) {
-                assignee = "";
-            } else {
-                assignee = task.getAssignee();
-            }
+            ApplicationTask applicationTask = new ApplicationTask(varMap);
 
-            ApplicationTask applicationTask = new ApplicationTask();
-
-            applicationTask.setId(task.getId());
-            applicationTask.setAssignee(assignee);
             applicationTask.setCreateTime(createTime);
+            applicationTask.setId(task.getId());
+            applicationTask.setAssignee((task.getAssignee() != null)?task.getAssignee():"");
             applicationTask.setTaskDescription(task.getDescription());
-            applicationTask.setApplicationId(applicationId);
-            applicationTask.setApplicationName(applicationName);
-            applicationTask.setApplicationDescription(description);
-            applicationTask.setOperators(operators);
-            applicationTask.setTier(tier);
             applicationTask.setTiersStr(tiersStr);
-            applicationTask.setUserName(varMap.get(AppVariable.USERNAME).getValue());
-            applicationTask.setCreditPlan("");
-
-            applicationTask.setRelevantRates(Collections.<RelevantRate>emptyList());
-            applicationTask.setSelectedRate("");
-            applicationTask.setApiName("");
 
             applicationTasks.add(applicationTask);
         }
 
-        SearchResponse searchResponse = new SearchResponse();
-
+        AppSearchResponse searchResponse = new AppSearchResponse();
         searchResponse.setMetadata(metadata);
         searchResponse.setApplicationTasks(applicationTasks);
 
@@ -125,13 +60,13 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
     @Override
     protected Callback buildMyTaskResponse(TaskSearchDTO searchDTO, TaskList taskList, UserProfileDTO userProfile)
             throws BusinessException {
-        SearchResponse payload;
+        AppSearchResponse payload;
         Callback returnCall;
         try {
             payload = generateResponse(taskList);
             returnCall = new Callback().setPayload(payload).setSuccess(true).setMessage(Messages.MY_APPLICATION_LOAD_SUCCESS.getValue());
-        } catch (ParseException e) {
-            returnCall = new Callback().setPayload(null).setSuccess(false).setMessage(Messages.MY_APPLICATION_LOAD_FAIL.getValue());
+        } catch (BusinessException e) {
+            returnCall = new Callback().setPayload(e.getMessage()).setSuccess(false).setMessage(Messages.MY_APPLICATION_LOAD_FAIL.getValue());
         }
 
         return returnCall;
@@ -140,13 +75,13 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
     @Override
     protected Callback buildAllTaskResponse(TaskSearchDTO searchDTO, TaskList taskList, UserProfileDTO userProfile)
             throws BusinessException {
-        SearchResponse payload;
+        AppSearchResponse payload;
         Callback returnCall;
         try {
             payload = generateResponse(taskList);
             returnCall = new Callback().setPayload(payload).setSuccess(true).setMessage(Messages.ALL_APPLICATION_LOAD_SUCCESS.getValue());
-        } catch (ParseException e) {
-            returnCall = new Callback().setPayload(null).setSuccess(false).setMessage(Messages.ALL_APPLICATION_LOAD_FAIL.getValue());
+        } catch (BusinessException e) {
+            returnCall = new Callback().setPayload(e.getMessage()).setSuccess(false).setMessage(Messages.ALL_APPLICATION_LOAD_FAIL.getValue());
         }
 
         return returnCall;

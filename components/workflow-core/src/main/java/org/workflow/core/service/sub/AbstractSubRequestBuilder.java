@@ -5,6 +5,7 @@ import com.wso2telco.core.dbutils.util.ApprovalRequest;
 import com.wso2telco.core.dbutils.util.Callback;
 import com.wso2telco.core.userprofile.dto.UserProfileDTO;
 import com.wso2telco.dep.operatorservice.service.OparatorService;
+import org.workflow.core.SubSearchResponse;
 import org.workflow.core.activity.ActivityRestClient;
 import org.workflow.core.activity.RestClientFactory;
 import org.workflow.core.execption.WorkflowExtensionException;
@@ -23,139 +24,87 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
 
     private static final String GRAPH_LABEL = "SUBSCRIPTIONS";
 
-    private SearchResponse generateResponse(final TaskList taskList) throws ParseException {
+    private SubSearchResponse generateResponse(final TaskList taskList) throws ParseException {
 
-        TaskMetadata metadata = new TaskMetadata();
-        metadata.setOrder(taskList.getOrder());
-        metadata.setSize(taskList.getSize());
-        metadata.setSort(taskList.getSort());
-        metadata.setStart(taskList.getStart());
-        metadata.setTotal(taskList.getTotal());
+        TaskMetadata metadata = new TaskMetadata(taskList);
+        List<SubscriptionTask> subscriptionTasks = new ArrayList();
+        final Map<AppVariable, TaskVariableResponse> varMap = new HashMap<AppVariable, TaskVariableResponse>();
 
-        List<ApplicationTask> applicationTasks = new ArrayList();
-
-        for (int k = 0; k < taskList.getData().size(); k++) {
-
-            Task task = taskList.getData().get(k);
+        for (Task task : taskList.getData()) {
             CreateTime createTime = getCreatedTime(task);
-            List<RelevantRate> relevantRates = new ArrayList<RelevantRate>();
-            List<Operation> operationRates;
 
-            final Map<AppVariable, TaskVariableResponse> varMap = new HashMap<AppVariable, TaskVariableResponse>();
+            varMap.clear();
             for (final TaskVariableResponse var : task.getVariables()) {
                 varMap.put(AppVariable.getByKey(var.getName()), var);
             }
 
-            if (task.getOperationRates() != null && task.getOperationRates().getApi() != null) {
+            List<String> tiersStr = Collections.emptyList();
+            List<RelevantRate> relevantRates = setRelevantRates(task);
 
-                operationRates = task.getOperationRates().getApi().getOperations();
-
-                for (Operation operation : operationRates) {
-
-                    RelevantRate relevantRate = new RelevantRate();
-                    List<RateDefinition> rateDefinitions = new ArrayList<RateDefinition>();
-                    for (RateDefinition rateDefinition : operation.getRates()) {
-
-                        RateDefinition tempDef = new RateDefinition();
-                        tempDef.setRateDefId(rateDefinition.getOperationRateId());
-                        tempDef.setRateDefName(rateDefinition.getRateDefName());
-                        tempDef.setRateDefDescription(rateDefinition.getRateDefDescription());
-
-                        rateDefinitions.add(tempDef);
-                    }
-                    relevantRate.setApiOperation(operation.getApiOperationName());
-                    relevantRate.setRateDefinitions(rateDefinitions);
-
-                    relevantRates.add(relevantRate);
-                }
-            }
-
-            String description;
-            String tier;
-            String applicationId;
-            String applicationName;
-            String operators;
-            String assignee;
-            List<String> tiersStr;
-
-            if (varMap.containsKey(AppVariable.APPLICATION_DESCRIPTION)) {
-                description = varMap.get(AppVariable.APPLICATION_DESCRIPTION).getValue();
-            } else {
-                description = "";
-            }
-
-            if (varMap.containsKey(AppVariable.TIER_NAME)) {
-                tier = varMap.get(AppVariable.TIER_NAME).getValue();
-            } else {
-                tier = "";
-            }
-
-            if (varMap.containsKey(AppVariable.ID)) {
-                applicationId = varMap.get(AppVariable.ID).getValue();
-            } else {
-                applicationId = "";
-            }
-
-            if (varMap.containsKey(AppVariable.NAME)) {
-                applicationName = varMap.get(AppVariable.NAME).getValue();
-            } else {
-                applicationName = "";
-            }
-
-            if (varMap.containsKey(AppVariable.OPARATOR)) {
-                operators = varMap.get(AppVariable.OPARATOR).getValue();
-            } else {
-                operators = "";
-            }
 
             if (varMap.containsKey(AppVariable.API_TIERS)) {
                 tiersStr = new ArrayList<String>(Arrays.asList(varMap.get(AppVariable.API_TIERS).getValue().split(",")));
-            } else {
-                tiersStr = Collections.emptyList();
             }
 
-            if (task.getAssignee() == null) {
-                assignee = "";
-            } else {
-                assignee = task.getAssignee();
-            }
+            SubscriptionTask subscriptionTask = new SubscriptionTask(varMap);
 
-            ApplicationTask applicationTask = new ApplicationTask();
+            subscriptionTask.setId(task.getId());
+            subscriptionTask.setAssignee((task.getAssignee() != null)?task.getAssignee():"");
+            subscriptionTask.setCreateTime(createTime);
+            subscriptionTask.setTaskDescription(task.getDescription());
+            subscriptionTask.setTiersStr(tiersStr);
 
-            applicationTask.setId(task.getId());
-            applicationTask.setAssignee(assignee);
-            applicationTask.setCreateTime(createTime);
-            applicationTask.setTaskDescription(task.getDescription());
-            applicationTask.setApplicationId(applicationId);
-            applicationTask.setApplicationName(applicationName);
-            applicationTask.setApplicationDescription(description);
-            applicationTask.setOperators(operators);
-            applicationTask.setTier(tier);
-            applicationTask.setTiersStr(tiersStr);
-            applicationTask.setUserName(varMap.get(AppVariable.SUBSCRIBER).getValue());
-            applicationTask.setApiName(varMap.get(AppVariable.API_NAME).getValue());
-            applicationTask.setApiVersion(varMap.get(AppVariable.API_VERSION).getValue());
+            subscriptionTask.setRelevantRates(relevantRates);
 
-            applicationTask.setRelevantRates(relevantRates);
-            applicationTask.setSelectedRate("");
-            applicationTask.setCreditPlan("");
-
-            applicationTasks.add(applicationTask);
+            subscriptionTasks.add(subscriptionTask);
         }
 
-        SearchResponse searchResponse = new SearchResponse();
+        SubSearchResponse searchResponse = new SubSearchResponse();
 
         searchResponse.setMetadata(metadata);
-        searchResponse.setApplicationTasks(applicationTasks);
+        searchResponse.setApplicationTasks(subscriptionTasks);
 
         return searchResponse;
+    }
+
+
+    private List<RelevantRate> setRelevantRates(Task task){
+
+        List<RelevantRate> relevantRates = new ArrayList<RelevantRate>();
+        List<Operation> operationRates;
+
+        if (task.getOperationRates() != null && task.getOperationRates().getApi() != null) {
+
+            operationRates = task.getOperationRates().getApi().getOperations();
+
+            for (Operation operation : operationRates) {
+
+                RelevantRate relevantRate = new RelevantRate();
+                List<RateDefinition> rateDefinitions = new ArrayList<RateDefinition>();
+                for (RateDefinition rateDefinition : operation.getRates()) {
+
+                    RateDefinition tempDef = new RateDefinition();
+                    tempDef.setRateDefId(rateDefinition.getOperationRateId());
+                    tempDef.setRateDefName(rateDefinition.getRateDefName());
+                    tempDef.setRateDefDescription(rateDefinition.getRateDefDescription());
+
+                    rateDefinitions.add(tempDef);
+                }
+                relevantRate.setApiOperation(operation.getApiOperationName());
+                relevantRate.setRateDefinitions(rateDefinitions);
+
+                relevantRates.add(relevantRate);
+            }
+        }
+
+        return relevantRates;
     }
 
     @Override
     protected Callback buildMyTaskResponse(TaskSearchDTO searchDTO, TaskList taskList, UserProfileDTO userProfile) throws BusinessException {
 
         TaskList myTaskList = getOperationRates(taskList, userProfile);
-        SearchResponse payload;
+        SubSearchResponse payload;
         Callback returnCall;
         try {
             payload = generateResponse(myTaskList);
@@ -175,7 +124,7 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
             allTaskList = filterOperatorApprovedApps(taskList);
         }
         allTaskList = getOperationRates(allTaskList, userProfile);
-        SearchResponse payload;
+        SubSearchResponse payload;
         Callback returnCall;
         try {
             payload = generateResponse(allTaskList);
@@ -191,7 +140,6 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
 
         String appIds = "";
         List<String> operatorApprovedApps = new ArrayList<String>();
-        List<Task> tasks = new ArrayList<Task>();
 
         for (Task task : taskList.getData()) {
             final Map<AppVariable, TaskVariableResponse> varMap = new HashMap<AppVariable, TaskVariableResponse>();
@@ -209,6 +157,11 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
             log.error("", e);
         }
 
+        return filterOperatorApproveApps(taskList, operatorApprovedApps);
+    }
+
+    private TaskList filterOperatorApproveApps(TaskList taskList, List<String> operatorApprovedApps){
+        List<Task> tasks = new ArrayList<Task>();
         if (!operatorApprovedApps.isEmpty()) {
             for (Task task : taskList.getData()) {
                 final Map<AppVariable, TaskVariableResponse> varMap = new HashMap<AppVariable, TaskVariableResponse>();
@@ -221,7 +174,6 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
                     }
                 }
             }
-
             taskList.setData(tasks);
             taskList.setSize(tasks.size());
 
@@ -229,7 +181,6 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
             taskList.setData(tasks);
             taskList.setSize(tasks.size());
         }
-
 
         return taskList;
     }
