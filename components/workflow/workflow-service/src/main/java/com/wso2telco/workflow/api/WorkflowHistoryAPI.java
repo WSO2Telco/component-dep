@@ -20,7 +20,6 @@ import com.google.gson.Gson;
 import com.wso2telco.dep.operatorservice.service.OparatorService;
 import com.wso2telco.dep.reportingservice.southbound.SbHostObjectUtils;
 import com.wso2telco.workflow.model.ApplicationStatusDTO;
-import com.wso2telco.workflow.model.ApprovalDTO;
 import com.wso2telco.workflow.service.WorkflowHistoryService;
 import com.wso2telco.workflow.utils.WorkflowServiceException;
 
@@ -42,22 +41,8 @@ public class WorkflowHistoryAPI {
 
     private static final Log log = LogFactory.getLog(WorkflowHistoryAPI.class);
 
-    @GET
-    @Path("/approval/{fromDate}/{toDate}/{subscriber}/{api}/{applicationId}/{operator}/{offset}/{count}")
-    @Produces("application/json")
-    public Response getApprovalHistory(@PathParam("fromDate") String fromDate, @PathParam("toDate") String toDate, @PathParam("subscriber") String subscriber, @PathParam("api") String api, @PathParam("applicationId") int applicationId, @PathParam("operator") String operator, @PathParam("offset") int offset, @PathParam("count") int count) {
 
-        String jsonPayload;
 
-        try {
-            List<String[]> apiRequests = SbHostObjectUtils.getApprovalHistory(fromDate, toDate, subscriber, api, applicationId, operator, offset, count);
-            jsonPayload = new Gson().toJson(apiRequests);
-        } catch (Exception e) {
-            log.error(e);
-            return Response.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).build();
-        }
-        return Response.status(HttpServletResponse.SC_OK).entity(jsonPayload).build();
-    }
 
     @GET
     @Path("/approval/{app_id}")
@@ -123,7 +108,7 @@ public class WorkflowHistoryAPI {
             log.error(e);
             return Response.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).build();
         }
-        return Response.status(HttpServletResponse.SC_OK).header("Content-Type", "application/json").entity(jsonPayload).build();
+        return Response.status(HttpServletResponse.SC_OK).entity(jsonPayload).build();
     }
 
     @GET
@@ -157,7 +142,7 @@ public class WorkflowHistoryAPI {
             return Response.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).build();
         }
 
-        return Response.status(HttpServletResponse.SC_OK).header("Content-Type", "application/json").entity(jsonPayload).build();
+        return Response.status(HttpServletResponse.SC_OK).entity(jsonPayload).build();
     }
 
 
