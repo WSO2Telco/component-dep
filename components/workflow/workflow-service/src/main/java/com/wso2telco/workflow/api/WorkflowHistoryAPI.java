@@ -40,7 +40,7 @@ import java.util.List;
 public class WorkflowHistoryAPI {
 
     private static final Log log = LogFactory.getLog(WorkflowHistoryAPI.class);
-
+    
     @GET
     @Path("/approval/{app_id}")
     @Produces("application/json")
