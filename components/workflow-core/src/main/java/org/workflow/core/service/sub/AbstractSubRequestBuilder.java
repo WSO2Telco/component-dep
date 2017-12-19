@@ -5,7 +5,7 @@ import com.wso2telco.core.dbutils.util.ApprovalRequest;
 import com.wso2telco.core.dbutils.util.Callback;
 import com.wso2telco.core.userprofile.dto.UserProfileDTO;
 import com.wso2telco.dep.operatorservice.service.OparatorService;
-import org.workflow.core.SubSearchResponse;
+import org.workflow.core.model.SubSearchResponse;
 import org.workflow.core.activity.ActivityRestClient;
 import org.workflow.core.activity.RestClientFactory;
 import org.workflow.core.execption.WorkflowExtensionException;

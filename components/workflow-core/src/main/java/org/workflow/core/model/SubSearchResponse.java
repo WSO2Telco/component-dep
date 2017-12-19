@@ -1,4 +1,4 @@
-package org.workflow.core;
+package org.workflow.core.model;
 
 /**
  * Created by manoj on 10/17/17.
@@ -7,9 +7,6 @@ package org.workflow.core;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
-import org.workflow.core.model.ApplicationTask;
-import org.workflow.core.model.SubscriptionTask;
-import org.workflow.core.model.TaskMetadata;
 
 import java.util.List;
 

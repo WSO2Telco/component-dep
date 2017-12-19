@@ -28,7 +28,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
     protected DeploymentTypes depType;
     static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssXXX";
     static final String MONTH_FORMAT = "MMM";
-    private  DateFormat format = new SimpleDateFormat(WorkFlowVariables.DATE_FORMAT.getValue(), Locale.ENGLISH);
+    private DateFormat format = new SimpleDateFormat(WorkFlowVariables.DATE_FORMAT.getValue(), Locale.ENGLISH);
     private SimpleDateFormat dateFormatter = new SimpleDateFormat(WorkFlowVariables.DATE_FORMAT2.getValue());
     private SimpleDateFormat timeFormatter = new SimpleDateFormat(WorkFlowVariables.TIME_FORMAT.getValue());
     private SimpleDateFormat offsetFormatter = new SimpleDateFormat(WorkFlowVariables.OFFSET_FORMAT.getValue());
@@ -38,10 +38,10 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
     protected abstract DeploymentTypes getDeployementType();
 
     protected abstract Callback buildMyTaskResponse(final TaskSearchDTO searchDTO, final TaskList taskList,
-                                              final UserProfileDTO userProfile) throws BusinessException;
+                                                    final UserProfileDTO userProfile) throws BusinessException;
 
     protected abstract Callback buildAllTaskResponse(final TaskSearchDTO searchDTO, final TaskList taskList,
-                                              final UserProfileDTO userProfile) throws BusinessException;
+                                                     final UserProfileDTO userProfile) throws BusinessException;
 
     protected abstract Callback getHistoricalData(String user, List<Range> months, List<String> xAxisLabels) throws BusinessException;
 
@@ -49,9 +49,9 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 
     public Callback searchPending(TaskSearchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException {
         ProcessSearchRequest processRequest = buildSearchRequest(searchDTO, userProfile);
-        if(isAdmin(userProfile)){
+        if (isAdmin(userProfile)) {
             processRequest.setCandidateGroup(WorkFlowVariables.HUB_ADMI_ROLE.getValue());
-        }else {
+        } else {
             processRequest.setCandidateGroup(WorkFlowVariables.OPERATOR_ADMIN_ROLE.getValue());
         }
 
@@ -206,38 +206,33 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
         return new Callback().setPayload(null).setSuccess(success).setMessage(message);
     }
 
-    public CreateTime getCreatedTime(Task task)  {
-        try {
-
+    public CreateTime getCreatedTime(Task task) {
         CreateTime createTime = new CreateTime();
-
-        if (task.getCreateTime() != null) {
-            Date date = null;
-
+        try {
+            if (task.getCreateTime() != null) {
+                Date date = null;
                 date = format.parse(task.getCreateTime());
-
-            createTime.setDate(dateFormatter.format(date));
-            createTime.setTime(timeFormatter.format(date));
-            createTime.setOffset(offsetFormatter.format(date));
-            createTime.setUnformatted(task.getCreateTime());
-        } else {
-            createTime.setDate("");
-            createTime.setTime("");
-            createTime.setOffset("");
-            createTime.setUnformatted("");
-        }
-
-        return createTime;
+                createTime.setDate(dateFormatter.format(date));
+                createTime.setTime(timeFormatter.format(date));
+                createTime.setOffset(offsetFormatter.format(date));
+                createTime.setUnformatted(task.getCreateTime());
+            } else {
+                createTime.setDate("");
+                createTime.setTime("");
+                createTime.setOffset("");
+                createTime.setUnformatted("");
+            }
         } catch (ParseException e) {
-           return null;
+            createTime = null;
         }
+        return createTime;
     }
 
     protected boolean isAdmin(UserProfileDTO userProfile) {
         String[] userRoles = userProfile.getUserRoles();
         boolean isAdmin = false;
-        for(String role: userRoles){
-            if(role.trim().equals(WorkFlowVariables.ADMIN_ROLE.getValue())){
+        for (String role : userRoles) {
+            if (role.trim().equals(WorkFlowVariables.ADMIN_ROLE.getValue())) {
                 isAdmin = true;
             }
         }
