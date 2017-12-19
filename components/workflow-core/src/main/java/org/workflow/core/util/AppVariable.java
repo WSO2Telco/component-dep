@@ -22,7 +22,8 @@ public enum AppVariable {
     MANDATESERVICEURL("mandateServiceURL"),
 	SUBSCRIBER("subscriber"),
 	API_NAME("apiName"),
-	API_TIERS("apiTiers");
+	API_TIERS("apiTiers"),
+	API_VERSION("apiVersion");
 	
 	private String varName;
 	AppVariable(String paramName){

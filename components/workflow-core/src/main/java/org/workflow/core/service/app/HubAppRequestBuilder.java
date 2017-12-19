@@ -3,6 +3,7 @@ package org.workflow.core.service.app;
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.util.ApprovalRequest;
 import com.wso2telco.core.dbutils.util.Callback;
+import com.wso2telco.core.userprofile.dto.UserProfileDTO;
 import org.apache.commons.logging.LogFactory;
 import org.workflow.core.activity.TaskApprovalRequest;
 import org.workflow.core.model.RequestVariable;
@@ -34,15 +35,12 @@ public class HubAppRequestBuilder extends AbstractAppRequestBuilder {
 
     private static HubAppRequestBuilder instance;
 
-    {
+    private HubAppRequestBuilder(DeploymentTypes depType) {
         log = LogFactory.getLog(AbstractAppRequestBuilder.class);
-    }
-
-    private HubAppRequestBuilder(DeploymentTypes depType) throws BusinessException {
         super.depType = depType;
     }
 
-    public static HubAppRequestBuilder getInstace(DeploymentTypes depType) throws BusinessException {
+    public static HubAppRequestBuilder getInstace(DeploymentTypes depType) {
         if (instance == null) {
             instance = new HubAppRequestBuilder(depType);
         }
@@ -50,16 +48,14 @@ public class HubAppRequestBuilder extends AbstractAppRequestBuilder {
     }
 
     @Override
-    protected Callback buildApprovalRequest(ApprovalRequest request) throws BusinessException {
+    protected Callback buildApprovalRequest(ApprovalRequest request, UserProfileDTO userProfile) throws BusinessException {
         List<RequestVariable> variables = new ArrayList();
-        boolean isAdmin = true; // dummy variable
         final String type = "string";
-        final String user = "admin";
 
-        if (isAdmin) {
+        if (isAdmin(userProfile)) {
             variables
                     .add(new RequestVariable().setName(WorkFlowVariables.HUB_ADMIN_APPROVAL.getValue()).setValue(request.getStatus()).setType(type));
-            variables.add(new RequestVariable().setName(WorkFlowVariables.COMPLETED_BY.getValue()).setValue(user).setType(type));
+            variables.add(new RequestVariable().setName(WorkFlowVariables.COMPLETED_BY.getValue()).setValue(userProfile.getUserName()).setType(type));
             variables.add(new RequestVariable().setName(WorkFlowVariables.STATUS.getValue()).setValue(request.getStatus()).setType(type));
             variables.add(new RequestVariable().setName(WorkFlowVariables.COMPLETED_ON.getValue())
                     .setValue(new SimpleDateFormat(WorkFlowVariables.DATE_FORMAT.getValue(), Locale.ENGLISH).format(new Date()))
@@ -72,7 +68,7 @@ public class HubAppRequestBuilder extends AbstractAppRequestBuilder {
         } else {
             variables.add(
                     new RequestVariable().setName(WorkFlowVariables.OPERATOR_ADMIN_APPROVAL.getValue()).setValue(request.getStatus()).setType(type));
-            variables.add(new RequestVariable().setName(WorkFlowVariables.COMPLETED_BY.getValue()).setValue(user).setType(type));
+            variables.add(new RequestVariable().setName(WorkFlowVariables.COMPLETED_BY.getValue()).setValue(userProfile.getUserName()).setType(type));
             variables.add(new RequestVariable().setName(WorkFlowVariables.STATUS.getValue()).setValue(request.getStatus()).setType(type));
             variables.add(new RequestVariable().setName(WorkFlowVariables.COMPLETED_ON.getValue())
                     .setValue(new SimpleDateFormat(WorkFlowVariables.DATE_FORMAT.getValue(), Locale.ENGLISH).format(new Date()))
@@ -85,6 +81,6 @@ public class HubAppRequestBuilder extends AbstractAppRequestBuilder {
         approvalRequest.setAction(WorkFlowVariables.ACTION.getValue());
         approvalRequest.setVariables(variables);
 
-        return super.executeTaskApprovalRequest(approvalRequest, request);
+        return executeTaskApprovalRequest(approvalRequest, request);
     }
 }

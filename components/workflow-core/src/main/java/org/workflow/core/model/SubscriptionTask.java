@@ -13,6 +13,7 @@ import java.util.Map;
 @JsonPropertyOrder({
         "id",
         "assignee",
+        "apiName",
         "createTime",
         "taskDescription",
         "applicationId",
@@ -22,14 +23,20 @@ import java.util.Map;
         "tier",
         "tiersStr",
         "userName",
+        "apiVersion",
+        "subscriber",
+        "relevantRates",
+        "selectedRate",
         "creditPlan"
 })
-public class ApplicationTask {
+public class SubscriptionTask {
 
     @JsonProperty("id")
     private String id;
     @JsonProperty("assignee")
     private String assignee;
+    @JsonProperty("apiName")
+    private String apiName;
     @JsonProperty("createTime")
     private CreateTime createTime;
     @JsonProperty("taskDescription")
@@ -48,17 +55,25 @@ public class ApplicationTask {
     private List<String> tiersStr = null;
     @JsonProperty("userName")
     private String userName;
-    @JsonProperty("creditPlan")
-    private String creditPlan;
+    @JsonProperty("apiVersion")
+    private String apiVersion;
+    @JsonProperty("subscriber")
+    private String subscriber;
+    @JsonProperty("relevantRates")
+    private List<RelevantRate> relevantRates = null;
+    @JsonProperty("selectedRate")
+    private String selectedRate;
 
-    public ApplicationTask(Map<AppVariable, TaskVariableResponse> varMap) {
-        this.applicationDescription = (varMap.containsKey(AppVariable.DESCRIPTION)) ? varMap.get(AppVariable.DESCRIPTION).getValue() : "";
-        this.tier = (varMap.containsKey(AppVariable.TIER)) ? varMap.get(AppVariable.TIER).getValue() : "";
-        this.applicationId = (varMap.containsKey(AppVariable.ID)) ? varMap.get(AppVariable.ID).getValue() : "";
-        this.applicationName = (varMap.containsKey(AppVariable.NAME)) ? varMap.get(AppVariable.NAME).getValue() : "";
-        this.operators = (varMap.containsKey(AppVariable.OPARATOR)) ? varMap.get(AppVariable.OPARATOR).getValue() : "";
-        this.userName = (varMap.containsKey(AppVariable.USERNAME)) ? varMap.get(AppVariable.USERNAME).getValue() : "";
-        this.creditPlan = "";
+    public SubscriptionTask(Map<AppVariable, TaskVariableResponse> varMap) {
+        this.applicationDescription = (varMap.containsKey(AppVariable.APPLICATION_DESCRIPTION))?varMap.get(AppVariable.APPLICATION_DESCRIPTION).getValue():"";
+        this.tier = (varMap.containsKey(AppVariable.TIER_NAME))?varMap.get(AppVariable.TIER_NAME).getValue():"";
+        this.applicationId = (varMap.containsKey(AppVariable.ID))?varMap.get(AppVariable.ID).getValue():"";
+        this.applicationName = (varMap.containsKey(AppVariable.NAME))?varMap.get(AppVariable.NAME).getValue():"";
+        this.operators = (varMap.containsKey(AppVariable.OPARATOR))?varMap.get(AppVariable.OPARATOR).getValue():"";
+        this.userName = (varMap.containsKey(AppVariable.SUBSCRIBER))?varMap.get(AppVariable.SUBSCRIBER).getValue():"";
+        this.apiName = (varMap.containsKey(AppVariable.API_NAME))?varMap.get(AppVariable.API_NAME).getValue():"";
+        this.apiVersion = (varMap.containsKey(AppVariable.API_VERSION))?varMap.get(AppVariable.API_VERSION).getValue():"";
+        this.selectedRate = "";
     }
 
     @JsonProperty("id")
@@ -79,6 +94,11 @@ public class ApplicationTask {
     @JsonProperty("assignee")
     public void setAssignee(String assignee) {
         this.assignee = assignee;
+    }
+
+    @JsonProperty("apiName")
+    public String getApiName() {
+        return apiName;
     }
 
     @JsonProperty("createTime")
@@ -106,19 +126,9 @@ public class ApplicationTask {
         return applicationId;
     }
 
-    @JsonProperty("applicationId")
-    public void setApplicationId(String applicationId) {
-        this.applicationId = applicationId;
-    }
-
     @JsonProperty("applicationName")
     public String getApplicationName() {
         return applicationName;
-    }
-
-    @JsonProperty("applicationName")
-    public void setApplicationName(String applicationName) {
-        this.applicationName = applicationName;
     }
 
     @JsonProperty("applicationDescription")
@@ -151,8 +161,34 @@ public class ApplicationTask {
         return userName;
     }
 
-    @JsonProperty("creditPlan")
-    public String getCreditPlan() {
-        return creditPlan;
+    @JsonProperty("apiVersion")
+    public String getApiVersion() {
+        return apiVersion;
     }
+
+    @JsonProperty("subscriber")
+    public String getSubscriber() {
+        return subscriber;
+    }
+
+    @JsonProperty("subscriber")
+    public void setSubscriber(String subscriber) {
+        this.subscriber = subscriber;
+    }
+
+    @JsonProperty("relevantRates")
+    public List<RelevantRate> getRelevantRates() {
+        return relevantRates;
+    }
+
+    @JsonProperty("relevantRates")
+    public void setRelevantRates(List<RelevantRate> relevantRates) {
+        this.relevantRates = relevantRates;
+    }
+
+    @JsonProperty("selectedRate")
+    public String getSelectedRate() {
+        return selectedRate;
+    }
+
 }

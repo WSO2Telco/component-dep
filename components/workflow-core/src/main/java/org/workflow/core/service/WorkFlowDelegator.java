@@ -50,40 +50,40 @@ public class WorkFlowDelegator {
         return queryBuilder.getGraphData(userProfile);
     }
 
-    public Callback approveApplication(ApprovalRequest approvalRequest)throws BusinessException {
+    public Callback approveApplication(ApprovalRequest approvalRequest, UserProfileDTO userProfile)throws BusinessException {
         WorkFlowProcessor queryBuilder = ActivityProcessFactory
                 .getInstance()
                 .getWorkFlowFactory(WorkFlowType.APPLICATION)
                 .getWorkFlowProcessor();
 
-        return queryBuilder.approveTask(approvalRequest);
+        return queryBuilder.approveTask(approvalRequest, userProfile);
     }
 
-    public Callback approveSubscription(ApprovalRequest approvalRequest)throws BusinessException {
+    public Callback approveSubscription(ApprovalRequest approvalRequest, UserProfileDTO userProfile)throws BusinessException {
         WorkFlowProcessor queryBuilder = ActivityProcessFactory
                 .getInstance()
                 .getWorkFlowFactory(WorkFlowType.SUBSCRIPTION)
                 .getWorkFlowProcessor();
 
-        return queryBuilder.approveTask(approvalRequest);
+        return queryBuilder.approveTask(approvalRequest, userProfile);
     }
 
-    public Callback assignApplicationTask(AssignRequest assignRequest)throws BusinessException {
+    public Callback assignApplicationTask(AssignRequest assignRequest, UserProfileDTO userProfile)throws BusinessException {
         WorkFlowProcessor queryBuilder = ActivityProcessFactory
                 .getInstance()
                 .getWorkFlowFactory(WorkFlowType.APPLICATION)
                 .getWorkFlowProcessor();
 
-        return queryBuilder.assignTask(assignRequest);
+        return queryBuilder.assignTask(assignRequest, userProfile);
     }
 
-    public Callback assignSubscriptionTask(AssignRequest assignRequest)throws BusinessException {
+    public Callback assignSubscriptionTask(AssignRequest assignRequest, UserProfileDTO userProfile)throws BusinessException {
         WorkFlowProcessor queryBuilder = ActivityProcessFactory
                 .getInstance()
                 .getWorkFlowFactory(WorkFlowType.SUBSCRIPTION)
                 .getWorkFlowProcessor();
 
-        return queryBuilder.assignTask(assignRequest);
+        return queryBuilder.assignTask(assignRequest, userProfile);
     }
 
 }

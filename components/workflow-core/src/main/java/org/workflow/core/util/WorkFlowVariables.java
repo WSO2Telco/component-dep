@@ -19,8 +19,13 @@ public enum  WorkFlowVariables {
 
     HUB_ADMIN_APPROVAL("hubAdminApproval"),
     OPERATOR_ADMIN_APPROVAL("operatorAdminApproval"),
+    HUB_ADMI_ROLE("admin"),
+    OPERATOR_ADMIN_ROLE("operator1-admin-role"),
     API_PUBLISHER_ADMIN_APPROVAL(""),
     DATE_FORMAT("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"),
+    DATE_FORMAT2("dd-MMM-yyyy"),
+    TIME_FORMAT("HH:mm:ss"),
+    OFFSET_FORMAT("XXX"),
     DESCRIPTION("description"),
     SELECTGED_TIER("selectedTier"),
     COMPLETED_ON("completedOn"),
@@ -28,7 +33,9 @@ public enum  WorkFlowVariables {
     SLECTED_RATE("selectedRate"),
     CREDIT_PLAN("creditPlan"),
     STATUS("status"),
-    ACTION("complete");
+    ACTION("complete"),
+    ADMIN_ROLE("manage-app-admin"),
+    ASSIGN_ACTION("claim");
 
 
     private String value;
