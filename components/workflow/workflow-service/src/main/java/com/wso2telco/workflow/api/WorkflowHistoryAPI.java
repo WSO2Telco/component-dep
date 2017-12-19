@@ -1,12 +1,12 @@
 /**
  * Copyright (c) 2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
- * <p>
+ * <p/>
  * WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
+ * <p/>
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -42,32 +42,22 @@ public class WorkflowHistoryAPI {
 
     private static final Log log = LogFactory.getLog(WorkflowHistoryAPI.class);
 
-    @POST
-    @Path("/approval")
-    @Consumes(MediaType.APPLICATION_JSON)
-    @Produces(MediaType.APPLICATION_JSON)
-    public Response getApprovalHistory(ApprovalDTO approvalDTO) {
-
-        String fromDate = approvalDTO.getFromDate();
-        String toDate = approvalDTO.getToDate();
-        String subscriber = approvalDTO.getSubscriber();
-        String api = approvalDTO.getApi();
-        int applicationId = approvalDTO.getApplicationId();
-        String operator = approvalDTO.getOperator();
-        int offset = approvalDTO.getOffset();
-        int count = approvalDTO.getCount();
+    @GET
+    @Path("/approval/{fromDate}/{toDate}/{subscriber}/{api}/{applicationId}/{operator}/{offset}/{count}")
+    @Produces("application/json")
+    public Response getApprovalHistory(@PathParam("fromDate") String fromDate, @PathParam("toDate") String toDate, @PathParam("subscriber") String subscriber, @PathParam("api") String api, @PathParam("applicationId") int applicationId, @PathParam("operator") String operator, @PathParam("offset") int offset, @PathParam("count") int count) {
 
         String jsonPayload;
 
-		try {
-			List<String[]> apiRequests = SbHostObjectUtils.getApprovalHistory(fromDate, toDate, subscriber, api, applicationId, operator, offset, count);
-			jsonPayload = new Gson().toJson(apiRequests);
-		} catch (Exception e) {
-			log.error(e);
-			return Response.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).build();
-		}
-		return Response.status(HttpServletResponse.SC_OK).entity(jsonPayload).build();
-	}
+        try {
+            List<String[]> apiRequests = SbHostObjectUtils.getApprovalHistory(fromDate, toDate, subscriber, api, applicationId, operator, offset, count);
+            jsonPayload = new Gson().toJson(apiRequests);
+        } catch (Exception e) {
+            log.error(e);
+            return Response.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).build();
+        }
+        return Response.status(HttpServletResponse.SC_OK).entity(jsonPayload).build();
+    }
 
     @GET
     @Path("/approval/{app_id}")
@@ -80,7 +70,7 @@ public class WorkflowHistoryAPI {
         try {
             app = service.getAppApprovalHistory(appID);
         } catch (WorkflowServiceException e) {
-            log.error("",e);
+            log.error("", e);
             return Response.serverError().entity(gson.toJson("An error has occurred. ")).build();
         }
 
@@ -135,21 +125,21 @@ public class WorkflowHistoryAPI {
         }
         return Response.status(HttpServletResponse.SC_OK).header("Content-Type", "application/json").entity(jsonPayload).build();
     }
-    
-    @GET
-	@Path("/operator/approved/apps")
-	@Produces(MediaType.APPLICATION_JSON)
-	public Response getPendingSubscriptions(@QueryParam("appids") String appIds ) {
-        String jsonPayload;
-    	try {
 
-			List<String> OparatorApprovedApps = new OparatorService().getOparatorApprovedApp(appIds);
-			 jsonPayload = new Gson().toJson(OparatorApprovedApps);
-			return Response.status(Response.Status.OK).header("Content-Type", "application/json").entity(jsonPayload).build();
-		} catch (Exception e) {
-			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-		}
-	}
+    @GET
+    @Path("/operator/approved/apps")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getPendingSubscriptions(@QueryParam("appids") String appIds) {
+        String jsonPayload;
+        try {
+
+            List<String> OparatorApprovedApps = new OparatorService().getOparatorApprovedApp(appIds);
+            jsonPayload = new Gson().toJson(OparatorApprovedApps);
+            return Response.status(Response.Status.OK).header("Content-Type", "application/json").entity(jsonPayload).build();
+        } catch (Exception e) {
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
 
 
     @GET
@@ -169,7 +159,6 @@ public class WorkflowHistoryAPI {
 
         return Response.status(HttpServletResponse.SC_OK).header("Content-Type", "application/json").entity(jsonPayload).build();
     }
-    
-	
+
 
 }
