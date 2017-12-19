@@ -557,5 +557,5 @@
     </ThrottlingConfigurations>
 
     <!--Validation Regex service endpoint - deployed via common gw/hub capps-->
-    <ValidationRegexURL>http://localhost:8281/services/validationRegex</ValidationRegexURL>
+    <ValidationRegexURL>{http://esb-host}:{esb-nio-port}/services/validationRegex</ValidationRegexURL>
 </APIManager>
