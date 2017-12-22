@@ -7,6 +7,7 @@ import com.wso2telco.core.userprofile.dto.UserProfileDTO;
 import org.workflow.core.activity.ActivityRestClient;
 import org.workflow.core.activity.RestClientFactory;
 import org.workflow.core.activity.TaskApprovalRequest;
+import org.workflow.core.dboperation.DatabaseHandler;
 import org.workflow.core.execption.WorkflowExtensionException;
 import org.workflow.core.model.*;
 import org.workflow.core.service.AbsractQueryBuilder;
@@ -134,6 +135,11 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
             returnCall = new Callback().setPayload(null).setSuccess(false).setMessage(Messages.APPLICATION_APPROVAL_FAILED.getValue());
         }
         return returnCall;
+    }
+
+    public HistoryResponse getApprovalHistory(String subscriber, String applicationName, int applicationId, String operator, int offset, int count) throws BusinessException {
+        DatabaseHandler handler = new DatabaseHandler();
+        return handler.getApprovalHistory(subscriber, applicationName, applicationId, operator, offset, count);
     }
 
     @Override

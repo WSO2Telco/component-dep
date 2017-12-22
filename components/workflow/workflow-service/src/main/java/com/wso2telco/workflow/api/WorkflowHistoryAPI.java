@@ -16,13 +16,14 @@
 
 package com.wso2telco.workflow.api;
 
+
 import com.google.gson.Gson;
 import com.wso2telco.dep.operatorservice.service.OparatorService;
 import com.wso2telco.dep.reportingservice.southbound.SbHostObjectUtils;
 import com.wso2telco.workflow.model.ApplicationStatusDTO;
+import com.wso2telco.workflow.model.ApprovalDTO;
 import com.wso2telco.workflow.service.WorkflowHistoryService;
 import com.wso2telco.workflow.utils.WorkflowServiceException;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.apimgt.api.APIConsumer;
@@ -139,6 +140,33 @@ public class WorkflowHistoryAPI {
             return Response.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).build();
         }
 
+        return Response.status(HttpServletResponse.SC_OK).entity(jsonPayload).build();
+    }
+
+    @POST
+    @Path("/approval")
+    @Consumes(MediaType.APPLICATION_JSON)
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getApprovalHistory(ApprovalDTO approvalDTO) {
+
+        String fromDate = approvalDTO.getFromDate();
+        String toDate = approvalDTO.getToDate();
+        String subscriber = approvalDTO.getSubscriber();
+        String api = approvalDTO.getApi();
+        int applicationId = approvalDTO.getApplicationId();
+        String operator = approvalDTO.getOperator();
+        int offset = approvalDTO.getOffset();
+        int count = approvalDTO.getCount();
+
+        String jsonPayload;
+
+        try {
+            List<String[]> apiRequests = SbHostObjectUtils.getApprovalHistory(fromDate, toDate, subscriber, api, applicationId, operator, offset, count);
+            jsonPayload = new Gson().toJson(apiRequests);
+        } catch (Exception e) {
+            log.error(e);
+            return Response.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).build();
+        }
         return Response.status(HttpServletResponse.SC_OK).entity(jsonPayload).build();
     }
 

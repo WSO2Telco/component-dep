@@ -12,10 +12,7 @@ import org.workflow.core.activity.RestClientFactory;
 import org.workflow.core.activity.TaskAssignRequest;
 import org.workflow.core.execption.WorkflowExtensionException;
 import org.workflow.core.model.*;
-import org.workflow.core.util.AppVariable;
-import org.workflow.core.util.DeploymentTypes;
-import org.workflow.core.util.Messages;
-import org.workflow.core.util.WorkFlowVariables;
+import org.workflow.core.util.*;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -28,6 +25,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
     protected DeploymentTypes depType;
     static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssXXX";
     static final String MONTH_FORMAT = "MMM";
+    private static final String ALL = "__ALL__";
     private DateFormat format = new SimpleDateFormat(WorkFlowVariables.DATE_FORMAT.getValue(), Locale.ENGLISH);
     private SimpleDateFormat dateFormatter = new SimpleDateFormat(WorkFlowVariables.DATE_FORMAT2.getValue());
     private SimpleDateFormat timeFormatter = new SimpleDateFormat(WorkFlowVariables.TIME_FORMAT.getValue());
@@ -226,6 +224,79 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
             createTime = null;
         }
         return createTime;
+    }
+
+    /** when subscription history is added move this to the child layer*/
+    @Override
+    public Callback getHistoryData(TaskSearchDTO searchDTO, UserProfileDTO userProfile) throws BusinessException {
+
+        String filterStr = searchDTO.getFilterBy();
+        final Map<String, String> varMap = new HashMap<String, String>();
+        Callback returnCall;
+
+        if (filterStr != null && !filterStr.trim().isEmpty()) {
+            final String[] filterCriterias = filterStr.split(",");
+            for (String criteria : filterCriterias) {
+                String[] criteriaArray = criteria.split(":");
+                if (criteriaArray.length == 2 && !criteriaArray[0].trim().isEmpty() && !criteriaArray[1].trim().isEmpty()
+                        && historyFilterMap().containsKey(criteriaArray[0].trim().toLowerCase())) {
+                    varMap.put(historyFilterMap().get(criteriaArray[0].trim().toLowerCase()), criteriaArray[1]);
+                }
+            }
+        }
+
+        String subscriber = ALL;
+        int applicationId;
+        String applicationName =ALL;
+        String operator = ALL;
+
+        if (varMap.containsKey(HistoryVariable.SP.key())) {
+            subscriber = varMap.get(HistoryVariable.SP.key());
+        }
+
+        if(varMap.containsKey(HistoryVariable.NAME.key())){
+            applicationName = varMap.get(HistoryVariable.NAME.key());
+        }
+
+        if(varMap.containsKey(HistoryVariable.ID.key())) {
+            applicationId = Integer.parseInt(varMap.get(HistoryVariable.ID.key()));
+        }else {
+            applicationId = 0;
+        }
+
+        if(varMap.containsKey(HistoryVariable.OPARATOR.key())){
+            operator = varMap.get(HistoryVariable.OPARATOR.key());
+        }
+
+        try {
+            HistoryResponse apiRequests = getApprovalHistory( subscriber, applicationName, applicationId, operator, searchDTO.getStart(), searchDTO.getBatchSize());
+            returnCall = new Callback().setPayload(apiRequests).setSuccess(true).setMessage(Messages.APPLICATION_HISTORY_SUCCESS.getValue());
+        } catch (Exception e) {
+            returnCall = new Callback().setPayload(e.getMessage()).setSuccess(false).setMessage(Messages.APPLICATION_HISTORY_FAILED.getValue());
+        }
+        return returnCall;
+    }
+
+    public abstract HistoryResponse getApprovalHistory(String subscriber, String applicationName, int applicationId, String operator, int offset, int count) throws BusinessException;
+
+    protected Map<String, String> historyFilterMap() {
+        Map<String, String> filter = new HashMap<String, String>();
+        filter.put("username", HistoryVariable.SP.key());
+        filter.put("user", HistoryVariable.SP.key());
+        filter.put("name", HistoryVariable.SP.key());
+        filter.put("subscriber", HistoryVariable.SP.key());
+        filter.put("sp", HistoryVariable.SP.key());
+        filter.put("provider", HistoryVariable.SP.key());
+        filter.put("serviceprovider", HistoryVariable.SP.key());
+        filter.put("applicationname", HistoryVariable.NAME.key());
+        filter.put("application", HistoryVariable.NAME.key());
+        filter.put("appname", HistoryVariable.NAME.key());
+        filter.put("app", HistoryVariable.NAME.key());
+        filter.put("applicationid", HistoryVariable.ID.key());
+        filter.put("appid", HistoryVariable.ID.key());
+        filter.put("id", HistoryVariable.ID.key());
+        filter.put("operator",HistoryVariable.OPARATOR.key());
+        return filter;
     }
 
     protected boolean isAdmin(UserProfileDTO userProfile) {
