@@ -16,6 +16,7 @@
 package com.wso2telco.dep.ratecardservice.resource;
 
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -42,6 +43,7 @@ public class TaxResource {
 	private TaxService taxService = new TaxService();
 
 	@GET
+	@RolesAllowed({"admin", "hub/admin", "operator/admin"})
 	public Response getTaxes() {
 
 		List<TaxDTO> taxes = null;
@@ -83,6 +85,7 @@ public class TaxResource {
 	}
 
 	@POST
+	@RolesAllowed({"admin", "hub/admin"})
 	public Response addTax(TaxDTO tax) {
 
 		TaxDTO newtax = null;
@@ -132,6 +135,7 @@ public class TaxResource {
 
 	@GET
 	@Path("/{taxId}")
+	@RolesAllowed({"admin", "hub/admin", "operator/admin"})
 	public Response getTax(@PathParam("taxId") int taxId) {
 
 		TaxDTO tax = null;

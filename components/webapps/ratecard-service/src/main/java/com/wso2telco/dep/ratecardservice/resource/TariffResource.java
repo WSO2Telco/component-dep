@@ -16,6 +16,7 @@
 package com.wso2telco.dep.ratecardservice.resource;
 
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -41,6 +42,7 @@ public class TariffResource {
 	private TariffService tariffService = new TariffService();
 
 	@GET
+	@RolesAllowed({"admin", "hub/admin", "operator/admin"})
 	public Response getTariffs() {
 
 		List<TariffDTO> tariffs = null;
@@ -82,6 +84,7 @@ public class TariffResource {
 	}
 
 	@POST
+	@RolesAllowed({"admin", "hub/admin"})
 	public Response addTariff(TariffDTO tariff) {
 
 		TariffDTO newTariff = null;

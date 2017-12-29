@@ -16,6 +16,8 @@
 package com.wso2telco.dep.ratecardservice.resource;
 
 import java.util.List;
+
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -40,6 +42,7 @@ public class APIResource {
 	private APIService apiService = new APIService();
 
 	@GET
+	@RolesAllowed({"admin", "hub/admin", "operator/admin"})
 	public Response getAPIs() {
 
 		List<APIDTO> apis = null;

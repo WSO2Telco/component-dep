@@ -21,6 +21,7 @@ import com.wso2telco.workflow.model.*;
 import com.wso2telco.workflow.notification.Notification;
 import com.wso2telco.workflow.notification.NotificationImpl;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -35,6 +36,7 @@ public class NotificationAPI {
     @POST
     @Path("application/hub")
     @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "hub/admin", "gateway/admin"})
     public Response sendHUBAdminAppApprovalNotification(NotificationRequest request){
         try {
             notification.sendHUBAdminAppApprovalNotification(request);
@@ -47,6 +49,7 @@ public class NotificationAPI {
     @POST
     @Path("subscription/hub")
     @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "hub/admin", "gateway/admin"})
     public Response sendHUBAdminSubrovalNotification(NotificationRequest request){
         try {
             notification.sendHUBAdminSubrovalNotification(request);
@@ -59,6 +62,7 @@ public class NotificationAPI {
     @POST
     @Path("application/plugin")
     @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "hub/admin", "gateway/admin", "operator/admin"})
     public Response sendPLUGINAdminAppApprovalNotification(NotificationRequest request){
         try {
             notification.sendPLUGINAdminAppApprovalNotification(request);
@@ -71,6 +75,7 @@ public class NotificationAPI {
     @POST
     @Path("subscription/plugin")
     @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "hub/admin", "gateway/admin", "operator/admin"})
     public Response sendPLUGINAdminSubApprovalNotification(NotificationRequest request){
         try {
             notification.sendPLUGINAdminSubApprovalNotification(request);
@@ -83,6 +88,7 @@ public class NotificationAPI {
     @POST
     @Path("application/sp")
     @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "hub/admin", "gateway/admin", "operator/admin"})
     public Response sendAppApprovalStatusSPNotification(NotificationRequest request){
         try {
             notification.sendAppApprovalStatusSPNotification(request);
@@ -95,6 +101,7 @@ public class NotificationAPI {
     @POST
     @Path("subscription/sp")
     @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "hub/admin", "gateway/admin", "operator/admin"})
     public Response sendSubApprovalStatusSPNotification(NotificationRequest request){
         try {
             notification.sendSubApprovalStatusSPNotification(request);

@@ -16,6 +16,8 @@
 package com.wso2telco.dep.ratecardservice.resource;
 
 import java.util.List;
+
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -41,6 +43,7 @@ public class RateCategoryResource {
 	private RateCategoryService rateCategoryService = new RateCategoryService();
 
 	@POST
+	@RolesAllowed({"admin", "hub/admin"})
 	public Response addRateCategory(@PathParam("rateDefId") int rateDefId, RateCategoryDTO rateCategory) {
 
 		RateCategoryDTO newRateCategory = null;
@@ -89,6 +92,7 @@ public class RateCategoryResource {
 	}
 
 	@GET
+	@RolesAllowed({"admin", "hub/admin", "operator/admin"})
 	public Response getRateCategories(@PathParam("rateDefId") int rateDefId, @QueryParam("schema") String schema) {
 
 		List<RateCategoryDTO> rateCategories = null;

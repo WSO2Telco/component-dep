@@ -26,6 +26,7 @@ import com.wso2telco.workflow.publisher.WorkflowApprovalRatePublisher;
 import com.wso2telco.workflow.subscription.SubscriptionApproval;
 import com.wso2telco.workflow.subscription.SubscriptionApprovalImpl;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -42,6 +43,7 @@ public class WorkflowApprovalAPI {
 	@POST
 	@Path("application/hub")
 	@Consumes(MediaType.APPLICATION_JSON)
+	@RolesAllowed({"admin", "hub/admin", "gateway/admin"})
 	public Response applicationApprovalHub(Application application) {
 		try {
 			applicationApproval.updateDBAppHubApproval(application);
@@ -54,6 +56,7 @@ public class WorkflowApprovalAPI {
 	@POST
 	@Path("subscription/hub")
 	@Consumes(MediaType.APPLICATION_JSON)
+	@RolesAllowed({"admin", "hub/admin", "gateway/admin"})
 	public Response subscriptionApprovalHub(Subscription subscription) {
 
 		try {
@@ -92,6 +95,7 @@ public class WorkflowApprovalAPI {
 	@PUT
 	@Path("application/operator")
 	@Consumes(MediaType.APPLICATION_JSON)
+	@RolesAllowed({"admin", "hub/admin", "gateway/admin", "operator/admin"})
 	public Response applicationApprovalOperator(Application application) {
 		try {
 			applicationApproval.updateDBAppOpApproval(application);
@@ -105,6 +109,7 @@ public class WorkflowApprovalAPI {
 	@PUT
 	@Path("subscription/operator")
 	@Consumes(MediaType.APPLICATION_JSON)
+	@RolesAllowed({"admin", "hub/admin", "gateway/admin", "operator/admin"})
 	public Response subscriptionApprovalOperator(Subscription subscription) {
 		
 		try {
@@ -142,6 +147,7 @@ public class WorkflowApprovalAPI {
 	@POST
 	@Path("subscription/validator")
 	@Consumes(MediaType.APPLICATION_JSON)
+	@RolesAllowed({"admin", "hub/admin", "gateway/admin", "operator/admin"})
 	public Response insertValidatorForSubscription(SubscriptionValidation subscriptionValidation) {
 		try {
 			subscriptionApproval.insertValidatorForSubscription(subscriptionValidation);
@@ -154,6 +160,7 @@ public class WorkflowApprovalAPI {
 	@GET
 	@Path("subscription/getoperators/{apiname}/{apiversion}/{apiprovider}/{appid}")
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({"admin", "hub/admin"})
 	public Response subscriptionGetOperators(@PathParam("apiname") String apiName,
 			@PathParam("apiversion") String apiVersion, @PathParam("apiprovider") String apiProvider,
 			@PathParam("appid") int appId) {
@@ -170,6 +177,7 @@ public class WorkflowApprovalAPI {
 	@GET
 	@Path("subscription/getApprovedOrPendingOperators")
 	@Produces(MediaType.APPLICATION_JSON)
+	@RolesAllowed({"admin", "hub/admin"})
 	public Response getApplicationApprovedOrPendingOperators(@QueryParam("appid") int appId) {
 		try {
 			List<String> operatorList;

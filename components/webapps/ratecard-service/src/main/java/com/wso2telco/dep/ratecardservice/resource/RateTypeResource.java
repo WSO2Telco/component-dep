@@ -16,6 +16,7 @@
 package com.wso2telco.dep.ratecardservice.resource;
 
 import java.util.List;
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -40,6 +41,7 @@ public class RateTypeResource {
 	RateTypeService rateTypeService = new RateTypeService();
 
 	@GET
+	@RolesAllowed({"admin", "hub/admin", "operator/admin"})
 	public Response getRateTypes() {
 
 		List<RateTypeDTO> rateTypes = null;

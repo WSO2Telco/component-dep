@@ -23,6 +23,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
 
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -59,6 +60,7 @@ public class Queries {
 	@Path("/getQuotaLimitInfo")
 	@Consumes("application/json")
 	@Produces("application/json")
+	@RolesAllowed({"admin", "hub/admin", "operator/admin"})
 	public Response getQuotaLimitInfo(String jsonBody) throws SQLException {
 		LOG.debug("getQuotaLimitInfo request jsonBody :" + jsonBody);
 		try {
@@ -83,6 +85,7 @@ public class Queries {
 	@Path("/checkIfDatesOverlap")
 	@Consumes("application/json")
 	@Produces("application/json")
+	@RolesAllowed({"admin", "hub/admin", "operator/admin"})
 	public Response checkIfDatesOverlap(String jsonBody) throws SQLException {
 		LOG.debug("checkIfDatesOverlap request jsonBody :" + jsonBody);
 		try {
@@ -107,6 +110,7 @@ public class Queries {
 	@Path("/applyQuotaLimit")
 	@Consumes("application/json")
 	@Produces("application/json")
+	@RolesAllowed({"admin", "hub/admin", "operator/admin"})
 	public Response applyQuotaLimit(String jsonBody) throws SQLException {
 		LOG.debug("applyQuotaLimit request jsonBody :" + jsonBody);
 
@@ -137,6 +141,7 @@ public class Queries {
 	@GET
 	@Path("/getOperatorsBySubscriber")
 	@Produces("application/json")
+	@RolesAllowed({"admin", "hub/admin"})
 	public static Response getOperatorsBySubscriber(@QueryParam("subscriberName") String subscriberName)throws SQLException,Exception {
 		String operatorListJsonStr="{\"result\": \"empty\"}";
 		List<String> operatorList = new ArrayList<String>();
@@ -167,6 +172,7 @@ public class Queries {
 	@GET
 	@Path("/getSubscribersByOperator")
 	@Produces("application/json")
+	@RolesAllowed({"admin", "hub/admin"})
 	public static Response getSubscribersByOperator(@QueryParam("operatorName") String operatorName)throws SQLException, Exception{
         String subscribersJsonStr="{\"result\": \"empty\"}";
         List<String> subscribers = null;
