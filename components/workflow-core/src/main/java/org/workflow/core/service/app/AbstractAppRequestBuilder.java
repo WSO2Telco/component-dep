@@ -94,7 +94,7 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
     }
 
     @Override
-    protected Callback getHistoricalData(String user, List<Range> months, List<String> xAxisLabels) throws BusinessException {
+    protected Callback getHistoricalGraphData(String user, List<Range> months, List<String> xAxisLabels) throws BusinessException {
         List<Integer> data = new ArrayList();
         ActivityRestClient activityClient = RestClientFactory.getInstance().getClient(getProcessDefinitionKey());
         TaskDetailsResponse taskList = null;

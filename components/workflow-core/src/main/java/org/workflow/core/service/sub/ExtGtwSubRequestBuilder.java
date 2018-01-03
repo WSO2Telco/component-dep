@@ -5,6 +5,7 @@ import com.wso2telco.core.dbutils.util.ApprovalRequest;
 import com.wso2telco.core.dbutils.util.Callback;
 import com.wso2telco.core.userprofile.dto.UserProfileDTO;
 import org.apache.commons.logging.LogFactory;
+import org.workflow.core.model.TaskSearchDTO;
 import org.workflow.core.util.DeploymentTypes;
 
 /**
@@ -41,6 +42,11 @@ public class ExtGtwSubRequestBuilder extends AbstractSubRequestBuilder {
 
     @Override
     protected Callback buildApprovalRequest(ApprovalRequest approvalRequest, UserProfileDTO userProfile) throws BusinessException {
+        return null;
+    }
+
+    @Override
+    public Callback getHistoryData(TaskSearchDTO searchDTO, UserProfileDTO userProfile) throws BusinessException {
         return null;
     }
 }

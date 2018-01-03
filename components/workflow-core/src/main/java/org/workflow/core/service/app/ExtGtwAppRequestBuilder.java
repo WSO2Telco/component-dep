@@ -7,6 +7,7 @@ import com.wso2telco.core.userprofile.dto.UserProfileDTO;
 import org.apache.commons.logging.LogFactory;
 import org.workflow.core.activity.TaskApprovalRequest;
 import org.workflow.core.model.RequestVariable;
+import org.workflow.core.model.TaskSearchDTO;
 import org.workflow.core.util.DeploymentTypes;
 import org.workflow.core.util.WorkFlowVariables;
 
@@ -70,5 +71,10 @@ public class ExtGtwAppRequestBuilder extends AbstractAppRequestBuilder {
         approvalRequest.setVariables(variables);
 
         return super.executeTaskApprovalRequest(approvalRequest, request);
+    }
+
+    @Override
+    public Callback getHistoryData(TaskSearchDTO searchDTO, UserProfileDTO userProfile) throws BusinessException {
+        return null;
     }
 }

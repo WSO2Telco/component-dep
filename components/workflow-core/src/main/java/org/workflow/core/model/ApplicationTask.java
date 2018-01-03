@@ -6,7 +6,6 @@ import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 import org.workflow.core.util.AppVariable;
 
-import java.util.Collections;
 import java.util.List;
 import java.util.Map;
 
@@ -53,10 +52,6 @@ public class ApplicationTask {
     private String userName;
     @JsonProperty("creditPlan")
     private String creditPlan;
-    @JsonProperty("relevantRates")
-    private List<RelevantRate> relevantRates = null;
-    @JsonProperty("selectedRate")
-    private String selectedRate;
 
     public ApplicationTask(Map<AppVariable, TaskVariableResponse> varMap) {
         this.applicationDescription = (varMap.containsKey(AppVariable.DESCRIPTION)) ? varMap.get(AppVariable.DESCRIPTION).getValue() : "";
@@ -66,8 +61,6 @@ public class ApplicationTask {
         this.operators = (varMap.containsKey(AppVariable.OPARATOR)) ? varMap.get(AppVariable.OPARATOR).getValue() : "";
         this.userName = (varMap.containsKey(AppVariable.USERNAME)) ? varMap.get(AppVariable.USERNAME).getValue() : "";
         this.creditPlan = "";
-        this.selectedRate = "";
-        this.relevantRates = Collections.emptyList();
     }
 
     @JsonProperty("id")
@@ -163,20 +156,5 @@ public class ApplicationTask {
     @JsonProperty("creditPlan")
     public String getCreditPlan() {
         return creditPlan;
-    }
-
-    @JsonProperty("relevantRates")
-    public List<RelevantRate> getRelevantRates() {
-        return relevantRates;
-    }
-
-    @JsonProperty("relevantRates")
-    public void setRelevantRates(List<RelevantRate> relevantRates) {
-        this.relevantRates = relevantRates;
-    }
-
-    @JsonProperty("selectedRate")
-    public String getSelectedRate() {
-        return selectedRate;
     }
 }

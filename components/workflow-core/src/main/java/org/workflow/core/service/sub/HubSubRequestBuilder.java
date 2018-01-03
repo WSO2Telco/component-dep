@@ -10,6 +10,7 @@ import org.workflow.core.activity.RestClientFactory;
 import org.workflow.core.activity.TaskApprovalRequest;
 import org.workflow.core.execption.WorkflowExtensionException;
 import org.workflow.core.model.RequestVariable;
+import org.workflow.core.model.TaskSearchDTO;
 import org.workflow.core.util.DeploymentTypes;
 import org.workflow.core.util.Messages;
 import org.workflow.core.util.WorkFlowVariables;
@@ -79,4 +80,8 @@ class HubSubRequestBuilder extends AbstractSubRequestBuilder {
         return new Callback().setPayload(null).setSuccess(success).setMessage(message);
     }
 
+    @Override
+    public Callback getHistoryData(TaskSearchDTO searchDTO, UserProfileDTO userProfile) throws BusinessException {
+        return null;
+    }
 }

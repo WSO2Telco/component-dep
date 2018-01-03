@@ -20,6 +20,9 @@ import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
 @JsonInclude(JsonInclude.Include.NON_NULL)
 @JsonPropertyOrder({
         "applicationId",
@@ -44,14 +47,18 @@ public class HistoryDetails {
     @JsonProperty("createdBy")
     private String createdBy;
 
-    @JsonProperty("createdBy")
-    public String getCreatedBy() {
-        return createdBy;
+    public HistoryDetails(ResultSet rs) throws SQLException {
+        this.applicationId = rs.getInt("application_id");
+        this.applicationName = rs.getString("name");
+        this.applicationDescription = rs.getString("description");
+        this.status = rs.getString("app_status");
+        this.createdBy = rs.getString("created_by");
+        this.approvedOn = (rs.getString("oparators") != null) ? rs.getString("oparators") : "None";
     }
 
     @JsonProperty("createdBy")
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
+    public String getCreatedBy() {
+        return createdBy;
     }
 
     @JsonProperty("applicationId")
@@ -59,19 +66,9 @@ public class HistoryDetails {
         return applicationId;
     }
 
-    @JsonProperty("applicationId")
-    public void setApplicationId(Integer applicationId) {
-        this.applicationId = applicationId;
-    }
-
     @JsonProperty("applicationName")
     public String getApplicationName() {
         return applicationName;
-    }
-
-    @JsonProperty("applicationName")
-    public void setApplicationName(String applicationName) {
-        this.applicationName = applicationName;
     }
 
     @JsonProperty("applicationDescription")
@@ -79,29 +76,13 @@ public class HistoryDetails {
         return applicationDescription;
     }
 
-    @JsonProperty("applicationDescription")
-    public void setApplicationDescription(String applicationDescription) {
-        this.applicationDescription = applicationDescription;
-    }
-
     @JsonProperty("status")
     public String getStatus() {
         return status;
-    }
-
-    @JsonProperty("status")
-    public void setStatus(String status) {
-        this.status = status;
     }
 
     @JsonProperty("approvedOn")
     public String getApprovedOn() {
         return approvedOn;
     }
-
-    @JsonProperty("approvedOn")
-    public void setApprovedOn(String approvedOn) {
-        this.approvedOn = approvedOn;
-    }
-
 }
