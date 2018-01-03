@@ -52,7 +52,7 @@ public class SubscriptionTask {
     @JsonProperty("tier")
     private String tier;
     @JsonProperty("tiersStr")
-    private List<String> tiersStr = null;
+    private List<String> tiersStr;
     @JsonProperty("userName")
     private String userName;
     @JsonProperty("apiVersion")
@@ -60,7 +60,7 @@ public class SubscriptionTask {
     @JsonProperty("subscriber")
     private String subscriber;
     @JsonProperty("relevantRates")
-    private List<RelevantRate> relevantRates = null;
+    private List<RelevantRate> relevantRates;
     @JsonProperty("selectedRate")
     private String selectedRate;
 
