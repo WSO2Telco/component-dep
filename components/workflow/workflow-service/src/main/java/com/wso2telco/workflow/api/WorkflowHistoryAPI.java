@@ -17,6 +17,7 @@
 package com.wso2telco.workflow.api;
 
 import com.google.gson.Gson;
+import com.wso2telco.core.userprofile.UserProfileRetriever;
 import com.wso2telco.dep.operatorservice.service.OparatorService;
 import com.wso2telco.dep.reportingservice.southbound.SbHostObjectUtils;
 import com.wso2telco.workflow.model.ApplicationStatusDTO;
@@ -114,8 +115,8 @@ public class WorkflowHistoryAPI {
     public Response getPendingSubscriptions(@QueryParam("appids") String appIds) {
         String jsonPayload;
         try {
-
-            List<String> OparatorApprovedApps = new OparatorService().getOparatorApprovedApp(appIds);
+        	
+            List<String> OparatorApprovedApps = new OparatorService().getOparatorApprovedApp(appIds,null);
             jsonPayload = new Gson().toJson(OparatorApprovedApps);
             return Response.status(Response.Status.OK).header("Content-Type", "application/json").entity(jsonPayload).build();
         } catch (Exception e) {

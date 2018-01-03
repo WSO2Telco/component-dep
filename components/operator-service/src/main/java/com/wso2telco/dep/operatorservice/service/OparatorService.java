@@ -271,7 +271,7 @@ public class OparatorService {
 		}
 	}
     
-    public List<String> getOparatorApprovedApp(String appIds) throws BusinessException {
+    public List<String> getOparatorApprovedApp(String appIds,final String oparatorName) throws BusinessException {
     	LOG.debug("calling getOparatorApprovedApp ,appIds:"+appIds);
     	
     	List<String> returnList= Collections.emptyList();
@@ -322,7 +322,7 @@ public class OparatorService {
     	}
     	
     	try {
-			returnList = dao.getOparatorApprovedApp(apps);
+			returnList = dao.getOparatorApprovedApp(apps,oparatorName);
 		} catch (Exception e) {
 			LOG.error("getOparatorApprovedApp appIds:"+appIds,e);
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);

@@ -177,6 +177,11 @@ public class WorkflowDAO {
     }
 
     public List<String> getOparatorApprovedApp(String []  applicationDIds)          throws  Exception {
+       
+    	return getOparatorApprovedApp(applicationDIds,null);
+    }
+    
+    public List<String> getOparatorApprovedApp(String []  applicationDIds,final String oparorName)          throws  Exception {
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -189,12 +194,23 @@ public class WorkflowDAO {
             StringBuilder query = new StringBuilder();
             query.append("SELECT applicationid ");
             query.append(" FROM operatorapps opapp ");
-            query.append(" WHERE ");
-            query.append(" opapp.applicationid in(");
+            query.append(" WHERE 1=1 ");
+          
+            if(oparorName!=null && oparorName.trim().length()>0) {
+            	query.append(" AND EXISTS (SELECT 1 FROM");
+            	query.append(" operators op ");
+            	query.append(" WHERE op.ID=opapp.operatorid ");
+            	query.append( " AND opapp.operatorname =? )");
+            }
+            query.append(" AND opapp.applicationid in(");
             query.append(  cvsAppIds).append(" )");
             query.append(" AND isactive=1");
             ps = conn.prepareStatement(query.toString());
-           
+            
+            if(oparorName!=null && oparorName.trim().length()>0) {
+            	ps.setString(0,oparorName.trim());
+            }
+            
             rs = ps.executeQuery();
            
             while (rs.next()) {
@@ -214,6 +230,7 @@ public class WorkflowDAO {
         return returnApp;
 
     }
+    
     
     /**
      * Gets the operator if by name.
