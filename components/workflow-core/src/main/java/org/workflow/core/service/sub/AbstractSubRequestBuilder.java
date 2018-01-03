@@ -138,7 +138,7 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
     public TaskList filterOperatorApprovedApps(TaskList taskList) {
 
         String appIds = "";
-        List<String> operatorApprovedApps = new ArrayList<String>();
+        List<String> operatorApprovedApps = Collections.emptyList();
 
         for (Task task : taskList.getData()) {
             final Map<AppVariable, TaskVariableResponse> varMap = new HashMap<AppVariable, TaskVariableResponse>();

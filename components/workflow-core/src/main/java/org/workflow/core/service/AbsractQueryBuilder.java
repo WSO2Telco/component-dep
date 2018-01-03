@@ -49,12 +49,6 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 
     public Callback searchPending(TaskSearchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException {
         ProcessSearchRequest processRequest = buildSearchRequest(searchDTO, userProfile);
-//        if (isAdmin(userProfile)) {
-//            processRequest.setCandidateGroup(WorkFlowVariables.HUB_ADMIN_ROLE.getValue());
-//        } else {
-//            /**here the operator role in hard coded. when a common operator role is implemented we need to modify this.*/
-//            processRequest.setCandidateGroup(userProfile.getUserName());
-//        }
         processRequest.setCandidateGroup(userProfile.getUserName());
         TaskList taskList = executeRequest(processRequest);
         return buildAllTaskResponse(searchDTO, taskList, userProfile);

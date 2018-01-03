@@ -114,14 +114,16 @@ public class WorkflowHistoryAPI {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getPendingSubscriptions(@QueryParam("appids") String appIds) {
         String jsonPayload;
+        Response returnCall;
         try {
-
-            List<String> OparatorApprovedApps = new OparatorService().getOparatorApprovedApp(appIds);
-            jsonPayload = new Gson().toJson(OparatorApprovedApps);
-            return Response.status(Response.Status.OK).header("Content-Type", "application/json").entity(jsonPayload).build();
+            List<String> oparatorApprovedApp = new OparatorService().getOparatorApprovedApp(appIds);
+            jsonPayload = new Gson().toJson(oparatorApprovedApp);
+            returnCall = Response.status(Response.Status.OK).header("Content-Type", "application/json").entity(jsonPayload).build();
         } catch (Exception e) {
-            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            returnCall = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
+
+        return returnCall;
     }
 
 
