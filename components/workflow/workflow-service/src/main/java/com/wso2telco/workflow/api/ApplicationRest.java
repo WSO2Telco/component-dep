@@ -150,14 +150,5 @@ public class ApplicationRest {
             response =  Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
         return response;
-
-//        try {
-//            List<String[]> apiRequests = SbHostObjectUtils.getApprovalHistory(fromDate, toDate, subscriber, api, applicationId, operator, start, batchSize);
-//            jsonPayload = new Gson().toJson(apiRequests);
-//            response = Response.status(HttpServletResponse.SC_OK).entity(jsonPayload).build();
-//        } catch (Exception e) {
-//            response = Response.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).build();
-//        }
-//        return response;
     }
 }
