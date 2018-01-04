@@ -16,6 +16,8 @@
 package com.wso2telco.dep.ratecardservice.resource;
 
 import java.util.List;
+
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -41,6 +43,7 @@ public class CurrencyResource {
 	private CurrencyService currencyService = new CurrencyService();
 
 	@GET
+	@RolesAllowed({"admin", "hub-admin", "operator-admin"})
 	public Response getCurrencies() {
 
 		List<CurrencyDTO> currencies = null;
@@ -82,6 +85,7 @@ public class CurrencyResource {
 	}
 
 	@POST
+	@RolesAllowed({"admin", "hub-admin"})
 	public Response addCurrency(CurrencyDTO currency) {
 
 		CurrencyDTO newCurrency = null;

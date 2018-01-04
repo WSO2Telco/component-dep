@@ -30,7 +30,7 @@ import com.wso2telco.dep.operatorservice.service.OparatorService;
 import com.wso2telco.dep.operatorservice.util.APIError;
 import com.wso2telco.services.bw.entity.*;
 import org.apache.log4j.Logger;
-
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
@@ -69,6 +69,7 @@ public class Queries {
 	@Path("/Blacklist/{MSISDN}")
 	@Consumes("application/json")
 	@Produces("application/json")
+	@RolesAllowed({"admin", "hub-admin"})
 	public Response location(@PathParam("MSISDN") String msisdn, String jsonBody) throws Exception {
 		LOG.debug("location Triggerd  jsonBody :" + jsonBody + " jsonBody: " + jsonBody);
 		Gson gson = new GsonBuilder().serializeNulls().create();
@@ -120,6 +121,7 @@ public class Queries {
 	@Path("/Blacklist")
 	@Consumes("application/json")
 	@Produces("application/json")
+	@RolesAllowed({"admin", "hub-admin"})
 	public Response location(String jsonBody) throws BusinessException {
 
 		LOG.debug("location Triggerd  jsonBody :" + jsonBody);
@@ -196,6 +198,7 @@ public class Queries {
 	@Path("/GetBlacklistPerApi/{apiId}")
 	@Consumes("application/json")
 	@Produces("text/plain")
+	@RolesAllowed({"admin", "hub-admin"})
 	public Response getBlacklistPerApi(@PathParam("apiId") String apiId) {
 		LOG.debug("getBlacklistPerApi Triggerd  apiName :" + apiId);
 
@@ -238,6 +241,7 @@ public class Queries {
 	@Path("/RemoveFromBlacklist/{MSISDN}")
 	@Consumes("application/json")
 	@Produces("application/json")
+	@RolesAllowed({"admin", "hub-admin"})
 	public Response removeFromBlacklist(@PathParam("MSISDN") String msisdn, String jsonBody) throws SQLException {
 		LOG.debug("removeFromBlacklist Triggerd  jsonBody :" + jsonBody + " , msisdn :" + msisdn);
 
@@ -287,6 +291,7 @@ public class Queries {
 	@Path("/whitelist/{MSISDN}")
 	@Consumes("application/json")
 	@Produces("application/json")
+	@RolesAllowed({"admin", "hub-admin"})
 	public Response provisionWhiteListedNumber(@PathParam("MSISDN") String msisdn, String jsonBody) {
 
 		LOG.debug("provisionWhiteListedNumber Triggerd  jsonBody :" + jsonBody + " , msisdn :" + msisdn);
@@ -348,6 +353,7 @@ public class Queries {
 	@Path("/Whitelist")
 	@Consumes("application/json")
 	@Produces("application/json")
+	@RolesAllowed({"admin", "hub-admin"})
 	public Response bulkWhitelist(String jsonBody) throws SQLException {
 		LOG.debug("bulkWhitelist Triggerd  jsonBody :" + jsonBody);
 
@@ -410,6 +416,7 @@ public class Queries {
 	@GET
 	@Path("/subscribers")
 	@Produces("application/json")
+	@RolesAllowed({"admin", "hub-admin", "operator-admin"})
 	public Response getAllSubscribers() throws SQLException, BusinessException {
 
 		String jsonString = blackListWhiteListService.getAllSubscribedUsers();
@@ -419,6 +426,7 @@ public class Queries {
 	@GET
 	@Path("/apps/{userId}/{operatorId}")
 	@Produces("application/json")
+	@RolesAllowed({"admin", "hub-admin", "operator-admin"})
 	public Response getAllApplicationsByUser(@PathParam("userId") String userId,@PathParam("operatorId") String operatorId) throws SQLException, BusinessException {
 
 		//Gson gson = new GsonBuilder().serializeNulls().create();
@@ -437,6 +445,7 @@ public class Queries {
 	@GET
 	@Path("/apis/{userId}/{appId}")
 	@Produces("application/json")
+	@RolesAllowed({"admin", "hub-admin", "operator-admin"})
 	public Response getAllApisByUserAndApp(@PathParam("userId") String userId,@PathParam("appId") String appId) throws SQLException, BusinessException {
 		//Gson gson = new GsonBuilder().serializeNulls().create();
 		if (userId!=null && appId!=null) {
@@ -449,6 +458,7 @@ public class Queries {
 	@GET
 	@Path("/apis")
 	@Produces("application/json")
+	@RolesAllowed({"admin", "hub-admin", "operator-admin"})
 	public Response getAllApi() throws SQLException, BusinessException {
 		String jsonString = blackListWhiteListService.getAllAPIs();
 		return Response.status(Response.Status.OK).entity(jsonString).build();
@@ -458,6 +468,7 @@ public class Queries {
 	@GET
 	@Path("/GetWhiteList/{userId}/{apiId}/{appId}")
 	@Produces("application/json")
+	@RolesAllowed({"admin", "hub-admin"})
 	public Response getWhiteListNumbers(@PathParam("userId")String userId,@PathParam("apiId")String apiId,@PathParam("appId")String appId) throws SQLException {
 
 		Gson gson = new Gson();
@@ -488,6 +499,7 @@ public class Queries {
 	@Path("/RemoveFromWhiteList/{MSISDN}")
 	@Consumes("application/json")
 	@Produces("application/json")
+	@RolesAllowed({"admin", "hub-admin"})
 	public Response removeFromWhiteListNumbers(@PathParam("MSISDN") String msisdn) {
 
 		LOG.debug("removeFromWhiteListNumbers Triggered  msisdn :" + msisdn);
@@ -529,6 +541,7 @@ public class Queries {
 	@Path("/merchant/blacklist")
 	@Consumes("application/json")
 	@Produces("application/json")
+	@RolesAllowed({"admin", "hub-admin"})
 	public Response blacklistAggregator(String jsonData) {
 
 		try {

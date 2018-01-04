@@ -19,7 +19,7 @@ package com.wso2telco.workflow.api;
 import com.wso2telco.workflow.dao.WorkflowStatsDbService;
 import com.wso2telco.workflow.model.ApplicationApprovalAuditRecord;
 import com.wso2telco.workflow.model.SubscriptionApprovalAuditRecord;
-
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
@@ -34,6 +34,7 @@ public class WorkflowApprovalAuditAPI {
     @POST
     @Path("application")
     @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "hub-admin", "operator-admin"})
     public Response appApprovalAuditRecord(ApplicationApprovalAuditRecord applicationApprovalAuditRecord){
         try {
             workflowStatsDbService.insertAppApprovalAuditRecord(applicationApprovalAuditRecord);
@@ -46,6 +47,7 @@ public class WorkflowApprovalAuditAPI {
     @POST
     @Path("subscription")
     @Consumes(MediaType.APPLICATION_JSON)
+    @RolesAllowed({"admin", "hub-admin", "operator-admin"})
     public Response subscriptionApprovalAuditRecord(SubscriptionApprovalAuditRecord subscriptionApprovalAuditRecord){
         try {
             workflowStatsDbService.insertSubApprovalAuditRecord(subscriptionApprovalAuditRecord);

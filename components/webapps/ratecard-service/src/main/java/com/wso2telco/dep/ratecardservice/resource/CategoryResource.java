@@ -16,6 +16,8 @@
 package com.wso2telco.dep.ratecardservice.resource;
 
 import java.util.List;
+
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -41,6 +43,7 @@ public class CategoryResource {
 	CategoryService categoryService = new CategoryService();
 
 	@GET
+	@RolesAllowed({"admin", "hub-admin", "operator-admin"})
 	public Response getCategories() {
 
 		List<CategoryDTO> categories = null;
@@ -82,6 +85,7 @@ public class CategoryResource {
 	}
 
 	@POST
+	@RolesAllowed({"admin", "hub-admin"})
 	public Response addCategory(CategoryDTO category) {
 
 		CategoryDTO newCategory = null;

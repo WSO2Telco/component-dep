@@ -16,6 +16,8 @@
 package com.wso2telco.dep.ratecardservice.resource;
 
 import java.util.List;
+
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.Path;
@@ -45,6 +47,7 @@ public class OperationResource {
 	private APIOperationService apiOperationService = new APIOperationService();
 
 	@GET
+	@RolesAllowed({"admin", "hub-admin", "operator-admin"})
 	public Response getAPIOperations(@PathParam("apiName") String apiName, @QueryParam("schema") String schema) {
 
 		List<APIOperationDTO> apiOperations = null;
@@ -87,6 +90,7 @@ public class OperationResource {
 
 	@GET
 	@Path("/operationrates")
+	@RolesAllowed({"admin", "hub-admin", "operator-admin"})
 	public Response getOperationRates(@PathParam("apiName") String apiName, @QueryParam("schema") String schema) {
 
 		RateDTO rate = null;
@@ -131,6 +135,7 @@ public class OperationResource {
 
 	@GET
 	@Path("/{apiOperationId}/ratedefinitions")
+	@RolesAllowed({"admin", "hub-admin", "operator-admin"})
 	public Response getAPIOperationRates(@PathParam("apiName") String apiName,
 			@PathParam("apiOperationId") int apiOperationId, @QueryParam("schema") String schema) {
 

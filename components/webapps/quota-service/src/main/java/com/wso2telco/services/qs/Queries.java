@@ -22,23 +22,24 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
 import javax.ws.rs.QueryParam;
+import javax.ws.rs.core.Context;
+import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import org.apache.log4j.Logger;
 import org.wso2.carbon.apimgt.api.model.Application;
 import org.wso2.carbon.apimgt.api.model.Subscriber;
 import org.wso2.carbon.apimgt.impl.dao.ApiMgtDAO;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.wso2telco.core.authfilter.util.AuthFilterParam;
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.services.qs.entity.QuotaBean;
 import com.wso2telco.services.qs.entity.QuotaReqBean;
@@ -59,43 +60,56 @@ public class Queries {
 	@Path("/getQuotaLimitInfo")
 	@Consumes("application/json")
 	@Produces("application/json")
-	public Response getQuotaLimitInfo(String jsonBody) throws SQLException {
+	@RolesAllowed({"admin", "hub-admin", "operator-admin"})
+	public Response getQuotaLimitInfo(@Context HttpHeaders headers, String jsonBody) throws SQLException {
+		
 		LOG.debug("getQuotaLimitInfo request jsonBody :" + jsonBody);
+		
 		try {
+			
+			String cookieValue = headers.getRequestHeader(AuthFilterParam.COOKIE.getTObject()).get(0);
+			String sessionId = cookieValue.replace("JSESSIONID=", "");
+			
 			Gson gson = new Gson();
 			QuotaReqBean quotaReqBean = gson.fromJson(jsonBody, QuotaReqBean.class);
-			List<QuotaBean> quotaBeanList = quotaService.getQuotaLimitInfo(quotaReqBean.getByFlag(),quotaReqBean.getInfo(),quotaReqBean.getOperator());
+			List<QuotaBean> quotaBeanList = quotaService.getQuotaLimitInfo(quotaReqBean.getByFlag(),quotaReqBean.getInfo(),quotaReqBean.getOperator(),sessionId);
 			StringBuilder succMSG = new StringBuilder();
 			succMSG.append("{ \"Success\": { \"service\": \"QuotaLimit\", \"text\": ");
 			succMSG.append(new Gson().toJson(quotaBeanList));
 			succMSG.append("}}");
 			return Response.status(Response.Status.OK).entity(succMSG.toString()).build();
-
 		} catch (BusinessException e) {
+			
 			StringBuilder errorMSG = new StringBuilder();
 			errorMSG.append("{\"Failed\":{\"service\":\"getQuotaLimitInfo\",\"text\":\"QuotaLimit could not be retrieved. \"}}");
 			return Response.status(Response.Status.BAD_REQUEST).entity(e.getErrorType()).build();
 		}
-
 	}
 
 	@POST
 	@Path("/checkIfDatesOverlap")
 	@Consumes("application/json")
 	@Produces("application/json")
-	public Response checkIfDatesOverlap(String jsonBody) throws SQLException {
+	@RolesAllowed({"admin", "hub-admin", "operator-admin"})
+	public Response checkIfDatesOverlap(@Context HttpHeaders headers, String jsonBody) throws SQLException {
+		
 		LOG.debug("checkIfDatesOverlap request jsonBody :" + jsonBody);
+		
 		try {
+			
+			String cookieValue = headers.getRequestHeader(AuthFilterParam.COOKIE.getTObject()).get(0);
+			String sessionId = cookieValue.replace("JSESSIONID=", "");
+			
 			Gson gson = new Gson();
 			QuotaReqBeanWithDates quotaReqBeanWD = gson.fromJson(jsonBody, QuotaReqBeanWithDates.class);
-			Boolean checkIfDatesOverlap = quotaService.checkIfDatesOverlap(quotaReqBeanWD.getByFlag(),quotaReqBeanWD.getInfo(),quotaReqBeanWD.getFromDate(),quotaReqBeanWD.getToDate(),quotaReqBeanWD.getOperator());
+			Boolean checkIfDatesOverlap = quotaService.checkIfDatesOverlap(quotaReqBeanWD.getByFlag(),quotaReqBeanWD.getInfo(),quotaReqBeanWD.getFromDate(),quotaReqBeanWD.getToDate(),quotaReqBeanWD.getOperator(), sessionId);
 			StringBuilder succMSG = new StringBuilder();
 			succMSG.append("{ \"Success\": { \"service\": \"QuotaLimit\", \"text\": ");
 			succMSG.append(new Gson().toJson(checkIfDatesOverlap.toString()));
 			succMSG.append("}}");
 			return Response.status(Response.Status.OK).entity(succMSG.toString()).build();
-
 		} catch (BusinessException e) {
+			
 			StringBuilder errorMSG = new StringBuilder();
 			errorMSG.append("{\"Failed\":{\"service\":\"getQuotaLimitInfo\",\"text\":\"QuotaLimit could not be retrieved. \"}}");
 			return Response.status(Response.Status.BAD_REQUEST).entity(e.getErrorType()).build();
@@ -107,27 +121,30 @@ public class Queries {
 	@Path("/applyQuotaLimit")
 	@Consumes("application/json")
 	@Produces("application/json")
-	public Response applyQuotaLimit(String jsonBody) throws SQLException {
+	@RolesAllowed({"admin", "hub-admin", "operator-admin"})
+	public Response applyQuotaLimit(@Context HttpHeaders headers, String jsonBody) throws SQLException {
 		LOG.debug("applyQuotaLimit request jsonBody :" + jsonBody);
 
 		Gson gson = new GsonBuilder().serializeNulls().create();
 		QuotaBean quotaBean = gson.fromJson(jsonBody, QuotaBean.class);
 
 		if (quotaBean.getOperator().equalsIgnoreCase("_ALL_")) {
+			
 			quotaBean.setOperator(null);
 		}
 
-		/*SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-		String fromDate = sdf.format(quotaBean.getFromDate());*/
-
 		try {
-			quotaService.addQuotaLimit(quotaBean);
+			
+			String cookieValue = headers.getRequestHeader(AuthFilterParam.COOKIE.getTObject()).get(0);
+			String sessionId = cookieValue.replace("JSESSIONID=", "");
+			
+			quotaService.addQuotaLimit(quotaBean, sessionId);
 
 			StringBuilder succMSG = new StringBuilder();
 			succMSG.append("{\"Success\":{\"service\":\"applyQuotaLimit\",\"text\":\" Quota limit Successfully Added to the system. \"}}");
 			return Response.status(Response.Status.OK).entity(succMSG.toString()).build();
-
 		}catch (BusinessException exception) {
+			
 			StringBuilder errorMSG = new StringBuilder();
 			errorMSG.append("{\"Failed\":{\"service\":\"applyQuotaLimit\",\"text\":\"QuotaLimit could not be added to the system. \"}}");
 			return Response.status(Response.Status.BAD_REQUEST).entity(errorMSG.toString()).build();
@@ -137,6 +154,7 @@ public class Queries {
 	@GET
 	@Path("/getOperatorsBySubscriber")
 	@Produces("application/json")
+	@RolesAllowed({"admin", "hub-admin"})
 	public static Response getOperatorsBySubscriber(@QueryParam("subscriberName") String subscriberName)throws SQLException,Exception {
 		String operatorListJsonStr="{\"result\": \"empty\"}";
 		List<String> operatorList = new ArrayList<String>();
@@ -167,6 +185,7 @@ public class Queries {
 	@GET
 	@Path("/getSubscribersByOperator")
 	@Produces("application/json")
+	@RolesAllowed({"admin", "hub-admin"})
 	public static Response getSubscribersByOperator(@QueryParam("operatorName") String operatorName)throws SQLException, Exception{
         String subscribersJsonStr="{\"result\": \"empty\"}";
         List<String> subscribers = null;

@@ -17,6 +17,8 @@ package com.wso2telco.dep.ratecardservice.resource;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
 import javax.ws.rs.POST;
@@ -44,6 +46,7 @@ public class OperatorRateResource {
 	private OperationRateService operationRateService = new OperationRateService();
 
 	@GET
+	@RolesAllowed({"admin", "hub-admin", "operator-admin"})
 	public Response getAssignedRateDefinitions(@PathParam("operatorId") int operatorId,
 			@PathParam("apiName") String apiName, @PathParam("apiOperationId") int apiOperationId,
 			@QueryParam("schema") String schema) {
@@ -89,6 +92,7 @@ public class OperatorRateResource {
 	}
 
 	@POST
+	@RolesAllowed({"admin", "hub-admin"})
 	public Response addOperationRate(List<OperationRateDTO> operationRateList) {
 
 		List<OperationRateDTO> newOperationRateList = new ArrayList<OperationRateDTO>();
