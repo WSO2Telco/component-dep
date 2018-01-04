@@ -48,7 +48,7 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
             SubscriptionTask subscriptionTask = new SubscriptionTask(varMap);
 
             subscriptionTask.setId(task.getId());
-            subscriptionTask.setAssignee((task.getAssignee() != null)?task.getAssignee():"");
+            subscriptionTask.setAssignee((task.getAssignee() != null) ? task.getAssignee() : "");
             subscriptionTask.setCreateTime(createTime);
             subscriptionTask.setTaskDescription(task.getDescription());
             subscriptionTask.setTiersStr(tiersStr);
@@ -67,7 +67,7 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
     }
 
 
-    private List<RelevantRate> setRelevantRates(Task task){
+    private List<RelevantRate> setRelevantRates(Task task) {
 
         List<RelevantRate> relevantRates = new ArrayList<RelevantRate>();
         List<Operation> operationRates;
@@ -120,7 +120,7 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
 
         TaskList allTaskList = taskList;
         if (!isAdmin(userProfile)) {
-            allTaskList = filterOperatorApprovedApps(taskList);
+            allTaskList = filterOperatorApprovedApps(taskList, userProfile.getUserName());
         }
         allTaskList = getOperationRates(allTaskList, userProfile);
         SubSearchResponse payload;
@@ -135,8 +135,7 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
         return returnCall;
     }
 
-    public TaskList filterOperatorApprovedApps(TaskList taskList) {
-
+    public TaskList filterOperatorApprovedApps(TaskList taskList, String operatorName) {
         String appIds = "";
         List<String> operatorApprovedApps = null;
 
@@ -151,7 +150,7 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
         }
 
         try {
-            operatorApprovedApps = new OparatorService().getOparatorApprovedApp(appIds,null);
+            operatorApprovedApps = new OparatorService().getOparatorApprovedApp(appIds, operatorName);
         } catch (BusinessException e) {
             log.error("", e);
         }
@@ -159,7 +158,7 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
         return filterOperatorApproveApps(taskList, operatorApprovedApps);
     }
 
-    private TaskList filterOperatorApproveApps(TaskList taskList, List<String> operatorApprovedApps){
+    private TaskList filterOperatorApproveApps(TaskList taskList, List<String> operatorApprovedApps) {
         List<Task> tasks = new ArrayList<Task>();
         if (!operatorApprovedApps.isEmpty()) {
             for (Task task : taskList.getData()) {
