@@ -43,7 +43,7 @@ public class CategoryResource {
 	CategoryService categoryService = new CategoryService();
 
 	@GET
-	@RolesAllowed({"admin", "hub/admin", "operator/admin"})
+	@RolesAllowed({"admin", "hub-admin", "operator-admin"})
 	public Response getCategories() {
 
 		List<CategoryDTO> categories = null;
@@ -85,7 +85,7 @@ public class CategoryResource {
 	}
 
 	@POST
-	@RolesAllowed({"admin", "hub/admin"})
+	@RolesAllowed({"admin", "hub-admin"})
 	public Response addCategory(CategoryDTO category) {
 
 		CategoryDTO newCategory = null;

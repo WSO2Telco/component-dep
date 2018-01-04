@@ -46,7 +46,7 @@ public class RateDefinitionResource {
 	private RateDefinitionService rateDefinitionService = new RateDefinitionService();
 
 	@GET
-	@RolesAllowed({"admin", "hub/admin", "operator/admin"})
+	@RolesAllowed({"admin", "hub-admin", "operator-admin"})
 	public Response getRateDefinitions(@QueryParam("schema") String schema) {
 
 		List<RateDefinitionDTO> rateDefinitions = null;
@@ -88,7 +88,7 @@ public class RateDefinitionResource {
 	}
 
 	@POST
-	@RolesAllowed({"admin", "hub/admin"})
+	@RolesAllowed({"admin", "hub-admin"})
 	public Response addRateDefinition(RateDefinitionDTO rateDefinition) {
 
 		RateDefinitionDTO newRateDefinition = null;
@@ -139,7 +139,7 @@ public class RateDefinitionResource {
 
 	@GET
 	@Path("/{rateDefId}")
-	@RolesAllowed({"admin", "hub/admin", "operator/admin"})
+	@RolesAllowed({"admin", "hub-admin", "operator-admin"})
 	public Response getRateDefinition(@PathParam("rateDefId") int rateDefId, @QueryParam("schema") String schema) {
 
 		RateDefinitionDTO rateDefinition = null;
@@ -182,7 +182,7 @@ public class RateDefinitionResource {
 
 	@DELETE
 	@Path("/{rateDefId}")
-	@RolesAllowed({"admin", "hub/admin"})
+	@RolesAllowed({"admin", "hub-admin"})
 	public Response deleteRateDefinition(@PathParam("rateDefId") int rateDefId) {
 
 		boolean status = false;

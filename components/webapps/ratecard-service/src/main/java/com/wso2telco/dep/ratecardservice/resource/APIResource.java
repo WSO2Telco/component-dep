@@ -42,7 +42,7 @@ public class APIResource {
 	private APIService apiService = new APIService();
 
 	@GET
-	@RolesAllowed({"admin", "hub/admin", "operator/admin"})
+	@RolesAllowed({"admin", "hub-admin", "operator-admin"})
 	public Response getAPIs() {
 
 		List<APIDTO> apis = null;

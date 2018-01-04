@@ -43,7 +43,7 @@ public class RateCategoryResource {
 	private RateCategoryService rateCategoryService = new RateCategoryService();
 
 	@POST
-	@RolesAllowed({"admin", "hub/admin"})
+	@RolesAllowed({"admin", "hub-admin"})
 	public Response addRateCategory(@PathParam("rateDefId") int rateDefId, RateCategoryDTO rateCategory) {
 
 		RateCategoryDTO newRateCategory = null;
@@ -92,7 +92,7 @@ public class RateCategoryResource {
 	}
 
 	@GET
-	@RolesAllowed({"admin", "hub/admin", "operator/admin"})
+	@RolesAllowed({"admin", "hub-admin", "operator-admin"})
 	public Response getRateCategories(@PathParam("rateDefId") int rateDefId, @QueryParam("schema") String schema) {
 
 		List<RateCategoryDTO> rateCategories = null;

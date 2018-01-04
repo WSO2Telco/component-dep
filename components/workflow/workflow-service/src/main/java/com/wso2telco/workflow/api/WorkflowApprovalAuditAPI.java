@@ -34,7 +34,7 @@ public class WorkflowApprovalAuditAPI {
     @POST
     @Path("application")
     @Consumes(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"admin", "hub/admin", "operator/admin"})
+    @RolesAllowed({"admin", "hub-admin", "operator-admin"})
     public Response appApprovalAuditRecord(ApplicationApprovalAuditRecord applicationApprovalAuditRecord){
         try {
             workflowStatsDbService.insertAppApprovalAuditRecord(applicationApprovalAuditRecord);
@@ -47,7 +47,7 @@ public class WorkflowApprovalAuditAPI {
     @POST
     @Path("subscription")
     @Consumes(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"admin", "hub/admin", "operator/admin"})
+    @RolesAllowed({"admin", "hub-admin", "operator-admin"})
     public Response subscriptionApprovalAuditRecord(SubscriptionApprovalAuditRecord subscriptionApprovalAuditRecord){
         try {
             workflowStatsDbService.insertSubApprovalAuditRecord(subscriptionApprovalAuditRecord);

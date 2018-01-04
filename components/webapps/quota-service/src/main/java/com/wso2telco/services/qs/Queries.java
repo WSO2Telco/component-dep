@@ -22,7 +22,6 @@ import java.util.HashSet;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Set;
-
 import javax.annotation.security.RolesAllowed;
 import javax.ws.rs.Consumes;
 import javax.ws.rs.GET;
@@ -34,21 +33,14 @@ import javax.ws.rs.core.Context;
 import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-
 import org.apache.log4j.Logger;
 import org.wso2.carbon.apimgt.api.model.Application;
 import org.wso2.carbon.apimgt.api.model.Subscriber;
 import org.wso2.carbon.apimgt.impl.dao.ApiMgtDAO;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 import com.wso2telco.core.authfilter.util.AuthFilterParam;
-import com.wso2telco.core.authfilter.util.HeaderParam;
 import com.wso2telco.core.dbutils.exception.BusinessException;
-import com.wso2telco.core.userprofile.cache.CacheFactory;
-import com.wso2telco.core.userprofile.cache.UserProfileCachable;
-import com.wso2telco.core.userprofile.dto.UserProfileDTO;
-import com.wso2telco.core.userprofile.util.CacheType;
 import com.wso2telco.services.qs.entity.QuotaBean;
 import com.wso2telco.services.qs.entity.QuotaReqBean;
 import com.wso2telco.services.qs.entity.QuotaReqBeanWithDates;
@@ -68,7 +60,7 @@ public class Queries {
 	@Path("/getQuotaLimitInfo")
 	@Consumes("application/json")
 	@Produces("application/json")
-	@RolesAllowed({"admin", "hub/admin", "operator/admin"})
+	@RolesAllowed({"admin", "hub-admin", "operator-admin"})
 	public Response getQuotaLimitInfo(@Context HttpHeaders headers, String jsonBody) throws SQLException {
 		
 		LOG.debug("getQuotaLimitInfo request jsonBody :" + jsonBody);
@@ -98,7 +90,7 @@ public class Queries {
 	@Path("/checkIfDatesOverlap")
 	@Consumes("application/json")
 	@Produces("application/json")
-	@RolesAllowed({"admin", "hub/admin", "operator/admin"})
+	@RolesAllowed({"admin", "hub-admin", "operator-admin"})
 	public Response checkIfDatesOverlap(@Context HttpHeaders headers, String jsonBody) throws SQLException {
 		
 		LOG.debug("checkIfDatesOverlap request jsonBody :" + jsonBody);
@@ -129,7 +121,7 @@ public class Queries {
 	@Path("/applyQuotaLimit")
 	@Consumes("application/json")
 	@Produces("application/json")
-	@RolesAllowed({"admin", "hub/admin", "operator/admin"})
+	@RolesAllowed({"admin", "hub-admin", "operator-admin"})
 	public Response applyQuotaLimit(@Context HttpHeaders headers, String jsonBody) throws SQLException {
 		LOG.debug("applyQuotaLimit request jsonBody :" + jsonBody);
 
@@ -162,7 +154,7 @@ public class Queries {
 	@GET
 	@Path("/getOperatorsBySubscriber")
 	@Produces("application/json")
-	@RolesAllowed({"admin", "hub/admin"})
+	@RolesAllowed({"admin", "hub-admin"})
 	public static Response getOperatorsBySubscriber(@QueryParam("subscriberName") String subscriberName)throws SQLException,Exception {
 		String operatorListJsonStr="{\"result\": \"empty\"}";
 		List<String> operatorList = new ArrayList<String>();
@@ -193,7 +185,7 @@ public class Queries {
 	@GET
 	@Path("/getSubscribersByOperator")
 	@Produces("application/json")
-	@RolesAllowed({"admin", "hub/admin"})
+	@RolesAllowed({"admin", "hub-admin"})
 	public static Response getSubscribersByOperator(@QueryParam("operatorName") String operatorName)throws SQLException, Exception{
         String subscribersJsonStr="{\"result\": \"empty\"}";
         List<String> subscribers = null;

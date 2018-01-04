@@ -43,7 +43,7 @@ public class CurrencyResource {
 	private CurrencyService currencyService = new CurrencyService();
 
 	@GET
-	@RolesAllowed({"admin", "hub/admin", "operator/admin"})
+	@RolesAllowed({"admin", "hub-admin", "operator-admin"})
 	public Response getCurrencies() {
 
 		List<CurrencyDTO> currencies = null;
@@ -85,7 +85,7 @@ public class CurrencyResource {
 	}
 
 	@POST
-	@RolesAllowed({"admin", "hub/admin"})
+	@RolesAllowed({"admin", "hub-admin"})
 	public Response addCurrency(CurrencyDTO currency) {
 
 		CurrencyDTO newCurrency = null;

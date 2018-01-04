@@ -42,7 +42,7 @@ public class TariffResource {
 	private TariffService tariffService = new TariffService();
 
 	@GET
-	@RolesAllowed({"admin", "hub/admin", "operator/admin"})
+	@RolesAllowed({"admin", "hub-admin", "operator-admin"})
 	public Response getTariffs() {
 
 		List<TariffDTO> tariffs = null;
@@ -84,7 +84,7 @@ public class TariffResource {
 	}
 
 	@POST
-	@RolesAllowed({"admin", "hub/admin"})
+	@RolesAllowed({"admin", "hub-admin"})
 	public Response addTariff(TariffDTO tariff) {
 
 		TariffDTO newTariff = null;

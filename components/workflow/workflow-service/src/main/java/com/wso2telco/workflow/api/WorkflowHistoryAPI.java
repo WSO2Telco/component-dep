@@ -44,7 +44,7 @@ public class WorkflowHistoryAPI {
     @Path("/approval")
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"admin", "hub/admin", "operator/admin"})
+    @RolesAllowed({"admin", "hub-admin", "operator-admin"})
     public Response getApprovalHistory(ApprovalDTO approvalDTO) {
 
         String fromDate = approvalDTO.getFromDate();
@@ -71,7 +71,7 @@ public class WorkflowHistoryAPI {
     @GET
     @Path("/approval/{app_id}")
     @Produces("application/json")
-    @RolesAllowed({"admin", "hub/admin", "operator/admin"})
+    @RolesAllowed({"admin", "hub-admin", "operator-admin"})
     public Response getAppApprovalHistory(@PathParam("app_id") int appID) {
 
         Gson gson = new Gson();
@@ -90,7 +90,7 @@ public class WorkflowHistoryAPI {
     @GET
     @Path("/subscribers")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"admin", "hub/admin", "operator/admin"})
+    @RolesAllowed({"admin", "hub-admin", "operator-admin"})
     public Response getAllSubscribers() {
         String jsonPayload;
         try {
@@ -107,7 +107,7 @@ public class WorkflowHistoryAPI {
     @GET
     @Path("/apis/{subscriberName}")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"admin", "hub/admin", "operator/admin"})
+    @RolesAllowed({"admin", "hub-admin", "operator-admin"})
     public Response getAPIsBySubscriber(@PathParam("subscriberName") String subscriberName) {
 
         String jsonPayload;
@@ -125,7 +125,7 @@ public class WorkflowHistoryAPI {
     @GET
     @Path("/operators")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"admin", "hub/admin"})
+    @RolesAllowed({"admin", "hub-admin"})
     public Response getAllOperators() {
 
         String jsonPayload;
@@ -143,7 +143,7 @@ public class WorkflowHistoryAPI {
     @GET
     @Path("/applications/{subscriberName}")
     @Produces(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"admin", "hub/admin", "operator/admin"})
+    @RolesAllowed({"admin", "hub-admin", "operator-admin"})
     public Response getApplications(@PathParam("subscriberName") String subscriberName) {
         String jsonPayload;
         try {

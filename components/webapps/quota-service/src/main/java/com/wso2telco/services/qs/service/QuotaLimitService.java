@@ -4,11 +4,8 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.apimgt.usage.client.exception.APIMgtUsageQueryServiceClientException;
-
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.exception.GenaralError;
 import com.wso2telco.core.userprofile.cache.CacheFactory;
@@ -40,7 +37,7 @@ public class QuotaLimitService {
 			String[] roles = userProfileDTO.getUserRoles();
 			List <String> roleList = new ArrayList<>(Arrays.asList(roles));
 			
-			if(roleList.contains("operator/admin")){
+			if(roleList.contains("operator-admin")){
 				
 				quotaBean.setOperator(userProfileDTO.getOrganization());
 			}
@@ -65,7 +62,7 @@ public class QuotaLimitService {
 			String[] roles = userProfileDTO.getUserRoles();
 			List <String> roleList = new ArrayList<>(Arrays.asList(roles));
 			
-			if(roleList.contains("operator/admin")){
+			if(roleList.contains("operator-admin")){
 				
 				operator = userProfileDTO.getOrganization();
 			}
@@ -104,7 +101,7 @@ public class QuotaLimitService {
 			String[] roles = userProfileDTO.getUserRoles();
 			List <String> roleList = new ArrayList<>(Arrays.asList(roles));
 			
-			if(roleList.contains("operator/admin")){
+			if(roleList.contains("operator-admin")){
 				
 				operator = userProfileDTO.getOrganization();
 			}

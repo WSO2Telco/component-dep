@@ -41,7 +41,7 @@ public class RateTypeResource {
 	RateTypeService rateTypeService = new RateTypeService();
 
 	@GET
-	@RolesAllowed({"admin", "hub/admin", "operator/admin"})
+	@RolesAllowed({"admin", "hub-admin", "operator-admin"})
 	public Response getRateTypes() {
 
 		List<RateTypeDTO> rateTypes = null;

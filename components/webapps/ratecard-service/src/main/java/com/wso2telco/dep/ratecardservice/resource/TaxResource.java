@@ -43,7 +43,7 @@ public class TaxResource {
 	private TaxService taxService = new TaxService();
 
 	@GET
-	@RolesAllowed({"admin", "hub/admin", "operator/admin"})
+	@RolesAllowed({"admin", "hub-admin", "operator-admin"})
 	public Response getTaxes() {
 
 		List<TaxDTO> taxes = null;
@@ -85,7 +85,7 @@ public class TaxResource {
 	}
 
 	@POST
-	@RolesAllowed({"admin", "hub/admin"})
+	@RolesAllowed({"admin", "hub-admin"})
 	public Response addTax(TaxDTO tax) {
 
 		TaxDTO newtax = null;
@@ -135,7 +135,7 @@ public class TaxResource {
 
 	@GET
 	@Path("/{taxId}")
-	@RolesAllowed({"admin", "hub/admin", "operator/admin"})
+	@RolesAllowed({"admin", "hub-admin", "operator-admin"})
 	public Response getTax(@PathParam("taxId") int taxId) {
 
 		TaxDTO tax = null;

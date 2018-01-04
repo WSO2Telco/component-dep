@@ -36,7 +36,7 @@ public class NotificationAPI {
     @POST
     @Path("application/hub")
     @Consumes(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"admin", "hub/admin", "gateway/admin"})
+    @RolesAllowed({"admin", "hub-admin", "gateway-admin"})
     public Response sendHUBAdminAppApprovalNotification(NotificationRequest request){
         try {
             notification.sendHUBAdminAppApprovalNotification(request);
@@ -49,7 +49,7 @@ public class NotificationAPI {
     @POST
     @Path("subscription/hub")
     @Consumes(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"admin", "hub/admin", "gateway/admin"})
+    @RolesAllowed({"admin", "hub-admin", "gateway-admin"})
     public Response sendHUBAdminSubrovalNotification(NotificationRequest request){
         try {
             notification.sendHUBAdminSubrovalNotification(request);
@@ -62,7 +62,7 @@ public class NotificationAPI {
     @POST
     @Path("application/plugin")
     @Consumes(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"admin", "hub/admin", "gateway/admin", "operator/admin"})
+    @RolesAllowed({"admin", "hub-admin", "gateway-admin", "operator-admin"})
     public Response sendPLUGINAdminAppApprovalNotification(NotificationRequest request){
         try {
             notification.sendPLUGINAdminAppApprovalNotification(request);
@@ -75,7 +75,7 @@ public class NotificationAPI {
     @POST
     @Path("subscription/plugin")
     @Consumes(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"admin", "hub/admin", "gateway/admin", "operator/admin"})
+    @RolesAllowed({"admin", "hub-admin", "gateway-admin", "operator-admin"})
     public Response sendPLUGINAdminSubApprovalNotification(NotificationRequest request){
         try {
             notification.sendPLUGINAdminSubApprovalNotification(request);
@@ -88,7 +88,7 @@ public class NotificationAPI {
     @POST
     @Path("application/sp")
     @Consumes(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"admin", "hub/admin", "gateway/admin", "operator/admin"})
+    @RolesAllowed({"admin", "hub-admin", "gateway-admin", "operator-admin"})
     public Response sendAppApprovalStatusSPNotification(NotificationRequest request){
         try {
             notification.sendAppApprovalStatusSPNotification(request);
@@ -101,7 +101,7 @@ public class NotificationAPI {
     @POST
     @Path("subscription/sp")
     @Consumes(MediaType.APPLICATION_JSON)
-    @RolesAllowed({"admin", "hub/admin", "gateway/admin", "operator/admin"})
+    @RolesAllowed({"admin", "hub-admin", "gateway-admin", "operator-admin"})
     public Response sendSubApprovalStatusSPNotification(NotificationRequest request){
         try {
             notification.sendSubApprovalStatusSPNotification(request);
@@ -130,7 +130,5 @@ public class NotificationAPI {
             return Response.status(Response.Status.OK).build();
         }catch(Exception ex){
             return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }}
-
-
+    }}
 }

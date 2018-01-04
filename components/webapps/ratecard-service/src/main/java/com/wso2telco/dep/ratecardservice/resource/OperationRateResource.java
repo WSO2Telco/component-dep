@@ -46,7 +46,7 @@ public class OperationRateResource {
 	private OperationRateService operationRateService = new OperationRateService();
 
 	@GET
-	@RolesAllowed({"admin", "hub/admin", "operator/admin"})
+	@RolesAllowed({"admin", "hub-admin", "operator-admin"})
 	public Response getAssignedRateDefinitions(@PathParam("apiName") String apiName,
 			@PathParam("apiOperationId") int apiOperationId, @QueryParam("schema") String schema) {
 
@@ -91,7 +91,7 @@ public class OperationRateResource {
 	}
 
 	@POST
-	@RolesAllowed({"admin", "hub/admin"})
+	@RolesAllowed({"admin", "hub-admin"})
 	public Response addOperationRate(List<OperationRateDTO> operationRateList) {
 
 		List<OperationRateDTO> newOperationRateList = new ArrayList<OperationRateDTO>();

@@ -44,7 +44,7 @@ public class RateCardResource {
 	private RateCardService rateCardService = new RateCardService();
 
 	@POST
-	@RolesAllowed({"admin", "hub/admin"})
+	@RolesAllowed({"admin", "hub-admin"})
 	public Response addRateCard(RateCardDTO rateCard) {
 
 		RateCardDTO newRateCard = null;
@@ -93,7 +93,7 @@ public class RateCardResource {
 	}
 
 	@GET
-	@RolesAllowed({"admin", "hub/admin", "operator/admin"})
+	@RolesAllowed({"admin", "hub-admin", "operator-admin"})
 	public Response getRateCard(@QueryParam("schema") String schema) {
 
 		List<RateCardDTO> rateCards = null;

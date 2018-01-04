@@ -45,7 +45,7 @@ public class RateTaxResource {
 	private RateTaxService rateTaxService = new RateTaxService();
 
 	@POST
-	@RolesAllowed({"admin", "hub/admin"})
+	@RolesAllowed({"admin", "hub-admin"})
 	public Response addRateTax(@PathParam("taxId") int taxId, RateTaxDTO rateTax) {
 
 		RateTaxDTO newRateTaxDTO = null;
@@ -94,7 +94,7 @@ public class RateTaxResource {
 	}
 
 	@GET
-	@RolesAllowed({"admin", "hub/admin", "operator/admin"})
+	@RolesAllowed({"admin", "hub-admin", "operator-admin"})
 	public Response getRateTaxes(@PathParam("taxId") int taxId, @QueryParam("schema") String schema) {
 
 		List<RateTaxDTO> rateTaxes = null;
@@ -137,7 +137,7 @@ public class RateTaxResource {
 
 	@DELETE
 	@Path("/{rateTaxId}")
-	@RolesAllowed({"admin", "hub/admin", "operator/admin"})
+	@RolesAllowed({"admin", "hub-admin", "operator-admin"})
 	public Response deleteRateTax(@PathParam("taxId") int taxId, @PathParam("rateTaxId") int rateTaxId) {
 
 		boolean status = false;
