@@ -375,16 +375,16 @@ DROP TABLE IF EXISTS `tax_validity`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `tax_validity` (
-  `idtax_validityid` int(11) NOT NULL,
-  `tax_validityactdate` date NOT NULL,
-  `tax_validitydisdate` date NOT NULL,
-  `tax_validityval` double NOT NULL,
+  `idtaxValidityId` int(11) NOT NULL,
+  `taxValidityactdate` date NOT NULL,
+  `taxValiditydisdate` date NOT NULL,
+  `taxValidityval` double NOT NULL,
   `taxid` int(11) NOT NULL,
   `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
   `updatedby` varchar(255) DEFAULT NULL,
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`idtax_validityid`),
+  PRIMARY KEY (`idtaxValidityId`),
   KEY `fk_tax_validity_1_idx` (`taxid`),
   CONSTRAINT `fk_tax_validity_1` FOREIGN KEY (`taxid`) REFERENCES `tax` (`taxid`) ON DELETE NO ACTION ON UPDATE NO ACTION
 ) ENGINE=InnoDB DEFAULT CHARSET=latin1;
@@ -487,7 +487,7 @@ CREATE TRIGGER insert_tax_validity_trigger AFTER INSERT ON tax_validity
   FOR EACH ROW BEGIN
 
    INSERT INTO audit(tbl_name, id, col_name, old_data, new_data, action, updated_at) VALUES ('tax_validity', NEW
-   .idtax_validityid, 'idtax_validityid', 'null', NEW.idtax_validityid , 'insert' ,NOW());
+   .idtaxValidityId, 'idtaxValidityId', 'null', NEW.idtaxValidityId , 'insert' ,NOW());
 END ;
 
 DROP TRIGGER IF EXISTS delete_tax_validity_trigger;
@@ -495,24 +495,24 @@ CREATE TRIGGER delete_tax_validity_trigger AFTER DELETE ON tax_validity
   FOR EACH ROW BEGIN
 
    INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tax_validity', OLD
-   .idtax_validityid, 'idtax_validityid', OLD.idtax_validityid , 'null' , 'delete' ,NOW());
+   .idtaxValidityId, 'idtaxValidityId', OLD.idtaxValidityId , 'null' , 'delete' ,NOW());
 END ;
 
 DROP TRIGGER IF EXISTS update_tax_validity_trigger;
 CREATE TRIGGER update_tax_validity_trigger BEFORE UPDATE ON tax_validity
   FOR EACH ROW BEGIN
 
-    IF OLD.tax_validityactdate <> NEW.tax_validityactdate THEN
-      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tax_validity', OLD.idtax_validityid, 'tax_validityactdate', OLD.tax_validityactdate, NEW.tax_validityactdate, 'update' ,NOW());
+    IF OLD.taxValidityactdate <> NEW.taxValidityactdate THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tax_validity', OLD.idtaxValidityId, 'taxValidityactdate', OLD.taxValidityactdate, NEW.taxValidityactdate, 'update' ,NOW());
     END IF;
-    IF OLD.tax_validitydisdate <> NEW.tax_validitydisdate THEN
-      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tax_validity', OLD.idtax_validityid, 'tax_validitydisdate', OLD.tax_validitydisdate, NEW.tax_validitydisdate, 'update' ,NOW());
+    IF OLD.taxValiditydisdate <> NEW.taxValiditydisdate THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tax_validity', OLD.idtaxValidityId, 'taxValiditydisdate', OLD.taxValiditydisdate, NEW.taxValiditydisdate, 'update' ,NOW());
     END IF;
-    IF OLD.tax_validityval <> NEW.tax_validityval THEN
-      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tax_validity', OLD.idtax_validityid, 'tax_validityval', OLD.tax_validityval, NEW.tax_validityval, 'update' ,NOW());
+    IF OLD.taxValidityval <> NEW.taxValidityval THEN
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tax_validity', OLD.idtaxValidityId, 'taxValidityval', OLD.taxValidityval, NEW.taxValidityval, 'update' ,NOW());
     END IF;
     IF OLD.taxid <> NEW.taxid THEN
-      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tax_validity', OLD.idtax_validityid, 'taxid', OLD.taxid, NEW.taxid, 'update' ,NOW());
+      INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tax_validity', OLD.idtaxValidityId, 'taxid', OLD.taxid, NEW.taxid, 'update' ,NOW());
     END IF;
     IF OLD.createdby <> NEW.createdby THEN
       INSERT INTO audit(tbl_name, id,  col_name, old_data, new_data, action, updated_at) VALUES ('tax_validity', OLD.createdby, 'createdby', OLD.createdby, NEW.createdby, 'update' ,NOW());
