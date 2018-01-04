@@ -19,7 +19,7 @@ public enum  WorkFlowVariables {
 
     HUB_ADMIN_APPROVAL("hubAdminApproval"),
     OPERATOR_ADMIN_APPROVAL("operatorAdminApproval"),
-    HUB_ADMI_ROLE("admin"),
+    HUB_ADMIN_ROLE("admin"),
     OPERATOR_ADMIN_ROLE("operator1-admin-role"),
     API_PUBLISHER_ADMIN_APPROVAL(""),
     DATE_FORMAT("yyyy-MM-dd'T'HH:mm:ss.SSSXXX"),

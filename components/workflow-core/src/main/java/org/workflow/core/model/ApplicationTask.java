@@ -22,7 +22,9 @@ import java.util.Map;
         "tier",
         "tiersStr",
         "userName",
-        "creditPlan"
+        "creditPlan",
+        "relevantRates",
+        "selectedRate"
 })
 public class ApplicationTask {
 

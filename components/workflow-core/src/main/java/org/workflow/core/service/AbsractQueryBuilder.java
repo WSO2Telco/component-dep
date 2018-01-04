@@ -12,10 +12,7 @@ import org.workflow.core.activity.RestClientFactory;
 import org.workflow.core.activity.TaskAssignRequest;
 import org.workflow.core.execption.WorkflowExtensionException;
 import org.workflow.core.model.*;
-import org.workflow.core.util.AppVariable;
-import org.workflow.core.util.DeploymentTypes;
-import org.workflow.core.util.Messages;
-import org.workflow.core.util.WorkFlowVariables;
+import org.workflow.core.util.*;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -28,6 +25,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
     protected DeploymentTypes depType;
     static final String DATE_FORMAT = "yyyy-MM-dd'T'HH:mm:ssXXX";
     static final String MONTH_FORMAT = "MMM";
+    protected static final String ALL = "__ALL__";
     private DateFormat format = new SimpleDateFormat(WorkFlowVariables.DATE_FORMAT.getValue(), Locale.ENGLISH);
     private SimpleDateFormat dateFormatter = new SimpleDateFormat(WorkFlowVariables.DATE_FORMAT2.getValue());
     private SimpleDateFormat timeFormatter = new SimpleDateFormat(WorkFlowVariables.TIME_FORMAT.getValue());
@@ -43,18 +41,15 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
     protected abstract Callback buildAllTaskResponse(final TaskSearchDTO searchDTO, final TaskList taskList,
                                                      final UserProfileDTO userProfile) throws BusinessException;
 
-    protected abstract Callback getHistoricalData(String user, List<Range> months, List<String> xAxisLabels) throws BusinessException;
+    protected abstract Callback getHistoricalGraphData(String user, List<Range> months, List<String> xAxisLabels) throws BusinessException;
+
+    public abstract HistoryResponse getApprovalHistory(String subscriber, String applicationName, int applicationId, String operator, int offset, int count) throws BusinessException;
 
     protected abstract Callback buildApprovalRequest(final ApprovalRequest approvalRequest, final UserProfileDTO userProfile) throws BusinessException;
 
     public Callback searchPending(TaskSearchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException {
         ProcessSearchRequest processRequest = buildSearchRequest(searchDTO, userProfile);
-        if (isAdmin(userProfile)) {
-            processRequest.setCandidateGroup(WorkFlowVariables.HUB_ADMI_ROLE.getValue());
-        } else {
-            processRequest.setCandidateGroup(WorkFlowVariables.OPERATOR_ADMIN_ROLE.getValue());
-        }
-
+        processRequest.setCandidateGroup(userProfile.getUserName());
         TaskList taskList = executeRequest(processRequest);
         return buildAllTaskResponse(searchDTO, taskList, userProfile);
     }
@@ -117,10 +112,8 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
                 if (criteriaArray.length == 2 && !criteriaArray[0].trim().isEmpty() && !criteriaArray[1].trim().isEmpty()
                         && getFilterMap().containsKey(criteriaArray[0].trim().toLowerCase())) {
                     /**
-                     * add process variable ,
-                     *
+                     * add process variable
                      */
-
                     Variable var = new Variable(getFilterMap().get(criteriaArray[0].toLowerCase()), criteriaArray[1]);
                     request.addProcessVariable(var);
                 }
@@ -176,7 +169,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
             xAxisLabels.add(monthFormat.format(stop));
         }
 
-        return getHistoricalData(userProfile.getUserName(), months, xAxisLabels);
+        return getHistoricalGraphData(userProfile.getUserName(), months, xAxisLabels);
 
     }
 
@@ -226,6 +219,26 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
             createTime = null;
         }
         return createTime;
+    }
+
+    protected Map<String, String> historyFilterMap() {
+        Map<String, String> filter = new HashMap<String, String>();
+        filter.put("username", HistoryVariable.SP.key());
+        filter.put("user", HistoryVariable.SP.key());
+        filter.put("name", HistoryVariable.SP.key());
+        filter.put("subscriber", HistoryVariable.SP.key());
+        filter.put("sp", HistoryVariable.SP.key());
+        filter.put("provider", HistoryVariable.SP.key());
+        filter.put("serviceprovider", HistoryVariable.SP.key());
+        filter.put("applicationname", HistoryVariable.NAME.key());
+        filter.put("application", HistoryVariable.NAME.key());
+        filter.put("appname", HistoryVariable.NAME.key());
+        filter.put("app", HistoryVariable.NAME.key());
+        filter.put("applicationid", HistoryVariable.ID.key());
+        filter.put("appid", HistoryVariable.ID.key());
+        filter.put("id", HistoryVariable.ID.key());
+        filter.put("operator",HistoryVariable.OPARATOR.key());
+        return filter;
     }
 
     protected boolean isAdmin(UserProfileDTO userProfile) {

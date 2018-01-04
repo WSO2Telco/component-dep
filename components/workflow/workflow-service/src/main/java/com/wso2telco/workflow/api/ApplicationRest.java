@@ -17,21 +17,17 @@
 package com.wso2telco.workflow.api;
 
 
-import com.google.gson.Gson;
 import com.wso2telco.core.dbutils.util.ApprovalRequest;
 import com.wso2telco.core.dbutils.util.AssignRequest;
 import com.wso2telco.core.dbutils.util.Callback;
 import com.wso2telco.core.userprofile.UserProfileRetriever;
 import com.wso2telco.core.userprofile.dto.UserProfileDTO;
-import com.wso2telco.dep.reportingservice.southbound.SbHostObjectUtils;
 import org.workflow.core.model.TaskSearchDTO;
 import org.workflow.core.service.WorkFlowDelegator;
 
-import javax.servlet.http.HttpServletResponse;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
-import java.util.List;
 
 
 @Path("/applications")
@@ -137,27 +133,22 @@ public class ApplicationRest {
 
 
     @GET
-    @Path("/history/{subscriber}/{api}/{applicationId}/{operator}")
-    @Produces("application/json")
-    public Response getApprovalHistory(@HeaderParam("user-name") String userName,
-                                       @QueryParam("fromDate") String fromDate,
-                                       @QueryParam("toDate") String toDate,
-                                       @PathParam("subscriber") String subscriber,
-                                       @PathParam("api") String api,
-                                       @PathParam("applicationId") int applicationId,
-                                       @PathParam("operator") String operator,
-                                       @QueryParam("batchSize") int batchSize,
-                                       @QueryParam("start") int start, @QueryParam("orderBy") String orderBy,
-                                       @QueryParam("sortBy") String sortBy, @QueryParam("filterBy") String filterBy) {
-
-        String jsonPayload;
-
+    @Path("/history")
+    public Response approvalHistory(@HeaderParam("user-name") String userName,
+                                    @QueryParam("start") int start, @QueryParam("filterBy") String filterBy) {
+        Response response;
         try {
-            List<String[]> apiRequests = SbHostObjectUtils.getApprovalHistory(fromDate, toDate, subscriber, api, applicationId, operator, start, batchSize);
-            jsonPayload = new Gson().toJson(apiRequests);
+            WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
+            TaskSearchDTO searchD = new TaskSearchDTO();
+            searchD.setStart(start);
+            searchD.setFilterBy(filterBy);
+            UserProfileRetriever userProfileRetriever = new UserProfileRetriever();
+            UserProfileDTO userProfile = userProfileRetriever.getUserProfile(userName);
+            Callback callback = workFlowDelegator.getApplicationApprovalHistory(searchD, userProfile);
+            response = Response.status(Response.Status.OK).entity(callback).build();
         } catch (Exception e) {
-            return Response.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).build();
+            response =  Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
-        return Response.status(HttpServletResponse.SC_OK).entity(jsonPayload).build();
+        return response;
     }
 }

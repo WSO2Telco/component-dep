@@ -5,7 +5,6 @@ import com.wso2telco.core.dbutils.util.ApprovalRequest;
 import com.wso2telco.core.dbutils.util.Callback;
 import com.wso2telco.core.userprofile.dto.UserProfileDTO;
 import com.wso2telco.dep.operatorservice.service.OparatorService;
-import org.workflow.core.model.SubSearchResponse;
 import org.workflow.core.activity.ActivityRestClient;
 import org.workflow.core.activity.RestClientFactory;
 import org.workflow.core.execption.WorkflowExtensionException;
@@ -139,7 +138,7 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
     public TaskList filterOperatorApprovedApps(TaskList taskList) {
 
         String appIds = "";
-        List<String> operatorApprovedApps = new ArrayList<String>();
+        List<String> operatorApprovedApps = null;
 
         for (Task task : taskList.getData()) {
             final Map<AppVariable, TaskVariableResponse> varMap = new HashMap<AppVariable, TaskVariableResponse>();
@@ -152,7 +151,7 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
         }
 
         try {
-            operatorApprovedApps = new OparatorService().getOparatorApprovedApp(appIds);
+            operatorApprovedApps = new OparatorService().getOparatorApprovedApp(appIds,null);
         } catch (BusinessException e) {
             log.error("", e);
         }
@@ -223,7 +222,7 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
     }
 
     @Override
-    protected Callback getHistoricalData(String user, List<Range> months, List<String> xAxisLabels) throws BusinessException {
+    protected Callback getHistoricalGraphData(String user, List<Range> months, List<String> xAxisLabels) throws BusinessException {
         List<Integer> data = new ArrayList();
         ActivityRestClient activityClient = RestClientFactory.getInstance().getClient(getProcessDefinitionKey());
         TaskDetailsResponse taskList = null;
@@ -253,6 +252,11 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
 
     @Override
     protected abstract Callback buildApprovalRequest(ApprovalRequest approvalRequest, UserProfileDTO userProfile) throws BusinessException;
+
+    @Override
+    public HistoryResponse getApprovalHistory(String subscriber, String applicationName, int applicationId, String operator, int offset, int count) throws BusinessException {
+        return null;
+    }
 
     @Override
     protected String getProcessDefinitionKey() {
