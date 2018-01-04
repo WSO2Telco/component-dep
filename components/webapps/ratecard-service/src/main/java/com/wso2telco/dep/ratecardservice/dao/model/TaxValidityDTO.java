@@ -15,53 +15,43 @@
  ******************************************************************************/
 package com.wso2telco.dep.ratecardservice.dao.model;
 
-public class TaxDTO {
+public class TaxValidityDTO {
 
-    private Integer taxId;
-    private String taxCode;
-    private String taxName;
-    private TaxValidityDTO [] taxesValidityDates;
-    private String createdBy;
+    private Integer idtaxValidityId;
+    private String taxValidityactdate;
+    private String taxValiditydisdate;
+    private String taxValidityval;
 
-    public Integer getTaxId() {
-        return taxId;
+    public Integer getIdtaxValidityId() {
+        return idtaxValidityId;
     }
 
-    public void setTaxId(Integer taxId) {
-        this.taxId = taxId;
+    public void setIdtaxValidityId(Integer idtaxValidityId) {
+        this.idtaxValidityId = idtaxValidityId;
     }
 
-    public String getTaxCode() {
-        return taxCode;
+    public void setTaxValidityactdate(String taxValidityactdate) {
+        this.taxValidityactdate = taxValidityactdate;
     }
 
-    public void setTaxCode(String taxCode) {
-        this.taxCode = taxCode;
+    public String getTaxValidityactdate() {
+        return taxValidityactdate;
     }
 
-    public String getTaxName() {
-        return taxName;
+    public void setTaxValiditydisdate(String taxValiditydisdate) {
+        this.taxValiditydisdate = taxValiditydisdate;
     }
 
-    public void setTaxName(String taxName) {
-        this.taxName = taxName;
+    public String getTaxValiditydisdate() {
+        return taxValiditydisdate;
     }
 
-    public TaxValidityDTO[] getTaxesValidityDates() {
-        return taxesValidityDates;
+    public void setTaxValidityval(String taxValidityval) {
+        this.taxValidityval = taxValidityval;
     }
 
-    public void setTaxesValidityDates(TaxValidityDTO[] taxesValidityDates) {
-        this.taxesValidityDates = taxesValidityDates;
+    public String getTaxValidityval() {
+        return taxValidityval;
     }
-
-    public String getCreatedBy() {
-        return createdBy;
-    }
-
-    public void setCreatedBy(String createdBy) {
-        this.createdBy = createdBy;
-    }
-
 
 }

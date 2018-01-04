@@ -28,10 +28,11 @@ public enum DatabaseTables {
 	OPERATOR("operator"),
 	OPERATION_RATE("operation_rate"),
 	TAX("tax"),
-	RATE_TAX("rate_taxes");
+	RATE_TAX("rate_taxes"),
+	TAX_VALIDITY("tax_validity");
 	
 	DatabaseTables(String tObject) {
-		
+
 		this.tObject = tObject;
 	}
 	
