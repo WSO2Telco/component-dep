@@ -31,7 +31,7 @@ public final class QueryBuilderFactory  implements WorkFlow{
 			queryBuilder =  HubAppRequestBuilder.getInstace(depType);
 			break;
 		case INTERNAL_GATEWAY:
-			queryBuilder =  IntGtwAppRequestBuilder.getInstace(depType);
+			queryBuilder =  ExtGtwAppRequestBuilder.getInstace(depType);
 			break;
 		default:
 			queryBuilder =  HubAppRequestBuilder.getInstace(depType);
