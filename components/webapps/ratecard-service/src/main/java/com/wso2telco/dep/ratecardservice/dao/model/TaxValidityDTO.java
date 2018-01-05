@@ -21,9 +21,18 @@ public class TaxValidityDTO {
     private String taxValidityactdate;
     private String taxValiditydisdate;
     private String taxValidityval;
+    private int taxid;
 
     public Integer getIdtaxValidityId() {
         return idtaxValidityId;
+    }
+
+    public int getTaxid() {
+        return taxid;
+    }
+
+    public void setTaxid(int taxid) {
+        this.taxid = taxid;
     }
 
     public void setIdtaxValidityId(Integer idtaxValidityId) {

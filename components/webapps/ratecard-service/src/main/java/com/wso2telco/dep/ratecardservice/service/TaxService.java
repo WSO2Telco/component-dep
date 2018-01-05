@@ -15,13 +15,12 @@
  ******************************************************************************/
 package com.wso2telco.dep.ratecardservice.service;
 
-import java.util.Collections;
-import java.util.List;
-
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.dep.ratecardservice.dao.TaxDAO;
 import com.wso2telco.dep.ratecardservice.dao.model.TaxDTO;
 import com.wso2telco.dep.ratecardservice.dao.model.TaxValidityDTO;
+
+import java.util.*;
 
 public class TaxService {
 
@@ -38,34 +37,23 @@ public class TaxService {
 
         taxes = taxDAO.getTaxes();
 
+        Map <Integer, TaxDTO> map = new HashMap<>();
+
         if (taxes != null && !taxes.isEmpty()) {
 
             for (int i = 0; i < taxes.size(); i++) {
 
                 TaxDTO tax = taxes.get(i);
-
-                List<TaxValidityDTO> taxValidityList = getTaxValidityDates(tax.getTaxId());
-                TaxValidityDTO[] taxValidityArray = new TaxValidityDTO[taxValidityList.size()];
-                tax.setTaxesValidityDates(taxValidityList.toArray(taxValidityArray));
+                map.put(tax.getTaxId(),tax);
 
             }
-
+            List<TaxValidityDTO> listOfValidator =  taxDAO.getTaxValidityDates(new ArrayList<Integer>(map.keySet()));
+            for (TaxValidityDTO dto: listOfValidator){
+                if(map.containsKey(dto.getTaxid())){
+                    map.get(dto.getTaxid()).addValidity(dto);
+                }
+            }
             return taxes;
-        } else {
-
-            return Collections.emptyList();
-        }
-    }
-
-    public List<TaxValidityDTO> getTaxValidityDates(int taxId) throws BusinessException {
-
-        List<TaxValidityDTO> taxesValidityDates = null;
-
-        taxesValidityDates = taxDAO.getTaxValidityDates(taxId);
-
-        if (taxesValidityDates != null && !taxesValidityDates.isEmpty()) {
-
-            return taxesValidityDates;
         } else {
 
             return Collections.emptyList();

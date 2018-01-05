@@ -15,30 +15,27 @@
  ******************************************************************************/
 package com.wso2telco.dep.ratecardservice.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-
-import com.wso2telco.dep.ratecardservice.dao.model.TaxValidityDTO;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import com.wso2telco.core.dbutils.DbUtils;
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.exception.ServiceError;
 import com.wso2telco.core.dbutils.util.DataSourceNames;
 import com.wso2telco.dep.ratecardservice.dao.model.TaxDTO;
+import com.wso2telco.dep.ratecardservice.dao.model.TaxValidityDTO;
 import com.wso2telco.dep.ratecardservice.util.DatabaseTables;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class TaxDAO {
 
     private final Log log = LogFactory.getLog(TaxDAO.class);
     public static final String DBERRORMSG = "unable to open";
     public static final String DBCONERRORMSG = "database connection";
-
+    public static final String TAXID = "taxid";
 
 
     public List<TaxDTO> getTaxes() throws BusinessException {
@@ -71,7 +68,7 @@ public class TaxDAO {
 
                 TaxDTO tax = new TaxDTO();
 
-                tax.setTaxId(rs.getInt("taxid"));
+                tax.setTaxId(rs.getInt(TAXID));
                 tax.setTaxCode(rs.getString("taxcode"));
                 tax.setTaxName(rs.getString("taxname"));
                 tax.setCreatedBy(rs.getString("createdby"));
@@ -94,7 +91,7 @@ public class TaxDAO {
         return taxes;
     }
 
-    public List<TaxValidityDTO> getTaxValidityDates(int taxid) throws BusinessException {
+    public List<TaxValidityDTO> getTaxValidityDates(List<Integer> taxids) throws BusinessException {
 
         List<TaxValidityDTO> taxes = new ArrayList<TaxValidityDTO>();
 
@@ -111,14 +108,34 @@ public class TaxDAO {
                 throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
             }
 
-            StringBuilder query = new StringBuilder("select idtax_validityid, tax_validityactdate, tax_validitydisdate, tax_validityval from ");
+            StringBuilder query = new StringBuilder();
+            query.append("select taxid,idtax_validityid,");
+            query.append(" tax_validityactdate, tax_validitydisdate, tax_validityval from ");
             query.append(DatabaseTables.TAX_VALIDITY.getTObject());
-            query.append(" where taxid = ?");
+            query.append(" where taxid in(  ");
 
+
+            Iterator<Integer> iterator = taxids.iterator();
+            int[] values = new int[taxids.size()];
+            int index = 0;
+            while (iterator.hasNext()) {
+                values[index] = iterator.next();
+                query.append("?");
+                if (iterator.hasNext()) {
+                    query.append(",");
+                }
+                index++;
+
+            }
+
+            query.append(")");
             ps = con.prepareStatement(query.toString());
 
+            for (int x = 0; x < values.length; x++) {
+                ps.setInt(x + 1, values[x]);
+            }
             log.debug("sql query in getTaxes : " + ps);
-            ps.setInt(1, taxid);
+
 
             rs = ps.executeQuery();
 
@@ -129,8 +146,7 @@ public class TaxDAO {
                 tax.setTaxValidityactdate(rs.getString("tax_validityactdate"));
                 tax.setTaxValiditydisdate(rs.getString("tax_validitydisdate"));
                 tax.setTaxValidityval(rs.getString("tax_validityval"));
-
-
+                tax.setTaxid(rs.getInt(TAXID));
                 taxes.add(tax);
             }
         } catch (SQLException e) {
@@ -238,7 +254,7 @@ public class TaxDAO {
 
                 tax = new TaxDTO();
 
-                tax.setTaxId(rs.getInt("taxid"));
+                tax.setTaxId(rs.getInt(TAXID));
                 tax.setTaxCode(rs.getString("taxcode"));
                 tax.setTaxName(rs.getString("taxname"));
                 tax.setCreatedBy(rs.getString("createdby"));
