@@ -15,14 +15,24 @@
  ******************************************************************************/
 package com.wso2telco.dep.ratecardservice.dao.model;
 
+import java.util.ArrayList;
+import java.util.Collections;
+import java.util.List;
+
 public class TaxDTO {
 
     private Integer taxId;
     private String taxCode;
     private String taxName;
-    private TaxValidityDTO [] taxesValidityDates;
+    private List<TaxValidityDTO> taxesValidityDates = Collections.emptyList();
     private String createdBy;
 
+    public void addValidity(TaxValidityDTO validityDTO){
+        if(taxesValidityDates.isEmpty()){
+            taxesValidityDates = new ArrayList<>();
+        }
+        taxesValidityDates.add(validityDTO);
+    }
     public Integer getTaxId() {
         return taxId;
     }
@@ -48,12 +58,9 @@ public class TaxDTO {
     }
 
     public TaxValidityDTO[] getTaxesValidityDates() {
-        return taxesValidityDates;
+        return taxesValidityDates.toArray( new TaxValidityDTO[taxesValidityDates.size()] );
     }
 
-    public void setTaxesValidityDates(TaxValidityDTO[] taxesValidityDates) {
-        this.taxesValidityDates = taxesValidityDates;
-    }
 
     public String getCreatedBy() {
         return createdBy;
