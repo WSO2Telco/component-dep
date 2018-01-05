@@ -28,6 +28,7 @@ public enum  WorkFlowVariables {
     OFFSET_FORMAT("XXX"),
     DESCRIPTION("description"),
     SELECTGED_TIER("selectedTier"),
+    SELECTED_TIER("adminSelectedTier"),
     COMPLETED_ON("completedOn"),
     COMPLETED_BY("completedByUser"),
     SLECTED_RATE("selectedRate"),
