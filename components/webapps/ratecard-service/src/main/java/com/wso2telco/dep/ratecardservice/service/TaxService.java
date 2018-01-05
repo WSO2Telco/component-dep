@@ -37,20 +37,20 @@ public class TaxService {
 
         taxes = taxDAO.getTaxes();
 
-        Map <Integer, TaxDTO> map = new HashMap<>();
+        Map <Integer, TaxDTO> taxesMap = new HashMap<>();
 
         if (taxes != null && !taxes.isEmpty()) {
 
             for (int i = 0; i < taxes.size(); i++) {
 
                 TaxDTO tax = taxes.get(i);
-                map.put(tax.getTaxId(),tax);
+                taxesMap.put(tax.getTaxId(),tax);
 
             }
-            List<TaxValidityDTO> listOfValidator =  taxDAO.getTaxValidityDates(new ArrayList<Integer>(map.keySet()));
+            List<TaxValidityDTO> listOfValidator =  taxDAO.getTaxValidityDates(new ArrayList<Integer>(taxesMap.keySet()));
             for (TaxValidityDTO dto: listOfValidator){
-                if(map.containsKey(dto.getTaxid())){
-                    map.get(dto.getTaxid()).addValidity(dto);
+                if(taxesMap.containsKey(dto.getTaxid())){
+                    taxesMap.get(dto.getTaxid()).addValidity(dto);
                 }
             }
             return taxes;
