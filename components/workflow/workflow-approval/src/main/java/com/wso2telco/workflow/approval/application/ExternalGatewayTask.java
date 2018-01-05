@@ -27,6 +27,7 @@ public class ExternalGatewayTask extends DefaultApplicationTaskExecutor {
         application.setApplicationID(delegatedArgsDTO.getApplicationId());
         application.setOperatorName(delegatedArgsDTO.getOperatorName());
         application.setStatus(delegatedArgsDTO.getOperatorAdminApprovalStatus());
+        application.setSelectedTier(delegatedArgsDTO.getAdminSelectedTier());
         api.applicationApprovalHub(application);
         api.applicationApprovalOperator(application);
 
