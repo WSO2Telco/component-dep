@@ -70,8 +70,10 @@
         <extensionElements>
           <activiti:formProperty id="hubAdminApproval" name="Approve / Reject" required="true" type="enum" variable="hubAdminApproval">
             <formProperty>
-              <activiti:value id="APPROVED" name="Approve"/>
-              <activiti:value id="REJECTED" name="Reject"/>
+              <formProperty>
+                <activiti:value id="APPROVED" name="Approve"/>
+                <activiti:value id="REJECTED" name="Reject"/>
+              </formProperty>
             </formProperty>
           </activiti:formProperty>
         </extensionElements>
@@ -109,8 +111,10 @@
         <extensionElements>
           <activiti:formProperty id="operatorAdminApproval" name="Approve / Reject" required="true" type="enum" variable="operatorAdminApproval">
             <formProperty>
-              <activiti:value id="APPROVED" name="Approve"/>
-              <activiti:value id="REJECTED" name="Reject"/>
+              <formProperty>
+                <activiti:value id="APPROVED" name="Approve"/>
+                <activiti:value id="REJECTED" name="Reject"/>
+              </formProperty>
             </formProperty>
           </activiti:formProperty>
         </extensionElements>
@@ -145,7 +149,7 @@
       <bpmndi:BPMNShape bpmnElement="startevent1" id="Yaoqiang-startevent1">
         <omgdc:Bounds height="32.0" width="32.0" x="91.0" y="608.0"/>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="18.8" width="34.0" x="90.0" y="648.6"/>
+          <omgdc:Bounds height="18.8" width="34.0" x="90.0" y="648.68"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="Yaoqiang-exclusivegateway1" isMarkerVisible="true">
@@ -163,7 +167,7 @@
       <bpmndi:BPMNShape bpmnElement="endevent3" id="Yaoqiang-endevent3">
         <omgdc:Bounds height="32.0" width="32.0" x="810.0" y="30.0"/>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="18.8" width="27.0" x="812.5" y="70.6"/>
+          <omgdc:Bounds height="18.8" width="27.0" x="812.5" y="70.68"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="exclusivegateway2" id="Yaoqiang-exclusivegateway2" isMarkerVisible="true">
@@ -211,19 +215,19 @@
       <bpmndi:BPMNShape bpmnElement="startevent3" id="Yaoqiang-startevent3">
         <omgdc:Bounds height="32.0" width="32.0" x="85.0" y="316.0"/>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="18.8" width="34.0" x="84.0" y="356.6"/>
+          <omgdc:Bounds height="18.8" width="34.0" x="84.0" y="356.68"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="endevent5" id="Yaoqiang-endevent5">
         <omgdc:Bounds height="32.0" width="32.0" x="85.0" y="69.0"/>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="18.8" width="27.0" x="87.5" y="109.6"/>
+          <omgdc:Bounds height="18.8" width="27.0" x="87.5" y="109.68"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="startevent2" id="Yaoqiang-startevent2">
         <omgdc:Bounds height="32.0" width="32.0" x="552.0" y="196.0"/>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="18.8" width="34.0" x="551.0" y="236.6"/>
+          <omgdc:Bounds height="18.8" width="34.0" x="551.0" y="236.68"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNShape bpmnElement="usertask1" id="Yaoqiang-usertask1">
@@ -247,7 +251,7 @@
       <bpmndi:BPMNShape bpmnElement="endevent4" id="Yaoqiang-endevent4">
         <omgdc:Bounds height="32.0" width="32.0" x="1062.0" y="196.0"/>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="18.8" width="27.0" x="1064.5" y="236.6"/>
+          <omgdc:Bounds height="18.8" width="27.0" x="1064.5" y="236.68"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNShape>
       <bpmndi:BPMNEdge bpmnElement="flow24" id="Yaoqiang-flow24">

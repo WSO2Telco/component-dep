@@ -32,7 +32,7 @@ public class SubscriptionProcessorFactory implements WorkFlow {
 			workflowProcessor = HubSubRequestBuilder.getInstace(deploymentType);
 			break;
 		case INTERNAL_GATEWAY:
-			workflowProcessor = IntGtwSubRequestBuilder.getInstace(deploymentType);
+			workflowProcessor = ExtGtwSubRequestBuilder.getInstace(deploymentType);
 			break;
 		default:
 			workflowProcessor = HubSubRequestBuilder.getInstace(deploymentType);

@@ -47,9 +47,11 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 
     protected abstract Callback buildApprovalRequest(final ApprovalRequest approvalRequest, final UserProfileDTO userProfile) throws BusinessException;
 
+    protected abstract String getCandidateGroup(String username);
+
     public Callback searchPending(TaskSearchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException {
         ProcessSearchRequest processRequest = buildSearchRequest(searchDTO, userProfile);
-        processRequest.setCandidateGroup(userProfile.getUserName());
+        processRequest.setCandidateGroup(getCandidateGroup(userProfile.getUserName()));
         TaskList taskList = executeRequest(processRequest);
         return buildAllTaskResponse(searchDTO, taskList, userProfile);
     }
