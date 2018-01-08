@@ -63,7 +63,7 @@ public class ExtGtwSubRequestBuilder extends AbstractSubRequestBuilder {
         variables.add(new RequestVariable().setName(WorkFlowVariables.STATUS.getValue()).setValue(request.getStatus()).setType(type));
         variables.add(new RequestVariable().setName(WorkFlowVariables.COMPLETED_ON.getValue()).setValue(new SimpleDateFormat(WorkFlowVariables.DATE_FORMAT.getValue(), Locale.ENGLISH).format(new Date())).setType(type));
         variables.add(new RequestVariable().setName(WorkFlowVariables.DESCRIPTION.getValue()).setValue(request.getDescription()).setType(type));
-        variables.add(new RequestVariable().setName(WorkFlowVariables.SELECTGED_TIER.getValue()).setValue(request.getSelectedTier()).setType(type));
+        variables.add(new RequestVariable().setName(WorkFlowVariables.SELECTED_TIER.getValue()).setValue(request.getSelectedTier()).setType(type));
         variables.add(new RequestVariable().setName(WorkFlowVariables.SLECTED_RATE.getValue()).setValue(request.getSelectedRate()).setType(type));
 
         TaskApprovalRequest approvalRequest = new TaskApprovalRequest();
@@ -71,6 +71,7 @@ public class ExtGtwSubRequestBuilder extends AbstractSubRequestBuilder {
         approvalRequest.setVariables(variables);
 
         return executeTaskApprovalRequest(approvalRequest, request);
+
     }
 
     @Override
