@@ -47,6 +47,7 @@ abstract class AbstractTaskExecutor implements SubscriptionTask {
         String apiProviderRole = arg0.getVariable(Constants.API_PROVIDER_ROLE) != null ? arg0.getVariable(Constants.API_PROVIDER_ROLE).toString() : null;
         String adminSelectedTier = arg0.getVariable(Constants.ADMIN_SELECTED_TIER) != null ? arg0.getVariable(Constants.ADMIN_SELECTED_TIER).toString() : null;
         String selectedRate = arg0.getVariable(Constants.SELECTED_RATE) != null ? arg0.getVariable(Constants.SELECTED_RATE).toString() : null;
+        String workflowRefId = arg0.getVariable(Constants.WORK_FLOW_REF)!=null?arg0.getVariable(Constants.WORK_FLOW_REF).toString():null;
 
         log.info("In OperatorDataUpdater, Operator admin approval status: " + operatorAdminApprovalStatus +
                 " Operator: " + operatorName);
@@ -85,6 +86,7 @@ abstract class AbstractTaskExecutor implements SubscriptionTask {
         delegatedArgsDTO.setApiProviderRole(apiProviderRole);
         delegatedArgsDTO.setAdminSelectedTier(adminSelectedTier);
         delegatedArgsDTO.setSelectedRate(selectedRate);
+        delegatedArgsDTO.setWorkflowRefId(workflowRefId);
 
         WorkflowApprovalAuditApi apiAudit = Feign.builder()
                 .encoder(new JacksonEncoder())
