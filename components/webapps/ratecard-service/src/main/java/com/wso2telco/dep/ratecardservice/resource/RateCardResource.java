@@ -1,9 +1,27 @@
+/*******************************************************************************
+ * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+ * <p>
+ * WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ * <p>
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * <p>
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.wso2telco.dep.ratecardservice.resource;
 
+import java.util.List;
 import javax.ws.rs.Consumes;
+import javax.ws.rs.GET;
 import javax.ws.rs.POST;
 import javax.ws.rs.Path;
 import javax.ws.rs.Produces;
+import javax.ws.rs.QueryParam;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.Response.Status;
@@ -22,7 +40,7 @@ public class RateCardResource {
 
 	private final Log log = LogFactory.getLog(RateCardResource.class);
 	private RateCardService rateCardService = new RateCardService();
-	
+
 	@POST
 	public Response addRateCard(RateCardDTO rateCard) {
 
@@ -40,29 +58,74 @@ public class RateCardResource {
 				responseCode = Response.Status.CREATED;
 			} else {
 
-				log.error(
-						"Error in RateCardResource addRateCard : rate card can not insert to database ");
+				log.error("Error in RateCardResource addRateCard : rate card can not insert to database ");
 				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 			}
-		} catch (Exception e) {
+		} catch (BusinessException e) {
 
-			ErrorDTO errorDTO = new ErrorDTO();
-			ErrorDTO.ServiceException serviceException = new ErrorDTO.ServiceException();
+			ErrorDTO error = new ErrorDTO();
+			ErrorDTO.RequestError requestError = new ErrorDTO.RequestError();
+			ErrorDTO.RequestError.ServiceException serviceException = new ErrorDTO.RequestError.ServiceException();
 
-			if (e instanceof BusinessException) {
+			serviceException.setMessageId(e.getErrorType().getCode());
+			serviceException.setText(e.getErrorType().getMessage());
+			requestError.setServiceException(serviceException);
+			error.setRequestError(requestError);
 
-				BusinessException be = (BusinessException) e;
-				serviceException.setMessageId(be.getErrorType().getCode());
-				serviceException.setText(be.getErrorType().getMessage());
-				errorDTO.setServiceException(serviceException);
+			if (e.getErrorType().getCode() == ServiceError.NO_RESOURCES.getCode()) {
+
+				responseCode = Response.Status.NOT_FOUND;
+			} else {
+
+				responseCode = Response.Status.BAD_REQUEST;
 			}
 
-			responseCode = Response.Status.BAD_REQUEST;
-			responseString = errorDTO;
+			responseString = error;
 		}
 
 		log.debug("RateCardResource addRateCard -> response code : " + responseCode);
 		log.debug("RateCardResource addRateCard -> response body : " + responseString);
+
+		return Response.status(responseCode).entity(responseString).build();
+	}
+
+	@GET
+	public Response getRateCard(@QueryParam("schema") String schema) {
+
+		List<RateCardDTO> rateCards = null;
+		Status responseCode = null;
+		Object responseString = null;
+
+		try {
+
+			rateCards = rateCardService.getRateCards(schema);
+
+			responseString = rateCards;
+			responseCode = Response.Status.OK;
+		} catch (BusinessException e) {
+
+			ErrorDTO error = new ErrorDTO();
+			ErrorDTO.RequestError requestError = new ErrorDTO.RequestError();
+			ErrorDTO.RequestError.ServiceException serviceException = new ErrorDTO.RequestError.ServiceException();
+
+			serviceException.setMessageId(e.getErrorType().getCode());
+			serviceException.setText(e.getErrorType().getMessage());
+			requestError.setServiceException(serviceException);
+			error.setRequestError(requestError);
+
+			if (e.getErrorType().getCode() == ServiceError.NO_RESOURCES.getCode()) {
+
+				responseCode = Response.Status.NOT_FOUND;
+			} else {
+
+				responseCode = Response.Status.BAD_REQUEST;
+			}
+
+			responseString = error;
+		}
+
+		log.debug("RateDefinitionResource getRateDefinitions -> response code : " + responseCode);
+		log.debug("RateDefinitionResource getRateDefinitions -> response body : " + responseString);
 
 		return Response.status(responseCode).entity(responseString).build();
 	}

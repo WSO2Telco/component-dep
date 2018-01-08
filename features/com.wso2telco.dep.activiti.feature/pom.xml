@@ -19,7 +19,7 @@
     <parent>
         <groupId>com.wso2telco.dep</groupId>
         <artifactId>component-dep-feature</artifactId>
-        <version>2.2.5</version>
+        <version>2.3.2-SNAPSHOT</version>
     </parent>
 
     <modelVersion>4.0.0</modelVersion>
@@ -182,9 +182,26 @@
                                     </fileset>
                                 </copy>
 
+                                <copy todir="${tempdir}/activiti-explorer/WEB-INF/classes" overwrite="true">
+                                    <fileset dir="${project.build.directory}/../src/main/resources/activiti-explorer">
+                                        <include name="activiti-login-context.xml" />
+                                    </fileset>
+                                </copy>
+
+                                <copy todir="${tempdir}/activiti-explorer/WEB-INF/lib" overwrite="true">
+                                    <fileset dir="${project.build.directory}/../../../components/workflow/workflow-user-manage/target">
+                                        <include name="workflow-user-manage-${project.version}.jar" />
+                                    </fileset>
+                                </copy>
+
                                 <copy todir="${tempdir}/activiti-rest/WEB-INF/lib" overwrite="true">
                                     <fileset dir="${project.build.directory}/../../../components/workflow/workflow-approval/target">
                                         <include name="workflow-approval-${project.version}.jar" />
+                                    </fileset>
+                                </copy>
+                                <copy todir="${tempdir}/activiti-rest/WEB-INF/lib" overwrite="true">
+                                    <fileset dir="${project.build.directory}/../../../components/workflow/workflow-user-manage/target">
+                                        <include name="workflow-user-manage-${project.version}.jar" />
                                     </fileset>
                                 </copy>
                                 <copy todir="${tempdir}/activiti-rest/WEB-INF/lib" overwrite="true">
@@ -268,8 +285,8 @@
             <plugin>
                 <groupId>org.wso2.maven</groupId>
                 <artifactId>carbon-p2-plugin</artifactId>
-                <version>1.5.3</version>
-                <executions>
+                <version>${carbon.p2.plugin.version}</version>
+		<executions>
                     <execution>
                         <id>p2-feature-generation</id>
                         <phase>package</phase>

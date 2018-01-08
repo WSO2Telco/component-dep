@@ -16,6 +16,7 @@
 package com.wso2telco.dep.verificationhandler.verifier;
 
 import com.google.gson.Gson;
+import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.dep.verificationhandler.model.payment.PaymentRequestWrap;
 import com.wso2telco.dep.verificationhandler.model.smsmessaging.SMSMessagingRequestWrap;
 import com.wso2telco.dep.verificationhandler.model.ussd.InboundUSSDMessageRequestWrap;
@@ -69,10 +70,19 @@ public class WhitelistHandler extends AbstractHandler implements ManagedLifecycl
 	 */
 	private List<String> subscriptionList;
 
+	static final String URL_MSISDN_NOT_MATCHED ="URL MSISDN not match Body ";
 
 	//Entry point to the White list Mediator
 	public boolean handleRequest(MessageContext messageContext) {
 
+		ValidationRegexDTO validationRegexDTO = null;
+
+		try {
+			validationRegexDTO = ValidationRegexClient.getValidationRegex();
+		} catch (BusinessException e) {
+			log.error("Error in retrieving validation Regex");
+			return false;
+		}
 
 		try {
 
@@ -124,8 +134,8 @@ public class WhitelistHandler extends AbstractHandler implements ManagedLifecycl
 						PaymentRequestWrap payment = gson.fromJson(jsonPayloadToString, PaymentRequestWrap.class);
 						msisdn = payment.getAmountTransaction().getEndUserId();
 
-						if (!filterMSISDN(msisdn).equals(filterMSISDN(urlMSISDN))) {
-							log.warn("URL MSISDN not match Body " + urlMSISDN + ":" + msisdn);
+						if (!FormatMsisdn.getInstance().splitMsisdn(msisdn).equalsIgnoreCase(FormatMsisdn.getInstance().splitMsisdn(urlMSISDN))) {
+							log.warn(URL_MSISDN_NOT_MATCHED + urlMSISDN + ":" + msisdn);
 						}
 					} catch (Exception e) {
 						e.printStackTrace();
@@ -182,8 +192,8 @@ public class WhitelistHandler extends AbstractHandler implements ManagedLifecycl
 					SMSMessagingRequestWrap sms = gson.fromJson(jsonPayloadToString, SMSMessagingRequestWrap.class);
 					msisdn = sms.getOutboundSMSMessageRequest().getAddress().get(0);
 
-					if (!filterMSISDN(msisdn).equals(filterMSISDN(urlMSISDN))) {
-						log.warn("URL MSISDN not match Body " + urlMSISDN + ":" + msisdn);
+					if (!FormatMsisdn.getInstance().splitMsisdn(msisdn).equalsIgnoreCase(FormatMsisdn.getInstance().splitMsisdn(urlMSISDN))) {
+						log.warn(URL_MSISDN_NOT_MATCHED + urlMSISDN + ":" + msisdn);
 					}
 
 					if (sms.getOutboundSMSMessageRequest().getAddress().size() > 0)
@@ -219,8 +229,8 @@ public class WhitelistHandler extends AbstractHandler implements ManagedLifecycl
                                 .class);
 						msisdn = ussd.getOutboundUSSDMessageRequest().getAddress();
 
-						if (!filterMSISDN(msisdn).equals(filterMSISDN(urlMSISDN))) {
-							log.warn("URL MSISDN not match Body " + urlMSISDN + ":" + msisdn);
+						if (!FormatMsisdn.getInstance().splitMsisdn(msisdn).equalsIgnoreCase(FormatMsisdn.getInstance().splitMsisdn(urlMSISDN))) {
+							log.warn(URL_MSISDN_NOT_MATCHED + urlMSISDN + ":" + msisdn);
 						}
 					} catch (Exception e) {
 						log.error("Whitelist mediation handling failed: " + e.getMessage(), e);
@@ -247,8 +257,8 @@ public class WhitelistHandler extends AbstractHandler implements ManagedLifecycl
                                 InboundUSSDMessageRequestWrap.class);
 						msisdn = ussd.getInboundUSSDMessageRequest().getAddress();
 
-						if (!filterMSISDN(msisdn).equals(filterMSISDN(urlMSISDN))) {
-							log.warn("URL MSISDN not match Body " + urlMSISDN + ":" + msisdn);
+						if (!FormatMsisdn.getInstance().splitMsisdn(msisdn).equalsIgnoreCase(FormatMsisdn.getInstance().splitMsisdn(urlMSISDN))) {
+							log.warn(URL_MSISDN_NOT_MATCHED + urlMSISDN + ":" + msisdn);
 						}
 					} catch (Exception e) {
 						log.error("Whitelist mediation handling failed: " + e.getMessage(), e);
@@ -290,7 +300,7 @@ outbound/(.+?).$";
 					Matcher matcher = pattern.matcher(resourceUrl);
 					matcher.find();
 					msisdn = (matcher.group(1));
-					msisdn = filterMSISDN(msisdn);
+					msisdn = FormatMsisdn.getInstance().splitMsisdn(msisdn);
 				} catch (Exception e) {
 					log.error("RegX: " + e.getMessage(), e);
 				}
@@ -300,7 +310,20 @@ outbound/(.+?).$";
 			}
 			log.info("MSISDN : " + msisdn);
 
-			String userMSISDN = ACRModule.getMSISDNFromACR(msisdn);
+			String msisdnRegex = validationRegexDTO.getValidationRegex();
+
+			Pattern pattern = Pattern.compile(msisdnRegex);
+			Matcher matcher = pattern.matcher(msisdn);
+
+			String formattedNumber = null;
+			if (matcher.matches()) {
+				formattedNumber = matcher.group(Integer.parseInt(validationRegexDTO.getDigitsGroup()));
+			} else {
+				log.error("Entered Msisdn does not match with given regex:" + validationRegexDTO.getValidationRegex());
+				handleValidationResponse(messageContext, validationRegexDTO.getValidationRegex());
+				return false;
+			}
+
 			String appID = messageContext.getProperty("api.ut.application.id").toString();
 
 			log.info("App ID : " + appID);
@@ -326,7 +349,7 @@ outbound/(.+?).$";
 				subscriptionIDstring = String.valueOf(subscriptionID);
 			}
 
-			if (!isWhiteListedNumber(userMSISDN, appID, subscriptionIDstring, apiID)) {
+			if (!isWhiteListedNumber(formattedNumber, appID, subscriptionIDstring, apiID)) {
 				log.info("Not a WhiteListed number");
 				hadleNonWhiteListedResponse(messageContext);
 			} else if (msisdns != null) {
@@ -334,7 +357,14 @@ outbound/(.+?).$";
 				//check all numbers are whitelisted
 				log.info("Multiple MSISDN");
 				for (String cur : msisdns) {
-					cur = ACRModule.getMSISDNFromACR(cur);
+					Matcher numbers = pattern.matcher(cur);
+					if (numbers.matches()) {
+						cur = numbers.group(Integer.parseInt(validationRegexDTO.getDigitsGroup()));
+					} else {
+						log.error("Entered Msisdn does not match with given regex:" + validationRegexDTO.getValidationRegex());
+						handleValidationResponse(messageContext, validationRegexDTO.getValidationRegex());
+						return false;
+					}
 					if (!isWhiteListedNumber(cur, appID, subscriptionIDstring, apiID)) {
 						log.info("Not a WhiteListed number");
 						hadleNonWhiteListedResponse(messageContext);
@@ -382,6 +412,30 @@ outbound/(.+?).$";
 		Utils.sendFault(messageContext, status);
 	}
 
+
+	/**
+	 * Handling Validation Response
+	 * @param messageContext
+	 * @param message
+	 */
+	private void handleValidationResponse(MessageContext messageContext, String message) {
+		messageContext.setProperty(SynapseConstants.ERROR_CODE, "500");
+		messageContext.setProperty(SynapseConstants.ERROR_MESSAGE, "Internal Server Error. Not a whiteListed Number");
+		int status = 500;
+
+		if (messageContext.isDoingPOX() || messageContext.isDoingGET()) {
+			Utils.setFaultPayload(messageContext, PayloadFactory.getInstance().getErrorPayload(status, message, "Validation Regex Does not matched"));
+
+		} else {
+			Utils.setSOAPFault(messageContext, "Client", "Authentication Failure", "Not a whiteListed Number");
+		}
+
+		messageContext.setProperty("error_message_type", "application/json");
+
+		Utils.sendFault(messageContext, status);
+	}
+
+
 	/**
 	 * Checks if is white listed number.
 	 *
@@ -406,8 +460,6 @@ outbound/(.+?).$";
 	 */
 	public static boolean isWhiteListedNumber(String MSISDN, String applicationId, String subscriptionId, String
             apiId) throws SQLException, NamingException {
-		MSISDN = filterMSISDN(MSISDN);
-		MSISDN = "tel3A+" + MSISDN;
 		WhiteListResult whiteListResult = DatabaseUtils.checkWhiteListed(MSISDN, applicationId, subscriptionId, apiId);
 		if (whiteListResult == null) {
 			log.info("Whitelist not : App " + applicationId + ", API " + apiId + ", Subscription : " + subscriptionId
@@ -435,7 +487,9 @@ outbound/(.+?).$";
 	 *
 	 * @param msisdn the msisdn
 	 * @return the string
+	 * @deprecated
 	 */
+	@Deprecated
 	private static String filterMSISDN(String msisdn) {
 		if (msisdn == null)
 			return null;

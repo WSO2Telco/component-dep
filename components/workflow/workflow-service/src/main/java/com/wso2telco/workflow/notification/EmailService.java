@@ -18,6 +18,7 @@ package com.wso2telco.workflow.notification;
 
 import com.wso2telco.workflow.utils.WorkflowProperties;
 import com.wso2telco.workflow.utils.Constants;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -26,6 +27,8 @@ import javax.mail.Session;
 import javax.mail.Transport;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeMessage;
+
+import java.util.Map;
 import java.util.Properties;
 
 
@@ -36,11 +39,12 @@ public class EmailService {
     public void sendEmail(final String emailAddress,final String subject,final String content) {
 
         new Thread() {
+            @Override
             public void run() {
-                Properties workflowProperties = WorkflowProperties.loadWorkflowProperties();
-                String emailHost = workflowProperties.getProperty(Constants.KEY_WORKFLOW_EMAIL_NOTIFICATION_HOST);
-                String fromEmailAddress = workflowProperties.getProperty(Constants.KEY_WORKFLOW_EMAIL_NOTIFICATION_FROM_ADDRESS);
-                String fromEmailPassword = workflowProperties.getProperty(Constants.KEY_WORKFLOW_EMAIL_NOTIFICATION_FROM_PASSWORD);
+                Map<String, String> workflowProperties = WorkflowProperties.loadWorkflowPropertiesFromXML();
+                String emailHost = workflowProperties.get(Constants.KEY_WORKFLOW_EMAIL_NOTIFICATION_HOST);
+                String fromEmailAddress = workflowProperties.get(Constants.KEY_WORKFLOW_EMAIL_NOTIFICATION_FROM_ADDRESS);
+                String fromEmailPassword = workflowProperties.get(Constants.KEY_WORKFLOW_EMAIL_NOTIFICATION_FROM_PASSWORD);
 
                 Properties props = System.getProperties();
                 props.put("mail.smtp.host", emailHost);
@@ -52,11 +56,11 @@ public class EmailService {
 
                 try {
                     Session session = Session.getDefaultInstance(props, null);
-                    InternetAddress to_address = new InternetAddress(emailAddress);
+                    InternetAddress toAddress = new InternetAddress(emailAddress);
 
                     MimeMessage message = new MimeMessage(session);
                     message.setFrom(new InternetAddress(fromEmailAddress));
-                    message.addRecipient(Message.RecipientType.TO, to_address);
+                    message.addRecipient(Message.RecipientType.TO, toAddress);
                     message.setSubject(subject);
                     message.setContent(content, "text/html; charset=UTF-8");
 

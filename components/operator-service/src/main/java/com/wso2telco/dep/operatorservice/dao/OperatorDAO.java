@@ -671,6 +671,7 @@ public class OperatorDAO {
         }
     }
 
+
     public Map<Integer, Map<String, Map<String,String>>> getOperatorApprovedSubscriptionsByApplicationId(int appId) throws SQLException, Exception {
 
     	log.debug("getOperatorApprovedSubscriptionsByApplicationId : OperatorDAO " + appId);
@@ -731,5 +732,84 @@ public class OperatorDAO {
 		}
 
 		return historyDetails;
+	}
+    
+    public Map<Integer, Map<String, List<String>>> getSubscribedOperatorsByApplicationId(int appId) throws Exception {
+		
+    	log.debug("getSubscribedOperatorsByApplicationId : OperatorDAO " + appId);
+		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		Map<Integer, Map<String, List<String>>> subscribedOperators = new HashMap<Integer, Map<String, List<String>>>();
+
+		try {
+
+			if (con == null) {
+
+				throw new Exception("Connection not found");
+			}
+
+			StringBuilder query = new StringBuilder("SELECT API_NAME, OPERATOR_LIST ");
+			query.append("FROM ");
+			query.append(OparatorTable.SUB_APPROVAL_OPERATORS.getTObject());					
+			query.append(" WHERE APP_ID = ?");
+
+			ps = con.prepareStatement(query.toString());
+
+			ps.setInt(1, appId);
+
+			log.debug("sql query in getSubscribedOperatorsByApplicationId : " + ps);
+
+			rs = ps.executeQuery();
+			
+			int i = 0;
+			
+			while (rs.next()) {
+
+				Map<String, List<String>> subDetails = new HashMap<String, List<String>>();
+				List<String> subData = new ArrayList<String>();
+				
+				String apiName = rs.getString("API_NAME");
+				String operatorNames = rs.getString("OPERATOR_LIST");
+				
+				if(operatorNames != null && operatorNames.trim().length() > 0){
+					
+					String [] operatorNamesArray = operatorNames.split(",");
+					
+					if(operatorNamesArray.length > 0){
+						
+						for (int j = 0; j < operatorNamesArray.length; j++) {
+							
+							String operatorName = operatorNamesArray[j];
+							subData.add(operatorName);
+						}
+					}else {
+						
+						subData.add(operatorNames);
+					}
+				} else {
+					
+					subData.add(null);
+				}
+				
+				subDetails.put(apiName, subData);
+				
+				subscribedOperators.put(i, subDetails);
+				i++;
+			}
+		} catch (SQLException e) {
+
+			log.error("database operation error in getSubscribedOperatorsByApplicationId : ", e);
+			throw e;
+		} catch (Exception e) {
+
+			log.error("error in getSubscribedOperatorsByApplicationId : ", e);
+			throw e;
+		} finally {
+
+			DbUtils.closeAllConnections(ps, con, rs);
+		}
+
+		return subscribedOperators;
 	}
 }

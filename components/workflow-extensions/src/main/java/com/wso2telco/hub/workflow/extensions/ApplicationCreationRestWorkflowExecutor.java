@@ -79,6 +79,8 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
     private static final String ADMIN_PASSWORD = "adminPassword";
     private static final String SERVICE_HOST = "service.host";
     private static final String SERVICE_URL = "serviceURL";
+    private static final String MANDATE_SERVICE_HOST = "mandate.service.host";
+    private static final String MANDATE_SERVICE_URL = "mandateServiceURL";
 
     private String serviceEndpoint;
     private String username;
@@ -124,8 +126,9 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
                 tiersStr.append(tierName + ',');
             }
 
-            Properties workflowProperties = WorkflowProperties.loadWorkflowProperties();
-            String serviceURLString = workflowProperties.getProperty(SERVICE_HOST);
+            Map<String, String> workflowProperties = WorkflowProperties.loadWorkflowPropertiesFromXML();
+            String serviceURLString = workflowProperties.get(SERVICE_HOST);
+            String mandateServiceURLString = workflowProperties.get(MANDATE_SERVICE_HOST);
 
             Variable deploymentType = new Variable(DEPLOYMENT_TYPE, getDeploymentType());
             Variable applicationName = new Variable(APPLICATION_NAME, application.getName());
@@ -139,6 +142,7 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
             Variable externalWorkflowReference = new Variable(EXTERNAL_REFERENCE, appWorkFlowDTO.getExternalWorkflowReference());
             Variable tiers = new Variable(TIERS_STR, tiersStr.toString());
             Variable serviceURL = new Variable(SERVICE_URL, serviceURLString);
+            Variable mandateServiceURL = new Variable(MANDATE_SERVICE_URL, mandateServiceURLString);
             Variable adminUserName = new Variable(ADMIN_USER, CarbonContext
                     .getThreadLocalCarbonContext()
                     .getUserRealm()
@@ -174,6 +178,7 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
             variables.add(serviceURL);
             variables.add(adminUserName);
             variables.add(adminPassword);
+            variables.add(mandateServiceURL);
             processInstanceRequest.setVariables(variables);
             CreateProcessInstanceResponse processInstanceResponse;
 

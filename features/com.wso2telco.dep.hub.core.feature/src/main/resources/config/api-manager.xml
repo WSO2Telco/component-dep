@@ -556,4 +556,6 @@
         <EnableQueryParamConditions>false</EnableQueryParamConditions>
     </ThrottlingConfigurations>
 
+    <!--Validation Regex service endpoint - deployed via common gw/hub capps-->
+    <ValidationRegexURL>{http://esb-host}:{esb-nio-port}/services/validationRegex</ValidationRegexURL>
 </APIManager>
