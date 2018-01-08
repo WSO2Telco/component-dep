@@ -29,6 +29,8 @@ class ExternalGatewayTask extends AbstractTaskExecutor{
         subscription.setApplicationID(args.getApplicationId());
         subscription.setOperatorName(args.getOperatorName());
         subscription.setStatus(args.getOperatorAdminApprovalStatus());
+        subscription.setWorkflowRefId(args.getWorkflowRefId());
+        subscription.setSelectedTier(args.getAdminSelectedTier());
         api.subscriptionApprovalHub(subscription);
         api.subscriptionApprovalOperator(subscription);
 
