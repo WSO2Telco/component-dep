@@ -108,7 +108,7 @@ public class WorkflowDAO {
         try {
             con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
             if (con == null) {
-                throw new Exception("Connection not found");
+                throw new SQLException("Connection not found");
             }
             StringBuilder queryString = new StringBuilder("UPDATE ");
             queryString.append("workflow_reference");
@@ -194,13 +194,13 @@ public class WorkflowDAO {
             StringBuilder query = new StringBuilder();
             query.append("SELECT applicationid ");
             query.append(" FROM operatorapps opapp ");
-            query.append(" WHERE 1=1 ");
+            query.append("WHERE 1=1 ");
           
             if(oparorName!=null && oparorName.trim().length()>0) {
             	query.append(" AND EXISTS (SELECT 1 FROM");
             	query.append(" operators op ");
             	query.append(" WHERE op.ID=opapp.operatorid ");
-            	query.append( " AND opapp.operatorname =? )");
+            	query.append( " AND op.operatorname =? )");
             }
             query.append(" AND opapp.applicationid in(");
             query.append(  cvsAppIds).append(" )");
@@ -208,7 +208,7 @@ public class WorkflowDAO {
             ps = conn.prepareStatement(query.toString());
             
             if(oparorName!=null && oparorName.trim().length()>0) {
-            	ps.setString(0,oparorName.trim());
+            	ps.setString(1, oparorName.trim().toUpperCase());
             }
             
             rs = ps.executeQuery();
@@ -248,7 +248,7 @@ public class WorkflowDAO {
             con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 
             if (con == null) {
-                throw new Exception("Connection not found");
+                throw new SQLException("Connection not found");
             }
 
             st = con.createStatement();

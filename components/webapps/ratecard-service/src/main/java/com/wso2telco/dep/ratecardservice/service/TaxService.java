@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
- * <p>
+ * <p/>
  * WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
+ * <p/>
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,52 +15,67 @@
  ******************************************************************************/
 package com.wso2telco.dep.ratecardservice.service;
 
-import java.util.Collections;
-import java.util.List;
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.dep.ratecardservice.dao.TaxDAO;
 import com.wso2telco.dep.ratecardservice.dao.model.TaxDTO;
+import com.wso2telco.dep.ratecardservice.dao.model.TaxValidityDTO;
+
+import java.util.*;
 
 public class TaxService {
 
-	TaxDAO taxDAO;
+    TaxDAO taxDAO;
 
-	public TaxService() {
+    public TaxService() {
 
-		taxDAO = new TaxDAO();
-	}
+        taxDAO = new TaxDAO();
+    }
 
-	public List<TaxDTO> getTaxes() throws BusinessException {
+    public List<TaxDTO> getTaxes() throws BusinessException {
 
-		List<TaxDTO> taxes = null;
+        List<TaxDTO> taxes = null;
 
-		taxes = taxDAO.getTaxes();
+        taxes = taxDAO.getTaxes();
 
-		if (taxes != null && !taxes.isEmpty()) {
+        Map <Integer, TaxDTO> taxesMap = new HashMap<>();
 
-			return taxes;
-		} else {
+        if (taxes != null && !taxes.isEmpty()) {
 
-			return Collections.emptyList();
-		}
-	}
+            for (int i = 0; i < taxes.size(); i++) {
 
-	public TaxDTO addTax(TaxDTO tax) throws BusinessException {
+                TaxDTO tax = taxes.get(i);
+                taxesMap.put(tax.getTaxId(),tax);
 
-		TaxDTO newTax = null;
+            }
+            List<TaxValidityDTO> listOfValidator =  taxDAO.getTaxValidityDates(new ArrayList<Integer>(taxesMap.keySet()));
+            for (TaxValidityDTO dto: listOfValidator){
+                if(taxesMap.containsKey(dto.getTaxid())){
+                    taxesMap.get(dto.getTaxid()).addValidity(dto);
+                }
+            }
+            return taxes;
+        } else {
 
-		newTax = taxDAO.addTax(tax);
-		newTax = getTax(newTax.getTaxId());
+            return Collections.emptyList();
+        }
+    }
 
-		return newTax;
-	}
+    public TaxDTO addTax(TaxDTO tax) throws BusinessException {
 
-	public TaxDTO getTax(int taxId) throws BusinessException {
+        TaxDTO newTax = null;
 
-		TaxDTO tax = null;
+        newTax = taxDAO.addTax(tax);
+        newTax = getTax(newTax.getTaxId());
 
-		tax = taxDAO.getTax(taxId);
+        return newTax;
+    }
 
-		return tax;
-	}
+    public TaxDTO getTax(int taxId) throws BusinessException {
+
+        TaxDTO tax = null;
+
+        tax = taxDAO.getTax(taxId);
+
+        return tax;
+    }
 }
