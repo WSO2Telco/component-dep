@@ -73,7 +73,13 @@
             <groupId>com.wso2telco.dep</groupId>
             <artifactId>workflow-core</artifactId>
         </dependency>
-    </dependencies>
+	<dependency>
+		<groupId>com.wso2telco.core</groupId>
+		<artifactId>user-profile</artifactId>
+	</dependency>
+    
+
+	</dependencies>
 
     <build>
         <plugins>
