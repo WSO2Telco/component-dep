@@ -57,23 +57,22 @@ public class IntGtwSubRequestBuilder extends AbstractSubRequestBuilder {
 
     @Override
     protected Callback buildApprovalRequest(ApprovalRequest request, UserProfileDTO userProfile) throws BusinessException {
-//        List<RequestVariable> variables = new ArrayList();
-//        final String type = "string";
-//
-//        variables.add(new RequestVariable().setName(WorkFlowVariables.OPERATOR_ADMIN_APPROVAL.getValue()).setValue(request.getStatus()).setType(type));
-//        variables.add(new RequestVariable().setName(WorkFlowVariables.COMPLETED_BY.getValue()).setValue(userProfile.getUserName()).setType(type));
-//        variables.add(new RequestVariable().setName(WorkFlowVariables.STATUS.getValue()).setValue(request.getStatus()).setType(type));
-//        variables.add(new RequestVariable().setName(WorkFlowVariables.COMPLETED_ON.getValue()).setValue(new SimpleDateFormat(WorkFlowVariables.DATE_FORMAT.getValue(), Locale.ENGLISH).format(new Date())).setType(type));
-//        variables.add(new RequestVariable().setName(WorkFlowVariables.DESCRIPTION.getValue()).setValue(request.getDescription()).setType(type));
-//        variables.add(new RequestVariable().setName(WorkFlowVariables.SELECTGED_TIER.getValue()).setValue(request.getSelectedTier()).setType(type));
+        List<RequestVariable> variables = new ArrayList();
+        final String type = "string";
+
+        variables.add(new RequestVariable().setName(WorkFlowVariables.API_PUBLISHER_APPROVAL.getValue()).setValue(request.getStatus()).setType(type));
+        variables.add(new RequestVariable().setName(WorkFlowVariables.COMPLETED_BY.getValue()).setValue(userProfile.getUserName()).setType(type));
+        variables.add(new RequestVariable().setName(WorkFlowVariables.STATUS.getValue()).setValue(request.getStatus()).setType(type));
+        variables.add(new RequestVariable().setName(WorkFlowVariables.COMPLETED_ON.getValue()).setValue(new SimpleDateFormat(WorkFlowVariables.DATE_FORMAT.getValue(), Locale.ENGLISH).format(new Date())).setType(type));
+        variables.add(new RequestVariable().setName(WorkFlowVariables.DESCRIPTION.getValue()).setValue(request.getDescription()).setType(type));
+        variables.add(new RequestVariable().setName(WorkFlowVariables.SELECTED_TIER.getValue()).setValue(request.getSelectedTier()).setType(type));
 //        variables.add(new RequestVariable().setName(WorkFlowVariables.SLECTED_RATE.getValue()).setValue(request.getSelectedRate()).setType(type));
-//
-//        TaskApprovalRequest approvalRequest = new TaskApprovalRequest();
-//        approvalRequest.setAction(WorkFlowVariables.ACTION.getValue());
-//        approvalRequest.setVariables(variables);
-//
-//        return executeTaskApprovalRequest(approvalRequest, request);
-        return null;
+
+        TaskApprovalRequest approvalRequest = new TaskApprovalRequest();
+        approvalRequest.setAction(WorkFlowVariables.ACTION.getValue());
+        approvalRequest.setVariables(variables);
+
+        return executeTaskApprovalRequest(approvalRequest, request);
     }
 
     @Override
@@ -82,8 +81,8 @@ public class IntGtwSubRequestBuilder extends AbstractSubRequestBuilder {
     }
 
     @Override
-    protected String getCandidateGroup(String username) {
-        return WorkFlowVariables.GATEWAY_ADMIN_ROLE.getValue();
+    protected String getCandidateGroup(UserProfileDTO userProfileDTO) {
+        return userProfileDTO.getDepartment();
     }
 
     @Override

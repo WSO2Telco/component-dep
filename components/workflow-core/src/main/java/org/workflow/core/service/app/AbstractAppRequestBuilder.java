@@ -22,8 +22,8 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
     private static final String GRAPH_LABEL = "APPLICATIONS";
 
     @Override
-    protected String getCandidateGroup(String username) {
-        return username;
+    protected String getCandidateGroup(UserProfileDTO userProfileDTO) {
+        return userProfileDTO.getUserName();
     }
 
     private AppSearchResponse generateResponse(final TaskList taskList) throws BusinessException {

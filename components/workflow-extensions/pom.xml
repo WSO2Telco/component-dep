@@ -66,6 +66,10 @@
             <artifactId>dbutils</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.wso2telco.core</groupId>
+            <artifactId>user-profile</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.wso2telco.dep</groupId>
             <artifactId>operator-service</artifactId>
         </dependency>

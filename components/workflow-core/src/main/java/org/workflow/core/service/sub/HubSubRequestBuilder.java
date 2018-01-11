@@ -78,8 +78,8 @@ class HubSubRequestBuilder extends AbstractSubRequestBuilder {
     }
 
     @Override
-    protected String getCandidateGroup(String username) {
-        return username;
+    protected String getCandidateGroup(UserProfileDTO userProfileDTO) {
+        return userProfileDTO.getUserName();
     }
 
     @Override

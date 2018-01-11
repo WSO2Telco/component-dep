@@ -66,6 +66,9 @@ import com.wso2telco.hub.workflow.extensions.rest.client.BusinessProcessApi;
 import com.wso2telco.hub.workflow.extensions.util.DeploymentTypes;
 import com.wso2telco.hub.workflow.extensions.util.WorkflowProperties;
 
+import com.wso2telco.core.userprofile.UserProfileRetriever;
+import com.wso2telco.core.userprofile.dto.UserProfileDTO;
+
 import feign.Feign;
 import feign.auth.BasicAuthRequestInterceptor;
 import feign.jackson.JacksonDecoder;
@@ -100,6 +103,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
     private static final String SERVICE_URL = "serviceURL";
     private static final String PUBLISHED_STATE = "PUBLISHED";
     private static final String API_PROVIDER_ROLE = "apiProviderRole";
+    private static final String DEPARTMENT = "department";
     private static final String INTERNAL_GATEWAY ="internal_gateway";
     private static final String PUBLISHER_ROLE_START_WITH ="workflow.Publisher.role.start.with";
     private static final String PUBLISHER_ROLE_END_WITH ="workflow.Publisher.role.end.with";
@@ -221,6 +225,8 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
 
             Variable operators = new Variable(OPERATORS, operatorApi.getOperators());
             Variable apiProviderRole= new Variable(API_PROVIDER_ROLE, null);
+            Variable department= new Variable(DEPARTMENT, null);
+
             if (operators == null) {
                 throw new WorkflowException("No operator(s) defined!!");
             }
@@ -244,7 +250,13 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
                         break;
                     }
                 }
-                apiProviderRole = new Variable(API_PROVIDER_ROLE, publisherRole);
+
+//                apiProviderRole = new Variable(API_PROVIDER_ROLE, publisherRole);
+
+                UserProfileRetriever userProfileRetriever = new UserProfileRetriever();
+                UserProfileDTO userProfile = userProfileRetriever.getUserProfile(publisherName);
+                department = new Variable(DEPARTMENT, userProfile.getDepartment());
+                apiProviderRole = new Variable(API_PROVIDER_ROLE, userProfile.getDepartment());
             }
 
             List<Variable> variables = new ArrayList<Variable>();
@@ -268,6 +280,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
             variables.add(adminUserName);
             variables.add(adminPassword);
             variables.add(apiProviderRole);
+            variables.add(department);
 
             processInstanceRequest.setVariables(variables);
 

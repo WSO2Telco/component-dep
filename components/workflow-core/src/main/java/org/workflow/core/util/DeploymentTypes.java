@@ -23,7 +23,7 @@ import java.util.Map;
 public enum DeploymentTypes {
 	HUB("hub", "application_creation_approval_process", "subscription_approval_process"), 
 	EXTERNAL_GATEWAY("external_gateway", "application_creation_approval_process","subscription_approval_process"), 
-	INTERNAL_GATEWAY("internal_gateway","application_creation_approval_process", "subscription_approval_process");
+	INTERNAL_GATEWAY("internal_gateway_type2","application_creation_approval_process", "subscription_approval_process");
 
 	private String deploymentType;
 	private String appProcess;
