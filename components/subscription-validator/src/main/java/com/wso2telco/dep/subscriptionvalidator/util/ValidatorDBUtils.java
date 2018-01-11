@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
- *  
+ *
  *  WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,27 +15,30 @@
  ******************************************************************************/
 package com.wso2telco.dep.subscriptionvalidator.util;
 
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.apimgt.api.APIManagementException;
 import org.wso2.carbon.apimgt.api.model.APIIdentifier;
 import org.wso2.carbon.apimgt.impl.dao.ApiMgtDAO;
 import org.wso2.carbon.apimgt.impl.utils.APIMgtDBUtil;
+
 import com.wso2telco.core.dbutils.DbUtils;
 import com.wso2telco.core.dbutils.util.DataSourceNames;
 import com.wso2telco.dep.subscriptionvalidator.exceptions.ValidatorException;
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
 
 
-// TODO: Auto-generated Javadoc
 /**
  * The Class ValidatorDBUtils.
  */
 public class ValidatorDBUtils {
-    
+
     /** The Constant log. */
     private static final Log log = LogFactory.getLog(ValidatorDBUtils.class);
 
@@ -101,6 +104,31 @@ public class ValidatorDBUtils {
         } catch (Exception e) {
             handleException("Error occured while getting Validator Class for App: " + applicationId + " API: " +
                     apiId + " from the database", e);
+        } finally {
+            closeAllConnections(ps, conn, results);
+        }
+        return validatorClass;
+    }
+
+    public static List<ValidatorClassDTO> getValidatorClassForSMSSubscription() throws ValidatorException {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet results = null;
+        String sql = "SELECT v.class as class,s.application_id as app,s.api_id as api FROM validator v, subscription_validator s WHERE v.id=s.validator_id";
+        List<ValidatorClassDTO> validatorClass = new ArrayList<ValidatorClassDTO>();
+        try {
+            conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+            ps = conn.prepareStatement(sql);
+            results = ps.executeQuery();
+            while (results.next()) {
+            	ValidatorClassDTO classDTO=new ValidatorClassDTO();
+            	classDTO.setClassName(results.getString("class"));
+            	classDTO.setApp(results.getInt("app"));
+            	classDTO.setApi(results.getInt("api"));
+                validatorClass.add(classDTO);
+            }
+        } catch (Exception e) {
+            handleException("Error occured while getting Validator Class  from the database", e);
         } finally {
             closeAllConnections(ps, conn, results);
         }

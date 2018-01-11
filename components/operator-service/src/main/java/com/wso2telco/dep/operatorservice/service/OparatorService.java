@@ -52,7 +52,7 @@ public class OparatorService {
 
 	/**
 	 * load all operators according to OperatorSearchDTO filters
-	 * 
+	 *
 	 * @param searchDTO
 	 * @return
 	 * @throws Exception
@@ -76,6 +76,20 @@ public class OparatorService {
 			return operatorList;
 		} else {
 
+			return Collections.emptyList();
+		}
+	}
+
+	public List<OperatorApplicationDTO> loadActiveApplicationOperators()throws ApplicationException, BusinessException {
+		List<OperatorApplicationDTO> operators = null;
+		try {
+			operators = dao.loadActiveApplicationOperators();
+		} catch (Exception e) {
+			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
+		}
+		if (operators != null) {
+			return operators;
+		} else {
 			return Collections.emptyList();
 		}
 	}
@@ -210,7 +224,7 @@ public class OparatorService {
 
 		if (operatorId <= 0) {
 
-			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID); 
+			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
 		}
 
 		if (refreshToken == null || refreshToken.trim().length() <= 0) {
