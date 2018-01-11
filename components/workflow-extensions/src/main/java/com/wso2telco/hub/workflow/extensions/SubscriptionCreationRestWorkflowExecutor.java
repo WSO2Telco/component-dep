@@ -24,7 +24,6 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.workflow.core.WorkflowErrorDecoder;
 import org.workflow.core.execption.WorkflowExtensionException;
 import org.wso2.carbon.apimgt.api.APIConsumer;
 import org.wso2.carbon.apimgt.api.APIManagementException;
@@ -53,6 +52,9 @@ import org.wso2.carbon.user.api.UserStoreManager;
 import org.wso2.carbon.user.core.UserRealm;
 import org.wso2.carbon.user.core.service.RealmService;
 
+import com.wso2telco.core.dbutils.exception.BusinessException;
+import com.wso2telco.core.userprofile.UserProfileRetriever;
+import com.wso2telco.core.userprofile.dto.UserProfileDTO;
 import com.wso2telco.dep.operatorservice.dao.WorkflowDAO;
 import com.wso2telco.hub.workflow.extensions.beans.CreateProcessInstanceRequest;
 import com.wso2telco.hub.workflow.extensions.beans.CreateProcessInstanceResponse;
@@ -107,7 +109,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
     private static final String INTERNAL_GATEWAY ="internal_gateway";
     private static final String PUBLISHER_ROLE_START_WITH ="workflow.Publisher.role.start.with";
     private static final String PUBLISHER_ROLE_END_WITH ="workflow.Publisher.role.end.with";
-
+    private static final String API_PUB_DEPARTMENT ="department";
     private String serviceEndpoint;
     private String username;
     private String password;
@@ -258,8 +260,21 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
                 department = new Variable(DEPARTMENT, userProfile.getDepartment());
                 apiProviderRole = new Variable(API_PROVIDER_ROLE, userProfile.getDepartment());
             }
-
+            
             List<Variable> variables = new ArrayList<Variable>();
+            
+            /**
+             * define department if exists
+             */
+            try {
+				UserProfileDTO profile= UserProfileRetriever.getInstance().getUserProfile(subscriptionWorkFlowDTO.getApiProvider());
+				  Variable api_pub_Department = new Variable(API_PUB_DEPARTMENT, serviceURLString);
+				  variables.add(api_pub_Department);
+			} catch (BusinessException e1) {
+				log.error(" error occurd during subscrioption creation",e1);
+				throw new WorkflowException("",e1);
+			}
+        
 
             variables.add(subscribedApiName);
             variables.add(subscribedApiId);
