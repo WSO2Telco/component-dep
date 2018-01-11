@@ -10,11 +10,14 @@ import org.workflow.core.activity.RestClientFactory;
 import org.workflow.core.activity.TaskApprovalRequest;
 import org.workflow.core.execption.WorkflowExtensionException;
 import org.workflow.core.model.RequestVariable;
+import org.workflow.core.model.SubSearchResponse;
+import org.workflow.core.model.TaskList;
 import org.workflow.core.model.TaskSearchDTO;
 import org.workflow.core.util.DeploymentTypes;
 import org.workflow.core.util.Messages;
 import org.workflow.core.util.WorkFlowVariables;
 
+import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
@@ -66,22 +69,36 @@ class HubSubRequestBuilder extends AbstractSubRequestBuilder {
         approvalRequest.setAction(WorkFlowVariables.ACTION.getValue());
         approvalRequest.setVariables(variables);
 
-        try {
-            activityClient.approveTask(request.getTaskId(), approvalRequest);
-            success = true;
-            message = Messages.SUBSCRIPTION_APPROVAL_SUCCESS.getValue();
-
-        } catch (WorkflowExtensionException e) {
-            log.error("", e);
-            success = false;
-            message = Messages.SUBSCRIPTION_APPROVAL_FAILED.getValue();
-        }
-
-        return new Callback().setPayload(null).setSuccess(success).setMessage(message);
+        return executeTaskApprovalRequest(approvalRequest, request);
     }
 
     @Override
     public Callback getHistoryData(TaskSearchDTO searchDTO, UserProfileDTO userProfile) throws BusinessException {
         return null;
+    }
+
+    @Override
+    protected String getCandidateGroup(UserProfileDTO userProfileDTO) {
+        return userProfileDTO.getUserName();
+    }
+
+    @Override
+    protected Callback buildAllTaskResponse(TaskSearchDTO searchDTO, TaskList taskList, UserProfileDTO userProfile) throws BusinessException {
+
+        TaskList allTaskList = taskList;
+        if (!isAdmin(userProfile)) {
+            allTaskList = filterOperatorApprovedApps(taskList, userProfile.getUserName());
+        }
+        allTaskList = getOperationRates(allTaskList, userProfile);
+        SubSearchResponse payload;
+        Callback returnCall;
+        try {
+            payload = generateResponse(allTaskList);
+            returnCall = new Callback().setPayload(payload).setSuccess(true).setMessage(Messages.ALL_SUBSCRIPTION_LOAD_SUCCESS.getValue());
+        } catch (ParseException e) {
+            returnCall = new Callback().setPayload(null).setSuccess(false).setMessage(Messages.ALL_SUBSCRIPTION_LOAD_FAIL.getValue());
+        }
+
+        return returnCall;
     }
 }

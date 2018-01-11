@@ -15,12 +15,10 @@
  */
 package com.wso2telco.dep.operatorservice.dao;
 
-import org.apache.commons.lang.StringUtils;
 import com.wso2telco.core.dbutils.DbUtils;
 import com.wso2telco.core.dbutils.util.DataSourceNames;
-import com.wso2telco.dep.operatorservice.model.Operator;
 import com.wso2telco.dep.operatorservice.model.WorkflowReferenceDTO;
-import com.wso2telco.dep.operatorservice.util.OparatorTable;
+import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 

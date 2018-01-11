@@ -7,6 +7,7 @@ import com.wso2telco.core.userprofile.dto.UserProfileDTO;
 import com.wso2telco.dep.operatorservice.service.OparatorService;
 import org.workflow.core.activity.ActivityRestClient;
 import org.workflow.core.activity.RestClientFactory;
+import org.workflow.core.activity.TaskApprovalRequest;
 import org.workflow.core.execption.WorkflowExtensionException;
 import org.workflow.core.model.*;
 import org.workflow.core.model.rate.RateDefinition;
@@ -23,7 +24,7 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
 
     private static final String GRAPH_LABEL = "SUBSCRIPTIONS";
 
-    private SubSearchResponse generateResponse(final TaskList taskList) throws ParseException {
+    protected SubSearchResponse generateResponse(final TaskList taskList) throws ParseException {
 
         TaskMetadata metadata = new TaskMetadata(taskList);
         List<SubscriptionTask> subscriptionTasks = new ArrayList();
@@ -115,27 +116,7 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
         return returnCall;
     }
 
-    @Override
-    protected Callback buildAllTaskResponse(TaskSearchDTO searchDTO, TaskList taskList, UserProfileDTO userProfile) throws BusinessException {
-
-        TaskList allTaskList = taskList;
-        if (!isAdmin(userProfile)) {
-            allTaskList = filterOperatorApprovedApps(taskList, userProfile.getUserName());
-        }
-        allTaskList = getOperationRates(allTaskList, userProfile);
-        SubSearchResponse payload;
-        Callback returnCall;
-        try {
-            payload = generateResponse(allTaskList);
-            returnCall = new Callback().setPayload(payload).setSuccess(true).setMessage(Messages.ALL_SUBSCRIPTION_LOAD_SUCCESS.getValue());
-        } catch (ParseException e) {
-            returnCall = new Callback().setPayload(null).setSuccess(false).setMessage(Messages.ALL_SUBSCRIPTION_LOAD_FAIL.getValue());
-        }
-
-        return returnCall;
-    }
-
-    public TaskList filterOperatorApprovedApps(TaskList taskList, String operatorName) {
+    protected TaskList filterOperatorApprovedApps(TaskList taskList, String operatorName) {
         String appIds = "";
         List<String> operatorApprovedApps = null;
 
@@ -255,6 +236,19 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
     @Override
     public HistoryResponse getApprovalHistory(String subscriber, String applicationName, int applicationId, String operator, int offset, int count) throws BusinessException {
         return null;
+    }
+
+    protected Callback executeTaskApprovalRequest(TaskApprovalRequest approvalRequest, ApprovalRequest request) throws BusinessException {
+        ActivityRestClient activityClient = RestClientFactory.getInstance().getClient(getProcessDefinitionKey());
+        Callback returnCall;
+        try {
+            activityClient.approveTask(request.getTaskId(), approvalRequest);
+            returnCall = new Callback().setPayload(null).setSuccess(true).setMessage(Messages.SUBSCRIPTION_APPROVAL_SUCCESS.getValue());
+        } catch (WorkflowExtensionException e) {
+            log.error("", e);
+            returnCall = new Callback().setPayload(null).setSuccess(false).setMessage(Messages.SUBSCRIPTION_APPROVAL_FAILED.getValue());
+        }
+        return returnCall;
     }
 
     @Override
