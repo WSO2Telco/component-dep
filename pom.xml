@@ -7,8 +7,7 @@
 	under the License is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES 
 	OR CONDITIONS OF ANY KIND, either express or implied. See the License for 
 	the specific language governing permissions and limitations under the License. -->
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
 
 	<modelVersion>4.0.0</modelVersion>
 
@@ -21,7 +20,7 @@
 	<groupId>com.wso2telco.dep</groupId>
 	<artifactId>component-dep</artifactId>
 	<packaging>pom</packaging>
-	<version>2.3.2-SNAPSHOT</version>
+	<version>2.4.0</version>
 	<name>WSO2Telco -Digital Enable Platform Component</name>
 	<description>WSO2Telco DEP Aggregate Pom</description>
 	<url>http://wso2telco.com</url>
@@ -157,7 +156,7 @@
 		<url>https://github.com/WSO2Telco/component-dep.git</url>
 		<developerConnection>scm:git:https://github.com/WSO2Telco/component-dep.git</developerConnection>
 		<connection>scm:git:https://github.com/WSO2Telco/component-dep.git</connection>
-		<tag>33</tag>
+		<tag>v2.4.0</tag>
 	</scm>
 
 	<repositories>
@@ -257,8 +256,7 @@
 						<version>0.12</version>
 						<configuration>
 							<licenses>
-								<license
-									implementation="org.apache.rat.analysis.license.SimplePatternBasedLicense">
+								<license implementation="org.apache.rat.analysis.license.SimplePatternBasedLicense">
 									<licenseFamilyCategory>WSO2Telco</licenseFamilyCategory>
 									<licenseFamilyName>WSO2Telco License 1.0</licenseFamilyName>
 									<notes />
@@ -268,15 +266,13 @@
 										</pattern>
 									</patterns>
 								</license>
-								<!-- <license implementation="org.apache.rat.analysis.license.ApacheSoftwareLicense20" 
-									/> -->
+								<!-- <license implementation="org.apache.rat.analysis.license.ApacheSoftwareLicense20" /> -->
 							</licenses>
 							<licenseFamilies>
 								<licenseFamily implementation="org.apache.rat.license.SimpleLicenseFamily">
 									<familyName>WSO2Telco License 1.0</familyName>
 								</licenseFamily>
-								<!-- <licenseFamily implementation="org.apache.rat.license.Apache20LicenseFamily" 
-									/> -->
+								<!-- <licenseFamily implementation="org.apache.rat.license.Apache20LicenseFamily" /> -->
 							</licenseFamilies>
 							<excludes>
 								<exclude>**/target/**/*</exclude>
