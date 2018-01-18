@@ -6,16 +6,16 @@ import com.wso2telco.core.dbutils.util.Callback;
 import com.wso2telco.core.userprofile.dto.UserProfileDTO;
 import org.apache.commons.logging.LogFactory;
 import org.workflow.core.activity.TaskApprovalRequest;
+import org.workflow.core.model.HistoryResponse;
 import org.workflow.core.model.RequestVariable;
 import org.workflow.core.model.TaskSearchDTO;
 import org.workflow.core.util.DeploymentTypes;
+import org.workflow.core.util.HistoryVariable;
+import org.workflow.core.util.Messages;
 import org.workflow.core.util.WorkFlowVariables;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Copyright (c) 2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
@@ -53,7 +53,7 @@ public class IntGtwAppRequestBuilder extends AbstractAppRequestBuilder {
         final String type = "string";
 
         variables
-                .add(new RequestVariable().setName(WorkFlowVariables.API_PUBLISHER_APPROVAL.getValue()).setValue(request.getStatus()).setType(type));
+                .add(new RequestVariable().setName(WorkFlowVariables.INT_GTW_ADMIN_APPROVAL.getValue()).setValue(request.getStatus()).setType(type));
         variables.add(new RequestVariable().setName(WorkFlowVariables.COMPLETED_BY.getValue()).setValue(userProfile.getUserName()).setType(type));
         variables.add(new RequestVariable().setName(WorkFlowVariables.STATUS.getValue()).setValue(request.getStatus()).setType(type));
         variables.add(new RequestVariable().setName(WorkFlowVariables.COMPLETED_ON.getValue())
@@ -61,6 +61,8 @@ public class IntGtwAppRequestBuilder extends AbstractAppRequestBuilder {
                 .setType(type));
         variables
                 .add(new RequestVariable().setName(WorkFlowVariables.DESCRIPTION.getValue()).setValue(request.getDescription()).setType(type));
+        variables.add(
+                new RequestVariable().setName(WorkFlowVariables.SELECTED_TIER.getValue()).setValue(request.getSelectedTier()).setType(type));
         variables.add(
                 new RequestVariable().setName(WorkFlowVariables.SELECTGED_TIER.getValue()).setValue(request.getSelectedTier()).setType(type));
         variables.add(new RequestVariable().setName(WorkFlowVariables.CREDIT_PLAN.getValue()).setValue(request.getCreditPlan()).setType(type));
@@ -71,10 +73,5 @@ public class IntGtwAppRequestBuilder extends AbstractAppRequestBuilder {
         approvalRequest.setVariables(variables);
 
         return super.executeTaskApprovalRequest(approvalRequest, request);
-    }
-
-    @Override
-    public Callback getHistoryData(TaskSearchDTO searchDTO, UserProfileDTO userProfile) throws BusinessException {
-        return null;
     }
 }

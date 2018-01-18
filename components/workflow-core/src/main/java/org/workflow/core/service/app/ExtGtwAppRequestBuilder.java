@@ -74,9 +74,4 @@ public class ExtGtwAppRequestBuilder extends AbstractAppRequestBuilder {
 
         return super.executeTaskApprovalRequest(approvalRequest, request);
     }
-
-    @Override
-    public Callback getHistoryData(TaskSearchDTO searchDTO, UserProfileDTO userProfile) throws BusinessException {
-        return null;
-    }
 }

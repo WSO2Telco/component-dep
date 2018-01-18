@@ -8,7 +8,6 @@ import org.apache.commons.logging.LogFactory;
 import org.workflow.core.activity.ActivityRestClient;
 import org.workflow.core.activity.RestClientFactory;
 import org.workflow.core.activity.TaskApprovalRequest;
-import org.workflow.core.execption.WorkflowExtensionException;
 import org.workflow.core.model.RequestVariable;
 import org.workflow.core.model.SubSearchResponse;
 import org.workflow.core.model.TaskList;

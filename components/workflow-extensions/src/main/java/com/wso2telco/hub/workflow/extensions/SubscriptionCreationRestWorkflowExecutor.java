@@ -100,6 +100,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
         return WorkflowConstants.WF_TYPE_AM_SUBSCRIPTION_CREATION;
     }
 
+    @Override
     public WorkflowResponse execute(WorkflowDTO workflowDTO) throws WorkflowException {
 
         OperatorApi operatorApi = new OperatorImpl();
@@ -226,7 +227,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
                 RealmService realmService = ServiceReferenceHolder.getInstance().getRealmService();
                 UserRealm realm = realmService.getBootstrapRealm();
                 UserStoreManager manager = realm.getUserStoreManager();
-                String userList[] = manager.getRoleListOfUser(publisherName);
+                String[] userList = manager.getRoleListOfUser(publisherName);
                 String publisherRole = null;
                 for (String roleName : userList) {
                     if (roleName.startsWith(startsWith) && roleName.endsWith(endsWith)) {
@@ -236,17 +237,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
                 }
 
                 apiProviderRole = new Variable(API_PROVIDER_ROLE, publisherRole);
-
-                /**
-                 * define department if exists
-                 */
-                try {
-                    UserProfileDTO userProfile = new UserProfileRetriever().getUserProfile(publisherName);
-                    apiPubDepartment = new Variable(API_PUB_DEPARTMENT, userProfile.getDepartment());
-                } catch (BusinessException e1) {
-                    log.error(" error occurred during subscription creation", e1);
-                    throw new WorkflowException("", e1);
-                }
+                apiPubDepartment = new Variable(API_PUB_DEPARTMENT, getDepartment(publisherName));
             }
 
             List<Variable> variables = new ArrayList<Variable>();
@@ -300,6 +291,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
         return new GeneralWorkflowResponse();
     }
 
+    @Override
     public WorkflowResponse complete(WorkflowDTO workFlowDTO) throws WorkflowException {
         workFlowDTO.setUpdatedTime(System.currentTimeMillis());
         super.complete(workFlowDTO);
@@ -333,6 +325,27 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
         return null;
     }
 
+
+    private String getDepartment(String publisherName){
+
+        String department = null;
+        UserProfileDTO userProfile = null;
+
+        /**
+         * define department if exists
+         */
+        try {
+            userProfile = new UserProfileRetriever().getUserProfile(publisherName);
+            department = userProfile.getDepartment();
+        } catch (BusinessException e) {
+            log.error("Error loading publisher department " , e);
+        }
+
+        return department;
+
+    }
+
+    @Override
     public void cleanUpPendingTask(String workflowExtRef) throws WorkflowException {
         BusinessProcessApi api = Feign.builder().encoder(new JacksonEncoder()).decoder(new JacksonDecoder())
                 //.errorDecoder(new WorkflowErrorDecoder())
