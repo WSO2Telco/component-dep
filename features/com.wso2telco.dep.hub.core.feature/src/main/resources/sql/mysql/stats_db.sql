@@ -360,18 +360,22 @@ CREATE TABLE IF NOT EXISTS subscription_rates (
 */
 CREATE TABLE IF NOT EXISTS `blacklistmsisdn` (
  `Index` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
+ `PREFIX` varchar(45) NOT NULL,
  `MSISDN` varchar(45) NOT NULL,
  `API_ID` varchar(45) NOT NULL,
  `API_NAME` varchar(45) NOT NULL,
  `USER_ID` varchar(45) NOT NULL,
+ `VALIDATION_REGEX` varchar(300),
   UNIQUE KEY `UNQ_blacklistmsisdn` (`API_NAME`, `MSISDN`));
 
 CREATE TABLE IF NOT EXISTS`subscription_WhiteList` (
   `index` int(11) NOT NULL AUTO_INCREMENT,
   `subscriptionID` varchar(45) NOT NULL,
+  `prefix` varchar(45) NOT NULL,
   `msisdn` varchar(45) NOT NULL ,
   `api_id` varchar(45) NOT NULL,
   `application_id` varchar(45) NOT NULL,
+  `validation_regex` varchar(300),
   PRIMARY KEY (`index`),
   UNIQUE white_label_unique_con(subscriptionID, msisdn, api_id, application_id)
 );

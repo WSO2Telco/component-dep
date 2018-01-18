@@ -28,20 +28,10 @@ import com.wso2telco.dep.operatorservice.model.WhiteListDTO;
 import com.wso2telco.dep.operatorservice.service.BlackListWhiteListService;
 import com.wso2telco.dep.operatorservice.service.OparatorService;
 import com.wso2telco.dep.operatorservice.util.APIError;
-import com.wso2telco.services.bw.entity.BlackList;
-import com.wso2telco.services.bw.entity.BlackListBulk;
-import com.wso2telco.services.bw.entity.Id;
-import com.wso2telco.services.bw.entity.RemoveRequest;
-import com.wso2telco.services.bw.entity.WhiteList;
-import com.wso2telco.services.bw.entity.WhiteListBulk;
+import com.wso2telco.services.bw.entity.*;
 import org.apache.log4j.Logger;
 
-import javax.ws.rs.Consumes;
-import javax.ws.rs.GET;
-import javax.ws.rs.POST;
-import javax.ws.rs.Path;
-import javax.ws.rs.PathParam;
-import javax.ws.rs.Produces;
+import javax.ws.rs.*;
 import javax.ws.rs.core.Context;
 import javax.ws.rs.core.Response;
 import javax.ws.rs.core.UriInfo;
@@ -50,7 +40,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
-import java.util.StringTokenizer;
 
 @Path("/queries")
 public class Queries {
@@ -75,6 +64,7 @@ public class Queries {
 	 * @return an HTTP response with content of the created resource
 	 * @throws Exception
 	 */
+	@Deprecated
 	@POST
 	@Path("/Blacklist/{MSISDN}")
 	@Consumes("application/json")
@@ -118,10 +108,10 @@ public class Queries {
 
 				return Response.status(Response.Status.OK).entity(jsonreturn.toString()).build();
 			} catch (BusinessException msisdnEx) {
-				return Response.status(Response.Status.BAD_REQUEST).entity(msisdnEx.getErrorType()).build();
+				return Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson(msisdnEx.getMessage())).build();
 			}
 		} else {
-			return Response.status(Response.Status.BAD_REQUEST).entity(errorMSG.toString()).build();
+			return Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson(errorMSG.toString())).build();
 		}
 
 	}
@@ -138,22 +128,9 @@ public class Queries {
 
 		BlackListBulk blackListReq = gson.fromJson(jsonBody, BlackListBulk.class);
 
-		int apiId = Integer.parseInt(blackListReq.getAPIID());
+		int apiId = Integer.parseInt(blackListReq.getApiID());
 
-/*		String apiName = blackListReq.getAPIName();
-		String[] apiNameArray = apiName.split("[:]");
-
-		if(apiNameArray.length != 3){
-			return Response.status(Response.Status.BAD_REQUEST).entity(APIError.INVALID_API_NAME).build();
-		}*/
-/*
-		int apiId = blackListWhiteListService.getAPIId(apiNameArray[0], apiNameArray[1],
-				apiNameArray[2]);*/
-
-
-
-
-		if(apiId == -1){
+		if (apiId == -1) {
 			return Response.status(Response.Status.BAD_REQUEST).entity(APIError.INVALID_API_NAME).build();
 		}
 
@@ -177,24 +154,29 @@ public class Queries {
 
 		//gson = new Gson();
 		String[] apiInfoArray = blackListWhiteListService.getAPIInfo(apiId);
-		if (userID != null && msisdnList != null && apiInfoArray != null && apiInfoArray.length == 3) {
+		if (userID != null && msisdnList != null && apiInfoArray.length != 0 && apiInfoArray.length == 3) {
 			try {
 				BlackListDTO blackListDTO = new BlackListDTO();
 				blackListDTO.setApiID(String.valueOf(apiId));
-				blackListDTO.setApiName(apiInfoArray[0]+":"+ apiInfoArray[1] + ":" + apiInfoArray[2]);
+				blackListDTO.setApiName(apiInfoArray[0] + ":" + apiInfoArray[1] + ":" + apiInfoArray[2]);
 				blackListDTO.setUserID(userID);
 				blackListDTO.setUserMSISDN(msisdnList);
+				blackListDTO.setValidationRegex(blackListReq.getValidationRegex());
+				blackListDTO.setValidationPrefixGroup(blackListReq.getValidationPrefixGroup());
+				blackListDTO.setValidationDigitsGroup(blackListReq.getValidationDigitsGroup());
+
 
 				blackListWhiteListService.blacklist(blackListDTO);
 
 				return Response.status(Response.Status.OK).entity(successMSG.toString()).build();
 
-			} catch (BusinessException msisdnEx) {
-				return Response.status(Response.Status.BAD_REQUEST).entity(msisdnEx.getErrorType()).build();
+			} catch (BusinessException ex) {
+				StringBuilder errorMessage = new StringBuilder("{ \"Failed\": { \"messageId\": \"Blacklist Numbers\", \"text\": \"Blacklist Numbers could not be added to the system\", \"variables\": \"" + ex.getErrorType().toString() + "\" } }");
+				return Response.status(Response.Status.BAD_REQUEST).entity(errorMessage.toString()).build();
 			}
 
 		} else {
-			return Response.status(Response.Status.BAD_REQUEST).entity(errorMSG.toString()).build();
+			return Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson(errorMSG.toString())).build();
 		}
 
 	}
@@ -210,7 +192,7 @@ public class Queries {
 	 *
 	 * {empty request body}
 	 */
-	@POST
+	@GET
 	@Path("/GetBlacklistPerApi/{apiId}")
 	@Consumes("application/json")
 	@Produces("text/plain")
@@ -281,8 +263,7 @@ public class Queries {
 						.append("Remove Number").append("\",").append("\"text\":\"");
 				jsonreturn.append("Blacklist number successfully removed ").append("\",").append("\"variables\":\"")
 						.append(msisdn).append("\"").append("}}");
-
-				return Response.status(Response.Status.OK).entity(jsonreturn).build();
+				return Response.status(Response.Status.OK).entity(jsonreturn.toString()).build();
 			} catch (BusinessException e) {
 				LOG.error("", e);
 
@@ -301,6 +282,7 @@ public class Queries {
 	 *            representation for the new resource
 	 * @return an HTTP response with content of the created resource
 	 */
+	@Deprecated
 	@POST
 	@Path("/whitelist/{MSISDN}")
 	@Consumes("application/json")
@@ -348,7 +330,7 @@ public class Queries {
 
 			}catch( InvalidMSISDNException e1){
 				return Response.status(Response.Status.BAD_REQUEST).entity(e1.getErrorType()).build();
-				
+
 			} catch (BusinessException e) {
 				return Response.status(Response.Status.BAD_REQUEST).entity(e.getErrorType()).build();
 			} catch (Exception e) {
@@ -374,7 +356,6 @@ public class Queries {
 
 		String appId = whiteListReq.getAppId();//lbs-payment-app
 		String apiId = whiteListReq.getApiId();//admin:LBS:v1.0
-		// String apiName = whiteListReq.getAPIName();
 		String userID = whiteListReq.getUserID();//admin
 		String[] msisdnList = whiteListReq.getMsisdnList();
 
@@ -385,8 +366,6 @@ public class Queries {
 
 		gson = new Gson();
 
-		// if (apiID != null && apiName != null && userID != null && msisdnList
-		// != null) {
 		if (userID != null && msisdnList != null) {
 			msisdnList = removeNullMsisdnValues(msisdnList);
 
@@ -396,6 +375,9 @@ public class Queries {
 				whiteListDTO.setApiID(apiId);
 				whiteListDTO.setApplicationID(appId);
 				whiteListDTO.setUserMSISDN(msisdnList);
+				whiteListDTO.setValidationRegex(whiteListReq.getValidationRegex());
+				whiteListDTO.setValidationPrefixGroup(whiteListReq.getValidationPrefixGroup());
+				whiteListDTO.setValidationDigitsGroup(whiteListReq.getValidationDigitsGroup());
 				//whiteListDTO.setSubscriptionID(userID);
 
 				blackListWhiteListService.whiteListSubscription(whiteListDTO);
@@ -407,24 +389,25 @@ public class Queries {
 				succMSG.append("\"variables\":").append(gson.toJson(msisdnList)).append("}}");
 
 				return Response.status(Response.Status.OK).entity(succMSG.toString()).build();
-			}catch( InvalidMSISDNException e1){
-				return Response.status(Response.Status.BAD_REQUEST).entity(e1.getErrorType()).build();
-			} 
+			}catch( InvalidMSISDNException ex){
+				StringBuilder errorMessage=new StringBuilder("{ \"Failed\": { \"messageId\": \"Whitelist Numbers\", \"text\": \"Whitelist Numbers could not be added to the system\", \"variables\":  \""+ex.getErrorType().toString()+"\" } }");
+				return Response.status(Response.Status.BAD_REQUEST).entity(errorMessage.toString()).build();
+			}
 			catch (BusinessException ex) {
-				return Response.status(Response.Status.BAD_REQUEST).entity(ex.getErrorType()).build();
-			} catch (Exception e) {
-				e.printStackTrace();
+				StringBuilder errorMessage=new StringBuilder("{ \"Failed\": { \"messageId\": \"Whitelist Numbers\", \"text\": \"Whitelist Numbers could not be added to the system\", \"variables\": \""+ex.getErrorType().toString()+"\" } }");
+				return Response.status(Response.Status.BAD_REQUEST).entity(errorMessage.toString()).build();
+			} catch (Exception ex) {
+				StringBuilder errorMessage=new StringBuilder("{ \"Failed\": { \"messageId\": \"Whitelist Numbers\", \"text\": \"Whitelist Numbers could not be added to the system\", \"variables\": \""+ex.getMessage()+"\" } }");
+				return Response.status(Response.Status.BAD_REQUEST).entity(errorMessage.toString()).build();
 			}
 		} else {
 			return Response.status(Response.Status.BAD_REQUEST).entity(errorMSG.toString()).build();
 		}
-
-		return Response.status(Response.Status.OK).build();
 	}
 
 
 
-	@POST
+	@GET
 	@Path("/subscribers")
 	@Produces("application/json")
 	public Response getAllSubscribers() throws SQLException, BusinessException {
@@ -433,41 +416,33 @@ public class Queries {
 		return Response.status(Response.Status.OK).entity(jsonString).build();
 	}
 
-	@POST
-	@Path("/apps")
-	@Consumes("application/json")
+	@GET
+	@Path("/apps/{userId}/{operatorId}")
 	@Produces("application/json")
-	public Response getAllApplicationsByUser(String jsonBody) throws SQLException, BusinessException {
+	public Response getAllApplicationsByUser(@PathParam("userId") String userId,@PathParam("operatorId") String operatorId) throws SQLException, BusinessException {
 
-		Gson gson = new GsonBuilder().serializeNulls().create();
-		Id userID = gson.fromJson(jsonBody, Id.class);
+		//Gson gson = new GsonBuilder().serializeNulls().create();
+		//Id userID = gson.fromJson(jsonBody, Id.class);
 		String jsonString;
-		if (userID.getOperator().equals("_ALL_")) {
-			jsonString = blackListWhiteListService.getAllApplicationsByUser(userID.getId());
+		if (operatorId.equals("_ALL_")) {
+			jsonString = blackListWhiteListService.getAllApplicationsByUser(userId);
 		} else{
-			jsonString = blackListWhiteListService.getAllApplicationsByUserAndOperator(userID.getId(), userID.getOperator());
+			jsonString = blackListWhiteListService.getAllApplicationsByUserAndOperator(userId, operatorId);
 		}
 
 		return Response.status(Response.Status.OK).entity(jsonString).build();
 	}
 
 
-	@POST
-	@Path("/apis")
-	@Consumes("application/json")
+	@GET
+	@Path("/apis/{userId}/{appId}")
 	@Produces("application/json")
-	public Response getAllApisByUserAndApp(String jsonBody) throws SQLException, BusinessException {
-
-		Gson gson = new GsonBuilder().serializeNulls().create();
-		Id subscriptionUserID = gson.fromJson(jsonBody, Id.class);
-
-		String[] subscriptionUserIDArray = subscriptionUserID.getId().split("[|]");
-		if(subscriptionUserIDArray.length == 2){
-			String jsonString = blackListWhiteListService.getAllApisByUserAndApp(subscriptionUserIDArray[0],
-					subscriptionUserIDArray[1]);
+	public Response getAllApisByUserAndApp(@PathParam("userId") String userId,@PathParam("appId") String appId) throws SQLException, BusinessException {
+		//Gson gson = new GsonBuilder().serializeNulls().create();
+		if (userId!=null && appId!=null) {
+			String jsonString = blackListWhiteListService.getAllApisByUserAndApp(userId,appId);
 			return Response.status(Response.Status.OK).entity(jsonString).build();
 		}
-
 		return Response.status(Response.Status.BAD_REQUEST).build();
 	}
 
@@ -475,104 +450,20 @@ public class Queries {
 	@Path("/apis")
 	@Produces("application/json")
 	public Response getAllApi() throws SQLException, BusinessException {
-
-
-		/*Gson gson = new GsonBuilder().serializeNulls().create();
-		Id subscriptionUserID = gson.fromJson(jsonBody, Id.class);
-
-		String[] subscriptionUserIDArray = subscriptionUserID.getId().split("[|]");
-		if(subscriptionUserIDArray.length == 2){
-			String jsonString = blackListWhiteListService.getAllApisByUserAndApp(subscriptionUserIDArray[0],
-					subscriptionUserIDArray[1]);
-			return Response.status(Response.Status.OK).entity(jsonString).build();
-		}*/
-
 		String jsonString = blackListWhiteListService.getAllAPIs();
 		return Response.status(Response.Status.OK).entity(jsonString).build();
 	}
 
 
-	/*	*//**
-			 * get all subscribers
-			 *//*
-			 * @POST
-			 * 
-			 * @Path("/getSubscribers")
-			 * 
-			 * @Consumes("application/json")
-			 * 
-			 * @Produces("application/json") public Response
-			 * getSubscribers(String jsonBody) { try { LOG.debug(
-			 * "getSubscribers Triggerd  jsonBody :" + jsonBody);
-			 * 
-			 * String subscribersJson = DatabaseUtils.getSubscribers(); return
-			 * Response.status(Response.Status.OK).entity(subscribersJson).build
-			 * (); } catch (Exception ex) {
-			 * java.util.logging.Logger.getLogger(Queries.class.getName()).log(
-			 * Level.SEVERE, null, ex); return
-			 * Response.status(Response.Status.BAD_REQUEST).entity(
-			 * "{\"error\":\"true\"}").build(); } }
-			 */
-	/**
-	 * get all apps of subscriber
-	 */
-	/*
-	 * @POST
-	 * 
-	 * @Path("/getApps")
-	 * 
-	 * @Consumes("application/json")
-	 * 
-	 * @Produces("application/json") public Response getApps(String jsonBody) {
-	 * try { LOG.debug("getApps Triggerd  msisdn :" + jsonBody);
-	 * 
-	 * Gson gson = new GsonBuilder().serializeNulls().create(); Id whiteListReq
-	 * = gson.fromJson(jsonBody, Id.class);
-	 * 
-	 * String subscriberId = whiteListReq.getId(); String json =
-	 * DatabaseUtils.getApps(subscriberId); return
-	 * Response.status(Response.Status.OK).entity(json).build(); } catch
-	 * (Exception ex) {
-	 * java.util.logging.Logger.getLogger(Queries.class.getName()).log(Level.
-	 * SEVERE, null, ex); return
-	 * Response.status(Response.Status.BAD_REQUEST).entity(
-	 * "{\"error\":\"true\"}").build(); } }
-	 */
-
-	/**
-	 * get apis of app
-	 *//*
-		 * @POST
-		 * 
-		 * @Path("/getApis")
-		 * 
-		 * @Consumes("application/json")
-		 * 
-		 * @Produces("application/json") public Response getApis(String
-		 * jsonBody) { try { Gson gson = new
-		 * GsonBuilder().serializeNulls().create(); Id whiteListReq =
-		 * gson.fromJson(jsonBody, Id.class);
-		 * 
-		 * String appId = whiteListReq.getId(); String json =
-		 * DatabaseUtils.getApis(appId); return
-		 * Response.status(Response.Status.OK).entity(json).build(); } catch
-		 * (Exception ex) {
-		 * java.util.logging.Logger.getLogger(Queries.class.getName()).log(Level
-		 * .SEVERE, null, ex); return
-		 * Response.status(Response.Status.BAD_REQUEST).entity(
-		 * "{\"error\":\"true\"}").build(); } }
-		 */
-
-	@POST
-	@Path("/GetWhiteList")
-	@Consumes("application/json")
-	@Produces("text/plain")
-	public Response getWhiteListNumbers() throws SQLException {
+	@GET
+	@Path("/GetWhiteList/{userId}/{apiId}/{appId}")
+	@Produces("application/json")
+	public Response getWhiteListNumbers(@PathParam("userId")String userId,@PathParam("apiId")String apiId,@PathParam("appId")String appId) throws SQLException {
 
 		Gson gson = new Gson();
 
 		try {
-			String[] whiteListNumbers = blackListWhiteListService.getWhiteListNumbers();
+			String[] whiteListNumbers = blackListWhiteListService.getWhiteListNumbers(userId,apiId,appId);
 
 			StringBuilder successMSG = new StringBuilder();
 			successMSG.append("{\"Success\":{\"messageId\":\"Whitelist result\",\"text\":\"");

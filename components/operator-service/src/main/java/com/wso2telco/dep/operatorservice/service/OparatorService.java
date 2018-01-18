@@ -17,6 +17,7 @@
 package com.wso2telco.dep.operatorservice.service;
 
 import java.util.Collections;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import org.apache.commons.lang.StringUtils;
@@ -51,7 +52,7 @@ public class OparatorService {
 
 	/**
 	 * load all operators according to OperatorSearchDTO filters
-	 * 
+	 *
 	 * @param searchDTO
 	 * @return
 	 * @throws Exception
@@ -75,6 +76,20 @@ public class OparatorService {
 			return operatorList;
 		} else {
 
+			return Collections.emptyList();
+		}
+	}
+
+	public List<OperatorApplicationDTO> loadActiveApplicationOperators()throws ApplicationException, BusinessException {
+		List<OperatorApplicationDTO> operators = null;
+		try {
+			operators = dao.loadActiveApplicationOperators();
+		} catch (Exception e) {
+			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
+		}
+		if (operators != null) {
+			return operators;
+		} else {
 			return Collections.emptyList();
 		}
 	}
@@ -209,7 +224,7 @@ public class OparatorService {
 
 		if (operatorId <= 0) {
 
-			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID); 
+			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
 		}
 
 		if (refreshToken == null || refreshToken.trim().length() <= 0) {
@@ -245,24 +260,69 @@ public class OparatorService {
           return dao.retrieveOperatorList();
     }
 
-    public Map<Integer, Map<String, Map<String,String>>> getOperatorApprovedSubscriptionsByApplicationId(int appId) throws Exception {
+    public Map<Integer, Map<String, Map<String, String>>> getOperatorApprovedSubscriptionsByApplicationId(int appId) throws Exception {
 
-		Map<Integer, Map<String, Map<String,String>>> historyDetails = null;
+		Map<Integer, Map<String, Map<String, String>>> historyDetails = null;
+		Map<Integer, Map<String, List<String>>> subscribedOperators = null;
 
-		try {
+		historyDetails = dao.getOperatorApprovedSubscriptionsByApplicationId(appId);
+		subscribedOperators = dao.getSubscribedOperatorsByApplicationId(appId);
+		
+		Iterator<Map.Entry<Integer, Map<String, Map<String, String>>>> sub = historyDetails.entrySet().iterator();
+		
+		while (sub.hasNext()) {
+			
+			Map.Entry<Integer, Map<String, Map<String, String>>> entry = sub.next();
 
-			historyDetails = dao.getOperatorApprovedSubscriptionsByApplicationId(appId);
-		} catch (Exception e) {
-
-			throw e;
+			Map<String, Map<String, String>> subInfo = entry.getValue();
+			
+			for(Map.Entry<String, Map<String, String>> details : subInfo.entrySet()){
+				
+				String historyAPIName = details.getKey();
+				Map<String, String> detailsInfo = details.getValue();				
+				
+				for(Map.Entry<String, String> opcoStatus : detailsInfo.entrySet()){
+					
+					String opcoStatusKey = opcoStatus.getKey();
+					
+					if (opcoStatusKey.equals("operatorname")){
+						
+						String historyOpcoName = opcoStatus.getValue();
+						
+						for(Map.Entry<Integer, Map<String, List<String>>> subscribedOpco : subscribedOperators.entrySet()){
+							
+							Map<String, List<String>> subscribedOpcoDetails = subscribedOpco.getValue();
+							
+							for(Map.Entry<String, List<String>> opcoDetails : subscribedOpcoDetails.entrySet()){
+								
+								String opcoAPI = opcoDetails.getKey();
+								List<String> opcoList = opcoDetails.getValue();
+								
+								if(historyAPIName.equalsIgnoreCase(opcoAPI)){
+									
+									int status = 0;
+									
+									for (String opcoName : opcoList) {
+										
+										if(historyOpcoName.equalsIgnoreCase(opcoName)){
+											
+											status = 1;
+											break;
+										}
+									}
+									
+									if (status != 1){
+										
+										sub.remove();
+									}
+								}
+							}
+						}
+					}	
+				}
+			}
 		}
-
-		if (historyDetails != null) {
-
-			return historyDetails;
-		} else {
-
-			return Collections.emptyMap();
-		}
+		
+		return historyDetails;
 	}
 }

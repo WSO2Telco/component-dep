@@ -15,14 +15,14 @@
  ******************************************************************************/
 package com.wso2telco.dep.oneapivalidation.util;
 
-import com.wso2telco.core.dbutils.fileutils.FileReader;
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import org.apache.log4j.Logger;
 import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.File;
+import java.io.FileInputStream;
 import java.util.HashSet;
-import java.util.Map;
+import java.util.Properties;
 import java.util.Set;
 
 // TODO: Auto-generated Javadoc
@@ -70,11 +70,107 @@ public class Validation {
     /** The dump request and response. */
     public static boolean dumpRequestAndResponse = false;
 
+    private static Properties oneAPIValidationConfMap = readOneApiValidationConfig();
+
     /** The Constant telFormats. */
     private static String telFormats = readCustomRegex();
 
+    private static int prefixGroup = readCustomRegexPrefixGroup();
+
+    private static int digitsGroup = readCustomRegexDigitsGroup();
+
+    static final String CUSTOM_VALIDATION = "customValidation";
+
     /** The Constant urlFormats. */
     private static final String[] urlFormats = {"http\\:\\/\\/.+", "https\\:\\/\\/.+"};
+
+    static int readCustomRegexPrefixGroup() {
+        String prefixGroupTemp = null;
+        String defaultGroup = "2";
+
+        try {
+
+            String group = oneAPIValidationConfMap.getProperty("validation.regex.prefix.group");
+            String useCustomRegex = oneAPIValidationConfMap.getProperty(CUSTOM_VALIDATION);
+
+            if (useCustomRegex.equals("true") && !group.equals("")) {
+
+                prefixGroupTemp = group.trim();
+                logger.info("Read custom validation from config file: " + prefixGroupTemp);
+
+            } else {
+                prefixGroupTemp = defaultGroup;
+            }
+        } catch (Exception e) {
+            logger.error("Error while reading regex capture group for prefix. Default group (" + defaultGroup + ") will be used.", e);
+            prefixGroupTemp = defaultGroup;
+        }
+
+        return Integer.parseInt(prefixGroupTemp);
+    }
+
+    static int readCustomRegexDigitsGroup() {
+        String digitsGroupTemp = null;
+        String defaultGroup = "9";
+
+        try {
+            String group = oneAPIValidationConfMap.getProperty("validation.regex.digits.group");
+            String useCustomRegex = oneAPIValidationConfMap.getProperty(CUSTOM_VALIDATION);
+
+            if (useCustomRegex.equals("true") && !group.equals("")) {
+
+                digitsGroupTemp = group.trim();
+                logger.info("Read capture group from config file: " + digitsGroupTemp);
+
+            } else {
+                digitsGroupTemp = defaultGroup;
+            }
+        } catch (Exception e) {
+            logger.error("Error while reading regex capture group for digits. Default group (" + defaultGroup + ") will be used.", e);
+            digitsGroupTemp = defaultGroup;
+        }
+
+        return Integer.parseInt(digitsGroupTemp);
+    }
+
+    static String readCustomRegex() {
+        String telFormatTemp = null;
+        String defaultRegex = "^((((tel:){1}(\\+){0,1})|((tel:){0,1}(\\+){1}))([a-zA-Z0-9]+))$";
+
+        try {
+            String customRegex = oneAPIValidationConfMap.getProperty("validation.regex");
+            String useCustomRegex = oneAPIValidationConfMap.getProperty(CUSTOM_VALIDATION);
+
+            if (useCustomRegex.equals("true") && !customRegex.equals("")) {
+
+                telFormatTemp = customRegex.trim();
+                logger.info("Read capture group from config file: " + telFormatTemp);
+
+            } else {
+                telFormatTemp = defaultRegex;
+            }
+
+        } catch (Exception e) {
+            logger.error("Error while reading custom regex. Default validation will be used.", e);
+            telFormatTemp = defaultRegex;
+        }
+
+        return telFormatTemp;
+    }
+
+    static Properties readOneApiValidationConfig() {
+        Properties oneAPIValidationConfMap = new Properties();
+        String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
+                + FileNames.ONEAPI_VALIDATION_CONF_FILE.getFileName();
+
+        try {
+            oneAPIValidationConfMap.load(new FileInputStream(file));
+        } catch (Exception e) {
+            logger.error("Failed to read oneapi-validation.properties", e);
+        }
+
+        return oneAPIValidationConfMap;
+    }
 
     /**
      * Checks if is correctly formatted number.
@@ -82,36 +178,6 @@ public class Validation {
      * @param tel the tel
      * @return true, if is correctly formatted number
      */
-
-
-    static String readCustomRegex() {
-        String telFormatTemp = null;
-
-        FileReader fileReader = new FileReader();
-        String file = CarbonUtils.getCarbonConfigDirPath() + File.separator
-                + FileNames.ONEAPI_VALIDATION_CONF_FILE.getFileName();
-
-        try {
-            Map<String, String> oneAPIValidationConfMap = fileReader.readPropertyFile(file);
-            String customRegex = oneAPIValidationConfMap.get("validation.regex");
-            String useCustomRegex = oneAPIValidationConfMap.get("customValidation");
-
-            if (useCustomRegex.equals("true") && !customRegex.equals("")) {
-
-                telFormatTemp = customRegex;
-                logger.info("Read custom validation from config file: " + telFormatTemp);
-
-            } else {
-                telFormatTemp = "^((((tel:){1}(\\+){0,1})|((tel:){0,1}(\\+){1}))([a-zA-Z0-9]+))$";
-            }
-
-        } catch (Exception e) {
-            logger.error("Error while reading custom custom regex. Default validation will be used.", e);
-            telFormatTemp = "^((((tel:){1}(\\+){0,1})|((tel:){0,1}(\\+){1}))([a-zA-Z0-9]+))$";
-        }
-
-        return telFormatTemp;
-    }
 
     public static boolean isCorrectlyFormattedNumber(String tel) {
         boolean matched = false;
@@ -125,7 +191,18 @@ public class Validation {
         return matched;
     }
 
-     
+    public static String getValidationRegex() {
+        return telFormats;
+    }
+
+    public static int getPrefixGroup(){
+        return prefixGroup;
+    }
+
+    public static int getDigitsGroup(){
+        return digitsGroup;
+    }
+
     /**
      * Check duplicated address.
      *
