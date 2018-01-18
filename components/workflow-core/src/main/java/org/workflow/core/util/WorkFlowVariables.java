@@ -19,6 +19,7 @@ public enum  WorkFlowVariables {
 
     HUB_ADMIN_APPROVAL("hubAdminApproval"),
     OPERATOR_ADMIN_APPROVAL("operatorAdminApproval"),
+    INT_GTW_ADMIN_APPROVAL("operatorAdminApproval"),
     API_PUBLISHER_APPROVAL("apiPublisherApproval"),
     GATEWAY_ADMIN_ROLE("admin"),
     OPERATOR_ADMIN_ROLE("operator1-admin-role"),

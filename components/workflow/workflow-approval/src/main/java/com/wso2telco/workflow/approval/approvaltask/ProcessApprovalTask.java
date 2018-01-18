@@ -16,23 +16,10 @@
 
 package com.wso2telco.workflow.approval.approvaltask;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.List;
-
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-
-import feign.Feign;
-import feign.jackson.JacksonDecoder;
-import feign.jackson.JacksonEncoder;
-
-import org.activiti.engine.delegate.DelegateExecution;
-
 import com.wso2telco.workflow.approval.application.ApplicationTask;
 import com.wso2telco.workflow.approval.application.ApplicationTaskFactory;
 import com.wso2telco.workflow.approval.application.rest.client.HubWorkflowApi;
+import com.wso2telco.workflow.approval.application.rest.client.WorkflowApprovalAuditApi;
 import com.wso2telco.workflow.approval.exception.ApprovalWorkflowException;
 import com.wso2telco.workflow.approval.exception.HubWorkflowCallbackApiErrorDecoder;
 import com.wso2telco.workflow.approval.model.Application;
@@ -43,6 +30,17 @@ import com.wso2telco.workflow.approval.subscription.rest.client.SubscriptionWork
 import com.wso2telco.workflow.approval.subscription.rest.client.WorkflowCallbackErrorDecoder;
 import com.wso2telco.workflow.approval.util.AuthRequestInterceptor;
 import com.wso2telco.workflow.approval.util.Constants;
+import feign.Feign;
+import feign.jackson.JacksonDecoder;
+import feign.jackson.JacksonEncoder;
+import org.activiti.engine.delegate.DelegateExecution;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
+import java.util.List;
 
 public class ProcessApprovalTask implements WorkflowApprovalTask {
 
@@ -75,7 +73,7 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminUserName,adminPassword))
 	                .target(HubWorkflowApi.class,serviceUrl);
 
-	        com.wso2telco.workflow.approval.application.rest.client.WorkflowApprovalAuditApi apiAudit = Feign.builder()
+	        WorkflowApprovalAuditApi apiAudit = Feign.builder()
 	                .encoder(new JacksonEncoder())
 	                .decoder(new JacksonDecoder())
 	                .errorDecoder(new HubWorkflowCallbackApiErrorDecoder())
