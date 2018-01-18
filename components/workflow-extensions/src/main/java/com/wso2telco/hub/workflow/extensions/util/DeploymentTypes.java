@@ -16,21 +16,49 @@
 
 package com.wso2telco.hub.workflow.extensions.util;
 
-public enum DeploymentTypes
-{
-	HUB("hub"),
-	EXTERNAL_GATEWAY("external_gateway"),
-	INTERNAL_GATEWAY("internal_gateway");
+import java.util.EnumSet;
+import java.util.HashMap;
+import java.util.Map;
+
+public enum DeploymentTypes {
+	HUB("hub", "application_creation_approval_process", "subscription_approval_process"), 
+	EXTERNAL_GATEWAY("external_gateway", "application_creation_approval_process","subscription_approval_process"), 
+	INTERNAL_GATEWAY("internal_gateway","application_creation_approval_process", "subscription_approval_process");
 
 	private String deploymentType;
+	private String appProcess;
+	private String subProcess;
 
-	DeploymentTypes(String deploymentType) {
+	private static Map<String,DeploymentTypes> byNameMap =new HashMap<String, DeploymentTypes>();
+	
+	static{
+		EnumSet<DeploymentTypes> all = EnumSet.allOf( DeploymentTypes.class);
+		for (DeploymentTypes deploymentTypes : all) {
+			byNameMap.put(deploymentTypes.getDeploymentType(),deploymentTypes);
+		}
+	}
+	
+	DeploymentTypes(String deploymentType, String appProcess, String subProcess) {
 
 		this.deploymentType = deploymentType;
+		this.appProcess = appProcess;
+		this.subProcess = subProcess;
 	}
 
 	public String getDeploymentType() {
 
 		return this.deploymentType;
+	}
+	
+	public String getAppProcessType() {
+
+		return this.appProcess;
+	}
+	public String getSubscriptoinProcessType() {
+
+		return this.subProcess;
+	}
+	public static DeploymentTypes getByName(String name) {
+		return byNameMap.get(name.trim());
 	}
 }

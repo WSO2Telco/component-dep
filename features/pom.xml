@@ -41,6 +41,7 @@
         <module>com.wso2telco.dep.oneapivalidation.feature</module>
         <module>com.wso2telco.dep.manage.ui.feature</module>
         <module>com.wso2telco.dep.publisher.ui.feature</module>
+		<module>com.wso2telco.dep.admin.ui.feature</module>
         <module>com.wso2telco.dep.sandbox.ui.feature</module>
         <module>com.wso2telco.dep.aggregatorblacklist.webapp.feature</module>
         <module>com.wso2telco.dep.blacklistwhitelistservice.webapp.feature</module>
@@ -51,6 +52,7 @@
         <module>com.wso2telco.dep.logging.extension.feature</module>
 		<module>com.wso2telco.dep.quota.service.feature</module>
         <module>com.wso2telco.dep.ratecard.service.feature</module>
+		<module>com.wso2telco.dep.workflow.core.feature</module>
     </modules>
 </project>
 

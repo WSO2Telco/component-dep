@@ -26,6 +26,7 @@ public class DelegatedArgsDTO {
     private String appCreatorName;
     private String adminSelectedTier;
     private String selectedRate;
+    private String workflowRefId;
 
     public String getAdminSelectedTier() {
         return adminSelectedTier;
@@ -220,5 +221,11 @@ public class DelegatedArgsDTO {
     }
 
 
+    public String getWorkflowRefId() {
+        return workflowRefId;
+    }
 
+    public void setWorkflowRefId(String workflowRefId) {
+        this.workflowRefId = workflowRefId;
+    }
 }

@@ -18,6 +18,7 @@ package com.wso2telco.workflow.subscription;
 
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.exception.GenaralError;
+import com.wso2telco.core.dbutils.exception.ThrowableError;
 import com.wso2telco.dep.operatorservice.model.OperatorEndPointDTO;
 import com.wso2telco.workflow.dao.WorkflowDbService;
 import com.wso2telco.workflow.model.Subscription;
@@ -26,8 +27,12 @@ import com.wso2telco.workflow.utils.ApprovelStatus;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
+
+import javax.ws.rs.core.Response;
+
 import com.wso2telco.dep.operatorservice.model.Operator;
 import org.wso2.carbon.apimgt.impl.dao.ApiMgtDAO;
 import org.wso2.carbon.apimgt.impl.dto.WorkflowDTO;
@@ -164,4 +169,5 @@ public class SubscriptionApprovalImpl implements SubscriptionApproval {
             throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
         }
     }
+ 
 }

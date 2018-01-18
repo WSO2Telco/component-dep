@@ -15,7 +15,8 @@
 ~
 -->
 
-<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
+<project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+         xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/maven-v4_0_0.xsd">
     <modelVersion>4.0.0</modelVersion>
     <parent>
         <groupId>com.wso2telco.dep</groupId>
@@ -30,6 +31,7 @@
     <name>WSO2 Telco Workflow Extensions</name>
 
     <dependencies>
+
         <dependency>
             <groupId>org.wso2.carbon.apimgt</groupId>
             <artifactId>org.wso2.carbon.apimgt.impl</artifactId>
@@ -65,9 +67,17 @@
             <artifactId>dbutils</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.wso2telco.core</groupId>
+            <artifactId>user-profile</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.wso2telco.dep</groupId>
             <artifactId>operator-service</artifactId>
-        </dependency>		
+        </dependency>
+        <dependency>
+            <groupId>com.wso2telco.dep</groupId>
+            <artifactId>workflow-core</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

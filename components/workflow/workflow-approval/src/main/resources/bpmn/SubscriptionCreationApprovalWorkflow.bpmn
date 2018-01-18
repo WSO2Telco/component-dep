@@ -1,354 +1,639 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" typeLanguage="http://www.w3.org/2001/XMLSchema" expressionLanguage="http://www.w3.org/1999/XPath" targetNamespace="http://www.activiti.org/test">
-  <process id="subscription_approval_process" name="Subscription Approval Process" isExecutable="true">
-    <startEvent id="startevent1" name="Start">
+<?xml version="1.0" encoding="UTF-8" standalone="yes"?>
+<definitions xmlns="http://www.omg.org/spec/BPMN/20100524/MODEL" xmlns:activiti="http://activiti.org/bpmn" xmlns:bpmndi="http://www.omg.org/spec/BPMN/20100524/DI" xmlns:omgdc="http://www.omg.org/spec/DD/20100524/DC" xmlns:omgdi="http://www.omg.org/spec/DD/20100524/DI" xmlns:tns="http://www.activiti.org/test" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:yaoqiang="http://bpmn.sourceforge.net" exporter="Yaoqiang BPMN Editor" exporterVersion="5.3" expressionLanguage="http://www.w3.org/1999/XPath" id="_1515478317651" name="" targetNamespace="http://www.activiti.org/test" typeLanguage="http://www.w3.org/2001/XMLSchema" xsi:schemaLocation="http://www.omg.org/spec/BPMN/20100524/MODEL http://bpmn.sourceforge.net/schemas/BPMN20.xsd">
+  <process id="subscription_approval_process" isClosed="false" isExecutable="true" name="Subscription Approval Process" processType="None">
+    <extensionElements>
+      <yaoqiang:description/>
+      <yaoqiang:pageFormat height="841.8897637795276" imageableHeight="831.8897637795276" imageableWidth="588.1102362204724" imageableX="5.0" imageableY="5.0" orientation="0" width="598.1102362204724"/>
+      <yaoqiang:page background="#FFFFFF" horizontalCount="2" verticalCount="1"/>
+    </extensionElements>
+    <startEvent id="startevent1" isInterrupting="true" name="Start" parallelMultiple="false">
       <extensionElements>
-        <activiti:formProperty id="deployment_type" name="Deployment Type" type="string" variable="deployment_type"></activiti:formProperty>
-        <activiti:formProperty id="applicationName" name="Application Name" type="string" variable="applicationName" required="true"></activiti:formProperty>
-        <activiti:formProperty id="workflowRefId" name="Workflow reference ID" type="string" variable="workflowRefId" required="true"></activiti:formProperty>
-        <activiti:formProperty id="callBackUrl" name="Callback URL" type="string" variable="callBackUrl" required="true"></activiti:formProperty>
-        <activiti:formProperty id="operators" name="Operator Names" type="string" variable="operators" required="true"></activiti:formProperty>
-        <activiti:formProperty id="apiName" name="apiName" type="string" variable="apiName" required="true"></activiti:formProperty>
-        <activiti:formProperty id="apiId" name="apiId" type="string" variable="apiId" required="true"></activiti:formProperty>
-        <activiti:formProperty id="apiVersion" name="apiVersion" type="string" variable="apiVersion" required="true"></activiti:formProperty>
-        <activiti:formProperty id="apiContext" name="apiContext" type="string" variable="apiContext" required="true"></activiti:formProperty>
-        <activiti:formProperty id="apiProvider" name="apiProvider" type="string" variable="apiProvider" required="true"></activiti:formProperty>
-        <activiti:formProperty id="subscriber" name="subscriber" type="string" variable="subscriber" required="true"></activiti:formProperty>
-        <activiti:formProperty id="tierName" name="tierName" type="string" variable="tierName" required="true"></activiti:formProperty>
-        <activiti:formProperty id="applicationId" name="applicationId" type="string" variable="applicationId" required="true"></activiti:formProperty>
-        <activiti:formProperty id="applicationDescription" name="applicationDescription" type="string" variable="applicationDescription" required="true"></activiti:formProperty>
-        <activiti:formProperty id="apiTiers" name="apiTiers" type="string" variable="apiTiers" required="true"></activiti:formProperty>
-        <activiti:formProperty id="api_publisher" name="API Publisher" type="string" variable="api_publisher" required="true"></activiti:formProperty>
-        <activiti:formProperty id="adminPassword" name="admin Password" variable="adminPassword"></activiti:formProperty>
-        <activiti:formProperty id="serviceURL" name="serviceURL" variable="serviceURL" writable="false"></activiti:formProperty>
-        <activiti:formProperty id="adminUserName" name="Admin User Name" variable="adminUserName" required="true"></activiti:formProperty>
-        <activiti:formProperty id="apiProviderRole" name="api Provider Role" type="string"></activiti:formProperty>
+        <activiti:formProperty id="deployment_type" name="Deployment Type" type="string" variable="deployment_type"/>
+        <activiti:formProperty id="applicationName" name="Application Name" required="true" type="string" variable="applicationName"/>
+        <activiti:formProperty id="workflowRefId" name="Workflow reference ID" required="true" type="string" variable="workflowRefId"/>
+        <activiti:formProperty id="callBackUrl" name="Callback URL" required="true" type="string" variable="callBackUrl"/>
+        <activiti:formProperty id="operators" name="Operator Names" required="true" type="string" variable="operators"/>
+        <activiti:formProperty id="apiName" name="apiName" required="true" type="string" variable="apiName"/>
+        <activiti:formProperty id="apiId" name="apiId" required="true" type="string" variable="apiId"/>
+        <activiti:formProperty id="apiVersion" name="apiVersion" required="true" type="string" variable="apiVersion"/>
+        <activiti:formProperty id="apiContext" name="apiContext" required="true" type="string" variable="apiContext"/>
+        <activiti:formProperty id="apiProvider" name="apiProvider" required="true" type="string" variable="apiProvider"/>
+        <activiti:formProperty id="subscriber" name="subscriber" required="true" type="string" variable="subscriber"/>
+        <activiti:formProperty id="tierName" name="tierName" required="true" type="string" variable="tierName"/>
+        <activiti:formProperty id="applicationId" name="applicationId" required="true" type="string" variable="applicationId"/>
+        <activiti:formProperty id="applicationDescription" name="applicationDescription" required="true" type="string" variable="applicationDescription"/>
+        <activiti:formProperty id="apiTiers" name="apiTiers" required="true" type="string" variable="apiTiers"/>
+        <activiti:formProperty id="api_publisher" name="API Publisher" required="true" type="string" variable="api_publisher"/>
+        <activiti:formProperty id="adminPassword" name="admin Password" variable="adminPassword"/>
+        <activiti:formProperty id="serviceURL" name="serviceURL" variable="serviceURL" writable="false"/>
+        <activiti:formProperty id="adminUserName" name="Admin User Name" required="true" variable="adminUserName"/>
+        <activiti:formProperty id="apiProviderRole" name="api Provider Role" type="string"/>
       </extensionElements>
+      <outgoing>flow26</outgoing>
+      <outputSet/>
     </startEvent>
-    <exclusiveGateway id="exclusivegateway1" name="Exclusive Gateway"></exclusiveGateway>
+    <exclusiveGateway gatewayDirection="Unspecified" id="exclusivegateway1" name="Exclusive Gateway">
+      <incoming>flow27</incoming>
+      <outgoing>hubFlow</outgoing>
+      <outgoing>flow44</outgoing>
+    </exclusiveGateway>
     <sequenceFlow id="hubFlow" name="Hub Flow" sourceRef="exclusivegateway1" targetRef="hub_admin_approval_transaction">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${deployment_type.equals("hub")}]]></conditionExpression>
     </sequenceFlow>
-    <serviceTask id="servicetask2" name="Hub Callback" activiti:class="com.wso2telco.workflow.approval.subscription.servicetask.HubCallbackServiceInvokeTask"></serviceTask>
-    <endEvent id="endevent3" name="End"></endEvent>
-    <sequenceFlow id="hubAdminRejectFlow" sourceRef="exclusivegateway2" targetRef="endevent3"></sequenceFlow>
-    <exclusiveGateway id="exclusivegateway2" name="Exclusive Gateway" default="hubAdminRejectFlow"></exclusiveGateway>
+    <serviceTask activiti:class="com.wso2telco.workflow.approval.subscription.servicetask.HubCallbackServiceInvokeTask" completionQuantity="1" id="servicetask2" implementation="##WebService" isForCompensation="false" name="Hub Callback" startQuantity="1">
+      <incoming>flow24</incoming>
+      <outgoing>hubFlow1</outgoing>
+    </serviceTask>
+    <endEvent id="endevent3" name="End">
+      <incoming>hubAdminRejectFlow</incoming>
+      <incoming>flow38</incoming>
+      <incoming>flow40</incoming>
+      <inputSet/>
+    </endEvent>
+    <sequenceFlow id="hubAdminRejectFlow" sourceRef="exclusivegateway2" targetRef="endevent3"/>
+    <exclusiveGateway default="hubAdminRejectFlow" gatewayDirection="Unspecified" id="exclusivegateway2" name="Exclusive Gateway">
+      <incoming>hubFlow1</incoming>
+      <outgoing>hubAdminRejectFlow</outgoing>
+      <outgoing>hubAdminApprovedFlow</outgoing>
+    </exclusiveGateway>
     <sequenceFlow id="hubAdminApprovedFlow" name="Hub admin approved flow" sourceRef="exclusivegateway2" targetRef="operator_admin_approval_transaction">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${hubAdminApproval.equals("APPROVED")}]]></conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="hubFlow1" name="Hub admin rejected flow" sourceRef="servicetask2" targetRef="exclusivegateway2"></sequenceFlow>
-    <serviceTask id="operators_converter" name="Operators Converter" activiti:class="com.wso2telco.workflow.approval.subscription.servicetask.OperatorListConverter"></serviceTask>
-    <sequenceFlow id="flow26" sourceRef="startevent1" targetRef="operators_converter"></sequenceFlow>
-    <sequenceFlow id="flow27" sourceRef="operators_converter" targetRef="exclusivegateway1"></sequenceFlow>
-    <transaction id="hub_admin_approval_transaction" name="Hub Admin Approval Transaction">
-      <userTask id="hub_admin_approval" name="Hub Admin Approval" activiti:candidateGroups="admin">
+    <sequenceFlow id="hubFlow1" name="Hub admin rejected flow" sourceRef="servicetask2" targetRef="exclusivegateway2"/>
+    <serviceTask activiti:class="com.wso2telco.workflow.approval.subscription.servicetask.OperatorListConverter" completionQuantity="1" id="operators_converter" implementation="##WebService" isForCompensation="false" name="Operators Converter" startQuantity="1">
+      <incoming>flow26</incoming>
+      <outgoing>flow27</outgoing>
+    </serviceTask>
+    <sequenceFlow id="flow26" sourceRef="startevent1" targetRef="operators_converter"/>
+    <sequenceFlow id="flow27" sourceRef="operators_converter" targetRef="exclusivegateway1"/>
+    <transaction completionQuantity="1" id="hub_admin_approval_transaction" isForCompensation="false" method="##Compensate" name="Hub Admin Approval Transaction" startQuantity="1" triggeredByEvent="false">
+      <incoming>hubFlow</incoming>
+      <incoming>flow30</incoming>
+      <outgoing>flow24</outgoing>
+      <userTask activiti:candidateGroups="admin" completionQuantity="1" id="hub_admin_approval" implementation="##unspecified" isForCompensation="false" name="Hub Admin Approval" startQuantity="1">
         <extensionElements>
-          <activiti:formProperty id="hubAdminApproval" name="Approve / Reject" type="enum" variable="hubAdminApproval" required="true">
-            <activiti:value id="APPROVED" name="Approve"></activiti:value>
-            <activiti:value id="REJECTED" name="Reject"></activiti:value>
+          <activiti:formProperty id="hubAdminApproval" name="Approve / Reject" required="true" type="enum" variable="hubAdminApproval">
+            <formProperty>
+              <formProperty>
+                <formProperty>
+                  <formProperty>
+                    <formProperty>
+                      <formProperty>
+                        <formProperty>
+                          <formProperty>
+                            <formProperty>
+                              <formProperty>
+                                <activiti:value id="APPROVED" name="Approve"/>
+                                <activiti:value id="REJECTED" name="Reject"/>
+                              </formProperty>
+                            </formProperty>
+                          </formProperty>
+                        </formProperty>
+                      </formProperty>
+                    </formProperty>
+                  </formProperty>
+                </formProperty>
+              </formProperty>
+            </formProperty>
           </activiti:formProperty>
         </extensionElements>
+        <incoming>flow28</incoming>
+        <outgoing>flow15</outgoing>
       </userTask>
-      <sequenceFlow id="flow15" sourceRef="hub_admin_approval" targetRef="hub_admin_data_update"></sequenceFlow>
-      <serviceTask id="hub_admin_data_update" name="Hub Admin Data Update" activiti:class="com.wso2telco.workflow.approval.subscription.servicetask.HubAdminDbUpdater"></serviceTask>
-      <startEvent id="startevent3" name="Start"></startEvent>
-      <endEvent id="endevent5" name="End"></endEvent>
-      <sequenceFlow id="flow28" sourceRef="startevent3" targetRef="hub_admin_approval"></sequenceFlow>
-      <sequenceFlow id="flow29" sourceRef="hub_admin_data_update" targetRef="endevent5"></sequenceFlow>
+      <sequenceFlow id="flow15" sourceRef="hub_admin_approval" targetRef="hub_admin_data_update"/>
+      <serviceTask activiti:class="com.wso2telco.workflow.approval.subscription.servicetask.HubAdminDbUpdater" completionQuantity="1" id="hub_admin_data_update" implementation="##WebService" isForCompensation="false" name="Hub Admin Data Update" startQuantity="1">
+        <incoming>flow15</incoming>
+        <outgoing>flow29</outgoing>
+      </serviceTask>
+      <startEvent id="startevent3" isInterrupting="true" name="Start" parallelMultiple="false">
+        <outgoing>flow28</outgoing>
+        <outputSet/>
+      </startEvent>
+      <endEvent id="endevent5" name="End">
+        <incoming>flow29</incoming>
+        <inputSet/>
+      </endEvent>
+      <sequenceFlow id="flow28" sourceRef="startevent3" targetRef="hub_admin_approval"/>
+      <sequenceFlow id="flow29" sourceRef="hub_admin_data_update" targetRef="endevent5"/>
     </transaction>
-    <sequenceFlow id="flow24" sourceRef="hub_admin_approval_transaction" targetRef="servicetask2"></sequenceFlow>
-    <transaction id="operator_admin_approval_transaction" name="Operator Admin Approval Transaction">
-      <multiInstanceLoopCharacteristics isSequential="false" activiti:collection="${operatorList}" activiti:elementVariable="operator"></multiInstanceLoopCharacteristics>
-      <startEvent id="startevent2" name="Start"></startEvent>
-      <sequenceFlow id="flow18" sourceRef="startevent2" targetRef="usertask1"></sequenceFlow>
-      <userTask id="usertask1" name="Operator Admin Approval" activiti:candidateGroups="${deployment_type.equals(&quot;hub&quot;) ? operator.concat('-admin-role') : 'admin'}">
+    <sequenceFlow id="flow24" sourceRef="hub_admin_approval_transaction" targetRef="servicetask2"/>
+    <transaction completionQuantity="1" id="operator_admin_approval_transaction" isForCompensation="false" method="##Compensate" name="Operator Admin Approval Transaction" startQuantity="1" triggeredByEvent="false">
+      <incoming>hubAdminApprovedFlow</incoming>
+      <incoming>flow37</incoming>
+      <incoming>flow43</incoming>
+      <outgoing>flow41</outgoing>
+      <multiInstanceLoopCharacteristics activiti:collection="${operatorList}" activiti:elementVariable="operator" behavior="All" isSequential="false"/>
+      <startEvent id="startevent2" isInterrupting="true" name="Start" parallelMultiple="false">
+        <outgoing>flow18</outgoing>
+        <outputSet/>
+      </startEvent>
+      <sequenceFlow id="flow18" sourceRef="startevent2" targetRef="usertask1"/>
+      <userTask activiti:candidateGroups="${deployment_type.equals(&quot;hub&quot;) ? operator: 'admin'}" completionQuantity="1" id="usertask1" implementation="##unspecified" isForCompensation="false" name="Operator Admin Approval" startQuantity="1">
         <extensionElements>
-          <activiti:formProperty id="operatorAdminApproval" name="Approve / Reject" type="enum" variable="operatorAdminApproval" required="true">
-            <activiti:value id="APPROVED" name="Approve"></activiti:value>
-            <activiti:value id="REJECTED" name="Reject"></activiti:value>
+          <activiti:formProperty id="operatorAdminApproval" name="Approve / Reject" required="true" type="enum" variable="operatorAdminApproval">
+            <formProperty>
+              <formProperty>
+                <formProperty>
+                  <formProperty>
+                    <formProperty>
+                      <formProperty>
+                        <formProperty>
+                          <formProperty>
+                            <formProperty>
+                              <formProperty>
+                                <activiti:value id="APPROVED" name="Approve"/>
+                                <activiti:value id="REJECTED" name="Reject"/>
+                              </formProperty>
+                            </formProperty>
+                          </formProperty>
+                        </formProperty>
+                      </formProperty>
+                    </formProperty>
+                  </formProperty>
+                </formProperty>
+              </formProperty>
+            </formProperty>
           </activiti:formProperty>
         </extensionElements>
+        <incoming>flow18</incoming>
+        <outgoing>flow19</outgoing>
       </userTask>
-      <sequenceFlow id="flow19" sourceRef="usertask1" targetRef="servicetask4"></sequenceFlow>
-      <sequenceFlow id="flow25" sourceRef="servicetask4" targetRef="endevent4"></sequenceFlow>
-      <endEvent id="endevent4" name="End"></endEvent>
-      <serviceTask id="servicetask4" name="Operator Admin Data Update" activiti:class="com.wso2telco.workflow.approval.subscription.servicetask.OperatorAdminDbUpdater"></serviceTask>
+      <sequenceFlow id="flow19" sourceRef="usertask1" targetRef="servicetask4"/>
+      <sequenceFlow id="flow25" sourceRef="servicetask4" targetRef="endevent4"/>
+      <endEvent id="endevent4" name="End">
+        <incoming>flow25</incoming>
+        <inputSet/>
+      </endEvent>
+      <serviceTask activiti:class="com.wso2telco.workflow.approval.subscription.servicetask.OperatorAdminDbUpdater" completionQuantity="1" id="servicetask4" implementation="##WebService" isForCompensation="false" name="Operator Admin Data Update" startQuantity="1">
+        <incoming>flow19</incoming>
+        <outgoing>flow25</outgoing>
+      </serviceTask>
     </transaction>
-    <boundaryEvent id="api_manager_callback_error_boundry_event" name="Callback Error" attachedToRef="servicetask2">
-      <errorEventDefinition></errorEventDefinition>
+    <boundaryEvent attachedToRef="servicetask2" cancelActivity="true" id="api_manager_callback_error_boundry_event" name="Callback Error" parallelMultiple="false">
+      <outgoing>flow30</outgoing>
+      <outputSet/>
+      <errorEventDefinition id="api_manager_callback_error_boundry_event_ED_1"/>
     </boundaryEvent>
-    <sequenceFlow id="flow30" name="Hub callback error flow" sourceRef="api_manager_callback_error_boundry_event" targetRef="hub_admin_approval_transaction"></sequenceFlow>
-    <serviceTask id="servicetask3" name="Operator Callback" activiti:class="com.wso2telco.workflow.approval.subscription.servicetask.CallbackServiceInvokeTask"></serviceTask>
-    <transaction id="api_publisher_approval_transaction" name="API Publisher Approval Transaction">
-      <startEvent id="startevent4" name="Start"></startEvent>
-      <endEvent id="endevent6" name="End"></endEvent>
-      <userTask id="api_publisher_approval" name="API Publisher Approval" activiti:candidateGroups="${apiProviderRole}">
+    <sequenceFlow id="flow30" name="Hub callback error flow" sourceRef="api_manager_callback_error_boundry_event" targetRef="hub_admin_approval_transaction"/>
+    <serviceTask activiti:class="com.wso2telco.workflow.approval.subscription.servicetask.CallbackServiceInvokeTask" completionQuantity="1" id="servicetask3" implementation="##WebService" isForCompensation="false" name="Operator Callback" startQuantity="1">
+      <incoming>external_gateway_flow</incoming>
+      <outgoing>flow38</outgoing>
+    </serviceTask>
+    <transaction completionQuantity="1" id="api_publisher_approval_transaction" isForCompensation="false" method="##Compensate" name="API Publisher Approval Transaction" startQuantity="1" triggeredByEvent="false">
+      <incoming>internal_gateway_flow</incoming>
+      <incoming>flow42</incoming>
+      <outgoing>flow40</outgoing>
+      <startEvent id="startevent4" isInterrupting="true" name="Start" parallelMultiple="false">
+        <outgoing>flow33</outgoing>
+        <outputSet/>
+      </startEvent>
+      <endEvent id="endevent6" name="End">
+        <incoming>flow39</incoming>
+        <inputSet/>
+      </endEvent>
+      <userTask activiti:candidateGroups="${apiProviderRole}" completionQuantity="1" id="api_publisher_approval" implementation="##unspecified" isForCompensation="false" name="API Publisher Approval" startQuantity="1">
         <extensionElements>
-          <activiti:formProperty id="apiPublisherApproval" name="Approve / Reject" type="enum" default="apiPublisherApproval" required="true">
-            <activiti:value id="APPROVED" name="Approve"></activiti:value>
-            <activiti:value id="REJECTED" name="Reject"></activiti:value>
+          <activiti:formProperty default="apiPublisherApproval" id="apiPublisherApproval" name="Approve / Reject" required="true" type="enum">
+            <formProperty>
+              <formProperty>
+                <formProperty>
+                  <formProperty>
+                    <formProperty>
+                      <formProperty>
+                        <formProperty>
+                          <formProperty>
+                            <formProperty>
+                              <formProperty>
+                                <activiti:value id="APPROVED" name="Approve"/>
+                                <activiti:value id="REJECTED" name="Reject"/>
+                              </formProperty>
+                            </formProperty>
+                          </formProperty>
+                        </formProperty>
+                      </formProperty>
+                    </formProperty>
+                  </formProperty>
+                </formProperty>
+              </formProperty>
+            </formProperty>
           </activiti:formProperty>
         </extensionElements>
+        <incoming>flow33</incoming>
+        <outgoing>flow34</outgoing>
       </userTask>
-      <serviceTask id="publisher_data_update" name="Publisher Data Update" activiti:class="com.wso2telco.workflow.approval.subscription.servicetask.APIPublisherApprovalDBUpdater"></serviceTask>
-      <sequenceFlow id="flow33" sourceRef="startevent4" targetRef="api_publisher_approval"></sequenceFlow>
-      <sequenceFlow id="flow34" sourceRef="api_publisher_approval" targetRef="publisher_data_update"></sequenceFlow>
-      <sequenceFlow id="flow35" sourceRef="publisher_data_update" targetRef="publisher_callback"></sequenceFlow>
-      <serviceTask id="publisher_callback" name="Publisher Callback" activiti:class="com.wso2telco.workflow.approval.subscription.servicetask.CallbackServiceInvokeTask"></serviceTask>
-      <sequenceFlow id="flow39" sourceRef="publisher_callback" targetRef="endevent6"></sequenceFlow>
+      <serviceTask activiti:class="com.wso2telco.workflow.approval.subscription.servicetask.APIPublisherApprovalDBUpdater" completionQuantity="1" id="publisher_data_update" implementation="##WebService" isForCompensation="false" name="Publisher Data Update" startQuantity="1">
+        <incoming>flow34</incoming>
+        <outgoing>flow35</outgoing>
+      </serviceTask>
+      <sequenceFlow id="flow33" sourceRef="startevent4" targetRef="api_publisher_approval"/>
+      <sequenceFlow id="flow34" sourceRef="api_publisher_approval" targetRef="publisher_data_update"/>
+      <sequenceFlow id="flow35" sourceRef="publisher_data_update" targetRef="publisher_callback"/>
+      <serviceTask activiti:class="com.wso2telco.workflow.approval.subscription.servicetask.CallbackServiceInvokeTask" completionQuantity="1" id="publisher_callback" implementation="##WebService" isForCompensation="false" name="Publisher Callback" startQuantity="1">
+        <incoming>flow35</incoming>
+        <outgoing>flow39</outgoing>
+      </serviceTask>
+      <sequenceFlow id="flow39" sourceRef="publisher_callback" targetRef="endevent6"/>
     </transaction>
-    <boundaryEvent id="operator_callback_error_event" name="Operator Callback Error Event" attachedToRef="servicetask3">
-      <errorEventDefinition></errorEventDefinition>
+    <boundaryEvent attachedToRef="servicetask3" cancelActivity="true" id="operator_callback_error_event" name="Operator Callback Error Event" parallelMultiple="false">
+      <outgoing>flow37</outgoing>
+      <outputSet/>
+      <errorEventDefinition id="operator_callback_error_event_ED_1"/>
     </boundaryEvent>
-    <sequenceFlow id="flow37" name="operator callback error flow" sourceRef="operator_callback_error_event" targetRef="operator_admin_approval_transaction"></sequenceFlow>
-    <sequenceFlow id="flow38" sourceRef="servicetask3" targetRef="endevent3"></sequenceFlow>
-    <sequenceFlow id="flow40" sourceRef="api_publisher_approval_transaction" targetRef="endevent3"></sequenceFlow>
-    <exclusiveGateway id="exclusivegateway4" name="Exclusive Gateway"></exclusiveGateway>
-    <sequenceFlow id="flow41" sourceRef="operator_admin_approval_transaction" targetRef="exclusivegateway4"></sequenceFlow>
+    <sequenceFlow id="flow37" name="operator callback error flow" sourceRef="operator_callback_error_event" targetRef="operator_admin_approval_transaction"/>
+    <sequenceFlow id="flow38" sourceRef="servicetask3" targetRef="endevent3"/>
+    <sequenceFlow id="flow40" sourceRef="api_publisher_approval_transaction" targetRef="endevent3"/>
+    <exclusiveGateway gatewayDirection="Unspecified" id="exclusivegateway4" name="Exclusive Gateway">
+      <incoming>flow41</incoming>
+      <outgoing>internal_gateway_flow</outgoing>
+      <outgoing>external_gateway_flow</outgoing>
+    </exclusiveGateway>
+    <sequenceFlow id="flow41" sourceRef="operator_admin_approval_transaction" targetRef="exclusivegateway4"/>
     <sequenceFlow id="internal_gateway_flow" name="internal gateway flow" sourceRef="exclusivegateway4" targetRef="api_publisher_approval_transaction">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${operatorAdminApproval.equals("APPROVED") and deployment_type.equals("internal_gateway_type1")}]]></conditionExpression>
     </sequenceFlow>
     <sequenceFlow id="external_gateway_flow" name="external gateway / operator admin rejected flow" sourceRef="exclusivegateway4" targetRef="servicetask3">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${operatorAdminApproval.equals("REJECTED") or deployment_type.equals("external_gateway") or deployment_type.equals("hub") }]]></conditionExpression>
     </sequenceFlow>
-    <exclusiveGateway id="exclusivegateway5" name="Exclusive Gateway"></exclusiveGateway>
+    <exclusiveGateway gatewayDirection="Unspecified" id="exclusivegateway5" name="Exclusive Gateway">
+      <incoming>flow44</incoming>
+      <outgoing>flow42</outgoing>
+      <outgoing>flow43</outgoing>
+    </exclusiveGateway>
     <sequenceFlow id="flow42" name="Internal gateway type1 flow" sourceRef="exclusivegateway5" targetRef="api_publisher_approval_transaction">
       <conditionExpression xsi:type="tFormalExpression"><![CDATA[${deployment_type.equals("internal_gateway_type2")}]]></conditionExpression>
     </sequenceFlow>
-    <sequenceFlow id="flow43" sourceRef="exclusivegateway5" targetRef="operator_admin_approval_transaction"></sequenceFlow>
-    <sequenceFlow id="flow44" sourceRef="exclusivegateway1" targetRef="exclusivegateway5"></sequenceFlow>
+    <sequenceFlow id="flow43" sourceRef="exclusivegateway5" targetRef="operator_admin_approval_transaction"/>
+    <sequenceFlow id="flow44" sourceRef="exclusivegateway1" targetRef="exclusivegateway5"/>
   </process>
-  <bpmndi:BPMNDiagram id="BPMNDiagram_subscription_approval_process">
-    <bpmndi:BPMNPlane bpmnElement="subscription_approval_process" id="BPMNPlane_subscription_approval_process">
-      <bpmndi:BPMNShape bpmnElement="startevent1" id="BPMNShape_startevent1">
-        <omgdc:Bounds height="35.0" width="35.0" x="91.0" y="608.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="BPMNShape_exclusivegateway1">
-        <omgdc:Bounds height="40.0" width="40.0" x="87.0" y="432.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="servicetask2" id="BPMNShape_servicetask2">
-        <omgdc:Bounds height="55.0" width="105.0" x="226.0" y="184.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="api_manager_callback_error_boundry_event" id="BPMNShape_api_manager_callback_error_boundry_event">
-        <omgdc:Bounds height="30.0" width="30.0" x="275.0" y="165.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="endevent3" id="BPMNShape_endevent3">
-        <omgdc:Bounds height="35.0" width="35.0" x="1428.0" y="30.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="exclusivegateway2" id="BPMNShape_exclusivegateway2">
-        <omgdc:Bounds height="40.0" width="40.0" x="350.0" y="191.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="operators_converter" id="BPMNShape_operators_converter">
-        <omgdc:Bounds height="55.0" width="105.0" x="55.0" y="500.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="hub_admin_approval_transaction" id="BPMNShape_hub_admin_approval_transaction">
-        <omgdc:Bounds height="330.0" width="205.0" x="6.0" y="47.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="hub_admin_approval" id="BPMNShape_hub_admin_approval">
-        <omgdc:Bounds height="55.0" width="105.0" x="50.0" y="236.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="hub_admin_data_update" id="BPMNShape_hub_admin_data_update">
-        <omgdc:Bounds height="55.0" width="105.0" x="50.0" y="136.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="startevent3" id="BPMNShape_startevent3">
-        <omgdc:Bounds height="35.0" width="35.0" x="85.0" y="316.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="endevent5" id="BPMNShape_endevent5">
-        <omgdc:Bounds height="35.0" width="35.0" x="85.0" y="69.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="operator_admin_approval_transaction" id="BPMNShape_operator_admin_approval_transaction">
-        <omgdc:Bounds height="205.0" width="484.0" x="457.0" y="109.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="startevent2" id="BPMNShape_startevent2">
-        <omgdc:Bounds height="35.0" width="35.0" x="487.0" y="196.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="usertask1" id="BPMNShape_usertask1">
-        <omgdc:Bounds height="55.0" width="105.0" x="557.0" y="186.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="endevent4" id="BPMNShape_endevent4">
-        <omgdc:Bounds height="35.0" width="35.0" x="860.0" y="196.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="servicetask4" id="BPMNShape_servicetask4">
-        <omgdc:Bounds height="55.0" width="105.0" x="720.0" y="186.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="servicetask3" id="BPMNShape_servicetask3">
-        <omgdc:Bounds height="55.0" width="105.0" x="1228.0" y="184.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="operator_callback_error_event" id="BPMNShape_operator_callback_error_event">
-        <omgdc:Bounds height="30.0" width="30.0" x="1291.0" y="164.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="api_publisher_approval_transaction" id="BPMNShape_api_publisher_approval_transaction">
-        <omgdc:Bounds height="205.0" width="571.0" x="1160.0" y="350.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="startevent4" id="BPMNShape_startevent4">
-        <omgdc:Bounds height="35.0" width="35.0" x="1190.0" y="430.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="endevent6" id="BPMNShape_endevent6">
-        <omgdc:Bounds height="35.0" width="35.0" x="1668.0" y="430.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="api_publisher_approval" id="BPMNShape_api_publisher_approval">
-        <omgdc:Bounds height="55.0" width="105.0" x="1260.0" y="420.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="publisher_data_update" id="BPMNShape_publisher_data_update">
-        <omgdc:Bounds height="55.0" width="105.0" x="1390.0" y="420.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="publisher_callback" id="BPMNShape_publisher_callback">
-        <omgdc:Bounds height="55.0" width="105.0" x="1530.0" y="420.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="exclusivegateway4" id="BPMNShape_exclusivegateway4">
-        <omgdc:Bounds height="40.0" width="40.0" x="1080.0" y="191.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNShape bpmnElement="exclusivegateway5" id="BPMNShape_exclusivegateway5">
-        <omgdc:Bounds height="40.0" width="40.0" x="678.0" y="432.0"></omgdc:Bounds>
-      </bpmndi:BPMNShape>
-      <bpmndi:BPMNEdge bpmnElement="hubFlow" id="BPMNEdge_hubFlow">
-        <omgdi:waypoint x="107.0" y="432.0"></omgdi:waypoint>
-        <omgdi:waypoint x="108.0" y="377.0"></omgdi:waypoint>
+  <bpmndi:BPMNDiagram id="Yaoqiang_Diagram-subscription_approval_process" name="Untitled Diagram" resolution="96.0">
+    <bpmndi:BPMNPlane bpmnElement="subscription_approval_process">
+      <bpmndi:BPMNShape bpmnElement="startevent1" id="Yaoqiang-startevent1">
+        <omgdc:Bounds height="32.0" width="32.0" x="91.0" y="608.0"/>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="12.0" width="46.0" x="107.0" y="432.0"></omgdc:Bounds>
+          <omgdc:Bounds height="18.8" width="34.0" x="90.0" y="649.32"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway1" id="Yaoqiang-exclusivegateway1" isMarkerVisible="true">
+        <omgdc:Bounds height="42.0" width="42.0" x="87.0" y="432.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="111.0" x="52.5" y="476.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask2" id="Yaoqiang-servicetask2">
+        <omgdc:Bounds height="55.0" width="105.0" x="226.0" y="184.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="79.0" x="239.0" y="204.1"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent3" id="Yaoqiang-endevent3">
+        <omgdc:Bounds height="32.0" width="32.0" x="1428.0" y="30.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="27.0" x="1430.5" y="71.32"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway2" id="Yaoqiang-exclusivegateway2" isMarkerVisible="true">
+        <omgdc:Bounds height="42.0" width="42.0" x="350.0" y="191.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="111.0" x="315.5" y="235.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="operators_converter" id="Yaoqiang-operators_converter">
+        <omgdc:Bounds height="55.0" width="105.0" x="55.0" y="500.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.8" width="64.0" x="75.5" y="513.1"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="hub_admin_approval_transaction" id="Yaoqiang-hub_admin_approval_transaction" isExpanded="true">
+        <omgdc:Bounds height="330.0" width="205.0" x="6.0" y="47.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.8" width="120.0" x="21.0" y="52.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="operator_admin_approval_transaction" id="Yaoqiang-operator_admin_approval_transaction" isExpanded="true">
+        <omgdc:Bounds height="205.0" width="484.0" x="457.0" y="109.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="220.0" x="472.0" y="114.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask3" id="Yaoqiang-servicetask3">
+        <omgdc:Bounds height="55.0" width="105.0" x="1228.0" y="184.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.8" width="57.0" x="1252.0" y="197.1"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="api_publisher_approval_transaction" id="Yaoqiang-api_publisher_approval_transaction" isExpanded="true">
+        <omgdc:Bounds height="205.0" width="571.0" x="1160.0" y="350.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="204.0" x="1175.0" y="355.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway4" id="Yaoqiang-exclusivegateway4" isMarkerVisible="true">
+        <omgdc:Bounds height="42.0" width="42.0" x="1080.0" y="191.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="111.0" x="1045.5" y="235.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="exclusivegateway5" id="Yaoqiang-exclusivegateway5" isMarkerVisible="true">
+        <omgdc:Bounds height="42.0" width="42.0" x="678.0" y="432.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="111.0" x="643.5" y="476.0"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="api_manager_callback_error_boundry_event" id="Yaoqiang-api_manager_callback_error_boundry_event">
+        <omgdc:Bounds height="32.0" width="32.0" x="273.75" y="223.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="86.0" x="246.75" y="263.6"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="hub_admin_approval" id="Yaoqiang-hub_admin_approval">
+        <omgdc:Bounds height="55.0" width="105.0" x="50.0" y="236.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.8" width="67.0" x="69.0" y="249.1"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="hub_admin_data_update" id="Yaoqiang-hub_admin_data_update">
+        <omgdc:Bounds height="55.0" width="105.0" x="50.0" y="136.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.8" width="76.0" x="64.5" y="149.1"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startevent3" id="Yaoqiang-startevent3">
+        <omgdc:Bounds height="32.0" width="32.0" x="85.0" y="316.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="34.0" x="84.0" y="357.32"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent5" id="Yaoqiang-endevent5">
+        <omgdc:Bounds height="32.0" width="32.0" x="85.0" y="69.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="27.0" x="87.5" y="110.32"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startevent2" id="Yaoqiang-startevent2">
+        <omgdc:Bounds height="32.0" width="32.0" x="487.0" y="196.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="34.0" x="486.0" y="237.32"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="usertask1" id="Yaoqiang-usertask1">
+        <omgdc:Bounds height="55.0" width="105.0" x="557.0" y="186.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.8" width="94.0" x="562.5" y="199.1"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent4" id="Yaoqiang-endevent4">
+        <omgdc:Bounds height="32.0" width="32.0" x="860.0" y="196.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="27.0" x="862.5" y="237.32"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="servicetask4" id="Yaoqiang-servicetask4">
+        <omgdc:Bounds height="55.0" width="105.0" x="720.0" y="186.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="46.8" width="71.0" x="737.0" y="192.1"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="operator_callback_error_event" id="Yaoqiang-operator_callback_error_event">
+        <omgdc:Bounds height="32.0" width="32.0" x="1275.75" y="223.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="176.0" x="1203.75" y="263.6"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="startevent4" id="Yaoqiang-startevent4">
+        <omgdc:Bounds height="32.0" width="32.0" x="1190.0" y="430.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="34.0" x="1189.0" y="471.32"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="endevent6" id="Yaoqiang-endevent6">
+        <omgdc:Bounds height="32.0" width="32.0" x="1668.0" y="430.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="27.0" x="1670.5" y="471.32"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="api_publisher_approval" id="Yaoqiang-api_publisher_approval">
+        <omgdc:Bounds height="55.0" width="105.0" x="1260.0" y="420.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.8" width="80.0" x="1272.5" y="433.1"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="publisher_data_update" id="Yaoqiang-publisher_data_update">
+        <omgdc:Bounds height="55.0" width="105.0" x="1390.0" y="420.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.8" width="89.0" x="1398.0" y="433.1"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNShape bpmnElement="publisher_callback" id="Yaoqiang-publisher_callback">
+        <omgdc:Bounds height="55.0" width="105.0" x="1530.0" y="420.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.8" width="59.0" x="1553.0" y="433.1"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNShape>
+      <bpmndi:BPMNEdge bpmnElement="flow24" id="Yaoqiang-flow24">
+        <omgdi:waypoint x="211.0" y="212.0"/>
+        <omgdi:waypoint x="226.0" y="211.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="6.0" x="215.5" y="202.35"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="hubAdminRejectFlow" id="BPMNEdge_hubAdminRejectFlow">
-        <omgdi:waypoint x="370.0" y="191.0"></omgdi:waypoint>
-        <omgdi:waypoint x="370.0" y="47.0"></omgdi:waypoint>
-        <omgdi:waypoint x="463.0" y="47.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1137.0" y="47.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1428.0" y="47.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="hubAdminApprovedFlow" id="BPMNEdge_hubAdminApprovedFlow">
-        <omgdi:waypoint x="390.0" y="211.0"></omgdi:waypoint>
-        <omgdi:waypoint x="457.0" y="211.0"></omgdi:waypoint>
+      <bpmndi:BPMNEdge bpmnElement="flow19" id="Yaoqiang-flow19">
+        <omgdi:waypoint x="662.0" y="213.5"/>
+        <omgdi:waypoint x="720.0" y="213.5"/>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="36.0" width="100.0" x="390.0" y="211.0"></omgdc:Bounds>
+          <omgdc:Bounds height="18.8" width="6.0" x="688.0" y="204.1"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="hubFlow1" id="BPMNEdge_hubFlow1">
-        <omgdi:waypoint x="331.0" y="211.0"></omgdi:waypoint>
-        <omgdi:waypoint x="347.0" y="210.0"></omgdi:waypoint>
-        <omgdi:waypoint x="350.0" y="211.0"></omgdi:waypoint>
+      <bpmndi:BPMNEdge bpmnElement="flow18" id="Yaoqiang-flow18">
+        <omgdi:waypoint x="519.0" y="212.0"/>
+        <omgdi:waypoint x="557.0" y="213.5"/>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="36.0" width="100.0" x="357.0" y="119.0"></omgdc:Bounds>
+          <omgdc:Bounds height="18.8" width="6.0" x="535.0" y="203.35"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow26" id="BPMNEdge_flow26">
-        <omgdi:waypoint x="108.0" y="608.0"></omgdi:waypoint>
-        <omgdi:waypoint x="107.0" y="555.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow27" id="BPMNEdge_flow27">
-        <omgdi:waypoint x="107.0" y="500.0"></omgdi:waypoint>
-        <omgdi:waypoint x="107.0" y="472.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow15" id="BPMNEdge_flow15">
-        <omgdi:waypoint x="102.0" y="236.0"></omgdi:waypoint>
-        <omgdi:waypoint x="102.0" y="191.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow28" id="BPMNEdge_flow28">
-        <omgdi:waypoint x="102.0" y="316.0"></omgdi:waypoint>
-        <omgdi:waypoint x="102.0" y="291.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow29" id="BPMNEdge_flow29">
-        <omgdi:waypoint x="102.0" y="136.0"></omgdi:waypoint>
-        <omgdi:waypoint x="102.0" y="104.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow24" id="BPMNEdge_flow24">
-        <omgdi:waypoint x="211.0" y="212.0"></omgdi:waypoint>
-        <omgdi:waypoint x="226.0" y="211.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow18" id="BPMNEdge_flow18">
-        <omgdi:waypoint x="522.0" y="213.0"></omgdi:waypoint>
-        <omgdi:waypoint x="557.0" y="213.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow19" id="BPMNEdge_flow19">
-        <omgdi:waypoint x="662.0" y="213.0"></omgdi:waypoint>
-        <omgdi:waypoint x="720.0" y="213.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow25" id="BPMNEdge_flow25">
-        <omgdi:waypoint x="825.0" y="213.0"></omgdi:waypoint>
-        <omgdi:waypoint x="860.0" y="213.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow30" id="BPMNEdge_flow30">
-        <omgdi:waypoint x="290.0" y="165.0"></omgdi:waypoint>
-        <omgdi:waypoint x="289.0" y="15.0"></omgdi:waypoint>
-        <omgdi:waypoint x="129.0" y="15.0"></omgdi:waypoint>
-        <omgdi:waypoint x="108.0" y="47.0"></omgdi:waypoint>
+      <bpmndi:BPMNEdge bpmnElement="flow15" id="Yaoqiang-flow15">
+        <omgdi:waypoint x="102.5" y="236.0"/>
+        <omgdi:waypoint x="102.5" y="191.0"/>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="36.0" width="100.0" x="191.0" y="-39.0"></omgdc:Bounds>
+          <omgdc:Bounds height="18.8" width="6.0" x="99.5" y="204.1"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow33" id="BPMNEdge_flow33">
-        <omgdi:waypoint x="1225.0" y="447.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1260.0" y="447.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow34" id="BPMNEdge_flow34">
-        <omgdi:waypoint x="1365.0" y="447.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1390.0" y="447.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow35" id="BPMNEdge_flow35">
-        <omgdi:waypoint x="1495.0" y="447.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1530.0" y="447.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow39" id="BPMNEdge_flow39">
-        <omgdi:waypoint x="1635.0" y="447.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1668.0" y="447.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow37" id="BPMNEdge_flow37">
-        <omgdi:waypoint x="1306.0" y="164.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1264.0" y="99.0"></omgdi:waypoint>
-        <omgdi:waypoint x="971.0" y="99.0"></omgdi:waypoint>
-        <omgdi:waypoint x="730.0" y="99.0"></omgdi:waypoint>
-        <omgdi:waypoint x="699.0" y="109.0"></omgdi:waypoint>
+      <bpmndi:BPMNEdge bpmnElement="flow44" id="Yaoqiang-flow44">
+        <omgdi:waypoint x="127.0" y="451.0"/>
+        <omgdi:waypoint x="318.0" y="451.0"/>
+        <omgdi:waypoint x="546.0" y="451.0"/>
+        <omgdi:waypoint x="678.0" y="451.0"/>
+        <omgdi:waypoint x="680.0" y="451.0"/>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="36.0" width="100.0" x="1185.0" y="-14.0"></omgdc:Bounds>
+          <omgdc:Bounds height="18.8" width="6.0" x="400.5" y="441.6"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow38" id="BPMNEdge_flow38">
-        <omgdi:waypoint x="1333.0" y="211.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1445.0" y="211.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1445.0" y="65.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow40" id="BPMNEdge_flow40">
-        <omgdi:waypoint x="1445.0" y="350.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1446.0" y="252.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1445.0" y="65.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow41" id="BPMNEdge_flow41">
-        <omgdi:waypoint x="941.0" y="211.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1080.0" y="211.0"></omgdi:waypoint>
-      </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="internal_gateway_flow" id="BPMNEdge_internal_gateway_flow">
-        <omgdi:waypoint x="1100.0" y="231.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1100.0" y="400.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1134.0" y="400.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1159.0" y="400.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1160.0" y="452.0"></omgdi:waypoint>
+      <bpmndi:BPMNEdge bpmnElement="flow43" id="Yaoqiang-flow43">
+        <omgdi:waypoint x="699.0" y="432.0"/>
+        <omgdi:waypoint x="699.0" y="314.0"/>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="36.0" width="100.0" x="1000.0" y="324.0"></omgdc:Bounds>
+          <omgdc:Bounds height="18.8" width="6.0" x="696.0" y="363.6"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="external_gateway_flow" id="BPMNEdge_external_gateway_flow">
-        <omgdi:waypoint x="1120.0" y="211.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1228.0" y="211.0"></omgdi:waypoint>
+      <bpmndi:BPMNEdge bpmnElement="hubAdminRejectFlow" id="Yaoqiang-hubAdminRejectFlow">
+        <omgdi:waypoint x="370.0" y="192.0"/>
+        <omgdi:waypoint x="370.0" y="47.0"/>
+        <omgdi:waypoint x="463.0" y="47.0"/>
+        <omgdi:waypoint x="1137.0" y="47.0"/>
+        <omgdi:waypoint x="1428.0312805773287" y="47.0"/>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="48.0" width="100.0" x="1119.0" y="164.0"></omgdc:Bounds>
+          <omgdc:Bounds height="18.8" width="6.0" x="823.52" y="37.6"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow42" id="BPMNEdge_flow42">
-        <omgdi:waypoint x="718.0" y="452.0"></omgdi:waypoint>
-        <omgdi:waypoint x="1160.0" y="452.0"></omgdi:waypoint>
+      <bpmndi:BPMNEdge bpmnElement="flow42" id="Yaoqiang-flow42">
+        <omgdi:waypoint x="720.0" y="453.0"/>
+        <omgdi:waypoint x="1160.0" y="452.5"/>
         <bpmndi:BPMNLabel>
-          <omgdc:Bounds height="36.0" width="100.0" x="718.0" y="452.0"></omgdc:Bounds>
+          <omgdc:Bounds height="32.8" width="316.0" x="782.0" y="436.35"/>
         </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow43" id="BPMNEdge_flow43">
-        <omgdi:waypoint x="698.0" y="432.0"></omgdi:waypoint>
-        <omgdi:waypoint x="699.0" y="314.0"></omgdi:waypoint>
+      <bpmndi:BPMNEdge bpmnElement="flow41" id="Yaoqiang-flow41">
+        <omgdi:waypoint x="941.0" y="211.5"/>
+        <omgdi:waypoint x="1080.0" y="212.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="6.0" x="1007.5" y="202.35"/>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
-      <bpmndi:BPMNEdge bpmnElement="flow44" id="BPMNEdge_flow44">
-        <omgdi:waypoint x="127.0" y="452.0"></omgdi:waypoint>
-        <omgdi:waypoint x="318.0" y="451.0"></omgdi:waypoint>
-        <omgdi:waypoint x="546.0" y="451.0"></omgdi:waypoint>
-        <omgdi:waypoint x="678.0" y="451.0"></omgdi:waypoint>
-        <omgdi:waypoint x="718.0" y="452.0"></omgdi:waypoint>
+      <bpmndi:BPMNEdge bpmnElement="flow40" id="Yaoqiang-flow40">
+        <omgdi:waypoint x="1446.0" y="350.0"/>
+        <omgdi:waypoint x="1446.0" y="252.0"/>
+        <omgdi:waypoint x="1446.0" y="61.874507866387546"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="6.0" x="1443.0" y="196.53"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="external_gateway_flow" id="Yaoqiang-external_gateway_flow">
+        <omgdi:waypoint x="1122.0" y="212.0"/>
+        <omgdi:waypoint x="1228.0" y="211.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.8" width="750.0" x="800.0" y="195.35"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="hubFlow" id="Yaoqiang-hubFlow">
+        <omgdi:waypoint x="108.0" y="432.0"/>
+        <omgdi:waypoint x="108.0" y="377.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.8" width="204.0" x="6.0" y="388.1"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow39" id="Yaoqiang-flow39">
+        <omgdi:waypoint x="1635.0" y="447.5"/>
+        <omgdi:waypoint x="1668.0" y="446.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="6.0" x="1648.5" y="437.35"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow38" id="Yaoqiang-flow38">
+        <omgdi:waypoint x="1333.0" y="211.0"/>
+        <omgdi:waypoint x="1445.0" y="211.0"/>
+        <omgdi:waypoint x="1445.0" y="61.96871942267131"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="6.0" x="1442.0" y="183.08"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow37" id="Yaoqiang-flow37">
+        <omgdi:waypoint x="1291.75" y="223.00195324422384"/>
+        <omgdi:waypoint x="1264.0" y="99.0"/>
+        <omgdi:waypoint x="971.0" y="99.0"/>
+        <omgdi:waypoint x="730.0" y="99.0"/>
+        <omgdi:waypoint x="699.0" y="109.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="164.0" x="970.38" y="89.6"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow35" id="Yaoqiang-flow35">
+        <omgdi:waypoint x="1495.0" y="447.5"/>
+        <omgdi:waypoint x="1530.0" y="447.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="6.0" x="1509.5" y="438.1"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow34" id="Yaoqiang-flow34">
+        <omgdi:waypoint x="1365.0" y="447.5"/>
+        <omgdi:waypoint x="1390.0" y="447.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="6.0" x="1374.5" y="438.1"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow33" id="Yaoqiang-flow33">
+        <omgdi:waypoint x="1222.0" y="446.0"/>
+        <omgdi:waypoint x="1260.0" y="447.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="6.0" x="1238.0" y="437.35"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow30" id="Yaoqiang-flow30">
+        <omgdi:waypoint x="289.0" y="223.0312805773287"/>
+        <omgdi:waypoint x="289.0" y="15.0"/>
+        <omgdi:waypoint x="129.0" y="15.0"/>
+        <omgdi:waypoint x="108.5" y="47.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="137.0" x="218.27" y="5.6"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="hubAdminApprovedFlow" id="Yaoqiang-hubAdminApprovedFlow">
+        <omgdi:waypoint x="392.0" y="212.0"/>
+        <omgdi:waypoint x="457.0" y="211.5"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.8" width="251.0" x="299.0" y="195.35"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="internal_gateway_flow" id="Yaoqiang-internal_gateway_flow">
+        <omgdi:waypoint x="1100.0" y="232.0"/>
+        <omgdi:waypoint x="1100.0" y="400.0"/>
+        <omgdi:waypoint x="1134.0" y="400.0"/>
+        <omgdi:waypoint x="1159.0" y="400.0"/>
+        <omgdi:waypoint x="1160.0" y="400.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="32.8" width="597.0" x="801.5" y="329.6"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow29" id="Yaoqiang-flow29">
+        <omgdi:waypoint x="101.0" y="136.0"/>
+        <omgdi:waypoint x="101.0" y="101.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="6.0" x="98.0" y="109.1"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow28" id="Yaoqiang-flow28">
+        <omgdi:waypoint x="101.0" y="316.0"/>
+        <omgdi:waypoint x="101.0" y="291.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="6.0" x="98.0" y="294.1"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow27" id="Yaoqiang-flow27">
+        <omgdi:waypoint x="108.0" y="500.0"/>
+        <omgdi:waypoint x="108.0" y="474.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="6.0" x="105.0" y="477.6"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow26" id="Yaoqiang-flow26">
+        <omgdi:waypoint x="107.0" y="608.0"/>
+        <omgdi:waypoint x="107.0" y="555.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="6.0" x="104.0" y="572.1"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="hubFlow1" id="Yaoqiang-hubFlow1">
+        <omgdi:waypoint x="331.0" y="210.0"/>
+        <omgdi:waypoint x="347.0" y="210.0"/>
+        <omgdi:waypoint x="352.0" y="210.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="144.0" x="269.5" y="200.6"/>
+        </bpmndi:BPMNLabel>
+      </bpmndi:BPMNEdge>
+      <bpmndi:BPMNEdge bpmnElement="flow25" id="Yaoqiang-flow25">
+        <omgdi:waypoint x="825.0" y="213.5"/>
+        <omgdi:waypoint x="860.0" y="212.0"/>
+        <bpmndi:BPMNLabel>
+          <omgdc:Bounds height="18.8" width="6.0" x="839.5" y="203.35"/>
+        </bpmndi:BPMNLabel>
       </bpmndi:BPMNEdge>
     </bpmndi:BPMNPlane>
   </bpmndi:BPMNDiagram>

@@ -39,7 +39,7 @@ public class SQLConstants {
 			" SELECT distinct(SUB.USER_ID) AS USER_ID FROM AM_SUBSCRIPTION SUBS, AM_APPLICATION APP,  " +
 					"AM_SUBSCRIBER SUB, AM_API API WHERE SUBS.APPLICATION_ID = APP.APPLICATION_ID " +
 					"AND APP.SUBSCRIBER_ID = SUB.SUBSCRIBER_ID AND API.API_ID = SUBS.API_ID " +
-					"AND SUBS.SUB_STATUS != '"+BlacklistWhitelistConstants.SubscriptionStatus.REJECTED +"' " +
+					"AND SUBS.SUB_STATUS != '"+BlacklistWhitelistConstants.SubscriptionStatus.REJECTED + "'" +
 					"";
 
 

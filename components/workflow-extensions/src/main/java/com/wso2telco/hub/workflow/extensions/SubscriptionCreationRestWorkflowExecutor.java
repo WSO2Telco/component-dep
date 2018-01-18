@@ -1,12 +1,12 @@
 /**
  * Copyright (c) 2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
- *
+ * <p>
  * WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- *
+ * <p>
  * http://www.apache.org/licenses/LICENSE-2.0
- *
+ * <p>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -16,13 +16,14 @@
 
 package com.wso2telco.hub.workflow.extensions;
 
+import com.wso2telco.core.dbutils.exception.BusinessException;
+import com.wso2telco.core.userprofile.UserProfileRetriever;
+import com.wso2telco.core.userprofile.dto.UserProfileDTO;
 import com.wso2telco.dep.operatorservice.dao.WorkflowDAO;
 import com.wso2telco.hub.workflow.extensions.beans.CreateProcessInstanceRequest;
 import com.wso2telco.hub.workflow.extensions.beans.CreateProcessInstanceResponse;
 import com.wso2telco.hub.workflow.extensions.beans.ProcessInstanceData;
 import com.wso2telco.hub.workflow.extensions.beans.Variable;
-import com.wso2telco.hub.workflow.extensions.exceptions.WorkflowErrorDecoder;
-import com.wso2telco.hub.workflow.extensions.exceptions.WorkflowExtensionException;
 import com.wso2telco.hub.workflow.extensions.impl.OperatorImpl;
 import com.wso2telco.hub.workflow.extensions.impl.WorkflowAPIConsumerImpl;
 import com.wso2telco.hub.workflow.extensions.interfaces.OperatorApi;
@@ -36,6 +37,7 @@ import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.workflow.core.execption.WorkflowExtensionException;
 import org.wso2.carbon.apimgt.api.APIConsumer;
 import org.wso2.carbon.apimgt.api.APIManagementException;
 import org.wso2.carbon.apimgt.api.APIProvider;
@@ -48,11 +50,7 @@ import org.wso2.carbon.apimgt.impl.dto.SubscriptionWorkflowDTO;
 import org.wso2.carbon.apimgt.impl.dto.WorkflowDTO;
 import org.wso2.carbon.apimgt.impl.internal.ServiceReferenceHolder;
 import org.wso2.carbon.apimgt.impl.utils.APIUtil;
-import org.wso2.carbon.apimgt.impl.workflow.GeneralWorkflowResponse;
-import org.wso2.carbon.apimgt.impl.workflow.WorkflowConstants;
-import org.wso2.carbon.apimgt.impl.workflow.WorkflowException;
-import org.wso2.carbon.apimgt.impl.workflow.WorkflowExecutor;
-import org.wso2.carbon.apimgt.impl.workflow.WorkflowStatus;
+import org.wso2.carbon.apimgt.impl.workflow.*;
 import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.api.UserStoreManager;
@@ -90,10 +88,10 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
     private static final String SERVICE_URL = "serviceURL";
     private static final String PUBLISHED_STATE = "PUBLISHED";
     private static final String API_PROVIDER_ROLE = "apiProviderRole";
-    private static final String INTERNAL_GATEWAY ="internal_gateway";
-    private static final String PUBLISHER_ROLE_START_WITH ="workflow.Publisher.role.start.with";
-    private static final String PUBLISHER_ROLE_END_WITH ="workflow.Publisher.role.end.with";
-
+    private static final String INTERNAL_GATEWAY = "internal_gateway";
+    private static final String PUBLISHER_ROLE_START_WITH = "workflow.Publisher.role.start.with";
+    private static final String PUBLISHER_ROLE_END_WITH = "workflow.Publisher.role.end.with";
+    private static final String API_PUB_DEPARTMENT = "department";
     private String serviceEndpoint;
     private String username;
     private String password;
@@ -102,10 +100,11 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
         return WorkflowConstants.WF_TYPE_AM_SUBSCRIPTION_CREATION;
     }
 
+    @Override
     public WorkflowResponse execute(WorkflowDTO workflowDTO) throws WorkflowException {
 
         OperatorApi operatorApi = new OperatorImpl();
-        WorkflowDAO workflowDAO=new WorkflowDAO();
+        WorkflowDAO workflowDAO = new WorkflowDAO();
 
         try {
             if (log.isDebugEnabled()) {
@@ -114,7 +113,8 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
             super.execute(workflowDTO);
 
             BusinessProcessApi httpClient = Feign.builder().encoder(new JacksonEncoder()).decoder(new JacksonDecoder())
-                    .errorDecoder(new WorkflowErrorDecoder()).requestInterceptor(
+                    //.errorDecoder(new WorkflowErrorDecoder())
+                    .requestInterceptor(
                             new BasicAuthRequestInterceptor(username, password))
                     .target(BusinessProcessApi.class, serviceEndpoint);
 
@@ -180,8 +180,8 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
 
             Map<String, String> workflowProperties = WorkflowProperties.loadWorkflowPropertiesFromXML();
             String serviceURLString = workflowProperties.get(SERVICE_HOST);
-            String startsWith=workflowProperties.get(PUBLISHER_ROLE_START_WITH);
-            String endsWith=workflowProperties.get(PUBLISHER_ROLE_END_WITH);
+            String startsWith = workflowProperties.get(PUBLISHER_ROLE_START_WITH);
+            String endsWith = workflowProperties.get(PUBLISHER_ROLE_END_WITH);
 
             Variable deploymentType = new Variable(DEPLOYMENT_TYPE, getDeploymentType());
             Variable subscribedApiName = new Variable(API_NAME, apiName);
@@ -209,7 +209,9 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
                     .getRealmConfiguration().getAdminPassword());
 
             Variable operators = new Variable(OPERATORS, operatorApi.getOperators());
-            Variable apiProviderRole= new Variable(API_PROVIDER_ROLE, null);
+            Variable apiProviderRole = new Variable(API_PROVIDER_ROLE, null);
+            Variable apiPubDepartment = new Variable(API_PUB_DEPARTMENT, null);
+
             if (operators == null) {
                 throw new WorkflowException("No operator(s) defined!!");
             }
@@ -225,7 +227,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
                 RealmService realmService = ServiceReferenceHolder.getInstance().getRealmService();
                 UserRealm realm = realmService.getBootstrapRealm();
                 UserStoreManager manager = realm.getUserStoreManager();
-                String userList[] = manager.getRoleListOfUser(publisherName);
+                String[] userList = manager.getRoleListOfUser(publisherName);
                 String publisherRole = null;
                 for (String roleName : userList) {
                     if (roleName.startsWith(startsWith) && roleName.endsWith(endsWith)) {
@@ -233,7 +235,9 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
                         break;
                     }
                 }
+
                 apiProviderRole = new Variable(API_PROVIDER_ROLE, publisherRole);
+                apiPubDepartment = new Variable(API_PUB_DEPARTMENT, getDepartment(publisherName));
             }
 
             List<Variable> variables = new ArrayList<Variable>();
@@ -257,16 +261,17 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
             variables.add(adminUserName);
             variables.add(adminPassword);
             variables.add(apiProviderRole);
+            variables.add(apiPubDepartment);
 
             processInstanceRequest.setVariables(variables);
 
             CreateProcessInstanceResponse processInstanceResponse;
             try {
                 processInstanceResponse = httpClient.createProcessInstance(processInstanceRequest);
-                workflowDAO.insertWorkflowRef(subscriptionWorkFlowDTO.getExternalWorkflowReference(),apiName,version,applicationId,serviceEndpoint);
+                workflowDAO.insertWorkflowRef(subscriptionWorkFlowDTO.getExternalWorkflowReference(), apiName, version, applicationId, serviceEndpoint);
             } catch (WorkflowExtensionException e) {
                 throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
-            } catch(Exception e){
+            } catch (Exception e) {
                 throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
             }
 
@@ -286,6 +291,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
         return new GeneralWorkflowResponse();
     }
 
+    @Override
     public WorkflowResponse complete(WorkflowDTO workFlowDTO) throws WorkflowException {
         workFlowDTO.setUpdatedTime(System.currentTimeMillis());
         super.complete(workFlowDTO);
@@ -319,13 +325,34 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
         return null;
     }
 
+
+    private String getDepartment(String publisherName){
+
+        String department = null;
+        UserProfileDTO userProfile = null;
+
+        /**
+         * define department if exists
+         */
+        try {
+            userProfile = new UserProfileRetriever().getUserProfile(publisherName);
+            department = userProfile.getDepartment();
+        } catch (BusinessException e) {
+            log.error("Error loading publisher department " , e);
+        }
+
+        return department;
+
+    }
+
+    @Override
     public void cleanUpPendingTask(String workflowExtRef) throws WorkflowException {
         BusinessProcessApi api = Feign.builder().encoder(new JacksonEncoder()).decoder(new JacksonDecoder())
-                .errorDecoder(new WorkflowErrorDecoder())
+                //.errorDecoder(new WorkflowErrorDecoder())
                 .requestInterceptor(new BasicAuthRequestInterceptor(username, password))
                 .target(BusinessProcessApi.class, serviceEndpoint);
 
-       ProcessInstanceData instanceData = null;
+        ProcessInstanceData instanceData = null;
         try {
             instanceData = api.getProcessInstances(workflowExtRef);
         } catch (WorkflowExtensionException e) {
@@ -334,7 +361,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
 
         // should be only one process instance for this business key, hence get the 0th element
         try {
-            if(instanceData.getData().size()!=0) {
+            if (instanceData.getData().size() != 0) {
                 api.deleteProcessInstance(Integer.toString(instanceData.getData().get(0).getId()));
             }
         } catch (WorkflowExtensionException e) {

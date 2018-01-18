@@ -6,8 +6,8 @@ public class SubscriptionTaskFactory {
 
     public SubscriptionTask getInstance(String deploymentTypes) {
         SubscriptionTask subscriptionTask = null;
-        if (deploymentTypes.startsWith(Constants.INTERNAL_GATEWAY)) {
-            subscriptionTask = new InternalGatewayTask();
+        if (deploymentTypes.startsWith(Constants.INTERNAL_GATEWAY_TYPE2)) {
+            subscriptionTask = new ExternalGatewayTask();
         } else if (deploymentTypes.equals(Constants.EXTERNAL_GATEWAY)) {
             subscriptionTask = new ExternalGatewayTask();
         } else if (deploymentTypes.equals(Constants.HUB)) {

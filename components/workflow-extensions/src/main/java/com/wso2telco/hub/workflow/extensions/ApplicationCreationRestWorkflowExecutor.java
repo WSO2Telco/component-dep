@@ -16,24 +16,17 @@
 
 package com.wso2telco.hub.workflow.extensions;
 
-import com.wso2telco.dep.operatorservice.dao.WorkflowDAO;
-import com.wso2telco.dep.operatorservice.model.WorkflowReferenceDTO;
-import com.wso2telco.hub.workflow.extensions.beans.CreateProcessInstanceRequest;
-import com.wso2telco.hub.workflow.extensions.beans.CreateProcessInstanceResponse;
-import com.wso2telco.hub.workflow.extensions.beans.ProcessInstanceData;
-import com.wso2telco.hub.workflow.extensions.beans.Variable;
-import com.wso2telco.hub.workflow.extensions.exceptions.WorkflowErrorDecoder;
-import com.wso2telco.hub.workflow.extensions.exceptions.WorkflowExtensionException;
-import com.wso2telco.hub.workflow.extensions.impl.OperatorImpl;
-import com.wso2telco.hub.workflow.extensions.interfaces.OperatorApi;
-import com.wso2telco.hub.workflow.extensions.rest.client.BusinessProcessApi;
-import com.wso2telco.hub.workflow.extensions.util.WorkflowProperties;
-import feign.Feign;
-import feign.auth.BasicAuthRequestInterceptor;
-import feign.jackson.JacksonDecoder;
-import feign.jackson.JacksonEncoder;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.workflow.core.WorkflowErrorDecoder;
+import org.workflow.core.execption.WorkflowExtensionException;
+import org.workflow.core.util.WorkFlowHealper;
 import org.wso2.carbon.apimgt.api.APIConsumer;
 import org.wso2.carbon.apimgt.api.APIManagementException;
 import org.wso2.carbon.apimgt.api.WorkflowResponse;
@@ -53,26 +46,45 @@ import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.user.api.UserStoreException;
 
-import java.util.*;
+import com.wso2telco.dep.operatorservice.dao.WorkflowDAO;
+import com.wso2telco.dep.operatorservice.model.WorkflowReferenceDTO;
+import com.wso2telco.hub.workflow.extensions.beans.CreateProcessInstanceRequest;
+import com.wso2telco.hub.workflow.extensions.beans.CreateProcessInstanceResponse;
+import com.wso2telco.hub.workflow.extensions.beans.ProcessInstanceData;
+import com.wso2telco.hub.workflow.extensions.beans.Variable;
+import com.wso2telco.hub.workflow.extensions.impl.OperatorImpl;
+import com.wso2telco.hub.workflow.extensions.interfaces.OperatorApi;
+import com.wso2telco.hub.workflow.extensions.rest.client.BusinessProcessApi;
+import com.wso2telco.hub.workflow.extensions.util.WorkflowProperties;
+
+import feign.Feign;
+import feign.auth.BasicAuthRequestInterceptor;
+import feign.jackson.JacksonDecoder;
+import feign.jackson.JacksonEncoder;
 
 public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
 
-    private static final Log log = LogFactory.getLog(ApplicationCreationRestWorkflowExecutor.class);
+    /**
+	 *
+	 */
+	private static final long serialVersionUID = 2480996304691515065L;
+
+	private static final Log log = LogFactory.getLog(ApplicationCreationRestWorkflowExecutor.class);
 
     private static final String TENANT_ID = "-1234";
     private static final String APPLICATION_CREATION_APPROVAL_PROCESS_NAME = "application_creation_approval_process";
-    private static final String APPLICATION_NAME = "applicationName";
+    public static final String APPLICATION_NAME = "applicationName";
     private static final String APPLICATION_ID = "applicationId";
     private static final String WORKFLOW_REF_ID = "workflowRefId";
     private static final String CALL_BACK_URL = "callBackUrl";
     private static final String OPERATORS = "operators";
     private static final String DEPLOYMENT_TYPE = "deployment_type";
     private static final String OPERATORS_SYSTEM_PARAM = "OPERATORS";
-    private static final String DEPLOYMENT_TYPE_SYSTEM_PARAM = "DEPLOYMENT_TYPE";
-    private static final String TIER = "tier";
+
+    public static final String TIER = "tier";
     private static final String DESCRIPTION = "description";
     private static final String TENANT_DOMAIN = "tenantDomain";
-    private static final String USER_NAME = "userName";
+    public static final String USER_NAME = "userName";
     private static final String EXTERNAL_REFERENCE = "externalWorkflowReferenc";
     private static final String TIERS_STR = "tiersStr";
     private static final String ADMIN_USER = "adminUserName";
@@ -90,6 +102,8 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
         return WorkflowConstants.WF_TYPE_AM_APPLICATION_CREATION;
     }
 
+
+
     public WorkflowResponse execute(WorkflowDTO workflowDTO) throws WorkflowException {
 
         OperatorApi operatorApi = new OperatorImpl();
@@ -99,10 +113,11 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
         }
         super.execute(workflowDTO);
         try {
+        	WorkFlowHealper.getInstance().setAppCreationServiceEndPoint(serviceEndpoint);
             BusinessProcessApi api = Feign.builder()
                     .encoder(new JacksonEncoder())
                     .decoder(new JacksonDecoder())
-                    .errorDecoder(new WorkflowErrorDecoder())
+                    //.errorDecoder(new WorkflowErrorDecoder())
                     .requestInterceptor(new BasicAuthRequestInterceptor(username, password))
                     .target(BusinessProcessApi.class, serviceEndpoint);
 
@@ -250,7 +265,7 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
         BusinessProcessApi api = Feign.builder()
                 .encoder(new JacksonEncoder())
                 .decoder(new JacksonDecoder())
-                .errorDecoder(new WorkflowErrorDecoder())
+                //.errorDecoder(new WorkflowErrorDecoder())
                 .requestInterceptor(new BasicAuthRequestInterceptor(username, password))
                 .target(BusinessProcessApi.class, serviceEndpoint);
 
@@ -296,9 +311,13 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
                 workflowExtRef + " deleted successfully");
 
     }
-
+    /**\
+     * replaced by WorkFlowHealper.getDeploymentType()
+     * @return
+     */
+    @Deprecated
     private String getDeploymentType() {
-        return System.getProperty(DEPLOYMENT_TYPE_SYSTEM_PARAM, "hub");
+        return WorkFlowHealper.getDeploymentType();
     }
 
 
@@ -312,6 +331,7 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
     }
 
     public void setServiceEndpoint(String serviceEndpoint) {
+    	//WorkFlowHealper.getInstance().setAppCreationServiceEndPoint(serviceEndpoint);
         this.serviceEndpoint = serviceEndpoint;
     }
 
