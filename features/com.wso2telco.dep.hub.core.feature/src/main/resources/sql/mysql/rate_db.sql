@@ -116,7 +116,9 @@ INSERT INTO `api_operation`
 (31,8,'MakePayment','MakePayment','admin'),
 (32,8,'ListTransactions','ListTransactions','admin'),
 (33,8,'RefundUser','RefundUser','admin'),
-(34,8,'BalanceLookup','BalanceLookup','admin');
+(34,8,'BalanceLookup','BalanceLookup','admin'),
+(35,1,'DuplicateCharge','DuplicateCharge','admin');
+
 /*!40000 ALTER TABLE `api_operation` ENABLE KEYS */;
 UNLOCK TABLES;
 
