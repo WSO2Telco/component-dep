@@ -153,6 +153,21 @@ public class StoreHostObject extends ScriptableObject {
         }
     }
 
+    public static void jsFunction_removeAPISubscriptionFromStatDB(Context cx,
+                                                                  Scriptable thisObj,
+                                                                  Object[] args,
+                                                                  Function funObj) {
+        OperatorDAO operatorDAO = new OperatorDAO();
+        String applicationId = (String) args[0];
+        String apiName= (String) args[1];
+        String version = (String) args[2];
+        try {
+            operatorDAO.removeAPISubscriptionFromStatDB(applicationId,apiName,version);
+        } catch (SQLException e) {
+            log.error("database operation error in remove API Subscription : ", e);
+        }
+    }
+
     public static void jsFunction_removeApplication(Context cx,
                                                     Scriptable thisObj,
                                                     Object[] args,
