@@ -31,6 +31,7 @@ import org.apache.commons.logging.LogFactory;
 import com.wso2telco.core.dbutils.DbUtils;
 import com.wso2telco.core.dbutils.util.DataSourceNames;
 import com.wso2telco.dep.operatorservice.model.Operator;
+import com.wso2telco.dep.operatorservice.model.OperatorAppSearchDTO;
 import com.wso2telco.dep.operatorservice.model.OperatorSearchDTO;
 import com.wso2telco.dep.operatorservice.util.OparatorTable;
 import com.wso2telco.dep.operatorservice.model.OperatorApplicationDTO;
@@ -111,8 +112,12 @@ public class OperatorDAO {
 			if (con == null) {
 				throw new Exception("Connection not found");
 			}
-			StringBuilder queryString = new StringBuilder(
-					"SELECT oa.id id, oe.api, oa.applicationid, oa.operatorid, o.operatorname,o.refreshtoken, o.tokenvalidity, o.tokentime, o.token, o.tokenurl, o.tokenauth,oe.operatorid FROM  OPERATORAPPS oa, OPERATORS  o ,ENDPOINTAPPS e, OPERATORENDPOINTS oe WHERE oa.operatorid = o.id AND oa.applicationid=e.applicationid AND e.endpointid = oe.id AND oe.id = e.endpointid AND e.isactive = 1 AND oa.isactive = 1;");
+			StringBuilder queryString = new StringBuilder("SELECT oa.id id, oe.api, oa.applicationid, oa.operatorid,")
+												.append("o.operatorname,o.refreshtoken, o.tokenvalidity, o.tokentime,")
+												.append("o.token, o.tokenurl, o.tokenauth,oe.operatorid ")
+												.append(" FROM  OPERATORAPPS oa, OPERATORS  o ,ENDPOINTAPPS e, OPERATORENDPOINTS oe ")
+												.append(" WHERE oa.operatorid = o.id AND oa.applicationid=e.applicationid AND ")
+												.append(" e.endpointid = oe.id AND oe.id = e.endpointid AND e.isactive = 1 AND oa.isactive = 1 ");
 
 			ps = con.prepareStatement(queryString.toString());
 
@@ -143,6 +148,78 @@ public class OperatorDAO {
 		return operators;
 	}
 
+	public List<OperatorApplicationDTO> loadActiveApplicationOperators(OperatorAppSearchDTO searchDTO)throws SQLException, Exception {
+		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<OperatorApplicationDTO> operators = new ArrayList();
+		try {
+			if (con == null) {
+				throw new Exception("Connection not found");
+			}
+			StringBuilder queryString = new StringBuilder("SELECT oa.id id, oe.api, oa.applicationid, oa.operatorid,")
+												.append(" o.operatorname,o.refreshtoken, o.tokenvalidity, o.tokentime,")
+												.append(" o.token, o.tokenurl, o.tokenauth,oe.operatorid ")
+												.append(" FROM  OPERATORAPPS oa, OPERATORS  o ,ENDPOINTAPPS e, OPERATORENDPOINTS oe ")
+												.append(" WHERE oa.operatorid = o.id ")
+												.append(" AND oa.applicationid=e.applicationid ")
+												.append(" AND e.endpointid = oe.id ")
+												.append(" AND oe.id = e.endpointid ")
+												.append(" AND e.isactive = 1 ")
+												.append(" AND oa.isactive = 1 ");
+			
+			List<Object> params = new ArrayList<Object>();
+			
+			if(searchDTO.getApiName()!=null && !searchDTO.getApiName().isEmpty()) {
+				queryString.append(" AND oe.api =?");
+				params.add(searchDTO.getApiName().trim());
+			}
+
+			if(searchDTO.getApplicationId()!=0) {
+				queryString.append(" AND e.applicationid =?");
+				params.add(Integer.valueOf( searchDTO.getApplicationId()));
+			}
+
+
+			ps = con.prepareStatement(queryString.toString());
+			
+			if(!params.isEmpty()) {
+				Object [] paramArray = params.toArray(new Object[params.size()]);
+				
+				for (int x=0; x<paramArray.length;x++) {
+				 ps.setObject(x+1, paramArray[x]); //Since the param index start from 1
+				}
+			}
+			
+		
+
+			this.log.debug("sql query in getApplicationOperators : " + ps);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				OperatorApplicationDTO oper = new OperatorApplicationDTO();
+				oper.setId(rs.getInt("id"));
+				oper.setApiName(rs.getString("api"));
+				oper.setApplicationid(rs.getInt("applicationid"));
+				oper.setOperatorid(rs.getInt("operatorid"));
+				oper.setOperatorname(rs.getString("operatorname"));
+				oper.setRefreshtoken(rs.getString("refreshtoken"));
+				oper.setTokenvalidity(rs.getLong("tokenvalidity"));
+				oper.setTokentime(rs.getLong("tokentime"));
+				oper.setToken(rs.getString("token"));
+				oper.setTokenurl(rs.getString("tokenurl"));
+				oper.setTokenauth(rs.getString("tokenauth"));
+				operators.add(oper);
+			}
+		} catch (SQLException e) {
+			this.log.error("database operation error in getApplicationOperators : ", e);
+		} catch (Exception e) {
+			this.log.error("error in getApplicationOperators : ", e);
+		} finally {
+			DbUtils.closeAllConnections(ps, con, rs);
+		}
+		return operators;
+	}
+	
 	/**
 	 * Persist operators.
 	 *

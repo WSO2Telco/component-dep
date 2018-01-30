@@ -38,6 +38,7 @@ import com.wso2telco.dep.operatorservice.exception.ApplicationException.Applicat
 import com.wso2telco.dep.operatorservice.exception.TokenException;
 import com.wso2telco.dep.operatorservice.exception.TokenException.TokenErrorType;
 import com.wso2telco.dep.operatorservice.model.Operator;
+import com.wso2telco.dep.operatorservice.model.OperatorAppSearchDTO;
 import com.wso2telco.dep.operatorservice.model.OperatorApplicationDTO;
 import com.wso2telco.dep.operatorservice.model.OperatorEndPointDTO;
 import com.wso2telco.dep.operatorservice.model.OperatorSearchDTO;
@@ -89,6 +90,20 @@ public class OparatorService {
 		List<OperatorApplicationDTO> operators = null;
 		try {
 			operators = dao.loadActiveApplicationOperators();
+		} catch (Exception e) {
+			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
+		}
+		if (operators != null) {
+			return operators;
+		} else {
+			return Collections.emptyList();
+		}
+	}
+	
+	public List<OperatorApplicationDTO> loadActiveApplicationOperators(OperatorAppSearchDTO searchDTO)throws  BusinessException {
+		List<OperatorApplicationDTO> operators = null;
+		try {
+			operators = dao.loadActiveApplicationOperators(searchDTO);
 		} catch (Exception e) {
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
