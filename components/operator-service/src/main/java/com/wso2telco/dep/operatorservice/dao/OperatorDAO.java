@@ -706,6 +706,56 @@ public class OperatorDAO {
         }
     }
 
+	public void removeAPISubscriptionFromStatDB(String applicationId,String apiName, String version) throws SQLException {
+
+		Connection con = null;
+		PreparedStatement ps = null;
+		String query = "delete from subscription_rates_nb where application_id = ? and api_id = ?";
+		try {
+			con = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
+			ps = con.prepareStatement(query);
+			ps.setString(1, applicationId);
+			ps.setString(2, getApiIDFromName(apiName,version));
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			log.error("database operation error in remove API Subscription : ", e);
+			throw e;
+		} catch (Exception e) {
+			log.error("database operation error in remove API Subscription : ", e);
+		} finally {
+			DbUtils.closeAllConnections(ps, con, null);
+		}
+	}
+
+	public String getApiIDFromName(String apiName, String version) throws SQLException{
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		String apiId = "";
+		String query = "select API_ID from am_api where API_NAME = ? and API_VERSION = ? ";
+		try {
+			con = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+			ps = con.prepareStatement(query);
+			ps.setString(1, apiName);
+			ps.setString(1, version);
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+				apiId = String.valueOf(rs.getInt("API_ID"));
+			}
+
+		} catch (SQLException e) {
+			log.error("database operation error in remove API Subscription : ", e);
+			throw e;
+		} catch (Exception e) {
+			log.error("database operation error in remove API Subscription : ", e);
+		} finally {
+			DbUtils.closeAllConnections(ps, con, null);
+		}
+
+		return apiId;
+	}
+
     public void removeApplication(String applicationId) throws SQLException {
 
         Connection con = null;
