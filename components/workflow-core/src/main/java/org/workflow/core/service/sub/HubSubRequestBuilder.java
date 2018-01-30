@@ -85,7 +85,7 @@ class HubSubRequestBuilder extends AbstractSubRequestBuilder {
     protected Callback buildAllTaskResponse(TaskSearchDTO searchDTO, TaskList taskList, UserProfileDTO userProfile) throws BusinessException {
 
         TaskList allTaskList = taskList;
-        if (!isAdmin(userProfile)) {
+        if (!isAdmin(userProfile) && !taskList.getData().isEmpty()) {
             allTaskList = filterOperatorApprovedApps(taskList, userProfile.getUserName());
         }
         allTaskList = getOperationRates(allTaskList, userProfile);
