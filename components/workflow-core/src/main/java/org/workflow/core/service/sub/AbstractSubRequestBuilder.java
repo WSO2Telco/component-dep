@@ -100,22 +100,6 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
         return relevantRates;
     }
 
-    @Override
-    protected Callback buildMyTaskResponse(TaskSearchDTO searchDTO, TaskList taskList, UserProfileDTO userProfile) throws BusinessException {
-
-        TaskList myTaskList = getOperationRates(taskList, userProfile);
-        SubSearchResponse payload;
-        Callback returnCall;
-        try {
-            payload = generateResponse(myTaskList);
-            returnCall = new Callback().setPayload(payload).setSuccess(true).setMessage(Messages.MY_SUBSCRIPTION_LOAD_SUCCESS.getValue());
-        } catch (ParseException e) {
-            returnCall = new Callback().setPayload(null).setSuccess(false).setMessage(Messages.MY_SUBSCRIPTION_LOAD_FAIL.getValue());
-        }
-
-        return returnCall;
-    }
-
     protected TaskList filterOperatorApprovedApps(TaskList taskList, String operatorName) {
         String appIds = "";
         List<String> operatorApprovedApps = null;
