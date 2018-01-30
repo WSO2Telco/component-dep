@@ -82,6 +82,7 @@ var log = new Log();
         var mod = jagg.module("manager");
         var storeHostObject = mod.getStoreHostObject(); //get getstoreObj
         storeHostObject.removeAPISubscription(applicationId.toString(),apiName);
+        storeHostObject.removeAPISubscriptionFromStatDB(applicationId.toString(),apiName, version);
         storeHostObject.removeSubApprovalOperators(applicationId.toString());
 
         var workflowRef=storeHostObject.getWorkflowRef(applicationId.toString(),apiName,version);
