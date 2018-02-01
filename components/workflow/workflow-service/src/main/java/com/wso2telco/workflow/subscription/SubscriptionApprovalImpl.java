@@ -79,7 +79,30 @@ public class SubscriptionApprovalImpl implements SubscriptionApproval {
                     }
                     counter++;
                 }
-            } else {
+            }else if(deploymentType.equals("internal_gateway_type2")){
+                /**
+                 * this custom else if block is added beasei it is not required to update the endpointapps table of the dep
+                 * dep db when we approve an subscription*/
+                List<Operator> operatorList = dbservice.getOperators();
+                log.info("operatorList.size() : " + operatorList.size());
+                idList = new int[operatorList.size()];
+                for (Iterator iterator = operatorList.iterator(); iterator.hasNext(); ) {
+                    Operator operator = (Operator) iterator.next();
+                    log.info("operator name : " + operator.getOperatorName() + "| operator id : " + operator.getOperatorId());
+                    for (Iterator iterator2 = operatorEndpoints.iterator(); iterator2.hasNext(); ) {
+                        OperatorEndPointDTO operatorendpoint = (OperatorEndPointDTO) iterator2.next();
+                        log.debug("operatorendpoint.getOperatorid : " + operatorendpoint.getOperatorid());
+                        if (operator.getOperatorId() == operatorendpoint.getOperatorid() && operatorendpoint.getApi().equalsIgnoreCase(apiName)) {
+                            log.info("operatorendpoint.getId : " + operatorendpoint.getId());
+                            idList[counter] = operatorendpoint.getId();
+                            break;
+                        }
+                    }
+                    counter++;
+                }
+                isAdd = true;
+            }
+            else {
             	
             	List<Operator> operatorList = dbservice.getOperators();
             	log.info("operatorList.size() : " + operatorList.size());
