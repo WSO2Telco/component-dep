@@ -87,7 +87,7 @@
     <transaction id="api_publisher_approval_transaction" name="API Publisher Approval Transaction">
       <startEvent id="startevent4" name="Start"></startEvent>
       <endEvent id="endevent6" name="End"></endEvent>
-      <userTask id="api_publisher_approval" name="API Publisher Approval" activiti:candidateGroups="${depatmet}" completionQuantity="1" implementation="##unspecified" isForCompensation="false" startQuantity="1">
+      <userTask id="api_publisher_approval" name="API Publisher Approval" activiti:candidateGroups="${department}" completionQuantity="1" implementation="##unspecified" isForCompensation="false" startQuantity="1">
         <extensionElements>
           <activiti:formProperty id="apiPublisherApproval" name="Approve / Reject" type="enum" default="apiPublisherApproval" required="true">
             <activiti:value id="APPROVED" name="Approve"></activiti:value>
