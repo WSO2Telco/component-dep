@@ -89,7 +89,7 @@ public class APIPublisherApprovalDBUpdater implements JavaDelegate {
         subscription.setStatus(approvalStatus);
         subscription.setWorkflowRefId(workflowRefId);
         subscription.setSelectedTier(adminSelectedTier);
-        api.subscriptionApprovalHub(subscription);
+        api.subscriptionApprovalHub(subscription);  //tier is set at here
         api.subscriptionApprovalOperator(subscription);
 
         SubscriptionValidation subscriptionValidation = new SubscriptionValidation();
