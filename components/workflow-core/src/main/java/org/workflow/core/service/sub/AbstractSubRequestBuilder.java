@@ -218,7 +218,7 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
     protected abstract Callback buildApprovalRequest(ApprovalRequest approvalRequest, UserProfileDTO userProfile) throws BusinessException;
 
     @Override
-    public HistoryResponse getApprovalHistory(String subscriber, String applicationName, int applicationId, String operator, int offset, int count) throws BusinessException {
+    public HistoryResponse getApprovalHistory(String subscriber, String applicationName, int applicationId, String operator, String status, int offset, int count) throws BusinessException {
         return null;
     }
 
