@@ -718,10 +718,10 @@ public class OperatorDAO {
 			ps.setString(2, getApiIDFromName(apiName,version));
 			ps.executeUpdate();
 		} catch (SQLException e) {
-			log.error("database operation error in remove API Subscription : ", e);
+			log.error("database operation error in remove API Subscription from statdb : ", e);
 			throw e;
 		} catch (Exception e) {
-			log.error("database operation error in remove API Subscription : ", e);
+			log.error("database operation error in remove API Subscription from statdb: ", e);
 		} finally {
 			DbUtils.closeAllConnections(ps, con, null);
 		}
@@ -737,7 +737,7 @@ public class OperatorDAO {
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
 			ps = con.prepareStatement(query);
 			ps.setString(1, apiName);
-			ps.setString(1, version);
+			ps.setString(2, version);
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
@@ -745,10 +745,10 @@ public class OperatorDAO {
 			}
 
 		} catch (SQLException e) {
-			log.error("database operation error in remove API Subscription : ", e);
+			log.error("database operation error in get API ID from name and version : ", e);
 			throw e;
 		} catch (Exception e) {
-			log.error("database operation error in remove API Subscription : ", e);
+			log.error("database operation error in get API ID from name and version : ", e);
 		} finally {
 			DbUtils.closeAllConnections(ps, con, null);
 		}
