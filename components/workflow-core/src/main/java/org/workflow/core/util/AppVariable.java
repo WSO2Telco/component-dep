@@ -23,7 +23,9 @@ public enum AppVariable {
 	SUBSCRIBER("subscriber"),
 	API_NAME("apiName"),
 	API_TIERS("apiTiers"),
-	API_VERSION("apiVersion");
+	API_VERSION("apiVersion"),
+	STATUS("status"),
+	CREATED_BY("createdBy");
 	
 	private String varName;
 	AppVariable(String paramName){
