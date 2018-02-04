@@ -43,7 +43,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 
     protected abstract Callback getHistoricalGraphData(String user, List<Range> months, List<String> xAxisLabels) throws BusinessException;
 
-    public abstract HistoryResponse getApprovalHistory(String subscriber, String applicationName, int applicationId, String operator, int offset, int count) throws BusinessException;
+    public abstract HistoryResponse getApprovalHistory(String subscriber, String applicationName, int applicationId, String operator, String status, int offset, int count) throws BusinessException;
 
     protected abstract Callback buildApprovalRequest(final ApprovalRequest approvalRequest, final UserProfileDTO userProfile) throws BusinessException;
 
@@ -137,6 +137,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
         filter.put("tier", AppVariable.TIER.key());
         filter.put("apiname", AppVariable.API_NAME.key());
         filter.put("api", AppVariable.API_NAME.key());
+        filter.put("status", AppVariable.STATUS.key());
         return filter;
     }
 
@@ -240,6 +241,8 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
         filter.put("appid", HistoryVariable.ID.key());
         filter.put("id", HistoryVariable.ID.key());
         filter.put("operator",HistoryVariable.OPARATOR.key());
+        filter.put("status", HistoryVariable.STATUS.key());
+        filter.put("createdby", HistoryVariable.SP.key());
         return filter;
     }
 
