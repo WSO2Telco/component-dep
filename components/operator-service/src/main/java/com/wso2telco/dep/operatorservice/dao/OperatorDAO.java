@@ -737,7 +737,7 @@ public class OperatorDAO {
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
 			ps = con.prepareStatement(query);
 			ps.setString(1, apiName);
-			ps.setString(1, version);
+			ps.setString(2, version);
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
