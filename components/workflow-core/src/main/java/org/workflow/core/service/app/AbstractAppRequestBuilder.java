@@ -143,9 +143,9 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
         return returnCall;
     }
 
-    public HistoryResponse getApprovalHistory(String subscriber, String applicationName, int applicationId, String operator, int offset, int count) throws BusinessException {
+    public HistoryResponse getApprovalHistory(String subscriber, String applicationName, int applicationId, String operator, String status, int offset, int count) throws BusinessException {
         DatabaseHandler handler = new DatabaseHandler();
-        return handler.getApprovalHistory(subscriber, applicationName, applicationId, operator, offset, count);
+        return handler.getApprovalHistory(subscriber, applicationName, applicationId, operator, status, offset, count);
     }
 
     @Override
@@ -177,6 +177,7 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
         int applicationId;
         String applicationName =ALL;
         String operator = ALL;
+        String status = ALL;
 
         if (varMap.containsKey(HistoryVariable.SP.key())) {
             subscriber = varMap.get(HistoryVariable.SP.key());
@@ -192,6 +193,10 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
             applicationId = 0;
         }
 
+        if (varMap.containsKey(HistoryVariable.STATUS.key())) {
+            status = varMap.get(HistoryVariable.STATUS.key());
+        }
+
         if(!isAdmin(userProfile)){
             operator = userProfile.getUserName().toUpperCase();
         }else if(varMap.containsKey(HistoryVariable.OPARATOR.key())){
@@ -199,7 +204,7 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
         }
 
         try {
-            HistoryResponse apiRequests = getApprovalHistory( subscriber, applicationName, applicationId, operator, searchDTO.getStart(), searchDTO.getBatchSize());
+            HistoryResponse apiRequests = getApprovalHistory( subscriber, applicationName, applicationId, operator, status, searchDTO.getStart(), searchDTO.getBatchSize());
             returnCall = new Callback().setPayload(apiRequests).setSuccess(true).setMessage(Messages.APPLICATION_HISTORY_SUCCESS.getValue());
         } catch (Exception e) {
             returnCall = new Callback().setPayload(e.getMessage()).setSuccess(false).setMessage(Messages.APPLICATION_HISTORY_FAILED.getValue());

@@ -81,7 +81,7 @@ public class DatabaseHandler {
         throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
     }
 
-    public HistoryResponse getApprovalHistory(String subscriber, String applicationName, int applicationId, String operator, int offset, int count) throws BusinessException {
+    public HistoryResponse getApprovalHistory(String subscriber, String applicationName, int applicationId, String operator, String status, int offset, int count) throws BusinessException {
 
         Connection conn = null;
         PreparedStatement ps = null;
@@ -102,8 +102,13 @@ public class DatabaseHandler {
                 .append("WHERE EXISTS( SELECT 1 FROM " + depDB + "." + Tables.DEP_OPERATOR_APPS.getTObject() + " opcoApp ")
                 .append("INNER JOIN " + depDB + "." + Tables.DEP_OPERATORS.getTObject() + " opco ON opcoApp.operatorid = opco.id ")
                 .append("WHERE opcoApp.isactive LIKE ? AND opcoApp.applicationid = amapp.application_id AND ")
-                .append("opco.operatorname LIKE ? AND amapp.application_id LIKE ? AND amapp.name LIKE ? AND amapp.subscriber_id LIKE ? ) ")
-                .append("ORDER BY application_id) t")
+                .append("opco.operatorname LIKE ? AND amapp.application_id LIKE ? AND amapp.name LIKE ? AND amapp.subscriber_id LIKE ? ) ");
+
+            if(status!=null && !status.isEmpty()&& !status.equals(ALL)) {
+            	sql	.append("AND amapp.application_status LIKE ? ");
+            }
+
+             sql.append("ORDER BY application_id) t")
                 .append(" LIMIT ?,?");
 
         if (!subscriber.equals(ALL)) {
@@ -138,8 +143,17 @@ public class DatabaseHandler {
                 ps.setInt(5, Integer.parseInt(subscriber));
             }
 
-            ps.setInt(6, offset);
-            ps.setInt(7, count);
+             if (status!=null && !status.isEmpty() && !status.equals(ALL))  {
+                ps.setString(6, status);
+                 
+                 ps.setInt(7, offset);
+                 ps.setInt(8, count);
+            }else{
+                ps.setInt(6, offset);
+                ps.setInt(7, count);
+             }
+
+           
 
             log.debug("get Operator Wise API Traffic");
 
@@ -156,7 +170,7 @@ public class DatabaseHandler {
             historyResponse.setApplications(applist);
             historyResponse.setStart(offset);
             historyResponse.setSize(size);
-            historyResponse.setTotal(getApplicationCount(applicationId, applicationName, subscriber, operator));
+            historyResponse.setTotal(getApplicationCount(applicationId, applicationName, subscriber, operator, status));
 
 
         } catch (Exception e) {
@@ -167,7 +181,7 @@ public class DatabaseHandler {
         return historyResponse;
     }
 
-    public int getApplicationCount(int applicationId, String applicationName, String subscriber, String operator) throws BusinessException {
+    public int getApplicationCount(int applicationId, String applicationName, String subscriber, String operator, String status) throws BusinessException {
 
         StringBuilder sql = new StringBuilder();
         Connection conn = null;
@@ -188,6 +202,7 @@ public class DatabaseHandler {
                 .append(" opcoApp INNER JOIN " + depDB + "." + Tables.DEP_OPERATORS.getTObject() + " opco ON opcoApp.operatorid = opco.id WHERE ")
                 .append("opcoApp.isactive LIKE ? AND opcoApp.applicationid = amapp.application_id AND ")
                 .append("opco.operatorname LIKE ? AND amapp.application_id LIKE ? AND amapp.name LIKE ? AND amapp.subscriber_id LIKE ? ) ")
+                .append("AND amapp.application_status LIKE ? ")
                 .append("ORDER BY application_id) t");
 
         try {
@@ -217,6 +232,13 @@ public class DatabaseHandler {
             } else {
                 ps.setInt(5, Integer.parseInt(subscriber));
             }
+
+            if (status.equals(ALL)) {
+                ps.setString(6, "%");
+            } else {
+                ps.setString(6, status);
+            }
+
             rs = ps.executeQuery();
             if (rs.next()) {
                 count = rs.getInt(1);
