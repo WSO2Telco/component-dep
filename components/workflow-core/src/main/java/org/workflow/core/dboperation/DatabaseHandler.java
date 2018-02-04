@@ -104,7 +104,7 @@ public class DatabaseHandler {
                 .append("WHERE opcoApp.isactive LIKE ? AND opcoApp.applicationid = amapp.application_id AND ")
                 .append("opco.operatorname LIKE ? AND amapp.application_id LIKE ? AND amapp.name LIKE ? AND amapp.subscriber_id LIKE ? ) ");
 
-            if(status!=null && !status.isEmpty()) {
+            if(status!=null && !status.isEmpty()&& !subscriber.equals(ALL)) {
             	sql	.append("AND amapp.application_status LIKE ? ");
             }
 
@@ -143,7 +143,7 @@ public class DatabaseHandler {
                 ps.setInt(5, Integer.parseInt(subscriber));
             }
 
-            if (status!=null && !status.isEmpty() && status.equals(ALL)) {
+            if (status!=null && !status.isEmpty() && !status.equals(ALL)) {
                 ps.setString(6, "%");
             }
 
