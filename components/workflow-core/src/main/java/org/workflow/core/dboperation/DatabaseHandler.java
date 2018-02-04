@@ -145,10 +145,15 @@ public class DatabaseHandler {
 
              if (status!=null && !status.isEmpty() && !status.equals(ALL))  {
                 ps.setString(6, status);
-            }
+                 
+                 ps.setInt(7, offset);
+                 ps.setInt(8, count);
+            }else{
+                ps.setInt(6, offset);
+                ps.setInt(7, count);
+             }
 
-            ps.setInt(7, offset);
-            ps.setInt(8, count);
+           
 
             log.debug("get Operator Wise API Traffic");
 
