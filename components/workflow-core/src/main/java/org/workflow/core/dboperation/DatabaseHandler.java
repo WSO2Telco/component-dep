@@ -102,9 +102,13 @@ public class DatabaseHandler {
                 .append("WHERE EXISTS( SELECT 1 FROM " + depDB + "." + Tables.DEP_OPERATOR_APPS.getTObject() + " opcoApp ")
                 .append("INNER JOIN " + depDB + "." + Tables.DEP_OPERATORS.getTObject() + " opco ON opcoApp.operatorid = opco.id ")
                 .append("WHERE opcoApp.isactive LIKE ? AND opcoApp.applicationid = amapp.application_id AND ")
-                .append("opco.operatorname LIKE ? AND amapp.application_id LIKE ? AND amapp.name LIKE ? AND amapp.subscriber_id LIKE ? ) ")
-                .append("AND amapp.application_status LIKE ? ")
-                .append("ORDER BY application_id) t")
+                .append("opco.operatorname LIKE ? AND amapp.application_id LIKE ? AND amapp.name LIKE ? AND amapp.subscriber_id LIKE ? ) ");
+
+            if(status!=null && !status.isEmpty()) {
+            	sql	.append("AND amapp.application_status LIKE ? ");
+            }
+
+             sql.append("ORDER BY application_id) t")
                 .append(" LIMIT ?,?");
 
         if (!subscriber.equals(ALL)) {
@@ -139,9 +143,11 @@ public class DatabaseHandler {
                 ps.setInt(5, Integer.parseInt(subscriber));
             }
 
-            if (status.equals(ALL)) {
-                ps.setString(6,"%");
-            }else {
+            if (status!=null && !status.isEmpty() && status.equals(ALL)) {
+                ps.setString(6, "%");
+            }
+
+            if (status!=null && !status.isEmpty() && !status.equals(ALL))  {
                 ps.setString(6, status);
             }
 
