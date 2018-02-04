@@ -397,7 +397,6 @@ $("#subscription-actions").each(function(){
 			},
             { "data": "subscribedTier" },
             { "data": "subStatus" },
-            { "data": "operators" },
             { "data": "apiName",
               "render": function ( data, type, rec, meta ) {
                   return subscription_actions(rec);
