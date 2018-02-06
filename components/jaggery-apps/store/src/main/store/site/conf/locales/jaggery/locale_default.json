@@ -124,6 +124,8 @@
     "Hide Keys": "Hide Keys",
     "Hour": "Hour",
     "hubadminstatus" : "Hub Admin Status",
+    "pulishertatus" : "Publisher Status",
+    "adminstatus" : "Admin Status",
     "INACTIVE": "INACTIVE",
     "If you already have an OAuth application registered with the IdP, you can use those keys without generating one.": "If you already have an OAuth application registered with the IdP, you can use those keys without generating one.",
     "If you already have an access token please provide it below.": "If you already have an access token please provide it below.",
