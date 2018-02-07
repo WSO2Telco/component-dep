@@ -333,5 +333,7 @@
     "timeWarn": "timeWarn",
     "operators" : "Operators",
     "operatorstatus" : "Operator Status",
-    "hubadminstatus" : "Publisher Status"
+    "hubadminstatus" : "Hub Admin Status",
+    "pulishertatus" : "Publisher Status",
+    "adminstatus" : "Admin Status"
 }
