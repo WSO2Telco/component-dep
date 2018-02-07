@@ -389,6 +389,18 @@ $("#subscription-actions").each(function(){
             	return json.apis
             }
         },
+        initComplete: function(settings, json){
+            var api = new $.fn.dataTable.Api(settings);
+            if(json && json.depType){
+                if (json.depType == 'internal_gateway_type2'){
+                    api.columns([2,3,5]).visible(false); 
+                }else if(json.depType == 'external_gateway'){
+                    api.columns([2,3,4]).visible(false); 
+                }else{
+                    api.columns([4,5]).visible(false); // Hide Publisher Status column
+                }
+            }
+         },
         "columns": [
             { "data": "apiName", 
               "render": function ( data, type, rec, meta ) {
@@ -396,7 +408,10 @@ $("#subscription-actions").each(function(){
               }
 			},
             { "data": "subscribedTier" },
-            { "data": "subStatus" },
+            { "data": "subStatus" }, //Hub Admin Status
+            { "data": "operators" }, // Operator Status
+            { "data": "subStatus" }, // Publisher Status
+            { "data": "subStatus" }, // Admin Status
             { "data": "apiName",
               "render": function ( data, type, rec, meta ) {
                   return subscription_actions(rec);
