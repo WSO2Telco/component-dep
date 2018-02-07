@@ -257,7 +257,7 @@ include("/jagg/jagg.jag");
         username = user.username;
 
         mod = jagg.module("subscription");
-        storeMod = store = jagg.module("manager").getStoreHostObject();
+        var storeMod = jagg.module("manager").getStoreHostObject();
 
         result = mod.getAPISubscriptionsForApplication(username,appname);
 
