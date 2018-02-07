@@ -332,8 +332,8 @@
     "tenants": "Visible to Tenants",
     "timeWarn": "timeWarn",
     "operators" : "Operators",
-    "operatorstatus" : "Operator Status",
-    "hubadminstatus" : "Hub Admin Status",
-    "pulishertatus" : "Publisher Status",
-    "adminstatus" : "Admin Status"
+    "operatorstatus" : "Operator Approval Status",
+    "hubadminstatus" : "Hub Admin Approval Status",
+    "pulishertatus" : "Publisher Approval Status",
+    "adminstatus" : "Admin Approval Status"
 }
