@@ -238,47 +238,49 @@ public class StoreHostObject extends ScriptableObject {
 
 		OparatorService oparatorService = new OparatorService();
 
-		try {
+        if(jsFunction_getDeploymentType().equals("hub") || jsFunction_getDeploymentType().equals("external_gateway")){
+            try {
 
-			Map<Integer, Map<String, Map<String,String>>> subDetails = oparatorService.getOperatorApprovedSubscriptionsByApplicationId(Integer.parseInt(appId));
-			log.debug("getOperatorApprovedSubscriptionsByApplicationId : " + subDetails);
-			
-			if (!subDetails.isEmpty()) {
+                Map<Integer, Map<String, Map<String,String>>> subDetails = oparatorService.getOperatorApprovedSubscriptionsByApplicationId(Integer.parseInt(appId));
+                log.debug("getOperatorApprovedSubscriptionsByApplicationId : " + subDetails);
 
-				int j = 0;
-				for (Map.Entry<Integer, Map<String, Map<String,String>>> sub : subDetails.entrySet()) {
+                if (!subDetails.isEmpty()) {
 
-					Map<String, Map<String,String>> subInfo = sub.getValue();
+                    int j = 0;
+                    for (Map.Entry<Integer, Map<String, Map<String,String>>> sub : subDetails.entrySet()) {
 
-					NativeArray historyDataArray = new NativeArray(0);
-					int z = 0;
-					
-					for (Map.Entry<String, Map<String,String>> sb : subInfo.entrySet()) {
-						
-						String apiName = sb.getKey();
-						Map<String,String> s = sb.getValue();
-						
-						NativeObject subData = new NativeObject();
-						subData.put("apiName", subData, apiName);
-						subData.put("substatus", subData, s.get("substatus"));
-						subData.put("operatorname", subData, s.get("operatorname"));
-						
-						historyDataArray.put(z, historyDataArray, subData);
-						z++;
-					}
-					
-					historyArray.put(j, historyArray, historyDataArray);
-					j++;
-				}
-			} else {
+                        Map<String, Map<String,String>> subInfo = sub.getValue();
 
-				log.error("subscription details unavalible for application id : " + appId);
-			}
-		} catch (Exception e) {
+                        NativeArray historyDataArray = new NativeArray(0);
+                        int z = 0;
 
-			log.error("error occurred in getOperatorApprovedSubscriptionsByApplicationId : ", e);
-			handleException(e.getMessage(), e);
-		}
+                        for (Map.Entry<String, Map<String,String>> sb : subInfo.entrySet()) {
+
+                            String apiName = sb.getKey();
+                            Map<String,String> s = sb.getValue();
+
+                            NativeObject subData = new NativeObject();
+                            subData.put("apiName", subData, apiName);
+                            subData.put("substatus", subData, s.get("substatus"));
+                            subData.put("operatorname", subData, s.get("operatorname"));
+
+                            historyDataArray.put(z, historyDataArray, subData);
+                            z++;
+                        }
+
+                        historyArray.put(j, historyArray, historyDataArray);
+                        j++;
+                    }
+                } else {
+
+                    log.error("subscription details unavalible for application id : " + appId);
+                }
+            } catch (Exception e) {
+
+                log.error("error occurred in getOperatorApprovedSubscriptionsByApplicationId : ", e);
+                handleException(e.getMessage(), e);
+            }
+        }
 
 		resultObject.put("operatorSubsApprovedHistory", resultObject, historyArray);
 
