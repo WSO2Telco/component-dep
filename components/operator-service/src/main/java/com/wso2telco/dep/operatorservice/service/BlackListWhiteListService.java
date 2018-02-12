@@ -56,6 +56,7 @@ import org.wso2.carbon.identity.mgt.stub.UserIdentityManagementAdminServiceStub;
 import org.wso2.carbon.identity.oauth.stub.OAuthAdminServiceStub;
 import org.wso2.carbon.identity.oauth.stub.dto.OAuthConsumerAppDTO;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -225,9 +226,9 @@ public class BlackListWhiteListService {
 	public  String getAllSubscribers() throws BusinessException {
 
 		Map<String, UserApplicationAPIUsage> userApplicationAPIUsageMap = dao.getAllAPIUsageByProvider();
-		List<UserApplicationAPIUsage> userApplicationAPIUsageArrayList = new ArrayList<UserApplicationAPIUsage>(userApplicationAPIUsageMap.values());
+		List<UserApplicationAPIUsage> userApplicationAPIUsageArrayList = new ArrayList(userApplicationAPIUsageMap.values());
 
-		List<String> subsscriberList = new ArrayList<String>();
+		List<String> subsscriberList = new ArrayList();
 		for (UserApplicationAPIUsage userApplicationAPIUsage : userApplicationAPIUsageArrayList){
 			if(!subsscriberList.contains(userApplicationAPIUsage.getUserId())){
 				subsscriberList.add(userApplicationAPIUsage.getUserId());
@@ -274,9 +275,9 @@ public class BlackListWhiteListService {
 	public String getAllAPIs() throws BusinessException {
 
 		Map<String, UserApplicationAPIUsage> userApplicationAPIUsageMap = dao.getAllAPIUsageByProvider();
-		List<UserApplicationAPIUsage> userApplicationAPIUsageArrayList = new ArrayList<UserApplicationAPIUsage>(userApplicationAPIUsageMap.values());
+		List<UserApplicationAPIUsage> userApplicationAPIUsageArrayList = new ArrayList<>(userApplicationAPIUsageMap.values());
 
-		List<String> apiNameList = new ArrayList<String>();
+		List<String> apiNameList = new ArrayList();
 		for (UserApplicationAPIUsage userApplicationAPIUsage : userApplicationAPIUsageArrayList){
 			SubscribedAPI[] subscribedAPIS =  userApplicationAPIUsage.getApiSubscriptions();
 
@@ -411,7 +412,6 @@ public class BlackListWhiteListService {
 
 			AdminServiceClient adminService = new AdminServiceClient();
 			OAuthAdminServiceStub stub = new OAuthAdminServiceStub(serviceEndpoint);
-			OAuthConsumerAppDTO appDTO = new OAuthConsumerAppDTO();
 
 			ServiceClient sc = stub._getServiceClient();
 			Options options;
@@ -420,23 +420,31 @@ public class BlackListWhiteListService {
 			options.setProperty(org.apache.axis2.transport.http.HTTPConstants.COOKIE_STRING, adminService.getSessionCookie());
 
 			for (AppObject app : appList) {
-				try {
-					appDTO.setOAuthVersion("OAuth-2.0");
-					appDTO.setApplicationName(app.getAppName());
-					appDTO.setUsername(app.getSpName());
-					appDTO.setOauthConsumerKey(app.getConsumerKey());
-					appDTO.setOauthConsumerSecret(app.getConsumerSecret());
-					appDTO.setGrantTypes(null);
-					stub.updateConsumerApplication(appDTO);
-				} catch (Exception e) {
-					log.error("Error removing grant types for application: " + app.getAppName() + "of SP: " + app.getSpName(), e);
-				}
+				updateConsumerApp(stub, app, null);
 			}
+
 			adminService.logOut();
 		} catch (Exception e) {
 			throw new OperatorServiceException(e);
 		}
 
+	}
+
+	private void updateConsumerApp(final OAuthAdminServiceStub stub, final AppObject app, final String grantTypes) {
+		OAuthConsumerAppDTO appDTO = new OAuthConsumerAppDTO();
+
+		try {
+			appDTO.setOAuthVersion("OAuth-2.0");
+			appDTO.setApplicationName(app.getAppName());
+			appDTO.setUsername(app.getSpName());
+			appDTO.setOauthConsumerKey(app.getConsumerKey());
+			appDTO.setOauthConsumerSecret(app.getConsumerSecret());
+			appDTO.setGrantTypes(grantTypes);
+			stub.updateConsumerApplication(appDTO);
+		} catch (Exception e) {
+			String operation = grantTypes == null ? "removing" : "restoring";
+			log.error("Error " + operation + " grant types for application: " + app.getAppName() + "of SP: " + app.getSpName(), e);
+		}
 	}
 
 	private void restoreGrantTypes(List<AppObject> appList) throws OperatorServiceException {
@@ -446,7 +454,6 @@ public class BlackListWhiteListService {
 
 			AdminServiceClient adminService = new AdminServiceClient();
 			OAuthAdminServiceStub stub = new OAuthAdminServiceStub(serviceEndpoint);
-			OAuthConsumerAppDTO appDTO = new OAuthConsumerAppDTO();
 
 			ServiceClient sc = stub._getServiceClient();
 			Options options;
@@ -455,18 +462,9 @@ public class BlackListWhiteListService {
 			options.setProperty(org.apache.axis2.transport.http.HTTPConstants.COOKIE_STRING, adminService.getSessionCookie());
 
 			for (AppObject app : appList) {
-				try {
-					appDTO.setOAuthVersion("OAuth-2.0");
-					appDTO.setApplicationName(app.getAppName());
-					appDTO.setUsername(app.getSpName());
-					appDTO.setOauthConsumerKey(app.getConsumerKey());
-					appDTO.setOauthConsumerSecret(app.getConsumerSecret());
-					appDTO.setGrantTypes("refresh_token urn:ietf:params:oauth:grant-type:saml2-bearer password iwa:ntlm client_credentials");
-					stub.updateConsumerApplication(appDTO);
-				} catch (Exception e) {
-					log.error("Error restoring grant types for application: " + app.getAppName() + "of SP: " + app.getSpName(), e);
-				}
+				updateConsumerApp(stub, app, "refresh_token urn:ietf:params:oauth:grant-type:saml2-bearer password iwa:ntlm client_credentials");
 			}
+
 			adminService.logOut();
 		} catch (Exception e) {
 			throw new OperatorServiceException(e);
@@ -478,39 +476,41 @@ public class BlackListWhiteListService {
         APIManagerConfiguration config = HostObjectComponent.getAPIManagerConfiguration();
 		String revokeURL = config.getFirstProperty(APIConstants.REVOKE_API_URL);
 
-		String authToken;
-		List<NameValuePair> urlParameters = new ArrayList<NameValuePair>();
-		CloseableHttpClient client = null;
-
-		try {
-			client = HttpClientBuilder.create().build();
+		try(CloseableHttpClient client = HttpClientBuilder.create().build()) {
 
 			HttpPost post = new HttpPost(revokeURL);
-			post.setHeader("Content-Type", "application/x-www-form-urlencoded");
 
-			HttpResponse response;
 			for (AppObject app : appList) {
-				try {
-					authToken = new String(Base64.encodeBase64((app.getConsumerKey() + ":" + app.getConsumerSecret()).getBytes()));
-					post.setHeader("Authorization", "Basic " + authToken);
-					urlParameters.add(new BasicNameValuePair("token", app.getAccessToken()));
-					post.setEntity(new UrlEncodedFormEntity(urlParameters));
-
-					response = client.execute(post);
-					log.debug("Token revoke response code for app: " + app.getAppName() + " :"
-							+ response.getStatusLine().getStatusCode());
-					post.reset();
-					urlParameters.clear();
-				} catch (Exception e) {
-					log.error("Error revoking token for application: " + app.getAppName() + "of SP: " + app.getSpName(), e);
-				}
+				callTokenRevoke(app,post,client);
+				post.reset();
 			}
-			client.close();
+
 		} catch (Exception e) {
 			throw new OperatorServiceException(e);
 		}
 	}
 
+	private void callTokenRevoke(final AppObject app, HttpPost post, final CloseableHttpClient client){
+		String authToken;
+		List<NameValuePair> urlParameters = new ArrayList();
+		HttpResponse response;
+
+		try {
+			post.setHeader("Content-Type", "application/x-www-form-urlencoded");
+			authToken = new String(Base64.encodeBase64((app.getConsumerKey() + ":" + app.getConsumerSecret()).getBytes()));
+			post.setHeader("Authorization", "Basic " + authToken);
+			urlParameters.add(new BasicNameValuePair("token", app.getAccessToken()));
+			post.setEntity(new UrlEncodedFormEntity(urlParameters));
+
+			response = client.execute(post);
+			log.debug("Token revoke response code for app: " + app.getAppName() + " :"
+					+ response.getStatusLine().getStatusCode());
+
+			urlParameters.clear();
+		} catch (IOException e ) {
+			log.error("Error revoking token for application: " + app.getAppName() + "of SP: " + app.getSpName(), e);
+		}
+	}
 
 
 }

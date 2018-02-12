@@ -479,20 +479,23 @@ public class Queries {
 	@Produces("application/json")
 	public Response blacklistSP(String jsonBody) throws OperatorServiceException {
 		Gson gson = new Gson();
+		Response response=null;
 		try {
 			JsonElement jelement = new JsonParser().parse(jsonBody);
 			JsonObject jobject = jelement.getAsJsonObject();
 			if (jobject.has("SPName")) {
 				blackListWhiteListService.blacklistSP(jobject.get("SPName").getAsString());
+				response= Response.status(Response.Status.OK).build();
 			} else {
-				return Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson("Invalid request")).build();
+				response= Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson("Invalid request")).build();
 			}
-			return Response.status(Response.Status.OK).build();
+
 
 		} catch (OperatorServiceException e) {
 			LOG.error("",e);
-			return Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson(e)).build();
+			response= Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson(e)).build();
 		}
+		return response;
 	}
 
 	@POST
@@ -501,19 +504,22 @@ public class Queries {
 	@Produces("application/json")
 	public Response removeBlacklistedSP(String jsonBody) throws OperatorServiceException {
 		Gson gson = new Gson();
+		Response response = null;
 		try {
 			JsonElement jelement = new JsonParser().parse(jsonBody);
 			JsonObject jobject = jelement.getAsJsonObject();
 			if (jobject.has("SPName")) {
 				blackListWhiteListService.removeblacklistedSP(jobject.get("SPName").getAsString());
+				response = Response.status(Response.Status.OK).build();
 			} else {
-				return Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson("Invalid request")).build();
+				response = Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson("Invalid request")).build();
 			}
-			return Response.status(Response.Status.OK).build();
+
 		} catch (OperatorServiceException e) {
 			LOG.error("",e);
-			return Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson(e)).build();
+			response = Response.status(Response.Status.BAD_REQUEST).entity(gson.toJson(e)).build();
 		}
+		return response;
 	}
 
 	@GET
