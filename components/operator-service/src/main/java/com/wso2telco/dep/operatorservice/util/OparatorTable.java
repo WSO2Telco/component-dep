@@ -25,7 +25,17 @@ public enum OparatorTable {
 	SUB_APPROVAL_OPERATORS("sub_approval_operators"),
 	OPERATOR_ENDPOINTS("operatorendpoints"),
 	OPERATOR_APPS("operatorapps"),
-	ENDPOINT_APPS("endpointapps");
+	ENDPOINT_APPS("endpointapps"),
+	AM_APPLICATION_KEY_MAPPING("AM_APPLICATION_KEY_MAPPING"),
+	AM_APPLICATION("AM_APPLICATION"),
+	IDN_OAUTH_CONSUMER_APPS("IDN_OAUTH_CONSUMER_APPS"),
+	IDN_OAUTH2_ACCESS_TOKEN("IDN_OAUTH2_ACCESS_TOKEN"),
+	UM_USER("um_user"),
+	UM_USER_ROLE("um_user_role"),
+	UM_ROLE("um_role");
+
+
+
 	
 	OparatorTable(String tObject) {
 		
