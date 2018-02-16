@@ -202,7 +202,7 @@ public class NotifyApprovalTask implements WorkflowApprovalTask {
 	        String adminSelectedTier = arg0.getVariable(Constants.ADMIN_SELECTED_TIER) != null ? arg0.getVariable(Constants.ADMIN_SELECTED_TIER).toString() : null;
 	        String selectedRate = arg0.getVariable(Constants.SELECTED_RATE) != null ? arg0.getVariable(Constants.SELECTED_RATE).toString() : null;
 
-	        if (deploymentType.startsWith(Constants.INTERNAL_GATEWAY)) {
+	        if (deploymentType.startsWith(Constants.INTERNAL_GATEWAY_TYPE2)) {
 	            AuthRequestInterceptor authRequestInterceptor = new AuthRequestInterceptor();
 
 	            NotificationApi apiNotification = Feign.builder()

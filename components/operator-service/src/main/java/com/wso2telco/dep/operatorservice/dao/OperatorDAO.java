@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
- *  
+ *
  *  WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -31,6 +31,7 @@ import org.apache.commons.logging.LogFactory;
 import com.wso2telco.core.dbutils.DbUtils;
 import com.wso2telco.core.dbutils.util.DataSourceNames;
 import com.wso2telco.dep.operatorservice.model.Operator;
+import com.wso2telco.dep.operatorservice.model.OperatorAppSearchDTO;
 import com.wso2telco.dep.operatorservice.model.OperatorSearchDTO;
 import com.wso2telco.dep.operatorservice.util.OparatorTable;
 import com.wso2telco.dep.operatorservice.model.OperatorApplicationDTO;
@@ -72,9 +73,9 @@ public class OperatorDAO {
 			query.append(OparatorTable.OPERATORS.getTObject());
 
 			ps = conn.prepareStatement(query.toString());
-			
+
 			log.debug("sql query in retrieveOperatorList : " + ps);
-			
+
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
@@ -102,6 +103,123 @@ public class OperatorDAO {
 		return operatorList;
 	}
 
+	public List<OperatorApplicationDTO> loadActiveApplicationOperators()throws SQLException, Exception {
+		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<OperatorApplicationDTO> operators = new ArrayList();
+		try {
+			if (con == null) {
+				throw new Exception("Connection not found");
+			}
+			StringBuilder queryString = new StringBuilder("SELECT oa.id id, oe.api, oa.applicationid, oa.operatorid,")
+												.append("o.operatorname,o.refreshtoken, o.tokenvalidity, o.tokentime,")
+												.append("o.token, o.tokenurl, o.tokenauth,oe.operatorid ")
+												.append(" FROM  OPERATORAPPS oa, OPERATORS  o ,ENDPOINTAPPS e, OPERATORENDPOINTS oe ")
+												.append(" WHERE oa.operatorid = o.id AND oa.applicationid=e.applicationid AND ")
+												.append(" e.endpointid = oe.id AND oe.id = e.endpointid AND e.isactive = 1 AND oa.isactive = 1 ");
+
+			ps = con.prepareStatement(queryString.toString());
+
+			this.log.debug("sql query in getApplicationOperators : " + ps);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				OperatorApplicationDTO oper = new OperatorApplicationDTO();
+				oper.setId(rs.getInt("id"));
+				oper.setApiName(rs.getString("api"));
+				oper.setApplicationid(rs.getInt("applicationid"));
+				oper.setOperatorid(rs.getInt("operatorid"));
+				oper.setOperatorname(rs.getString("operatorname"));
+				oper.setRefreshtoken(rs.getString("refreshtoken"));
+				oper.setTokenvalidity(rs.getLong("tokenvalidity"));
+				oper.setTokentime(rs.getLong("tokentime"));
+				oper.setToken(rs.getString("token"));
+				oper.setTokenurl(rs.getString("tokenurl"));
+				oper.setTokenauth(rs.getString("tokenauth"));
+				operators.add(oper);
+			}
+		} catch (SQLException e) {
+			this.log.error("database operation error in getApplicationOperators : ", e);
+		} catch (Exception e) {
+			this.log.error("error in getApplicationOperators : ", e);
+		} finally {
+			DbUtils.closeAllConnections(ps, con, rs);
+		}
+		return operators;
+	}
+
+	public List<OperatorApplicationDTO> loadActiveApplicationOperators(OperatorAppSearchDTO searchDTO)throws SQLException, Exception {
+		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		List<OperatorApplicationDTO> operators = new ArrayList();
+		try {
+			if (con == null) {
+				throw new Exception("Connection not found");
+			}
+			StringBuilder queryString = new StringBuilder("SELECT oa.id id, oe.api, oa.applicationid, oa.operatorid,")
+												.append(" o.operatorname,o.refreshtoken, o.tokenvalidity, o.tokentime,")
+												.append(" o.token, o.tokenurl, o.tokenauth,oe.operatorid ")
+												.append(" FROM  OPERATORAPPS oa, OPERATORS  o ,ENDPOINTAPPS e, OPERATORENDPOINTS oe ")
+												.append(" WHERE oa.operatorid = o.id ")
+												.append(" AND oa.applicationid=e.applicationid ")
+												.append(" AND e.endpointid = oe.id ")
+												.append(" AND oe.id = e.endpointid ")
+												.append(" AND e.isactive = 1 ")
+												.append(" AND oa.isactive = 1 ");
+			
+			List<Object> params = new ArrayList<Object>();
+			
+			if(searchDTO.getApiName()!=null && !searchDTO.getApiName().isEmpty()) {
+				queryString.append(" AND oe.api =?");
+				params.add(searchDTO.getApiName().trim());
+			}
+
+			if(searchDTO.getApplicationId()!=0) {
+				queryString.append(" AND e.applicationid =?");
+				params.add(Integer.valueOf( searchDTO.getApplicationId()));
+			}
+
+
+			ps = con.prepareStatement(queryString.toString());
+			
+			if(!params.isEmpty()) {
+				Object [] paramArray = params.toArray(new Object[params.size()]);
+				
+				for (int x=0; x<paramArray.length;x++) {
+				 ps.setObject(x+1, paramArray[x]); //Since the param index start from 1
+				}
+			}
+			
+		
+
+			this.log.debug("sql query in getApplicationOperators : " + ps);
+			rs = ps.executeQuery();
+			while (rs.next()) {
+				OperatorApplicationDTO oper = new OperatorApplicationDTO();
+				oper.setId(rs.getInt("id"));
+				oper.setApiName(rs.getString("api"));
+				oper.setApplicationid(rs.getInt("applicationid"));
+				oper.setOperatorid(rs.getInt("operatorid"));
+				oper.setOperatorname(rs.getString("operatorname"));
+				oper.setRefreshtoken(rs.getString("refreshtoken"));
+				oper.setTokenvalidity(rs.getLong("tokenvalidity"));
+				oper.setTokentime(rs.getLong("tokentime"));
+				oper.setToken(rs.getString("token"));
+				oper.setTokenurl(rs.getString("tokenurl"));
+				oper.setTokenauth(rs.getString("tokenauth"));
+				operators.add(oper);
+			}
+		} catch (SQLException e) {
+			this.log.error("database operation error in getApplicationOperators : ", e);
+		} catch (Exception e) {
+			this.log.error("error in getApplicationOperators : ", e);
+		} finally {
+			DbUtils.closeAllConnections(ps, con, rs);
+		}
+		return operators;
+	}
+	
 	/**
 	 * Persist operators.
 	 *
@@ -142,9 +260,9 @@ public class OperatorDAO {
 			ps.setString(3, apiProvider);
 			ps.setInt(4, appId);
 			ps.setString(5, operatorList);
-			
+
 			log.debug("sql query in persistOperators : " + ps);
-			
+
 			ps.execute();
 		} catch (SQLException e) {
 
@@ -188,7 +306,7 @@ public class OperatorDAO {
 
 				ps.setString(1, searchDTO.getName().trim());
 			}
-			
+
 			log.debug("sql query in seachOparators : " + ps);
 
 			rs = ps.executeQuery();
@@ -256,7 +374,7 @@ public class OperatorDAO {
 				pst.setString(4, merchant);
 				pst.addBatch();
 			}
-			
+
 			log.debug("sql query in insertBlacklistAggregatoRows : " + pst);
 
 			pst.executeBatch();
@@ -333,7 +451,7 @@ public class OperatorDAO {
 				queryString.append("WHERE operatorendpoints.operatorid = operators.id");
 
 				ps = con.prepareStatement(queryString.toString());
-				
+
 				log.debug("sql query in getOperatorEndpoints : " + ps);
 
 				rs = ps.executeQuery();
@@ -399,7 +517,7 @@ public class OperatorDAO {
 			ps = con.prepareStatement(queryString.toString());
 
 			ps.setInt(1, applicationId);
-			
+
 			log.debug("sql query in getApplicationOperators : " + ps);
 
 			rs = ps.executeQuery();
@@ -526,7 +644,7 @@ public class OperatorDAO {
 		try {
 
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
-			
+
 			if (con == null) {
 
 				throw new Exception("Connection not found");
@@ -547,7 +665,7 @@ public class OperatorDAO {
 			ps.setLong(3, tokenTime);
 			ps.setString(4, token);
 			ps.setInt(5, operatorId);
-			
+
 			log.debug("sql query in updateOperatorToken : " + ps);
 
 			ps.executeUpdate();
@@ -587,6 +705,56 @@ public class OperatorDAO {
             DbUtils.closeAllConnections(ps, con, null);
         }
     }
+
+	public void removeAPISubscriptionFromStatDB(String applicationId,String apiName, String version) throws SQLException {
+
+		Connection con = null;
+		PreparedStatement ps = null;
+		String query = "delete from subscription_rates_nb where application_id = ? and api_id = ?";
+		try {
+			con = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
+			ps = con.prepareStatement(query);
+			ps.setString(1, applicationId);
+			ps.setString(2, getApiIDFromName(apiName,version));
+			ps.executeUpdate();
+		} catch (SQLException e) {
+			log.error("database operation error in remove API Subscription : ", e);
+			throw e;
+		} catch (Exception e) {
+			log.error("database operation error in remove API Subscription : ", e);
+		} finally {
+			DbUtils.closeAllConnections(ps, con, null);
+		}
+	}
+
+	public String getApiIDFromName(String apiName, String version) throws SQLException{
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+		String apiId = "";
+		String query = "select API_ID from am_api where API_NAME = ? and API_VERSION = ? ";
+		try {
+			con = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+			ps = con.prepareStatement(query);
+			ps.setString(1, apiName);
+			ps.setString(2, version);
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+				apiId = String.valueOf(rs.getInt("API_ID"));
+			}
+
+		} catch (SQLException e) {
+			log.error("database operation error in remove API Subscription : ", e);
+			throw e;
+		} catch (Exception e) {
+			log.error("database operation error in remove API Subscription : ", e);
+		} finally {
+			DbUtils.closeAllConnections(ps, con, null);
+		}
+
+		return apiId;
+	}
 
     public void removeApplication(String applicationId) throws SQLException {
 
@@ -629,9 +797,10 @@ public class OperatorDAO {
             DbUtils.closeAllConnections(ps, con, null);
         }
     }
-    
-    public Map<Integer, Map<String, Map<String,String>>> getOperatorApprovedSubscriptionsByApplicationId(int appId) throws Exception {
-		
+
+
+    public Map<Integer, Map<String, Map<String,String>>> getOperatorApprovedSubscriptionsByApplicationId(int appId) throws SQLException, Exception {
+
     	log.debug("getOperatorApprovedSubscriptionsByApplicationId : OperatorDAO " + appId);
 		Connection con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 		PreparedStatement ps = null;
@@ -652,7 +821,7 @@ public class OperatorDAO {
 			query.append(OparatorTable.OPERATOR_ENDPOINTS.getTObject());
 			query.append(" opcoendpoints, ");
 			query.append(OparatorTable.OPERATORS.getTObject());
-			query.append(" opco ");			
+			query.append(" opco ");
 			query.append("where eapps.endpointid = opcoendpoints.ID and opcoendpoints.operatorid = opco.ID and eapps.applicationid = ?");
 
 			ps = con.prepareStatement(query.toString());
@@ -662,17 +831,17 @@ public class OperatorDAO {
 			log.debug("sql query in getOperatorApprovedSubscriptionsByApplicationId : " + ps);
 
 			rs = ps.executeQuery();
-			
+
 			int i = 0;
 			while (rs.next()) {
 
 				Map<String, Map<String,String>> subDetails = new HashMap<String, Map<String,String>>();
 				Map<String,String> subData = new HashMap<String, String>();
-				
+
 				subData.put("operatorname", rs.getString("operatorname"));
 				subData.put("substatus", rs.getString("substatus"));
 				subDetails.put(rs.getString("api"), subData);
-				
+
 				historyDetails.put(i, subDetails);
 				i++;
 			}

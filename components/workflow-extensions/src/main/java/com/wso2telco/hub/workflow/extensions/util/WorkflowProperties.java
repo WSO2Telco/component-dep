@@ -45,29 +45,29 @@ public class WorkflowProperties {
     private static final String PUBLISHER_ROLE_START_WITH ="workflow.Publisher.role.start.with";
     private static final String PUBLISHER_ROLE_END_WITH ="workflow.Publisher.role.end.with";
     private static final String MANDATE_SERVICE_HOST = "mandate.service.host";
-    
+
     private static HashMap<String, String> propertiesMap = null;
 	private static final Log log = LogFactory.getLog(WorkflowProperties.class);
-	
+
     public static Properties loadWorkflowProperties(){
         Properties props=null;
         props =PropertyFileReader.getFileReader().getProperties(WORKFLOW_PROPERTIES_FILE);
         return props;
     }
-    
+
     public static Map<String, String> loadWorkflowPropertiesFromXML() {
     	if (propertiesMap == null) {
     		try {
             	propertiesMap = new HashMap<String, String>();
-            	
+
             	DocumentBuilder builder = DocumentBuilderFactory.newInstance().newDocumentBuilder();
-        		
+
         		String carbonHome = System.getProperty("carbon.home");
         		String workflowPropertiesFile = carbonHome + "/repository/conf/" + WORKFLOW_PROPERTIES_XML_FILE;
 
         		Document document = builder.parse(new File(workflowPropertiesFile));
         		Element rootElement = document.getDocumentElement();
-        		
+
         		NodeList nodeList = rootElement.getElementsByTagName("Property");
         		if (nodeList != null && nodeList.getLength() > 0) {
         			for (int i = 0; i < nodeList.getLength(); i++) {

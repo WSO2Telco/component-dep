@@ -19,7 +19,7 @@
     <parent>
         <groupId>com.wso2telco.dep</groupId>
         <artifactId>component-dep</artifactId>
-        <version>2.3.2-SNAPSHOT</version>
+        <version>2.4.3-SNAPSHOT</version>
         <relativePath>../pom.xml</relativePath>
     </parent>
     <modelVersion>4.0.0</modelVersion>
@@ -41,6 +41,7 @@
         <module>com.wso2telco.dep.oneapivalidation.feature</module>
         <module>com.wso2telco.dep.manage.ui.feature</module>
         <module>com.wso2telco.dep.publisher.ui.feature</module>
+		<module>com.wso2telco.dep.admin.ui.feature</module>
         <module>com.wso2telco.dep.sandbox.ui.feature</module>
         <module>com.wso2telco.dep.aggregatorblacklist.webapp.feature</module>
         <module>com.wso2telco.dep.blacklistwhitelistservice.webapp.feature</module>
@@ -51,6 +52,7 @@
         <module>com.wso2telco.dep.logging.extension.feature</module>
 		<module>com.wso2telco.dep.quota.service.feature</module>
         <module>com.wso2telco.dep.ratecard.service.feature</module>
+		<module>com.wso2telco.dep.workflow.core.feature</module>
     </modules>
 </project>
 

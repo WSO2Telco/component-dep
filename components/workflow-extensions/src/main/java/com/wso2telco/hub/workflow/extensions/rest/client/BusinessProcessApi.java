@@ -16,14 +16,16 @@
 
 package com.wso2telco.hub.workflow.extensions.rest.client;
 
-import feign.Headers;
-import feign.Param;
-import feign.RequestLine;
+import org.workflow.core.execption.WorkflowExtensionException;
+
 import com.wso2telco.hub.workflow.extensions.beans.CreateProcessInstanceRequest;
 import com.wso2telco.hub.workflow.extensions.beans.CreateProcessInstanceResponse;
 import com.wso2telco.hub.workflow.extensions.beans.ProcessInstanceData;
-import com.wso2telco.hub.workflow.extensions.exceptions.WorkflowExtensionException;
 
+import feign.Headers;
+import feign.Param;
+import feign.RequestLine;
+//TODO:This need to move into workflow-core
 public interface BusinessProcessApi {
 
     @RequestLine("POST runtime/process-instances")

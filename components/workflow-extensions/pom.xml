@@ -20,7 +20,7 @@
     <parent>
         <groupId>com.wso2telco.dep</groupId>
         <artifactId>component-dep</artifactId>
-        <version>2.3.2-SNAPSHOT</version>
+        <version>2.4.3-SNAPSHOT</version>
         <relativePath>../../pom.xml</relativePath>
     </parent>
 
@@ -30,6 +30,7 @@
     <name>WSO2 Telco Workflow Extensions</name>
 
     <dependencies>
+
         <dependency>
             <groupId>org.wso2.carbon.apimgt</groupId>
             <artifactId>org.wso2.carbon.apimgt.impl</artifactId>
@@ -65,9 +66,17 @@
             <artifactId>dbutils</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.wso2telco.core</groupId>
+            <artifactId>user-profile</artifactId>
+        </dependency>
+        <dependency>
             <groupId>com.wso2telco.dep</groupId>
             <artifactId>operator-service</artifactId>
-        </dependency>		
+        </dependency>
+        <dependency>
+            <groupId>com.wso2telco.dep</groupId>
+            <artifactId>workflow-core</artifactId>
+        </dependency>
     </dependencies>
 
     <build>

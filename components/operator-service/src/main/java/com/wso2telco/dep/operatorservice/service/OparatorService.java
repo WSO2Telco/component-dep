@@ -16,16 +16,21 @@
 
 package com.wso2telco.dep.operatorservice.service;
 
+import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.exception.GenaralError;
+import com.wso2telco.core.dbutils.exception.ThrowableError;
 import com.wso2telco.dep.operatorservice.dao.OperatorDAO;
+import com.wso2telco.dep.operatorservice.dao.WorkflowDAO;
 import com.wso2telco.dep.operatorservice.exception.APIException;
 import com.wso2telco.dep.operatorservice.exception.APIException.APIErrorType;
 import com.wso2telco.dep.operatorservice.exception.ApplicationException;
@@ -33,11 +38,12 @@ import com.wso2telco.dep.operatorservice.exception.ApplicationException.Applicat
 import com.wso2telco.dep.operatorservice.exception.TokenException;
 import com.wso2telco.dep.operatorservice.exception.TokenException.TokenErrorType;
 import com.wso2telco.dep.operatorservice.model.Operator;
+import com.wso2telco.dep.operatorservice.model.OperatorAppSearchDTO;
+import com.wso2telco.dep.operatorservice.model.OperatorApplicationDTO;
+import com.wso2telco.dep.operatorservice.model.OperatorEndPointDTO;
 import com.wso2telco.dep.operatorservice.model.OperatorSearchDTO;
 import com.wso2telco.dep.operatorservice.model.ProvisionReq;
 import com.wso2telco.dep.operatorservice.util.OparatorError;
-import com.wso2telco.dep.operatorservice.model.OperatorEndPointDTO;
-import com.wso2telco.dep.operatorservice.model.OperatorApplicationDTO;
 
 public class OparatorService {
 
@@ -52,7 +58,7 @@ public class OparatorService {
 
 	/**
 	 * load all operators according to OperatorSearchDTO filters
-	 * 
+	 *
 	 * @param searchDTO
 	 * @return
 	 * @throws Exception
@@ -76,6 +82,34 @@ public class OparatorService {
 			return operatorList;
 		} else {
 
+			return Collections.emptyList();
+		}
+	}
+
+	public List<OperatorApplicationDTO> loadActiveApplicationOperators()throws ApplicationException, BusinessException {
+		List<OperatorApplicationDTO> operators = null;
+		try {
+			operators = dao.loadActiveApplicationOperators();
+		} catch (Exception e) {
+			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
+		}
+		if (operators != null) {
+			return operators;
+		} else {
+			return Collections.emptyList();
+		}
+	}
+	
+	public List<OperatorApplicationDTO> loadActiveApplicationOperators(OperatorAppSearchDTO searchDTO)throws  BusinessException {
+		List<OperatorApplicationDTO> operators = null;
+		try {
+			operators = dao.loadActiveApplicationOperators(searchDTO);
+		} catch (Exception e) {
+			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
+		}
+		if (operators != null) {
+			return operators;
+		} else {
 			return Collections.emptyList();
 		}
 	}
@@ -210,7 +244,7 @@ public class OparatorService {
 
 		if (operatorId <= 0) {
 
-			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID); 
+			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
 		}
 
 		if (refreshToken == null || refreshToken.trim().length() <= 0) {
@@ -311,4 +345,64 @@ public class OparatorService {
 		
 		return historyDetails;
 	}
+    
+    public List<String> getOparatorApprovedApp(String appIds,final String oparatorName) throws BusinessException {
+    	LOG.debug("calling getOparatorApprovedApp ,appIds:"+appIds);
+    	
+    	List<String> returnList= Collections.emptyList();
+    	
+    	ThrowableError emptyAppId = new ThrowableError() {
+			
+			@Override
+			public String getMessage() {
+				return "API ids can not be empty";
+			}
+			
+			@Override
+			public String getCode() {
+				return "SUB009";
+			}
+		};
+		
+		appIds= appIds.replace("'","");
+    	if(appIds==null || appIds.trim().length()==0 ) {
+    		LOG.debug("parameter null appIds");
+    	throw	new BusinessException(emptyAppId);
+    	}
+    	
+    	List<String> appIdList = new ArrayList<String>();
+    	
+    	WorkflowDAO dao = new WorkflowDAO();
+    	String []  apps = appIds.split(",") ;
+     	
+    	if(apps==null || apps.length==0 ) {
+    		LOG.debug("parameter null appIds");
+    		throw new BusinessException(emptyAppId);
+    	}
+    	
+    	for (String string : apps) {
+    		try {
+				Integer.parseInt(string);
+				appIdList.add(string);
+			} catch (Exception e) {
+				//ignore and continue
+			}
+		}
+    	
+    	if(appIdList.size()==0) {
+
+    		LOG.debug("parameter null appIds");
+    		throw new BusinessException(emptyAppId);
+    	
+    	}
+    	
+    	try {
+			returnList = dao.getOparatorApprovedApp(apps,oparatorName);
+		} catch (Exception e) {
+			LOG.error("getOparatorApprovedApp appIds:"+appIds,e);
+			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
+		}
+//    	returnList= returnList==null? Collections.emptyList():	returnList;
+    	return returnList;
+    }
 }

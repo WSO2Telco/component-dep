@@ -18,8 +18,11 @@ package com.wso2telco.workflow.approval.subscription.servicetask;
 
 
 import com.wso2telco.workflow.approval.model.NotificationRequest;
+import com.wso2telco.workflow.approval.model.Subscription;
 import com.wso2telco.workflow.approval.model.SubscriptionApprovalAuditRecord;
+import com.wso2telco.workflow.approval.model.SubscriptionValidation;
 import com.wso2telco.workflow.approval.subscription.rest.client.NotificationApi;
+import com.wso2telco.workflow.approval.subscription.rest.client.SubscriptionWorkflowApi;
 import com.wso2telco.workflow.approval.subscription.rest.client.WorkflowApprovalAuditApi;
 import com.wso2telco.workflow.approval.subscription.rest.client.WorkflowCallbackErrorDecoder;
 import com.wso2telco.workflow.approval.util.AuthRequestInterceptor;
@@ -37,6 +40,7 @@ public class APIPublisherApprovalDBUpdater implements JavaDelegate {
 
         AuthRequestInterceptor authRequestInterceptor = new AuthRequestInterceptor();
         int applicationId = arg0.getVariable(Constants.APPLICATION_ID)!=null?Integer.parseInt(arg0.getVariable(Constants.APPLICATION_ID).toString()):0;
+        int apiID = arg0.getVariable(Constants.API_ID) != null ? Integer.parseInt(arg0.getVariable(Constants.API_ID).toString()) : 0;
         String serviceUrl = arg0.getVariable(Constants.SERVICE_URL)!=null?arg0.getVariable(Constants.SERVICE_URL).toString():null;
         String apiName = arg0.getVariable(Constants.API_NAME)!=null?arg0.getVariable(Constants.API_NAME).toString():null;
         String apiVersion = arg0.getVariable(Constants.API_VERSION)!=null?arg0.getVariable(Constants.API_VERSION).toString():null;
@@ -47,11 +51,14 @@ public class APIPublisherApprovalDBUpdater implements JavaDelegate {
         String applicationName =  arg0.getVariable(Constants.APPLICATION_NAME)!=null?arg0.getVariable(Constants.APPLICATION_NAME).toString():null;
         String description = arg0.getVariable(Constants.APPLICATION_DESCRIPTION)!=null?arg0.getVariable(Constants.APPLICATION_DESCRIPTION).toString():null;
         String publisherApprovalStatus = arg0.getVariable(Constants.API_PUBLISHER_APPROVAL)!=null?(arg0.getVariable(Constants.API_PUBLISHER_APPROVAL).toString()):null;
-        String selectedTier = arg0.getVariable(Constants.SELECTED_TIER)!=null? publisherApprovalStatus.equalsIgnoreCase(Constants.APPROVE)?arg0.getVariable(Constants.SELECTED_TIER).toString():Constants.REJECTED_TIER:null;
         String adminUserName = arg0.getVariable(Constants.ADMIN_USER_NAME) != null ? arg0.getVariable(Constants.ADMIN_USER_NAME).toString() : null;
         String adminPassword = arg0.getVariable(Constants.ADMIN_PASSWORD)!=null?arg0.getVariable(Constants.ADMIN_PASSWORD).toString():null;
         String apiContext = arg0.getVariable(Constants.API_CONTEXT)!=null?arg0.getVariable(Constants.API_CONTEXT).toString():null;
         String subscriber = arg0.getVariable(Constants.SUBSCRIBER)!=null?arg0.getVariable(Constants.SUBSCRIBER).toString():null;
+        String operatorName = arg0.getVariable(Constants.OPERATOR) != null ? arg0.getVariable(Constants.OPERATOR).toString() : null;
+        String approvalStatus = arg0.getVariable(Constants.API_PUBLISHER_APPROVAL) != null ? arg0.getVariable(Constants.API_PUBLISHER_APPROVAL).toString() : null;
+        String workflowRefId = arg0.getVariable(Constants.WORK_FLOW_REF)!=null?arg0.getVariable(Constants.WORK_FLOW_REF).toString():null;
+        String adminSelectedTier = arg0.getVariable(Constants.ADMIN_SELECTED_TIER) != null ? arg0.getVariable(Constants.ADMIN_SELECTED_TIER).toString() : null;
 
         NotificationApi apiNotification = Feign.builder()
                 .encoder(new JacksonEncoder())
@@ -66,6 +73,29 @@ public class APIPublisherApprovalDBUpdater implements JavaDelegate {
                 .errorDecoder(new WorkflowCallbackErrorDecoder())
                 .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminUserName, adminPassword))
                 .target(WorkflowApprovalAuditApi.class, serviceUrl);
+
+
+        SubscriptionWorkflowApi api = Feign.builder()
+                .encoder(new JacksonEncoder())
+                .decoder(new JacksonDecoder())
+                .errorDecoder(new WorkflowCallbackErrorDecoder())
+                .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminUserName, adminPassword))
+                .target(SubscriptionWorkflowApi.class, serviceUrl);
+
+        Subscription subscription = new Subscription();
+        subscription.setApiName(apiName);
+        subscription.setApplicationID(applicationId);
+        subscription.setOperatorName(operatorName);
+        subscription.setStatus(approvalStatus);
+        subscription.setWorkflowRefId(workflowRefId);
+        subscription.setSelectedTier(adminSelectedTier);
+        api.subscriptionApprovalHub(subscription);  //tier is set at here
+        api.subscriptionApprovalOperator(subscription);
+
+        SubscriptionValidation subscriptionValidation = new SubscriptionValidation();
+        subscriptionValidation.setApiID(apiID);
+        subscriptionValidation.setApplicationID(applicationId);
+        api.subscriptionApprovalValidator(subscriptionValidation);
 
         SubscriptionApprovalAuditRecord subscriptionApprovalAuditRecord = new SubscriptionApprovalAuditRecord();
         subscriptionApprovalAuditRecord.setApiName(apiName);
@@ -84,7 +114,7 @@ public class APIPublisherApprovalDBUpdater implements JavaDelegate {
         notificationRequest.setApiProvider(apiProvider);
         notificationRequest.setApiName(apiName);
         notificationRequest.setSubscriber(subscriber);
-        notificationRequest.setSubscriptionTier(selectedTier);
+        notificationRequest.setSubscriptionTier(adminSelectedTier);
         notificationRequest.setApplicationDescription(description);
         notificationRequest.setApiVersion(apiVersion);
         notificationRequest.setApiContext(apiContext);

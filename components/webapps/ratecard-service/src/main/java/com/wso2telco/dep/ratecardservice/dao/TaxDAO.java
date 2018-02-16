@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
- * <p>
+ * <p/>
  * WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * <p>
+ * <p/>
  * http://www.apache.org/licenses/LICENSE-2.0
- * <p>
+ * <p/>
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -15,186 +15,263 @@
  ******************************************************************************/
 package com.wso2telco.dep.ratecardservice.dao;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.ArrayList;
-import java.util.List;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import com.wso2telco.core.dbutils.DbUtils;
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.exception.ServiceError;
 import com.wso2telco.core.dbutils.util.DataSourceNames;
 import com.wso2telco.dep.ratecardservice.dao.model.TaxDTO;
+import com.wso2telco.dep.ratecardservice.dao.model.TaxValidityDTO;
 import com.wso2telco.dep.ratecardservice.util.DatabaseTables;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
+import java.sql.*;
+import java.util.ArrayList;
+import java.util.Iterator;
+import java.util.List;
 
 public class TaxDAO {
 
-	private final Log log = LogFactory.getLog(TaxDAO.class);
+    private final Log log = LogFactory.getLog(TaxDAO.class);
+    public static final String DBERRORMSG = "unable to open";
+    public static final String DBCONERRORMSG = "database connection";
+    public static final String TAXID = "taxid";
 
-	public List<TaxDTO> getTaxes() throws BusinessException {
 
-		List<TaxDTO> taxes = new ArrayList<TaxDTO>();
+    public List<TaxDTO> getTaxes() throws BusinessException {
 
-		Connection con = null;
-		ResultSet rs = null;
-		PreparedStatement ps = null;
+        List<TaxDTO> taxes = new ArrayList<TaxDTO>();
 
-		try {
+        Connection con = null;
+        ResultSet rs = null;
+        PreparedStatement ps = null;
 
-			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
-			if (con == null) {
+        try {
 
-				log.error("unable to open " + DataSourceNames.WSO2TELCO_RATE_DB + " database connection");
-				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
-			}
+            con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
+            if (con == null) {
 
-			StringBuilder query = new StringBuilder("select taxid, taxcode, taxname, createdby from ");
-			query.append(DatabaseTables.TAX.getTObject());
+                log.error(DBERRORMSG + DataSourceNames.WSO2TELCO_RATE_DB + DBCONERRORMSG);
+                throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+            }
 
-			ps = con.prepareStatement(query.toString());
+            StringBuilder query = new StringBuilder("select taxid, taxcode, taxname, createdby from ");
+            query.append(DatabaseTables.TAX.getTObject());
 
-			log.debug("sql query in getTaxes : " + ps);
+            ps = con.prepareStatement(query.toString());
 
-			rs = ps.executeQuery();
+            log.debug("sql query in getTaxes : " + ps);
 
-			while (rs.next()) {
+            rs = ps.executeQuery();
 
-				TaxDTO tax = new TaxDTO();
+            while (rs.next()) {
 
-				tax.setTaxId(rs.getInt("taxid"));
-				tax.setTaxCode(rs.getString("taxcode"));
-				tax.setTaxName(rs.getString("taxname"));
-				tax.setCreatedBy(rs.getString("createdby"));
+                TaxDTO tax = new TaxDTO();
 
-				taxes.add(tax);
-			}
-		} catch (SQLException e) {
+                tax.setTaxId(rs.getInt(TAXID));
+                tax.setTaxCode(rs.getString("taxcode"));
+                tax.setTaxName(rs.getString("taxname"));
+                tax.setCreatedBy(rs.getString("createdby"));
 
-			log.error("database operation error in getTaxes : ", e);
-			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
-		} catch (Exception e) {
+                taxes.add(tax);
+            }
+        } catch (SQLException e) {
 
-			log.error("error in getTaxes : ", e);
-			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
-		} finally {
+            log.error("database operation error in getTaxes : ", e);
+            throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+        } catch (Exception e) {
 
-			DbUtils.closeAllConnections(ps, con, rs);
-		}
+            log.error("error in getTaxes : ", e);
+            throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+        } finally {
 
-		return taxes;
-	}
+            DbUtils.closeAllConnections(ps, con, rs);
+        }
 
-	public TaxDTO addTax(TaxDTO tax) throws BusinessException {
+        return taxes;
+    }
 
-		Connection con = null;
-		PreparedStatement ps = null;
-		ResultSet rs = null;
-		Integer taxId = 0;
+    public List<TaxValidityDTO> getTaxValidityDates(List<Integer> taxids) throws BusinessException {
 
-		try {
+        List<TaxValidityDTO> taxes = new ArrayList<TaxValidityDTO>();
 
-			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
-			if (con == null) {
+        Connection con = null;
+        ResultSet rs = null;
+        PreparedStatement ps = null;
 
-				log.error("unable to open " + DataSourceNames.WSO2TELCO_RATE_DB + " database connection");
-				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
-			}
+        try {
 
-			StringBuilder query = new StringBuilder("insert into ");
-			query.append(DatabaseTables.TAX.getTObject());
-			query.append(" (taxcode, taxname, createdby)");
-			query.append(" values");
-			query.append(" (?, ?, ?)");
+            con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
+            if (con == null) {
 
-			ps = con.prepareStatement(query.toString(), Statement.RETURN_GENERATED_KEYS);
+                log.error(DBERRORMSG + DataSourceNames.WSO2TELCO_RATE_DB + DBCONERRORMSG);
+                throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+            }
 
-			log.debug("sql query in addTax : " + ps);
+            StringBuilder query = new StringBuilder();
+            query.append("select taxid,idtax_validityid,");
+            query.append(" tax_validityactdate, tax_validitydisdate, tax_validityval from ");
+            query.append(DatabaseTables.TAX_VALIDITY.getTObject());
+            query.append(" where taxid in(  ");
 
-			ps.setString(1, tax.getTaxCode());
-			ps.setString(2, tax.getTaxName());
-			ps.setString(3, tax.getCreatedBy());
 
-			ps.executeUpdate();
+            Iterator<Integer> iterator = taxids.iterator();
+            int[] values = new int[taxids.size()];
+            int index = 0;
+            while (iterator.hasNext()) {
+                values[index] = iterator.next();
+                query.append("?");
+                if (iterator.hasNext()) {
+                    query.append(",");
+                }
+                index++;
 
-			rs = ps.getGeneratedKeys();
+            }
 
-			while (rs.next()) {
+            query.append(")");
+            ps = con.prepareStatement(query.toString());
 
-				taxId = rs.getInt(1);
-			}
+            for (int x = 0; x < values.length; x++) {
+                ps.setInt(x + 1, values[x]);
+            }
+            log.debug("sql query in getTaxes : " + ps);
 
-			tax.setTaxId(taxId);
-		} catch (SQLException e) {
 
-			log.error("database operation error in addTax : ", e);
-			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
-		} catch (Exception e) {
+            rs = ps.executeQuery();
 
-			log.error("error in addTax : ", e);
-			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
-		} finally {
+            while (rs.next()) {
 
-			DbUtils.closeAllConnections(ps, con, rs);
-		}
+                TaxValidityDTO tax = new TaxValidityDTO();
+                tax.setIdtaxValidityId(rs.getInt("idtax_validityid"));
+                tax.setTaxValidityactdate(rs.getString("tax_validityactdate"));
+                tax.setTaxValiditydisdate(rs.getString("tax_validitydisdate"));
+                tax.setTaxValidityval(rs.getString("tax_validityval"));
+                tax.setTaxid(rs.getInt(TAXID));
+                taxes.add(tax);
+            }
+        } catch (SQLException e) {
 
-		return tax;
-	}
+            log.error("database operation error in getTaxes : ", e);
+            throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+        } catch (Exception e) {
 
-	public TaxDTO getTax(int taxId) throws BusinessException {
+            log.error("error in getTaxes : ", e);
+            throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+        } finally {
 
-		TaxDTO tax = null;
+            DbUtils.closeAllConnections(ps, con, rs);
+        }
 
-		Connection con = null;
-		ResultSet rs = null;
-		PreparedStatement ps = null;
+        return taxes;
+    }
 
-		try {
+    public TaxDTO addTax(TaxDTO tax) throws BusinessException {
 
-			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
-			if (con == null) {
+        Connection con = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        Integer taxId = 0;
 
-				log.error("unable to open " + DataSourceNames.WSO2TELCO_RATE_DB + " database connection");
-				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
-			}
+        try {
 
-			StringBuilder query = new StringBuilder("select taxid, taxcode, taxname, createdby from ");
-			query.append(DatabaseTables.TAX.getTObject());
-			query.append(" where taxid = ?");
+            con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
+            if (con == null) {
 
-			ps = con.prepareStatement(query.toString());
+                log.error(DBERRORMSG + DataSourceNames.WSO2TELCO_RATE_DB + DBCONERRORMSG);
+                throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+            }
 
-			log.debug("sql query in getTax : " + ps);
+            StringBuilder query = new StringBuilder("insert into ");
+            query.append(DatabaseTables.TAX.getTObject());
+            query.append(" (taxcode, taxname, createdby)");
+            query.append(" values");
+            query.append(" (?, ?, ?)");
 
-			ps.setInt(1, taxId);
+            ps = con.prepareStatement(query.toString(), Statement.RETURN_GENERATED_KEYS);
 
-			rs = ps.executeQuery();
+            log.debug("sql query in addTax : " + ps);
 
-			while (rs.next()) {
+            ps.setString(1, tax.getTaxCode());
+            ps.setString(2, tax.getTaxName());
+            ps.setString(3, tax.getCreatedBy());
 
-				tax = new TaxDTO();
+            ps.executeUpdate();
 
-				tax.setTaxId(rs.getInt("taxid"));
-				tax.setTaxCode(rs.getString("taxcode"));
-				tax.setTaxName(rs.getString("taxname"));
-				tax.setCreatedBy(rs.getString("createdby"));
-			}
-		} catch (SQLException e) {
+            rs = ps.getGeneratedKeys();
 
-			log.error("database operation error in getTax : ", e);
-			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
-		} catch (Exception e) {
+            while (rs.next()) {
 
-			log.error("error in getTax : ", e);
-			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
-		} finally {
+                taxId = rs.getInt(1);
+            }
 
-			DbUtils.closeAllConnections(ps, con, rs);
-		}
+            tax.setTaxId(taxId);
+        } catch (SQLException e) {
 
-		return tax;
-	}
+            log.error("database operation error in addTax : ", e);
+            throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+        } catch (Exception e) {
+
+            log.error("error in addTax : ", e);
+            throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+        } finally {
+
+            DbUtils.closeAllConnections(ps, con, rs);
+        }
+
+        return tax;
+    }
+
+    public TaxDTO getTax(int taxId) throws BusinessException {
+
+        TaxDTO tax = null;
+
+        Connection con = null;
+        ResultSet rs = null;
+        PreparedStatement ps = null;
+
+        try {
+
+            con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
+            if (con == null) {
+
+                log.error(DBERRORMSG + DataSourceNames.WSO2TELCO_RATE_DB + DBCONERRORMSG);
+                throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+            }
+
+            StringBuilder query = new StringBuilder("select taxid, taxcode, taxname, createdby from ");
+            query.append(DatabaseTables.TAX.getTObject());
+            query.append(" where taxid = ?");
+
+            ps = con.prepareStatement(query.toString());
+
+            log.debug("sql query in getTax : " + ps);
+
+            ps.setInt(1, taxId);
+
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+
+                tax = new TaxDTO();
+
+                tax.setTaxId(rs.getInt(TAXID));
+                tax.setTaxCode(rs.getString("taxcode"));
+                tax.setTaxName(rs.getString("taxname"));
+                tax.setCreatedBy(rs.getString("createdby"));
+            }
+        } catch (SQLException e) {
+
+            log.error("database operation error in getTax : ", e);
+            throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+        } catch (Exception e) {
+
+            log.error("error in getTax : ", e);
+            throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+        } finally {
+
+            DbUtils.closeAllConnections(ps, con, rs);
+        }
+
+        return tax;
+    }
 }
