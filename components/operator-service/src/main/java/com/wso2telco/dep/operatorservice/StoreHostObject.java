@@ -280,6 +280,7 @@ public class StoreHostObject extends ScriptableObject {
                 log.error("error occurred in getOperatorApprovedSubscriptionsByApplicationId : ", e);
                 handleException(e.getMessage(), e);
             }
+
         }
 
 		resultObject.put("operatorSubsApprovedHistory", resultObject, historyArray);
