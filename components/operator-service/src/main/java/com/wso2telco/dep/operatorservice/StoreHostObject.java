@@ -283,6 +283,7 @@ public class StoreHostObject extends ScriptableObject {
 
         }
 
+
 		resultObject.put("operatorSubsApprovedHistory", resultObject, historyArray);
 
 		return resultObject;
