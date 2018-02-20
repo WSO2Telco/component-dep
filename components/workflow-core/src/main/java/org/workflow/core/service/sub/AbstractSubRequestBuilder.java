@@ -139,10 +139,12 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
             }
             taskList.setData(tasks);
             taskList.setSize(tasks.size());
+            taskList.setTotal(tasks.size());
 
         } else {
             taskList.setData(tasks);
             taskList.setSize(tasks.size());
+            taskList.setTotal(tasks.size());
         }
 
         return taskList;
