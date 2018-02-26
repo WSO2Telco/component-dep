@@ -4,11 +4,17 @@ package com.wso2telco.dep.ratecardservice.service;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.dep.ratecardservice.dao.ApplicationSubcriptionsDAO;
 import com.wso2telco.dep.ratecardservice.dao.model.ApplicationSubcriptionsDTO;
+import com.wso2telco.dep.ratecardservice.resource.APIResource;
 
 public class ApplicationSubcriptionsService {
+	
+	private final Log log = LogFactory.getLog(ApplicationSubcriptionsService.class);
 	
 	public List<ApplicationSubcriptionsDTO> getSBSubscriptionRateInfo(String appId, String operatorId,String apiId) throws BusinessException{
 		 
@@ -30,23 +36,37 @@ public class ApplicationSubcriptionsService {
 		ApplicationSubcriptionsDAO applicationSubcriptionsDAO=new ApplicationSubcriptionsDAO();
 		List<ApplicationSubcriptionsDTO> applicationSubcriptionsDTOs = null;
 		List<ApplicationSubcriptionsDTO> updatedList = new ArrayList<ApplicationSubcriptionsDTO>();;
-		applicationSubcriptionsDTOs=applicationSubcriptionsDAO.getSBRates(appId, operatorId, apiId);
+		applicationSubcriptionsDTOs=applicationSubcriptionsDAO.getExistingSBRates(appId, operatorId, apiId);
 				
-		for (ApplicationSubcriptionsDTO applicationSubcriptionsDTODB:applicationSubcriptionsDTOs) {
-			for (ApplicationSubcriptionsDTO applicationSubcriptionsDTO:applicationSubcriptionsRateList) {
+		for (ApplicationSubcriptionsDTO applicationSubcriptionsDTO:applicationSubcriptionsRateList) {
+			boolean isUpdate=false;
+			ApplicationSubcriptionsDTO updatedDto=null;
+			for ( ApplicationSubcriptionsDTO applicationSubcriptionsDTODB:applicationSubcriptionsDTOs) {
 
 
-				if (applicationSubcriptionsDTO.getApiOperation().equals(applicationSubcriptionsDTODB.getApiOperation()) &&
+
+				if (applicationSubcriptionsDTO.getApiOperationId().equals(applicationSubcriptionsDTODB.getApiOperationId()) &&
 					applicationSubcriptionsDTO.getApplicationId().equals(applicationSubcriptionsDTODB.getApplicationId()) &&
 					applicationSubcriptionsDTO.getOperatorId().equals(applicationSubcriptionsDTODB.getOperatorId()) ) 
 				{	
-					ApplicationSubcriptionsDTO ubdatedDTO=applicationSubcriptionsDAO.updateSBRates(applicationSubcriptionsDTO);
-					applicationSubcriptionsDAO.insertUpdatedSBRates(applicationSubcriptionsDTODB);
-					updatedList.add(ubdatedDTO);
-				} else {
-					ApplicationSubcriptionsDTO ubdatedDTO=applicationSubcriptionsDAO.insertSBRates(applicationSubcriptionsDTO);
-					updatedList.add(ubdatedDTO);
-				}
+					isUpdate=true;
+					updatedDto=applicationSubcriptionsDTODB;
+				} 
+			}
+			
+			
+			if (isUpdate) {
+				log.debug("SB before update");
+				ApplicationSubcriptionsDTO ubdatedDTO=applicationSubcriptionsDAO.updateSBRates(applicationSubcriptionsDTO);
+				log.debug("update success");
+				applicationSubcriptionsDAO.insertUpdatedSBRates(updatedDto);
+				log.debug("insert update success");
+				updatedList.add(ubdatedDTO);
+			} else {
+				log.debug("SB insert");
+				ApplicationSubcriptionsDTO ubdatedDTO=applicationSubcriptionsDAO.insertSBRates(applicationSubcriptionsDTO);
+				log.debug("SB insert  success");
+				updatedList.add(ubdatedDTO);
 			}
 
 		}
@@ -59,22 +79,36 @@ public class ApplicationSubcriptionsService {
 		ApplicationSubcriptionsDAO applicationSubcriptionsDAO=new ApplicationSubcriptionsDAO();
 		List<ApplicationSubcriptionsDTO> applicationSubcriptionsDTOs = null;
 		List<ApplicationSubcriptionsDTO> updatedList = new ArrayList<ApplicationSubcriptionsDTO>();;
-		applicationSubcriptionsDTOs=applicationSubcriptionsDAO.getNBRates(appId, apiId);
+		applicationSubcriptionsDTOs=applicationSubcriptionsDAO.getExistingNBRates(appId, apiId);
 		
-		for (ApplicationSubcriptionsDTO applicationSubcriptionsDTODB:applicationSubcriptionsDTOs) {
-			for (ApplicationSubcriptionsDTO applicationSubcriptionsDTO:applicationSubcriptionsRateList) {
+		for (ApplicationSubcriptionsDTO applicationSubcriptionsDTO:applicationSubcriptionsRateList) {
+			
+			boolean isUpdate=false;
+			ApplicationSubcriptionsDTO updatedDto=null;
+			for (ApplicationSubcriptionsDTO applicationSubcriptionsDTODB:applicationSubcriptionsDTOs) {
 
 
-				if (applicationSubcriptionsDTO.getApiOperation().equals(applicationSubcriptionsDTODB.getApiOperation()) &&
+				if (applicationSubcriptionsDTO.getApiOperationId().equals(applicationSubcriptionsDTODB.getApiOperationId()) &&
 					applicationSubcriptionsDTO.getApplicationId().equals(applicationSubcriptionsDTODB.getApplicationId()) ) 
-				{	
-					ApplicationSubcriptionsDTO ubdatedDTO=applicationSubcriptionsDAO.updateNBRates(applicationSubcriptionsDTO);
-					updatedList.add(ubdatedDTO);
-					applicationSubcriptionsDAO.insertUpdatedNBRates(applicationSubcriptionsDTODB);
-				} else {
-					ApplicationSubcriptionsDTO ubdatedDTO=applicationSubcriptionsDAO.insertNBRates(applicationSubcriptionsDTO);
-					updatedList.add(ubdatedDTO);
-				}
+				{				
+					isUpdate=true;
+					updatedDto=applicationSubcriptionsDTODB;
+				} 
+			}
+			
+			if (isUpdate) {
+				log.debug("Nb before update");
+				ApplicationSubcriptionsDTO ubdatedDTO=applicationSubcriptionsDAO.updateNBRates(applicationSubcriptionsDTO);
+				log.debug("update success");
+				updatedList.add(ubdatedDTO);
+				applicationSubcriptionsDAO.insertUpdatedNBRates(updatedDto);
+				log.debug("insert update success");
+			} else {
+
+				log.debug("NB insert  success");
+				ApplicationSubcriptionsDTO ubdatedDTO=applicationSubcriptionsDAO.insertNBRates(applicationSubcriptionsDTO);
+				log.debug("NB insert  success");
+				updatedList.add(ubdatedDTO);
 			}
 
 		}

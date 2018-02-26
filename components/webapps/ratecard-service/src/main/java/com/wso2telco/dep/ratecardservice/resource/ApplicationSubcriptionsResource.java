@@ -29,7 +29,7 @@ import com.wso2telco.dep.ratecardservice.service.ApplicationSubcriptionsService;
 @Produces(MediaType.APPLICATION_JSON)
 public class ApplicationSubcriptionsResource {
 	
-	private final Log log = LogFactory.getLog(APIResource.class);
+	private final Log log = LogFactory.getLog(ApplicationSubcriptionsResource.class);
 	private ApplicationSubcriptionsService service = new ApplicationSubcriptionsService();
 
 	

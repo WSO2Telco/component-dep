@@ -46,7 +46,7 @@ public class ApplicationSubcriptionsDAO {
 					+"left join ( "
 					+"select sub_rate_sb.api_operationid,rate_def.rate_defname,sub_rate_sb.applicationid,sub_rate_sb.rate_defid,sub_rate_sb.operatorid,sub_rate_sb.updatedby,sub_rate_sb.createdby from sub_rate_sb " 
 					+"inner join rate_def on sub_rate_sb.rate_defid=rate_def.rate_defid  where sub_rate_sb.operatorid=? and sub_rate_sb.applicationid=? "
-					+") as rate_def_temp on api_operation_temp.api_operationid=rate_def_temp.api_operationid ");
+					+") as rate_def_temp on api_operation_temp.api_operationid=rate_def_temp.api_operationid");
 
 			ps = con.prepareStatement(query.toString());
 
@@ -115,7 +115,7 @@ public class ApplicationSubcriptionsDAO {
 					+"left join ( "
 					+"select sub_rate_nb.applicationid,sub_rate_nb.api_operationid,rate_def.rate_defname,sub_rate_nb.rate_defid,sub_rate_nb.updatedby,sub_rate_nb.createdby from sub_rate_nb " 
 					+"inner join rate_def on sub_rate_nb.rate_defid=rate_def.rate_defid  where sub_rate_nb.applicationid=? "
-					+") as rate_def_temp on api_operation_temp.api_operationid=rate_def_temp.api_operationid ");
+					+") as rate_def_temp on api_operation_temp.api_operationid=rate_def_temp.api_operationid");
 
 			ps = con.prepareStatement(query.toString());
 
@@ -183,7 +183,7 @@ public class ApplicationSubcriptionsDAO {
 			query.append("updatedby = ? ");
 			query.append("WHERE operatorid=? ");
 			query.append("and api_operationid=? ");
-			query.append("and applicationid=? ");
+			query.append("and applicationid=?");
 	 
 			ps = con.prepareStatement(query.toString(),Statement.RETURN_GENERATED_KEYS);
 
@@ -259,9 +259,7 @@ public class ApplicationSubcriptionsDAO {
 			while (rs.next()) {
 
 				applicationSubcriptionsDTO.setOperatorId(rs.getInt(1));
-				applicationSubcriptionsDTO.setApiOperationId(rs.getInt(2));
-				applicationSubcriptionsDTO.setApplicationId(rs.getInt(3));
-				applicationSubcriptionsDTO.setRateDefId(rs.getInt(4));
+				
 			}
 
 		} catch (SQLException e) {
@@ -305,7 +303,7 @@ public class ApplicationSubcriptionsDAO {
 			query.append("SET rate_defid = ?, ");
 			query.append("updatedby = ? ");
 			query.append("WHERE applicationid=? ");
-			query.append("and api_operationid=? ");
+			query.append("and api_operationid=?");
 
 	 
 			ps = con.prepareStatement(query.toString(),Statement.RETURN_GENERATED_KEYS);
@@ -380,8 +378,7 @@ public class ApplicationSubcriptionsDAO {
 
 			while (rs.next()) {
 				applicationSubcriptionsDTO.setApiOperationId(rs.getInt(1));
-				applicationSubcriptionsDTO.setApplicationId(rs.getInt(2));
-				applicationSubcriptionsDTO.setRateDefId(rs.getInt(3));
+				
 			}
 
 		} catch (SQLException e) {
@@ -418,7 +415,7 @@ public class ApplicationSubcriptionsDAO {
 			}
 
 			StringBuilder query = new StringBuilder("INSERT INTO sub_rate_nb_updated ( api_operationid, applicationid, rate_defid) ");
-			query.append("VALUES ( ?, ?, ?) ");
+			query.append("VALUES ( ?, ?, ?)");
 	 
 	 
 			ps = con.prepareStatement(query.toString(),Statement.RETURN_GENERATED_KEYS);
@@ -435,8 +432,7 @@ public class ApplicationSubcriptionsDAO {
 
 			while (rs.next()) {
 				applicationSubcriptionsDTO.setApiOperationId(rs.getInt(1));
-				applicationSubcriptionsDTO.setApplicationId(rs.getInt(2));
-				applicationSubcriptionsDTO.setRateDefId(rs.getInt(3));
+
 			}
 
 		} catch (SQLException e) {
@@ -495,9 +491,7 @@ public class ApplicationSubcriptionsDAO {
 			while (rs.next()) {
 
 				applicationSubcriptionsDTO.setOperatorId(rs.getInt(1));
-				applicationSubcriptionsDTO.setApiOperationId(rs.getInt(2));
-				applicationSubcriptionsDTO.setApplicationId(rs.getInt(3));
-				applicationSubcriptionsDTO.setRateDefId(rs.getInt(4));
+				
 			}
 
 		} catch (SQLException e) {
@@ -514,6 +508,143 @@ public class ApplicationSubcriptionsDAO {
 		}
 
 		return applicationSubcriptionsDTO;
+	}
+	
+	
+	
+	public List<ApplicationSubcriptionsDTO> getExistingSBRates(String appId, String operatorId,String apiId) throws BusinessException{
+
+		List<ApplicationSubcriptionsDTO> applicationSubcriptionsDTOs = new ArrayList<ApplicationSubcriptionsDTO>();
+
+		Connection con = null;
+		ResultSet rs = null;
+		PreparedStatement ps = null;
+
+		try {
+
+			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
+			if (con == null) {
+
+				log.error("unable to open " + DataSourceNames.WSO2TELCO_RATE_DB + " database connection");
+				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+			}
+
+			StringBuilder query = new StringBuilder("select rate_def_temp.operatorid,api_operation_temp.api_operationid,rate_def_temp.applicationid,rate_def_temp.rate_defid,api_operation_temp.api_operation,rate_def_temp.rate_defname,rate_def_temp.updatedby,rate_def_temp.createdby  from "
+					+"( " 
+					+"	select * from api_operation where apiid=? "
+					+") as api_operation_temp "
+					+"inner join ( "
+					+"select sub_rate_sb.api_operationid,rate_def.rate_defname,sub_rate_sb.applicationid,sub_rate_sb.rate_defid,sub_rate_sb.operatorid,sub_rate_sb.updatedby,sub_rate_sb.createdby from sub_rate_sb " 
+					+"inner join rate_def on sub_rate_sb.rate_defid=rate_def.rate_defid  where sub_rate_sb.operatorid=? and sub_rate_sb.applicationid=? "
+					+") as rate_def_temp on api_operation_temp.api_operationid=rate_def_temp.api_operationid");
+
+			ps = con.prepareStatement(query.toString());
+
+			log.debug("sql query in getAPI : " + ps);
+
+			ps.setString(1, apiId);
+			ps.setString(2, operatorId);
+			ps.setString(3, appId);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				ApplicationSubcriptionsDTO applicationSubcriptionsDTO = new ApplicationSubcriptionsDTO();
+
+				applicationSubcriptionsDTO.setApiOperation(rs.getString("api_operation"));
+				applicationSubcriptionsDTO.setRateDefname(rs.getString("rate_defname"));
+
+				applicationSubcriptionsDTO.setApiOperationId(rs.getInt("api_operationid"));
+				applicationSubcriptionsDTO.setApplicationId(rs.getInt("applicationid"));
+				applicationSubcriptionsDTO.setOperatorId(rs.getInt("operatorid"));
+				applicationSubcriptionsDTO.setRateDefId(rs.getInt("rate_defid"));
+				applicationSubcriptionsDTO.setCreateBy(rs.getString("updatedby"));
+				applicationSubcriptionsDTO.setUpdateBy(rs.getString("createdby"));
+
+				applicationSubcriptionsDTOs.add(applicationSubcriptionsDTO);
+			}
+		} catch (SQLException e) {
+
+			log.error("database operation error in getAPI : ", e);
+			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+		} catch (Exception e) {
+
+			log.error("error in getAPI : ", e);
+			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+		} finally {
+
+			DbUtils.closeAllConnections(ps, con, rs);
+		}
+
+		return applicationSubcriptionsDTOs;
+	} 
+
+
+	public List<ApplicationSubcriptionsDTO> getExistingNBRates(String appId,String apiId) throws BusinessException{
+
+		List<ApplicationSubcriptionsDTO> applicationSubcriptionsDTOs = new ArrayList<ApplicationSubcriptionsDTO>();
+
+		Connection con = null;
+		ResultSet rs = null;
+		PreparedStatement ps = null;
+
+		try {
+
+			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
+			if (con == null) {
+
+				log.error("unable to open " + DataSourceNames.WSO2TELCO_RATE_DB + " database connection");
+				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+			}
+
+			StringBuilder query = new StringBuilder("select api_operation_temp.api_operationid,rate_def_temp.applicationid,rate_def_temp.rate_defid,api_operation_temp.api_operation,rate_def_temp.rate_defname,rate_def_temp.updatedby,rate_def_temp.createdby  from "
+					+"(" 
+					+"	select * from api_operation where apiid=? "
+					+") as api_operation_temp "
+					+"inner join ( "
+					+"select sub_rate_nb.applicationid,sub_rate_nb.api_operationid,rate_def.rate_defname,sub_rate_nb.rate_defid,sub_rate_nb.updatedby,sub_rate_nb.createdby from sub_rate_nb " 
+					+"inner join rate_def on sub_rate_nb.rate_defid=rate_def.rate_defid  where sub_rate_nb.applicationid=? "
+					+") as rate_def_temp on api_operation_temp.api_operationid=rate_def_temp.api_operationid");
+
+			ps = con.prepareStatement(query.toString());
+
+			log.debug("sql query in getAPI : " + ps);
+
+			ps.setString(1, apiId);
+			ps.setString(2, appId);
+
+			rs = ps.executeQuery();
+
+			while (rs.next()) {
+
+				ApplicationSubcriptionsDTO applicationSubcriptionsDTO = new ApplicationSubcriptionsDTO();
+
+				applicationSubcriptionsDTO.setApiOperation(rs.getString("api_operation"));
+				applicationSubcriptionsDTO.setRateDefname(rs.getString("rate_defname"));
+
+				applicationSubcriptionsDTO.setApiOperationId(rs.getInt("api_operationid"));
+				applicationSubcriptionsDTO.setApplicationId(rs.getInt("applicationid"));
+				applicationSubcriptionsDTO.setRateDefId(rs.getInt("rate_defid"));
+				applicationSubcriptionsDTO.setCreateBy(rs.getString("updatedby"));
+				applicationSubcriptionsDTO.setUpdateBy(rs.getString("createdby"));
+
+				applicationSubcriptionsDTOs.add(applicationSubcriptionsDTO);
+			}
+		} catch (SQLException e) {
+
+			log.error("database operation error in getAPI : ", e);
+			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+		} catch (Exception e) {
+
+			log.error("error in getAPI : ", e);
+			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+		} finally {
+
+			DbUtils.closeAllConnections(ps, con, rs);
+		}
+
+		return applicationSubcriptionsDTOs;
 	}
 
 
