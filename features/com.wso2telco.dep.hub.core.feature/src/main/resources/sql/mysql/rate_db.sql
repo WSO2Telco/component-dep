@@ -25,6 +25,7 @@ DROP TABLE IF EXISTS `api`;
 CREATE TABLE `api` (
   `apiid` int(11) NOT NULL AUTO_INCREMENT,
   `apiname` varchar(45) NOT NULL,
+	`apiversion` varchar(45) NOT NULL,
   `apidesc` varchar(45) DEFAULT NULL,
   `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -423,6 +424,45 @@ CREATE TABLE `tax` (
   PRIMARY KEY (`taxid`)
 ) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 /*!40101 SET character_set_client = @saved_cs_client */;
+
+DROP TABLE IF EXISTS `sub_rate_nb_updated`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `sub_rate_nb_updated` (
+  `sub_rate_nbid_updated` int(11) NOT NULL AUTO_INCREMENT,
+  `api_operationid` int(11) NOT NULL,
+  `applicationid` int(11) NOT NULL,
+  `rate_defid` int(11) NOT NULL,
+  `sub_rate_nbactdate` date DEFAULT NULL,
+  `sub_rate_nbdisdate` date DEFAULT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
+  `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  `updatedby` varchar(255) DEFAULT NULL,
+  `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`comment` varchar(255),
+  PRIMARY KEY (`sub_rate_nbid_updated`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+
+DROP TABLE IF EXISTS `sub_rate_sb_updated`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `sub_rate_sb_updated` (
+  `sub_rate_sbid_updated` int(11) NOT NULL AUTO_INCREMENT,
+  `operatorid` int(11) NOT NULL,
+  `api_operationid` int(11) NOT NULL,
+  `applicationid` int(11) NOT NULL,
+  `rate_defid` int(11) NOT NULL,
+  `sub_rate_sbactdate` date DEFAULT NULL,
+  `sub_rate_sbdisdate` date DEFAULT NULL,
+  `createdby` varchar(255) DEFAULT NULL,
+  `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
+  `updatedby` varchar(255) DEFAULT NULL,
+  `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+`comment` varchar(255),
+  PRIMARY KEY (`sub_rate_sbid_updated`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 --
 -- Table structure for table `tax_validity`

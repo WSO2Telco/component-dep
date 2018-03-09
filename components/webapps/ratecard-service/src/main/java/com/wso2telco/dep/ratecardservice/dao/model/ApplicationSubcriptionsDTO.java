@@ -6,7 +6,14 @@ public class ApplicationSubcriptionsDTO {
 	
 	private String apiOperation;
 	private String rateDefname;
+	private String apiVersion;
 	
+	public String getApiVersion() {
+		return apiVersion;
+	}
+	public void setApiVersion(String apiVersion) {
+		this.apiVersion = apiVersion;
+	}
 	private Integer operatorId;
 	private Integer apiOperationId;
 	private Integer  applicationId;
@@ -15,10 +22,21 @@ public class ApplicationSubcriptionsDTO {
 	private Date subRateSBActDate;
 	private Date subRateSBDisDate;
 	private String createBy;
+
 	private String updateBy;
+	private String comment;
 	
 
-
+	
+	
+	
+	public String getComment() {
+		return comment;
+	}
+	public void setComment(String comment) {
+		this.comment = comment;
+	}
+	
 	public Integer getApplicationId() {
 		return applicationId;
 	}

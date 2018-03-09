@@ -16,27 +16,27 @@ public class ApplicationSubcriptionsService {
 	
 	private final Log log = LogFactory.getLog(ApplicationSubcriptionsService.class);
 	
-	public List<ApplicationSubcriptionsDTO> getSBSubscriptionRateInfo(String appId, String operatorId,String apiId) throws BusinessException{
+	public List<ApplicationSubcriptionsDTO> getSBSubscriptionRateInfo(String appId, String operatorId,String apiName,String version) throws BusinessException{
 		 
 		ApplicationSubcriptionsDAO applicationSubcriptionsDAO=new ApplicationSubcriptionsDAO();
-		List<ApplicationSubcriptionsDTO> applicationSubcriptions=applicationSubcriptionsDAO.getSBRates(appId, operatorId, apiId);
+		List<ApplicationSubcriptionsDTO> applicationSubcriptions=applicationSubcriptionsDAO.getSBRates(appId, operatorId, apiName,version);
 		return applicationSubcriptions;
 	}
 	
 	
-	public List<ApplicationSubcriptionsDTO> getNBSubscriptionRateInfo(String appId,String apiId) throws BusinessException{
+	public List<ApplicationSubcriptionsDTO> getNBSubscriptionRateInfo(String appId,String apiName,String version) throws BusinessException{
 		 
 		ApplicationSubcriptionsDAO applicationSubcriptionsDAO=new ApplicationSubcriptionsDAO();
-		List<ApplicationSubcriptionsDTO> applicationSubcriptions=applicationSubcriptionsDAO.getNBRates(appId, apiId);
+		List<ApplicationSubcriptionsDTO> applicationSubcriptions=applicationSubcriptionsDAO.getNBRates(appId, apiName,version);
 		return applicationSubcriptions;
 	}
 	
-	public List<ApplicationSubcriptionsDTO> updateSBSubscriptionRateInfo(String appId, String operatorId,String apiId,List<ApplicationSubcriptionsDTO> applicationSubcriptionsRateList) throws BusinessException{
+	public List<ApplicationSubcriptionsDTO> updateSBSubscriptionRateInfo(String appId, String operatorId,String apiName, String version,List<ApplicationSubcriptionsDTO> applicationSubcriptionsRateList) throws BusinessException{
 		 
 		ApplicationSubcriptionsDAO applicationSubcriptionsDAO=new ApplicationSubcriptionsDAO();
 		List<ApplicationSubcriptionsDTO> applicationSubcriptionsDTOs = null;
 		List<ApplicationSubcriptionsDTO> updatedList = new ArrayList<ApplicationSubcriptionsDTO>();;
-		applicationSubcriptionsDTOs=applicationSubcriptionsDAO.getExistingSBRates(appId, operatorId, apiId);
+		applicationSubcriptionsDTOs=applicationSubcriptionsDAO.getExistingSBRates(appId, operatorId, apiName,version);
 				
 		for (ApplicationSubcriptionsDTO applicationSubcriptionsDTO:applicationSubcriptionsRateList) {
 			boolean isUpdate=false;
@@ -51,6 +51,8 @@ public class ApplicationSubcriptionsService {
 				{	
 					isUpdate=true;
 					updatedDto=applicationSubcriptionsDTODB;
+					applicationSubcriptionsDTO.setApiOperationId(applicationSubcriptionsDTODB.getApiOperationId());
+					break;
 				} 
 			}
 			
@@ -59,6 +61,7 @@ public class ApplicationSubcriptionsService {
 				log.debug("SB before update");
 				ApplicationSubcriptionsDTO ubdatedDTO=applicationSubcriptionsDAO.updateSBRates(applicationSubcriptionsDTO);
 				log.debug("update success");
+				updatedDto.setComment(applicationSubcriptionsDTO.getComment());
 				applicationSubcriptionsDAO.insertUpdatedSBRates(updatedDto);
 				log.debug("insert update success");
 				updatedList.add(ubdatedDTO);
@@ -74,12 +77,12 @@ public class ApplicationSubcriptionsService {
 	}
 	
 	
-	public List<ApplicationSubcriptionsDTO> updateNBSubscriptionRateInfo(String appId,String apiId,List<ApplicationSubcriptionsDTO> applicationSubcriptionsRateList) throws BusinessException{
+	public List<ApplicationSubcriptionsDTO> updateNBSubscriptionRateInfo(String appId,String apiName, String version, List<ApplicationSubcriptionsDTO> applicationSubcriptionsRateList) throws BusinessException{
 		 
 		ApplicationSubcriptionsDAO applicationSubcriptionsDAO=new ApplicationSubcriptionsDAO();
 		List<ApplicationSubcriptionsDTO> applicationSubcriptionsDTOs = null;
 		List<ApplicationSubcriptionsDTO> updatedList = new ArrayList<ApplicationSubcriptionsDTO>();;
-		applicationSubcriptionsDTOs=applicationSubcriptionsDAO.getExistingNBRates(appId, apiId);
+		applicationSubcriptionsDTOs=applicationSubcriptionsDAO.getExistingNBRates(appId, apiName, version);
 		
 		for (ApplicationSubcriptionsDTO applicationSubcriptionsDTO:applicationSubcriptionsRateList) {
 			
@@ -93,6 +96,8 @@ public class ApplicationSubcriptionsService {
 				{				
 					isUpdate=true;
 					updatedDto=applicationSubcriptionsDTODB;
+					applicationSubcriptionsDTO.setApiOperationId(applicationSubcriptionsDTODB.getApiOperationId());
+					break;
 				} 
 			}
 			
@@ -101,6 +106,7 @@ public class ApplicationSubcriptionsService {
 				ApplicationSubcriptionsDTO ubdatedDTO=applicationSubcriptionsDAO.updateNBRates(applicationSubcriptionsDTO);
 				log.debug("update success");
 				updatedList.add(ubdatedDTO);
+				updatedDto.setComment(applicationSubcriptionsDTO.getComment());
 				applicationSubcriptionsDAO.insertUpdatedNBRates(updatedDto);
 				log.debug("insert update success");
 			} else {

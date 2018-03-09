@@ -9,7 +9,16 @@ import java.util.List;
 public class APISubscriptionStatusDTO {
 
     private String name;
-    private String version;
+    private String id;
+    public String getId() {
+		return id;
+	}
+
+	public void setId(String id) {
+		this.id = id;
+	}
+
+	private String version;
     private String tier;
     private String adminApprovalStatus;
     private ArrayList<OperatorApproval> operatorApprovals;

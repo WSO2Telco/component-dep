@@ -34,15 +34,16 @@ public class ApplicationSubcriptionsResource {
 
 	
 	@GET
-	@Path("/{appId}/operators/{operatorId}/apis/{apiId}/SBsubscriptions")
-	public Response getSBOperationsDetails(@PathParam("appId") String appId,@PathParam("operatorId") String operatorId,@PathParam("apiId") String apiId) {
+	@Path("/{appId}/operators/{operatorId}/apis/{apiName}/apiversion/{version}/SBsubscriptions")
+	public Response getSBOperationsDetails(@PathParam("appId") String appId,@PathParam("operatorId") String operatorId,@PathParam("apiName") String apiName,@PathParam("version") String version) {
 
 		List<ApplicationSubcriptionsDTO> applicationSubcriptions = null;
 		Status responseCode = null;
 		Object responseString = null;
+		
 
 		try {
-			applicationSubcriptions = service.getSBSubscriptionRateInfo(appId, operatorId, apiId);
+			applicationSubcriptions = service.getSBSubscriptionRateInfo(appId, operatorId, apiName,version);
 		} catch (BusinessException e) {
 			
 			ErrorDTO error = new ErrorDTO();
@@ -75,15 +76,16 @@ public class ApplicationSubcriptionsResource {
 	}
 	
 	@GET
-	@Path("/{appId}/apis/{apiId}/NBsubscriptions")
-	public Response getNBOperationsDetails(@PathParam("appId") String appId,@PathParam("apiId") String apiId) {
-		log.info(appId+"----"+apiId);
+	@Path("/{appId}/apis/{apiName}/apiversion/{version}/NBsubscriptions")
+	public Response getNBOperationsDetails(@PathParam("appId") String appId,@PathParam("apiName") String apiName,@PathParam("version") String version) {
+
 		List<ApplicationSubcriptionsDTO> applicationSubcriptions = null;
 		Status responseCode = null;
 		Object responseString = null;
 
+		
 		try {
-			applicationSubcriptions = service.getNBSubscriptionRateInfo(appId, apiId);
+			applicationSubcriptions = service.getNBSubscriptionRateInfo(appId,apiName,version );
 		} catch (BusinessException e) {
 			
 			ErrorDTO error = new ErrorDTO();
@@ -116,15 +118,15 @@ public class ApplicationSubcriptionsResource {
 	}
 	
 	@POST
-	@Path("/{appId}/apis/{apiId}/NBsubscriptions")
-	public Response updateNBOperationsDetails(@PathParam("appId") String appId,@PathParam("apiId") String apiId,List<ApplicationSubcriptionsDTO> applicationSubcriptionsRateList) {
+	@Path("/{appId}/apis/{apiName}/apiversion/{version}/NBsubscriptions")
+	public Response updateNBOperationsDetails(@PathParam("appId") String appId,@PathParam("apiName") String apiName,@PathParam("version") String version,List<ApplicationSubcriptionsDTO> applicationSubcriptionsRateList) {
 
 		List<ApplicationSubcriptionsDTO> applicationSubcriptions = null;
 		Status responseCode = null;
 		Object responseString = null;
 
 		try {
-			applicationSubcriptions = service.updateNBSubscriptionRateInfo(appId, apiId,applicationSubcriptionsRateList);
+			applicationSubcriptions = service.updateNBSubscriptionRateInfo(appId, apiName,version,applicationSubcriptionsRateList);
 		} catch (BusinessException e) {
 			
 			ErrorDTO error = new ErrorDTO();
@@ -157,15 +159,15 @@ public class ApplicationSubcriptionsResource {
 	}
 	
 	@POST
-	@Path("/{appId}/operators/{operatorId}/apis/{apiId}/SBsubscriptions")
-	public Response updateSBOperationsDetails(@PathParam("appId") String appId,@PathParam("operatorId") String operatorId,@PathParam("apiId") String apiId,List<ApplicationSubcriptionsDTO> applicationSubcriptionsRateList) {
+	@Path("/{appId}/operators/{operatorId}/apis/{apiName}/apiversion/{version}/SBsubscriptions")
+	public Response updateSBOperationsDetails(@PathParam("appId") String appId,@PathParam("operatorId") String operatorId,@PathParam("apiName") String apiName,@PathParam("version") String version,List<ApplicationSubcriptionsDTO> applicationSubcriptionsRateList) {
 
 		List<ApplicationSubcriptionsDTO> applicationSubcriptions = null;
 		Status responseCode = null;
 		Object responseString = null;
 
 		try {
-			applicationSubcriptions = service.updateSBSubscriptionRateInfo(appId, operatorId, apiId,applicationSubcriptionsRateList);
+			applicationSubcriptions = service.updateSBSubscriptionRateInfo(appId, operatorId, apiName,version,applicationSubcriptionsRateList);
 		} catch (BusinessException e) {
 			
 			ErrorDTO error = new ErrorDTO();

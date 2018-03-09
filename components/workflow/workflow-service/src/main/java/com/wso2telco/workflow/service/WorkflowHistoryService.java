@@ -1,6 +1,10 @@
 package com.wso2telco.workflow.service;
 
+
+import java.util.List;
+
 import com.wso2telco.workflow.dao.WorkflowHistoryDAO;
+import com.wso2telco.workflow.model.APISubscriptionStatusDTO;
 import com.wso2telco.workflow.model.ApplicationStatusDTO;
 import com.wso2telco.workflow.utils.WorkflowServiceException;
 
@@ -22,5 +26,38 @@ public class WorkflowHistoryService {
         }
 
         return app;
+    }
+    
+    
+    public List<APISubscriptionStatusDTO> getAppApprovalHistoryWithOperators(int appID, String opId, String apiid) throws WorkflowServiceException {
+
+        WorkflowHistoryDAO dao = new WorkflowHistoryDAO();
+        List<APISubscriptionStatusDTO> apiSubs = null;
+        String adjustApiID=null;
+        if(apiid!= null && apiid.equals("_ALL"))
+        {
+        	adjustApiID="%";
+        }else{
+        	adjustApiID=apiid;
+        }
+        
+
+        try {
+        	
+        	if(opId.equalsIgnoreCase("_ALL")){
+        		
+        		apiSubs=dao.getSubscribedAPIsWithoutOperators(appID, adjustApiID);
+        	}else{
+        		
+        		
+        		apiSubs=dao.getSubscribedAPIsWithOperators(appID,Integer.parseInt(opId),adjustApiID);
+        	}
+        	
+            
+        } catch (Exception e) {
+            throw new WorkflowServiceException(e);
+        }
+
+        return apiSubs;
     }
 }

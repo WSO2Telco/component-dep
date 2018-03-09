@@ -22,7 +22,7 @@ public class ApplicationSubcriptionsDAO {
 
 	private final Log log = LogFactory.getLog(ApplicationSubcriptionsDAO.class);
 
-	public List<ApplicationSubcriptionsDTO> getSBRates(String appId, String operatorId,String apiId) throws BusinessException{
+	public List<ApplicationSubcriptionsDTO> getSBRates(String appId, String operatorId,String apiName, String version) throws BusinessException{
 
 		List<ApplicationSubcriptionsDTO> applicationSubcriptionsDTOs = new ArrayList<ApplicationSubcriptionsDTO>();
 
@@ -41,7 +41,8 @@ public class ApplicationSubcriptionsDAO {
 
 			StringBuilder query = new StringBuilder("select rate_def_temp.operatorid,api_operation_temp.api_operationid,rate_def_temp.applicationid,rate_def_temp.rate_defid,api_operation_temp.api_operation,rate_def_temp.rate_defname,rate_def_temp.updatedby,rate_def_temp.createdby  from "
 					+"( " 
-					+"	select * from api_operation where apiid=? "
+					+"	select * from api_operation "
+					+ "inner join api on api_operation.apiid=api.apiid  where apiname=?  and apiversion=?"
 					+") as api_operation_temp "
 					+"left join ( "
 					+"select sub_rate_sb.api_operationid,rate_def.rate_defname,sub_rate_sb.applicationid,sub_rate_sb.rate_defid,sub_rate_sb.operatorid,sub_rate_sb.updatedby,sub_rate_sb.createdby from sub_rate_sb " 
@@ -52,9 +53,10 @@ public class ApplicationSubcriptionsDAO {
 
 			log.debug("sql query in getAPI : " + ps);
 
-			ps.setString(1, apiId);
-			ps.setString(2, operatorId);
-			ps.setString(3, appId);
+			ps.setString(1, apiName);
+			ps.setString(2, version);
+			ps.setString(3, operatorId);
+			ps.setString(4, appId);
 
 			rs = ps.executeQuery();
 
@@ -91,7 +93,7 @@ public class ApplicationSubcriptionsDAO {
 	} 
 
 
-	public List<ApplicationSubcriptionsDTO> getNBRates(String appId,String apiId) throws BusinessException{
+	public List<ApplicationSubcriptionsDTO> getNBRates(String appId,String apiName, String version) throws BusinessException{
 
 		List<ApplicationSubcriptionsDTO> applicationSubcriptionsDTOs = new ArrayList<ApplicationSubcriptionsDTO>();
 
@@ -110,7 +112,8 @@ public class ApplicationSubcriptionsDAO {
 
 			StringBuilder query = new StringBuilder("select api_operation_temp.api_operationid,rate_def_temp.applicationid,rate_def_temp.rate_defid,api_operation_temp.api_operation,rate_def_temp.rate_defname,rate_def_temp.updatedby,rate_def_temp.createdby  from "
 					+"(" 
-					+"	select * from api_operation where apiid=? "
+					+"	select api_operation.api_operationid,api_operation.api_operation from api_operation "
+					+ "inner join api on api_operation.apiid=api.apiid  where apiname=? and apiversion=? "
 					+") as api_operation_temp "
 					+"left join ( "
 					+"select sub_rate_nb.applicationid,sub_rate_nb.api_operationid,rate_def.rate_defname,sub_rate_nb.rate_defid,sub_rate_nb.updatedby,sub_rate_nb.createdby from sub_rate_nb " 
@@ -121,8 +124,9 @@ public class ApplicationSubcriptionsDAO {
 
 			log.debug("sql query in getAPI : " + ps);
 
-			ps.setString(1, apiId);
-			ps.setString(2, appId);
+			ps.setString(1, apiName);
+			ps.setString(2, version);
+			ps.setString(3, appId);
 
 			rs = ps.executeQuery();
 
@@ -414,8 +418,8 @@ public class ApplicationSubcriptionsDAO {
 				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 			}
 
-			StringBuilder query = new StringBuilder("INSERT INTO sub_rate_nb_updated ( api_operationid, applicationid, rate_defid) ");
-			query.append("VALUES ( ?, ?, ?)");
+			StringBuilder query = new StringBuilder("INSERT INTO sub_rate_nb_updated ( api_operationid, applicationid, rate_defid, comment) ");
+			query.append("VALUES ( ?, ?, ?, ?)");
 	 
 	 
 			ps = con.prepareStatement(query.toString(),Statement.RETURN_GENERATED_KEYS);
@@ -425,6 +429,7 @@ public class ApplicationSubcriptionsDAO {
 			ps.setInt(1, applicationSubcriptionsRate.getApiOperationId());
 			ps.setInt(2, applicationSubcriptionsRate.getApplicationId());
 			ps.setInt(3, applicationSubcriptionsRate.getRateDefId());
+			ps.setString(4, applicationSubcriptionsRate.getComment());
 			
 			ps.executeUpdate();
 
@@ -471,8 +476,8 @@ public class ApplicationSubcriptionsDAO {
 				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 			}
 
-			StringBuilder query = new StringBuilder("INSERT INTO sub_rate_sb_updated (operatorid, api_operationid, applicationid, rate_defid) ");
-			query.append("VALUES (?, ?, ?, ?)");
+			StringBuilder query = new StringBuilder("INSERT INTO sub_rate_sb_updated (operatorid, api_operationid, applicationid, rate_defid, comment) ");
+			query.append("VALUES (?, ?, ?, ?, ?)");
 	 
 	 
 			ps = con.prepareStatement(query.toString(),Statement.RETURN_GENERATED_KEYS);
@@ -483,6 +488,7 @@ public class ApplicationSubcriptionsDAO {
 			ps.setInt(2, applicationSubcriptionsRate.getApiOperationId());
 			ps.setInt(3, applicationSubcriptionsRate.getApplicationId());
 			ps.setInt(4, applicationSubcriptionsRate.getRateDefId());
+			ps.setString(5, applicationSubcriptionsRate.getComment());
 			
 			ps.executeUpdate();
 
@@ -512,7 +518,7 @@ public class ApplicationSubcriptionsDAO {
 	
 	
 	
-	public List<ApplicationSubcriptionsDTO> getExistingSBRates(String appId, String operatorId,String apiId) throws BusinessException{
+	public List<ApplicationSubcriptionsDTO> getExistingSBRates(String appId, String operatorId,String apiName, String version) throws BusinessException{
 
 		List<ApplicationSubcriptionsDTO> applicationSubcriptionsDTOs = new ArrayList<ApplicationSubcriptionsDTO>();
 
@@ -531,7 +537,8 @@ public class ApplicationSubcriptionsDAO {
 
 			StringBuilder query = new StringBuilder("select rate_def_temp.operatorid,api_operation_temp.api_operationid,rate_def_temp.applicationid,rate_def_temp.rate_defid,api_operation_temp.api_operation,rate_def_temp.rate_defname,rate_def_temp.updatedby,rate_def_temp.createdby  from "
 					+"( " 
-					+"	select * from api_operation where apiid=? "
+					+"	select api_operation.api_operationid,api_operation.api_operation from api_operation"
+					+ "inner join api on api_operation.apiid=api.apiid  where apiname=? and apiversion=? "
 					+") as api_operation_temp "
 					+"inner join ( "
 					+"select sub_rate_sb.api_operationid,rate_def.rate_defname,sub_rate_sb.applicationid,sub_rate_sb.rate_defid,sub_rate_sb.operatorid,sub_rate_sb.updatedby,sub_rate_sb.createdby from sub_rate_sb " 
@@ -542,7 +549,8 @@ public class ApplicationSubcriptionsDAO {
 
 			log.debug("sql query in getAPI : " + ps);
 
-			ps.setString(1, apiId);
+			ps.setString(1, apiName);
+			ps.setString(2, version);
 			ps.setString(2, operatorId);
 			ps.setString(3, appId);
 
@@ -581,7 +589,7 @@ public class ApplicationSubcriptionsDAO {
 	} 
 
 
-	public List<ApplicationSubcriptionsDTO> getExistingNBRates(String appId,String apiId) throws BusinessException{
+	public List<ApplicationSubcriptionsDTO> getExistingNBRates(String appId,String apiName,String version) throws BusinessException{
 
 		List<ApplicationSubcriptionsDTO> applicationSubcriptionsDTOs = new ArrayList<ApplicationSubcriptionsDTO>();
 
@@ -600,7 +608,8 @@ public class ApplicationSubcriptionsDAO {
 
 			StringBuilder query = new StringBuilder("select api_operation_temp.api_operationid,rate_def_temp.applicationid,rate_def_temp.rate_defid,api_operation_temp.api_operation,rate_def_temp.rate_defname,rate_def_temp.updatedby,rate_def_temp.createdby  from "
 					+"(" 
-					+"	select * from api_operation where apiid=? "
+					+"	select api_operation.api_operationid,api_operation.api_operation from api_operation"
+					+ "inner join api on api_operation.apiid=api.apiid  where apiname=? and apiversion=? "
 					+") as api_operation_temp "
 					+"inner join ( "
 					+"select sub_rate_nb.applicationid,sub_rate_nb.api_operationid,rate_def.rate_defname,sub_rate_nb.rate_defid,sub_rate_nb.updatedby,sub_rate_nb.createdby from sub_rate_nb " 
@@ -611,8 +620,9 @@ public class ApplicationSubcriptionsDAO {
 
 			log.debug("sql query in getAPI : " + ps);
 
-			ps.setString(1, apiId);
-			ps.setString(2, appId);
+			ps.setString(1, apiName);
+			ps.setString(2, version);
+			ps.setString(3, appId);
 
 			rs = ps.executeQuery();
 
@@ -646,6 +656,5 @@ public class ApplicationSubcriptionsDAO {
 
 		return applicationSubcriptionsDTOs;
 	}
-
-
+	
 }
