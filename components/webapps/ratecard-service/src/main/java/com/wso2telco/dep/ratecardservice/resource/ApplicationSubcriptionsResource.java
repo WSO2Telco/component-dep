@@ -20,7 +20,6 @@ import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.exception.ServiceError;
 import com.wso2telco.dep.ratecardservice.dao.model.ApplicationSubcriptionsDTO;
 import com.wso2telco.dep.ratecardservice.dao.model.ErrorDTO;
-import com.wso2telco.dep.ratecardservice.dao.model.OperationRateDTO;
 import com.wso2telco.dep.ratecardservice.service.ApplicationSubcriptionsService;
 
 

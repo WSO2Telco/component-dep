@@ -3,6 +3,7 @@ package com.wso2telco.workflow.dao;
 
 import com.wso2telco.core.dbutils.DbUtils;
 import com.wso2telco.core.dbutils.util.DataSourceNames;
+import com.wso2telco.workflow.model.APISubscriptionDTO;
 import com.wso2telco.workflow.model.APISubscriptionStatusDTO;
 import com.wso2telco.workflow.model.ApplicationStatusDTO;
 import com.wso2telco.workflow.utils.WorkflowServiceException;
@@ -150,12 +151,12 @@ public class WorkflowHistoryDAO {
 		return app;
 	}
 
-	public List<APISubscriptionStatusDTO> getSubscribedAPIsWithOperators(int appID,int opId,String apiid) throws WorkflowServiceException {
+	public List<APISubscriptionDTO> getSubscribedAPIsWithOperators(int appID,int opId,String apiid ,int start, int size) throws WorkflowServiceException {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		List<APISubscriptionStatusDTO> subscriptions=new ArrayList<APISubscriptionStatusDTO>();
+		List<APISubscriptionDTO> subscriptions=new ArrayList<APISubscriptionDTO>();
 
 		try {
 			conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
@@ -167,7 +168,7 @@ public class WorkflowHistoryDAO {
 			String depDB = DbUtils.getDbNames().get(DataSourceNames.WSO2TELCO_DEP_DB);
 			String apimgtDB = DbUtils.getDbNames().get(DataSourceNames.WSO2AM_DB);
 
-			String sql = "SELECT api.api_name, " +
+			String sqlPredecessor ="SELECT api.api_name, " +
 					"       api.api_version, " +
 					"       api.api_id, " +
 					"       sub.tier_id, " +
@@ -182,45 +183,54 @@ public class WorkflowHistoryDAO {
 					"WHERE  epa.applicationid = ? " +
 					"       AND epa.endpointid = oep.id " +
 					"       AND o.id = oep.operatorid " +
-					"       AND o.id = ? " +
-					"       AND CAST(sub.application_id as CHAR) LIKE ? " +
 					"       AND oep.api = api.api_name " +
 					"       AND sub.api_id = api.api_id" +
 					"       AND sub.application_id = epa.applicationid " +
-					"ORDER BY api_name";
+					"       AND o.id = ? ";  
 
-			ps = conn.prepareStatement(sql);
+
+			if(!apiid.equals("_ALL")){
+				sqlPredecessor.concat("   AND api.api_id= ? ");
+			}
+			sqlPredecessor.concat("       AND oep.api = api.api_name " +
+					"       AND sub.api_id = api.api_id" +
+					"       AND sub.application_id = epa.applicationid " +
+					"ORDER BY api_name limit ?,?");
+			ps = conn.prepareStatement(sqlPredecessor);
 			ps.setInt(1, appID);
 			ps.setInt(2, opId);
-			ps.setString(3, apiid);
+
+
+			if(!apiid.equals("_ALL")){
+				ps.setString(3, apiid);
+				ps.setInt(4, start);
+				ps.setInt(5, size);
+			}else{
+				ps.setInt(3, start);
+				ps.setInt(4, size);
+			}
+
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
-				APISubscriptionStatusDTO subscription = null ;
 				boolean isNew=true;
-				for(APISubscriptionStatusDTO apiSubscriptionStatusDTO:subscriptions){
-
-					if(apiSubscriptionStatusDTO.getName().equals(rs.getString(API_NAME))){
-						subscription=apiSubscriptionStatusDTO;
+				for(APISubscriptionDTO subscriptionDB:subscriptions){
+					if(subscriptionDB.getName().equals(rs.getString(API_NAME)) && subscriptionDB.getVersion().equals(rs.getString("api_version"))){
 						isNew=false;
 					}
 				}
-
-				if (isNew) {
-					subscription = new APISubscriptionStatusDTO();
+				if(isNew){
+					APISubscriptionDTO subscription  = new APISubscriptionDTO();
 					subscription.setName(rs.getString(API_NAME));
 					subscription.setId(rs.getString(API_ID));
 					subscription.setVersion(rs.getString("api_version"));
 					subscription.setTier(rs.getString("tier_id"));
-					subscription.addOperator(rs.getString(OPERATOR_NAME), rs.getString(OPERATOR_APPROVAL));
+					subscription.setOperatoApprovalStatus(rs.getString(OPERATOR_NAME), rs.getString(OPERATOR_APPROVAL));
 					subscription.setLastUpdated(rs.getDate("updated_time").toString() + " " + rs.getTime("updated_time"));
 					subscriptions.add(subscription);
-				} else {
-					if (subscription != null) {
-						subscription.addOperator(rs.getString(OPERATOR_NAME), rs.getString(OPERATOR_APPROVAL));
-					}
 				}
 			}
+
 
 		} catch (Exception e) {
 			throw new WorkflowServiceException(e);
@@ -229,12 +239,12 @@ public class WorkflowHistoryDAO {
 		}
 		return subscriptions;
 	}
-	public List<APISubscriptionStatusDTO> getSubscribedAPIsWithoutOperators(int appID, String apiid) throws WorkflowServiceException {
+	public List<APISubscriptionDTO> getSubscribedAPIsWithoutOperators(int appID, String apiid ,int start, int size) throws WorkflowServiceException {
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		List<APISubscriptionStatusDTO> subscriptions=new ArrayList<APISubscriptionStatusDTO>();
+		List<APISubscriptionDTO> subscriptions=new ArrayList<APISubscriptionDTO>();
 		try {
 			conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 
@@ -244,7 +254,7 @@ public class WorkflowHistoryDAO {
 
 			String apimgtDB = DbUtils.getDbNames().get(DataSourceNames.WSO2AM_DB);
 
-			String sql = "SELECT api.api_name, " +
+			String sql="SELECT api.api_name, " +
 					"       api.api_version, " +
 					"       api.api_id, " +
 					"       sub.tier_id, " +
@@ -252,18 +262,33 @@ public class WorkflowHistoryDAO {
 					"       sub.updated_time " +
 					"FROM   "+ apimgtDB + ".am_api api, " +
 					" " + apimgtDB + ".am_subscription sub " +
-					"WHERE  CAST(api.api_id  as CHAR) LIKE ? " +
-					"       AND sub.application_id = ?" +
+					"WHERE  sub.application_id = ?" +
 					"       AND api.api_id = sub.api_id";
+			
+			if(!apiid.equals("_ALL")){
 
-			ps = conn.prepareStatement(sql);
-			ps.setString(1, apiid);
-			ps.setInt(2, appID);
+				sql.concat(" AND api.api_id = ? limit ?, ?"); 
+
+				ps = conn.prepareStatement(sql);
+				ps.setInt(1, appID);
+				ps.setInt(2, Integer.parseInt(apiid));
+				ps.setInt(3, start);
+				ps.setInt(4, size);
+
+			}else{
+				sql.concat(" limit ?, ?"); 
+				ps = conn.prepareStatement(sql);
+				ps.setInt(1, appID);
+				ps.setInt(2, start);
+				ps.setInt(3, size);
+			}
+
+
 			rs = ps.executeQuery();
 
 			log.debug(ps.toString());
 			while (rs.next()) {
-				APISubscriptionStatusDTO subscription = new APISubscriptionStatusDTO();
+				APISubscriptionDTO subscription = new APISubscriptionDTO();
 				log.debug(rs.getString(API_NAME));
 				subscription.setName(rs.getString(API_NAME));
 				subscription.setId(rs.getString(API_ID));
@@ -273,7 +298,7 @@ public class WorkflowHistoryDAO {
 				subscription.setLastUpdated(rs.getDate("updated_time").toString() + " " + rs.getTime("updated_time"));
 				subscriptions.add(subscription);
 			} 
-			
+
 		} catch (Exception e) {
 			throw new WorkflowServiceException(e);
 		} finally {

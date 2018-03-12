@@ -18,10 +18,10 @@ package com.wso2telco.workflow.api;
 
 
 import com.google.gson.Gson;
-import com.wso2telco.core.userprofile.UserProfileRetriever;
 import com.wso2telco.dep.operatorservice.service.OparatorService;
 import com.wso2telco.dep.reportingservice.southbound.SbHostObjectUtils;
-import com.wso2telco.workflow.model.APISubscriptionStatusDTO;
+import com.wso2telco.workflow.model.APISubscriptionDTO;
+import com.wso2telco.workflow.model.ApprovalDTO;
 import com.wso2telco.workflow.model.ApplicationStatusDTO;
 import com.wso2telco.workflow.model.ApprovalDTO;
 import com.wso2telco.workflow.service.WorkflowHistoryService;
@@ -65,15 +65,15 @@ public class WorkflowHistoryAPI {
     }
     
     @GET
-    @Path("/approval/{app_id}/operators/{opId}/apis/{apiid}")
+    @Path("/approval/{app_id}/operators/{opId}/apis/{apiid}/start/{start}/size/{size}")
     @Produces("application/json")
-    public Response getAppApprovalHistory(@PathParam("app_id") int appID,@PathParam("opId") String opId,@PathParam("apiid") String apiid) {
+    public Response getAppApprovalHistory(@PathParam("app_id") int appID,@PathParam("opId") String opId,@PathParam("apiid") String apiid, @PathParam("start") int start, @PathParam("size") int size) {
 
         Gson gson = new Gson();
         WorkflowHistoryService service = new WorkflowHistoryService();
-        List<APISubscriptionStatusDTO> apiSubs = null;
+        List<APISubscriptionDTO> apiSubs = null;
         try {
-        	apiSubs = service.getAppApprovalHistoryWithOperators(appID, opId, apiid);
+        	apiSubs = service.getAppApprovalHistoryWithOperators(appID, opId, apiid,start,size);
         } catch (WorkflowServiceException e) {
             log.error("", e);
             return Response.serverError().entity(gson.toJson("An error has occurred. ")).build();

@@ -25,7 +25,6 @@ DROP TABLE IF EXISTS `api`;
 CREATE TABLE `api` (
   `apiid` int(11) NOT NULL AUTO_INCREMENT,
   `apiname` varchar(45) NOT NULL,
-	`apiversion` varchar(45) NOT NULL,
   `apidesc` varchar(45) DEFAULT NULL,
   `createdby` varchar(255) DEFAULT NULL,
   `createddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP NOT NULL,
@@ -330,6 +329,7 @@ DROP TABLE IF EXISTS `sub_rate_nb`;
 CREATE TABLE `sub_rate_nb` (
   `sub_rate_nbid` int(11) NOT NULL AUTO_INCREMENT,
   `api_operationid` int(11) NOT NULL,
+  `api_version` varchar(50) NOT NULL,
   `applicationid` int(11) NOT NULL,
   `rate_defid` int(11) NOT NULL,
   `sub_rate_nbactdate` date DEFAULT NULL,
@@ -358,6 +358,7 @@ CREATE TABLE `sub_rate_sb` (
   `sub_rate_sbid` int(11) NOT NULL AUTO_INCREMENT,
   `operatorid` int(11) NOT NULL,
   `api_operationid` int(11) NOT NULL,
+  `api_version` varchar(50) NOT NULL,
   `applicationid` int(11) NOT NULL,
   `rate_defid` int(11) NOT NULL,
   `sub_rate_sbactdate` date DEFAULT NULL,
@@ -431,6 +432,7 @@ DROP TABLE IF EXISTS `sub_rate_nb_updated`;
 CREATE TABLE `sub_rate_nb_updated` (
   `sub_rate_nbid_updated` int(11) NOT NULL AUTO_INCREMENT,
   `api_operationid` int(11) NOT NULL,
+  `api_version` varchar(50) NOT NULL,
   `applicationid` int(11) NOT NULL,
   `rate_defid` int(11) NOT NULL,
   `sub_rate_nbactdate` date DEFAULT NULL,
@@ -452,6 +454,7 @@ CREATE TABLE `sub_rate_sb_updated` (
   `sub_rate_sbid_updated` int(11) NOT NULL AUTO_INCREMENT,
   `operatorid` int(11) NOT NULL,
   `api_operationid` int(11) NOT NULL,
+  `api_version` varchar(50) NOT NULL,
   `applicationid` int(11) NOT NULL,
   `rate_defid` int(11) NOT NULL,
   `sub_rate_sbactdate` date DEFAULT NULL,

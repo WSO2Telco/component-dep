@@ -43,15 +43,13 @@ public class ApplicationSubcriptionsService {
 			ApplicationSubcriptionsDTO updatedDto=null;
 			for ( ApplicationSubcriptionsDTO applicationSubcriptionsDTODB:applicationSubcriptionsDTOs) {
 
-
-
 				if (applicationSubcriptionsDTO.getApiOperationId().equals(applicationSubcriptionsDTODB.getApiOperationId()) &&
 					applicationSubcriptionsDTO.getApplicationId().equals(applicationSubcriptionsDTODB.getApplicationId()) &&
-					applicationSubcriptionsDTO.getOperatorId().equals(applicationSubcriptionsDTODB.getOperatorId()) ) 
+					applicationSubcriptionsDTO.getOperatorId().equals(applicationSubcriptionsDTODB.getOperatorId()) &&
+					applicationSubcriptionsDTO.getApiVersion().equalsIgnoreCase(applicationSubcriptionsDTODB.getApiVersion()) ) 
 				{	
 					isUpdate=true;
 					updatedDto=applicationSubcriptionsDTODB;
-					applicationSubcriptionsDTO.setApiOperationId(applicationSubcriptionsDTODB.getApiOperationId());
 					break;
 				} 
 			}
@@ -90,13 +88,12 @@ public class ApplicationSubcriptionsService {
 			ApplicationSubcriptionsDTO updatedDto=null;
 			for (ApplicationSubcriptionsDTO applicationSubcriptionsDTODB:applicationSubcriptionsDTOs) {
 
-
 				if (applicationSubcriptionsDTO.getApiOperationId().equals(applicationSubcriptionsDTODB.getApiOperationId()) &&
-					applicationSubcriptionsDTO.getApplicationId().equals(applicationSubcriptionsDTODB.getApplicationId()) ) 
+					applicationSubcriptionsDTO.getApplicationId().equals(applicationSubcriptionsDTODB.getApplicationId()) && 
+					applicationSubcriptionsDTO.getApiVersion().equalsIgnoreCase(applicationSubcriptionsDTODB.getApiVersion())) 
 				{				
 					isUpdate=true;
 					updatedDto=applicationSubcriptionsDTODB;
-					applicationSubcriptionsDTO.setApiOperationId(applicationSubcriptionsDTODB.getApiOperationId());
 					break;
 				} 
 			}
