@@ -257,6 +257,9 @@ include("/jagg/jagg.jag");
         username = user.username;
 
         mod = jagg.module("subscription");
+        
+        var storeMod = jagg.module("manager").getStoreHostObject();
+
         result = mod.getAPISubscriptionsForApplication(username,appname);
 
         var APIUtil = Packages.org.wso2.carbon.apimgt.impl.utils.APIUtil;
@@ -311,7 +314,8 @@ include("/jagg/jagg.jag");
         } else {
             obj = {
                 error:false,
-                apis:result.subscriptions
+                apis:result.subscriptions,
+                depType:storeMod.getDeploymentType()
             }
         }
         print(obj);
