@@ -3,7 +3,7 @@
 #-- Do all db setups/configurations and start the server for the first time. #####################
 #-- Upload the .bar files.
 #-- Now stop the server.
-#-- Use the provided “permission_tree.sql” and change the db name in the first line of the script to the name of your reg-db ( ex: prodregdb).
+#-- Use the provided “manageapp_permission_tree.sql” and change the db name in the first line of the script to the name of your reg-db ( eg: prodregdb).
 #-- Now execute the script.
 #-- Now start the server again and check the server log for errors ( if exist something has gone wrong)
 #-- Now go to carbon. ( https://localhost:9443/carbon )
@@ -11,7 +11,7 @@
 #-- It should contain a new branch called “UI Module Permission”
 #########################################################################################################################
 
-USE YOUR_REG_DB_NAME;
+use prodregdb;
 
 SET @REG_PATH_PARENT_ID := (SELECT REG_PATH_ID
                             FROM REG_PATH
