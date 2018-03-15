@@ -273,7 +273,7 @@ public class StoreHostObject extends ScriptableObject {
                     }
                 } else {
 
-                    log.error("subscription details unavalible for application id : " + appId);
+                    log.debug("subscription details unavalible for application id : " + appId);
                 }
             } catch (Exception e) {
 
