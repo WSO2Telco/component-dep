@@ -16,7 +16,6 @@
 
 package com.wso2telco.workflow.api;
 
-import com.wso2telco.dep.operatorservice.service.OparatorService;
 import com.wso2telco.workflow.application.ApplicationApproval;
 import com.wso2telco.workflow.application.ApplicationApprovalImpl;
 import com.wso2telco.workflow.dao.WorkflowDbService;

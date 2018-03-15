@@ -1,42 +1,44 @@
 package com.wso2telco.workflow.model;
 
-import java.util.ArrayList;
-import java.util.List;
 
-/**
- * DTO for  API with list of operator approvals
- */
-public class APISubscriptionStatusDTO {
+
+public class APISubscriptionDTO {
+
 
     private String name;
     private String id;
 	private String version;
     private String tier;
-    private String adminApprovalStatus;
-    private ArrayList<OperatorApproval> operatorApprovals;
+    private String approvalStatus;
+    private String operatorName;
     private String lastUpdated;
 
-    
-    
-    public ArrayList<OperatorApproval> getOperatorApprovals() {
-		return operatorApprovals;
-	}
-
-	public void setOperatorApprovals(ArrayList<OperatorApproval> operatorApprovals) {
-		this.operatorApprovals = operatorApprovals;
-	}
 
 	public String getId() {
 		return id;
+	}
+
+	public String getApprovalStatus() {
+		return approvalStatus;
+	}
+
+	public void setApprovalStatus(String approvalStatus) {
+		this.approvalStatus = approvalStatus;
+	}
+
+	public String getOperatorName() {
+		return operatorName;
+	}
+
+	public void setOperatorName(String operatorName) {
+		this.operatorName = operatorName;
 	}
 
 	public void setId(String id) {
 		this.id = id;
 	}
 	
-    public APISubscriptionStatusDTO() {
-        operatorApprovals = new ArrayList();
-    }
+
 
     public String getLastUpdated() {
         return lastUpdated;
@@ -47,7 +49,7 @@ public class APISubscriptionStatusDTO {
     }
 
 
-    public void addOperator(String name, String tempStatus) {
+    public void setOperatoApprovalStatus(String name, String tempStatus) {
         String operatorStatus = "";
 
         switch (tempStatus) {
@@ -64,12 +66,11 @@ public class APISubscriptionStatusDTO {
                 operatorStatus = tempStatus;
         }
 
-        operatorApprovals.add(new OperatorApproval(name, operatorStatus));
+        operatorName=name;
+        approvalStatus=operatorStatus;
     }
 
-    public List<OperatorApproval> getOperatorList() {
-        return operatorApprovals;
-    }
+
 
     public String getName() {
         return name;
@@ -95,9 +96,7 @@ public class APISubscriptionStatusDTO {
         this.tier = tier;
     }
 
-    public String getAdminApprovalStatus() {
-        return adminApprovalStatus;
-    }
+
 
     public void setAdminApprovalStatus(String adminApprovalStatus) {
         String status = "";
@@ -113,7 +112,8 @@ public class APISubscriptionStatusDTO {
                 status = adminApprovalStatus;
         }
 
-        this.adminApprovalStatus = status;
+        this.approvalStatus = status;
 
     }
+	
 }
