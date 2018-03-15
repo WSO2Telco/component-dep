@@ -74,14 +74,5 @@ public class ApplicationStatusDTO
 
 }
 
-class OperatorApproval {
-    String operatorName;
-    String approvalStatus;
-
-    public OperatorApproval(String operatorName, String approvalStatus) {
-        this.operatorName = operatorName;
-        this.approvalStatus = approvalStatus;
-    }
-}
 
 
