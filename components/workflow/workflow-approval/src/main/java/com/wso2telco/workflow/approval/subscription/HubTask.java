@@ -43,6 +43,7 @@ public class HubTask extends AbstractTaskExecutor {
 
         Subscription subscription = new Subscription();
         subscription.setApiName(delegatedArgsDTO.getApiName());
+        subscription.setApiVersion(delegatedArgsDTO.getApiVersion());
         subscription.setApplicationID(delegatedArgsDTO.getApplicationId());
         subscription.setStatus(delegatedArgsDTO.getOperatorAdminApprovalStatus());
         subscription.setOperatorName(delegatedArgsDTO.getOperatorName());

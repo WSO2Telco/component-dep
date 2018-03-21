@@ -1,8 +1,10 @@
 package com.wso2telco.workflow.publisher;
 
 import java.util.ServiceLoader;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.dep.billingextension.BillingHandlerExtension;
 
@@ -10,7 +12,7 @@ public class WorkflowApprovalRatePublisher {
 
 	private final Log log = LogFactory.getLog(WorkflowApprovalRatePublisher.class);
 
-	public void publishHubAPIRate(int servicesRateDid, int applicationDid) throws BusinessException {
+	public void publishHubAPIRate(int servicesRateDid, int applicationDid,String apiVersion) throws BusinessException {
 
 		try {
 
@@ -18,7 +20,7 @@ public class WorkflowApprovalRatePublisher {
 
 			for (BillingHandlerExtension extn : loader) {
 
-				extn.publishHubAPIRate(servicesRateDid, applicationDid);
+				extn.publishHubAPIRate(servicesRateDid, applicationDid, apiVersion);
 			}
 		} catch (BusinessException e) {
 
@@ -29,7 +31,7 @@ public class WorkflowApprovalRatePublisher {
 
 	//TODO:change in here
 	//rateId, appID, operatorId, operationId
-	public void publishOperatorAPIRate(int operatorRateDid, int applicationDid) throws BusinessException {
+	public void publishOperatorAPIRate(int operatorRateDid, int applicationDid, String apiVersion) throws BusinessException {
 
 		try {
 
@@ -37,7 +39,7 @@ public class WorkflowApprovalRatePublisher {
 
 			for (BillingHandlerExtension extn : loader) {
 
-				extn.publishOperatorAPIRate(operatorRateDid, applicationDid);
+				extn.publishOperatorAPIRate(operatorRateDid, applicationDid, apiVersion);
 			}
 		} catch (BusinessException e) {
 

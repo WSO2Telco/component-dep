@@ -2,6 +2,7 @@ package com.wso2telco.dep.billingservice.service;
 
 import java.util.Collections;
 import java.util.Map;
+
 import com.wso2telco.dep.billingservice.dao.RateCardDAO;
 
 public class RateCardService {
@@ -80,14 +81,14 @@ public class RateCardService {
 
 	//setters
 	//public void setHubSubscriptionRateData(int servicesRateDid, int applicationDid, String apiCode) throws Exception {
-	public void setHubSubscriptionRateData(int servicesRateDid, int applicationDid) throws Exception {
+	public void setHubSubscriptionRateData(int servicesRateDid, int applicationDid ,String apiVersion) throws Exception {
 
 		try {
-			boolean recordsExists = rateCardDAO.checkHubSubscriptionRateDataExists(servicesRateDid, applicationDid);
+			boolean recordsExists = rateCardDAO.checkHubSubscriptionRateDataExists(servicesRateDid, applicationDid, apiVersion);
 			if (recordsExists) {
-				rateCardDAO.deleteHubSubscriptionRateData(servicesRateDid, applicationDid);
+				rateCardDAO.deleteHubSubscriptionRateData(servicesRateDid, applicationDid, apiVersion);
 			}
-			rateCardDAO.setHubSubscriptionRateData(servicesRateDid, applicationDid);
+			rateCardDAO.setHubSubscriptionRateData(servicesRateDid, applicationDid,apiVersion);
 		} catch (Exception e) {
 
 			throw e;
@@ -95,14 +96,14 @@ public class RateCardService {
 	}
 //int operatorRateDid, int applicationDid, String operatorId, String operationId
 	//public void setOperatorSubscriptionRateData(int operatorRateDid, int applicationDid) throws Exception {
-	public void setOperatorSubscriptionRateData(int operatorRateDid, int applicationDid) throws Exception {
+	public void setOperatorSubscriptionRateData(int operatorRateDid, int applicationDid, String apiVersion) throws Exception {
 
 		try {
-			boolean recordsExists = rateCardDAO.checkOperatorSubscriptionRateData(operatorRateDid, applicationDid);
+			boolean recordsExists = rateCardDAO.checkOperatorSubscriptionRateData(operatorRateDid, applicationDid, apiVersion);
 			if (recordsExists) {
-				rateCardDAO.deleteOperatorSubscriptionRateData(operatorRateDid, applicationDid);
+				rateCardDAO.deleteOperatorSubscriptionRateData(operatorRateDid, applicationDid, apiVersion);
 			}
-			rateCardDAO.setOperatorSubscriptionRateData(operatorRateDid, applicationDid);
+			rateCardDAO.setOperatorSubscriptionRateData(operatorRateDid, applicationDid, apiVersion);
 		} catch (Exception e) {
 
 			throw e;

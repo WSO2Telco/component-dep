@@ -75,8 +75,8 @@ public class WorkflowApprovalAPI {
 
 						int rateId = Integer.parseInt(rate);
 						if (rateId != 0) {
-
-							workflowApprovalRatePublisher.publishHubAPIRate(rateId, appID);
+							String apiVersion=subscription.getApiVersion();
+							workflowApprovalRatePublisher.publishHubAPIRate(rateId, appID,apiVersion);
 						}
 					}
 				}
@@ -126,8 +126,9 @@ public class WorkflowApprovalAPI {
 
 						int rateId = Integer.parseInt(rate);
 						if (rateId != 0) {
-						
-							workflowApprovalRatePublisher.publishOperatorAPIRate(rateId, appID);
+							
+							String apiVersion=subscription.getApiVersion();
+							workflowApprovalRatePublisher.publishOperatorAPIRate(rateId, appID, apiVersion);
 						}
 					}
 				}
