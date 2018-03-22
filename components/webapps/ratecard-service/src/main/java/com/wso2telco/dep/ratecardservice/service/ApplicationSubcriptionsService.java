@@ -59,8 +59,12 @@ public class ApplicationSubcriptionsService {
 				log.debug("SB before update");
 				ApplicationSubcriptionsDTO ubdatedDTO=applicationSubcriptionsDAO.updateSBRates(applicationSubcriptionsDTO);
 				log.debug("update success");
+				updatedDto.setdId(ubdatedDTO.getdId());
 				updatedDto.setComment(applicationSubcriptionsDTO.getComment());
-				applicationSubcriptionsDAO.insertUpdatedSBRates(updatedDto);
+				updatedDto.setNewRateDefId(applicationSubcriptionsDTO.getRateDefId());
+				updatedDto.setDirection("sb");
+				
+				applicationSubcriptionsDAO.insertUpdatedRates(updatedDto);
 				log.debug("insert update success");
 				updatedList.add(ubdatedDTO);
 			} else {
@@ -104,7 +108,9 @@ public class ApplicationSubcriptionsService {
 				log.debug("update success");
 				updatedList.add(ubdatedDTO);
 				updatedDto.setComment(applicationSubcriptionsDTO.getComment());
-				applicationSubcriptionsDAO.insertUpdatedNBRates(updatedDto);
+				updatedDto.setNewRateDefId(applicationSubcriptionsDTO.getRateDefId());
+				updatedDto.setDirection("nb");
+				applicationSubcriptionsDAO.insertUpdatedRates(updatedDto);
 				log.debug("insert update success");
 			} else {
 

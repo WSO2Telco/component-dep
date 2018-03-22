@@ -205,7 +205,8 @@ public class ApplicationSubcriptionsDAO {
 
 			while (rs.next()) {
 
-				applicationSubcriptionsDTO.setApiOperationId(rs.getInt(1));
+				applicationSubcriptionsDTO.setdId(rs.getInt("sub_rate_sbid_updated"));
+				applicationSubcriptionsDTO.setComment(applicationSubcriptionsRate.getComment());
 			}
 
 		} catch (SQLException e) {
@@ -405,7 +406,8 @@ public class ApplicationSubcriptionsDAO {
 		return applicationSubcriptionsDTO;
 	}
 	
-	public ApplicationSubcriptionsDTO insertUpdatedNBRates(ApplicationSubcriptionsDTO applicationSubcriptionsRate) throws BusinessException{
+	
+	public ApplicationSubcriptionsDTO insertUpdatedRates(ApplicationSubcriptionsDTO applicationSubcriptionsRate) throws BusinessException{
 
 		ApplicationSubcriptionsDTO applicationSubcriptionsDTO = new ApplicationSubcriptionsDTO();
 
@@ -422,66 +424,7 @@ public class ApplicationSubcriptionsDAO {
 				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 			}
 
-			StringBuilder query = new StringBuilder("INSERT INTO sub_rate_nb_updated ( api_operationid, api_version, applicationid, rate_defid, comment) ");
-			query.append("VALUES ( ?, ?, ?, ?, ?)");
-	 
-	 
-			ps = con.prepareStatement(query.toString(),Statement.RETURN_GENERATED_KEYS);
-
-			log.debug("sql query in getAPI : " + ps);
-
-			ps.setInt(1, applicationSubcriptionsRate.getApiOperationId());
-			ps.setString(2, applicationSubcriptionsRate.getApiVersion());
-			ps.setInt(3, applicationSubcriptionsRate.getApplicationId());
-			ps.setInt(4, applicationSubcriptionsRate.getRateDefId());
-			ps.setString(5, applicationSubcriptionsRate.getComment());
-			
-			ps.executeUpdate();
-
-			rs = ps.getGeneratedKeys();
-
-			while (rs.next()) {
-				applicationSubcriptionsDTO.setApiOperationId(rs.getInt(1));
-
-			}
-
-		} catch (SQLException e) {
-
-			log.error("database operation error in getAPI : ", e);
-			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
-		} catch (Exception e) {
-
-			log.error("error in getAPI : ", e);
-			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
-		} finally {
-
-			DbUtils.closeAllConnections(ps, con, rs);
-		}
-
-		return applicationSubcriptionsDTO;
-	}
-
-	
-	
-	
-	public ApplicationSubcriptionsDTO insertUpdatedSBRates(ApplicationSubcriptionsDTO applicationSubcriptionsRate) throws BusinessException{
-
-		ApplicationSubcriptionsDTO applicationSubcriptionsDTO = new ApplicationSubcriptionsDTO();
-
-		Connection con = null;
-		ResultSet rs = null;
-		PreparedStatement ps = null;
-
-		try {
-
-			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
-			if (con == null) {
-
-				log.error("unable to open " + DataSourceNames.WSO2TELCO_RATE_DB + " database connection");
-				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
-			}
-
-			StringBuilder query = new StringBuilder("INSERT INTO sub_rate_sb_updated (operatorid, api_operationid, api_version,applicationid, rate_defid, comment) ");
+			StringBuilder query = new StringBuilder("INSERT INTO subs_rate_updated (sbnbid, direction ,oldrate_defid, newrate_defid, updatedby, comment) ");
 			query.append("VALUES (?, ?, ?, ?, ?, ?)");
 	 
 	 
@@ -489,12 +432,13 @@ public class ApplicationSubcriptionsDAO {
 
 			log.debug("sql query in getAPI : " + ps);
 
-			ps.setInt(1, applicationSubcriptionsRate.getOperatorId());
-			ps.setInt(2, applicationSubcriptionsRate.getApiOperationId());
-			ps.setString(3, applicationSubcriptionsRate.getApiVersion());
-			ps.setInt(4, applicationSubcriptionsRate.getApplicationId());
-			ps.setInt(5, applicationSubcriptionsRate.getRateDefId());
+			ps.setInt(1, applicationSubcriptionsRate.getdId());
+			ps.setString(2, applicationSubcriptionsRate.getDirection());
+			ps.setInt(3, applicationSubcriptionsRate.getRateDefId());
+			ps.setInt(4, applicationSubcriptionsRate.getNewRateDefId());
+			ps.setString(5, applicationSubcriptionsRate.getUpdateBy());
 			ps.setString(6, applicationSubcriptionsRate.getComment());
+
 			
 			ps.executeUpdate();
 
@@ -502,7 +446,8 @@ public class ApplicationSubcriptionsDAO {
 
 			while (rs.next()) {
 
-				applicationSubcriptionsDTO.setOperatorId(rs.getInt(1));
+				applicationSubcriptionsDTO.setdId(rs.getInt("sub_rate_sbid_updated"));
+				applicationSubcriptionsDTO.setComment(applicationSubcriptionsRate.getComment());
 				
 			}
 
@@ -522,6 +467,10 @@ public class ApplicationSubcriptionsDAO {
 		return applicationSubcriptionsDTO;
 	}
 	
+	public void insertUpdateComment(ApplicationSubcriptionsDTO applicationSubcriptionsDTO){
+		
+		
+	}
 	
 	
 	public List<ApplicationSubcriptionsDTO> getExistingSBRates(String appId, String operatorId,String apiName, String version) throws BusinessException{

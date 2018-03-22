@@ -6,8 +6,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
 import java.util.Map;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+
 import com.wso2telco.core.dbutils.DbUtils;
 import com.wso2telco.core.dbutils.util.DataSourceNames;
 import com.wso2telco.dep.billingservice.util.DatabaseTables;
@@ -171,7 +173,7 @@ public class RateCardDAO {
 
 
 	//TODO:change here rate. write rollback as well
-	public void setHubSubscriptionRateData(int servicesRateDid, int applicationDid)
+	public void setHubSubscriptionRateData(int servicesRateDid, int applicationDid, String apiVersion)
 			throws SQLException, Exception {
 
 		Connection conn = null;
@@ -182,15 +184,16 @@ public class RateCardDAO {
 			conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 
 			StringBuilder query = new StringBuilder("INSERT INTO sub_rate_nb ");
-			query.append("(api_operationid,applicationid,rate_defid) ");
-			query.append("VALUES ((select api_operationid from operation_rate where operation_rateid=?),?,");
+			query.append("(api_operationid,api_version,applicationid,rate_defid) ");
+			query.append("VALUES ((select api_operationid from operation_rate where operation_rateid=?),?,?,");
 			query.append("(select rate_defid from operation_rate where operation_rateid=?))");
 			//query.append("(SELECT rate_defid FROM rate_def WHERE rate_defname=?))");
 
 			ps = conn.prepareStatement(query.toString());
 			ps.setInt(1,servicesRateDid);
-			ps.setInt(2,applicationDid);
-			ps.setInt(3,servicesRateDid);
+			ps.setString(2,apiVersion);
+			ps.setInt(3,applicationDid);
+			ps.setInt(4,servicesRateDid);
 
 			log.debug("sql query in setHubSubscriptionRateData : " + ps);
 
@@ -209,7 +212,7 @@ public class RateCardDAO {
 		}
 	}
 
-	public boolean checkHubSubscriptionRateDataExists(int servicesRateDid, int applicationDid)
+	public boolean checkHubSubscriptionRateDataExists(int servicesRateDid, int applicationDid,String apiVersion)
 			throws SQLException, Exception {
 
 		Connection conn = null;
@@ -223,12 +226,12 @@ public class RateCardDAO {
 			StringBuilder query = new StringBuilder("SELECT * FROM sub_rate_nb ");
 			query.append("WHERE api_operationid=(select api_operationid from operation_rate where operation_rateid=?) ");
 			query.append("AND applicationid=? ");
-			query.append("AND rate_defid=(select rate_defid from operation_rate where operation_rateid=?)");
+			query.append("AND api_version=?");
 
 			ps = conn.prepareStatement(query.toString());
 			ps.setInt(1,servicesRateDid);
 			ps.setInt(2,applicationDid);
-			ps.setInt(3,servicesRateDid);
+			ps.setString(3,apiVersion);
 
 			log.debug("sql query in checkHubSubscriptionRateDataExists : " + ps);
 
@@ -251,7 +254,7 @@ public class RateCardDAO {
 		return recordsExist;
 	}
 
-	public void deleteHubSubscriptionRateData(int servicesRateDid, int applicationDid)
+	public void deleteHubSubscriptionRateData(int servicesRateDid, int applicationDid ,String apiVersion)
 			throws SQLException, Exception {
 
 		Connection conn = null;
@@ -263,12 +266,12 @@ public class RateCardDAO {
 			StringBuilder query = new StringBuilder("DELETE FROM sub_rate_nb ");
 			query.append("WHERE api_operationid=(select api_operationid from operation_rate where operation_rateid=?) ");
 			query.append("AND applicationid=? ");
-			query.append("AND rate_defid=(select rate_defid from operation_rate where operation_rateid=?)");
+			query.append("AND api_version=?");
 
 			ps = conn.prepareStatement(query.toString());
 			ps.setInt(1,servicesRateDid);
 			ps.setInt(2,applicationDid);
-			ps.setInt(3,servicesRateDid);
+			ps.setString(3,apiVersion);
 
 			log.debug("sql query in deleteHubSubscriptionRateData : " + ps);
 
@@ -292,7 +295,7 @@ VALUES ((select operator_id from operation_rate where operation_rateid=1),
 30,
 (select rate_defid from operation_rate where operation_rateid=1))
 	* */
-	public void setOperatorSubscriptionRateData(int operatorRateDid, int applicationDid)
+	public void setOperatorSubscriptionRateData(int operatorRateDid, int applicationDid, String apiVersion)
 			throws SQLException, Exception {
 
 		Connection conn = null;
@@ -303,17 +306,18 @@ VALUES ((select operator_id from operation_rate where operation_rateid=1),
 			conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
 
 			StringBuilder query = new StringBuilder("INSERT INTO sub_rate_sb ");
-			query.append("(operatorid, api_operationid, applicationid, rate_defid) ");
-			query.append("VALUES ((select operator_id from operation_rate where operation_rateid=?),");
+			query.append("(operatorid ,api_version, api_operationid, applicationid, rate_defid) ");
+			query.append("VALUES ((select operator_id from operation_rate where operation_rateid=?),?,");
 			query.append("(select api_operationid from operation_rate where operation_rateid=?),?,");
 			query.append("(select rate_defid from operation_rate where operation_rateid=?))");
 
 			ps = conn.prepareStatement(query.toString());
 
 			ps.setInt(1, operatorRateDid);
-			ps.setInt(2, operatorRateDid);
-			ps.setInt(3,applicationDid);
-			ps.setInt(4,operatorRateDid);
+			ps.setString(2, apiVersion);
+			ps.setInt(3, operatorRateDid);
+			ps.setInt(4,applicationDid);
+			ps.setInt(5,operatorRateDid);
 
 			log.debug("sql query in setOperatorSubscriptionRateData : " + ps);
 
@@ -332,7 +336,7 @@ VALUES ((select operator_id from operation_rate where operation_rateid=1),
 		}
 	}	
 
-	public boolean checkOperatorSubscriptionRateData(int operatorRateDid, int applicationDid)
+	public boolean checkOperatorSubscriptionRateData(int operatorRateDid, int applicationDid,String apiVersion)
 			throws SQLException, Exception {
 
 		Connection conn = null;
@@ -347,14 +351,14 @@ VALUES ((select operator_id from operation_rate where operation_rateid=1),
 			query.append("WHERE operatorid=(select operator_id from operation_rate where operation_rateid=?) ");
 			query.append("AND api_operationid=(select api_operationid from operation_rate where operation_rateid=?) ");
 			query.append("AND applicationid=? ");
-			query.append("AND rate_defid=(select rate_defid from operation_rate where operation_rateid=?) ");
+			query.append("AND api_version=?");
 
 			ps = conn.prepareStatement(query.toString());
 
 			ps.setInt(1, operatorRateDid);
 			ps.setInt(2, operatorRateDid);
 			ps.setInt(3,applicationDid);
-			ps.setInt(4,operatorRateDid);
+			ps.setString(4,apiVersion);
 
 			log.debug("sql query in checkOperatorSubscriptionRateData : " + ps);
 
@@ -377,7 +381,7 @@ VALUES ((select operator_id from operation_rate where operation_rateid=1),
 		return recordsExist;
 	}
 	
-	public void deleteOperatorSubscriptionRateData(int operatorRateDid, int applicationDid)
+	public void deleteOperatorSubscriptionRateData(int operatorRateDid, int applicationDid, String apiVersion)
 			throws SQLException, Exception {
 
 		Connection conn = null;
@@ -390,14 +394,14 @@ VALUES ((select operator_id from operation_rate where operation_rateid=1),
 			query.append("WHERE operatorid=(select operator_id from operation_rate where operation_rateid=?) ");
 			query.append("AND api_operationid=(select api_operationid from operation_rate where operation_rateid=?) ");
 			query.append("AND applicationid=? ");
-			query.append("AND rate_defid=(select rate_defid from operation_rate where operation_rateid=?) ");
+			query.append("AND api_version=?");
 
 			ps = conn.prepareStatement(query.toString());
 
 			ps.setInt(1, operatorRateDid);
 			ps.setInt(2, operatorRateDid);
 			ps.setInt(3,applicationDid);
-			ps.setInt(4,operatorRateDid);
+			ps.setString(4,apiVersion);
 
 			log.debug("sql query in deleteOperatorSubscriptionRateData : " + ps);
 

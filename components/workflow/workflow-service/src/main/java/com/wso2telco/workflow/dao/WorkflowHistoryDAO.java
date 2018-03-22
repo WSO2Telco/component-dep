@@ -190,9 +190,9 @@ public class WorkflowHistoryDAO {
 
 
 			if(!apiid.equals("_ALL")){
-				sqlPredecessor.concat("   AND api.api_id= ? ");
+				sqlPredecessor= sqlPredecessor.concat("   AND api.api_id= ? ");
 			}
-			sqlPredecessor.concat("       AND oep.api = api.api_name " +
+			sqlPredecessor= sqlPredecessor.concat("       AND oep.api = api.api_name " +
 					"       AND sub.api_id = api.api_id" +
 					"       AND sub.application_id = epa.applicationid " +
 					"ORDER BY api_name limit ?,?");
@@ -267,7 +267,7 @@ public class WorkflowHistoryDAO {
 			
 			if(!apiid.equals("_ALL")){
 
-				sql.concat(" AND api.api_id = ? limit ?, ?"); 
+				sql= sql.concat(" AND api.api_id = ? limit ?, ?"); 
 
 				ps = conn.prepareStatement(sql);
 				ps.setInt(1, appID);
@@ -276,7 +276,7 @@ public class WorkflowHistoryDAO {
 				ps.setInt(4, size);
 
 			}else{
-				sql.concat(" limit ?, ?"); 
+				sql=  sql.concat(" limit ?, ?"); 
 				ps = conn.prepareStatement(sql);
 				ps.setInt(1, appID);
 				ps.setInt(2, start);

@@ -4,32 +4,49 @@ import java.util.Date;
 
 public class ApplicationSubcriptionsDTO {
 	
+	private int dId;
 	private String apiOperation;
 	private String rateDefname;
 	private String apiVersion;
+	private Integer operatorId;
+	private Integer apiOperationId;
+	private Integer  applicationId;
+	private Integer rateDefId;
+	private Date subRateSBActDate;
+	private Date subRateSBDisDate;
+	private String createBy;
+	private String updateBy;
+	private String comment;
+	private Integer newRateDefId;
+	private String direction;
 	
+	
+	public String getDirection() {
+		return direction;
+	}
+	public void setDirection(String direction) {
+		this.direction = direction;
+	}
+	public Integer getNewRateDefId() {
+		return newRateDefId;
+	}
+	public void setNewRateDefId(Integer newRateDefId) {
+		this.newRateDefId = newRateDefId;
+	}
 	public String getApiVersion() {
 		return apiVersion;
 	}
 	public void setApiVersion(String apiVersion) {
 		this.apiVersion = apiVersion;
 	}
-	private Integer operatorId;
-	private Integer apiOperationId;
-	private Integer  applicationId;
-	private Integer rateDefId;
-	
-	private Date subRateSBActDate;
-	private Date subRateSBDisDate;
-	private String createBy;
-
-	private String updateBy;
-	private String comment;
-	
-
 	
 	
-	
+	public int getdId() {
+		return dId;
+	}
+	public void setdId(int dId) {
+		this.dId = dId;
+	}
 	public String getComment() {
 		return comment;
 	}
