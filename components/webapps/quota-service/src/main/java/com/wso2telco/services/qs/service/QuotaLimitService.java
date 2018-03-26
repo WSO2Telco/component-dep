@@ -33,7 +33,7 @@ public class QuotaLimitService {
 		}
 	}
 
-	public List<QuotaBean> getQuotaLimitInfo(String byFlag, String info, String operator) throws QuotaLimitException{
+	public List<QuotaBean> getQuotaLimitInfo(String byFlag, String info, String operator,String sp, String app) throws QuotaLimitException{
 		List<QuotaBean> returnObjList=new ArrayList<QuotaBean>();
 		try {
 			switch (byFlag) {
@@ -41,10 +41,20 @@ public class QuotaLimitService {
 				returnObjList= dao.getQuotaLimitInfoByServiceProvider(info,operator);
 				break;
 			case "byApplication":
-				returnObjList= dao.getQuotaLimitInfoByApplication(info,operator);
+				if(sp==null){
+					LOG.error("sp is null");
+					throw new Exception("sp can not be null");
+				}else{
+					returnObjList= dao.getQuotaLimitInfoByApplication(info,operator,sp);
+				}
 				break;
 			case "byApi":
-				returnObjList= dao.getQuotaLimitInfoByApi(info,operator);
+				if(sp==null || app==null){
+					LOG.error("sp or app is null");
+					throw new Exception("sp  or app can not be null");
+				}else{
+					returnObjList= dao.getQuotaLimitInfoByApi(info,operator,sp,app);
+				}
 				break;
 			default:
 				break;
@@ -56,7 +66,7 @@ public class QuotaLimitService {
 		}
 	}
 
-	public Boolean checkIfDatesOverlap(String byFlag, String info,String fromDate, String toDate, String operator) throws QuotaLimitException{
+	public Boolean checkIfDatesOverlap(String byFlag, String info,String fromDate, String toDate, String operator,String sp, String app) throws QuotaLimitException{
 		Boolean checkIfDatesOverlap=false;
 		try {
 			switch (byFlag) {
@@ -64,10 +74,20 @@ public class QuotaLimitService {
 				checkIfDatesOverlap= dao.checkQuotaLimitInfoByServiceProviderWithDateRange(info,fromDate,toDate,operator);
 				break;
 			case "byApplication":
-				checkIfDatesOverlap= dao.checkQuotaLimitInfoByApplicationWithDateRange(info,fromDate,toDate,operator);
+				if(sp==null){
+					LOG.error("sp is null");
+					throw new Exception("sp can not be null");
+				}else{
+					checkIfDatesOverlap= dao.checkQuotaLimitInfoByApplicationWithDateRange(info,fromDate,toDate,operator,sp);
+				}
 				break;
 			case "byApi":
-				checkIfDatesOverlap= dao.checkQuotaLimitInfoByApiWithDateRange(info,fromDate,toDate,operator);
+				if(sp==null || app==null){
+					LOG.error("sp or app is null");
+					throw new Exception("sp  or app can not be null");
+				}else{
+					checkIfDatesOverlap= dao.checkQuotaLimitInfoByApiWithDateRange(info,fromDate,toDate,operator,sp,app);
+				}
 				break;
 			default:
 				break;

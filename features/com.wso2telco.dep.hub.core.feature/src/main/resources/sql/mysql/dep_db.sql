@@ -464,7 +464,7 @@ CREATE TABLE IF NOT EXISTS `sp_quota_limit` (
   `idsp_quota_limit` int(11) NOT NULL AUTO_INCREMENT,
   `serviceProvider` varchar(45) DEFAULT NULL,
   `operatorName` varchar(45) DEFAULT NULL,
-  `application` varchar(45) DEFAULT NULL,
+  `application` int(11) DEFAULT NULL,
   `apiName` varchar(45) DEFAULT NULL,
   `quota_limit` int(11) DEFAULT NULL,
   `fromDate` date DEFAULT NULL,

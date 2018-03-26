@@ -5,7 +5,7 @@ import java.util.Date;
 public class QuotaBean {
 	private String operator;
 	private String serviceProvider;
-	private String applicationName;
+	private String application;
 	private String apiName;
 	private String quotaLimit;
 	private String fromDate;
@@ -28,12 +28,12 @@ public class QuotaBean {
 		this.serviceProvider = serviceProvider;
 	}
 
-	public String getApplicationName() {
-		return applicationName;
+	public String getApplication() {
+		return application;
 	}
 
-	public void setApplicationName(String applicationName) {
-		this.applicationName = applicationName;
+	public void setApplication(String application) {
+		this.application = application;
 	}
 
 	public String getApiName() {
