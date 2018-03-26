@@ -78,7 +78,12 @@ class HubSubRequestBuilder extends AbstractSubRequestBuilder {
 
     @Override
     protected String getCandidateGroup(UserProfileDTO userProfileDTO) {
-        return userProfileDTO.getUserName();
+        //return userProfileDTO.getUserName();
+    	if(isAdmin(userProfileDTO)){
+            return WorkFlowVariables.GATEWAY_ADMIN_ROLE.getValue();
+        }else {
+            return userProfileDTO.getUserName();
+        }
     }
 
     @Override
