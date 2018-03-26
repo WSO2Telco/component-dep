@@ -7,6 +7,26 @@ public class QuotaReqBeanWithDates {
 	private String toDate;
 	private String fromDate;
 	private String operator;
+	private String sp;
+	private String app;
+
+	
+	
+	public String getSp() {
+		return sp;
+	}
+
+	public void setSp(String sp) {
+		this.sp = sp;
+	}
+
+	public String getApp() {
+		return app;
+	}
+
+	public void setApp(String app) {
+		this.app = app;
+	}
 
 	public String getByFlag() {
 		return byFlag;

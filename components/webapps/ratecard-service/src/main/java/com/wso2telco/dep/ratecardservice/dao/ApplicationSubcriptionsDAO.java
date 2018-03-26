@@ -244,7 +244,7 @@ public class ApplicationSubcriptionsDAO {
 			}
 
 			StringBuilder query = new StringBuilder("INSERT INTO sub_rate_sb (operatorid, api_operationid, api_version, applicationid, rate_defid,updatedby) ");
-			query.append("VALUES (?, ?, ?, ?, ?)");
+			query.append("VALUES (?, ?, ?, ?, ?, ?)");
 	 
 	 
 			ps = con.prepareStatement(query.toString(),Statement.RETURN_GENERATED_KEYS);
