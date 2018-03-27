@@ -15,7 +15,6 @@
  ******************************************************************************/
 package com.wso2telco.dep.subscriptionvalidator.util;
 
-import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.logging.Log;
@@ -36,8 +35,6 @@ public class ValidatorUtils {
     /** The Constant log. */
     private static final Log log = LogFactory.getLog(ValidatorUtils.class);
 
-    private static List<ValidatorClassDTO> validatorClassDTOs = null;
-
     /**
      * Gets the validator for subscription.
      *
@@ -46,46 +43,10 @@ public class ValidatorUtils {
      * @return the validator for subscription
      * @throws ValidatorException the validator exception
      */
-    /*public static MifeValidator getValidatorForSubscription(int applicationId, int apiId) throws ValidatorException {
+    public static MifeValidator getValidatorForSubscription(int applicationId, int apiId) throws ValidatorException {
 
         String className = ValidatorDBUtils.getValidatorClassForSubscription(applicationId, apiId);
         log.debug("Validator Class Name: " + className);
-
-        if (className == null) {
-            throw new ValidatorException("No Validator class defined for the subscription with appID: " +
-                    applicationId + " apiID: " + apiId);
-        }
-        try {
-            MifeValidator validator = (MifeValidator) Class.forName(className).newInstance();
-            return validator;
-        } catch (Exception e) {
-            log.error("Error occured while loading Validator class: " + className, e);
-            throw new ValidatorException("Error occured while loading Validator class: " + className, e);
-        }
-    }*/
-    private static String getValidatorClassName(int applicationId, int apiId){
-    	String className = null;
-    	for(ValidatorClassDTO classDTO : validatorClassDTOs){
-    		if(classDTO.getApp() == applicationId && classDTO.getApi() == apiId){
-    			className = classDTO.getClassName();
-    			log.debug("Validator Class Name: " + className);
-    			break;
-    		}
-    	}
-    	
-    	return className;
-    }
-    
-    public static MifeValidator getValidatorForSubscription(int applicationId, int apiId) throws ValidatorException {
-    	String className = null;
-    	if(validatorClassDTOs == null || validatorClassDTOs.isEmpty()){
-    		validatorClassDTOs = ValidatorDBUtils.getValidatorClassForSMSSubscription();
-    	}
-    	className = getValidatorClassName(applicationId, apiId);
-    	if(className == null){
-    		validatorClassDTOs = ValidatorDBUtils.getValidatorClassForSMSSubscription();
-    		className = getValidatorClassName(applicationId, apiId);
-    	}
 
         if (className == null) {
             throw new ValidatorException("No Validator class defined for the subscription with appID: " +
