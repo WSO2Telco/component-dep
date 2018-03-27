@@ -181,7 +181,6 @@ public class ApplicationSubcriptionsDAO {
 
 
 			StringBuilder query = new StringBuilder("UPDATE sub_rate_sb ");
-			query.append("UPDATE sub_rate_sb ");
 			query.append("SET rate_defid = ?, ");
 			query.append("updatedby = ? ");
 			query.append("WHERE operatorid=? ");
@@ -205,7 +204,7 @@ public class ApplicationSubcriptionsDAO {
 
 			while (rs.next()) {
 
-				applicationSubcriptionsDTO.setdId(rs.getInt("sub_rate_sbid_updated"));
+				applicationSubcriptionsDTO.setdId(rs.getInt(1));
 				applicationSubcriptionsDTO.setComment(applicationSubcriptionsRate.getComment());
 			}
 
@@ -446,7 +445,7 @@ public class ApplicationSubcriptionsDAO {
 
 			while (rs.next()) {
 
-				applicationSubcriptionsDTO.setdId(rs.getInt("sub_rate_sbid_updated"));
+				applicationSubcriptionsDTO.setdId(rs.getInt(1));
 				applicationSubcriptionsDTO.setComment(applicationSubcriptionsRate.getComment());
 				
 			}
