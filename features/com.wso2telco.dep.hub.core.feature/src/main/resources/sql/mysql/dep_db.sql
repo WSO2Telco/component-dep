@@ -475,3 +475,20 @@ CREATE TABLE IF NOT EXISTS `sp_quota_limit` (
   `updateddate` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   PRIMARY KEY (`idsp_quota_limit`)
 ) ENGINE=InnoDB AUTO_INCREMENT=32 DEFAULT CHARSET=utf8;
+
+
+
+--
+-- Operator Brand for OperatorCode.
+--
+CREATE TABLE `operator_brands` (
+  `id` int(20) NOT NULL AUTO_INCREMENT,
+  `operatorcode` varchar(45) DEFAULT NULL,
+  `brand` varchar(255) DEFAULT NULL,
+  `created` varchar(25) DEFAULT NULL,
+  `created_date` timestamp NULL DEFAULT NULL,
+  `lastupdated` varchar(25) DEFAULT NULL,
+  `lastupdated_date` timestamp NULL DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `operatorcode` (`operatorcode`)
+) ENGINE=InnoDB;
