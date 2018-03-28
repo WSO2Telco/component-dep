@@ -128,7 +128,7 @@
 	                                <%=i18n.localize("Go Back")%>
 	                            </a>
 	                        </li>
-							<% if (isEditable && isCreatePermitted) { %>
+							<% if (isEditable) { %>
 	                        <li>
 	                            <a href="<%=jagg.url("/design")%>?<%= apiUrlId %>" title="<%=i18n.localize("Edit API")%>">
 	                                <span class="icon fw-stack">
