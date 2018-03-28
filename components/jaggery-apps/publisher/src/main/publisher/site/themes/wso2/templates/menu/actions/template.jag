@@ -53,7 +53,9 @@
     var isEditable = false;
     provider = request.getParameter("provider");
     var userobj = jagg.getUser();
-    if (provider == userobj.username || userobj.username == "admin")
+	var isSuperAdmin = jagg.getManageTierPermitted().permitted;
+	
+    if (provider == userobj.username || userobj.username == "admin" || isSuperAdmin == true)
     { isEditable = true; }
     %>
 
@@ -126,7 +128,7 @@
 	                                <%=i18n.localize("Go Back")%>
 	                            </a>
 	                        </li>
-							<% if (isEditable) { %>
+							<% if (isEditable && isCreatePermitted) { %>
 	                        <li>
 	                            <a href="<%=jagg.url("/design")%>?<%= apiUrlId %>" title="<%=i18n.localize("Edit API")%>">
 	                                <span class="icon fw-stack">

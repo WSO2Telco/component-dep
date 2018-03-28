@@ -103,7 +103,9 @@
 
                     var isEditable = false;
                     var userobj = jagg.getUser();
-                    if (api.provider == userobj.username || userobj.username == "admin")
+					var isSuperAdmin = jagg.getManageTierPermitted().permitted;
+					
+                    if (api.provider == userobj.username || userobj.username == "admin" || isSuperAdmin == true)
                     { isEditable = true; }
                     %>
                     <%if(query != null && (query.indexOf("Doc:") == 0 || query.indexOf("doc:") == 0)) {%>
