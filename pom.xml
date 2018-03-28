@@ -34,7 +34,7 @@
 	<properties>
 		<!-- WSO2.Telco versions -->
 		<com.wso2telco.dep.version>2.4.3-SNAPSHOT</com.wso2telco.dep.version>
-		<com.wso2telco.core.version>2.4.1</com.wso2telco.core.version>
+		<com.wso2telco.core.version>2.4.2</com.wso2telco.core.version>
 
 		<log4j.version>1.2.13</log4j.version>
 		<com.google.code.gson.version>2.3.1</com.google.code.gson.version>
