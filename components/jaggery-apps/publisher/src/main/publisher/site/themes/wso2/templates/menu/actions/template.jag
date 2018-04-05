@@ -53,7 +53,9 @@
     var isEditable = false;
     provider = request.getParameter("provider");
     var userobj = jagg.getUser();
-    if (provider == userobj.username || userobj.username == "admin")
+	var isSuperAdmin = jagg.getManageTierPermitted().permitted;
+	
+    if (provider == userobj.username || userobj.username == "admin" || isSuperAdmin == true)
     { isEditable = true; }
     %>
 
