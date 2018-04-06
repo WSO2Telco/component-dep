@@ -15,6 +15,7 @@ import org.workflow.core.util.AppVariable;
 import org.workflow.core.util.DeploymentTypes;
 import org.workflow.core.util.HistoryVariable;
 import org.workflow.core.util.Messages;
+import org.workflow.core.util.WorkFlowVariables;
 
 import java.util.*;
 
@@ -24,7 +25,12 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
 
     @Override
     protected String getCandidateGroup(UserProfileDTO userProfileDTO) {
-        return userProfileDTO.getUserName();
+        //return userProfileDTO.getUserName();
+    	if(isAdmin(userProfileDTO)){
+            return WorkFlowVariables.GATEWAY_ADMIN_ROLE.getValue();
+        }else {
+            return userProfileDTO.getUserName();
+        }
     }
 
     private AppSearchResponse generateResponse(final TaskList taskList) throws BusinessException {
