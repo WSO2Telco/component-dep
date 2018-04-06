@@ -82,7 +82,7 @@ class HubSubRequestBuilder extends AbstractSubRequestBuilder {
     	if(isAdmin(userProfileDTO)){
             return WorkFlowVariables.GATEWAY_ADMIN_ROLE.getValue();
         }else {
-            return userProfileDTO.getOperatorName();
+            return userProfileDTO.getOperatorName().toLowerCase();
         }
     }
 
@@ -91,7 +91,7 @@ class HubSubRequestBuilder extends AbstractSubRequestBuilder {
 
         TaskList allTaskList = taskList;
         if (!isAdmin(userProfile) && !taskList.getData().isEmpty()) {
-            allTaskList = filterOperatorApprovedApps(taskList, userProfile.getOperatorName());
+            allTaskList = filterOperatorApprovedApps(taskList, userProfile.getOperatorName().toLowerCase());
         }
         allTaskList = getOperationRates(allTaskList, userProfile);
         SubSearchResponse payload;
