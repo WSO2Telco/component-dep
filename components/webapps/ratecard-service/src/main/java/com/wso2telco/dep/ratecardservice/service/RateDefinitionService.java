@@ -269,4 +269,45 @@ public class RateDefinitionService {
 			return Collections.emptyList();
 		}
 	}
+	
+	
+	
+	public List<RateDefinitionDTO> getAssignedRateDefinitionsForOperator(int operatorId, String schema)
+			throws BusinessException {
+
+		CurrencyService currencyService = new CurrencyService();
+		RateTypeService rateTypeService = new RateTypeService();
+		TariffService tariffService = new TariffService();
+
+		List<RateDefinitionDTO> rateDefinitions = null;
+
+		rateDefinitions = rateDefinitionDAO.getAssignedRateDefinitionsForOperator(operatorId);
+
+		if (rateDefinitions != null && !rateDefinitions.isEmpty()) {
+
+			if ((schema != null && schema.trim().length() > 0) && schema.equalsIgnoreCase("full")) {
+
+				for (int i = 0; i < rateDefinitions.size(); i++) {
+
+					RateDefinitionDTO rateDefinition = rateDefinitions.get(i);
+
+					CurrencyDTO currency = currencyService.getCurrency(rateDefinition.getCurrency().getCurrencyId());
+					rateDefinition.setCurrency(currency);
+
+					RateTypeDTO rateType = rateTypeService.getRateType(rateDefinition.getRateType().getRateTypeId());
+					rateDefinition.setRateType(rateType);
+
+					TariffDTO tariff = tariffService.getTariff(rateDefinition.getTariff().getTariffId());
+					rateDefinition.setTariff(tariff);
+
+					rateDefinitions.set(i, rateDefinition);
+				}
+			}
+
+			return rateDefinitions;
+		} else {
+
+			return Collections.emptyList();
+		}
+	}
 }

@@ -127,6 +127,54 @@ public class RateCardService {
 		}
 	}
 
+
+	public List<RateCardDTO> getRateCardsForOperator(String operatorId,String schema) throws BusinessException {
+
+		RateDefinitionService rateDefinitionService = new RateDefinitionService();
+		RateCategoryService rateCategoryService = new RateCategoryService();
+		RateTaxService rateTaxService = new RateTaxService();
+
+		List<RateDefinitionDTO> rateDefinitions =null;
+		List<RateCardDTO> rateCards = null;
+		if(operatorId.equals("__ALL")){
+			rateDefinitions = rateDefinitionService.getRateDefinitions(schema);
+		}else{
+			rateDefinitions = rateDefinitionService.getAssignedRateDefinitionsForOperator(Integer.parseInt(operatorId), schema);
+		}
+		if (rateDefinitions != null && !rateDefinitions.isEmpty()) {
+
+			rateCards = new ArrayList<RateCardDTO>();
+
+			for (int i = 0; i < rateDefinitions.size(); i++) {
+
+				RateCardDTO rateCard = new RateCardDTO();
+
+				RateDefinitionDTO rateDefinition = rateDefinitions.get(i);
+
+				List<RateCategoryDTO> rateCategories = rateCategoryService
+						.getRateCategories(rateDefinition.getRateDefId(), schema);
+				RateCategoryDTO[] rateCategoryArray = new RateCategoryDTO[rateCategories.size()];
+
+				List<RateTaxDTO> rateTaxes = rateTaxService.getRateTaxesByRateDefinition(rateDefinition.getRateDefId(),
+						schema);
+				RateTaxDTO[] rateTaxArray = new RateTaxDTO[rateTaxes.size()];
+
+				rateCard.setRateDefinition(rateDefinition);
+				rateCard.setRateCategories(rateCategories.toArray(rateCategoryArray));
+				rateCard.setRateTaxes(rateTaxes.toArray(rateTaxArray));
+
+				rateCards.add(rateCard);
+			}
+
+			return rateCards;
+		} else {
+
+			return Collections.emptyList();
+		}
+	}
+
+
+
 	public List<RateCard> getRateCards(String schema, String test) throws BusinessException {
 
 		RateDefinitionService rateDefinitionService = new RateDefinitionService();
