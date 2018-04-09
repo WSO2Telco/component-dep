@@ -112,12 +112,17 @@ public class OperatorDAO {
 			if (con == null) {
 				throw new Exception("Connection not found");
 			}
-			StringBuilder queryString = new StringBuilder("SELECT oa.id id, oe.api, oa.applicationid, oa.operatorid,")
-												.append("o.operatorname,o.refreshtoken, o.tokenvalidity, o.tokentime,")
-												.append("o.token, o.tokenurl, o.tokenauth,oe.operatorid ")
-												.append(" FROM  OPERATORAPPS oa, OPERATORS  o ,ENDPOINTAPPS e, OPERATORENDPOINTS oe ")
-												.append(" WHERE oa.operatorid = o.id AND oa.applicationid=e.applicationid AND ")
-												.append(" e.endpointid = oe.id AND oe.id = e.endpointid AND e.isactive = 1 AND oa.isactive = 1 ");
+			StringBuilder queryString = new StringBuilder("SELECT oa.id id, o.operatorname, oe.api, ")
+					.append("oa.applicationid, oa.operatorid, o.refreshtoken,")
+					.append("o.tokenvalidity, o.tokentime, o.token,")
+					.append("o.tokenurl, o.tokenauth, oe.operatorid ")
+					.append("FROM   operatorapps oa, operatorendpoints oe,")
+					.append("endpointapps e, operators o ")
+					.append("WHERE  oe.operatorid = oa.operatorid ")
+					.append("AND    oe.isactive = oa.isactive = e.isactive = 1 ")
+					.append("AND    oe.id = e.endpointid ")
+					.append("AND    o.id = oa.operatorid ")
+					.append("AND    oa.applicationid = e.applicationid ");
 
 			ps = con.prepareStatement(queryString.toString());
 
