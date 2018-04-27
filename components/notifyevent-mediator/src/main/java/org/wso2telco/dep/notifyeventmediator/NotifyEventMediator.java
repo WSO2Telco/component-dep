@@ -53,10 +53,13 @@ public class NotifyEventMediator extends AbstractMediator {
     private String eventSinkName;
 
     private FaultEventHandler faultEventHandler;
+    private GeneralEventHandler generalEventHandler;
     private boolean isEnabled = true;
 
     private long lastMediatorDisabledTime = 0L;
     private Object lastKnownEventSinkHash = null;
+
+    private String dataPublishingBackupEnabeld = "";
 
     @Override
     public boolean isContentAware() {
@@ -152,6 +155,13 @@ public class NotifyEventMediator extends AbstractMediator {
             boolean success = eventSink.getDataPublisher()
                     .tryPublish(DataBridgeCommonsUtils.generateStreamId(getStreamName(), getStreamVersion()), metaData,
                             correlationData, payloadData, arbitraryData);
+
+            //Logging all event if flag is enabled.
+            dataPublishingBackupEnabeld = messageContext.getProperty("dataPublishingEnabled").toString();
+
+            if (dataPublishingBackupEnabeld.equals("true")) {
+                generalEventHandler.handleGeneralEvents(DataBridgeCommonsUtils.generateStreamId(getStreamName(), getStreamVersion()), metaData, correlationData, payloadData, arbitraryData);
+            }
 
             // Handling the events when fails to put into the data-bridge queue
             if (!success)
@@ -311,5 +321,13 @@ public class NotifyEventMediator extends AbstractMediator {
 
     public void setEnabled(boolean enabled) {
         isEnabled = enabled;
+    }
+
+    public GeneralEventHandler getGeneralEventHandler() {
+        return generalEventHandler;
+    }
+
+    public void setGeneralEventHandler(GeneralEventHandler generalEventHandler) {
+        this.generalEventHandler = generalEventHandler;
     }
 }

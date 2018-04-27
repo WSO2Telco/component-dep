@@ -143,7 +143,7 @@ public class NotifyEventMediatorFactory extends AbstractMediatorFactory {
 
 		// Setting the fault handler
 		mediator.setFaultEventHandler(new FaultEventHandler());
-
+		mediator.setGeneralEventHandler(new GeneralEventHandler());
 		return mediator;
 	}
 
