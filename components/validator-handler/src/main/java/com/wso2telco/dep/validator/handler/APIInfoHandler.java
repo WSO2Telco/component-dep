@@ -78,13 +78,11 @@ public class APIInfoHandler extends AbstractHandler implements ManagedLifecycle 
     @Override
     public boolean handleRequest(MessageContext messageContext) {
         AuthenticationContext authContext = APISecurityUtils.getAuthenticationContext(messageContext);
-        String api_version = (String) messageContext.getProperty(RESTConstants.SYNAPSE_REST_API);
         String messageId = (String) messageContext.getProperty(MESSAGE_ID);
         String applicationId = (String) messageContext.getProperty(APPLICATION_ID);
         String apiName = (String) messageContext.getProperty(API_NAME);
         String apiVersion = (String) messageContext.getProperty(SYNAPSE_REST_API_VERSION);
         String apiPublisher = (String) messageContext.getProperty(API_PUBLISHER);
-        api_version = api_version.replace("--", "_").replace(":v", "_");
         APIIdentifier apiIdentifier = null;
         try {
             apiIdentifier = new APIIdentifier(apiPublisher, apiName, apiVersion);
