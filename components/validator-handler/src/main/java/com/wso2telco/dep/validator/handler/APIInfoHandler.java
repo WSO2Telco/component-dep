@@ -83,6 +83,10 @@ public class APIInfoHandler extends AbstractHandler implements ManagedLifecycle 
         String apiName = (String) messageContext.getProperty(API_NAME);
         String apiVersion = (String) messageContext.getProperty(SYNAPSE_REST_API_VERSION);
         String apiPublisher = (String) messageContext.getProperty(API_PUBLISHER);
+        if (apiPublisher.contains("@")) {
+            String[] split = apiPublisher.split("@");
+            apiPublisher = split[0];
+        }
         APIIdentifier apiIdentifier = null;
         try {
             apiIdentifier = new APIIdentifier(apiPublisher, apiName, apiVersion);
