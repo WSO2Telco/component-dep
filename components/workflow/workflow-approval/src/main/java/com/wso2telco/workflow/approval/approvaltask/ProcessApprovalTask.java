@@ -30,9 +30,11 @@ import com.wso2telco.workflow.approval.subscription.rest.client.SubscriptionWork
 import com.wso2telco.workflow.approval.subscription.rest.client.WorkflowCallbackErrorDecoder;
 import com.wso2telco.workflow.approval.util.AuthRequestInterceptor;
 import com.wso2telco.workflow.approval.util.Constants;
+
 import feign.Feign;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
+
 import org.activiti.engine.delegate.DelegateExecution;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -200,7 +202,7 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	        //Detailed log entry for the update done
 	        String completedByUser = arg0.getVariable(Constants.COMPLETE_BY_USER) != null ? arg0.getVariable(Constants.COMPLETE_BY_USER).toString() : null;
 	        String applicationName = arg0.getVariable(Constants.APPLICATION_NAME) != null ? arg0.getVariable(Constants.APPLICATION_NAME).toString() : null;
-	        String selectedTier = arg0.getVariable(Constants.TIER) != null ? arg0.getVariable(Constants.TIER).toString() : null;
+	        String selectedTier = arg0.getVariable(Constants.SELECTED_TIER) != null ? arg0.getVariable(Constants.SELECTED_TIER).toString() : null;
 	        String logEntry = "Application approval operator admin :";
 	        logEntry += " Completed by - " + completedByUser;
 	        logEntry += ", Application name - " + applicationName;
