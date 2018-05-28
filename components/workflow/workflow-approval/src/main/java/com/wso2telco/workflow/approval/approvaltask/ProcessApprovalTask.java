@@ -101,10 +101,10 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	        api.applicationApprovalHub(application);
 
 	        //Detailed log entry for the update done
-	        String logEntry = "Application approval hub admin :";
-	        logEntry += " Completed by - " + adminUserName;
-	        logEntry += ", Application name - " + applicationName;
-	        logEntry += ", Tier - " + selectedTier;
+	        String logEntry = "Application approval hub admin :"
+	        		+ " Completed by - " + adminUserName
+	        		+ ", Application name - " + applicationName
+	        		+ ", Tier - " + selectedTier;
 	        log.info(logEntry);
 		} catch (Exception e) {
 			String errorMessage = "Error in ProcessApprovalTask.executeHubAdminApplicationApproval";
@@ -176,13 +176,13 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	        api.subscriptionApprovalHub(subscription);
 
 	        //Detailed log entry for the update done
-	        String logEntry = "Subscription approval hub admin :";
-	        logEntry += " Completed by - " + adminUserName;
-	        logEntry += ", Application name - " + applicationName;
-	        logEntry += ", API name - " + apiName;
-	        logEntry += ", API version - " + apiVersion;
-	        logEntry += ", Rate - " + selectedRate;
-	        logEntry += ", Tier - " + selectedTier;
+	        String logEntry = "Subscription approval hub admin :"
+	        		+ " Completed by - " + adminUserName
+	        		+ ", Application name - " + applicationName
+	        		+ ", API name - " + apiName
+	        		+ ", API version - " + apiVersion
+	        		+ ", Rate - " + selectedRate
+	        		+ ", Tier - " + selectedTier;
 	        log.info(logEntry);
 		} catch (Exception e) {
 			String errorMessage = "Error in ProcessApprovalTask.executeHubAdminSubscriptionApproval";
@@ -203,10 +203,10 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	        String completedByUser = arg0.getVariable(Constants.COMPLETE_BY_USER) != null ? arg0.getVariable(Constants.COMPLETE_BY_USER).toString() : null;
 	        String applicationName = arg0.getVariable(Constants.APPLICATION_NAME) != null ? arg0.getVariable(Constants.APPLICATION_NAME).toString() : null;
 	        String selectedTier = arg0.getVariable(Constants.SELECTED_TIER) != null ? arg0.getVariable(Constants.SELECTED_TIER).toString() : null;
-	        String logEntry = "Application approval operator admin :";
-	        logEntry += " Completed by - " + completedByUser;
-	        logEntry += ", Application name - " + applicationName;
-	        logEntry += ", Tier - " + selectedTier;
+	        String logEntry = "Application approval operator admin :"
+	        		+ " Completed by - " + completedByUser
+	        		+ ", Application name - " + applicationName
+	        		+ ", Tier - " + selectedTier;
 	        log.info(logEntry);
 		} catch (Exception e) {
 			String errorMessage = "Error in ProcessApprovalTask.executeOperatorAdminApplicationApproval";
@@ -229,12 +229,12 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	        String apiName = arg0.getVariable(Constants.API_NAME) != null ? arg0.getVariable(Constants.API_NAME).toString() : null;
 	        String apiVersion = arg0.getVariable(Constants.API_VERSION) != null ? arg0.getVariable(Constants.API_VERSION).toString() : null;
 	        String selectedTier = arg0.getVariable(Constants.SELECTED_TIER) != null ? arg0.getVariable(Constants.SELECTED_TIER).toString() : null;
-	        String logEntry = "Subscription approval operator admin :";
-	        logEntry += " Completed by - " + completedByUser;
-	        logEntry += ", Application name - " + applicationName;
-	        logEntry += ", API name - " + apiName;
-	        logEntry += ", API version - " + apiVersion;
-	        logEntry += ", Tier - " + selectedTier;
+	        String logEntry = "Subscription approval operator admin :"
+	        		+ " Completed by - " + completedByUser
+	        		+ ", Application name - " + applicationName
+	        		+ ", API name - " + apiName
+	        		+ ", API version - " + apiVersion
+	        		+ ", Tier - " + selectedTier;
 	        log.info(logEntry);
 		} catch (Exception e) {
 			String errorMessage = "Error in ProcessApprovalTask.executeOperatorAdminSubscriptionApproval";

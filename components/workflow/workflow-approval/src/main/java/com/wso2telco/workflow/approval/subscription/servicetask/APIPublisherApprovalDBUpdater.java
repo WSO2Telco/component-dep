@@ -128,13 +128,12 @@ public class APIPublisherApprovalDBUpdater implements JavaDelegate {
         apiNotification.subscriptionNotificationSp(notificationRequest);
 
         //Detailed log entry for the update done
-        String selectedTier = arg0.getVariable(Constants.SELECTED_TIER) != null ? arg0.getVariable(Constants.SELECTED_TIER).toString() : null;
-        String logEntry = "Subscription approval api publisher :";
-        logEntry += " Completed by - " + completedByUser;
-        logEntry += ", Application name - " + applicationName;
-        logEntry += ", API name - " + apiName;
-        logEntry += ", API version - " + apiVersion;
-        logEntry += ", Tier - " + adminSelectedTier;
+		String logEntry = "Subscription approval api publisher :"
+				+ " Completed by - " + completedByUser
+				+ ", Application name - " + applicationName
+				+ ", API name - " + apiName
+				+ ", API version - " + apiVersion
+				+ ", Tier - " + adminSelectedTier;
         log.info(logEntry);
 
     }
