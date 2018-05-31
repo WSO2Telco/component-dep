@@ -31,10 +31,15 @@ import com.wso2telco.workflow.approval.util.Constants;
 import feign.Feign;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
+
 import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 public class APIPublisherApprovalDBUpdater implements JavaDelegate {
+
+	private static final Log log = LogFactory.getLog(APIPublisherApprovalDBUpdater.class);
 
     public void execute(DelegateExecution arg0) throws Exception {
 
@@ -121,6 +126,15 @@ public class APIPublisherApprovalDBUpdater implements JavaDelegate {
 
         apiAudit.subscriptionApprovalAudit(subscriptionApprovalAuditRecord);
         apiNotification.subscriptionNotificationSp(notificationRequest);
+
+        //Detailed log entry for the update done
+		String logEntry = "Subscription approval api publisher :"
+				+ " Completed by - " + completedByUser
+				+ ", Application name - " + applicationName
+				+ ", API name - " + apiName
+				+ ", API version - " + apiVersion
+				+ ", Tier - " + adminSelectedTier;
+        log.info(logEntry);
 
     }
 }

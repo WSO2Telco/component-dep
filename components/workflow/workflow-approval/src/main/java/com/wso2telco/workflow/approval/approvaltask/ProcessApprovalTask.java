@@ -30,9 +30,11 @@ import com.wso2telco.workflow.approval.subscription.rest.client.SubscriptionWork
 import com.wso2telco.workflow.approval.subscription.rest.client.WorkflowCallbackErrorDecoder;
 import com.wso2telco.workflow.approval.util.AuthRequestInterceptor;
 import com.wso2telco.workflow.approval.util.Constants;
+
 import feign.Feign;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
+
 import org.activiti.engine.delegate.DelegateExecution;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -97,6 +99,13 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	        application.setOperatorName(operatorName);
 	        application.setSelectedTier(selectedTier);
 	        api.applicationApprovalHub(application);
+
+	        //Detailed log entry for the update done
+	        String logEntry = "Application approval hub admin :"
+	        		+ " Completed by - " + adminUserName
+	        		+ ", Application name - " + applicationName
+	        		+ ", Tier - " + selectedTier;
+	        log.info(logEntry);
 		} catch (Exception e) {
 			String errorMessage = "Error in ProcessApprovalTask.executeHubAdminApplicationApproval";
 			log.error(errorMessage, e);
@@ -165,6 +174,16 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	            subscription.setApiProvider(apiProvider);
 	            subscription.setApiVersion(apiVersion);
 	        api.subscriptionApprovalHub(subscription);
+
+	        //Detailed log entry for the update done
+	        String logEntry = "Subscription approval hub admin :"
+	        		+ " Completed by - " + adminUserName
+	        		+ ", Application name - " + applicationName
+	        		+ ", API name - " + apiName
+	        		+ ", API version - " + apiVersion
+	        		+ ", Rate - " + selectedRate
+	        		+ ", Tier - " + selectedTier;
+	        log.info(logEntry);
 		} catch (Exception e) {
 			String errorMessage = "Error in ProcessApprovalTask.executeHubAdminSubscriptionApproval";
 			log.error(errorMessage, e);
@@ -179,6 +198,16 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	        ApplicationTaskFactory applicationTaskFactory = new ApplicationTaskFactory();
 	        ApplicationTask applicationTask = applicationTaskFactory.getInstance(deploymentType);
 	        applicationTask.execute(arg0);
+
+	        //Detailed log entry for the update done
+	        String completedByUser = arg0.getVariable(Constants.COMPLETE_BY_USER) != null ? arg0.getVariable(Constants.COMPLETE_BY_USER).toString() : null;
+	        String applicationName = arg0.getVariable(Constants.APPLICATION_NAME) != null ? arg0.getVariable(Constants.APPLICATION_NAME).toString() : null;
+	        String selectedTier = arg0.getVariable(Constants.SELECTED_TIER) != null ? arg0.getVariable(Constants.SELECTED_TIER).toString() : null;
+	        String logEntry = "Application approval operator admin :"
+	        		+ " Completed by - " + completedByUser
+	        		+ ", Application name - " + applicationName
+	        		+ ", Tier - " + selectedTier;
+	        log.info(logEntry);
 		} catch (Exception e) {
 			String errorMessage = "Error in ProcessApprovalTask.executeOperatorAdminApplicationApproval";
 			log.error(errorMessage, e);
@@ -193,6 +222,20 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	        SubscriptionTaskFactory subscriptionTaskFactory = new SubscriptionTaskFactory();
 	        com.wso2telco.workflow.approval.subscription.SubscriptionTask subscriptionTask = subscriptionTaskFactory.getInstance(deploymentType);
 	        subscriptionTask.execute(arg0);
+
+	        //Detailed log entry for the update done
+	        String completedByUser = arg0.getVariable(Constants.COMPLETE_BY_USER) != null ? arg0.getVariable(Constants.COMPLETE_BY_USER).toString() : null;
+	        String applicationName = arg0.getVariable(Constants.APPLICATION_NAME) != null ? arg0.getVariable(Constants.APPLICATION_NAME).toString() : null;
+	        String apiName = arg0.getVariable(Constants.API_NAME) != null ? arg0.getVariable(Constants.API_NAME).toString() : null;
+	        String apiVersion = arg0.getVariable(Constants.API_VERSION) != null ? arg0.getVariable(Constants.API_VERSION).toString() : null;
+	        String selectedTier = arg0.getVariable(Constants.SELECTED_TIER) != null ? arg0.getVariable(Constants.SELECTED_TIER).toString() : null;
+	        String logEntry = "Subscription approval operator admin :"
+	        		+ " Completed by - " + completedByUser
+	        		+ ", Application name - " + applicationName
+	        		+ ", API name - " + apiName
+	        		+ ", API version - " + apiVersion
+	        		+ ", Tier - " + selectedTier;
+	        log.info(logEntry);
 		} catch (Exception e) {
 			String errorMessage = "Error in ProcessApprovalTask.executeOperatorAdminSubscriptionApproval";
 			log.error(errorMessage, e);
