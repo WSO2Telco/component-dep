@@ -22,6 +22,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
+import com.wso2telco.dep.operatorservice.exception.OperatorServiceException;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -279,6 +280,14 @@ public class OparatorService {
     public List<Operator> retrieveOperatorList() throws Exception {
           return dao.retrieveOperatorList();
     }
+
+	public List<Operator> getOperatorsWithTokenDetails() throws OperatorServiceException {
+		return dao.retrieveOperatorsWithTokenDetails();
+	}
+
+	public Operator getOperatorWithTokenDetails(String operator) throws OperatorServiceException {
+		return dao.retrieveOperatorWithTokenDetails(operator);
+	}
 
     public Map<Integer, Map<String, Map<String, String>>> getOperatorApprovedSubscriptionsByApplicationId(int appId) throws Exception {
 
