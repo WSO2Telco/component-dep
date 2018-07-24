@@ -1,0 +1,74 @@
+<% jagg.template("menu/primary", function(inputs, outputs, jagg) { 
+  var tenant = jagg.getTenantDomain();
+  var user = jagg.getUser();
+  var reqUrl = request.getRequestURI();
+%>
+
+   <!-- START LEFT SIDEBAR NAV-->
+             <aside id="left-sidebar-nav">
+                 <ul id="slide-out" class="side-nav fixed leftside-navigation">
+                 <li class="user-details cyan darken-2">
+                 <div class="row">
+                     <div class="col col s4 m4 l4">
+                         <img src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("images/avatar.jpg"))%>" alt="" class="circle responsive-img valign profile-image">
+                     </div>
+                     <div class="col col s8 m8 l8">
+                         <ul id="profile-dropdown1" class="dropdown-content">
+                             <li><a href="#"><i class="mdi-action-face-unlock"></i> Profile</a>
+                             </li>
+                             <li><a href="#"><i class="mdi-action-settings"></i> Settings</a>
+                             </li>
+                             <li><a href="#"><i class="mdi-communication-live-help"></i> Help</a>
+                             </li>
+                             <li class="divider"></li>
+                             <li><a href="#"><i class="mdi-action-lock-outline"></i> Lock</a>
+                             </li>
+                             <li><a href="#"><i class="mdi-hardware-keyboard-tab"></i> Logout</a>
+                             </li>
+                         </ul>
+                         <a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn" href="#" data-activates="profile-dropdown">John Doe<i class="mdi-navigation-arrow-drop-down right"></i></a>
+                         <p class="user-roal">Administrator</p>
+                     </div>
+                 </div>
+             </li>
+                 <li class="bold active"><a title="Home" href="<%= jagg.urlTenanted("/")%>" class="waves-effect waves-cyan"><i class="mdi-action-dashboard"></i> Dashboard</a>
+                 </li>
+                 <li class="bold"><a title="APIs" href="<%= jagg.urlTenanted("/apis/list")%>" class="waves-effect waves-cyan"><i class="mdi-communication-email"></i> <%=i18n.localize("APIs")%> <span class="new badge">4</span></a>
+                 </li>
+                 <li class="bold"><a title="Applications" href="<%= jagg.urlTenanted("/site/pages/applications.jag")%>" class="waves-effect waves-cyan <%= "link-myapplications" + (user ? "" : " need-login") %>"><i class="mdi-editor-insert-invitation"></i><%=i18n.localize("Applications")%></a>
+                 </li>
+                 <li class="li-hover"><div class="divider"></div></li>
+ 				<li class="li-hover"><p class="ultra-small margin more-text">MORE</p></li>
+ 				<% if (outputs.isForumEnabled && (!outputs.tenantDomains || outputs.tenantDomains.indexOf(tenant) == -1 || tenant =="carbon.super")) { %>
+ 	            <li><a title="Forum" href="<%= jagg.urlTenanted("/forum")%>"><i class="mdi-action-verified-user"></i> <%=i18n.localize("Forum")%>  <span class="new badge"></span></a>
+                 </li>
+ 				<%} %>
+ 				<li class="bold"><a title="Statistics" href="<%= jagg.urlTenanted("/site/pages/statistics.jag?stat=perAppAPICount")%>" class="collapsible-header  waves-effect waves-cyan <%if(!user){%>need-login<%}%>"><i class="mdi-action-shopping-cart"></i> <%=i18n.localize("Statistics ")%></a>
+                             <div class="collapsible-body">
+                                 <ul>
+ 								 <li><a title="<%=i18n.localize("API Usage")%>" href="<%=jagg.urlTenanted("/site/pages/statistics.jag?stat=perAppAPICount")%>" class="<%if(!user){%>need-login<%}%>"><%=i18n.localize("API Usage")%></a></li>
+ 	                            <li><a title="<%=i18n.localize("Top Users")%>" href="<%=jagg.urlTenanted("/site/pages/statistics.jag?stat=topUsers")%>" class="<%if(!user){%>need-login<%}%>"><%=i18n.localize("Top Users")%></a></li>
+ 	                            <li><a title="<%=i18n.localize("Resource Usage")%>" href="<%=jagg.urlTenanted("/site/pages/statistics.jag?stat=apiCallType")%>" class="<%if(!user){%>need-login<%}%>"><%=i18n.localize("Resource Usage")%></a></li>
+ 	                            <li><a title="<%=i18n.localize("Faulty Invocations")%>" href="<%=jagg.urlTenanted("/site/pages/statistics.jag?stat=faultCount")%>" class="<%if(!user){%>need-login<%}%>"><%=i18n.localize("Faulty Invocations")%></a></li>
+                               <li><a title="<%=i18n.localize("Manage Alert Types")%>" href="<%=jagg.urlTenanted("/site/pages/manage-alert-type.jag")%>" class="<%if(!user){%>need-login<%}%>"><%=i18n.localize("Manage Alert Types")%></a></li>
+ 	                        </ul>
+                             </div>
+                 </li>
+                 <li class="li-hover"><div class="divider"></div></li>
+                 <li class="li-hover"><p class="ultra-small margin more-text">Daily Sales</p></li>
+                 <li class="li-hover">
+                     <div class="row">
+                         <div class="col s12 m12 l12">
+                             <div class="sample-chart-wrapper">
+                                 <div class="ct-chart ct-golden-section" id="ct2-chart"></div>
+                             </div>
+                         </div>
+                     </div>
+                 </li>
+             </ul>
+                 <a href="#" data-activates="slide-out" class="sidebar-collapse btn-floating btn-medium waves-effect waves-light hide-on-large-only cyan"><i class="mdi-navigation-menu"></i></a>
+             </aside>
+             <!-- END LEFT SIDEBAR NAV-->
+
+
+<%  }); %>
