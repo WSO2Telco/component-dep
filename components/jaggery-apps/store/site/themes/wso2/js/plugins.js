@@ -1,10 +1,3 @@
-/*================================================================================
-  Item Name: Materialize - Material Design Admin Template
-  Version: 3.0
-  Author: GeeksLabs
-  Author URL: http://www.themeforest.net/user/geekslabs
-================================================================================*/
-
 $(function() {
 
   "use strict";
@@ -276,7 +269,7 @@ $(function() {
 
   //LINE CHART WITH AREA IN SIDEBAR
   
-    new Chartist.Line('#ct2-chart', {
+  /*  new Chartist.Line('#ct2-chart', {
         labels: [1, 2, 3, 4, 5, 6, 7, 8],
         series: [
             [5, 9, 7, 8, 5, 3, 5, 4]
@@ -284,14 +277,14 @@ $(function() {
     }, {
         low: 0,
         showArea: true
-    });
+    }); */
   
   //Trending chart for small screen
-  if(window_width <= 480){    
+ /* if(window_width <= 480){
     $("#trending-line-chart").attr({
       height: '200'
     });
-  }
+  }  */
   
   /*
   * Advanced UI 

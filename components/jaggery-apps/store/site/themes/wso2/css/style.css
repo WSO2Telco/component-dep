@@ -389,6 +389,7 @@ header .brand-logo img {
   ul.side-nav.leftside-navigation {
     top: 56px;
   }
+
 }
 
 /*Search box*/
@@ -826,6 +827,7 @@ h5.breadcrumbs-header {
   font-size: 1.5rem;
   line-height: 1.804rem;
   margin: 18px 0 0;
+  padding-left: 15px;
 }
 
 .breadcrumbs-nav {
@@ -1130,7 +1132,7 @@ h5.breadcrumbs-header {
 
 #chart-dashboard .card {
   overflow: hidden;
-  background: #00ACC1;
+  /* background: #00ACC1; */
 }
 
 #chart-dashboard .card .card-content {
@@ -1307,6 +1309,16 @@ th {
 @media only screen and (min-device-width: 320px) and (max-device-width: 480px) {
   .doughnut-chart-status {
     display: none;
+  }
+
+  .search-wrap>.form-control {
+    margin-top: -9px !important;
+  }
+}
+
+@media only screen and (max-width: 320px) {
+  .search-wrap>.form-control {
+    margin-top: -9px !important;
   }
 }
 
@@ -1635,6 +1647,10 @@ tr.group:hover {
 ------------------------------------------*/
 .login-form {
   width: 280px;
+}
+
+.signup-form {
+  width: 400px;
 }
 
 .login-form-text {

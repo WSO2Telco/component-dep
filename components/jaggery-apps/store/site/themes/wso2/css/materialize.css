@@ -2052,6 +2052,7 @@
 
 .grey-text.text-lighten-3 {
   color: #eeeeee !important;
+  line-height: 20px;
 }
 
 .grey.lighten-2 {
@@ -2949,7 +2950,7 @@ video.responsive-video {
 .pagination li {
   display: inline-block;
   font-size: 1.2rem;
-  padding: 0 10px;
+  /*padding: 0 10px; */
   line-height: 30px;
   border-radius: 2px;
   text-align: center;
@@ -3639,6 +3640,7 @@ nav ul a span.badge {
   white-space: nowrap;
   overflow: hidden;
   text-overflow: ellipsis;
+  margin-top:0px;
 }
 
 .no-padding {
@@ -6937,6 +6939,7 @@ nav ul a span.badge {
   margin: 0 auto;
   max-width: 1280px;
   width: 90%;
+  margin-bottom:5% !important;
 }
 
 @media only screen and (min-width: 601px) {
@@ -8487,6 +8490,12 @@ button.btn-floating {
   text-shadow: 1px 1px 1px #444;
   font-size: 17px;
 }
+
+.need-login .fw-stack{ vertical-align: top;}
+
+#register-link1 .fw-stack{ vertical-align: top;}
+
+.wrapper{ padding-bottom: 50px;}
 
 /* Firefox Bug: link not triggered */
 a.waves-effect .waves-ripple {

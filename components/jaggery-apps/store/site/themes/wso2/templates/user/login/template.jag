@@ -9,18 +9,20 @@
           </div>
         </div>
         <div class="row margin">
-          <div class="input-field col s12">
-            <i class="mdi-social-person-outline prefix"></i>
-            <input type="text" id="username" name="name" title="<%=i18n.localize("Username")%>" class="form-control" placeholder="<%=i18n.localize("Username")%>"  />
+                  <div class="input-field col s12">
+                    <i class="mdi-social-person-outline prefix"></i>
+                    <input id="username" type="text">
+                    <label for="username" class="center-align">Username</label>
+                  </div>
+         </div>
+         <div class="row margin">
+                   <div class="input-field col s12">
+                     <i class="mdi-action-lock-outline prefix"></i>
+                     <input id="password" type="password" autocomplete="off">
+                     <label for="password">Password</label>
+                   </div>
+                 </div>
 
-          </div>
-        </div>
-        <div class="row margin">
-          <div class="input-field col s12">
-            <i class="mdi-action-lock-outline prefix"></i>
-            <input type="password"  autocomplete="off" id="password" name="pass" title="<%=i18n.localize("Password")%>" class="form-control" placeholder="<%=i18n.localize("Password")%>">
-            </div>
-        </div>
 		<input type="hidden" id="tenant" name="tenant" value="<%=request_tenant%>">
         <div class="row">
           <div class="input-field col s12 m12 l12  login-text">
@@ -50,6 +52,10 @@
 
   .page-footer{
   display:none;
+  }
+
+  body {
+      background-color: #00bcd4 !important;
   }
 
 

@@ -76,7 +76,7 @@ var reqUrl = request.getRequestURI();
             	}
              } else{
          %>
-    			<h2>APIs</h2>
+         <h5 class="breadcrumbs-title">APIs</h5>
    			 <% } %>
    			 </div>
 
@@ -84,24 +84,7 @@ var reqUrl = request.getRequestURI();
  <!-- START CONTENT -->
       <section id="content">
 
-        <!--breadcrumbs start-->
-        <div id="breadcrumbs-wrapper">
-            <!-- Search for small screen -->
-            <div class="header-search-wrapper grey hide-on-large-only">
-                <i class="mdi-action-search active"></i>
-                <input type="text" name="Search" class="header-search-input z-depth-2" placeholder="Explore Materialize">
-            </div>
-          <div class="container">
-            <div class="row">
-              <div class="col s12 m12 l12">
-                <h5 class="breadcrumbs-title">APIs</h5>
-              </div>
-            </div>
-          </div>
-        </div>
-        <!--breadcrumbs end-->
-
-		     <!--start container-->
+	     <!--start container-->
         <div class="container">
           <div class="section">
             <!-- statr products list -->
@@ -255,7 +238,7 @@ var reqUrl = request.getRequestURI();
 	                                   </a>
                         </div>
                         <ul class="card-action-buttons">
-                            <li><a class="btn-floating waves-effect waves-light red"><i class="mdi-action-info activator"></i></a>
+                            <li><a class="btn-floating waves-effect waves-light red"><i class="mdi-action-grade activator"></i></a>
                             </li>
                         </ul>
                         <div class="card-content">
@@ -269,7 +252,11 @@ var reqUrl = request.getRequestURI();
                                     <%} else if(api.apiBusinessOwner != null && api.apiBusinessOwner.trim() != "") {%>
                                     	<p class="truncate"><%=encode.forHtml(api.apiBusinessOwner)%></p>
                                     <%} else { %>
-                                    	<p class="truncate">Created by <%=encode.forHtml(api.provider)%></p>
+
+                                    <div class="chip">
+                                        <img src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("images/avatar.jpg"))%>" alt="Create by">
+                                         By <%=encode.forHtml(api.provider)%>
+                                    </div>
                                     <% } %>
                                 </div>
                             </div>

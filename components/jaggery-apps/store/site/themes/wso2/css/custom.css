@@ -11,7 +11,7 @@
     margin-right:5px;
 }
 .input-group {
-    margin-top: 3px;
+    margin-top: 16px;
 }
 a.btn .icon-caret, .btn .icon-caret {
     margin-left: 49px;
@@ -27,9 +27,17 @@ a.btn .icon-caret, .btn .icon-caret {
     background-color: #215080;
     border: 0px;
     color: #FFF;
-    height: 40px;
-    margin-top:-3px;
+    height: 42px;
+    margin-top: -5px;
     line-height:0px;
+}
+
+#application-list{
+    margin-bottom: 8%;
+}
+
+.help_popup span {
+    vertical-align: 15px;
 }
 .search-wrap>.form-control::-webkit-input-placeholder {
     color: #fff;
@@ -250,6 +258,7 @@ a.remove_rating:hover{
     display: table-cell;
     overflow: hidden;
     text-overflow: ellipsis;
+    padding-left: 15px;
 }
 .word-break{
   word-break: break-all;
@@ -273,14 +282,36 @@ a.remove_rating:hover{
 
 
 .search-wrap .dropdown-toggle{
-    color: #FFF;
+   /* color: #FFF;
     background-color: #215080;
     border:1px solid #215080;
     border-right:1px solid #1a78d8;
     padding: 9px 12px;
     margin-top: -3px;
-    line-height:20px;
+    line-height:20px;  */
+
+    /*  new setting  */
+
+    color: #FFF;
+    background-color: #215080;
+    border: 1px solid #215080;
+    border-right: 1px solid #1a78d8;
+    padding: 20px 12px;
+    margin-top: -32px;
+    line-height: 0px;
 }
+
+#searchAPI{
+    color: #FFF;
+    background-color: #215080;
+    border: 1px solid #215080;
+    border-left: 1px solid #1a78d8;
+    padding: 20px 12px;
+    margin-top: -32px;
+    line-height: 0px;
+}
+
+
 .search-wrap .dropdown-toggle:hover{
     border-color: #215080;
     border-right-color:#1a78d8;

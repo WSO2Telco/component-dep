@@ -32,15 +32,13 @@ if (jagg.getUser() != null) {
         <div class="navbar-fixed">
             <nav class="navbar-color">
                 <div class="nav-wrapper">
-
-
                     <ul class="left">
                       <li><h1 class="logo-wrapper"><a href="<%=jagg.getMappedUrl("")%>" title="API Store" class="brand-logo darken-1"> <img src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("images/logo-apigate.png"))%>" class="logo" alt="<%=i18n.localize("APIStore Home")%>"/></a> <span class="logo-text"><%=i18n.localize("API Store")%></span></h1></li>
                     </ul>
-                    <div class="header-search-wrapper hide-on-med-and-down">
+                    <!-- div class="header-search-wrapper hide-on-med-and-down">
                         <i class="mdi-action-search"></i>
                         <input type="text" name="Search" class="header-search-input z-depth-2" placeholder="Explore Materialize"/>
-                    </div>
+                    </div -->
                     <ul class="right hide-on-med-and-down">
                         <!--li><a href="javascript:void(0);" class="waves-effect waves-block waves-light translation-button"  data-activates="translation-dropdown"><img src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("images/flag-icons/United-States.png"))%>" alt="USA" /></a>
                         </li-->
@@ -48,9 +46,9 @@ if (jagg.getUser() != null) {
                         </li>
                         <!--li><a href="javascript:void(0);" class="waves-effect waves-block waves-light notification-button" data-activates="notifications-dropdown"><i class="mdi-social-notifications"><small class="notification-badge">5</small></i>
                         </a>
-                        </li-->
-                        <li><a href="#" data-activates="chat-out" class="waves-effect waves-block waves-light chat-collapse"><i class="mdi-communication-chat"></i></a>
                         </li>
+                        <li><a href="#" data-activates="chat-out" class="waves-effect waves-block waves-light chat-collapse"><i class="mdi-communication-chat"></i></a>
+                        </li-->
 						       <% if(user){ %>
        		<%if (tenant == null && isSuperTenant != null && !isSuperTenant && site.showPublicStoreURL) {%>
 						<li class="visible-inline-block">
@@ -158,16 +156,25 @@ if (jagg.getUser() != null) {
 
 			<%if(isSelfSignupEnabled){%>
 	            <li class="waves-effect waves-block waves-light ">
-	                <a title="<%=i18n.localize("Sign-up")%>" id="register-link1" href="<%= jagg.urlTenanted('/site/pages/sign-up.jag')%>">
-	               <i class="mdi-social-person-add"></i>
-	                </a>
+	            <a title="<%=i18n.localize("Sign-up")%>" id="register-link1" href="<%= jagg.urlTenanted('/site/pages/sign-up.jag')%>">
+                	                  <span class="icon fw-stack fw-lg">
+                	                  <i class="fw fw-circle-outline fw-stack-2x"></i>
+                	                  <i class="fw fw-register fw-stack-1x"></i>
+                	                  </span>
+                	                    <span class="hidden-xs"> Sign-up</span>
+                	                </a>
 	            </li>
 	          <% } %>
-	            <li class="waves-effect waves-block waves-light ">
-	                <a class="need-login" title="<%=i18n.localize("Sign-in")%>" href="<%= jagg.urlTenanted('/')%>">
-	                  <i class="mdi-social-person-outline"></i>
-	                </a>
-	            </li>
+	          <li class="waves-effect waves-block waves-light ">
+	          <a class="need-login" title="Sign-in" href="<%= jagg.urlTenanted('/')%>">
+	          <span class="icon fw-stack fw-lg">
+              	 <i class="fw fw-circle-outline fw-stack-2x"></i>
+              	 <i class="fw fw-sign-in fw-stack-1x"></i>
+                 </span>
+                 <span class="hidden-xs"> Sign-in</span>
+              </a>
+              </li>
+
 <% } %>
 
 <!-- TODO: Check and include relevant -->

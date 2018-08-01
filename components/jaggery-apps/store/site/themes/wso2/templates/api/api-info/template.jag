@@ -83,7 +83,8 @@ var result;
                         user = <%=(user != null)%>
                     var existingRating = <%=api.rating%>
                 </script>
-                <h2 class="truncate-children"><span><%=encode.forHtml(api.name)%> - <%=encode.forHtml(api.version)%><span></h2>
+
+            <h5 class="breadcrumbs-title"><%=encode.forHtml(api.name)%> - <%=encode.forHtml(api.version)%></h5>
     <%
             var tagDisplayName = "";
             var tag = "";

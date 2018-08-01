@@ -53,12 +53,6 @@ jagg.initializer("page/base", {
             <!--scrollbar-->
               jagg.addFooterJS("page/base", "perfect-scrollbar", "js/plugins/perfect-scrollbar/perfect-scrollbar.min.js");
 
-               <!-- chartist -->
-               jagg.addFooterJS("page/base", "chartist-js", "js/plugins/chartist-js/chartist.js");
-
-            <!-- sparkline -->
-             jagg.addFooterJS("page/base", "sparkline", "js/plugins/sparkline/jquery.sparkline.min.js");
-             jagg.addFooterJS("page/base", "sparkline-script", "js/plugins/sparkline/sparkline-script.js");
 
         jagg.addFooterJS("page/base", "mainjs", "js/main.js");
         jagg.addFooterJS("page/base", "bootstrap3js", "libs/bootstrap_3.3.5/js/bootstrap.min.js");
