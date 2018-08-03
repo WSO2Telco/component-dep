@@ -8502,6 +8502,7 @@ a.waves-effect .waves-ripple {
   z-index: -1;
 }
 
+/*
 .modal {
   display: none;
   position: fixed;
@@ -8517,8 +8518,10 @@ a.waves-effect .waves-ripple {
   will-change: top, opacity;
 }
 
+*/
+
 @media only screen and (max-width: 992px) {
-  .modal {
+ .modal {
     width: 80%;
   }
 }
@@ -8527,9 +8530,12 @@ a.waves-effect .waves-ripple {
   margin-top: 0;
 }
 
+/*
 .modal .modal-content {
   padding: 24px;
 }
+*/
+
 
 .modal .modal-close {
   cursor: pointer;
@@ -8548,6 +8554,8 @@ a.waves-effect .waves-ripple {
   margin: 6px 0;
 }
 
+
+
 .lean-overlay {
   position: fixed;
   z-index: 999;
@@ -8561,6 +8569,7 @@ a.waves-effect .waves-ripple {
   display: none;
   will-change: opacity;
 }
+
 
 .modal.modal-fixed-footer {
   padding: 0;

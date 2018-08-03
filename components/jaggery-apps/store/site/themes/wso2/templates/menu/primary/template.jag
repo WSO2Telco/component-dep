@@ -2,6 +2,15 @@
   var tenant = jagg.getTenantDomain();
   var user = jagg.getUser();
   var reqUrl = request.getRequestURI();
+
+  if (jagg.getUser() != null) {
+  	isSuperTenant = jagg.getUser().isSuperTenant;
+  	var MultitenantUtils = Packages.org.wso2.carbon.utils.multitenancy.MultitenantUtils;
+  	tenantDomain = MultitenantUtils.getTenantDomain(jagg.getUser().username);
+  	uname = jagg.getUser().username;
+  }
+
+
 %>
 
    <!-- START LEFT SIDEBAR NAV-->
@@ -9,26 +18,23 @@
                  <ul id="slide-out" class="side-nav fixed leftside-navigation">
                  <li class="user-details cyan darken-2">
                  <div class="row">
+                  <% if (jagg.getUser() != null) { %>
                      <div class="col col s4 m4 l4">
                          <img src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("images/avatar.jpg"))%>" alt="" class="circle responsive-img valign profile-image">
                      </div>
                      <div class="col col s8 m8 l8">
-                         <ul id="profile-dropdown1" class="dropdown-content">
-                             <li><a href="#"><i class="mdi-action-face-unlock"></i> Profile</a>
-                             </li>
-                             <li><a href="#"><i class="mdi-action-settings"></i> Settings</a>
-                             </li>
-                             <li><a href="#"><i class="mdi-communication-live-help"></i> Help</a>
-                             </li>
-                             <li class="divider"></li>
-                             <li><a href="#"><i class="mdi-action-lock-outline"></i> Lock</a>
-                             </li>
-                             <li><a href="#"><i class="mdi-hardware-keyboard-tab"></i> Logout</a>
-                             </li>
-                         </ul>
-                         <a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn" href="#" data-activates="profile-dropdown">John Doe<i class="mdi-navigation-arrow-drop-down right"></i></a>
-                         <p class="user-roal">Administrator</p>
+                        <a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn" href="#" data-activates="profile-dropdown"><%=uname%></a>
+                        <p class="user-roal">Administrator</p>
                      </div>
+                  <% } else {  %>
+                     <div class="col col s4 m4 l4">
+                         <img src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("images/avatar-default-icon.png"))%>" alt="" class="circle responsive-img valign profile-image">
+                      </div>
+                     <div class="col col s8 m8 l8">
+                        <a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn" href="#" data-activates="profile-dropdown">Not logged in</a>
+                        <p class="user-roal">Default User</p>
+                     </div>
+                  <% }  %>
                  </div>
              </li>
 
@@ -84,7 +90,7 @@
 
 				  <%} else if (inputs.pagePath == "application/application-list" || inputs.pagePath == "application/application-add" || inputs.pagePath == "application/application-view" || inputs.pagePath == "application/application-edit") { %>
 
-				 <li class="bold active"><a title="Home" href="<%= jagg.urlTenanted("/")%>" class="waves-effect waves-cyan"><i class="mdi-action-dashboard"></i> Dashboard</a>
+				 <li class="bold"><a title="Home" href="<%= jagg.urlTenanted("/")%>" class="waves-effect waves-cyan"><i class="mdi-action-dashboard"></i> Dashboard</a>
                  </li>
                  <li class="bold"><a title="APIs" href="<%= jagg.urlTenanted("/apis/list")%>" class="waves-effect waves-cyan"><i class="mdi-action-settings-input-component"></i> <%=i18n.localize("APIs")%></a>
                  </li>

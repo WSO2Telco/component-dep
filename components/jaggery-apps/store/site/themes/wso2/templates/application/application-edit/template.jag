@@ -27,7 +27,7 @@
  </script>
 
 <div class="page-header" id="Message">
-    <h2><%=i18n.localize("Edit Application")%></h2>
+    <h5 class="breadcrumbs-title"><%=i18n.localize("Edit Application")%></h5>
 </div>
 <div class="alert alert-success" id="appAddMessage" style="display:none">
         <button type="button" class="close" data-dismiss="alert">&times;</button>

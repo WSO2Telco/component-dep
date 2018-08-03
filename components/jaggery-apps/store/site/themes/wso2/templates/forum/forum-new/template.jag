@@ -8,7 +8,7 @@ var urlSuffix = jagg.getTenantURLPrefix();
 %>
 
 <div class="page-header">
-    <h2><%=i18n.localize('Create New Topic')%></h2>
+    <h5 class="breadcrumbs-title"><%=i18n.localize('Create New Topic')%></h5>
 </div>
 
 <div id="forum_add_new_topic_page" class="white-wrapper add-padding-5x">

@@ -292,7 +292,7 @@ var responsiveTextRatio = 0.2,
                                 });
                             } else if (filterColumn.eq(column.index()).hasClass('text-filter')) {
                                 var title = filterColumn.eq(column.index()).attr('data-for');
-                                $(filterColumn.eq(column.index()).empty()).html('<input type="text" class="form-control" placeholder="Search for ' + title + '" />');
+                                $(filterColumn.eq(column.index()).empty()).html('<input type="text" class="form-control sa" placeholder="Search for ' + title + '" />');
 
                                 filterColumn.eq(column.index()).find('input').on('keyup change', function () {
                                     column
@@ -305,7 +305,7 @@ var responsiveTextRatio = 0.2,
 
                         //Search input default styles override
                         var search_input = $(this).closest('.dataTables_wrapper').find('div[id$=_filter] input');
-                        search_input.before('<i class="fw fw-search search-icon"></i>').removeClass('input-sm');
+                        search_input.before('<i class="fw fw-search search-icon sahan"></i>').removeClass('input-sm');
 
                         // Create sorting dropdown menu for list table advance operations
                         var dropdownmenu = $('<ul class="dropdown-menu arrow arrow-top-right dark sort-list add-margin-top-2x"><li class="dropdown-header">Sort by</li></ul>');

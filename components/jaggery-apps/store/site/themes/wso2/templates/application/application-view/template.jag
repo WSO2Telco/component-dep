@@ -13,7 +13,7 @@ for(var i=0;i < outputs.tiers.length; i++){
 var supportedLangs = jagg.module("subscription").getSupportedLanguages();
 %>
 <div class="page-header" id="Message">
-    <h2 id="application_name"><%= encode.forHtml(application.name) %></h2>
+   <h5 class="breadcrumbs-title" id="application_name"><%= encode.forHtml(application.name) %></h5>
 </div>
   <!-- Nav tabs -->
   <div class="white-wrapper">

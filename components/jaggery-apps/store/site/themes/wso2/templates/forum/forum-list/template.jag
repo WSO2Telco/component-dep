@@ -23,7 +23,7 @@ var reqUrl = request.getRequestURI();
 %>
 <% if(!inputs.api){ %>
 <div class="page-header" id="Message">
-    <h2><%=i18n.localize("Forum")%></h2>
+ <h5 class="breadcrumbs-title"><%=i18n.localize("Forum")%></h5>
 </div>
 <% } %>
 <div id="forum_topics_list_page">

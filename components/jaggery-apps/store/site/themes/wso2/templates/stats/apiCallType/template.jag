@@ -1,6 +1,6 @@
 <% jagg.template("stats/apiCallType", function(inputs, outputs, jagg) { %>
 	<div class="page-header">
-    			<h2><%=i18n.localize("API Usage from Resource Path")%></h2>
+    			<h5 class="breadcrumbs-title"><%=i18n.localize("API Usage from Resource Path")%></h5>
 	</div>
 <div id="apiCallType-stat-page" class="stat-page">
     <%

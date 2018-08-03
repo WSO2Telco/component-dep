@@ -1,6 +1,6 @@
 <% jagg.template("stats/perAppAPICount", function(inputs, outputs, jagg) { %>
 <div class="page-header">
-    <h2><%=i18n.localize("API Usage per Application")%></h2>
+   <h5 class="breadcrumbs-title"><%=i18n.localize("API Usage per Application")%></h5>
 </div>
 <div id="apiUsage-stat-page" class="stat-page">
     <%
