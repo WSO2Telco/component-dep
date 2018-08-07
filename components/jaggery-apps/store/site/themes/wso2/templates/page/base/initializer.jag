@@ -24,8 +24,6 @@ jagg.initializer("page/base", {
 
     <!-- INCLUDED PLUGIN CSS ON THIS PAGE -->
     jagg.addHeaderCSS("page/base", "custom-style", "js/plugins/perfect-scrollbar/perfect-scrollbar.css");
-    jagg.addHeaderCSS("page/base", "jvectormap", "js/plugins/jvectormap/jquery-jvectormap.css");
-    jagg.addHeaderCSS("page/base", "chartist", "js/plugins/chartist-js/chartist.min.css");
 
 
         jagg.addHeaderCSS("page/base", "font-awesome", "libs/font-awesome/css/font-awesome.min.css");
@@ -34,6 +32,7 @@ jagg.initializer("page/base", {
         jagg.addHeaderCSS("page/base", "bootstrap-rating.css", "libs/bootstrap-rating/bootstrap-rating.css");
         jagg.addHeaderCSS("page/base", "bootstrap-datatables", "libs/data-tables_1.10.7/extensions/Bootstrap/css/dataTables.bootstrap.css");
         jagg.addHeaderCSS("page/base", "datatables-responsive", "libs/data-tables_1.10.7/extensions/Responsive/css/dataTables.responsive.css");
+        jagg.addHeaderCSS("page/base", "media-hover", "css/plugins/media-hover-effects.css");
 
         //include jquery at the top
         jagg.addHeaderJS("page/base", "jquery1.11.0", "libs/jquery_1.11.0/jquery-1.11.2.min.js");
@@ -50,8 +49,8 @@ jagg.initializer("page/base", {
 
 
 
-            <!--scrollbar-->
-              jagg.addFooterJS("page/base", "perfect-scrollbar", "js/plugins/perfect-scrollbar/perfect-scrollbar.min.js");
+        <!--scrollbar-->
+        jagg.addFooterJS("page/base", "perfect-scrollbar", "js/plugins/perfect-scrollbar/perfect-scrollbar.min.js");
 
 
         jagg.addFooterJS("page/base", "mainjs", "js/main.js");
@@ -76,6 +75,7 @@ jagg.initializer("page/base", {
         jagg.addFooterJS("page/base", "buttonLoader", "libs/jquery.buttonLoader.js");
 
     }
+
 });
 %>
 

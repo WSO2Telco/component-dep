@@ -44,7 +44,7 @@ $(function() {
   * Plugin initialization
   ------------------------*/
   
-  $('select').material_select();
+ // $('select').material_select();
   // Set checkbox on forms.html to indeterminate
   var indeterminateCheckbox = document.getElementById('indeterminate-checkbox');
   if (indeterminateCheckbox !== null)
@@ -162,7 +162,7 @@ $(function() {
   });
   
   // Perfect Scrollbar
-  $('select').not('.disabled').material_select();
+ /* $('select').not('.disabled').material_select();  */
     var leftnav = $(".page-topbar").height();  
     var leftnavHeight = window.innerHeight - leftnav;
   $('.leftside-navigation').height(leftnavHeight).perfectScrollbar({

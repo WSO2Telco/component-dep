@@ -2098,7 +2098,8 @@ Vel = $ ? $.Velocity : Velocity, function(a) {
             });
         });
     }, a(document).ready(function() {
-        a(".collapsible").collapsible();
+         a(".collapsible").collapsible();
+
     });
 }(jQuery), function(a) {
     a.fn.scrollTo = function(b) {
@@ -2528,7 +2529,7 @@ Vel = $ ? $.Velocity : Velocity, function(a) {
     }, a(document).ready(function() {
         a("ul.tabs").tabs();
     });
-}(jQuery), function(a) {
+}/*(jQuery), function(a) {
     a.fn.tooltip = function(c) {
         var d = null, e = !1, f = null, g = 5, h = {
             delay: 350
@@ -2651,7 +2652,7 @@ Vel = $ ? $.Velocity : Velocity, function(a) {
     a(document).ready(function() {
         a(".tooltipped").tooltip();
     });
-}(jQuery), function(a) {
+}*/(jQuery), function(a) {
     "use strict";
     function b(a) {
         return null !== a && a === a.window;
@@ -3180,7 +3181,7 @@ Vel = $ ? $.Velocity : Velocity, function(a) {
     }, a.fn.scrollSpy = function(b) {
         return a.scrollSpy(a(this), b);
     };
-}(jQuery), function(a) {
+} (jQuery), function(a) {
     a(document).ready(function() {
         function b(b) {
             var c = b.css("font-family"), e = b.css("font-size");
@@ -3289,7 +3290,7 @@ Vel = $ ? $.Velocity : Velocity, function(a) {
                 }), b.removeClass("active");
             }
         });
-    }), a.fn.material_select = function(b) {
+    })/*, a.fn.material_select = function(b) {
         function c(a, b, c) {
             var e = a.indexOf(b);
             -1 === e ? a.push(b) : a.splice(e, 1), c.siblings("ul.dropdown-content").find("li").eq(b).toggleClass("active"), 
@@ -3381,7 +3382,7 @@ Vel = $ ? $.Velocity : Velocity, function(a) {
                 p.on("keydown", r);
             }
         });
-    };
+    }; */
 }(jQuery), function(a) {
     var b = {
         init: function(b) {

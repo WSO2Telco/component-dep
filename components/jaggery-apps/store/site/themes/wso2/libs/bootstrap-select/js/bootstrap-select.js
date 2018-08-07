@@ -431,7 +431,7 @@
       });
     },
 
-    createDropdown: function () {
+  /*  createDropdown: function () {
       // Options
       // If we are multiple or showTick option is set, then add the show-tick class
       var showTick = (this.multiple || this.options.showTick) ? ' show-tick' : '',
@@ -484,7 +484,7 @@
           '</div>' +
           '</div>';
 
-      return $(drop);
+      return $(drop);*/
     },
 
     createView: function () {

@@ -8131,7 +8131,7 @@ nav .input-field label.active {
   height: 36px;
   line-height: 36px;
   outline: 0;
-  padding: 0 2rem;
+  padding: 0 1rem;
   text-transform: uppercase;
   vertical-align: middle;
   -webkit-tap-highlight-color: transparent;
@@ -8161,7 +8161,7 @@ nav .input-field label.active {
 .btn, .btn-large {
   text-decoration: none;
   color: #fff;
-  background-color: #ff4081;
+  background-color: #00bcd4;
   text-align: center;
   letter-spacing: .5px;
   -webkit-transition: 0.2s ease-out;
@@ -8173,7 +8173,7 @@ nav .input-field label.active {
 }
 
 .btn:hover, .btn-large:hover {
-  background-color: #ff5a92;
+  background-color: #00838f;
 }
 
 .btn-floating {
@@ -8217,6 +8217,14 @@ nav .input-field label.active {
 
 button.btn-floating {
   border: none;
+}
+
+#subscribe-button {
+  background-color: #0091ea !important;
+}
+
+.dropdown-toggle {
+  background-color: #4db6ac !important;
 }
 
 .fixed-action-btn {
@@ -9674,6 +9682,8 @@ select:disabled {
   padding-left: 1rem;
 }
 
+*/
+
 /*********************
       File Input
 **********************/
@@ -10606,6 +10616,7 @@ ul.side-nav.leftside-navigation li.active > a {
   right: 0;
   bottom: 0;
   margin: 0;
+  display: none;
 }
 
 .slider .indicators .indicator-item {
