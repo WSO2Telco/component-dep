@@ -12,9 +12,11 @@ WE WILL RELEASE FUTURE UPDATES SO IN ORDER TO NOT OVERWRITE YOUR CUSTOM SCRIPT I
 
 
    <!-- Toast Notification -->
-            <script type="text/javascript">
             // Toast Notification
             $(window).load(function() {
+
+                "use strict";
+
                 setTimeout(function() {
                     Materialize.toast('<span>Hiya! I am a toast.</span>', 1500);
                 }, 1500);
@@ -73,7 +75,5 @@ var transition = function(slidePosition) {
 $bullet.on( 'click', clickSlide);
 
 var autoSlide = window.setInterval(updateIndex, 2000);
-
-            </script>
 
 

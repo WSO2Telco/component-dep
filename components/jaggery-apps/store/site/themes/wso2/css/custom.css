@@ -205,8 +205,18 @@ a.remove_rating:hover{
     text-align:right;
     font-style: italic;
     margin-top:4px;
+    margin-left: 3rem;
+    color: #ad1457;
 }
+.help-block{
+    margin-left: 3rem;
+    color: #ad1457;
 }
+
+.sign-up-additional {
+    margin-left: 3rem;
+}
+
 .api-details-container .form-horizontal{
     max-width:100%;
 }

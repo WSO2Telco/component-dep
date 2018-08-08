@@ -19,8 +19,8 @@
         <form class="signup-form" id="sign-up" autocomplete="off">
                                  <div class="row">
           <div class="input-field col s12 center">
-            <h4>Register</h4>
-            <p class="center">Join to our community now !</p>
+            <img src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("images/api-gate.png"))%>" alt="" class="circle responsive-img valign profile-image-login">
+            <p class="center"><b>Register</b> & <b>Join </b> to our community now !</p>
           </div>
         </div>
 		<div class="row margin">
@@ -30,9 +30,6 @@
             <label for="username" class="center-align">Username *</label>
 
 			<input id="hiddenTenantDomain" type="hidden" value="<%=request_tenant%>">
-			<div class="col-xs-12 col-sm-12 col-md-7 col-lg-7">
-            <label class="control-label">&nbsp;</label>
-            </div>
           </div>
         </div>
 
@@ -77,14 +74,8 @@
 							            }
 							    %>
 								<%if (required == true) {%>
-								<div class="row margin">
-          <div class="input-field col s12">
-
-          </div>
-        </div>
 									<div class="row margin">
 										<div class="input-field col s12">
-                                            <div class="input-group input-wrap">
 						                        <% if(field.name == "Email") {%>
 												<i class="mdi-communication-email prefix"></i>
 												<input id="<%=i%>cliamUri" type="email" class="<%=inputClass%>">
@@ -94,7 +85,6 @@
 												<input id="<%=i%>cliamUri" type="text" class="<%=inputClass%>">
 												<label for="<%=i%>cliamUri" class="center-align"><%=i18n.localize(field.name, field.name)%> *</label>
                 <%}%>
-                                            </div>
                                         </div>
                                     </div>
 								 <%} %>
@@ -124,12 +114,11 @@
 										}
 									%>
 										<%if (required != true) {%>
-											<div class="form-group">
-		                                        <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
-		                                            <label class="control-label"><%=i18n.localize(field.name, field.name)%> </label>
-		                                            <div class="input-group input-wrap">
-		                                                <input type="text" id="<%=i%>cliamUri" title="<%=i%>cliamUri" name="<%=i%>cliamUri" class="<%=inputClass%> form-control">
-		                                            </div>
+											<div class="row margin">
+		                                        <div class="input-field col s12">
+												<i class="mdi-action-view-carousel prefix"></i>
+		                                            <input type="text" id="<%=i%>cliamUri" title="<%=i%>cliamUri" name="<%=i%>cliamUri" class="<%=inputClass%> form-control">
+		                                            <label for="<%=i%>cliamUri" class="center-align"><%=i18n.localize(field.name, field.name)%> </label>
 		                                        </div>
 		                                    </div>
 								 		<%} %>

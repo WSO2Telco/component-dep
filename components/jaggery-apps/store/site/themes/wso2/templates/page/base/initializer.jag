@@ -59,7 +59,7 @@ jagg.initializer("page/base", {
         jagg.addFooterJS("page/base", "materialize", "js/materialize.js");
           <!--plugins.js - Some Specific JS codes for Plugin Settings-->
         jagg.addFooterJS("page/base", "plugin", "js/plugins.js");
-        jagg.addFooterJS("page/base", "custom-script", "js/custom-script.js");
+      /* jagg.addFooterJS("page/base", "customize-script", "js/custom-script.js"); */
         jagg.addFooterJS("page/base", "index", "js/index.js");
         jagg.addFooterJS("page/base", "theme-wso2-js", "libs/theme-wso2_1.0/js/theme-wso2.js");
         jagg.addFooterJS("page/base", "bootstrap-selectjs", "libs/bootstrap-select/js/bootstrap-select.min.js");

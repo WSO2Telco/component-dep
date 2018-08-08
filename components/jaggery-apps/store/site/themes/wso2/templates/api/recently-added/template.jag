@@ -47,14 +47,13 @@
 
                             <div class="row">
                                 <div class="col s12">
-								<h4 class="truncate"><a href="https://localhost:9443/store/apis/info?name=goapi&amp;version=v1.1.0&amp;provider=admin" title="API Name: goapi">goapi</a></h4>
-                                    <h5><a href="https://localhost:9443/store/apis/info?name=goapi&amp;version=v1.1.0&amp;provider=admin" title="Version">v1.1.0</a></h5>
+								<h4 class="truncate"><a href="<%=jagg.getMappedUrl("/site/pages/item-info.jag")%>?name={{ name }}&version={{ version }}&provider={{ provider }}<%=urlPrefix%>">{{ name }}</a></h4>
+                                     <h5><a href="<%=jagg.getMappedUrl("/site/pages/item-info.jag")%>?name={{ name }}&version={{ version }}&provider={{ provider }}<%=urlPrefix%>" title="<%=i18n.localize("Version")%>">{{ version }}</a></h5>
 
-
-                                    <div class="chip">
-                                        <img src="https://localhost:9443/store/site/themes/wso2/images/avatar.jpg" alt="Create by">
-                                         By admin
-                                    </div>
+                                     <div class="chip">
+                                     <img src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("images/avatar.jpg"))%>" alt="Create by">
+                                     By {{ displayOwner }}
+                                     </div>
 
                                 </div>
                             </div>
