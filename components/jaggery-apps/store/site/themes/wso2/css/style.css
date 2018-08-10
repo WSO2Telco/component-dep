@@ -75,8 +75,10 @@ select {
   position: relative;
 }
 
-#content .container .row {
+#content .container .row , #recently-added .card-content .row{
   margin-bottom: 0;
+  margin-left: -0.75rem;
+  margin-right: -0.75rem;
 }
 
 @media only screen and (min-width: 601px) {

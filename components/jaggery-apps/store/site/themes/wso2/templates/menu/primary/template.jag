@@ -39,7 +39,7 @@
              </li>
 
 				<%if(inputs.pagePath == "api/listing" || inputs.pagePath == "api/api-listing-prototyped" || inputs.pagePath == "api/api-info" || inputs.pagePath == "api/documentation/view") { %>
-                 <li class="bold"><a title="Home" href="<%= jagg.urlTenanted("/")%>" class="waves-effect waves-cyan"><i class="mdi-action-dashboard"></i> Dashboard</a>
+                 <li class="bold"><a title="Home" href="<%= jagg.urlTenanted("/")%>" class="waves-effect waves-cyan"><i class="mdi-action-home"></i> Home</a>
                  </li>
                  <li class="bold active"><a title="APIs" href="<%= jagg.urlTenanted("/apis/list")%>" class="waves-effect waves-cyan"><i class="mdi-action-settings-input-component"></i> <%=i18n.localize("APIs")%></a>
                  </li>
@@ -49,11 +49,9 @@
  	            <li><a title="Forum" href="<%= jagg.urlTenanted("/forum")%>"><i class="mdi-action-verified-user"></i> <%=i18n.localize("Forum")%>  <span class="new badge"></span></a>
                  </li>
  				<%} %>
- 				<li class="bold"><a title="Statistics" href="<%= jagg.urlTenanted("/site/pages/statistics.jag?stat=perAppAPICount")%>" class="waves-effect waves-cyan <%if(!user){%>need-login<%}%>"><i class="mdi-action-shopping-cart"></i> <%=i18n.localize("Statistics ")%></a>
-                 </li>
 				  <%} else if (inputs.pagePath == "home") { %>
 
-				 <li class="bold active"><a title="Home" href="<%= jagg.urlTenanted("/")%>" class="waves-effect waves-cyan"><i class="mdi-action-dashboard"></i> Dashboard</a>
+				 <li class="bold active"><a title="Home" href="<%= jagg.urlTenanted("/")%>" class="waves-effect waves-cyan"><i class="mdi-action-home"></i> Home</a>
                  </li>
                  <li class="bold"><a title="APIs" href="<%= jagg.urlTenanted("/apis/list")%>" class="waves-effect waves-cyan"><i class="mdi-action-settings-input-component"></i> <%=i18n.localize("APIs")%></a>
                  </li>
@@ -63,12 +61,9 @@
  	            <li><a title="Forum" href="<%= jagg.urlTenanted("/forum")%>"><i class="mdi-action-verified-user"></i> <%=i18n.localize("Forum")%>  <span class="new badge"></span></a>
                  </li>
  				<%} %>
- 				<li class="bold"><a title="Statistics" href="<%= jagg.urlTenanted("/site/pages/statistics.jag?stat=perAppAPICount")%>" class="waves-effect waves-cyan <%if(!user){%>need-login<%}%>"><i class="mdi-action-assessment"></i> <%=i18n.localize("Statistics ")%></a>
-                 </li>
-
 				  <%} else if (inputs.pagePath == "application/application-list" || inputs.pagePath == "application/application-add" || inputs.pagePath == "application/application-view" || inputs.pagePath == "application/application-edit") { %>
 
-				 <li class="bold"><a title="Home" href="<%= jagg.urlTenanted("/")%>" class="waves-effect waves-cyan"><i class="mdi-action-dashboard"></i> Dashboard</a>
+				 <li class="bold"><a title="Home" href="<%= jagg.urlTenanted("/")%>" class="waves-effect waves-cyan"><i class="mdi-action-home"></i> Home</a>
                  </li>
                  <li class="bold"><a title="APIs" href="<%= jagg.urlTenanted("/apis/list")%>" class="waves-effect waves-cyan"><i class="mdi-action-settings-input-component"></i> <%=i18n.localize("APIs")%></a>
                  </li>
@@ -78,12 +73,9 @@
  	            <li><a title="Forum" href="<%= jagg.urlTenanted("/forum")%>"><i class="mdi-action-verified-user"></i> <%=i18n.localize("Forum")%>  <span class="new badge"></span></a>
                  </li>
  				<%} %>
- 				<li class="bold"><a title="Statistics" href="<%= jagg.urlTenanted("/site/pages/statistics.jag?stat=perAppAPICount")%>" class=" waves-effect waves-cyan <%if(!user){%>need-login<%}%>"><i class="mdi-action-assessment"></i> <%=i18n.localize("Statistics ")%></a>
-                 </li>
-
 				  <%} else if (inputs.pagePath == "forum/forum-list" || inputs.pagePath == "forum/forum-new" || inputs.pagePath == "forum/forum-topic") { %>
 
-				   <li class="bold"><a title="Home" href="<%= jagg.urlTenanted("/")%>" class="waves-effect waves-cyan"><i class="mdi-action-dashboard"></i> Dashboard</a>
+				   <li class="bold"><a title="Home" href="<%= jagg.urlTenanted("/")%>" class="waves-effect waves-cyan"><i class="mdi-action-home"></i> Home</a>
                  </li>
                  <li class="bold"><a title="APIs" href="<%= jagg.urlTenanted("/apis/list")%>" class="waves-effect waves-cyan"><i class="mdi-action-settings-input-component"></i> <%=i18n.localize("APIs")%></a>
                  </li>
@@ -93,12 +85,9 @@
  	            <li class="bold active"><a title="Forum" href="<%= jagg.urlTenanted("/forum")%>"><i class="mdi-action-verified-user"></i> <%=i18n.localize("Forum")%>  <span class="new badge"></span></a>
                  </li>
  				<%} %>
- 				<li class="bold"><a title="Statistics" href="<%= jagg.urlTenanted("/site/pages/statistics.jag?stat=perAppAPICount")%>" class="waves-effect waves-cyan <%if(!user){%>need-login<%}%>"><i class="mdi-action-assessment"></i> <%=i18n.localize("Statistics ")%></a>
-                 </li>
-
 				 <%} else { %>
 
-				  <li class="bold"><a title="Home" href="<%= jagg.urlTenanted("/")%>" class="waves-effect waves-cyan"><i class="mdi-action-dashboard"></i> Dashboard</a>
+				  <li class="bold"><a title="Home" href="<%= jagg.urlTenanted("/")%>" class="waves-effect waves-cyan"><i class="mdi-action-home"></i> Home</a>
                  </li>
                  <li class="bold"><a title="APIs" href="<%= jagg.urlTenanted("/apis/list")%>" class="waves-effect waves-cyan"><i class="mdi-action-settings-input-component"></i> <%=i18n.localize("APIs")%></a>
                  </li>
@@ -108,17 +97,6 @@
  	            <li><a title="Forum" href="<%= jagg.urlTenanted("/forum")%>"><i class="mdi-action-verified-user"></i> <%=i18n.localize("Forum")%>  <span class="new badge"></span></a>
                  </li>
  				<%} %>
- 				<li class="bold active"><a title="Statistics" href="<%= jagg.urlTenanted("/site/pages/statistics.jag?stat=perAppAPICount")%>" class="waves-effect waves-cyan <%if(!user){%>need-login<%}%>"><i class="mdi-action-assessment"></i> <%=i18n.localize("Statistics ")%></a>
-                             <div class="collapsible-body">
-                                 <ul>
- 								 <li><a title="<%=i18n.localize("API Usage")%>" href="<%=jagg.urlTenanted("/site/pages/statistics.jag?stat=perAppAPICount")%>" class="<%if(!user){%>need-login<%}%>"><%=i18n.localize("API Usage")%></a></li>
- 	                            <li><a title="<%=i18n.localize("Top Users")%>" href="<%=jagg.urlTenanted("/site/pages/statistics.jag?stat=topUsers")%>" class="<%if(!user){%>need-login<%}%>"><%=i18n.localize("Top Users")%></a></li>
- 	                            <li><a title="<%=i18n.localize("Resource Usage")%>" href="<%=jagg.urlTenanted("/site/pages/statistics.jag?stat=apiCallType")%>" class="<%if(!user){%>need-login<%}%>"><%=i18n.localize("Resource Usage")%></a></li>
- 	                            <li><a title="<%=i18n.localize("Faulty Invocations")%>" href="<%=jagg.urlTenanted("/site/pages/statistics.jag?stat=faultCount")%>" class="<%if(!user){%>need-login<%}%>"><%=i18n.localize("Faulty Invocations")%></a></li>
-                               <li><a title="<%=i18n.localize("Manage Alert Types")%>" href="<%=jagg.urlTenanted("/site/pages/manage-alert-type.jag")%>" class="<%if(!user){%>need-login<%}%>"><%=i18n.localize("Manage Alert Types")%></a></li>
- 	                        </ul>
-                             </div>
-                 </li>
 				  <%} %>
 
                  <li class="li-hover"><div class="divider"></div></li>

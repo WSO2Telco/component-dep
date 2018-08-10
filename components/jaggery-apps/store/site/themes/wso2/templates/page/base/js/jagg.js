@@ -156,7 +156,7 @@ var jagg = jagg || {};
                 jagg.login($("#username").val(), $("#password").val(),params);
             }
          );
-        $('#username').focus();
+      //  $('#username').focus();
         $('#loginErrorBox').show();
         $('#loginErrorMsg').html('<strong>i18n.t("Session Timed Out") </strong>' + i18n.t("- your session has expired due to an extended period of inactivity. You will need to re-authenticate to access the requested information. "));
     };
@@ -165,7 +165,7 @@ var jagg = jagg || {};
         if(username == "" || password == ""){
             $('#loginErrorBox').show();
             $('#loginErrorMsg').html(i18n.t('Username, Password fields are empty.'));
-            $('#username').focus();
+         //   $('#username').focus();
             return;
         }
         jagg.post("/site/blocks/user/login/ajax/login.jag", { action:"login", username:username, password:password },

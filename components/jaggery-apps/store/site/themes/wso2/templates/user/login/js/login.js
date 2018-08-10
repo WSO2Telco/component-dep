@@ -40,7 +40,7 @@ var login = login || {};
 
 $(document).ready(function () {
 	
-	$('#username').focus();
+	//$('#username').focus();
     $('#username').keydown(function(event) {
         if (event.which == 13) {
             event.preventDefault();
@@ -104,7 +104,7 @@ $(document).ready(function () {
 	        	}
 	        }
 	        
-	        $('#username').focus();
+	       // $('#username').focus();
 	
 	         registerEventsForLogin();
 	         

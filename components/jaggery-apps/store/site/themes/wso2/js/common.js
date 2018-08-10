@@ -79,7 +79,7 @@ $.fn.generateBgcolor = function(options){
 */
 (function ( $ ) {
     $.fn.nametoChar = function( options ) {
-
+        console.log('--hit location--');
         var settings = $.extend({
             // defaults
             nameElement: ""

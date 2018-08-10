@@ -9738,6 +9738,12 @@ nav.navigation .second_level > .left-menu-item {
   text-transform: capitalize;
 }
 
+
+.api-name-icon a:hover {
+  color: #fff;
+  text-decoration: none;
+}
+
 /* ========================================================================
  * Dropdown customizations
  * ======================================================================== */

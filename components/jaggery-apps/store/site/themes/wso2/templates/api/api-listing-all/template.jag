@@ -215,17 +215,17 @@ var reqUrl = request.getRequestURI();
 				                <%}%>
                         <div class="card-image waves-effect waves-block waves-light">
                             <a href="<%=path%>" title="<%=i18n.localize("Version")%>" class="btn-floating btn-large btn-price waves-effect waves-light  pink accent-2"><%=api.version%></a>
-
+                                	<div class="thumbnail icon">
                                 	<% if(thumbURL == null) { %>
                                 		<div class="square-element setbgcolor">
-                                		    <% if ( api.status == "PROTOTYPED" || api.status == "prototyped") { %>
-                                                <span class="api-prototype-icon" title="<%=i18n.localize("Prototyped")%>"><i class="fw fw-prototype fw-lg"></i></span>
+                                            <% if ( api.status == "PROTOTYPED" || api.status == "prototyped") { %>
+                                                span class="api-prototype-icon" title="<%=i18n.localize("Prototyped")%>"><i class="fw fw-prototype fw-lg"></i></span>
                                             <% } %>
-											<div class="api-name-icon"></div>
-											<div style="display: none">
-												<a href="" class="api-name" title="<%=i18n.localize("API Name")%>"><%=api.name%></a>
-											</div>
-										</div>
+                                        	<div class="api-name-icon"></div>
+                                        	<div style="display: none">
+                                        		<a href="" class="api-name" title="<%=i18n.localize("API Name")%>"><%=api.name%></a>
+                                        	</div>
+                                        </div>
                                     <% } else { %>
                                     	<div class="square-element">
                                     		<img class="" src="<%=thumbURL%>" alt="<%=i18n.localize("API Thumbnail")%>">
@@ -235,7 +235,14 @@ var reqUrl = request.getRequestURI();
                                     	</div>
                                     <% } %>
                                      <a href="<%=path%>" title="<%=i18n.localize("Browse APIs")%>">
-	                                   </a>
+                                     	                                    <div class="after">
+                                     	                                    <span class="fw-stack fw-lg">
+                                     	                                    <i class="fw fw-circle-outline fw-stack-2x"></i>
+                                     	                                    <i class="fw fw-view fw-stack-1x"></i>
+                                     	                                    </span>
+                                     	                                    </div>
+                                     	                                   </a>
+                                     	                                   </div>
                         </div>
                         <ul class="card-action-buttons">
                             <li><a class="btn-floating waves-effect waves-light red"><i class="mdi-action-grade activator"></i></a>
@@ -446,18 +453,6 @@ $(window).load(function(){
 
 });
 </script>
- <script type="text/javascript">
-    /*
-    * Masonry container for eCommerce page
-    */
-    var $containerProducts = $("#products");
-    $containerProducts.imagesLoaded(function() {
-      $containerProducts.masonry({
-        itemSelector: ".product",
-        columnWidth: ".product-sizer",
-      });
-    });
-    </script>
 
 <%
 }
