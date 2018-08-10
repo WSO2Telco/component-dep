@@ -35,8 +35,13 @@
 										</div>
 									{{/if}}
 									<a href="<%=jagg.getMappedUrl("/site/pages/item-info.jag")%>?name={{ name }}&version={{ version }}&provider={{ provider }}<%=urlPrefix%>" title="<%=i18n.localize("Browse APIs")%>">
-
-									</a>
+                                        <div class="after">
+                                             <span class="fw-stack fw-lg">
+                                                <i class="fw fw-circle-outline fw-stack-2x"></i>
+                                                <i class="fw fw-view fw-stack-1x"></i>
+                                              </span>
+                                        </div>
+                                     </a>
                                 </div>
 							</div>
 							<ul class="card-action-buttons">
