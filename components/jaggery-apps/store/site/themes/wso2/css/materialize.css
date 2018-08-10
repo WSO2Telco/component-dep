@@ -7815,6 +7815,26 @@ nav .input-field label.active {
   background-color: #fff;
 }
 
+.loginContainer{
+  position:fixed;
+  top: 50% !important;
+  left: 50%!important;
+  width:22em !important;
+  height:34em;
+  margin-top: -17em !important; /*set to a negative number 1/2 of your height*/
+  margin-left: -11em !important; /*set to a negative number 1/2 of your width*/
+}
+
+.signupContainer{
+  position:fixed;
+  top: 50% !important;
+  left: 50%!important;
+  width:31em !important;
+  height:40em;
+  margin-top: -20em !important; /*set to a negative number 1/2 of your height*/
+  margin-left: -15.5em !important; /*set to a negative number 1/2 of your width*/
+}
+
 .card {
   position: relative;
   margin: 0.5rem 0 1rem 0;
@@ -8359,6 +8379,8 @@ button.btn-floating {
   line-height: inherit;
 }
 
+
+
 /*!
  * Waves v0.6.0
  * http://fian.my.id/Waves
@@ -8367,6 +8389,15 @@ button.btn-floating {
  * Released under the MIT license
  * https://github.com/fians/Waves/blob/master/LICENSE
  */
+
+.square-element a{
+  display: block;
+  height: 100%;
+  width: 100%;
+  text-decoration: none;
+}
+
+
 .waves-effect {
   position: relative;
   cursor: pointer;

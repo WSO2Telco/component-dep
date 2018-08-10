@@ -15,7 +15,8 @@
 
 
   <div id="signup-page" class="row">
-    <div class="col s12 z-depth-4 card-panel" style="width:425px;margin-left:36%;margin-top:5%">
+    <div class="col s12 z-depth-4 card-panel signupContainer">
+       <div style="overflow-y: scroll; height: 100%;">
         <form class="signup-form" id="sign-up" autocomplete="off">
                                  <div class="row">
           <div class="input-field col s12 center">
@@ -28,7 +29,6 @@
             <i class="mdi-social-person-outline prefix"></i>
             <input id="newUsername" type="text">
             <label for="username" class="center-align">Username *</label>
-
 			<input id="hiddenTenantDomain" type="hidden" value="<%=request_tenant%>">
           </div>
         </div>
@@ -138,6 +138,7 @@
           </div>
         </div>
       </form>
+      </div>
     </div>
   </div>
 
