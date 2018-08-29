@@ -50,31 +50,31 @@ public class ValidateUssdSend implements IServiceValidate {
             JSONObject objJSONObject = new JSONObject(json);
             JSONObject requestData = objJSONObject.getJSONObject("outboundUSSDMessageRequest");
 
-            if (requestData.has("address")) {
+            if (!requestData.isNull("address")) {
                 address = nullOrTrimmed(requestData.getString("address"));
             }
-            if (requestData.has("shortCode")) {
+            if (!requestData.isNull("shortCode")) {
                 shortCode = nullOrTrimmed(requestData.getString("shortCode"));
             }
 
-            if (requestData.has("keyword")) {
+            if (!requestData.isNull("keyword")) {
                 keyword = nullOrTrimmed(requestData.getString("keyword"));
             }
-            if (requestData.has("outboundUSSDMessage")) {
+            if (!requestData.isNull("outboundUSSDMessage")) {
                 message = nullOrTrimmed(requestData.getString("outboundUSSDMessage"));
             }
-            if (requestData.has("clientCorrelator")) {
+            if (!requestData.isNull("clientCorrelator")) {
                 clientCorrelator = nullOrTrimmed(requestData.getString("clientCorrelator"));
             }
-            if (requestData.has("ussdAction")) {
+            if (!requestData.isNull("ussdAction")) {
                 ussdAction = nullOrTrimmed(requestData.getString("ussdAction"));
             }
 
             JSONObject responseRequest = requestData.getJSONObject("responseRequest");
-            if (responseRequest.has("notifyURL")) {
+            if (!responseRequest.isNull("notifyURL")) {
                 notifyUrl = nullOrTrimmed(responseRequest.getString("notifyURL"));
             }
-            if (responseRequest.has("callbackData")) {
+            if (!responseRequest.isNull("callbackData")) {
                 callbackData = nullOrTrimmed(responseRequest.getString("callbackData"));
             }
 
