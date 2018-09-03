@@ -177,4 +177,55 @@ public class TaxResource {
 
 		return new RateTaxResource();
 	}
+	
+	@POST
+	@Path("/insert")
+	public Response insertTax(TaxDTO tax) {
+
+		TaxDTO newtax = null;
+		Status responseCode = null;
+		Object responseString = null;
+
+		try {
+
+			newtax = taxService.insertTax(tax);
+
+			if (newtax != null) {
+
+				responseString = newtax;
+				responseCode = Response.Status.CREATED;
+			} else {
+
+				log.error("Error in TaxResource addTax : tax can not insert to database ");
+				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+			}
+		} catch (BusinessException e) {
+
+			ErrorDTO error = new ErrorDTO();
+			ErrorDTO.RequestError requestError = new ErrorDTO.RequestError();
+			ErrorDTO.RequestError.ServiceException serviceException = new ErrorDTO.RequestError.ServiceException();
+
+			serviceException.setMessageId(e.getErrorType().getCode());
+			serviceException.setText(e.getErrorType().getMessage());
+			requestError.setServiceException(serviceException);
+			error.setRequestError(requestError);
+
+			if (e.getErrorType().getCode() == ServiceError.NO_RESOURCES.getCode()) {
+
+				responseCode = Response.Status.NOT_FOUND;
+			} else {
+
+				responseCode = Response.Status.BAD_REQUEST;
+			}
+
+			responseString = error;
+		}
+
+		log.debug("TaxResource addTax -> response code : " + responseCode);
+		log.debug("TaxResource addTax -> response body : " + responseString);
+
+		return Response.status(responseCode).entity(responseString).build();
+	}
+	
+	
 }
