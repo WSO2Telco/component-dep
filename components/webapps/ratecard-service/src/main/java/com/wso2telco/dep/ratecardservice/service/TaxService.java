@@ -64,7 +64,7 @@ public class TaxService {
 
         TaxDTO newTax = null;
 
-        newTax = taxDAO.addTax(tax);
+        newTax = taxDAO.insertTax(tax);
         newTax = getTax(newTax.getTaxId());
 
         return newTax;

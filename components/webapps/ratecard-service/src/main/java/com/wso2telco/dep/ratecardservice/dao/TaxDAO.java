@@ -240,9 +240,7 @@ public class TaxDAO {
 				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 			}
 
-			if(!addTaxValidity(tax.getTaxesValidityDates()[0])) {
-				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
-			}
+			
 			
 			StringBuilder query = new StringBuilder("insert into ");
 			query.append(DatabaseTables.TAX.getTObject());
@@ -266,7 +264,7 @@ public class TaxDAO {
 
 				taxId = rs.getInt(1);
 			}
-			if(!addTaxValidity(tax.getTaxesValidityDates()[0])) {
+			if(!addTaxValidity(tax.getTaxesValidityDates()[0],taxId)) {
 				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 			}
 			
@@ -286,7 +284,7 @@ public class TaxDAO {
 
 		return tax;
 	}
-	public boolean addTaxValidity(TaxValidityDTO taxValidityDTO) throws BusinessException {
+	public boolean addTaxValidity(TaxValidityDTO taxValidityDTO,Integer taxID) throws BusinessException {
 		
 		
 		Connection con = null;
@@ -322,7 +320,7 @@ public class TaxDAO {
 			ps.setDate(1, new Date(new Integer(actDate[0]), new Integer(actDate[1]), new Integer(actDate[2])));
 			ps.setDate(2, new Date(new Integer(disDate[0]), new Integer(disDate[1]), new Integer(disDate[2])));
 			ps.setDouble(3, new Double(taxValidityDTO.getTaxValidityval()));
-			ps.setInt(4, taxValidityDTO.getTaxid());
+			ps.setInt(4, taxID);
 
 			ps.executeUpdate();
 
