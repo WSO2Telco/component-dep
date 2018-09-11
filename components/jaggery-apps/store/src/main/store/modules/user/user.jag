@@ -51,5 +51,40 @@ var checkIfUserExsits = function (username) {
             return true;
         }
 
-}
+};
+
+var getUserLastLoginTime = function () {
+    loggeduser = session.get("logged.user");
+    var username = loggeduser.username;
+    lastlogintime = "";
+    
+    var carbon = require('carbon');
+    
+    var MultitenantUtils = Packages.org.wso2.carbon.utils.multitenancy.MultitenantUtils;
+    var tenantDomain = MultitenantUtils.getTenantDomain(username);
+    var tenantManagerService = new Packages.org.wso2.carbon.um.ws.service.TenantManagerService();
+    var tenantId = tenantManagerService.getTenantId(tenantDomain);
+
+    var userstore = Packages.org.wso2.carbon.user.api.UserStoreManager;
+    var realmService = carbon.server.osgiService('org.wso2.carbon.user.core.service.RealmService');
+    userstore = realmService.getTenantUserRealm(tenantId).getUserStoreManager();
+    var result = userstore.getUserClaimValue(username, "http://wso2.org/claims/prelastLoginTime", null);
+    
+    var time = Number(result);
+    var date = new Date(time);
+    lastlogintime = formatDate(date);
+    log.info("+++user.jag getUserLastLoginTime|" + result + "|" + lastlogintime);
+    
+    return lastlogintime;
+};
+
+var formatDate = function(d) {
+    var datestring = ("0" + d.getDate()).slice(-2)
+                    + "/" + ("0"+(d.getMonth()+1)).slice(-2)
+                    + "/" + d.getFullYear()
+                    + " " + ("0" + d.getHours()).slice(-2)
+                    + ":" + ("0" + d.getMinutes()).slice(-2)
+                    + ":" + ("0" + d.getSeconds()).slice(-2);
+    return datestring;
+};
 %>
