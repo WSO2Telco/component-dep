@@ -90,7 +90,7 @@
     <form class="form-horizontal">
         <div class="form-group">
             <label class="control-label col-sm-3">Last login time:</label>
-            <label class="control-label col-sm-3"><%= outputs.lastlogintime %></label>
+            <label class="control-label col-sm-4"><%= outputs.lastlogintime %></label>
         </div>
     </form>
 </div>
