@@ -72,7 +72,7 @@ var getUserLastLoginTime = function () {
     
     var time = Number(result);
     var date = new Date(time);
-    lastlogintime = formatDate(date);
+    lastlogintime = date.toUTCString();
     
     return lastlogintime;
 };
