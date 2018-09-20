@@ -68,9 +68,33 @@ var getUserLastLoginTime = function () {
     var userstore = Packages.org.wso2.carbon.user.api.UserStoreManager;
     var realmService = carbon.server.osgiService('org.wso2.carbon.user.core.service.RealmService');
     userstore = realmService.getTenantUserRealm(tenantId).getUserStoreManager();
-    var result = userstore.getUserClaimValue(username, "http://wso2.org/claims/prelastLoginTime", null);
-    var resultUtc = userstore.getUserClaimValue(username, "http://wso2.org/claims/identity/utcOffset", null);
-    var resultDst = userstore.getUserClaimValue(username, "http://wso2.org/claims/identity/dstOffset", null);
+    var result = 0;
+    try {
+        result = userstore.getUserClaimValue(username, "http://wso2.org/claims/prelastLoginTime", null);
+    } catch (error) {
+        log.error("Claim http://wso2.org/claims/prelastLoginTime not set");
+        return "";
+    }
+    var resultUtc = "+00:00";
+    try {
+        resultUtc = userstore.getUserClaimValue(username, "http://wso2.org/claims/identity/utcOffset", null);
+        if (!resultUtc) {
+            log.error("Claim http://wso2.org/claims/identity/utcOffset not set. Default value set +00:00");
+            resultUtc = "+00:00";
+        }
+    } catch (error) {
+        log.error("Claim http://wso2.org/claims/identity/utcOffset not set. Default value set +00:00");
+    }
+    var resultDst = "+00:00";
+    try {
+        resultDst = userstore.getUserClaimValue(username, "http://wso2.org/claims/identity/dstOffset", null);
+        if (!resultDst) {
+            log.error("Claim http://wso2.org/claims/identity/dstOffset not set. Default value set +00:00");
+            resultDst = "+00:00";
+        }
+    } catch (error) {
+        log.error("Claim http://wso2.org/claims/identity/dstOffset not set. Default value set +00:00");
+    }
     
     var time = Number(result);
     var date = new Date(time);
