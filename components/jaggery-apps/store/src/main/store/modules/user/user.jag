@@ -77,23 +77,23 @@ var getUserLastLoginTime = function () {
     }
     var resultUtc = "+00:00";
     try {
-        resultUtc = userstore.getUserClaimValue(username, "http://wso2.org/claims/identity/utcOffset", null);
+        resultUtc = userstore.getUserClaimValue(username, "http://wso2.org/claims/utcOffset", null);
         if (!resultUtc) {
-            log.error("Claim http://wso2.org/claims/identity/utcOffset not set. Default value set +00:00");
+            log.error("Claim http://wso2.org/claims/utcOffset not set. Default value set +00:00");
             resultUtc = "+00:00";
         }
     } catch (error) {
-        log.error("Claim http://wso2.org/claims/identity/utcOffset not set. Default value set +00:00");
+        log.error("Claim http://wso2.org/claims/utcOffset not set. Default value set +00:00");
     }
     var resultDst = "+00:00";
     try {
-        resultDst = userstore.getUserClaimValue(username, "http://wso2.org/claims/identity/dstOffset", null);
+        resultDst = userstore.getUserClaimValue(username, "http://wso2.org/claims/dstOffset", null);
         if (!resultDst) {
-            log.error("Claim http://wso2.org/claims/identity/dstOffset not set. Default value set +00:00");
+            log.error("Claim http://wso2.org/claims/dstOffset not set. Default value set +00:00");
             resultDst = "+00:00";
         }
     } catch (error) {
-        log.error("Claim http://wso2.org/claims/identity/dstOffset not set. Default value set +00:00");
+        log.error("Claim http://wso2.org/claims/dstOffset not set. Default value set +00:00");
     }
     
     var time = Number(result);
