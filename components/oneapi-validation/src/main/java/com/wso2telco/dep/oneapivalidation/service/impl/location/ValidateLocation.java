@@ -36,8 +36,16 @@ public class ValidateLocation implements IServiceValidate {
      */
     public void validate(String[] params) throws CustomException {
         //Send parameters within String array according to following order, String[] params = "registrationId", "maxBatchSize";
-        String address = nullOrTrimmed(params[0]);
-        Double requestAccuracy = Double.parseDouble(params[1]);
+        String address = "";
+        Double requestAccuracy = 0.0;
+        try {
+            address = nullOrTrimmed(params[0]);
+            requestAccuracy = Double.parseDouble(params[1]);
+        } catch (ArrayIndexOutOfBoundsException e) {
+            throw new CustomException("SVC0002", null, new String[]{"Missing mandatory parameter address and/or requestedAccuracy"});
+        } catch (NumberFormatException msg){
+            throw new CustomException("SVC0002", null, new String[]{"requestAccuracy"});
+        }
         
         ValidationRule[] rules = {
                 new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_TEL, "address", address),
