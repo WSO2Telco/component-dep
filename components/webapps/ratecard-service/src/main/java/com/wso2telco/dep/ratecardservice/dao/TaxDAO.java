@@ -313,9 +313,9 @@ public class TaxDAO {
 
 			log.debug("sql query in addTax : " + ps);
 
-			String actDate[]=taxValidityDTO.getTaxValidityactdate().split("-");
+			String actDate[]=taxValidityDTO.getTaxValidityactdate().split("/");
 
-			String disDate[]=taxValidityDTO.getTaxValiditydisdate().split("-");
+			String disDate[]=taxValidityDTO.getTaxValiditydisdate().split("/");
 			
 			ps.setDate(1, new Date(new Integer(actDate[0]), new Integer(actDate[1]), new Integer(actDate[2])));
 			ps.setDate(2, new Date(new Integer(disDate[0]), new Integer(disDate[1]), new Integer(disDate[2])));
