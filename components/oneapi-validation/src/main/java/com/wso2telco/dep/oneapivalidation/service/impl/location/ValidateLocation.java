@@ -72,6 +72,9 @@ public class ValidateLocation implements IServiceValidate {
 					}
 				} else {
 					// This adds additional MSISDN numbers when user passes multiple MSISDNs
+					// TODO. This Assume additional query params are always MSISDN. Therefore those add directory to
+					// to address list. 
+					// Future this need a validation logic to identify whether this is a valid MSISDN 
 					if (param != null && !param.isEmpty()) {
 						addresses.add(param);
 						if (logger.isDebugEnabled()) {
