@@ -39,6 +39,10 @@ public class RateTaxService {
 		newRateTax = rateTaxDAO.addRateTax(rateTax);
 		newRateTax = getRateTax(newRateTax.getRateTaxId(), null);
 
+		boolean isTaxLevelAdded=rateTaxDAO.addRateTaxLevel(newRateTax.getRateTaxId(), 
+															newRateTax.getRateDefinition().getRateDefId(), 
+															newRateTax.getTax().getTaxId(),
+															rateTax.getLevel());
 		return newRateTax;
 	}
 

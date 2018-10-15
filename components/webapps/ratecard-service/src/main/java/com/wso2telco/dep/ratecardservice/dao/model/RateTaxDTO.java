@@ -21,7 +21,14 @@ public class RateTaxDTO {
 	private TaxDTO tax;
 	private RateDefinitionDTO rateDefinition;
 	private String createdBy;
+	private int level;
 	
+	public int getLevel() {
+		return level;
+	}
+	public void setLevel(int level) {
+		this.level = level;
+	}
 	public Integer getRateTaxId() {
 		return rateTaxId;
 	}
