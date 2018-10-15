@@ -29,7 +29,8 @@ public enum DatabaseTables {
 	OPERATION_RATE("operation_rate"),
 	TAX("tax"),
 	RATE_TAX("rate_taxes"),
-	TAX_VALIDITY("tax_validity");
+	TAX_VALIDITY("tax_validity"),
+	TAX_LEVEL("rate_tax_level");
 	
 	DatabaseTables(String tObject) {
 

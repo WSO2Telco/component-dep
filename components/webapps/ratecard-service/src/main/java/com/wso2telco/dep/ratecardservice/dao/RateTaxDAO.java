@@ -92,6 +92,58 @@ public class RateTaxDAO {
 
 		return rateTax;
 	}
+	
+	public boolean addRateTaxLevel(int rateTaxId,int rateDefId,int taxId,int level) throws BusinessException {
+
+		Connection con = null;
+		PreparedStatement ps = null;
+		ResultSet rs = null;
+
+
+		try {
+
+			con = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_RATE_DB);
+			if (con == null) {
+
+				log.error("unable to open " + DataSourceNames.WSO2TELCO_RATE_DB + " database connection");
+				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+			}
+
+			StringBuilder query = new StringBuilder("insert into ");
+			query.append(DatabaseTables.TAX_LEVEL.getTObject());
+			query.append(" (rate_taxesid, rate_defid, taxid, level)");
+			query.append(" values");
+			query.append(" (?, ?, ?, ?)");
+
+			ps = con.prepareStatement(query.toString(), Statement.RETURN_GENERATED_KEYS);
+
+			log.debug("sql query in addRateTax : " + ps);
+
+			ps.setInt(1, rateTaxId);
+			ps.setInt(2, rateDefId);
+			ps.setInt(3, taxId);
+			ps.setInt(4, level);
+
+			ps.executeUpdate();
+
+			rs = ps.getGeneratedKeys();
+
+			
+		} catch (SQLException e) {
+
+			log.error("database operation error in addRateTaxLevel : ", e);
+			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+		} catch (Exception e) {
+
+			log.error("error in addRateTax : ", e);
+			throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
+		} finally {
+
+			DbUtils.closeAllConnections(ps, con, rs);
+		}
+
+		return true;
+	}
 
 	public RateTaxDTO getRateTax(int rateTaxId) throws BusinessException {
 
