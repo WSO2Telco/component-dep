@@ -52,41 +52,40 @@ public class ValidateReceiveUssd implements IServiceValidate {
             JSONObject objJSONObject = new JSONObject(json);
             JSONObject requestData = objJSONObject.getJSONObject("inboundUSSDMessageRequest");
 
-            if (requestData.has("address")) {
+            if (!requestData.isNull("address")) {
                 address = nullOrTrimmed(requestData.getString("address"));
             }
-            if (requestData.has("shortCode")) {
+            if (!requestData.isNull("shortCode")) {
                 shortCode = nullOrTrimmed(requestData.getString("shortCode"));
             }
 
-            if (requestData.has("keyword")) {
+            if (!requestData.isNull("keyword")) {
                 keyword = nullOrTrimmed(requestData.getString("keyword"));
             }
-            if (requestData.has("inboundUSSDMessage")) {
+            if (!requestData.isNull("inboundUSSDMessage")) {
                 message = nullOrTrimmed(requestData.getString("inboundUSSDMessage"));
             }
-            if (requestData.has("clientCorrelator")) {
+            if (!requestData.isNull("clientCorrelator")) {
                 clientCorrelator = nullOrTrimmed(requestData.getString("clientCorrelator"));
             }
-            if (requestData.has("sessionID")) {
+            if (!requestData.isNull("sessionID")) {
                 sessionID = nullOrTrimmed(requestData.getString("sessionID"));
             }
-            if (requestData.has("ussdAction")) {
+            if (!requestData.isNull("ussdAction")) {
                 ussdAction = nullOrTrimmed(requestData.getString("ussdAction"));
             }
 
             JSONObject responseRequest = requestData.getJSONObject("responseRequest");
-            if (responseRequest.has("notifyURL")) {
+            if (!responseRequest.isNull("notifyURL")) {
                 notifyUrl = nullOrTrimmed(responseRequest.getString("notifyURL"));
             }
-            if (responseRequest.has("callbackData")) {
+            if (!responseRequest.isNull("callbackData")) {
                 callbackData = nullOrTrimmed(responseRequest.getString("callbackData"));
             }
 
         } catch (Exception e) {
 
-            System.out.println("Manipulating recived JSON Object: " + e);
-            throw new CustomException("POL0299", "Unexpected Error", new String[]{""});
+            throw new CustomException("POL0299", "Unexpected Error", new String[]{"Incorrect JSON Object received"});
         }
 
         ValidationRule[] rules = null;
@@ -96,7 +95,7 @@ public class ValidateReceiveUssd implements IServiceValidate {
             new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "shortCode", shortCode),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "keyword", keyword),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "inboundUSSDMessage", message),
-            new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "clientCorrelator", clientCorrelator),
+            new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "clientCorrelator", clientCorrelator),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "sessionID", sessionID),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "ussdAction", ussdAction),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "notifyURL", notifyUrl),

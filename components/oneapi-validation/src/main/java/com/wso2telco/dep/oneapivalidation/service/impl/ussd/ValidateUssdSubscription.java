@@ -50,17 +50,17 @@ public class ValidateUssdSubscription implements IServiceValidate {
             JSONObject objJSONObject = new JSONObject(json);
             JSONObject requestData = objJSONObject.getJSONObject("subscription");
 
-            if (requestData.has("clientCorrelator")) {
+            if (!requestData.isNull("clientCorrelator")) {
                 clientCorrelator = nullOrTrimmed(requestData.getString("clientCorrelator"));
             }
 
-            if (requestData.has("callbackReference")) {
+            if (!requestData.isNull("callbackReference")) {
                 JSONObject callbackReference = requestData.getJSONObject("callbackReference");
 
-                if (callbackReference.has("callbackData")) {
+                if (!callbackReference.isNull("callbackData")) {
                     callbackData = nullOrTrimmed(callbackReference.getString("callbackData"));
                 }
-                if (callbackReference.has("notifyURL")) {
+                if (!callbackReference.isNull("notifyURL")) {
                     notifyUrl = nullOrTrimmed(callbackReference.getString("notifyURL"));
                 }
             }
