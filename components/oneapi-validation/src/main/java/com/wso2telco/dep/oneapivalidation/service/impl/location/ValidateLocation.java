@@ -44,8 +44,8 @@ public class ValidateLocation implements IServiceValidate {
      */
 	public void validate(String[] params) throws CustomException {
 		List<String> addresses = new ArrayList<String>();
-		Double requestAccuracy = 0.0;
-		Boolean foundAddressParam = Boolean.FALSE;
+		double requestAccuracy = 0.0;
+		boolean foundAddressParam = false;
 
 		if (params == null || params.length == 0) {
 			throw new CustomException("SVC0002",
@@ -55,7 +55,7 @@ public class ValidateLocation implements IServiceValidate {
 				if (param.contains("=")) {
 					String[] pair = param.split("=");
 					if (pair.length > 1 && pair[0].equalsIgnoreCase("address")) {
-						foundAddressParam = Boolean.TRUE;
+						foundAddressParam = true;
 						addresses.add(pair[1]);
 						if (logger.isDebugEnabled()) {
 							logger.debug("Adding MSISDN number to request : " + pair[1]);
@@ -87,7 +87,7 @@ public class ValidateLocation implements IServiceValidate {
 
 		if (addresses.size() == 0 && requestAccuracy == 0.0) {
 			throw new CustomException("SVC0002", new String[] { "Missing mandatory parameters address and requestedAccuracy" });
-		} else if (!foundAddressParam.booleanValue() || addresses.size() == 0) {
+		} else if (!foundAddressParam || addresses.size() == 0) {
 			throw new CustomException("SVC0002", new String[] { "Missing mandatory parameter address" });
 		} else if (requestAccuracy == 0.0) {
 			throw new CustomException("SVC0002", new String[] { "Missing mandatory parameter requestedAccuracy" });
