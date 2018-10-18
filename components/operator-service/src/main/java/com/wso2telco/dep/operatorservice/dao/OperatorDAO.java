@@ -121,14 +121,12 @@ public class OperatorDAO {
 					.append("FROM   operatorapps oa, operatorendpoints oe,")
 					.append("endpointapps e, operators o ")
 					.append("WHERE  oe.operatorid = oa.operatorid ")
-					.append("AND    oe.isactive = oa.isactive = e.isactive = 1 ")
+					.append("AND   oa.isactive=1 AND e.isactive = 1 ")
 					.append("AND    oe.id = e.endpointid ")
 					.append("AND    o.id = oa.operatorid ")
 					.append("AND    oa.applicationid = e.applicationid ");
 
 			ps = con.prepareStatement(queryString.toString());
-
-			this.log.debug("sql query in getApplicationOperators : " + ps);
 			rs = ps.executeQuery();
 			while (rs.next()) {
 				OperatorApplicationDTO oper = new OperatorApplicationDTO();
