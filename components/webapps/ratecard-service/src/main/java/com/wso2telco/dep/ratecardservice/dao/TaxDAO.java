@@ -22,6 +22,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Iterator;
 import java.util.List;
 
@@ -316,9 +317,16 @@ public class TaxDAO {
 			String actDate[]=taxValidityDTO.getTaxValidityactdate().split("/");
 
 			String disDate[]=taxValidityDTO.getTaxValiditydisdate().split("/");
-			
-			ps.setDate(1, new Date(new Integer(actDate[0]), new Integer(actDate[1]), new Integer(actDate[2])));
-			ps.setDate(2, new Date(new Integer(disDate[0]), new Integer(disDate[1]), new Integer(disDate[2])));
+
+			//ps.setDate(1, new Date(new Integer(new Integer(actDate[0]) - 1900), new Integer(actDate[1]), new Integer(actDate[2])));
+			//ps.setDate(2, new Date(new Integer(new Integer(disDate[0]) - 1900), new Integer(disDate[1]), new Integer(disDate[2])));
+			Calendar actDateCal = Calendar.getInstance();
+			actDateCal.set(new Integer(actDate[0]),new Integer(actDate[1]) - 1, new Integer(actDate[2]));
+			Calendar disDateCal = Calendar.getInstance();
+			disDateCal.set(new Integer(disDate[0]),new Integer(disDate[1]) - 1, new Integer(disDate[2]));
+
+			ps.setDate(1, new Date(actDateCal.getTimeInMillis()));
+			ps.setDate(2, new Date(disDateCal.getTimeInMillis()));
 			ps.setDouble(3, new Double(taxValidityDTO.getTaxValidityval()));
 			ps.setInt(4, taxID);
 
