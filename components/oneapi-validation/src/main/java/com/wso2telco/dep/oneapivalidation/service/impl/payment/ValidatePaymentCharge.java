@@ -1,12 +1,12 @@
 /*******************************************************************************
  * Copyright  (c) 2015-2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
- * 
+ *
  * WSO2.Telco Inc. licences this file to you under  the Apache License, Version 2.0 (the "License");
  * you may not use this file except in compliance with the License.
  * You may obtain a copy of the License at
- * 
+ *
  *   http://www.apache.org/licenses/LICENSE-2.0
- * 
+ *
  * Unless required by applicable law or agreed to in writing, software
  * distributed under the License is distributed on an "AS IS" BASIS,
  * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
@@ -22,23 +22,27 @@ import com.wso2telco.dep.oneapivalidation.util.UrlValidator;
 import com.wso2telco.dep.oneapivalidation.util.Validation;
 import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
 import org.json.JSONObject;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
- 
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class ValidatePaymentCharge.
  */
 public class ValidatePaymentCharge  implements IServiceValidate {
-    
+
+    private Log log = LogFactory.getLog(ValidatePaymentCharge.class);
+
     /** The validation rules. */
     private final String[] validationRules = {"*", "transactions", "amount"};
-    
+
     /* (non-Javadoc)
      * @see com.wso2telco.oneapivalidation.service.IServiceValidate#validate(java.lang.String)
      */
     public void validate(String json) throws CustomException {
         //throw new UnsupportedOperationException("Not supported yet.");
-        
+
             String endUserId = null;
             String transactionOperationStatus = null;
             String originalServerReferenceCode = null;
@@ -91,32 +95,34 @@ public class ValidatePaymentCharge  implements IServiceValidate {
                     description = nullOrTrimmed(chargingInfo.getString("description"));
                 }
 
-                JSONObject chargingMetaData = (JSONObject) payAmount.get("chargingMetaData");
-                
-                if (!chargingMetaData.isNull("onBehalfOf")) {
-                    onBehalfOf = nullOrTrimmed(chargingMetaData.getString("onBehalfOf"));
-                }
-                if (!chargingMetaData.isNull("purchaseCategoryCode")) {
-                    purchaseCategoryCode = nullOrTrimmed(chargingMetaData.getString("purchaseCategoryCode"));
-                }
-                if (!chargingMetaData.isNull("channel")) {
-                    channel = nullOrTrimmed(chargingMetaData.getString("channel"));
-                }
-                if (!chargingMetaData.isNull("taxAmount")) {
-                    if(!chargingMetaData.get("taxAmount").toString().matches(doubleValidationRegex)){
-                        throw new CustomException("SVC0002", "Invalid input value for message part %1",
-                                new String[]{"taxAmount should be a whole or two digit decimal positive number"});
+                if(payAmount.has("chargingMetaData")) {
+                    JSONObject chargingMetaData = (JSONObject) payAmount.get("chargingMetaData");
+
+                    if (!chargingMetaData.isNull("onBehalfOf")) {
+                        onBehalfOf = nullOrTrimmed(chargingMetaData.getString("onBehalfOf"));
                     }
-                    taxAmount = Double.parseDouble(nullOrTrimmed(String.valueOf(chargingMetaData.get("taxAmount"))));
+                    if (!chargingMetaData.isNull("purchaseCategoryCode")) {
+                        purchaseCategoryCode = nullOrTrimmed(chargingMetaData.getString("purchaseCategoryCode"));
+                    }
+                    if (!chargingMetaData.isNull("channel")) {
+                        channel = nullOrTrimmed(chargingMetaData.getString("channel"));
+                    }
+                    if (!chargingMetaData.isNull("taxAmount")) {
+                        if (!chargingMetaData.get("taxAmount").toString().matches(doubleValidationRegex)) {
+                            throw new CustomException("SVC0002", "Invalid input value for message part %1",
+                                    new String[]{"taxAmount should be a whole or two digit decimal positive number"});
+                        }
+                        taxAmount = Double.parseDouble(nullOrTrimmed(String.valueOf(chargingMetaData.get("taxAmount"))));
 
+                    }
                 }
 
-                System.out.println("Manipulated recived JSON Object: " + json);
+                log.info("Manipulated received JSON Object: " + json);
 
             } catch (CustomException e){
                 throw new CustomException(e.getErrcode(), e.getErrmsg(), e.getErrvar());
             } catch (Exception e) {
-                System.out.println("Manipulating recived JSON Object: " + e);
+                log.error("Manipulating received JSON Object: " + e);
                 throw new CustomException("POL0299", "Unexpected Error", new String[]{""});
             }
 
@@ -135,11 +141,11 @@ public class ValidatePaymentCharge  implements IServiceValidate {
                 new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "purchaseCategoryCode", purchaseCategoryCode),
                 new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL_PAYMENT_CHANNEL, "channel", channel),
                 new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL_DOUBLE_GE_ZERO, "taxAmount", taxAmount),};
-            
+
             Validation.checkRequestParams(rules);
-            
+
     }
-    
+
     /**
      * Null or trimmed.
      *
