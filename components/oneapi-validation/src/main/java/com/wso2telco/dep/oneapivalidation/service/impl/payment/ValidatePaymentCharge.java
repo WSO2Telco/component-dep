@@ -21,6 +21,7 @@ import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.dep.oneapivalidation.util.UrlValidator;
 import com.wso2telco.dep.oneapivalidation.util.Validation;
 import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
+import org.json.JSONException;
 import org.json.JSONObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -117,9 +118,15 @@ public class ValidatePaymentCharge  implements IServiceValidate {
                     }
                 }
 
-                log.info("Manipulated received JSON Object: " + json);
+                if (log.isDebugEnabled()){
+                    log.debug("Manipulated received JSON Object: " + json);
+                }
 
+            } catch (JSONException e) {
+                log.error("Manipulating received JSON Object: " + e);
+                throw new CustomException("SVC0001", "", new String[]{"Incorrect JSON Object received"});
             } catch (CustomException e){
+                log.error("Manipulating received JSON Object: " + e);
                 throw new CustomException(e.getErrcode(), e.getErrmsg(), e.getErrvar());
             } catch (Exception e) {
                 log.error("Manipulating received JSON Object: " + e);
