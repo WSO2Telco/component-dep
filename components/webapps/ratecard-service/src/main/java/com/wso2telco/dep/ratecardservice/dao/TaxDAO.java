@@ -265,6 +265,9 @@ public class TaxDAO {
 
 				taxId = rs.getInt(1);
 			}
+
+			con.commit();
+
 			if(!addTaxValidity(tax.getTaxesValidityDates()[0],taxId)) {
 				throw new BusinessException(ServiceError.SERVICE_ERROR_OCCURED);
 			}
@@ -330,6 +333,7 @@ public class TaxDAO {
 			ps.setDouble(3, new Double(taxValidityDTO.getTaxValidityval()));
 			ps.setInt(4, taxID);
 
+			log.debug("sql query in addTax (after): " + ps);
 			ps.executeUpdate();
 
 			
