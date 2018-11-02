@@ -137,28 +137,6 @@ public class ValidateLocation implements IServiceValidate {
 		return this.addresses.toArray(new String[addresses.size()]);
 	}
 
-    /**
-     * Returns array of MSISDNs without "tel:+" prefix
-     */
-	public String[] getUserMsisdns() {
-		List<String> userMsisdn = new ArrayList<String>();
-		for(String msisdn  : addresses) {
-			userMsisdn.add(msisdn.substring(5));
-		}
-		return userMsisdn.toArray(new String[userMsisdn.size()]);
-	}
-	
-	/**
-     * Returns array of MSISDNs without "tel:" prefix
-     */
-	public String[] getQueryMsisdns() {
-		List<String> qurMsisdn = new ArrayList<String>();
-		for(String msisdn  : addresses) {
-			qurMsisdn.add(msisdn.replace("tel:", ""));
-		}
-		return qurMsisdn.toArray(new String[qurMsisdn.size()]);
-	}
-	
 	public double getRequestAccuracy() {
 		return requestAccuracy;
 	}
