@@ -16,6 +16,9 @@
 package com.wso2telco.dep.oneapivalidation.service.impl.payment;
 
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
@@ -30,6 +33,8 @@ import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
  * The Class ValidateRefund.
  */
 public class ValidateRefund implements IServiceValidate {
+
+    private Log log = LogFactory.getLog(ValidateRefund.class);
 
     /** The validation rules. */
     private final String[] validationRules = {"*", "transactions", "amount"};
@@ -109,37 +114,46 @@ public class ValidateRefund implements IServiceValidate {
                 code = nullOrTrimmed(objChargingInformation.get("code").toString());
             }
 
-            JSONObject objChargingMetaData = (JSONObject) objPaymentAmount.get("chargingMetaData");
+            if (objPaymentAmount.has("chargingMetaData")) {
+                JSONObject objChargingMetaData = (JSONObject) objPaymentAmount.get("chargingMetaData");
 
-            if (!objChargingMetaData.isNull("onBehalfOf") ) {
-                onBehalfOf = nullOrTrimmed(objChargingMetaData.get("onBehalfOf").toString());
-            }
-            if (!objChargingMetaData.isNull("purchaseCategoryCode")) {
-                purchaseCategoryCode = nullOrTrimmed(objChargingMetaData.get("purchaseCategoryCode").toString());
-            }
-            if (!objChargingMetaData.isNull("channel") ) {
-                channel = nullOrTrimmed(objChargingMetaData.get("channel").toString());
-            }
-            if (!objChargingMetaData.isNull("taxAmount")) {
-                if(!objChargingMetaData.get("taxAmount").toString().matches(doubleValidationRegex)){
-                    throw new CustomException("SVC0002", "Invalid input value for message part %1",
-                            new String[]{"taxAmount should be a whole or two digit decimal positive number"});
+                if (!objChargingMetaData.isNull("onBehalfOf")) {
+                    onBehalfOf = nullOrTrimmed(objChargingMetaData.get("onBehalfOf").toString());
                 }
-                taxAmount = Double.parseDouble(nullOrTrimmed(String.valueOf(objChargingMetaData.get("taxAmount"))));
+                if (!objChargingMetaData.isNull("purchaseCategoryCode")) {
+                    purchaseCategoryCode = nullOrTrimmed(objChargingMetaData.get("purchaseCategoryCode").toString());
+                }
+                if (!objChargingMetaData.isNull("channel")) {
+                    channel = nullOrTrimmed(objChargingMetaData.get("channel").toString());
+                }
+                if (!objChargingMetaData.isNull("taxAmount")) {
+                    if (!objChargingMetaData.get("taxAmount").toString().matches(doubleValidationRegex)) {
+                        throw new CustomException("SVC0002", "Invalid input value for message part %1",
+                                new String[]{"taxAmount should be a whole or two digit decimal positive number"});
+                    }
+                    taxAmount = Double.parseDouble(nullOrTrimmed(String.valueOf(objChargingMetaData.get("taxAmount"))));
 
+                }
+                if (!objChargingMetaData.isNull("mandateId")) {
+                    mandateId = nullOrTrimmed(objChargingMetaData.get("mandateId").toString());
+                }
+                if (!objChargingMetaData.isNull("productId")) {
+                    productId = nullOrTrimmed(objChargingMetaData.get("productId").toString());
+                }
+                if (!objChargingMetaData.isNull("serviceId")) {
+                    serviceId = nullOrTrimmed(objChargingMetaData.get("serviceId").toString());
+                }
             }
-            if (!objChargingMetaData.isNull("mandateId") ) {
-                mandateId = nullOrTrimmed(objChargingMetaData.get("mandateId").toString());
+
+            if (log.isDebugEnabled()) {
+                log.debug("Manipulated received JSON Object: " + json);
             }
-            if (!objChargingMetaData.isNull("productId") ) {
-                productId = nullOrTrimmed(objChargingMetaData.get("productId").toString());
-            }
-            if (!objChargingMetaData.isNull("serviceId")) {
-                serviceId = nullOrTrimmed(objChargingMetaData.get("serviceId").toString());
-            }
-            
+
+        } catch (JSONException e) {
+            log.error("Manipulating received JSON Object: " + e);
+            throw new CustomException("SVC0001", "", new String[]{"Incorrect JSON Object received"});
         } catch (Exception e) {
-            System.out.println("Manipulating recived JSON Object: " + e);
+            log.error("Manipulating recived JSON Object: " + e);
             throw new CustomException("POL0299", "Unexpected Error", new String[]{""});
         }
 
