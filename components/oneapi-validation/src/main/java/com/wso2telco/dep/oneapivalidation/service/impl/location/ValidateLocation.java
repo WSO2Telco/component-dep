@@ -39,12 +39,13 @@ public class ValidateLocation implements IServiceValidate {
 
     static Logger logger = Logger.getLogger(ValidateLocation.class);
 
+    private List<String> addresses = new ArrayList<String>();
+    private double requestAccuracy = 0.0;
+    
     /* (non-Javadoc)
      * @see com.wso2telco.oneapivalidation.service.IServiceValidate#validate(java.lang.String[])
      */
 	public void validate(String[] params) throws CustomException {
-		List<String> addresses = new ArrayList<String>();
-		double requestAccuracy = 0.0;
 		boolean foundAddressParam = false;
 
 		if (params == null || params.length == 0) {
@@ -56,13 +57,13 @@ public class ValidateLocation implements IServiceValidate {
 					String[] pair = param.split("=");
 					if (pair.length > 1 && pair[0].equalsIgnoreCase("address")) {
 						foundAddressParam = true;
-						addresses.add(pair[1]);
+						this.addresses.add(pair[1]);
 						if (logger.isDebugEnabled()) {
 							logger.debug("Adding MSISDN number to request : " + pair[1]);
 						}
 					} else if (pair.length > 1 && pair[0].equalsIgnoreCase("requestedAccuracy")) {
 						try {
-							requestAccuracy = Double.parseDouble(pair[1]);
+							this.requestAccuracy = Double.parseDouble(pair[1]);
 							if (logger.isDebugEnabled()) {
 								logger.debug("Adding requestAccuracy to request : " + pair[1]);
 							}
@@ -76,7 +77,7 @@ public class ValidateLocation implements IServiceValidate {
 					// to address list. 
 					// Future this need a validation logic to identify whether this is a valid MSISDN 
 					if (param != null && !param.isEmpty()) {
-						addresses.add(param);
+						this.addresses.add(param);
 						if (logger.isDebugEnabled()) {
 							logger.debug("Adding MSISDN number to request : " + param);
 						}
@@ -85,19 +86,19 @@ public class ValidateLocation implements IServiceValidate {
 			}
 		}
 
-		if (addresses.size() == 0 && requestAccuracy == 0.0) {
+		if (this.addresses.size() == 0 && this.requestAccuracy == 0.0) {
 			throw new CustomException("SVC0002", new String[] { "Missing mandatory parameters address and requestedAccuracy" });
-		} else if (!foundAddressParam || addresses.size() == 0) {
+		} else if (!foundAddressParam || this.addresses.size() == 0) {
 			throw new CustomException("SVC0002", new String[] { "Missing mandatory parameter address" });
-		} else if (requestAccuracy == 0.0) {
+		} else if (this.requestAccuracy == 0.0) {
 			throw new CustomException("SVC0002", new String[] { "Missing mandatory parameter requestedAccuracy" });
 		}
 
 		ValidationRule[] rules = {
 				new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_TEL, "address",
-						addresses.toArray(new String[addresses.size()])),
+						this.addresses.toArray(new String[addresses.size()])),
 				new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_LOC_ACCURACY, "requestedAccuracy",
-						requestAccuracy) };
+						this.requestAccuracy) };
 
 		Validation.checkRequestParams(rules);
 
@@ -128,4 +129,15 @@ public class ValidateLocation implements IServiceValidate {
 
         UrlValidator.validateRequest(requestParts, validationRules);
     }
+    
+    /**
+     * Returns array of MSISDNs
+     */
+    public String[] getMsisdns() {
+		return this.addresses.toArray(new String[addresses.size()]);
+	}
+
+	public double getRequestAccuracy() {
+		return requestAccuracy;
+	}
 }
