@@ -141,7 +141,7 @@ public class ValidatePaymentCharge  implements IServiceValidate {
                 new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "originalServerReferenceCode", originalServerReferenceCode),
                 new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "referenceCode", referenceCode),
                 new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "description", description),
-                new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "currency", currency),
+                new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "currency", currency),
                 new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL_DOUBLE_GT_ZERO, "amount", amount),
                 new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "clientCorrelator", clientCorrelator),
                 new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "onBehalfOf", onBehalfOf),
