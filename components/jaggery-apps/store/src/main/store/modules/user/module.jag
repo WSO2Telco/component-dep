@@ -17,6 +17,10 @@ jagg.module("user", {
         return jagg.require(jagg.getModulesDir() + "user/add.jag").getUserFields.apply(this, arguments);
     },
 
+    getUserLastLoginTime:function () {
+        return jagg.require(jagg.getModulesDir() + "user/user.jag").getUserLastLoginTime.apply(this, arguments);
+    },
+
     login:function () {
         return jagg.require(jagg.getModulesDir() + "user/login.jag").login.apply(this, arguments);
     },
