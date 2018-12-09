@@ -1,5 +1,13 @@
 <% jagg.template("user/login", function(inputs, outputs, jagg) { %>
 
+<%
+var storeURL = jagg.getAbsoluteUrl('/');
+var splits = storeURL.split("store");
+var storeLoginURL = storeURL + 'site/pages/login.jag';
+var infoRecoveryUrl = splits[0] + 'InfoRecovery/infoRecover/userInfoView?recoveryMethod=notification&redirectStoreUrl=' + storeLoginURL;
+//When deployed in IS
+//var infoRecoveryUrl = https://localhost:9444/InfoRecovery/infoRecover/userInfoView?recoveryMethod=notification&redirectStoreUrl=https://localhost:9443/store/site/pages/login.jag
+%>
 <div class="page-content-wrapper">
     <div class="container-fluid ">
         <div class="container">
@@ -41,6 +49,11 @@
                                     <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
                                         <button type="button" id="loginBtn" onclick="login()" class="btn btn-default btn-primary add-margin-right-2x"><%=i18n.localize("Sign In")%></button>
                                         <button type="button" id="goBackBtn" class="btn btn-default btn-secondary hidden-xs hidden-sm"><%=i18n.localize("Go Back")%></button>
+                                    </div>
+                                </div>
+                                <div class="form-group">
+                                    <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
+                                        <a href="<%=infoRecoveryUrl%>">Forgot password?</a>
                                     </div>
                                 </div>
                             </form>

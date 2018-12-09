@@ -58,6 +58,10 @@ public class APIInfoHandler extends AbstractHandler implements ManagedLifecycle 
     private static final String API_NAME = "api.ut.api";
     
     private static final String REQUEST_ID = "REQUEST_ID";
+    
+    private static final String SYNAPSE_REST_API_VERSION = "SYNAPSE_REST_API_VERSION";
+    
+    private static final String API_PUBLISHER = "api.ut.apiPublisher";
 
     private static String HUB_GATEWAY_ID_VALUE = null;
 
@@ -74,14 +78,18 @@ public class APIInfoHandler extends AbstractHandler implements ManagedLifecycle 
     @Override
     public boolean handleRequest(MessageContext messageContext) {
         AuthenticationContext authContext = APISecurityUtils.getAuthenticationContext(messageContext);
-        String api_version = (String) messageContext.getProperty(RESTConstants.SYNAPSE_REST_API);
         String messageId = (String) messageContext.getProperty(MESSAGE_ID);
         String applicationId = (String) messageContext.getProperty(APPLICATION_ID);
         String apiName = (String) messageContext.getProperty(API_NAME);
-        api_version = api_version.replace("--", "_").replace(":v", "_");
+        String apiVersion = (String) messageContext.getProperty(SYNAPSE_REST_API_VERSION);
+        String apiPublisher = (String) messageContext.getProperty(API_PUBLISHER);
+        if (apiPublisher.contains("@")) {
+            String[] split = apiPublisher.split("@");
+            apiPublisher = split[0];
+        }
         APIIdentifier apiIdentifier = null;
         try {
-            apiIdentifier = new APIIdentifier(api_version);
+            apiIdentifier = new APIIdentifier(apiPublisher, apiName, apiVersion);
             int apiId = ValidatorDBUtils.getApiId(apiIdentifier);
             String requestId = getRequestId(messageId, applicationId, apiName);
             Object headers = ((Axis2MessageContext) messageContext).getAxis2MessageContext()
