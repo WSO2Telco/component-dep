@@ -176,8 +176,6 @@ public class ResponseStatInjectionMediator extends AbstractMediator {
 		} catch (UserStoreException ex) {
 			log.error("####STATINJECTION#### Error while retrieving user claim " + claim, ex);
 			throw ex;
-		} finally {
-			PrivilegedCarbonContext.endTenantFlow();
 		}
 
 		return claimValue;
