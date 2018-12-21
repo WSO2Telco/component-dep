@@ -89,6 +89,7 @@
 		<maven-bundle-plugin.version>2.5.3</maven-bundle-plugin.version>
 		<carbon.identity.version>5.1.1</carbon.identity.version>
 		<org.hibernate.version>5.2.1.Final</org.hibernate.version>
+		<cxf-bundle.wso2.version>2.7.16.wso2v1</cxf-bundle.wso2.version>
 
 		<!-- Analytic Commons version -->
 		<carbon.analytics.common.version>5.1.0</carbon.analytics.common.version>
@@ -628,6 +629,11 @@
 				<groupId>org.apache.cxf</groupId>
 				<artifactId>cxf-bundle</artifactId>
 				<version>${org.apache.cxf.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.wso2.orbit.org.apache.cxf</groupId>
+				<artifactId>cxf-bundle</artifactId>
+				<version>${cxf-bundle.wso2.version}</version>
 			</dependency>
 			<dependency>
 				<groupId>org.wso2.carbon</groupId>
