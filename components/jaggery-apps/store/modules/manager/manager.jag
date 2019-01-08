@@ -195,6 +195,22 @@ var getActiveTenantDomains=function(){
 
 };
 
+
+var getStoreHostObject = function() {
+
+    var tenantDomain = request.getParameter("tenant");
+    var user = jagg.getUser();
+    var storeHostObject;
+    if (user == null) {
+        storeHostObject = require('operatorservice');
+        return storeHostObj;
+    } else {
+        storeHostObject = require('operatorservice');
+         return new storeHostObject.StoreHostObject(user.username);
+    }
+};
+
+
 var getUsageClient = function() {
     var user = jagg.getUser();
     return org.wso2.carbon.apimgt.usage.client.UsageClient.getClient(user);
