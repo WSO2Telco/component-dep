@@ -1,0 +1,12 @@
+<%
+jagg.block("branding/terms-conditions", {
+    initializer:function (data) {
+
+    } ,
+ getInputs:function () {
+        return {
+        }
+    }
+
+});
+%>
