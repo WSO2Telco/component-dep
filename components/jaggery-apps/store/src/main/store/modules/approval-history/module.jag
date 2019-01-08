@@ -1,7 +1,0 @@
-<%
-jagg.module("approval-history", {
-	getOperatorApprovedSubscriptionsByApplicationId:function () {
-			return jagg.require(jagg.getModulesDir() + "approval-history/approval-history.jag").getOperatorApprovedSubscriptionsByApplicationId.apply(this, arguments);
-	}
-});
-%>
