@@ -6,6 +6,7 @@ var tenant=request_tenant;
 var MultitenantUtils = Packages.org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 var APIUtil = Packages.org.wso2.carbon.apimgt.impl.utils.APIUtil;
 var urlPrefix = jagg.getTenantURLPrefix("&");
+var result;
 
 %>
 <%if(api!=null){
@@ -204,8 +205,48 @@ var urlPrefix = jagg.getTenantURLPrefix("&");
                                         <div class="form-group" id="application-selection-list">
                                     <%}%>
 
-                                            <label for="application-list"><%=i18n.localize("Applications")%></label>
-                                            <select id="application-list" class="form-control">
+                                        <div class="form-group">
+                                            <%
+                                         var mod = jagg.module("manager");
+                                        var storeHostObject = mod.getStoreHostObject(); //changed from get getstoreObj
+                                          result = storeHostObject.getDeploymentType();
+
+                                         if(result == "hub")
+                                         {
+
+                                           %>
+                                                <!-- this is oparater-->
+                                                <Label><b><%=i18n.localize("operators")%></b></Label><br/>
+                                                <select id="operators" name="operators" multiple="multiple" class="required" <% if(operators.size()==1){%>
+                          style="display: none;"
+                          <%}%> >
+                            <%
+                            print(operators);
+                            for(i = 0; i < operators.size(); i++) {
+                                operator = operators.get(i);
+                            %>
+                            <option value="<%=operator.operatorName%>"><%= operator.getOperatorName()%></option>
+                            <%
+                            }
+                            %>
+                            </select>
+
+
+
+                                                <br/> <br/>
+                                                <!-- this is oparater end-->
+                                                <%
+
+                                         }
+
+                                         %>
+
+
+
+
+
+                                                    <label for="application-list"><%=i18n.localize("Applications")%></label>
+                                                    <select id="application-list" class="form-control">
                                                 <%if(!subscribedToDefault){%>
                                                     <option value="-"><%=i18n.localize("Select Application...")%></option>
                                                 <%}%>
@@ -228,9 +269,10 @@ var urlPrefix = jagg.getTenantURLPrefix("&");
                                                </optgroup>
                                             </select>
                                         </div>
-                                 <%} %>
-                                  <!--End Load Application -->
-                                  <!-- Load Tiers -->
+                                        <%} %>
+                                            <!--End Load Application -->
+                                            <!-- Load Tiers -->
+                                            <!--
                                 <%if(user && api) { %>
                                     <div class="form-group">
                                         <label for="tiers-list" class="hidden-xs"><%=i18n.localize("Tiers")%></label>
@@ -269,7 +311,11 @@ var urlPrefix = jagg.getTenantURLPrefix("&");
                                         %>
                                     </div>
                                 <%} %>
-                                <button type="button" onclick="triggerSubscribe()" id="subscribe-button" <%if(!tiersAvailable){%>disabled="disabled"<%}%>
+                                -->
+                                            <input type="hidden" id="tiers-list" value="Default" />
+
+
+                                            <button type="button" onclick="triggerSubscribe('<%=result%>')" id="subscribe-button" <%if(!tiersAvailable){%>disabled="disabled"<%}%>
                                             class="btn btn-primary btn-mobile<% if(!user) { %>need-login<% } %>">
                                     <span class="icon fw-stack">
                                         <i class="fw fw-subscribe fw-stack-1x"></i>

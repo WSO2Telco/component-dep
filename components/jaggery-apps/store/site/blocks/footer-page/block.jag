@@ -1,0 +1,12 @@
+<%
+jagg.block("footer-page", {
+    initializer:function (data) {
+
+    } ,
+ 	getInputs:function () {
+        return {
+        }
+    }
+
+});
+%>

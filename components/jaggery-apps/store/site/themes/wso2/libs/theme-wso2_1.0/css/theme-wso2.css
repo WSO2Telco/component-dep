@@ -3227,7 +3227,16 @@ footer .icon {
   vertical-align: middle;
   color: #cbcbcb;
 }
-footer a, footer a:hover {
+
+footer a {
+  color: #cbcbcb;
+}
+
+footer a:hover {
+  color: #d9edf7 !important;
+}
+
+footer a:visited {
   color: #cbcbcb;
 }
 
@@ -3235,7 +3244,7 @@ body.sticky-footer {
   padding-bottom: 40px;
 }
 body.sticky-footer footer {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   z-index: 1000;
 }
