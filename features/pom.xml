@@ -39,6 +39,7 @@
         <module>com.wso2telco.dep.verificationhandler.feature</module>
         <module>com.wso2telco.dep.store.ui.feature</module>
         <module>com.wso2telco.dep.oneapivalidation.feature</module>
+        <module>com.wso2telco.dep.usermasking.feature</module>
         <module>com.wso2telco.dep.manage.ui.feature</module>
         <module>com.wso2telco.dep.publisher.ui.feature</module>
 		<module>com.wso2telco.dep.admin.ui.feature</module>
