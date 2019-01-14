@@ -43,6 +43,29 @@ a.btn .icon-caret, .btn .icon-caret {
 #left-sidebar.sidebar-nav li a{
     color:inherit;
     font-size:13px;
+	white-space: nowrap;
+	min-width: 200px;
+}
+nav.navigation ul li a i {
+    display: inline-block;
+}
+
+nav.navigation .left-menu-item {
+    position: relative;
+    margin-left: 0;
+    display: inline-block;
+}
+nav.navigation .left-menu-item i {
+    float: none;
+    position: absolute;
+    right: 0;
+    top: 4px;
+    left: auto;
+    font-size: 10px;
+    display: block;
+}
+.sidebar-wrapper.affix nav.navigation .left-menu-item i {
+	right: 10px;
 }
 .navbar-search .navbar-default .navbar-toggle .icon-bar{
     background-color:#fff;
@@ -57,6 +80,7 @@ a.btn .icon-caret, .btn .icon-caret {
         margin-right:-15px;
     }
 
+
     body.sticky-footer {
         padding-bottom: 293px !important;
     }
@@ -68,7 +92,12 @@ a.btn .icon-caret, .btn .icon-caret {
         left: 0px;
         width: initial;
     }
-
+	#left-sidebar {
+		left: 0 !important;
+	}
+	.page-content-wrapper {
+		padding-left: 0 !important;
+	}
 }
 
 ul.nav.nav-tabs {
@@ -552,6 +581,61 @@ a.remove_rating:hover{
 .square-element .api-prototype-icon i{
     font-size:1.5em;
     padding:12px 2px;
+}
+
+.bootstrap-select.btn-group .dropdown-menu{
+    height: 250px;
+}
+
+
+.apiNameWrap{
+    width: 211px;
+    word-wrap: break-word;
+}
+
+.multi-grp-application-dropdown {
+    margin-bottom: 25px;
+    padding-top: 3px;
+}
+.padding-bottom-100 {
+    padding-bottom: 100px;
+}
+#consent-mgt-container p span {
+    margin-top: 4px;
+    display: block;
+}
+#consent-mgt-container #tree-table {
+    background: #fff;
+    padding: 10px;
+    color: #333;
+}
+.policy-alert-warning {
+  background-color: #ffe0b2 ;
+  color: #333;
+  border-color: #ffe0b2 ;
+}
+#query::placeholder{
+    color:#fff;
+}
+
+.scheme-container {
+    display: none;
+}
+
+.global-server-container {
+    display: none;
+}
+
+.scope-selection-form span.filter-option.pull-left{
+    white-space: normal;
+}
+
+.scope-selection-form {
+    padding-bottom: 10px;
+}
+
+.scope-selection-form div.btn-group.scope_select{
+    height: auto;
 }
 
 

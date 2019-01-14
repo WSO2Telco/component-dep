@@ -44,7 +44,7 @@
 
 
 
-<div class="page-header"> <h2><%=i18n.localize("Statistics")%></h2> </div>
+<div class="page-header"> <h2><%=i18n.localize("Analytics")%></h2> </div>
     <%
 	var APIUtil = org.wso2.carbon.apimgt.impl.utils.APIUtil;
 	var isAnalyticsEnabled = APIUtil.isAnalyticsEnabled();
@@ -52,7 +52,7 @@
 		%>
 		<div class="message message-warning">
 		<h4><i class="icon fw fw-warning"></i><%=i18n.localize("Not Configured")%></h4>
-        <p> <a href='https://docs.wso2.com/display/AM200/Configuring+APIM+Analytics' target='_blank'
+        <p> <a href='https://docs.wso2.com/display/AM250/Configuring+APIM+Analytics' target='_blank'
         title= '<%=i18n.localize("WSO2 documentation on APIM Analytics")%>' class='warningLink'>
         <%=i18n.localize("Refer our documentation to configure API Manager Analytics correctly")%> </a></p>
         </div>
@@ -74,6 +74,13 @@
 				onclick="jagg.sessionAwareJS({redirect:'<%=allStatsMappedUrl%>?page=api-usage-user&stat=all-stat<%=urlPrefix%>',e:event,ssoEnabled:<%=ssoEnabled%>})">
 				<i class="icon fw fw-bar-chart" title="<%=i18n.localize("API Usage")%>"></i>
 				<%=i18n.localize("API Usage")%></a></li>
+
+			<li><a class="substats" title="<%=i18n.localize("Top API Users")%>"
+				href="<%=allStatsMappedUrl%>?page=api-top-users&stat=all-stat<%=urlPrefix%>"
+				onclick="jagg.sessionAwareJS({redirect:'<%=allStatsMappedUrl%>?page=page=api-top-users&stat=all-stat<%=urlPrefix%>',e:event,ssoEnabled:<%=ssoEnabled%>})">
+				<i class="icon fw fw-table" title="<%=i18n.localize("Top API Users")%>"></i>
+				<%=i18n.localize("Top API Users")%></a></li>
+
 			<!--li><a class="substats" title="<%=i18n.localize("API Response Times")%>"
 				href="<%=allStatsMappedUrl%>?page=api-response-times&stat=all-stat<%=urlPrefix%>"
 				onclick="jagg.sessionAwareJS({redirect:'<%=allStatsMappedUrl%>?page=api-response-times&stat=all-stat<%=urlPrefix%>',e:event,ssoEnabled:<%=ssoEnabled%>})">

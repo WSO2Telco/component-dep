@@ -67,9 +67,8 @@ $( document ).ready(function() {
          versionComparison = false;
          renderGraph(from,to,depth);
          $('#compare-selection').css("display", "none");
-         $('#compare-selection-label').css("display", "none");
          $('#compare-version-btn').css("display", "inline");
-         $('#compare-btn-label').css("display", "inline");
+         $('#clear-btn-wrapper').css("display", "none");
          });
        $('#week-btn').on('click', function () {
         from = currentDay - 604800000;
@@ -93,13 +92,12 @@ $( document ).ready(function() {
         $('#compare-btn').on('click', function () {
           populateVersionList(apiName,true);
                $('#compare-selection').css("display", "inline");
-               $('#compare-selection-label').css("display", "inline");
                $('#compare-version-btn').css("display", "none");
-               $('#compare-btn-label').css("display", "none");
+               $('#clear-btn-wrapper').css("display", "inline");
         });
                    //date picker
         $('#date-range').daterangepicker({
-                        timePicker: true,
+                        timePicker: false,
                         timePickerIncrement: 30,
                         format: 'YYYY-MM-DD h:mm',
                         opens: 'left'
@@ -110,7 +108,7 @@ $( document ).ready(function() {
                         to = picker.endDate;
                         var fromStr = convertDate(from).split(" ");
                         var toStr = convertDate(to).split(" ");
-                        var dateStr = fromStr[0] + " <i>" + fromStr[1] + "</i> <b>to</b> " + toStr[0] + " <i>" + toStr[1] + "</i>";
+                        var dateStr = fromStr[0] + " <b>to</b> " + toStr[0];
                         $("#date-range span").html(dateStr);
                         if ((to-from)>(3600000*24*2)) {
                            depth = "DAY";
@@ -220,6 +218,7 @@ function renderGraph(fromDate,toDate,drillDown){
             if (!json.error) {
             var data1 = {};
                 if (json.usage && json.usage.length > 0) {
+                  $('#apiLatencyTimeNote').removeClass('hide');
                   for(var usage1 in json.usage ){
                     var apiResponseTimeData = (data1["Total Time"]) ? data1["Total Time"] : [];
                     var backendLatencyData  = (data1["BackEnd"])? data1["BackEnd"] : [] ;
@@ -249,12 +248,14 @@ function renderGraph(fromDate,toDate,drillDown){
                 }
                 else if (json.usage && json.usage.length == 0 && statsEnabled) {
                     $('#noData').html('');
-                    showNoDataAnalyticsMsg();
+                    $('#noData').append('<div class="center-wrapper"><div class="col-sm-4"/><div class="col-sm-4 message message-info"><h4><i class="icon fw fw-info" title="No Data Available"></i>'+i18n.t("No Data Available")+'</h4>'+ "<p> " + i18n.t('Generate some traffic to see statistics') + "</p>" +'</div></div>');
                     $('#chartContainer').hide();
+                    $('#apiLatencyTimeNote').addClass('hide');
 
                 }
                 else{
                     $('.stat-page').html("");
+                    $('#apiLatencyTimeNote').addClass('hide');
                     showEnableAnalyticsMsg();
                 }
             }
@@ -364,7 +365,7 @@ function getDateTime(currentDay,fromDay){
     fromStr = convertTimeString(fromDay);
     var toDate = toStr.split(" ");
     var fromDate = fromStr.split(" ");
-    var dateStr= fromDate[0]+" <i>"+fromDate[1]+"</i> <b>to</b> "+toDate[0]+" <i>"+toDate[1]+"</i>";
+    var dateStr= fromDate[0] + "<b>to</b> " + toDate[0];
     $("#date-range span").html(dateStr);
     $('#date-range').data('daterangepicker').setStartDate(from);
     $('#date-range').data('daterangepicker').setEndDate(to);

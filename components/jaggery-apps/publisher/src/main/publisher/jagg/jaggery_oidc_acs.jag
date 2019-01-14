@@ -14,7 +14,7 @@
     // check for state, if it doesn't match we bail early
     if (session.get("STATE") != state) {
         log.error("STATE does not match. Hence redirecting to error page. Sign-in fails.");
-        response.sendRedirect("../error.jag");
+        response.sendRedirect("../site/pages/error-pages/401.html");
         return;
     }
 
@@ -37,7 +37,7 @@
 
     if (!Boolean(isSignatureValid)) {
         log.error("OIDC signature is verification failed.");
-        response.sendRedirect("../error.jag");
+        response.sendRedirect("../site/pages/error-pages/401.html");
         return;
     }
 
@@ -45,13 +45,18 @@
     var api = jagg.module("api");
 
     var isUserCreatePermitted = api.hasUserPermissions(oidcRelyingParty.getLoggedInUser(sessionId));
-    isUserCreatePermitted = {permitted: true};
+
 
     //First check whether user is having sufficent permissions [create/publish]
     if (isUserCreatePermitted.permitted) {
         jagg.setUser({username: oidcRelyingParty.getLoggedInUser(sessionId), cookie: null});
         session.put("LOGGED_IN_USER", oidcRelyingParty.getLoggedInUser(sessionId));
+    } else {
+       oidcRelyingParty.invalidateSessionBySessionId(sessionId);
+       response.sendRedirect("../site/pages/error-pages/403.html");
+       return;
     }
+
     var isCreatePermitted = api.hasCreatePermission();
     var isPublishPermitted = api.hasPublishPermission();
     var showStoreURL = api.showStoreURL();

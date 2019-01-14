@@ -10,11 +10,17 @@ i18n.init(request,localeResourcesBasePath);
 (function () {
     var isCreatePermitted;
     var user = jagg.getUser();
+    if (!user && site.ssoConfiguration.enabled == "true" && site.ssoConfiguration.idpInit == "true") {
+        //There is already a redirection applied to idpInitSSOURL (in site.conf) from sso/fiter.
+        //So we should not do another redirection; just return from this.  
+        return;
+    }
     if (!user) {
         response.sendRedirect(getRedirectPathForNonAuthenticatedUser());
     return;
     }
     isCreatePermitted = jagg.getCreatePermitted().permitted;
+    isCreatePermitted = false; // 'subscriptions' page is removed. Hence blocking access.
     if (!isCreatePermitted) {
     response.sendRedirect(jagg.getAbsoluteUrl("/site/pages/index.jag"));
     return;

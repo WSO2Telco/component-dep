@@ -1,4 +1,4 @@
-var currentLocation = "allAPIs";$('.stat-page').append($('<br><div class="errorWrapper"><img src="../themes/wso2/images/statsEnabledThumb.png" alt="Thumbnail image when stats enabled"></div>'));
+var currentLocation = "allAPIs";$('.stat-page').append($('<br><div class="errorWrapper"><img src="../themes/wso2/images/statsEnabledThumb.png" alt="Thumbnail image when stats are enabled"></div>'));
 var statsEnabled = isDataPublishingEnabled();
 var apiNameVersionMap = {};
 var apiName;
@@ -13,7 +13,7 @@ var enableVersion = false;
 var d = new Date();
 var currentDay = new Date(d.getFullYear(), d.getMonth(), d.getDate(), d.getHours(), d.getMinutes(),d.getSeconds());
 var to = new Date();
-var from = new Date(to.getTime() - 1000 * 60 * 60 * 24);
+var from = new Date(to.getTime() - 1000 * 60 * 60 * 24 * 30);
 $( document ).ready(function() {
    populateAPIList();
     width = $("#chartContainer").width();
@@ -82,7 +82,7 @@ $( document ).ready(function() {
          }); 
                    //date picker
         $('#date-range').daterangepicker({
-                        timePicker: true,
+                        timePicker: false,
                         timePickerIncrement: 30,
                         format: 'YYYY-MM-DD h:mm',
                         opens: 'left'
@@ -93,7 +93,7 @@ $( document ).ready(function() {
                         to = picker.endDate;
                         var fromStr = convertTimeString(from).split(" ");
                         var toStr = convertTimeString(to).split(" ");
-                        var dateStr = fromStr[0] + " <i>" + fromStr[1] + "</i> <b>to</b> " + toStr[0] + " <i>" + toStr[1] + "</i>";
+                        var dateStr = fromStr[0] + " <b>to</b> " + toStr[0];
                         $("#date-range span").html(dateStr);
                         renderGraph(from, to);
                          });
@@ -171,7 +171,7 @@ function renderGraph(fromDate,toDate){
                 }
                 else if (json.usage && json.usage.length == 0 && statsEnabled) {
                           $('#noData').empty();
-                    $('#noData').append($('<div class="center-wrapper"><div class="col-sm-4"/><div class="col-sm-4 message message-info"><h4><i class="icon fw fw-info" title="No Stats"></i>'+i18n.t("No Data Available.")+'</h4></div></div>'));
+                    $('#noData').append($('<div class="center-wrapper"><div class="col-sm-4"/><div class="col-sm-4 message message-info"><h4><i class="icon fw fw-info" title="No Stats"></i>'+i18n.t("No Data Available")+'</h4></div></div>'));
                     $('#chartContainer').hide();
                 }
                 else {
@@ -245,7 +245,7 @@ function getDateTime(currentDay,fromDay){
     fromDateString = convertTimeString(fromDay);
     var toDate = toDateString.split(" ");
     var fromDate = fromDateString.split(" ");
-    var dateStr= fromDate[0]+" <i>"+fromDate[1]+"</i> <b>to</b> "+toDate[0]+" <i>"+toDate[1]+"</i>";
+    var dateStr= fromDate[0] + " <b>to</b> " + toDate[0];
     $("#date-range span").html(dateStr);
     $('#date-range').data('daterangepicker').setStartDate(from);
     $('#date-range').data('daterangepicker').setEndDate(to);

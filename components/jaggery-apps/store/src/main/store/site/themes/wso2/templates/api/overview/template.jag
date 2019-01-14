@@ -7,12 +7,17 @@
      var MultitenantUtils = Packages.org.wso2.carbon.utils.multitenancy.MultitenantUtils;
      tenantDomain = MultitenantUtils.getTenantDomain(api.provider);
  }
- var urlPrefix = jagg.getTenantURLPrefix();%>
+    var apiAdditionalProperties = parse(api.additionalProperties);
+    var urlPrefix = jagg.getTenantURLPrefix();%>
 <div class="row">
-		  <div class="col-md-12 col-lg-9">
+<%if (api.wsdl && api.wsdl != ""){%>
+		  <div class="col-md-12 col-lg-12">
+		  <%} else {%>
+          <div class="col-md-12 col-lg-9">
+          <%}%>
 	<%if (!api.isAdvertiseOnly) {%>
 
-	    <% 
+	    <%
         if(domains != null){
             for (var key in domains) {
                 var re = /\/$/g
@@ -21,10 +26,17 @@
                 // since we are using context versioning, we remove the api.version from the URL.
                 // The reason is that the context will have the version now
                 for(var t=0;t < transports.length;t++){
+                    var transport = transports[t];
+                    if (api.type.toUpperCase() == "WS") {
+                        transport = "ws";
+                    }
                 %>
-                <div  class="well well-sm add-margin-bottom-1x"><%=encode.forHtml(transports[t]) %>://<%=domainValue%><%= contextWithoutTenant %>
-                    <%if (api.isDefaultVersion){%>
-                        <br/><%= encode.forHtml(transports[t]) %><%= contextWithoutTenant %>
+                <div  class="well well-sm add-margin-bottom-1x"><%=encode.forHtml(transport) %>://<%=domainValue%><%= contextWithoutTenant %>
+                    <%if (api.isDefaultVersion){
+                        var contextWithoutTenantAndVersion = contextWithoutTenant;
+                        contextWithoutTenantAndVersion = contextWithoutTenantAndVersion.replace(api.version + "/", "");
+                        contextWithoutTenantAndVersion = contextWithoutTenantAndVersion.replace(api.version, "");%>
+                        <br/><%= encode.forHtml(transport) %>://<%=domainValue%><%= contextWithoutTenantAndVersion %>
                     <%}%>
                 </div>
                 <%
@@ -35,6 +47,7 @@
     	    var environments = JSON.parse(api.serverURL);
     	    for(var environmentType in environments){
     	        var environmentsPerType = environments[environmentType];
+                %><%
                 if(environmentType == "production"){
                     %>
                     <h4><%=i18n.localize("Production Endpoints")%></h4>
@@ -47,38 +60,62 @@
                     for( var environmentName in environmentsPerType){
                         var environmenturls = environmentsPerType[environmentName];
                         // @todo: param_string
-                %> 
-    	            <h5 class="add-margin-top-2x"><%=environmentName%> <%=i18n.localize("URLs")%>:</h5>
-
-    	        <%
+                        if (api.wsdl && api.wsdl != "") {
+                %>  <div style="display: flex;">
+                        <div class="col-md-12 col-lg-9">
+    	                    <h5 class="add-margin-top-2x"><%=environmentName%> <%=i18n.localize("URLs")%>:</h5>
+                    <div style="padding-right: 20px; border-right: 1px solid #ddd">
+    	        <% } else {%>
+    	                <h5 class="add-margin-top-2x"><%=environmentName%> <%=i18n.localize("URLs")%>:</h5>
+    	        <%}
                 // since we are using context versioning, we remove the api.version from the URL.
                 // The reason is that the context will have the version now
     	        for (var urltype in environmenturls ) {
                     if(urltype != "showInConsole"){
-	                    if(environmenturls[urltype] != ""){ %>
-	    	            <div  class="endpoint-copybtn well well-sm add-margin-bottom-1x"><a
-	    	            data-clipboard-text="<%=environmenturls[urltype]%><%=encode.forHtmlAttribute(api.context)%>"
-	    	            class="pull-right copy-button"  title="<%=i18n.localize("Copy")%>"><i class="fw fw-copy"></i></a><%=encode.forHtml(environmenturls[urltype])%><%=encode.forHtml(api.context)%>
+	                    if(environmenturls[urltype] != ""){
+                            var gatewayUrl = environmenturls[urltype];
+                        %>
+	    	            <div  class="endpoint-copybtn well well-sm add-margin-bottom-1x">
+                            <a data-clipboard-text=
+                                <%if (api.type.toUpperCase() != "WS") {%>
+                                    "<%=environmenturls[urltype]%><%=encode.forHtmlAttribute(api.context)%>"
+                                <%} else {%>
+                                    "<%=gatewayUrl%><%=encode.forHtml(api.context)%>"
+                                <%}%>
+                                class="pull-right copy-button"  title="<%=i18n.localize("Copy")%>"><i class="fw fw-copy"></i>
+                            </a>
+	    	                <%if (api.type.toUpperCase() != "WS") {%>
+                                <%=encode.forHtml(environmenturls[urltype])%><%=encode.forHtml(api.context)%>
+                            <%} else {%>
+                                <%=gatewayUrl%><%=encode.forHtml(api.context)%>
+                            <%}%>
 	                        <%if (api.isDefaultVersion){
 	                            var apiContext = api.context;
 	                            apiContext = apiContext.replace(api.version + "/", "");
 	                            apiContext = apiContext.replace(api.version, "");%><br/>
-	                            <%=encode.forHtml(environmenturls[urltype])%><%=encode.forHtml(apiContext)%>
+                                <%if (api.type.toUpperCase() != "WS") {%>
+                                    <%=encode.forHtml(environmenturls[urltype])%><%=encode.forHtml(apiContext)%>
+                                <%} else {%>
+                                    <%=gatewayUrl%><%=encode.forHtml(apiContext)%>
+                                <%}%>
 	                        <%}%>
 	                    </div>
 
 	    	            <%}
     	            }
                     }
+                        if (api.wsdl && api.wsdl != "") { %>
+                            </div>
+                            </div>
+                            <div class="col-md-12 col-lg-3" style="position:relative">
+                                 <a title="<%=i18n.localize("Download WSDL")%>" class="btn btn-default" style="color:#1a78d8; top:50%; position:absolute" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("templates/api/documentation/download.jag?tenant=" + tenantDomain + "&apiName=" + api.name + "&apiVersion=" + api.version + "&environmentName=" + environmentName + "&environmentType=" + environmentType + "&resourceUrl=" + api.wsdl))%>" target="_blank"><i class="fw fw-download"></i>&nbsp;&nbsp;<%=i18n.localize("Download WSDL")%></a>
+                            </div>
+                        </div>
+                        <% }
                     }
                     }
                     }%>
     <%}%>
-    <% if(api.wsdl && api.wsdl != ""){ %>     
-    <p>
-        <a title="<%=i18n.localize("Download WSDL")%>" href="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("templates/api/documentation/download.jag?tenant=" + tenantDomain + "&resourceUrl=" + api.wsdl))%>" target="_blank"><h4><%=i18n.localize("Download WSDL")%></h4></a>
-    </p>
-    <% } %>
     <% if(api.wadl && api.wadl != ""){ %>
         <h4 class="add-margin-top-5x"><%=i18n.localize("WADL")%>:</h4>
     <p>
@@ -92,6 +129,26 @@
         <%=encode.forHtml(api.description)%>
     </p>
         <% } %>
+
+    <!-- Start of Microgateways Section -->
+    <% if(api.labels != null){ %>
+        <h4 class="add-margin-top-5x"><%=i18n.localize("Microgateways")%></h4>
+        <% for (var label in api.labels ) { %>
+            <div class="endpoint-copybtn well well-sm add-margin-bottom-1x">
+                <p><b><%=i18n.localize("Label")%> : </b> <%=api.labels[label].labelName%></p>
+                <% if (api.labels[label].accessURLs != null && api.labels[label].accessURLs.length > 0){
+                        var urlArray = api.labels[label].accessURLs.split(',');
+                        if (urlArray != null && urlArray.length > 0){
+                            for(var i=0; i < urlArray.length; i++){ %>
+                                <%=encode.forHtml(urlArray[i])%><%=encode.forHtml(api.context)%>
+                                <br/>
+                            <%}
+                        }
+                }%>
+            </div>
+        <% } %>
+    <% } %>
+    <!-- End of Microgateways Section -->
 
 	 <% if((api.bizOwner && api.bizOwner != "") || (api.techOwner && api.techOwner != "")){ %>
 	 		<h4 class="add-margin-top-5x"><%=i18n.localize("Business Information")%></h4>
@@ -111,6 +168,49 @@
 		    		</p>
 		    <% } %>
 	   <%} %>
+    <!-- Start Additional Properties Section -->
+        <%if(apiAdditionalProperties && api.additionalProperties != stringify({})) {%>
+           <div class="panel-group accordion add-margin-top-5x" role="tablist" aria-multiselectable="true">
+                <div class="panel panel-default">
+                    <div class="panel-heading" id="headingOne" data-toggle="collapse" href="#accordion1-collapse1"
+                    aria-controls="accordion1-collapse3">
+                        <h4 class="panel-title">
+                            <div>
+                                <div class="no-description" style="margin-left: 10px"><%=i18n.localize("API Properties") %></div>
+                                <div class="status">
+                                    <i class="fw fw-down"></i>
+                                </div>
+                            </div>
+                            <div class="clearfix"></div>
+                        </h4>
+                    </div>
+                    <div id="accordion1-collapse1" class="panel-collapse collapse"
+                    role="tabpanel"aria-labelledby="headingOne">
+                        <div class="panel-body">
+                            <!-- UI components related with adding additional properties -->
+                            <table class="table-bordered table-responsive table">
+                            <thead>
+                                <tr>
+                                    <th><strong><%=i18n.localize("Property Name")%></strong></th>
+                                    <th><strong><%=i18n.localize("Property Value")%></strong></th>
+                                </tr>
+                            </thead>
+                             <% for(var prop in apiAdditionalProperties) { %>
+                                <% if (apiAdditionalProperties.hasOwnProperty(prop)) { %>
+                                    <tr>
+                                        <td class="col-sm-3"><%= encode.forHtml(prop) %></td>
+                                        <td><%= encode.forHtml(apiAdditionalProperties[prop]) %></td>
+                                    </tr>
+                                <% } %>
+                            <% } %>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+           </div>
+        <% } %>
+     <div class="col-md-12 col-lg-9">
+    <!-- End Additional Properties Section -->
     <h4 class="add-margin-top-5x"><%=i18n.localize("Share")%></h4>
     <ul class="nav nav-pills">
       <li role="presentation" class="active"><a href="#" ref="social" class="share_links" title="<%=i18n.localize("Social Sites")%>"><%=i18n.localize("Social Sites")%></a></li>
@@ -135,6 +235,7 @@
         </div>
     </div>
     </div>
+    </div>
 </div>
 </div>
 <div class="row">
@@ -146,6 +247,22 @@
 </div>
 <script language="javascript">
     $(document).ready(function(){
+         var clipboard = new ClipboardJS('.copy-button',{
+           text: function(trigger) {
+               $(trigger).parent().notify("Copied",{ position:"top right" ,className: 'success'});
+               return trigger.getAttribute('data-clipboard-text');
+           }}
+        );
+
+
+        clipboard.on('success', function(e) {
+            e.clearSelection();
+        });
+
+        clipboard.on('error', function(e) {
+            console.error('Action:', e.action);
+            console.error('Trigger:', e.trigger);
+        });
         var link = window.location+'';
         $('#api_mailto').on("click",function(){
             location.href = "mailto:?Subject="+encodeURIComponent(document.title)+"&body=Link : "+ encodeURIComponent(window.location);
@@ -162,7 +279,7 @@
         });
 
         var api_url = encodeURIComponent(window.location+'');
-        var description = document.title + " : try this API at "+window.location;
+        var description = document.title + " : try this API at ";
 
         $("#facebook").attr("href","http://www.facebook.com/sharer.php?u="+api_url);
         $("#twitter").attr("href","http://twitter.com/share?url="+api_url+"&text="+encodeURIComponent(description));

@@ -24,7 +24,7 @@ $(document).ready(function() {
         var illegalChars = /([~!&@#$;%^*+={}\|\\<>\"\',])/;
         var illegalCharsCondition = illegalChars.test(docId.val());
         // @todo: param_string
-        validInput(docId, 'Name contains one or more illegal characters  (~ ! & @ # $ ; % ^ * + = { } | &lt; &gt;, \' " \\ ) .', illegalCharsCondition);
+        validInput(docId, 'Name contains one or more illegal characters  (~ ! & @ # $ ; % ^ & * + = { } | &lt; &gt;, \' " \\ ) .', illegalCharsCondition);
 
         if(!illegalCharsCondition) {
             //Check the doc name is duplicated
@@ -45,12 +45,20 @@ $(document).ready(function() {
         null,
         { "bSortable": false }
         ];
-    } else {
+    } else if (docTableColCount == 4){
         docTableColumnStructure = [
         null,
         null,
         null,
         { "bSortable": false }
+        ];
+    } else if (docTableColCount == 5){
+        docTableColumnStructure = [
+            null,
+            null,
+            null,
+            null,
+            { "bSortable": false }
         ];
     }
 
@@ -81,7 +89,7 @@ var newDocFormToggle = function(){
 
 var removeDocumentation = function (provider, apiName, version, docName, docType) {
     $('#messageModal').html($('#confirmation-data').html());
-    $('#messageModal h3.modal-title').html(i18n.t('Confirm Delete'));
+    $('#messageModal h3.modal-title').html(i18n.t('Confirm Deletion'));
     $('#messageModal div.modal-body').html('\n\n' + i18n.t('Are you sure you want to delete the file') + '<b>"' + docName + '</b>"?');
     $('#messageModal a.btn-primary').html(i18n.t('Yes'));
     $('#messageModal a.btn-other').html(i18n.t('No'));
@@ -189,7 +197,10 @@ var editInlineContent = function (provider, apiName, version, docName, mode,tena
 
 var clearDocs = function () {
 	$('#newDoc').hide();
-
+    $('#addDoc').show('fast');
+    $('#updateDoc').hide();
+    $('#newDoc .btn-primary').text(i18n.t('Add Document'));
+    $('#newDoc .btn-primary').val('');
 };
 
 var submitDoc = function() {
@@ -231,7 +242,7 @@ var saveDoc=function(){
     var illegalCharsCondition = illegalChars.test(docId.val());
 
     // @todo: param_string
-    if (!validInput(docId, 'Name contains one or more illegal characters  (~ ! & @ # $ ; % ^ * + = { } | &lt; &gt;, \' " \\ ) .', illegalCharsCondition)) {
+    if (!validInput(docId, 'Name contains one or more illegal characters  (~ ! & @ # $ ; % ^ & * + = { } | &lt; &gt;, \' " \\ ) .', illegalCharsCondition)) {
         return;
     }
     if($('#saveDocBtn').val() != "Update"){
@@ -269,7 +280,7 @@ var saveDoc=function(){
 
         if (sourceType == 'file') {
 
-            var fileExtension = getExtension($("#docName").val());
+            var fileExtension = getExtension($("#fileName").val());
 
             var mimeType = getMimeType(fileExtension);
 
@@ -398,7 +409,7 @@ var validInputUrl = function(docUrlDiv) {
             docUrlD = docUrlDiv.val();
         }
         var erCondition = validUrl(docUrlD);
-        return validInput(docUrlDiv, i18n.t('Invalid Document URL Format.'), erCondition);
+        return validInput(docUrlDiv, i18n.t('Invalid document URL format.'), erCondition);
     }
 };
 

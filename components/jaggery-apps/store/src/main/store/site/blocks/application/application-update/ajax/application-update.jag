@@ -44,17 +44,29 @@ include("/jagg/jagg.jag");
         applicationOld = request.getParameter("applicationOld");
         applicationNew = request.getParameter("applicationNew");
         callbackUrlNew = request.getParameter("callbackUrlNew");
+        groupIdNew = request.getParameter("groupIdNew");
+        groupIdOld = request.getParameter("groupIdOld");
         if(null == request.getParameter("callbackUrlNew")){
             callbackUrlNew = "";
         }else{
             callbackUrlNew = request.getParameter("callbackUrlNew");
         }        
         descriptionNew = request.getParameter("descriptionNew");
+        if (request.getParameter("applicationAttributeNew") == null) {
+            applicationAttributeNew = "";
+        }else {
+            applicationAttributeNew = request.getParameter("applicationAttributeNew");
+        }
         tier = request.getParameter("tier");
         username = user.username;
 
         mod = jagg.module("application");
-        result = mod.updateApplication(applicationNew,applicationOld,username,tier,callbackUrlNew,descriptionNew);
+        tokenType = request.getParameter("tokenType");
+
+        if (tokenType == null) {
+            tokenType = "DEFAULT";
+        }
+        result = mod.updateApplication(applicationNew,applicationOld,username,tier,callbackUrlNew,descriptionNew,groupIdOld,groupIdNew,tokenType,applicationAttributeNew);
 
         //If name of the selected application is edited,add the new name  to   session
         var selectedApp = session.get("selectedApp");

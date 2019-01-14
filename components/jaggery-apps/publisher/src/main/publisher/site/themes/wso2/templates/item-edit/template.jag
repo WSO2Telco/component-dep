@@ -3,6 +3,7 @@
  var result = mod.getTiers().tiers;
  var isSynapseGateway = mod.isSynapseGateway().isSynapseGateway;
  var isDataPublishingEnabled = mod.isDataPublishingEnabled().isDataPublishingEnabled;
+ var isPublisherAccessControlEnabled = mod.isPublisherAccessControlEnabled();
  var isSuperTenant = jagg.getUser().isSuperTenant;
  var i,resCount,rowNums = [],api = outputs.api; log = new Log();
  var last_tier = result[result.length -1];
@@ -95,7 +96,7 @@ var faultSequencesLoaded = false;
                         <input type="checkbox" class="default_version_check" id="default_version" name="default_version" value="default_version" <%if(api.isDefaultVersion=="true"){%>checked<%}%>/>
 
                         <a class="icon-question-sign help_popup" help_data="default_api_help" title="default_api_help"></a>
-                        <p id="default_api_help" class="hide"><%=i18n.localize("Making an API version default will allow the subscribers to invoke it without the version attribute in the URI.")%></p>
+                        <p id="default_api_help" class="hide"><%=i18n.localize("Making an API version the default will allow the subscribers to invoke it without the version attribute in the URI.")%></p>
 
                         <%if(api.isDefaultVersion=="false"){if(api.hasDefaultVersion){%>
                             <!--@todo: param_string-->
@@ -163,16 +164,46 @@ var faultSequencesLoaded = false;
                     </div>
                 </div>
             <!--Response Caching End -->
+            <% if (isPublisherAccessControlEnabled) {%>
+               <div class="control-group">
+                   <label class="control-label" for="access-control"><%=i18n.localize("Access-Control")%>:<span
+                   class="requiredAstrix">*</span></label>
+                   <div class="controls">
+                       <select class="select required" id="access-control" name="accessControl"
+                       onchange="showHidePublisherAccessControlRoles()">
+                           <option value="none" <%if(api.accessControl!="restricted"){%> selected="selected" <%}%>>
+                           <%=i18n.localize("None")%></option>
+                           <option value="restricted" <%if(api.accessControl=="restricted"){%> selected="selected"
+                           <%}%>><%=i18n.localize("Restricted by roles")%></option>
+                       </select>
+                       <a class="icon-question-sign help_popup" help_data="publisherrole_help" title="publisherrole_help"></a>
+                       <p id="publisherrole_help" class="hide">
+                       <%=i18n.localize("<strong>All :</strong> The API is viewable, modifiable by all the publishers and creators.<br/><strong>Restricted by roles :</strong> The API can be viewable and modifiable by only specific publishers and creators with the roles that you specify")%>
+                     </p>
+                   </div>
+               </div>
 
+               <div class="control-group" id="publisherRolesDiv" <%if(api.accessControl!="restricted"){%>style="display: none;
+               "<%}%>>
+                    <label class="control-label" for="publisherRoles" id="publisherRolesLabel" name="publisherRolesLabel">
+                        <%=i18n.localize("Visible to Roles")%>:<span class="requiredAstrix">*</span>
+                    </label>
+                    <div class="controls">
+                        <input type="text" class="input required validInput validateUserRoles"
+                        id="publisherRoles" name="accessControlRoles"  value="<%=api.accessControlRoles%>"/>
+                        <p class="help-block" id="rolesHelp"><%=i18n.localize("Comma-separated list (e.g.: role1,role2,role3)")%></p>
+                    </div>
+                </div>
+            <% } %>
             <div class="control-group">
-               <label class="control-label" for="visibility"><%=i18n.localize("Visibility")%>:<span
+               <label class="control-label" for="visibility"><%=i18n.localize("Visibility on Store")%>:<span
                class="requiredAstrix">*</span></label>
                <div class="controls">
                    <select class="select required" id="visibility" name="visibility" onchange="showHideRoles()">
                        <option value="public" <%if(api.visibility=="public"){%> selected="selected" <%}%>><%=i18n
                        .localize("Public")%></option>
                        <option value="private" <%if(api.visibility=="private"){%> selected="selected" <%}%>><%=i18n
-                       .localize("Visible to my domain")%></option>
+                       .localize("Visible to my Domain")%></option>
                        <option value="restricted" <%if(api.visibility=="restricted"){%> selected="selected"
                        <%}%>><%=i18n.localize("Restricted by roles")%></option>
                    </select>
@@ -288,7 +319,7 @@ var faultSequencesLoaded = false;
                                <option value="address"><%=i18n.localize("Address Endpoint")%></option>
                                <option value="wsdl"><%=i18n.localize("WSDL Endpoint")%></option>
                                <option value="failover"><%=i18n.localize("Failover Endpoint")%></option>
-                               <option value="load_balance"><%=i18n.localize("Load balanced Endpoint")%></option>
+                               <option value="load_balance"><%=i18n.localize("Load Balanced Endpoint")%></option>
                            </select>
                            <a class="icon-question-sign help_popup" help_data="endpoint_help" title="endpoint_help"></a>
                        </div>
@@ -298,13 +329,13 @@ var faultSequencesLoaded = false;
 
                <div id="endpoint_help" class="hide">
                <strong><%=i18n.localize("HTTP Endpoint")%> </strong><p>
-               <%=i18n.localize("Defines a URI Template based REST Service endpoint")%></p>
+               <%=i18n.localize("Defines a URI template based REST service endpoint")%></p>
                <strong><%=i18n.localize("Address Endpoint")%></strong><p><%=i18n.localize("Defines the direct URL of the service")%></p>
                <strong><%=i18n.localize("WSDL Endpoint")%></strong><p><%=i18n.localize("Defines the WSDL, Service and Port")%></p>
                 <strong><%=i18n.localize("Failover Group")%> </strong>
                 <p><%=i18n.localize("Defines the endpoints that the service will try to connect to in case of a failure. This will take place in a round robin manner")%></p>
                 <strong><%=i18n.localize("Load Balance Endpoint")%></strong><p>
-                <%=i18n.localize("Defines groups of endpoints for replicated services.The incoming requests will be directed to these endpoints in a round robin manner. These endpoints automatically handle the fail-over cases as well")%> </p>
+                <%=i18n.localize("Defines groups of endpoints for replicated services.The incoming requests are directed to these endpoints in a round robin manner. These endpoints automatically handle the fail-over cases as well")%> </p>
                </div>
 
                <div id="endpoint_form" class="endpoint_dives" >
@@ -344,7 +375,7 @@ var faultSequencesLoaded = false;
                     <label class="control-label" for="credentials"><%=i18n.localize("Credentials")%>:<span class="requiredAstrix">*</span></label>
                     <div class="controls">
                         <input type="text" class="input-small required validInput" id="epUsername" name="epUsername"  value="<%=api.epUsername%>">
-                        <input type="password" class="input-small required" id="epPassword" name="epPassword" value="<%=api.epPassword%>">
+                        <input type="password" class="input-small required" id="epPassword" name="epPassword" value="<%=api.epPassword%>" autocomplete="off">
                     </div>
                 </div>
 
@@ -455,7 +486,7 @@ var faultSequencesLoaded = false;
                         <span style="color:#999"><%=i18n.localize("URL Pattern&nbsp;")%></span>
                         <div class="input-prepend">
                             <span class="add-on">/{context}/{version}/</span>
-                            <input style="width:500px" id="resource_url_pattern" type="text" placeholder="Url Pattern E.g.: path/to/resource" class="resource_url_pattern"/>
+                            <input style="width:500px" id="resource_url_pattern" type="text" placeholder="E.g., path/to/resource" class="resource_url_pattern"/>
                         </div>
                         <div  style="margin-top:5px;">
                             <ul class="inline" style="margin-left:80px">
@@ -558,7 +589,7 @@ var faultSequencesLoaded = false;
                     <div class="control-group">
                         <label class="control-label" for="scopeKey"><%=i18n.localize("Scope Key")%></label>
                         <div class="controls">
-                        <input type="text" id="scopeKey" placeholder="Eg: api_name_read">
+                        <input type="text" id="scopeKey" placeholder="<%=i18n.localize("Eg: api_name_read")%>">
                         </div>
                     </div>
                     <div class="control-group">
@@ -570,7 +601,7 @@ var faultSequencesLoaded = false;
                     <div class="control-group">
                         <label class="control-label" for="scopeRoles"><%=i18n.localize("Roles")%></label>
                         <div class="controls">
-                        <input type="text" id="scopeRoles" placeholder="E.g.: role1,role2,role3">
+                        <input type="text" id="scopeRoles" placeholder="<%=i18n.localize("E.g.: role1,role2,role3")%>">
                         </div>
                     </div>
                     <div class="control-group">

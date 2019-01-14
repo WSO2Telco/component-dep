@@ -17,7 +17,8 @@ var login = login || {};
                          $('#loginErrorMsg').show();
                          $('#password').val('');
                          //$('#loginErrorMsg').html(result.message).prepend('<strong>'+i18n.t("errorMsgs.login")+'</strong><br />');
-                         $('#loginErrorMsg').html('<i class="icon fw fw-error"></i><strong> '+i18n.t("Error!")+' </strong>' + result.message + '<button type="button" class="close" aria-label="close" data-dismiss="alert"><span aria-hidden="true"><i class="fw fw-cancel"></i></span></button>');
+                         var text = jQuery('<div />').text( result.message );
+                         $('#loginErrorMsg').html('<i class="icon fw fw-error"></i><strong> '+i18n.t("Error!")+' </strong>' + text.html() + '<button type="button" class="close" aria-label="close" data-dismiss="alert"><span aria-hidden="true"><i class="fw fw-cancel"></i></span></button>');
                      }
                  }, "json");
     };
@@ -91,16 +92,25 @@ $(document).ready(function () {
 	            $('#loginRedirectForm').submit();
 	            return;
 	        }
-	
-	        //$('#messageModal').html($('#login-data').html());
-	        //$('#messageModal').modal('show');
+
+
 	        if ($(this).attr("href")) {
-	        	$.cookie("goto_url",$(this).attr("href"));
+                var gotoUrl = siteContext;
+                //when there is a custom URL configured for a tenant in store (i.e https://store.apim.com -> tenant.com)
+                //the store will be on root context. In that cases, the redirection should happen to "/"
+                if (!gotoUrl) {
+                    gotoUrl = "/";
+                }
+                if($(this).attr("id") == "btn-login"){
+                    $.cookie("goto_url", window.location.href, {path: gotoUrl,secure:true});
+                } else {
+                    $.cookie("goto_url", $(this).attr("href"),{secure:true});
+                }
 	        } else {
 	        	if ($('#tenant').val() && $('#tenant').val() != "null") { 
-	        		$.cookie("goto_url",siteContext + '?tenant=' + $('#tenant').val());
+	        		$.cookie("goto_url",siteContext + '?tenant=' + $('#tenant').val(),{secure:true});
 	        	} else {
-	        		$.cookie("goto_url",siteContext);
+	        		$.cookie("goto_url",siteContext,{secure:true});
 	        	}
 	        }
 	        
@@ -121,11 +131,14 @@ $(document).ready(function () {
 
 
     $("#goBackBtn").click(function () {
-    	var loginUrl = siteContext;        
-        if ($('#tenant').val() != null && $('#tenant').val() != "null") {
-        	loginUrl = siteContext + '?tenant='+$('#tenant').val();
+        var loginUrl = $.cookie("goto_url");
+        if ((loginUrl == null || loginUrl == "null" || loginUrl == "")) {
+            loginUrl = siteContext;
+            if ($('#tenant').val() != null && $('#tenant').val() != "null") {
+                loginUrl = siteContext + '?tenant=' + $('#tenant').val();
+            }
         }
-    	window.location.href = loginUrl;
+        window.location.href = loginUrl;
     });
     
     $("#logout-link").click(function () {
@@ -168,7 +181,13 @@ function getAPIPublisherURL(){
 
 function login() {
 	var goto_url = $.cookie("goto_url");
-    login.loginbox.login($("#username").val(), $("#password").val(), goto_url,$("#tenant").val());
+    var url_prefix = window.location.origin + siteContext;
+    // checking whether the redirection url starts with the hostname
+    if (goto_url != null && goto_url.indexOf(url_prefix) != 0) {
+      goto_url = siteContext
+    }
+
+    login.loginbox.login($("#username").val().trim(), $("#password").val(), goto_url,$("#tenant").val());
 }
 
 
