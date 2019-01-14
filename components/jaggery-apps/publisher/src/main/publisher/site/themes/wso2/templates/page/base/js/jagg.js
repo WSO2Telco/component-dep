@@ -1,8 +1,24 @@
 var jagg = jagg || {};
 
 (function () {
+    try {
+        var locale = navigator.languages && navigator.languages[0] || // Chrome / Firefox
+            navigator.language ||   // All browsers
+            navigator.userLanguage; // IE <= 10
+
+        locale = "_" + locale;
+        if (locale.toLowerCase() == "_en-us" || locale.toLowerCase() == "_en") {
+            locale = "";
+        }
+    } catch (err) {
+        console.error("Error occurred while detecting browser locale");
+    }
+
     // getAsync: false option is provided to make sure localization will load before calling other UI js.
-    var option = { resGetPath:requestURL+'/site/conf/locales/js/i18nResources.json',   getAsync: false };
+    var option = {
+        resGetPath: requestURL + '/site/conf/locales/js/i18nResources' + locale + '.json',
+        getAsync: false
+    };
     i18n.init(option);
 
     if (!window.console) {
@@ -115,6 +131,7 @@ var jagg = jagg || {};
         jagg.messageDisplay({content:params.content,title:"API Publisher - " + type,buttons:[
             {name:i18n.t("OK"),cssClass:"btn btn-primary",cbk:function() {
                 $('#messageModal').modal('hide');
+                $(".modal-backdrop.fade.in").remove();
                 if (params.cbk && typeof params.cbk == "function")
                     params.cbk();
             }}
@@ -145,7 +162,7 @@ var jagg = jagg || {};
     jagg.login = function (username, password, params) {
         if(username == "" || password == ""){
             $('#loginErrorBox').show();
-            $('#loginErrorMsg').html(i18n.t('Username, Password fields are empty.'));
+            $('#loginErrorMsg').html(i18n.t('Username and Password fields are empty.'));
             $('#username').focus();
             return;
         }
@@ -247,5 +264,12 @@ $(document).ready(function(){
         div.toggle('fast');
         return false; 
     });
-    
+
+    $('.manage-certs').click(function() {
+        var id = $(this).attr('ref');
+        var div = $('#'+id);
+        div.toggle('fast');
+        return false;
+    });
+
 });

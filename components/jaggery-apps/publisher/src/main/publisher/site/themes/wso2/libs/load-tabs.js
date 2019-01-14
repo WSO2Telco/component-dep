@@ -3,6 +3,9 @@ var getLastAccessTime = function(name) {
     var provider = $("#spanProvider").text();
     jagg.syncPost("/site/blocks/stats/ajax/stats.jag", { action:"getProviderAPIVersionUserLastAccess",provider:provider,mode:'browse' },
                   function (json) {
+                      if (!json) {
+                        return 0;
+                      }
                       if (!json.error) {
                           var length = json.usage.length;
                           for (var i = 0; i < length; i++) {
@@ -27,6 +30,9 @@ var getResponseTime = function(name) {
     var provider = $("#spanProvider").text();
     jagg.syncPost("/site/blocks/stats/ajax/stats.jag", { action:"getProviderAPIServiceTime",provider:provider,mode:'browse'},
                   function (json) {
+                      if (!json) {
+                        return 0;
+                      }
                       if (!json.error) {
                           var length = json.usage.length;
                           for (var i = 0; i < length; i++) {
@@ -428,8 +434,9 @@ var loadLC = function () {
                             var event = obj.event;
                             var target = obj.target;
                             // Set up the edges
-
-                            g.setEdge(key.toUpperCase(), target.toUpperCase(), { label: event.toUpperCase(), labelStyle: "fill: white", lineInterpolate: 'cardinal' });
+                            var eventLabel = event.toUpperCase().replace(" ", "\n");
+                            eventLabel = eventLabel.trim().replace(/(\S(.{0,78}\S)?)\s+/g, '$1\n');
+                            g.setEdge(key.toUpperCase(), target.toUpperCase(), { label: eventLabel, labelStyle: "fill: white", lineInterpolate: 'cardinal' });
                         }
                     }
                 }
@@ -448,10 +455,12 @@ var loadLC = function () {
                     inner = svg.select("g");
 
 // Set up zoom support
-                var zoom = d3.behavior.zoom().on("zoom", function () {
+                var zoom = d3.behavior.zoom();
+                zoom.on("zoom", function () {
                     inner.attr("transform", "translate(" + d3.event.translate + ")" +
                         "scale(" + d3.event.scale + ")");
                 });
+                zoom.scaleExtent([0.3, 2]);
                 svg.call(zoom);
 
 // Create the renderer
@@ -459,11 +468,12 @@ var loadLC = function () {
 
 // Run the renderer. This is what draws the final graph.
                 render(inner, g);
-
+                var initialScale = 1;
+                var initialX = (svg.attr('width') - g.graph().width * initialScale) / 2;
+                var initialY = 10;
 // Center the graph
-                var initialScale = 1.2;
-
-                svg.attr('height', g.graph().height * initialScale + 40);
+                inner.attr("transform", "translate(" + [initialX, initialY] + ") scale(" + initialScale + ")");
+                zoom.translate([initialX, initialY]).scale(initialScale).event(svg);
             } else {
                 if (json.message == "AuthenticateError") {
                     jagg.showLogin();

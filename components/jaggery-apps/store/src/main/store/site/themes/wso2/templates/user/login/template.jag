@@ -49,11 +49,31 @@ var infoRecoveryUrl = splits[0] + 'InfoRecovery/infoRecover/userInfoView?recover
                                     <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
                                         <button type="button" id="loginBtn" onclick="login()" class="btn btn-default btn-primary add-margin-right-2x"><%=i18n.localize("Sign In")%></button>
                                         <button type="button" id="goBackBtn" class="btn btn-default btn-secondary hidden-xs hidden-sm"><%=i18n.localize("Go Back")%></button>
+                                        <% if(jagg.isForgotPasswordConfigured() == true){%>
+                                            <a href="<%=jagg.getAbsoluteUrl("/site/pages/initiate.jag")%>">&nbsp;&nbsp;&nbsp;<%=i18n.localize("Forgot Password")%></a>
+                                        <%}%>
                                     </div>
                                 </div>
+                                <hr>
                                 <div class="form-group">
-                                    <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
-                                        <a href="<%=infoRecoveryUrl%>">Forgot password?</a>
+                                    <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12">
+                                       <div class="alert alert-warning policy-alert-warning" role="alert">
+                                          <div>
+                                              <%=i18n.localize("privacy.policy.cookies.short.description")%>
+                                              <a href=<%=jagg.getAbsoluteUrl("/site/pages/policy-pages/cookie-policy.jag")%> target="policy-pane">
+                                                  <strong><%=i18n.localize("privacy.policy.cookies")%></strong>
+                                              </a>
+                                              <%=i18n.localize("privacy.policy.for.more.details")%>
+                                          </div>
+                                       </div>
+                                       <div class="alert alert-warning policy-alert-warning margin-none" role="alert">
+                                          <div>
+                                              <%=i18n.localize("privacy.policy.privacy.short.description")%>
+                                              <a href=<%=jagg.getAbsoluteUrl("/site/pages/policy-pages/privacy-policy.jag")%> target="policy-pane">
+                                                  <strong><%=i18n.localize("privacy.policy.general")%>.</strong>
+                                              </a>
+                                          </div>
+                                       </div>
                                     </div>
                                 </div>
                             </form>

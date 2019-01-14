@@ -34,6 +34,21 @@
         isPassiveAuthRequired = true;
     }
 
+    var security = require("sso");
+    var site = require("/site/conf/site.json");
+    var api = jagg.module("api");
+    var ssoRelyingParty = new security.SSORelyingParty(site.ssoConfiguration.issuer);
+    var errorAuthorizationURL = "/site/pages/error-pages/401.html";
+    var isUserPermitted = null;
+    if (ssoRelyingParty.getLoggedInUser(sessionId) != null) {
+        isUserPermitted = api.hasUserPermissions(ssoRelyingParty.getLoggedInUser(sessionId));
+    }
+    if(!isPassiveAuthRequired) {
+        if(Boolean(isAuthenticated) && !Boolean(isUserPermitted.permitted)) {
+            response.sendRedirect(jagg.getAbsoluteUrl(errorAuthorizationURL));
+        }
+    }
+
     if (checkSSO && !Boolean(isAuthenticated)) {
 
         var keyStorePassword = site.ssoConfiguration.keyStorePassword;
@@ -64,6 +79,15 @@
         ssoRelyingParty.setProperty("keyStoreName", String(site.ssoConfiguration.keyStoreName));
         ssoRelyingParty.setProperty("signRequests", String(site.ssoConfiguration.signRequests));
         ssoRelyingParty.setProperty("nameIdPolicy", site.ssoConfiguration.nameIdPolicy);
+        ssoRelyingParty.setProperty("assertionEncryptionEnabled", site.ssoConfiguration.assertionEncryptionEnabled);
+
+        // if it is IDP initiated SSO, we should just do a HTTP GET to IDP with SP ID and relay state optionally
+        if (site.ssoConfiguration.idpInit == "true") {
+            var relayState = ssoRelyingParty.getUUID();
+            ssoRelyingParty.setRelayStateProperty(relayState, requestURI);
+            response.sendRedirect(site.ssoConfiguration.idpInitSSOURL+"&RelayState="+ relayState);
+            return;
+        }
 
         var consumerUrl = "";
         //if acsURL is provided in site.json, consumerUrl will be taken from that. Otherwise generated from the app.

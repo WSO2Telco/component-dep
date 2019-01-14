@@ -45,7 +45,7 @@ var from = new Date(to.getTime() - 1000 * 60 * 60 * 24 * 30);
 
                     //date picker
                     $('#date-range').daterangepicker({
-                          timePicker: true,
+                          timePicker: false,
                           timePickerIncrement: 30,
                           format: 'YYYY-MM-DD h:mm',
                           opens: 'left',
@@ -62,7 +62,7 @@ var from = new Date(to.getTime() - 1000 * 60 * 60 * 24 * 30);
                        to = convertTimeString(picker.endDate);
                        var fromStr = from.split(" ");
                        var toStr = to.split(" ");
-                       var dateStr = fromStr[0] + " <i>" + fromStr[1] + "</i> <b>to</b> " + toStr[0] + " <i>" + toStr[1] + "</i>";
+                       var dateStr = fromStr[0] + " <b>to</b> " + toStr[0];
                        $("#date-range span").html(dateStr);
                        drawAPIUsage(from,to,apiFilter);
                     });
@@ -213,7 +213,7 @@ var drawAPIUsage = function (from,to,apiFilter) {
                         		$('div#apiSelectTable_wrapper.dataTables_wrapper.no-footer').remove();
                         		$('#apiUsageByUserTable').hide();
                                 $('#noData').html('');
-                                $('#noData').append($('<div class="center-wrapper"><div class="col-sm-4"/><div class="col-sm-4 message message-info"><h4><i class="icon fw fw-info" title="'+ i18n.t('No Stats') + '"></i>'+ i18n.t('No Data Available.') + '</h4></div></div>'));
+                                $('#noData').append($('<div class="center-wrapper"><div class="col-sm-4"/><div class="col-sm-4 message message-info"><h4><i class="icon fw fw-info" title="'+ i18n.t('No Stats') + '"></i>'+ i18n.t('No Data Available') + '</h4></div></div>'));
 
                         }
                     }
@@ -245,7 +245,7 @@ var drawChart = function (from, to) {
                 if (length == 0){
                     $('#apiUsageByUserTable').hide();
                     $('#noData').html('');
-                    $('#noData').append($('<div class="center-wrapper"><div class="col-sm-4"/><div class="col-sm-4 message message-info"><h4><i class="icon fw fw-info" title="'+ i18n.t('No Stats') + '"></i>'+ i18n.t('No Data Available.') + '</h4></div></div>'));
+                    $('#noData').append($('<div class="center-wrapper"><div class="col-sm-4"/><div class="col-sm-4 message message-info"><h4><i class="icon fw fw-info" title="'+ i18n.t('No Stats') + '"></i>'+ i18n.t('No Data Available') + '</h4></div></div>'));
 
                 } else {
                     $('#apiUsage_note').removeClass('hide');
@@ -388,7 +388,13 @@ var drawChart = function (from, to) {
                     y.tickFormat = '1d';
                     chart.addMeasureAxis("z", "Hits");
                     s=chart.addSeries("API", dimple.plot.bubble);
-
+                    s.getTooltipText = function (e) {
+                        return []; //removes the default tooltip text
+                    };
+                    s.addEventHandler("mousedown", function (e){
+                        var apiName = e.xValue;
+                        window.location = "all-statistics.jag?page=api-top-users&stat=all-stat&apiName=" + apiName;
+                    });
                     var div = d3.select("body").append("div").attr("class", "toolTip");
                     var filterValues = dimple.getUniqueValues(data, "API");
                     var state_array = [];
@@ -490,7 +496,7 @@ var drawChart = function (from, to) {
                           count++;
                             //limiting to show 20 entries at a time
                             if(count>20){
-                                $('#displayMsg').html('<h5 style="color:#555" >'+ i18n.t('Please Note that the graph will be showing only 20 entries') + '</h5>');
+                                $('#displayMsg').html('<h5 style="color:#555" >'+ i18n.t('Note that the graph shows only 20 entries') + '</h5>');
                                 state_array[id] = false;
                                 $(this).prop("checked", "");
                                 count--;
@@ -518,8 +524,10 @@ var drawChart = function (from, to) {
 
                         var circle=d3.select("#"+d.aggField+"_"+d.aggField+"__");
 
-                            circle.on("click", function(d){
-                            //circle on click
+                            circle.on("mouseenter", function(d){
+                            //circle on mouse enter
+                            $(this).css('cursor', 'pointer');
+                            
                             for ( var i = 0; i < parsedResponse.length; i++) {
                                 var count = 0;
                                 var app ='';
@@ -543,9 +551,8 @@ var drawChart = function (from, to) {
                                 div.style("left", d3.event.pageX+10+"px");
                                 div.style("top", d3.event.pageY-25+"px");
                                 div.style("display", "inline-block");
-
-                                div.html('<div style="color:#555; text-align:left">'+ i18n.t('API') + ' : ' +app +'</div><div style="color:#666;margin-top:5px;text-align:left">'+ i18n.t('Subscription Count') + ' : '+data[i].SubscriberCount+'</div><table class="table" id="tooltipTable"><thead><tr><th>'+ i18n.t('Version') + '</th><th>'+ i18n.t('Hits') + '</th></tr></thead><tbody></tbody></table>');
-                                    for (var l=0;l<versionCount.length;l++){
+                                div.html('<table class="table"><tbody><tr><td><div style="color:#555; text-align:left">'+ i18n.t("API") + '</td><td>' + app + '</td></tr><tr><td><div style="color:#555; text-align:left">'+ i18n.t('Subscriptions') + '</td><td>' + data[i].SubscriberCount + '</td></tr><tr><td><div style="color:#555; text-align:left">'+ i18n.t('Total Hits') + '</td><td>' + data[i].Hits + '</td></tr></tbody></table><table class="table" id="tooltipTable"><thead><tr><th>'+ i18n.t('Version') + '</th><th>'+ i18n.t('Hits') + '</th></tr></thead><tbody></tbody></table>');
+                                   for (var l=0;l<versionCount.length;l++){
                                         var versionName=versionCount[l].version;
                                         var version_Count=versionCount[l].count;
                                         $('#tooltipTable tbody').append('<tr><td>'+versionName+'</td><td>'+version_Count+'</td></tr>');
@@ -640,7 +647,7 @@ function getDateTime(currentDay,fromDay){
     from = convertTimeString(fromDay);
     var toDate = to.split(" ");
     var fromDate = from.split(" ");
-    var dateStr= fromDate[0]+" <i>"+fromDate[1]+"</i> <b>to</b> "+toDate[0]+" <i>"+toDate[1]+"</i>";
+    var dateStr= fromDate[0] + " <b>to</b> " + toDate[0];
     $("#date-range span").html(dateStr);
     $('#date-range').data('daterangepicker').setStartDate(from);
     $('#date-range').data('daterangepicker').setEndDate(to);

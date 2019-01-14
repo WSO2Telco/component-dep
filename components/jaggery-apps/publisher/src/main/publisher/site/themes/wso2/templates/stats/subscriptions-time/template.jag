@@ -17,7 +17,6 @@
         <div id="rangeSliderWrapper" >
            <div id="dateRangePickerContainer" style="text-align:right">
                <div class="btn-group" role="group">
-                   <button id="hour-btn" type="button" class="btn btn-default date-range"><%=i18n.localize("Hour")%></button>
                    <button id="today-btn" type="button" class="btn btn-default date-range"><%=i18n.localize("Day")%>
                    </button>
                    <button id="week-btn" type="button" class="btn btn-default date-range"><%=i18n.localize("Week")%></button>
@@ -34,7 +33,7 @@
 
 <div class="col-md-5 filters">
     <label class="control-label"><%=i18n.localize("API")%>&nbsp;&nbsp;</label>
-    <select id="apiSelect" name="selValue" class="selectpicker" data-live-search="true" title="<%=i18n.localize("Select API")%>">
+    <select id="apiSelect" name="selValue" class="selectpicker" data-live-search="true" title="<%=i18n.localize("All")%>">
        <option><%=i18n.localize("All")%></option>
     </select>
 </div>

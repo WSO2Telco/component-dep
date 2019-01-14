@@ -14,6 +14,9 @@ jagg.module("api", {
     isApiNameExist:function () {
         return jagg.require(jagg.getModulesDir() + "api/add.jag").isApiNameExist.apply(this, arguments);
     },
+    isApiNameWithDifferentCaseExist:function () {
+        return jagg.require(jagg.getModulesDir() + "api/add.jag").isApiNameWithDifferentCaseExist.apply(this, arguments);
+    },
     isURLValid:function () {
         return jagg.require(jagg.getModulesDir() + "api/add.jag").isURLValid.apply(this, arguments);
     },
@@ -61,6 +64,9 @@ jagg.module("api", {
     setCheckListItemVal:function () {
             return jagg.require(jagg.getModulesDir() + "api/life-cycles.jag").setCheckListItemVal.apply(this, arguments);
         },
+    getLabels:function () {
+        return jagg.require(jagg.getModulesDir() + "api/add.jag").getLabels.apply(this, arguments);
+    },
     getTiers:function () {
         return jagg.require(jagg.getModulesDir() + "api/add.jag").getTiers.apply(this, arguments);
     },
@@ -69,6 +75,9 @@ jagg.module("api", {
     },
     isAPIOlderVersionExist:function () {
         return jagg.require(jagg.getModulesDir() + "api/life-cycles.jag").isAPIOlderVersionExist.apply(this, arguments);
+    },
+    isPublisherAccessControlEnabled:function () {
+        return jagg.require(jagg.getModulesDir() + "api/check-permissions.jag").isPublisherAccessControlEnabled.apply(this, arguments);
     },
     hasCreatePermission:function () {
         return jagg.require(jagg.getModulesDir() + "api/check-permissions.jag").hasCreatePermission.apply(this, arguments);
@@ -125,9 +134,9 @@ jagg.module("api", {
     },
     updateAPIDesign:function () {
         return jagg.require(jagg.getModulesDir() + "api/add.jag").updateAPIDesign.apply(this, arguments);
-    },     
-    getSwagger12Resource:function () {
-        return jagg.require(jagg.getModulesDir() + "api/add.jag").getSwagger12Resource.apply(this, arguments);
+    },
+    getOpenAPIDefinitionResource:function () {
+        return jagg.require(jagg.getModulesDir() + "api/add.jag").getOpenAPIDefinitionResource.apply(this, arguments);
     },     
     updateAPIImplementation:function () {
         return jagg.require(jagg.getModulesDir() + "api/add.jag").updateAPIImplementation.apply(this, arguments);
@@ -158,6 +167,30 @@ jagg.module("api", {
     },
     uploadSequenceFile:function () {
         return jagg.require(jagg.getModulesDir() + "api/add.jag").uploadSequenceFile.apply(this, arguments);
+    },
+    getAPILCWorkflowStatus:function () {
+        return jagg.require(jagg.getModulesDir() + "api/life-cycles.jag").getAPILCWorkflowStatus.apply(this, arguments);
+    },
+    deleteWorkflowTask:function () {
+        return jagg.require(jagg.getModulesDir() + "api/life-cycles.jag").deleteWorkflowTask.apply(this, arguments);
+    },
+    uploadCertificate:function () {
+        return jagg.require(jagg.getModulesDir() + "api/add.jag").uploadCertificate.apply(this, arguments);
+    },
+    deleteCertificate:function () {
+        return jagg.require(jagg.getModulesDir() + "api/add.jag").deleteCertificate.apply(this, arguments);
+    },
+    getCertificate:function () {
+        return jagg.require(jagg.getModulesDir() + "api/add.jag").getCertificate.apply(this, arguments);
+    },
+    getCertificates:function () {
+        return jagg.require(jagg.getModulesDir() + "api/add.jag").getCertificates.apply(this, arguments);
+    },
+    isConfigured:function () {
+        return jagg.require(jagg.getModulesDir() + "api/add.jag").isConfigured.apply(this, arguments);
+    },
+    getSequenceFileContent:function() {
+        return jagg.require(jagg.getModulesDir() + "api/add.jag").getSequenceFileContent.apply(this, arguments);
     }
 });
 %>

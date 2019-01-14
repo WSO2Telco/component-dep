@@ -38,9 +38,9 @@ $(document).ready(function() {
 
     $('.default_version_check').change(function(){
         if($(this).is(":checked")){
-            $(default_version_checked).val($(this).val());
+            $('#default_version_checked').val($(this).val());
         }else{
-            $(default_version_checked).val("");
+            $('#default_version_checked').val("");
         }
     });
 
@@ -336,7 +336,7 @@ var deleteResource = function (deleteButton) {
     //Check whether only one defined resource remains before delete operation
     if(count==3){
         $('#resourceTableError').show('fast');
-        $('#resourceTableError').html( i18n.t("Sorry. This row cannot be deleted. At least one resource entry has to be available.")+'<br />');
+        $('#resourceTableError').html( i18n.t("This row cannot be deleted. At least one resource entry has to be available.")+'<br />');
         return;
     }
     $('#resourceTableError').hide('fast');
@@ -425,6 +425,18 @@ function showHideRoles(){
 	} else{
 		$('#rolesDiv').show();
 	}
+}
+
+/**
+ * To show, hide publisher access control roles.
+ */
+function showHidePublisherAccessControlRoles() {
+    var visibility = $('#access-control').find(":selected").val();
+    if (visibility == "none") {
+        $('#publisherRolesDiv').hide();
+    } else {
+        $('#publisherRolesDiv').show();
+    }
 }
 
 function showHideTenants(){

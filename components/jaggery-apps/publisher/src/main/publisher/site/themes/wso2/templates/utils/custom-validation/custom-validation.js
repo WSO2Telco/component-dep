@@ -13,7 +13,13 @@ $(document).ready(function() {
                       });
         return this.optional(element) || contextExist != "true";
     }, i18n.t('Duplicate context value.'));
-
+    $.validator.addMethod('tenantContextExists', function(value, element) {
+        if (value.charAt(0) != "/") {
+            value = "/" + value;
+        }
+        var illegalChars = /(\/t\/|\/t$)/;
+        return !illegalChars.test(value)
+    }, '/t/ not allowed in the context field.');
     $.validator.addMethod('apiNameExists', function(value, element) {
         var apiNameExist = false;
         jagg.syncPost("/site/blocks/item-add/ajax/add.jag", { action:"isAPINameExist", apiName:value },
@@ -25,19 +31,35 @@ $(document).ready(function() {
         return this.optional(element) || apiNameExist != "true";
     }, i18n.t('Duplicate API name.'));
 
+    $.validator.addMethod('validContext', function (value, element) {
+        return value != "/";
+    }, i18n.t('Only / is not allowed as context.'));
+
     $.validator.addMethod('selected', function(value, element) {
         return value!="";
     }, i18n.t('Select a value for the tier.'));
 
     $.validator.addMethod('validRegistryName', function(value, element) {
-        var illegalChars = /([~!@#;%^*+={}\|\\<>\"\',])/;
+        var illegalChars = /([~!@#;%^*()+={}|\<>"',&])/;
         return !illegalChars.test(value);
-    }, i18n.t('Name contains one or more illegal characters  (~ ! @ #  ; % ^ * + = { } | &lt; &gt;, \' " \\ ) .'));
+    }, i18n.t('Name contains one or more illegal characters  (~ ! @ #  ; % ^ & * + = { } () | &lt; &gt;, \' " \\ ) .'));
+
+    $.validator.addMethod('validAPIName', function(value, element) {
+        var illegalChars = /([~!@#;:%^*()+={}|\\<>"',&\/$])/;
+        return !illegalChars.test(value);
+    }, i18n.t('Name contains one or more illegal characters  (~ ! @ #  ; : % ^ & * + = { } () | &lt; &gt;, \' " \\ $) .'));
 
     $.validator.addMethod('validContextTemplate', function(value, element) {
-        var illegalChars = /([~!@#;%^*+=\|\\<>\"\',])/;
+        var illegalChars = /([~!@#;%^&*+=\|\\<>\"\',])/;
         return !illegalChars.test(value);
-    }, i18n.t('Name contains one or more illegal characters  (~ ! @ #  ; % ^ * + = | &lt; &gt;, \' " \\ ) .'));
+    }, i18n.t('Name contains one or more illegal characters  (~ ! @ #  ; % ^ & * + = | &lt; &gt;, \' " \\ ) .'));
+
+    $.validator.addMethod('validateVersionOnlyContext', function (value, element) {
+        if (value == "{version}" || value == "/{version}") {
+            return false;
+        }
+        return true;
+    }, i18n.t('"{version}" or "/{version}" cannot be used solely in the context field.'));
 
     $.validator.addMethod('validTemplate', function(value, element) {
         return value.indexOf("{}") == -1
@@ -72,6 +94,17 @@ $(document).ready(function() {
                       });
         return this.optional(element) || valid == true;
     }, i18n.t('Invalid role name[s]'));
+
+    $.validator.addMethod('validateUserRoles', function(value, element) {
+        var valid = false;
+        jagg.syncPost("/site/blocks/item-add/ajax/add.jag", { action:"validateRoles", roles:value , validate:true},
+            function (result) {
+                if (!result.error) {
+                    valid = result.response;
+                }
+            });
+        return this.optional(element) || valid == true;
+    }, i18n.t('Invalid role name[s] or roles provided do not contain any of the roles of API creator.'));
 
     $.validator.addMethod('validateEndpoints', function (value, element){
         return APP.is_production_endpoint_specified() || APP.is_sandbox_endpoint_specified();
@@ -127,7 +160,7 @@ $(document).ready(function() {
             return ($.inArray(ext, validFileExtensions)) > -1;
         }
         return true;
-    }, i18n.t('File must be in image file format.'));
+    }, i18n.t('File must be in an image file format.'));
 
     $.validator.addMethod('validateForwardSlashAtEnd', function(value, element) {
         var regexForwardSlashAtEnd = /.+\/$/;
@@ -135,11 +168,16 @@ $(document).ready(function() {
     }, i18n.t('Name or Context contains / at the end'));
 
     $.validator.addMethod('validateAPIVersion', function(value, element)    {
-        var illegalChars = /([~!@#;%^*+=\|\\<>\"\'\/,])/;
+        var illegalChars = /([\]\[\{\}\(\)\`~!@#;%^&*+=\|\\<>\"\'\/,])/;
         return !illegalChars.test(value);
-    }, i18n.t('Version contains one or more illegal characters  (~ ! @ #  ; % ^ * + = | &lt; &gt;, \' " \\) .'));
+    }, i18n.t('Version contains one or more illegal characters  ( [ ] { } ( ) ` ~ ! @ #  ; % ^ & * + = | &lt; &gt;, \' " \\) .'));
 
     $.validator.addMethod('validateDescriptionLength', function(value, element) {
         return value.length <= 20000;
     }, i18n.t('maximum support 20000 characters only'));
+    
+    $.validator.addMethod('email-validation', function(value, element) {
+        var validationQuery = /^([a-zA-Z0-9_.+-])+\@(([a-zA-Z0-9-])+\.)+([a-zA-Z0-9]{2,4})+$/;
+        return validationQuery.test(value)
+    }, 'Please enter a valid email address.');
 });

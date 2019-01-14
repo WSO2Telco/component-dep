@@ -3244,7 +3244,7 @@ body.sticky-footer {
   padding-bottom: 40px;
 }
 body.sticky-footer footer {
-  position: absolute;
+  position: fixed;
   bottom: 0;
   z-index: 1000;
 }
@@ -10248,6 +10248,10 @@ header .nav .dropdown-menu > li:not(.divider) {
 
 .ribbon-yellow:after {
   right: 0;
+}
+
+.bootstrap-tagsinput {
+  width: 100%;
 }
 
 /*# sourceMappingURL=apim-store.css.map */

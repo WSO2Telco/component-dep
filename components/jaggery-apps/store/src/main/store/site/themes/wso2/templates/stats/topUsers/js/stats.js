@@ -37,7 +37,7 @@ var statsEnabled = isDataPublishingEnabled();
                     
                     //date picker
                     $('#date-range').daterangepicker({
-                          timePicker: true,
+                          timePicker: false,
                           timePickerIncrement: 30,
                           format: 'YYYY-MM-DD h:mm',
                           opens: 'left',
@@ -48,7 +48,7 @@ var statsEnabled = isDataPublishingEnabled();
                        var to = convertTimeString(picker.endDate);
                        var fromStr = from.split(" ");
                        var toStr = to.split(" ");
-                       var dateStr = fromStr[0] + " <i>" + fromStr[1] + "</i> <b>to</b> " + toStr[0] + " <i>" + toStr[1] + "</i>";
+                       var dateStr = fromStr[0] + " <b>" + i18n.t("to") + "</b> " + toStr[0];
                        $("#date-range span").html(dateStr);
                        drawRegisteredUserCountByApplications(from,to);
                        drawTopUsersGraph(from,to);
@@ -110,20 +110,14 @@ var drawTopUsersGraph = function(from,to){
                 if (length > 0) {
                 for(var k=0 ; k<length ;k++){
                      $('#topUsersView').append($(' <h4>'+i18n.t("Application Name: ")+ json.usage[k].appName+'</h4><div class="col-md-12" ><div class="col-md-6" ><div id="userChart'+(k+1)+'" ><svg style="height:400px;"></svg></div> </div> <div class="col-md-6"> <table class="table table-striped table-bordered" id="userTable'+(k+1)+'" class="userTable display" cellspacing="0" width="100%"><thead><tr> <th>'+i18n.t("User")+'</th><th>'+i18n.t("Number of API Calls")+'</th></tr></thead> </table> </div> </div>'));
-                }
 
-                for(var k=0 ; k<length ;k++){
                     var dataLength = json.usage[k].userCountArray.length,data = [];
                     $('#userTable'+(k+1)).find("tr:gt(0)").remove();
                     var chartData=[];
-                    for (var i = 0; i < dataLength; i++) {
 
-                        data[i] = [ json.usage[k].userCountArray[i].user, parseInt( json.usage[k].userCountArray[i].count )];
-                        $('#userTable'+(k+1)).append($('<tr><td>' +  json.usage[k].userCountArray[i].user + '</td><td class="tdNumberCell">' +json.usage[k].userCountArray[i].count + '</td></tr>'));
-                        chartData.push({"userName":json.usage[k].userCountArray[i].user,
-                                         "count":parseInt( json.usage[k].userCountArray[i].count)
-                        });
-                    }
+                    $('#userTable'+(k+1)).append($(json.usage[k].chartTableRows));
+
+                    chartData = json.usage[k].chartData;
                     drawChart('#userChart'+(k+1),k,chartData);
                     $('#userTable'+(k+1)).datatables_extended({
                         "fnDrawCallback": function(){
@@ -133,10 +127,9 @@ var drawTopUsersGraph = function(from,to){
                             else $('#userTable'+(k+1)+'_paginate').show();
                           }
                         });
-                    $('#userTable'+(k+1)).show();
                 }
             }else{
-                $('#topUsersView').html($('<div id="noData" class="message message-info"><h4><i class="icon fw fw-info"></i>'+i18n.t("No Data Available.")+'</h4></div>'));
+                $('#topUsersView').html($('<div id="noData" class="message message-info"><h4><i class="icon fw fw-info"></i>'+i18n.t("No Data Available")+'</h4></div>'));
             }
             } else {
                 if (json.message == "AuthenticateError") {
@@ -275,7 +268,7 @@ var drawRegisteredUserCountByApplications = function(from,to){
 
                         // CREATE VIS & GROUPS
 
-                        var vis = d3.select("#subsChart").append("div:div").attr("class", "col-xs-12 col-sm-4 col-md-3 col-lg-2");
+                        var vis = d3.select("#subsChart").append("div:div").attr("class", "col-xs-12 col-sm-6 col-md-4 col-lg-3");
                         
                         vis = vis.append("svg:svg").style("height","200px");
 
@@ -504,7 +497,7 @@ var drawRegisteredUserCountByApplications = function(from,to){
                     update(0);
                 }
             } else {
-            	$('#subsChart').html($('<div id="noData" class="message message-info"><h4><i class="icon fw fw-info"></i>No Data Available.</h4></div>'));
+            	$('#subsChart').html($('<div id="noData" class="message message-info"><h4><i class="icon fw fw-info"></i>'+i18n.t("No Data Available")+'</h4></div>'));
             }
             } else {
                 if (json.message == "AuthenticateError") {
@@ -589,7 +582,7 @@ function getDateTime(currentDay,fromDay){
     var from = convertTimeString(fromDay);
     var toDate = to.split(" ");
     var fromDate = from.split(" ");
-    var dateStr= fromDate[0]+" <i>"+fromDate[1]+"</i> <b>to</b> "+toDate[0]+" <i>"+toDate[1]+"</i>";
+    var dateStr= fromDate[0]+" <b>to</b> "+toDate[0];
     $("#date-range span").html(dateStr);
     $('#date-range').data('daterangepicker').setStartDate(from);
     $('#date-range').data('daterangepicker').setEndDate(to);

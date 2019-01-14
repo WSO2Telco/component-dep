@@ -50,7 +50,12 @@ jagg.module("manager", {
     },
     getStoreHostObject:function () {
         return jagg.require(jagg.getModulesDir() + "manager/manager.jag").getStoreHostObject.apply(this, arguments);
+    },
+    getAPIProviderObj:function () {
+        return jagg.require(jagg.getModulesDir() + "manager/manager.jag").getAPIProviderObj.apply(this, arguments);
+     },
+    getUserNameFromEmail:function () {
+        return jagg.require(jagg.getModulesDir() + "manager/manager.jag").getUserNameFromEmail.apply(this, arguments);
     }
-
  });
  %>

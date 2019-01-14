@@ -43,7 +43,7 @@ currentLocation=window.location.pathname;
 
                     //date picker
                     $('#date-range').daterangepicker({
-                          timePicker: true,
+                          timePicker: false,
                           timePickerIncrement: 30,
                           format: 'YYYY-MM-DD h:mm',
                           opens: 'left',
@@ -60,7 +60,7 @@ currentLocation=window.location.pathname;
                        to = convertTimeString(picker.endDate);
                        var fromStr = from.split(" ");
                        var toStr = to.split(" ");
-                       var dateStr = fromStr[0] + " <i>" + fromStr[1] + "</i> <b>to</b> " + toStr[0] + " <i>" + toStr[1] + "</i>";
+                       var dateStr = fromStr[0] + " <b>to</b> " + toStr[0];
                        $("#date-range span").html(dateStr);
                        drawAPIResponseFaultCountChart(from,to,apiFilter);
                     });
@@ -147,7 +147,7 @@ var drawAPIResponseFaultCountTable = function(from,to){
                 }else if (length == 0) {
                     $('#tableContainer').hide();
                     $('div#apiFaultyTable_wrapper.dataTables_wrapper.no-footer').remove();
-                    $('#noData').append($('<div class="center-wrapper"><div class="col-sm-4"/><div class="col-sm-4 message message-info"><h4><i class="icon fw fw-info" title="No Stats"></i>No Data Available.</h4></div></div>'));
+                    $('#noData').append($('<div class="center-wrapper"><div class="col-sm-4"/><div class="col-sm-4 message message-info"><h4><i class="icon fw fw-info" title="No Stats"></i>'+i18n.t("No Data Available")+'</h4></div></div>'));
                 }
 
             } else {
@@ -182,17 +182,17 @@ var drawAPIResponseFaultCountChart = function(from,to){
                     }
 
 
-                    var dataStructure = [{
-                            "key": "Fault",
-                            "values": faultData
-                        },
+                    var dataStructure = [
                         {
                             "key": "Success",
                             "values": data
+                        },{
+                            "key": "Fault",
+                            "values": faultData
                         }];
 
                     (function (data) {
-                    var colorRangeArray=["#e74c3c","#4aa3df"];
+                    var colorRangeArray=["#4aa3df","#e74c3c"];
                         var colors = d3.scale.ordinal()
                            .range(colorRangeArray);
                         keyColor = function (d, i) {
@@ -220,7 +220,7 @@ var drawAPIResponseFaultCountChart = function(from,to){
 
                             chart.xAxis
                                 .axisLabel('APIs')
-                                .tickFormat(function (d, i) {
+                                .tickFormat(function (i) {
                                 return labels[i];
                             });
                             chart.xAxis.tickValues(dataStructure[0].values.map( function(d){return d.x;}));
@@ -248,7 +248,7 @@ var drawAPIResponseFaultCountChart = function(from,to){
                     $('#tableContainer').hide();
                     $('#chartContainer').hide();
                     $('#noData').html('');
-                    $('#noData').append($('<div class="center-wrapper"><div class="col-sm-4"/><div class="col-sm-4 message message-info"><h4><i class="icon fw fw-info" title="No Stats"></i>No Data Available.</h4></div></div>'));
+                    $('#noData').append($('<div class="center-wrapper"><div class="col-sm-4"/><div class="col-sm-4 message message-info"><h4><i class="icon fw fw-info" title="No Stats"></i>'+i18n.t("No Data Available")+'</h4></div></div>'));
                 }
 
             } else {
@@ -266,7 +266,7 @@ function getDateTime(currentDay,fromDay){
     from = convertTimeString(fromDay);
     var toDate = to.split(" ");
     var fromDate = from.split(" ");
-    var dateStr= fromDate[0]+" <i>"+fromDate[1]+"</i> <b>to</b> "+toDate[0]+" <i>"+toDate[1]+"</i>";
+    var dateStr= fromDate[0] + " <b>to</b> " + toDate[0];
     $("#date-range span").html(dateStr);
     $('#date-range').data('daterangepicker').setStartDate(from);
     $('#date-range').data('daterangepicker').setEndDate(to);
