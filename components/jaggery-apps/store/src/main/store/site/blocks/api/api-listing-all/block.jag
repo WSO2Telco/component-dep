@@ -15,6 +15,7 @@ jagg.block("api/api-listing-all", {
                 tag = request.getParameter("tag"), page = request.getParameter("page"),
                 query = request.getParameter("query")
                 apiStatus = request.getParameter("apiStatus");
+        var APIUtil = org.wso2.carbon.apimgt.impl.utils.APIUtil;
         //fix for broken listing page if the query had one quote
         if( query != null && ((query.split("\"").length - 1 ) % 2 == 1)){
             var query = query+"\""
@@ -38,11 +39,18 @@ jagg.block("api/api-listing-all", {
         if(page==null){
         page=1;
         }
-        var start = (page - 1)*12;
-        var end = 12;
+        var end;
+        if (APIUtil.getApisPerPageInStore() == 0) {
+            end = 12;
+        } else {
+            end = APIUtil.getApisPerPageInStore();
+        }
+        var start = (page - 1)*end;
 
         if (tag) {
             mod = jagg.module("api");
+            //Replace empty spaces with '\ ' in order to support Solr indexing
+            tag = tag.replace(/ /g, "\\ ");
             response = mod.getPaginatedAPIsByTag(tag,start,end);
             apis = response.result.apis;
         } else if (query) {
@@ -76,6 +84,15 @@ jagg.block("api/api-listing-all", {
         ratingResult = jagg.module("rating").isRatingActivated();
         isRatingActivated = ratingResult.allow;
 
+        // added for intractive tutorial
+        var applicationsResult = {};
+        var user = jagg.getUser();
+        if (user) {
+            if (user.username) {
+                applicationsResult = jagg.module("application").getApplications(user.username).applications;
+            }
+        }
+
         return {
             "apis":apis,
             "totalLength":response.result.totalLength,
@@ -83,7 +100,8 @@ jagg.block("api/api-listing-all", {
             "isMonetizationEnabled":isMonetizationEnabled,
             "error":error,
             "message":message,
-            "isRatingActivated":isRatingActivated
+            "isRatingActivated":isRatingActivated,
+            "applications":applicationsResult
         };
     }
 });

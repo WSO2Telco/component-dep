@@ -1,8 +1,13 @@
 $(document).ready(function() {
    $.validator.addMethod('validName', function(value, element) {
-        var illegalChars = /([~!#$;%^*+={}\|\\<>\"\'\/,])/;
+        var illegalChars = /([~!#$;%^&*+={}\|\\<>\"\'\/,])/;
         return !illegalChars.test(value);
-    }, i18n.t('The Name contains one or more illegal characters')+' (~ ! @ # $ ; % ^ * + = { } | &lt; &gt;, \' / " \\ ) .');
+    }, i18n.t('The Name contains one or more illegal characters')+' (~ ! # $ ; % ^ & * + = { } | &lt; &gt;, \' / " \\ ) .');
+
+    $.validator.addMethod('validateAt', function (value, element) {
+        var validString = /^(?!(.*@){2})/;
+        return validString.test(value);
+    }, i18n.t('The Name contains more than one @ signs'));
 
    $.validator.addMethod('validPassword', function(value, element) {
         var pwdregex = /^[\S]{5,30}$/;

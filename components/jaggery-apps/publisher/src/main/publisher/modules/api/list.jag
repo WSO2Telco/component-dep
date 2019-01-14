@@ -65,7 +65,13 @@ var getAPI = function (api) {
             hasDefaultVersion:hasDefaultVersion,
             currentDefaultVersion:defaultVersion,
             availableSubscriptionPolicy:result[50],
-            apiLevelPolicy:result[51]
+            apiLevelPolicy:result[51],
+            type:result[52],
+            accessControl:result[53],
+            accessControlRoles:result[54],
+            additionalProperties:result[55],
+            authorizationHeader:result[56],
+            gatewayLabels:result[57]
         };
         return {
             error:false,

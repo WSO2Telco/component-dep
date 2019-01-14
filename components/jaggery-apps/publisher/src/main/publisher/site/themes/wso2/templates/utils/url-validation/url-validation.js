@@ -1,6 +1,7 @@
 $(document).ready(function(){
     $( document ).on( "click focused", "button.check_url_valid", function() {
         var btn = this;
+        $(btn).prop('disabled', true);
         var url = $(this).parent().parent().find('input:first').val();
         var type = '';
         var attr = $(this).attr('url-type');
@@ -31,11 +32,15 @@ $(document).ready(function(){
         $(btn).val(i18n.t('Validating..'));
 
         if (url == '') {
-        	$(btn).parent().parent().after(' <span class="label label-danger url_validate_label"><i class="fw fw-warning icon-white" title="missing Url"></i> '+ i18n.t('Please provide a URL to test.')+'</span>');
+            $(btn).parent().parent().after(' <span class="label label-danger url_validate_label">' +
+                '<i class="fw fw-cancel icon-white" title="invalid url"></i> ' +
+                ' <span class ="url_validate_message"></span></span>');
+            jQuery( '.url_validate_message' ).text( i18n.t('Invalid') + '. ' +  result.response.response);
             var toFade = $(btn).parent().parent().parent().find('.url_validate_label');
             $(btn).removeClass("loadingButton-small");
             $(btn).val(i18n.t('Test URI'));
             var foo = setTimeout(function(){$(toFade).hide()},3000);
+            $(btn).prop('disabled', false);
             return;
         }
         if (!type) {
@@ -61,7 +66,7 @@ $(document).ready(function(){
                                         if (result.response.isContainUriTemplatesOnly) {
                                             $(btn).parent().parent().after(' <span class="label label-danger url_validate_label"><i class="fw fw-cancel icon-white" title="missing-complete-url>"></i> ' + i18n.t('Cannot test the endpoint provided. Please specify the full URL for testing.') + '</span>');
                                         } else {
-                                            $(btn).parent().parent().after(' <span class="label label-danger url_validate_label"><i class="fw fw-cancel icon-white" title="invalid"></i> ' + i18n.t('Invalid') + '. ' + result.response.statusCode + ' - ' + result.response.reasonPhrase + '</span>');
+                                            $(btn).parent().parent().after(' <span class="label label-warning url_validate_label"><i class="fw fw-cancel icon-white" title="warning"></i> ' + i18n.t('Warning') + '. ' + result.response.statusCode + ' - ' + result.response.reasonPhrase + '</span>');
                                         }
                                     }
                               }
@@ -79,6 +84,7 @@ $(document).ready(function(){
 
                       $(btn).removeClass("loadingButton-small");
                       $(btn).val(i18n.t('Test URI'));
+                      $(btn).prop('disabled', false);
                   }, "json");
 
     });

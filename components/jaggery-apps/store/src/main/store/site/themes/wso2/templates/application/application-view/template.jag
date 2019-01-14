@@ -2,30 +2,27 @@
  var application = outputs.application;
  var oauthapp = outputs.oauthapp;
  jagg.log(outputs.tiers);
-
+ var user = jagg.getUser();
 var app_tier;
 for(var i=0;i < outputs.tiers.length; i++){
   if(outputs.tiers[i].tierName == application.tier){
      app_tier = outputs.tiers[i]; 
   }
 }
-
-var supportedLangs = jagg.module("subscription").getSupportedLanguages();
 %>
+
 <div class="page-header" id="Message">
     <h2 id="application_name"><%= encode.forHtml(application.name) %></h2>
 </div>
   <!-- Nav tabs -->
   <div class="white-wrapper">
+    <div id="jwt_modal_placeholder"></div>
     <ul class="nav nav-tabs" role="tablist">
-      <li role="presentation" class="active"><a title="<%=i18n.localize("Details")%>" href="#details" aria-controls="profile" role="tab" data-toggle="tab"><%=i18n.localize("Details")%></a></li>          
+      <li role="presentation" id="details-tab" class="active"><a title="<%=i18n.localize("Details")%>" href="#details" aria-controls="profile" role="tab" data-toggle="tab"><%=i18n.localize("Details")%></a></li>
       <% if(application.status == "APPROVED"){ %>
-      <li role="presentation"><a title="<%=i18n.localize("Production Keys")%>" href="#production" aria-controls="profile" role="tab" data-toggle="tab"><%=i18n.localize("Production Keys")%></a></li>
-      <li role="presentation"><a title="<%=i18n.localize("Sandbox Keys")%>" href="#sandbox" aria-controls="profile" role="tab" data-toggle="tab"><%=i18n.localize("Sandbox Keys")%></a></li>
-      <li role="presentation"><a title="<%=i18n.localize("Subscriptions")%>" href="#subscription" aria-controls="profile" role="tab" data-toggle="tab"><%=i18n.localize("Subscriptions")%></a></li>
-      <% if (supportedLangs.langs != null) { %>
-      <li role="presentation"><a title="<%=i18n.localize("SDKs")%>"  href="#sdks" aria-controls="profile" role="tab" data-toggle="tab"><%=i18n.localize("SDKs")%></a></li>
-      <% } %>
+      <li role="presentation" id="production-keys-tab"><a title="<%=i18n.localize("Production Keys")%>" id="actionLink-productionKeys" href="#production" aria-controls="profile" role="tab" data-toggle="tab"><%=i18n.localize("Production Keys")%></a></li>
+      <li role="presentation" id="sandbox-keys-tab"><a title="<%=i18n.localize("Sandbox Keys")%>" href="#sandbox" aria-controls="profile" role="tab" data-toggle="tab"><%=i18n.localize("Sandbox Keys")%></a></li>
+      <li role="presentation" id="subscriptions-tab"><a title="<%=i18n.localize("Subscriptions")%>" href="#subscription" aria-controls="profile" role="tab" data-toggle="tab"><%=i18n.localize("Subscriptions")%></a></li>
       <% } %>
     </ul>
 
@@ -46,13 +43,67 @@ var supportedLangs = jagg.module("subscription").getSupportedLanguages();
       <p><%=i18n.localize("This feature allows you to assign an API request quota per access token. Allocated quota will be shared among all the subscribed APIs of the application.")%></p>
     </div>
   </div>
+
+<%
+  if(jagg.isMultiGroupEnabled()){
+%>
+    <div class="form-group">
+       <label class="col-sm-3 control-label">Groups%></label>
+       <div class="col-sm-9 " style="width: 200px">
+         <%
+            var groupId = encode.forHtml(application.groupId).replace(/,/g," ");
+
+            if (groupId == "" || groupId == "null") {
+                groupId = i18n.localize("No groups assigned");
+            }
+         %>
+         <p class="form-control-static" style="width: 100%"><span style="font-weight: bold;"><%= encode.forHtml(groupId)%></span></p>
+       </div>
+  </div>
+<%}%>
+  <%
+    var applicationUtils = Packages.org.wso2.carbon.apimgt.impl.utils.ApplicationUtils;
+    var result = applicationUtils.retrieveApplication(application.name, user.username, session.get("groupId"));
+
+    var isOwner = true;
+    if (!result.getSubscriber().getName().equalsIgnoreCase(user.username)) {
+  %>
+    <style>#appEditButton{display:none}</style>
+  <%}%>
   <div class="form-group">
     <label class="col-sm-3 control-label"><%=i18n.localize("Description")%></label>
     <div class="col-sm-9">
       <p class="form-control-static"><%if(application.description){%><%=encode.forHtml(application.description) %><% }else{%><%=i18n.localize("Not Given")%><%}%></p>
     </div>
-  </div>  
-</form>      
+  </div>
+
+  <% var applicationAttributes = parse(application.applicationAttributes);
+
+    for (var prop in applicationAttributes) { %>
+        <div class="form-group">
+            <label class="control-label col-sm-3" for="attribute_<%=i%>" >
+                <%=encode.forHtml(i18n.localize(prop,prop)) %>
+            </label>
+            <div class="col-sm-6">
+            <p class="form-control-static"><%
+        if (applicationAttributes[prop]) { %>
+                    <%=encode.forHtml(applicationAttributes[prop])%>
+                <% } else { %>
+                    <%=i18n.localize("Not Given") %>
+                <% } %>
+            </p>
+            </div>
+        </div>
+    <% } %>
+
+    <div class="form-group">
+    <label class="col-sm-3 control-label"><%=i18n.localize("Token Type")%></label>
+    <div class="col-sm-9">
+      <p class="form-control-static"><%if(application.tokenType){%><%=encode.forHtml(i18n.localize(application.tokenType)) %><% }else{%><%=i18n.localize("DEFAULT")%><%}%></p>
+    </div>
+  </div>
+
+</form>
       </div>
       <% if(application.status == "APPROVED"){ %>
       <div role="tabpanel" class="tab-pane fade production-keys" id="production">
@@ -76,7 +127,9 @@ var supportedLangs = jagg.module("subscription").getSupportedLanguages();
             Scopes: outputs.scopes,
             ValidityTime: oauthapp.prodValidityTime,
             keyState: oauthapp.prodKeyState,
-            grants: prodGrants
+            grants: prodGrants,
+            tokenType: application.tokenType
+
         }
       %>
       </div>
@@ -96,11 +149,12 @@ var supportedLangs = jagg.module("subscription").getSupportedLanguages();
             ConsumerKey: oauthapp.sandboxConsumerKey,
             ConsumerSecret: oauthapp.sandboxConsumerSecret,
             Key: oauthapp.sandboxKey,
-            KeyScope: oauthapp.sandKeyScope,
+            KeyScope: oauthapp.sandKeyScopeValue,
             Scopes: outputs.scopes,
             ValidityTime: oauthapp.sandValidityTime,
             keyState: oauthapp.sandboxKeyState,
-            grants:sandboxGrants
+            grants:sandboxGrants,
+            tokenType: application.tokenType
         }
       %>      
       <div role="tabpanel" class="tab-pane fade sandbox-keys" id="sandbox">
@@ -108,43 +162,17 @@ var supportedLangs = jagg.module("subscription").getSupportedLanguages();
       <div role="tabpanel" class="tab-pane fade" id="subscription">      
       <% jagg.includeBlock("subscription/subscribed-apis", { "application": application }); %>    
       </div>
-      <div role="tabpanel" class="tab-pane fade" id="sdks">
-
-        <%
-        var supportedLangs = jagg.module("subscription").getSupportedLanguages();
-
-        if (supportedLangs.langs != null) { %>
-
-            <div class="row">
-                  <div class="col-md-12"> <%=i18n.localize("Download client-side SDK for your applications.")%> </div>
-            </div>
-            <br>
-
-        <%  var langsArray = supportedLangs.langs.split(",");
-                for(var i = 0 ; i < langsArray.length ; i++ ) { %>
-                    <a href="/store/site/blocks/subscription/subscription-list/ajax/subscription-list.jag?action=generateSdk&selectedApp=<%=application.name%>&language=<%=langsArray[i]%>"
-                          class="btn btn-primary " type="button" title="sdk generation">
-                        <%=i18n.localize(langsArray[i],langsArray[i])%>&nbsp;<span class="glyphicon glyphicon-download-alt"></span>
-                    </a>
-        <%
-                }
-        } else  { %>
-        <div class="row">
-            <div class="col-md-12"> <%=i18n.localize("No SDK configured")%> </div>
-        </div>
-        <br>
-
-        <% }%>
-
-      </div>
       <% } %>      
     </div>
   </div>
   <% if(application.status == "APPROVED"){ %>
   <script language="javascript">
     var grant_types = <%= stringify(grant_types)%>;
-    var prodapp = <%= stringify(prodapp)%>;
-    var sandapp = <%= stringify(sandapp)%>;
+    var prodapp = jQuery.parseJSON('<%= encode.forJavaScript(stringify(prodapp))%>');
+    var sandapp = jQuery.parseJSON('<%= encode.forJavaScript(stringify(sandapp))%>');
+
+    var enjoyhint_instance = null;
+
     $(document).ready(function() {
 
       $(".production-keys").keyWidget({ app: prodapp, type:"PRODUCTION", provide_keys: <%= site.mapExistingAuthApps %>, grant_types: grant_types });
@@ -153,8 +181,43 @@ var supportedLangs = jagg.module("subscription").getSupportedLanguages();
       //activate a tab based on hash
       if(location.hash != undefined || location.hash !=""){
         $("a[href='"+location.hash+"']").tab("show");
-      }       
+      }
+
+        if (isEnjoyHintEnabled()) {
+            var prodKey = '<%=oauthapp.prodKey%>';
+            if(prodKey != undefined && prodKey != 'null'){
+                runEnjoyHintScript(enjoyhint_instance, re_generate_production_keys_data);
+            } else {
+                runEnjoyHintScript(enjoyhint_instance, generate_production_keys_data);
+            }
+        }
+        else {
+          runIntractiveTutorialForUser();
+        }
     });
+
+    // API Store Intractive Tutorial 
+    function runIntractiveTutorialForUser() { 
+      var enjoyHintApplicationViewInstance = null;
+      var isTutorialCompleted = localStorage.getItem("isTutorialCompleted");
+      var isNewUserInteractiveTutorialStarted = localStorage.getItem("isNewUserInteractiveTutorialStarted");
+      var isApplicationSubscribed = localStorage.getItem("isApplicationSubscribed");
+      var isSubscriptionViewed = localStorage.getItem("isSubscriptionViewed");
+      var isAccessKeyGeneratedForTheUser = localStorage.getItem("isAccessKeyGeneratedForTheUser");
+      var prodKey = '<%=oauthapp.prodKey%>';
+      if (<%=user%> && !isTutorialCompleted && isApplicationSubscribed && isNewUserInteractiveTutorialStarted) {
+        if (!isSubscriptionViewed) {
+          if (prodKey != undefined && prodKey != 'null') {
+            runEnjoyHintScript(enjoyHintApplicationViewInstance, api_store_view_application_subscriptions_for_generated_keys);
+          }
+          else {
+            runEnjoyHintScript(enjoyHintApplicationViewInstance, api_store_view_application_subscriptions);
+          }
+          localStorage.setItem("isAccessKeyGeneratedForTheUser", true);
+          localStorage.setItem("isSubscriptionViewed", true);
+        }
+      }
+    }
   </script>
   <% jagg.includeBlock("application/application-keys", { "app" : prodapp, "type": "" , "gatewayurl":outputs.gatewayurl} ); %>
   <% } %>

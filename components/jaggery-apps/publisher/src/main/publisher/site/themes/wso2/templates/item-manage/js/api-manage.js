@@ -108,8 +108,23 @@ function validate_tiers(){
     return false;
 }
 
+function validateGatewaysSelected(){
+    var atLeastOneIsSelected = false;
+    var gateway_error = $("#gateway_error").text();
+    $("input[name='gateways']:not(:checked)").each(function() {
+        atLeastOneIsSelected = true;
+    });
+    if(atLeastOneIsSelected){
+        $("#gateway_error").removeClass("hide").show().text(gateway_error);
+
+    } else {
+        $("#gateway_error").addClass("hide");
+    }
+
+}
+
 function validateSubscription() {
-    var subscriptionType = $('#subscriptions').val();
+    var subscriptionType = $('select#subscriptions').val();
     if (subscriptionType == 'specific_tenants') {
         var tenants = $('#tenants').val().trim();
         $("#subscriptions_error").remove();
@@ -145,6 +160,7 @@ $(document).ready(function(){
 
     //$('.multiselect').multiselect();
 
+    $('.env').change(validateGatewaysSelected);
     $('#tier').change(validate_tiers);
     $('#transport_http').change(validate_Transports);
     $('#transport_https').change(validate_Transports);
@@ -153,8 +169,8 @@ $(document).ready(function(){
       e.preventDefault();
     });
 
-    $('#subscriptions').change(function(e){
-        var subscription = $('#subscriptions').find(":selected").val();
+    $('select#subscriptions').change(function(e){
+        var subscription = $('select#subscriptions').find(":selected").val();
         if (subscription == "current_tenant" || subscription == "all_tenants"){
             $('#tenantsDiv').hide();
         } else {
@@ -164,13 +180,14 @@ $(document).ready(function(){
     
     $('.default_version_check').change(function(){
         if($(this).is(":checked")){
-            $(default_version_checked).val($(this).val());
+            $('#default_version_checked').val($(this).val());
         }else{
-            $(default_version_checked).val("");
+            $('#default_version_checked').val("");
         }
     });
 
-   validateAPITier();
+    validateAPITier();
+    validateGatewaysSelected();
 
     $("select[name='apiTier']").change(function(){
     	       validateAPITier();
@@ -247,7 +264,7 @@ $(document).ready(function(){
     else {
     	$(this).parent().parent().parent().next().children().next().children().hide();
     }
-
+    validate_Transports();
 });
 
 $('.js_hidden_section_title').click(function(){
@@ -293,15 +310,15 @@ function showHideResourceLevelTierSelection() {
     }
 }
 
+var transport_error = $("#transport_error").text();
 function validate_Transports(){
     var checkedHttpTransport=$('#transport_http').is(":checked");
     var checkedHttpsTransport=$('#transport_https').is(":checked");
-    $("#transport_error").remove();
     if(checkedHttpTransport || checkedHttpsTransport){
-    $( "div.checkbox" ).removeClass('error-multiselect');
+        $("#transport_error").addClass("hide");
         return true;
     }
-    $( "div.checkbox" ).addClass('error-multiselect').after('<div id="transport_error" class="error">This field is required.</div>');
+    $("#transport_error").removeClass("hide").show().text(transport_error);
     return false;
 }
 

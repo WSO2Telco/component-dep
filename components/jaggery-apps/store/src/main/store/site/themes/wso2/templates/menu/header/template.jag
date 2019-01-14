@@ -18,22 +18,51 @@ var isSuperTenant, tenantDomain;
 var tenant = request_tenant;
 if (jagg.getUser() != null) {
 	isSuperTenant = jagg.getUser().isSuperTenant;
-var MultitenantUtils = Packages.org.wso2.carbon.utils.multitenancy.MultitenantUtils;
+	var MultitenantUtils = Packages.org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 	tenantDomain = MultitenantUtils.getTenantDomain(jagg.getUser().username);
 }
-
+// used for the interactive tutorial
+var tenantDomains_forTutorial = require("/site/conf/interactiveTutorial.json");
+var blackListedTenantDomains_forTutorial = stringify(tenantDomains_forTutorial.blackListedTenantDomains);
+var isEnabledTutorialForUsers = tenantDomains_forTutorial.isEnabledTutorial;
+if (blackListedTenantDomains_forTutorial.indexOf(tenantDomain)>0) {
+    isEnabledTutorialForUsers = false;
+}
 %>
 <!-- header -->
 <header class="header header-default">
     <div class="container-fluid">
        <div class="pull-left brand float-remove-xs text-center-xs">
           <a href="<%=jagg.getMappedUrl("")%>" title="API Store">
-              <img src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("libs/theme-wso2_1.0/images/logo-inverse.svg"))%>" class="logo" alt="<%=i18n.localize("APIStore Home")%>"/>
+              <img src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("libs/theme-wso2_1.0/images/logo-inverse.svg"))%>" class="logo" alt="<%=i18n.localize("API Store Home")%>"/>
               <h1 class="display-block-xs"><%=i18n.localize("API Store")%></h1>
           </a>
        </div>
        <% if(user){ %>
        <ul class="nav navbar-right float-remove-xs text-center-xs">
+	   		<%if (isEnabledTutorialForUsers) {%>
+	   		    <%var tenantUrl = jagg.urlTenanted('/site/pages/index.jag');
+                var interactiveTutorialState;
+                %>
+                <%if (tenantUrl.indexOf("tenant") == -1) {
+                    interactiveTutorialState = "?storeInteractiveTutorial=true";
+                } else {
+                    interactiveTutorialState = "&storeInteractiveTutorial=true";
+                }%>
+                <li class="visible-inline-block">
+                        <!--Links to Access APIStore-->
+                    <a title="<%=i18n.localize("API Store walkthrough")%>" id="register-link1" href="<%= jagg.urlTenanted('/site/pages/index.jag')%><%=interactiveTutorialState%>">
+                        <span class="icon fw-stack fw-lg">
+                        <i class="fw fw-circle fw-stack-2x" title="walkthrough"></i>
+                        <i class="fw fw-deploy fw-stack-1x fw-inverse" title="walkthrough"></i>
+                        </span>
+
+                        <span class="hidden-xs">
+                            API Store walkthrough
+                        </span>
+                    </a>
+                </li>
+			<%}%>
        		<%if (tenant == null && isSuperTenant != null && !isSuperTenant && site.showPublicStoreURL) {%>
 						<li class="visible-inline-block">
 			                <a id="register-link" title="APIStore" href="<%=jagg.getAbsoluteUrl("/")%><%="?tenant=" + tenantDomain%>">
@@ -112,7 +141,9 @@ var MultitenantUtils = Packages.org.wso2.carbon.utils.multitenancy.MultitenantUt
 					         </a>
 					         <ul class="dropdown-menu dropdown-menu-right float-remove-xs position-static-xs text-center-xs remove-margin-xs slideInDown" role="menu">
 					           <li class="dropdown-header visible-xs">&nbsp; <%=user.username%> <span class="caret"></span></li>
+					    
 					           <li><a title="<%=i18n.localize("My Account","My Account")%>" href="<%= jagg.urlTenanted('/site/pages/user-info.jag')%>"><i class="fw fw-settings"></i> &nbsp; <%=i18n.localize("My Account","My Account")%></a></li>
+					               
 					           <li class="divider visible-xs"></li>
 					           <li><a title="<%=i18n.localize("Sign Out")%>" href="#" id="logout-link"><i class="fw fw-sign-out"></i> &nbsp; <%=i18n.localize("Sign Out")%></a></li>
 					         </ul>
@@ -154,7 +185,7 @@ var MultitenantUtils = Packages.org.wso2.carbon.utils.multitenancy.MultitenantUt
 	            </li>
 	          <% } %>       
 	            <li class="visible-inline-block">
-	                <a class="need-login" href="<%= jagg.urlTenanted('/')%>">
+	                <a id="btn-login" class="need-login" href="<%= jagg.urlTenanted('/')%>">
 	                  <span class="icon fw-stack fw-lg">
 	                  <i class="fw fw-circle-outline fw-stack-2x"></i>
 	                  <i class="fw fw-sign-in fw-stack-1x"></i>

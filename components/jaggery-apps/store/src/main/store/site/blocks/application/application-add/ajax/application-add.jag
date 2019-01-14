@@ -5,7 +5,7 @@ include("/jagg/jagg.jag");
     var site = require("/site/conf/site.json");
     var ssoEnabled = site.ssoConfiguration.enabled;
     response.contentType = "application/json; charset=UTF-8";
-    var mod, obj, application, result, username, tier, callbackUrl, description,
+    var mod, obj, application, result, username, tier, callbackUrl, description, applicationAttributes
             msg = require("/site/conf/ui-messages.jag"),
             action = request.getParameter("action"),
             user = jagg.getUser();
@@ -42,12 +42,29 @@ include("/jagg/jagg.jag");
         application = request.getParameter("application", "UTF-8");
         username = user.username;
         tier = request.getParameter("tier");
+        var groupId = "";
+        if (jagg.isMultiGroupEnabled()) {
+            groupId = request.getParameter("groupId");
+        }
+
         if(null == request.getParameter("callbackUrl")){
             callbackUrl = "";
         }else{
             callbackUrl = request.getParameter("callbackUrl");
         }        
-        description = request.getParameter("description");       
+        description = request.getParameter("description");
+        if (request.getParameter("applicationAttributes") == null) {
+            applicationAttributes = "";
+        } else {
+            applicationAttributes = request.getParameter("applicationAttributes");
+        }
+        description = request.getParameter("description");
+
+        tokenType = request.getParameter("tokenType");
+        if (tokenType == null) {
+            tokenType = "DEFAULT";
+        }
+
         mod = jagg.module("application");
         var MultitenantUtils = Packages.org.wso2.carbon.utils.multitenancy.MultitenantUtils;
         var tenantDomain = MultitenantUtils.getTenantDomain(user.username);
@@ -56,7 +73,7 @@ include("/jagg/jagg.jag");
         var applicationTierList = APIUtil.getTiers(applicationTierType, tenantDomain);
 
         if (!applicationTierList.isEmpty() && applicationTierList.containsKey(tier)) {
-            result = mod.addApplication(username, application, tier, callbackUrl, description);
+            result = mod.addApplication(username, application, tier, callbackUrl, description, groupId,tokenType,applicationAttributes);
             if (result.error) {
                 obj = {
                     error: true,
@@ -70,7 +87,7 @@ include("/jagg/jagg.jag");
             }
         } else {
             var log = new Log();
-            var errorMessage = "Specified application tier " + tier + " does not exist.";
+            var errorMessage = "Specified application tier does not exist.";
             log.error(errorMessage);
             obj = {
                 error: true,

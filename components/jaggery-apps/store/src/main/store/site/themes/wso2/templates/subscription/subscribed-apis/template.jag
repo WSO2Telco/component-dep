@@ -1,6 +1,9 @@
 <% jagg.template("subscription/subscribed-apis", function(inputs, outputs, jagg) { 
 //@todo api should have image and provider
-//@todo api status should be displayed in 
+//@todo api status should be displayed in
+    var urlPrefix = jagg.getTenantURLPrefix("&");
+    var path = jagg.getMappedUrl("/site/pages/item-info.jag") +
+        "?name={{ apiName }}&version={{ apiVersion }}&provider={{ apiProvider }}" + urlPrefix;
 %>
 
 

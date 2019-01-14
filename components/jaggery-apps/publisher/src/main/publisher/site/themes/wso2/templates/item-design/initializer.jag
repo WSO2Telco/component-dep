@@ -14,7 +14,7 @@ jagg.initializer("item-design", {
         jagg.addFooterJS("jquery-ace", "jagg", "libs/jquery-ace.min.js");
         //jagg.addFooterJS("bootstrap-min", "jagg", "lib/bootstrap/js/bootstrap.min.js");
 
-        jagg.addFooterJS("jsonpath-0.8.0", "jagg", "libs/jsonpath-0.8.0.js");
+        jagg.addFooterJS("jsonpath-0.15.0", "jagg", "libs/jsonpath-0.15.0.js");
 
         jagg.addHeaderCSS("tagscss", "jagg", "libs/bootstrap-taginput/bootstrap-tagsinput.css");
 
@@ -24,6 +24,8 @@ jagg.initializer("item-design", {
         jagg.addFooterJS("yaml2json", "jagg", "libs/js-yaml.min.js");
         jagg.addFooterJS("url-validation", "jagg", "templates/utils/url-validation/url-validation.js");
         jagg.addFooterJS("design-api", "jagg", "templates/item-design/js/api-design.js");
+        jagg.addFooterJS("openapi3-definition", "jagg", "templates/item-design/js/oas3-definition-builder.js");
+        jagg.addFooterJS("openapi2-definition", "jagg", "templates/item-design/js/oas2-definition-builder.js");
     }
 });
 %>

@@ -29,17 +29,83 @@
 	var username = user.username ;
 	var siteContext = "<%=jagg.getSiteContext()%>";
 
+	var enjoyhint_instance = null;
+
    function hideMsg() {
        $('#apiInfo').hide("fast");
    }
        $(document).ready(function () {
         if($.cookie('showAPIInfo')=="yes"){
         $('#apiInfo').show();
-        var date = new Date();
+        var date = Click one of the buttons below to get startednew Date();
         date.setTime(date.getTime() + (40* 1000));
         $.cookie('showAPIInfo', 'false',{ path: '/',expires: date });
          var t = setTimeout("hideMsg()", 3000);
 
+       }
+
+        var intervalId;
+        function runTutorialHints() {
+            intervalId = setInterval(function() {
+                runEnjoyHint_tutorial_Script()
+            }, 1000);
+        }
+
+        function runEnjoyHint_tutorial_Script() {
+            if (isEnjoyHintEnabled()) {
+                    runEnjoyHintScript(enjoyhint_instance, item_listing_script_data);
+            }
+        }
+
+       var apis = <%=outputs.apis%>;
+       var mode = "<%=outputs.mode%>";
+       if (null != apis) {
+            // Get the api count
+            var apiCount = apis.length;
+            // Check whether no APIs exists
+            if (apiCount == 0) {
+                localStorage.setItem("interactiveTutorialEnabled", true);
+                if (isEnjoyHintEnabled()) {
+                    $('#deploy_sample1').hide();
+                    var $helpText = $('#api-create-button-details');
+                    var prevText = $helpText.text();
+                    $helpText.text($helpText.attr('data-other'));
+                    $helpText.attr('data-other',prevText);
+                    if (mode != "search") {
+                        runEnjoyHintScript(enjoyhint_instance, item_listing_script_data);
+                    }
+                }
+            } else if (apiCount > 0) {
+                // Check whether the user enabled the tutorial by clicking Documentation sub-menu
+                var isEnjoyHintEnabledWithMenu = false;
+                var interactiveTutorialParamVal = <%=encode.forUriComponent(request.getParameter("interactiveTutorial"))%>;
+                if (null != interactiveTutorialParamVal && interactiveTutorialParamVal == true) {
+                    isEnjoyHintEnabledWithMenu = true;
+                }
+                if (null != isEnjoyHintEnabledWithMenu && isEnjoyHintEnabledWithMenu == true) {
+                    localStorage.setItem("interactiveTutorialEnabled", true);
+                    // Check whether the WorldBank api exists already
+                    localStorage.setItem("worldBankApiExist", false);
+                    for (var i = 0; i < apiCount; i++) {
+                        var api = apis[i];
+                        var apiName = api.name;
+                        if (apiName.toLowerCase() === "worldbank") {
+                            localStorage.setItem("worldBankApiExist", true);
+                            if (isEnjoyHintEnabled()) {
+                                runEnjoyHintScript(enjoyhint_instance, item_listing_with_worldbank_script_data);
+                                break;
+                            }
+                        }
+                    }
+                    // When no api named worldBank exists
+                    var worldBankApiExist = localStorage.getItem("worldBankApiExist");
+                    if (null != worldBankApiExist && worldBankApiExist === "false") {
+                        if (isEnjoyHintEnabled()) {
+                                runEnjoyHintScript(enjoyhint_instance, item_listing_with_apis_script_data);
+                        }
+                    }
+                }
+            }
        }
 
        });
@@ -59,14 +125,20 @@
         var i, api,path,mode=outputs.mode,apis = outputs.apis,length;
         var reqUrl = request.getRequestURI();
         var docViewMappedUrl = jagg.getMappedUrl("/site/pages/doc-viewer.jag") + urlPrefix;
+        var APIUtil = org.wso2.carbon.apimgt.impl.utils.APIUtil;
 
         length = outputs.totalLength;
-        var itemsPerPage = 12; //reduce this number to preview the pagination
+        var itemsPerPage; //reduce this number to preview the pagination
+        if (APIUtil.getApisPerPageInPublisher() == 0) {
+            itemsPerPage = 12;
+        } else {
+            itemsPerPage = APIUtil.getApisPerPageInPublisher();
+        }
         var currentPage = 1;
         var numberOfPages = outputs.numberOfPages;
         if (request.getParameter('page') != null) {
-            currentPage = parseInt(request.getParameter('page'));
-            if((currentPage-1)*itemsPerPage == length){
+           currentPage = parseInt(request.getParameter('page'));
+           if((currentPage-1)*itemsPerPage == length){
                 if(String(currentPage)=='1'){%>
                  <script>
                     window.location.href = "<%=jagg.getAbsoluteUrl("/site/pages/index.jag")%><%=urlPrefix%>";
@@ -261,14 +333,14 @@
     	<%if(outputs.isCreatePermitted){ %>
     	        <div class="message message-info">
                     <h4><i class="icon fw fw-info"></i><%=i18n.localize("No APIs created yet.")%></h4>
-                    <p><%=i18n.localize("Click one of the buttons below to get started.")%></p>
+                    <p><%=i18n.localize("Click the button below to get started.")%></p>
                 </div>
-                <div style="display: inline"><a title="<%=i18n.localize("Add New API")%>" class="btn btn-primary" href="<%=jagg.getMappedUrl("/add")%>" onclick="jagg.sessionAwareJS({redirect:'<%=jagg.getMappedUrl("/add")%><%=urlPrefix%>',e:event})" ><%=i18n.localize("New API...")%></a></div>
+                <div style="display: inline"><a title="<%=i18n.localize("Add New API")%>" class="btn btn-primary" id="btn-add-new-api"  href="<%=jagg.getMappedUrl("/add")%>" onclick="jagg.sessionAwareJS({redirect:'<%=jagg.getMappedUrl("/add")%><%=urlPrefix%>',e:event})" ><%=i18n.localize("New API...")%></a></div>
         		<div style="display: inline"><a title="<%=i18n.localize("Deploy Sample API")%>" class="btn btn-primary" href="#" id="deploy_sample1" onclick="deploySampleApi('<%=gatewayURL%>')" ><%=i18n.localize("Deploy Sample API")%></a></div>
         <%}else{%>
         		<div class="message message-info">
                     <h4><i class="icon fw fw-info"></i><%=i18n.localize("No APIs created yet.")%></h4>
-                    <p><%=i18n.localize("Click one of the buttons below to get started.")%></p>
+                    <p><%=i18n.localize("Click the button below to get started.")%></p>
                 </div>
         <%}%>
     <%

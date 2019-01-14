@@ -20,6 +20,14 @@ $(document).ready(function(){
         config : endpoint_config
     });
 
+    var certificate_data;
+    if ($('#cert-data').val() != "") {
+        certificate_data = jQuery.parseJSON($('#cert-data').val());
+    }
+    $("#cert-config").certUi({
+        config: {"cert_data": certificate_data, "ep_data": endpoint_config}
+    });
+
     $('a.help_popup').popover({
         html : true,
         container: 'body',
@@ -146,7 +154,7 @@ $(document).ready(function(){
     var v = $("#prototype_form").validate({
         submitHandler: function(form) {        
         var designer = APIDesigner();
-        var endpoint_config = {"production_endpoints":{"url": $("#prototype_endpoint").val(),"config":null},"endpoint_type":"http","implementation_status":"prototyped"}
+        var endpoint_config = {"production_endpoints":{"url": $("#prototype_endpoint").val().trim(),"config":null},"sandbox_endpoints":{"url":$("#prototype_endpoint").val().trim(),"config":null},"endpoint_type":"http","implementation_status":"prototyped"}
         $('.swagger').val(JSON.stringify(designer.api_doc));
         $('.prototype_config').val(JSON.stringify(endpoint_config));
         $('#corsConfigurationPrototyped').val(JSON.stringify($(".cors-ui-prototype-container").data("plugin_corsUi").get_cors_config()));
@@ -206,7 +214,24 @@ $(document).ready(function(){
                     },
                     success: function(responseText){
                         if (!responseText.error) {
-                             $("#prototype-success").modal('show');
+
+                            var jsonObj = JSON.stringify(responseText);                        
+                            var jsonPayload = responseText.status.workflowResponse.jsonPayload;
+                            if (responseText.status.stateChangeStatus == 'REJECTED') {
+                                    showWorkflowRejectedMessage();
+                            } else if (responseText.status.stateChangeStatus == 'CREATED') {
+                                    showWorkflowSubmittedMessage();
+                            } else if (jsonPayload != null && jsonPayload != "") {
+                                var apiInfo = {};
+                                    apiInfo.provider = "<%=api.provider%>";
+                                    apiInfo.name = "<%=api.name%>";
+                                    apiInfo.version = "<%=api.version%>";
+                                    handleWorkflowRedirection(jsonPayload, apiInfo);
+
+                            } else {
+                               $("#prototype-success").modal('show');
+                            }
+                           
                         }else{
                              if (responseText.message == "timeout") {
                                  if (ssoEnabled) {
@@ -300,6 +325,17 @@ $(document).ready(function(){
             $('#upload_sequence').buttonLoader('stop');
     });
 
+    $( "#soapToRestMappingContent" ).delegate( ".resource_expand", "click", this, function( event ) {
+        var soapRestMapping = JSON.parse($('#sequenceMapping').val());
+        var resourceDetails = $.trim($(this).parent().text().replace(/[\t\n]+/g,''));
+        resourceDetails = resourceDetails.replace(/\s/g,'');
+        var method = resourceDetails.substring(0, resourceDetails.indexOf("/"));
+        var path = resourceDetails.substring(resourceDetails.indexOf("/") + 1, resourceDetails.indexOf("+"));
+        $(this).parent().next().find('.editor');
+        var key = path + "_" + method;
+        var textArea = $(this).parent().next().find('.editor')[0];
+    });
+
 });
 
 var thisID='';
@@ -325,66 +361,66 @@ $('#save_policies').click(function(e){
 
 
 function uploadSequence (type) {
-	var file = $('#sequence_file').get(0).files[0];
-	var formData = new FormData();
-	formData.append('file', file);
-	formData.append('name', $('#name').val());
-	formData.append('version', $('#version').val());
-	formData.append('provider', $('#provider').val());
-	formData.append('seqType', type);
-	formData.append('action', "uploadSequence");
-	$.ajax({
-                type: "POST",
-                url: jagg.site.context + "/site/blocks/item-design/ajax/add.jag",
-                data: formData,
-                processData: false,
-                contentType: false,
-                success: $.proxy(function(responseText){        
-                    if (!responseText.error) {
-                    	if (this.type == "in") {
-                    		if ($("#inSequence option[value='" + responseText.fileName + "']").length == 0) {
-                    			$('#inSequence').append($("<option></option>").attr("value",responseText.fileName).text(responseText.fileName));
-                    		}                    		
-                    		$("#inSequence option[value='" + responseText.fileName + "']").attr("selected", "selected");
-                            $('#inSequence').selectpicker('render');
-                    	} else if (this.type == "out") {
-                    		if ($("#outSequence option[value='" + responseText.fileName + "']").length == 0) {
-                    			$('#outSequence').append($("<option></option>").attr("value",responseText.fileName).text(responseText.fileName));
-                    		}                    		
-                    		$("#outSequence option[value='" + responseText.fileName + "']").attr("selected", "selected");
-                            $('#outSequence').selectpicker('render');
-                    	} else if (this.type == "fault") {
-                    		if ($("#faultSequence option[value='" + responseText.fileName + "']").length == 0) {
-                    			$('#faultSequence').append($("<option></option>").attr("value",responseText.fileName).text(responseText.fileName));
-                    		}                    		
-                    		$("#faultSequence option[value='" + responseText.fileName + "']").attr("selected", "selected");
-                            $('#faultSequence').selectpicker('render');
-                    	}
-                    	$("#sequenceUpload").modal('hide');
-                    	$('#sequence_file_value').val('');
-                    	$('#sequence_file_help').addClass('hide');
-                    }else{
-                         if (responseText.message == "timeout") {
-                             if (ssoEnabled) {
-                                 var currentLoc = window.location.pathname;
-                                 if (currentLoc.indexOf(".jag") >= 0) {
-                                     location.href = "index.jag";
-                                 } else {
-                                	 location.href = 'site/pages/index.jag';
-                                 }
-                             } else {
-                                 jagg.showLogin();
-                             }
-                         } else {
-                          var message = responseText.message;
-                          $('#sequence_file_help').text(responseText.message);
-                          $('#sequence_file_help').removeClass('hide');
-                     }
+    var file = $('#sequence_file').get(0).files[0];
+    var formData = new FormData();
+    formData.append('file', file);
+    formData.append('name', $('#apiName').val());
+    formData.append('version', $('#apiVersion').val());
+    formData.append('provider', $('#apiProvider').val());
+    formData.append('seqType', type);
+    formData.append('action', "uploadSequence");
+    $.ajax({
+        type: "POST",
+        url: jagg.site.context + "/site/blocks/item-design/ajax/add.jag",
+        data: formData,
+        processData: false,
+        contentType: false,
+        success: $.proxy(function(responseText){
+            if (!responseText.error) {
+                if (this.type == "in") {
+                    if ($("#inSequence option[value='" + responseText.fileName + "']").length == 0) {
+                        $('#inSequence').append($("<option></option>").attr("value",responseText.fileName).text(responseText.fileName));
                     }
-                }, { "type": type }),
-                dataType: "json"
-            });               
-return true;                         
+                    $("#inSequence option[value='" + responseText.fileName + "']").attr("selected", "selected");
+                    $('#inSequence').selectpicker('render');
+                } else if (this.type == "out") {
+                    if ($("#outSequence option[value='" + responseText.fileName + "']").length == 0) {
+                        $('#outSequence').append($("<option></option>").attr("value",responseText.fileName).text(responseText.fileName));
+                    }
+                    $("#outSequence option[value='" + responseText.fileName + "']").attr("selected", "selected");
+                    $('#outSequence').selectpicker('render');
+                } else if (this.type == "fault") {
+                    if ($("#faultSequence option[value='" + responseText.fileName + "']").length == 0) {
+                        $('#faultSequence').append($("<option></option>").attr("value",responseText.fileName).text(responseText.fileName));
+                    }
+                    $("#faultSequence option[value='" + responseText.fileName + "']").attr("selected", "selected");
+                    $('#faultSequence').selectpicker('render');
+                }
+                $("#sequenceUpload").modal('hide');
+                $('#sequence_file_value').val('');
+                $('#sequence_file_help').addClass('hide');
+            }else{
+                if (responseText.message == "timeout") {
+                    if (ssoEnabled) {
+                        var currentLoc = window.location.pathname;
+                        if (currentLoc.indexOf(".jag") >= 0) {
+                            location.href = "index.jag";
+                        } else {
+                            location.href = 'site/pages/index.jag';
+                        }
+                    } else {
+                        jagg.showLogin();
+                    }
+                } else {
+                    var message = responseText.message;
+                    $('#sequence_file_help').text(responseText.message);
+                    $('#sequence_file_help').removeClass('hide');
+                }
+            }
+        }, { "type": type }),
+        dataType: "json"
+    });
+    return true;
 }
 
 var hideMsg = function () {
@@ -400,12 +436,12 @@ function showGatewayFailure(message) {
         var divPublish = "", divUnpublished = "";
         for (i = 0; i < failedToPublishEnvironments.split(",").length; i++) {
             var splitPublished = (failedToPublishEnvironments.split(",")[i]).split(":");
-            divPublish += splitPublished[0] + "<br>" + splitPublished[1] + "<br>";
+            divPublish += "<b>"+splitPublished[0]+"</b>" + "<br>" + splitPublished[1] + "<br>";
         }
         for (i = 0; i < failedToUnpublishedEnvironments.split(",").length; i++) {
             var splitUnPublished = (failedToUnpublishedEnvironments.split(",")[i]).split(":");
 
-            divUnpublished += splitUnPublished[0] + "<br>" + splitUnPublished[1] + "<br>";
+            divUnpublished += "<b>"+splitUnPublished[0] +"<b>"+ "<br>" + splitUnPublished[1] + "<br>";
         }
         $("#modal-published-content").empty();
         $("#modal-unpublished-content").empty();
@@ -420,6 +456,7 @@ function showGatewayFailure(message) {
             $("#modal-unpublished-content").hide();
         }
         $("#retryType").val("manage");
+        $("#environmentsRetry-modal").removeClass('hide');
         $("#environmentsRetry-modal").modal('show');
     }
     else {
@@ -460,6 +497,8 @@ function loadInSequences() {
 
                           for ( var i = 0; i < arr.length; i++) {
                               if(arr[i] == insequence){
+                                  $('#inSequenceExistingOptGroup option[value="none"]').removeAttr('selected');
+                                  $('#inSequenceUserAddedOptGroup option[value="none"]').removeAttr('selected');
                                   $('#inSequenceExistingOptGroup').append('<option value="'+arr[i]+'" selected="selected">'+arr[i]+'</option>');
                               }else{
                                   $('#inSequenceExistingOptGroup').append('<option value="'+arr[i]+'">'+arr[i]+'</option>');
@@ -475,6 +514,8 @@ function loadInSequences() {
 
                           for ( var i = 0; i < arrUserDefined.length; i++) {
                               if(arrUserDefined[i] == insequence){
+                                  $('#inSequenceExistingOptGroup option[value="none"]').removeAttr('selected');
+                                  $('#inSequenceUserAddedOptGroup option[value="none"]').removeAttr('selected');
                                   $('#inSequenceUserAddedOptGroup').append('<option value="'+arrUserDefined[i]+'" selected="selected">'+arrUserDefined[i]+'</option>');
                               }else{
                                   $('#inSequenceUserAddedOptGroup').append('<option value="'+arrUserDefined[i]+'">'+arrUserDefined[i]+'</option>');
@@ -530,6 +571,8 @@ function loadOutSequences() {
 
                           for ( var i = 0; i < arr.length; i++) {
                               if(arr[i] == outsequence){
+                                  $('#outSequenceExistingOptGroup option[value="none"]').removeAttr('selected');
+                                  $('#outSequenceUserAddedOptGroup option[value="none"]').removeAttr('selected');
                                   $('#outSequenceExistingOptGroup').append('<option value="'+arr[i]+'" selected="selected">'+arr[i]+'</option>');
                               }else{
                                   $('#outSequenceExistingOptGroup').append('<option value="'+arr[i]+'">'+arr[i]+'</option>');
@@ -546,6 +589,8 @@ function loadOutSequences() {
                           for ( var i = 0; i < arrUserDefined.length; i++) {
                               if(arrUserDefined[i] == outsequence){
                                   $('#outSequenceUserAddedOptGroup').append('<option value="'+arrUserDefined[i]+'" selected="selected">'+arrUserDefined[i]+'</option>');
+                                  $('#outSequenceExistingOptGroup option[value="none"]').removeAttr('selected');
+                                  $('#outSequenceUserAddedOptGroup option[value="none"]').removeAttr('selected');
                               }else{
                                   $('#outSequenceUserAddedOptGroup').append('<option value="'+arrUserDefined[i]+'">'+arrUserDefined[i]+'</option>');
                               }
@@ -600,6 +645,8 @@ function loadFaultSequences() {
 
                           for ( var i = 0; i < arr.length; i++) {
                               if(arr[i] == faultsequence){
+                                  $('#faultSequenceExistingOptGroup option[value="none"]').removeAttr('selected');
+                                  $('#faultSequenceUserAddedOptGroup option[value="none"]').removeAttr('selected');
                                   $('#faultSequenceExistingOptGroup').append('<option value="'+arr[i]+'" selected="selected">'+arr[i]+'</option>');
                               }else{
                                   $('#faultSequenceExistingOptGroup').append('<option value="'+arr[i]+'">'+arr[i]+'</option>');
@@ -615,6 +662,8 @@ function loadFaultSequences() {
 
                           for ( var i = 0; i < arrUserDefined.length; i++) {
                               if(arrUserDefined[i] == faultsequence){
+                                  $('#faultSequenceExistingOptGroup option[value="none"]').removeAttr('selected');
+                                  $('#faultSequenceUserAddedOptGroup option[value="none"]').removeAttr('selected');
                                   $('#faultSequenceUserAddedOptGroup').append('<option value="'+arrUserDefined[i]+'" selected="selected">'+arrUserDefined[i]+'</option>');
                               }else{
                                   $('#faultSequenceUserAddedOptGroup').append('<option value="'+arrUserDefined[i]+'">'+arrUserDefined[i]+'</option>');
@@ -638,7 +687,45 @@ function loadFaultSequences() {
               }, "json");
 }
 
+$(".btn-sequenceDownload").click(function (e) {
+    var name;
+    var selectedFlow = $(this).attr("data-id");
+    var url;
 
+    if (selectedFlow === "in") {
+        name = $("#inSequence").val();
+    } else if (selectedFlow === "out") {
+        name = $("#outSequence").val();
+    } else {
+        name = $("#faultSequence").val();
+    }
+
+    if (name === "none") {
+        jagg.message({content: i18n.t("You must select a mediation policy to download"), type: "error"});
+        return;
+    }
+
+    jagg.post("/site/blocks/item-add/ajax/add.jag", {
+        action : "getSequenceFileContent" , provider:apiProvider, apiName:apiName, apiVersion:apiVersion, seqType: selectedFlow, seqName:name
+    }, function (result) {
+        var resultJson = JSON.parse(result);
+        var fileName;
+        if (!resultJson.error) {
+            var file = new Blob([resultJson.sequence], {type: "text/xml"});
+            url = window.URL.createObjectURL(file);
+            fileName = name + ".xml";
+            var a = document.createElement('a');
+            a.setAttribute('href', url);
+            a.setAttribute('download', fileName);
+            a.setAttribute('target', '_blank');
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+        } else {
+            jagg.message({content: i18n.t("Error while retrieving the selected mediation policy"), type: "error"});
+        }
+    });
+});
 
 $("#toggleSequence").change(function(e){
     if($(this).is(":checked")){

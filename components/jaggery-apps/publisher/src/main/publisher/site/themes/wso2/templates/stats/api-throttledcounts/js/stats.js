@@ -47,7 +47,7 @@ $( document ).ready(function() {
 
                     //date picker
                     $('#date-range').daterangepicker({
-                        timePicker: true,
+                        timePicker: false,
                         timePickerIncrement: 30,
                         format: 'YYYY-MM-DD h:mm',
                         opens: 'left'
@@ -64,7 +64,7 @@ $( document ).ready(function() {
                         to = convertTimeString(picker.endDate);
                         var fromStr = from.split(" ");
                         var toStr = to.split(" ");
-                        var dateStr = fromStr[0] + " <i>" + fromStr[1] + "</i> <b>to</b> " + toStr[0] + " <i>" + toStr[1] + "</i>";
+                        var dateStr = fromStr[0] + " <b>to</b> " + toStr[0];
                         $("#date-range span").html(dateStr);
                         drawThrottledTimeGraph(apiName, appName, from, to,apiFilter);
                     });
@@ -163,7 +163,7 @@ var pupulateAppList = function(apiName) {
 
             } else {
                 $('#chartContainer').html('');
-                $('#chartContainer').append($('<div class="center-wrapper"><div class="col-sm-4"/><div class="col-sm-4 message message-info"><h4><i class="icon fw fw-info" title="No Stats"></i>No Data Available.</h4></div></div>'));
+                $('#chartContainer').append($('<div class="center-wrapper"><div class="col-sm-4"/><div class="col-sm-4 message message-info"><h4><i class="icon fw fw-info" title="No Stats"></i>'+i18n.t("No Data Available")+'</h4></div></div>'));
                 if (json.message == "AuthenticateError") {
                     jagg.showLogin();
                 } else {
@@ -272,16 +272,16 @@ var drawThrottledTimeGraph = function (apiName, appName, fromDate, toDate) {
                         }
 
                         d3.select('#throttledTimeChart svg').datum([
-                          {
-                            key: "Success Count",
-                            color: "#60CA60",
-                            values: successValues
-                          },
-                          {
-                            key: "Throttled Count",
-                            color: "#BD362F",
-                            values: throttledValues
-                          }
+						  {
+						    key: "Throttled Count",
+						    color: "#BD362F",
+						    values: throttledValues
+						  },
+						  {
+						    key: "Success Count",
+						    color: "#60CA60",
+						    values: successValues
+						  }
                         ]).transition().duration(500).call(chart);
                         nv.utils.windowResize(chart.update);
                             return chart;
@@ -292,7 +292,7 @@ var drawThrottledTimeGraph = function (apiName, appName, fromDate, toDate) {
 
                     }else if(length == 0) {
                         $('#chartContainer').html('');
-                        $('#chartContainer').append($('<div class="center-wrapper"><div class="col-sm-4"/><div class="col-sm-4 message message-info"><h4><i class="icon fw fw-info" title="No Stats"></i>No Data Available.</h4></div></div>'));
+                        $('#chartContainer').append($('<div class="center-wrapper"><div class="col-sm-4"/><div class="col-sm-4 message message-info"><h4><i class="icon fw fw-info" title="No Stats"></i>'+i18n.t("No Data Available")+'</h4></div></div>'));
                     }
             } else {
                 $('#chartContainer').html('');
@@ -312,7 +312,7 @@ function getDateTime(currentDay,fromDay){
     from = convertTimeString(fromDay);
     var toDate = to.split(" ");
     var fromDate = from.split(" ");
-    var dateStr= fromDate[0]+" <i>"+fromDate[1]+"</i> <b>to</b> "+toDate[0]+" <i>"+toDate[1]+"</i>";
+    var dateStr= fromDate[0] + "  <b>to</b> " + toDate[0];
     $("#date-range span").html(dateStr);
     $('#date-range').data('daterangepicker').setStartDate(from);
     $('#date-range').data('daterangepicker').setEndDate(to);

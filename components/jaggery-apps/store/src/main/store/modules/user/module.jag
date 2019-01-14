@@ -17,7 +17,7 @@ jagg.module("user", {
         return jagg.require(jagg.getModulesDir() + "user/add.jag").getUserFields.apply(this, arguments);
     },
 
-    getUserLastLoginTime:function () {
+  getUserLastLoginTime:function () {
         return jagg.require(jagg.getModulesDir() + "user/user.jag").getUserLastLoginTime.apply(this, arguments);
     },
 
@@ -40,6 +40,10 @@ jagg.module("user", {
     },
     changePassword:function () {
             return jagg.require(jagg.getModulesDir() + "user/add.jag").changePassword.apply(this, arguments);
-        }
+    },
+    updatePasswordWithUserInput:function (userName, newPassword, confirmationKey) {
+        return jagg.require(jagg.getModulesDir() + "user/user.jag").updatePasswordWithUserInput.apply(this, arguments);
+    },
+
 });
 %>
