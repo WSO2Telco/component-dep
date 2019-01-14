@@ -1,5 +1,7 @@
 <%
 include("/jagg/jagg.jag");
+var encode = require('encode');
+encode = new encode.Encode();
 
 (function () {
     var site = require("/site/conf/site.json");
@@ -68,6 +70,13 @@ include("/jagg/jagg.jag");
         var offset = request.getParameter("length");
         var columnId = request.getParameter("order[0][column]");
         var sortOrder = request.getParameter("order[0][dir]");
+        if (sortOrder.toLowerCase() != "asc" && sortOrder.toLowerCase() != "desc" ) {
+            print({
+                error:true,
+                message:msg.error.forbidAction(action)
+            });
+            return;
+        }
 
         var sortColumn = null;
         if(columnId == 0){
@@ -82,6 +91,11 @@ include("/jagg/jagg.jag");
             sortColumn = "NAME";
         }
 
+        if (sortOrder.equals("desc")) {
+            sortOrder = "desc";
+        } else {
+            sortOrder = "asc";
+        }
 
         username = user.username;
         mod = jagg.module("application");
@@ -104,7 +118,8 @@ include("/jagg/jagg.jag");
             obj = {
                 error:false,
                 applications:result.applications,
-                draw:draw,
+                grpIdList:jagg.isMultiGroupEnabled(),
+                draw:encode.forHtml(draw),
                 iTotalRecords:totalRecordsCount,
                 iTotalDisplayRecords:totalRecordsCount
             }

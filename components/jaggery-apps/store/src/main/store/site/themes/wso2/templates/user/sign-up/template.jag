@@ -4,6 +4,7 @@
         var user = session.get("logged.user");
         var mod = jagg.module("manager");
         var httpsUrl= mod.getHTTPsURL();
+        var purposes = outputs.purposes, hasPurposes = (purposes != null && purposes != "");
         if(user){ %>
 	        <script>
 	            location.href = "<%= jagg.getSiteContext()%>";
@@ -29,7 +30,7 @@
                             <h2 class="text-center-sm text-center-xs text-center-md text-right">API Store</h2>
                         </div>
                     </div>
-                    <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9 login">
+                    <div class="col-xs-12 col-sm-12 col-md-9 col-lg-9 login padding-bottom-100"">
                         <div class="data-container">
                             <form class="form-horizontal" id="sign-up" autocomplete="off">
                                 <h3>Create your Account</h3>
@@ -37,7 +38,8 @@
                                     <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
                                         <label class="control-label"><%=i18n.localize("Username")%> *</label>
                                         <div class="input-group input-wrap">
-                                            <input id="newUsername" name="newUsername" title="<%=i18n.localize("Please enter at lease 5 characters")%>" minlength="5" maxlength="30" type="text" class="required validName noSpace form-control" placeholder="e.g JohnDoe">
+                                            <input id="newUsername" name="newUsername" minlength="5" maxlength="30"
+                                            type="text" class="required validName validateAt noSpace form-control" placeholder="e.g JohnDoe">
                                         </div>
 
             							<input id="hiddenTenantDomain" type="hidden" value="<%=request_tenant%>"> 
@@ -50,7 +52,7 @@
                                     <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
                                         <label class="control-label"><%=i18n.localize("Password")%> *</label>
                                         <div class="input-group input-wrap">
-                                            <input id="newPassword" name="newPassword" title="<%=i18n.localize("Enter a more secure password")%>" type="password"  autocomplete="off" class="form-control password validPassword" placeholder="Password">
+                                            <input id="newPassword" name="newPassword" type="password"  autocomplete="off" class="form-control password validPassword" placeholder="Password">
                                         </div>
                                         <div class="help-block" id="password-help" style="display:none">
 							              <%=i18n.localize("For a more secure password:")%>
@@ -67,7 +69,7 @@
                                     <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
                                         <label class="control-label"><%=i18n.localize("Re-type Password")%> *</label>
                                         <div class="input-group input-wrap">
-                                            <input id="newPasswordConfirm" title="<%=i18n.localize("Confirm Password")%>" type="password" class="form-control matchPasswords" placeholder="Password">
+                                            <input id="newPasswordConfirm" type="password" class="form-control matchPasswords" placeholder="Password" autocomplete="off" >
                                         </div>
                                     </div>
                                 </div>
@@ -140,10 +142,50 @@
 									<% } %>                     
                                     
                                 </div>
-								<input type="hidden" id="fieldCount" name="fieldCount" value="<%=length%>"/>
+                                <input type="hidden" id="fieldCount" name="fieldCount" value="<%=length%>"/>
+                                <input type="hidden" id="consentPurposes" name="consentPurposes" value='<%=purposes%>'/>
+                                <input type="hidden" id="hasConsentPurposes" name="hasConsentPurposes" value="<%=hasPurposes%>"/>
+                                <hr>
+                                <!--User Consents-->
+                                    <%
+                                        if (hasPurposes) {
+                                    %>
+                                    <div class="alert alert-warning policy-alert-warning margin-none" role="alert">
+                                        <div id="consent-mgt-container">
+                                            <p>
+                                                <strong><%=i18n.localize("need.consent")%></strong>
+                                                <span><%=i18n.localize("need.consent.sub.info")%></span>
+                                            </p>
+                                            <div id="tree-table"></div>
+                                         </div>
+                                     </div>
+                                     <%}%>
+                                     <!--End User Consents-->
+                                    <!--Cookie Policy-->
+                                    <div class="alert alert-warning policy-alert-warning" role="alert">
+                                            <div>
+                                                    <%=i18n.localize("privacy.policy.cookies.short.description")%>
+                                                    <a href=<%=jagg.getAbsoluteUrl("/site/pages/policy-pages/cookie-policy.jag")%> target="policy-pane">
+                                                            <strong><%=i18n.localize("privacy.policy.cookies")%></strong>
+                                                    </a>
+                                                    <%=i18n.localize("privacy.policy.for.more.details")%>
+                                            </div>
+                                    </div>
+                                    <!--End Cookie Policy-->
+                                    <!--Terms/Privacy Policy-->
+                                    <div>
+                                        <label class="agreement-checkbox">
+                                                <input type="checkbox" /> <%=i18n.localize("have.read.and.understood")%>
+                                                <a href=<%=jagg.getAbsoluteUrl("/site/pages/policy-pages/privacy-policy.jag")%> target="policy-pane">
+                                                        <strong><%=i18n.localize("privacy.policy.general")%>.</strong>
+                                                </a>
+                                        </label>
+                                    </div>
+                                    <br>
+                                    <!--End Terms/Privacy Policy-->
                                 <div class="form-group">
                                     <div class="col-xs-12 col-sm-12 col-md-5 col-lg-5">
-                                        <button type="submit" class="btn btn-default btn-primary btn-mobile add-margin-right-2x"><%=i18n.localize("Sign Up")%></button>
+                                        <button type="submit" id="registrationSubmit" class="btn btn-default btn-primary btn-mobile add-margin-right-2x"><%=i18n.localize("Sign Up")%></button>
                                         <button type="button" id="goBackBtn" class="btn btn-default btn-secondary btn-mobile add-margin-right-2x"><%=i18n.localize("Cancel")%></button>
                                     </div>
                                 </div>

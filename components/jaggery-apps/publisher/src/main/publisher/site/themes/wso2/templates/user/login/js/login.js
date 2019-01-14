@@ -1,5 +1,6 @@
 var login = function () {
     var name = $("#username").val();
+    name = name.trim();
     var pass = $("#pass").val();
     var tenantDomain = $("#tenant").val();
     jagg.post("/site/blocks/user/login/ajax/login.jag", { action:"login", username:name, password:pass,tenant:tenantDomain },
@@ -9,8 +10,9 @@ var login = function () {
                       var currentHref=window.location.search;
                       var requestedPage=getParameterByName("requestedPage");
                       var queryParam;
-                      if(requestedPage){
-                        window.location.href=requestedPage;
+                      //siteContext is a global variable set in page/base/template.jag with the Publisher site context
+                      if (requestedPage && requestedPage.startsWith(siteContext)) {
+                          window.location.href = requestedPage;
                       } else {
                         if(currentHref.indexOf("tenant")>-1){queryParam=currentHref;}
                         else{queryParam='';}
@@ -22,10 +24,11 @@ var login = function () {
                       }
 
                   } else {
+                      var text = jQuery('<div />').text( result.message );
                       $('#loginErrorMsg').show();
                       //@todo: param_string
                       $('#loginErrorMsg').html('<i class="icon fw fw-error"></i><strong>'  + i18n.t("Error! ") +
-                      '</strong>' + result.message + '<button type="button" class="close" aria-label="close" data-dismiss="alert"><span aria-hidden="true"><i class="fw fw-cancel"></i></span></button>');
+                      '</strong>' + text.html() + '<button type="button" class="close" aria-label="close" data-dismiss="alert"><span aria-hidden="true"><i class="fw fw-cancel"></i></span></button>');
                       
                   }
               }, "json");

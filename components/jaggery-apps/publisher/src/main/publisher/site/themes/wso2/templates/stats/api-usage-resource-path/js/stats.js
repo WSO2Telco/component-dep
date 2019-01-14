@@ -61,7 +61,7 @@ jagg.post("/site/blocks/stats/api-usage-resource-path/ajax/stats.jag", { action:
 
                     //date picker
                     $('#date-range').daterangepicker({
-                          timePicker: true,
+                          timePicker: false,
                           timePickerIncrement: 30,
                           format: 'YYYY-MM-DD h:mm',
                           opens: 'left',
@@ -78,8 +78,7 @@ jagg.post("/site/blocks/stats/api-usage-resource-path/ajax/stats.jag", { action:
                        to = convertTimeString(picker.endDate);
                        var fromStr = from.split(" ");
                        var toStr = to.split(" ");
-                       var dateStr = fromStr[0] + " <i>" + fromStr[1] + "</i> <b>" + i18n.t("to") + "</b> " + toStr[0] + " <i>" +
-                       toStr[1] + "</i>";
+                       var dateStr = fromStr[0] + " <b>" + i18n.t("to") + "</b> " + toStr[0];
                        $("#date-range span").html(dateStr);
                        drawAPIUsageByResourcePath(from,to,apiFilter);
                         $('.apply-btn').on('click',function(){
@@ -139,7 +138,7 @@ var drawAPIUsageByResourcePath = function (from, to, apiFilter) {
                     $('#resourcePathUsageTable').hide();
                     $('div#resourcePathUsageTable_wrapper.dataTables_wrapper.no-footer').remove();
                     $('#noData').html('');
-                    $('#noData').append($('<div class="center-wrapper"><div class="col-sm-4"/><div class="col-sm-4 message message-info"><h4><i class="icon fw fw-info" title="No Stats"></i>' + i18n.t("No Data Available.") + '</h4></div></div>'));
+                    $('#noData').append($('<div class="center-wrapper"><div class="col-sm-4"/><div class="col-sm-4 message message-info"><h4><i class="icon fw fw-info" title="No Stats"></i>' + i18n.t("No Data Available") + '</h4></div></div>'));
 
                 } else {
 
@@ -272,7 +271,7 @@ var drawAPIUsageByResourcePath = function (from, to, apiFilter) {
                                    time = parsedResponse[i][1][j][1][k][1][m][1][l][1];
                                }
                                rowId++;
-                               $dataTable.append($('<tr id='+rowId+'><td>' + appName + '</td><td>' + version + '</td><td>' +'<a id="'+rowId+'" class="link" href="#" title="resource_path" >'+contextName+' </a>'+ '</td><td>' + method + '</td><td class="tdNumberCell" style="text-align:right">' + hitCount+ '</td></tr>'));
+                               $dataTable.append($('<tr id='+rowId+'><td>' + appName + '</td><td>' + version + '</td><td>' +'<span id="'+rowId+'"title="resource_path" >'+contextName+' </span>'+ '</td><td>' + method + '</td><td class="tdNumberCell" style="text-align:right">' + hitCount+ '</td></tr>'));
                                hitCount =0;
                             }
                         }
@@ -469,7 +468,7 @@ function getDateTime(currentDay,fromDay){
     from = convertTimeString(fromDay);
     var toDate = to.split(" ");
     var fromDate = from.split(" ");
-    var dateStr= fromDate[0]+" <i>"+fromDate[1]+"</i> <b>to</b> "+toDate[0]+" <i>"+toDate[1]+"</i>";
+    var dateStr= fromDate[0]+" <b>to</b> "+toDate[0];
     $("#date-range span").html(dateStr);
     $('#date-range').data('daterangepicker').setStartDate(from);
     $('#date-range').data('daterangepicker').setEndDate(to);

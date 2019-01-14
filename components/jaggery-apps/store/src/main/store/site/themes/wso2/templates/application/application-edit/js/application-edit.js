@@ -15,6 +15,10 @@ $(document).ready(function () {
         return !/(["\'])/g.test(value);
      }, i18n.t("The Name contains one or more illegal characters") + '( &nbsp;&nbsp; " &nbsp;&nbsp; \' &nbsp;&nbsp; )');
 
+    $.validator.addMethod('checkForSpaces', function(value, element) {
+        return (value.length == value.trim().length);
+    }, i18n.t('Application name cannot contain leading or trailing white spaces'));
+
     $("#appAddForm").validate({
         submitHandler: function(form) {
             updateApplication();
@@ -31,12 +35,30 @@ $(document).ready(function () {
         var description = $("#description").val();
         var status='';
         var applicationOld = $("#application-name-old").val();
+        var groupIdNew = $("#groupId").val();
+        var groupIdOld = $("#groupId-old").val();
+        var numberOfAttributes = $("#numberOfAttributes").val();
+        var applicationAttributesNew = {};
+        var attributeNew;
+        var attributeKeyNew;
+
+        for (var i = 0; i < parseInt(numberOfAttributes); i++) {
+            attributeKeyNew = $("#attributeKey_" + i.toString()).val();
+            attributeNew = $("#attribute_" + i.toString()).val();
+            applicationAttributesNew[attributeKeyNew] = attributeNew;
+        }
+        var tokenType = $("#tokenType").val();
         jagg.post("/site/blocks/application/application-update/ajax/application-update.jag", {
             action:"updateApplication",
             applicationNew:application,
             applicationOld:applicationOld,
             tier:tier,
-            descriptionNew:description
+            descriptionNew:description,
+            groupIdOld:groupIdOld,
+            groupIdNew:groupIdNew,
+            applicationAttributeNew:JSON.stringify(applicationAttributesNew),
+            groupIdNew:groupIdNew,
+            tokenType:tokenType
         }, function (result) {
             if (result.error == false) {                
                 window.location = jagg.url("/site/pages/application.jag?name="+application);
@@ -51,7 +73,19 @@ $(document).ready(function () {
 			allowed: 70,
 			warning: 50,
 			counterText: i18n.t("Characters left: ")
-		}); 
+		});
+
+    $('#tokenType').change(
+        function () {
+            var keyType = $('option:selected', this).attr('title');
+            if (keyType == 'JWT') {
+                $('#jwt-token-type-warning').removeClass('hidden');
+            } else {
+                $('#jwt-token-type-warning').addClass('hidden');
+            }
+
+        }
+    );
 
 });
 

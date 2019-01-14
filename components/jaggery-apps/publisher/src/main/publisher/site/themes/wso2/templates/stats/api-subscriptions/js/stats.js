@@ -187,7 +187,7 @@ var drawAPIUsage = function () {
                                .style("z-index", "19")
                                .style("text-anchor", "middle")
                                .style("color","gray")
-                               .text(groupData[i].apiName_Provider);
+                               .text(groupData[i].apiName_Provider.substring(0, 30));
 
                         //GROUP FOR ARCS/PATHS
                         var arc_group = vis.append("svg:g")
@@ -217,7 +217,7 @@ var drawAPIUsage = function () {
                             pieData = donut(data);
                             var api_name=groupData[i].api_name;
                             var provider = groupData[i].provider;
-
+                            var apiName_Provider = "" + api_name + "(" + provider + ")" ;
                             var sliceProportion = 0; //size of this slice
                             filteredPieData = pieData.filter(filterData);
 
@@ -270,7 +270,8 @@ var drawAPIUsage = function () {
                                 div.style("left", d3.event.pageX+10+"px");
                                 div.style("top", d3.event.pageY-25+"px");
                                 div.style("display", "inline-block");
-                                div.html("Version : "+(d.data.version)+"<br>Count : "+(d.data.Count)+"<br>Percentage : "+percentage.toFixed(1) + "%");
+                                div.html("Name : " + apiName_Provider + "<br>Version : " + (d.data.version) + "<br>Count : " +
+                                (d.data.Count) + "<br>Percentage : " + percentage.toFixed(1) + "%");
 
                                 if(d.data.version=="other"){
                                     div.style("display", "none");
@@ -450,7 +451,7 @@ var drawAPIUsage = function () {
                     });
                     }
                 }else{
-                    $('#pie-chart').html($('<div class="center-wrapper"><div class="col-sm-4"/><div class="col-sm-4 message message-info"><h4><i class="icon fw fw-info" title="No Stats"></i>No Data Available.</h4></div></div>'));
+                    $('#pie-chart').html($('<div class="center-wrapper"><div class="col-sm-4"/><div class="col-sm-4 message message-info"><h4><i class="icon fw fw-info" title="No Stats"></i>'+i18n.t("No Data Available")+'</h4></div></div>'));
                 }
             } else {
                 if (json.message == "AuthenticateError") {

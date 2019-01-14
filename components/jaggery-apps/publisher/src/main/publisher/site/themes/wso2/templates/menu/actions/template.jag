@@ -57,6 +57,23 @@
 	
     if (provider == userobj.username || userobj.username == "admin" || isSuperAdmin == true)
     { isEditable = true; }
+
+    if(api) {
+        var provider = api.provider;
+        var APIUtil = Packages.org.wso2.carbon.apimgt.impl.utils.APIUtil;
+        provider = APIUtil.replaceEmailDomain(provider);
+
+        if (provider.indexOf("@") > -1) {
+            provider = provider.replace("@", "%40");
+        }
+
+        var swaggerAPI;
+        if (provider.indexOf("/") > -1 || api.name.indexOf("/") > -1) {
+            swaggerAPI = jagg.url("/api-docs" + "?provider=" + encodeURIComponent(provider) + "&name=" + encodeURIComponent(api.name) + "&version=" + encodeURIComponent(api.version));
+        } else {
+            swaggerAPI = jagg.url("/api-docs" + "/" + provider + "/" + api.name + "/" + api.version);
+        }
+    }
     %>
 
 <div class="navbar-wrapper">
@@ -92,7 +109,7 @@
                     <ul class="nav navbar-nav">
                     	<% if(reqUrl.indexOf(listUrl)>=0 ||reqUrl.indexOf(listMappedUrl)>=0||reqUrl.equals(jagg.getAbsoluteUrl("/"))){ %>
 	                        <%if(isCreatePermitted) {%>
-	                        <li>
+	                        <li id="top-menu-api-add">
 	                            <a title="<%=i18n.localize("Add New API")%>" href="<%=addUrl%><%=urlPrefix%>" onclick="jagg.sessionAwareJS({redirect:'<%=addDesignUrl%><%=urlPrefix%>',e:event,ssoEnabled:<%=ssoEnabled%>})">
 	                                <span class="icon fw-stack">
 	                                    <i class="fw fw-add fw-stack-1x" title="<%=i18n.localize("Add New API")%>"></i>
@@ -148,7 +165,18 @@
 	                            </a>
 	                        </li>
 							<% } %>
-	                        <%} else if(api && isPublishPermitted && api.endpointConfig) {%>	                        
+	                        <%if (api.type != "WS") { %>
+	                        <li>
+	                            <a download="swagger.json" href="<%=swaggerAPI%>" title="<%=i18n.localize("Download Source")%>">
+	                                <span class="icon fw-stack">
+	                                    <i class="fw fw-download fw-stack-1x" title="<%=i18n.localize("Download Source")%>"></i>
+	                                    <i class="fw fw-circle-outline fw-stack-2x" title="<%=i18n.localize("Download Source")%>"></i>
+	                                </span>
+	                                <%=i18n.localize("Download Source")%>
+	                            </a>
+	                        </li>
+	                       <% } %>
+                                <%} else if(api && isPublishPermitted && api.endpointConfig) {%>
 	                        <li>
 	                            <a href="<%=jagg.url("/manage")%>?<%=apiUrlId%>" title="<%=i18n.localize("Manage API")%>">
 	                                <span class="icon fw-stack">
