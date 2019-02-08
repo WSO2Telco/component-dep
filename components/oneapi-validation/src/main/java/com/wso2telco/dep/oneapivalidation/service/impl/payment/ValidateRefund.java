@@ -16,6 +16,7 @@
 package com.wso2telco.dep.oneapivalidation.service.impl.payment;
 
 
+import org.apache.log4j.Logger;
 import org.json.JSONObject;
 
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
@@ -24,15 +25,27 @@ import com.wso2telco.dep.oneapivalidation.util.UrlValidator;
 import com.wso2telco.dep.oneapivalidation.util.Validation;
 import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
 
- 
+import javax.naming.Context;
+import javax.naming.InitialContext;
+import javax.naming.NamingException;
+import javax.sql.DataSource;
+import java.sql.Connection;
+import java.sql.PreparedStatement;
+import java.sql.ResultSet;
+import java.sql.SQLException;
+
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class ValidateRefund.
  */
 public class ValidateRefund implements IServiceValidate {
 
+    static Logger logger=Logger.getLogger(ValidateRefund.class);
+
     /** The validation rules. */
     private final String[] validationRules = {"*", "transactions", "amount"};
+    private String paymentCurrency=null;
 
     /* (non-Javadoc)
      * @see com.wso2telco.oneapivalidation.service.IServiceValidate#validate(java.lang.String)
@@ -149,7 +162,7 @@ public class ValidateRefund implements IServiceValidate {
             new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "clientCorrelator", clientCorrelator),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_TEL_END_USER_ID, "endUserId", endUserId),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL_DOUBLE_GT_ZERO, "amount", amount),
-            new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "currency", currency),
+            new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_CURRENCY, "currency", currency, paymentCurrency),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "description", description),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "onBehalfOf", onBehalfOf),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "notificationFormat", notificationFormat),
@@ -167,6 +180,33 @@ public class ValidateRefund implements IServiceValidate {
             new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "transactionOperationStatus", transactionOperationStatus, "Refunded")};
 
         Validation.checkRequestParams(rules);
+    }
+
+    private void retriveCurrencyInPaymentCall(String originalServerReferenceCode) {
+        DataSource dataSource;
+        String dataSourceName = "jdbc/ADS_BILLING";
+        Connection con = null;
+        PreparedStatement preparedStatement = null;
+        String sql="select * from sb_api_response_summary where serverReferenceCode='"+originalServerReferenceCode+"'";
+
+        try {
+            Context ctx = new InitialContext();
+            dataSource = (DataSource) ctx.lookup(dataSourceName);
+            con = dataSource.getConnection();
+            preparedStatement = con.prepareStatement(sql);
+            ResultSet rs=preparedStatement.executeQuery();
+            while(rs.next()) {
+                JSONObject objJSONObject = new JSONObject(rs.getString("jsonBody"));
+                JSONObject objChargingInformation =(JSONObject)((JSONObject)((JSONObject) objJSONObject.get("amountTransaction")).get("paymentAmount")).get("chargingInformation");
+                paymentCurrency=objChargingInformation.get("currency").toString();
+            }
+        } catch (NamingException e) {
+            logger.error("Error while looking up the data " +
+                    "source: " + dataSourceName, e);
+        } catch (SQLException e) {
+            logger.error("error while retriving the data:"+e);
+        }
+
     }
 
     /* (non-Javadoc)

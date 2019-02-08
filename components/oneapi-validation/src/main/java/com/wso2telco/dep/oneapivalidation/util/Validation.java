@@ -521,10 +521,10 @@ public class Validation {
                         case ValidationRule.VALIDATION_TYPE_OPTIONAL_PAYMENT_CHANNEL:
                             if (parameterValue != null) {
                                 if (parameterValue instanceof String) {
-                                    if (!(((String) parameterValue).equalsIgnoreCase("WAP") || ((String) parameterValue).equalsIgnoreCase("WEB") || ((String) parameterValue).equalsIgnoreCase("SMS"))) {
-                                        logger.debug("Rejecting parameter " + current.parameterName + " : " + ((String) parameterValue) + " should be 'Web', 'Wap' or 'SMS'");
+                                    if (!(((String) parameterValue).equalsIgnoreCase("WAP") || ((String) parameterValue).equalsIgnoreCase("WEB") || ((String) parameterValue).equalsIgnoreCase("SMS") ||((String) parameterValue).equalsIgnoreCase("CGATE"))) {
+                                        logger.debug("Rejecting parameter " + current.parameterName + " : " + ((String) parameterValue) + " should be 'Web', 'Wap', 'Cgate' or 'SMS'");
                                         //sendError(response, BAD_REQUEST, RequestError.SERVICEEXCEPTION, "SVC0002", "Invalid input value for message part %1", "Parameter " + current.parameterName + " expected 'Wap', 'Web' or 'SMS': " + ((String) parameterValue));
-                                        throw new CustomException("SVC0002", "Invalid input value for message part %1", new String[]{"Parameter " + current.parameterName + " expected 'Wap', 'Web' or 'SMS': " + ((String) parameterValue)});
+                                        throw new CustomException("SVC0002", "Invalid input value for message part %1", new String[]{"Parameter " + current.parameterName + " expected 'Wap', 'Web', 'Cgate' or 'SMS': " + ((String) parameterValue)});
                                     }
                                 }
                             }
