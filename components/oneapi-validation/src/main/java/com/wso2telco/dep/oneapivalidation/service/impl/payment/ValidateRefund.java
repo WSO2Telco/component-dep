@@ -156,6 +156,7 @@ public class ValidateRefund implements IServiceValidate {
             throw new CustomException("POL0299", "Unexpected Error", new String[]{""});
         }
 
+        retriveCurrencyInPaymentCall(originalServerReferenceCode);
         ValidationRule[] rules = null;
 
         rules = new ValidationRule[]{
