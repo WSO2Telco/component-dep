@@ -1469,7 +1469,7 @@
                 $('#sandboxTps').val(null);
             }
             thisID=$(this).attr('id');
-            $('#apiSaved').show();
+            $("#apiSaved").attr("style", "display: block;");
             setTimeout("hideMsg()", 3000);
         });
 
