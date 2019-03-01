@@ -7,49 +7,42 @@
    var urlPrefix = jagg.getTenantURLPrefix("&");
 %>
 
-<div class="page-header">
+<div class="page-header sub" style="margin-bottom:0px !important;">
     <h2><%=i18n.localize("Recently Added APIs")%></h2>
 </div>
 
-<div  class="page-content">
-    <div id="recently-added" class="row">
+<div class="page-content">
+  <div class="row">
+    <div id="cbp-vm-recent" class="cbp-vm-switcher cbp-vm-view-grid">
+        					<div class="cbp-vm-options">
+        						<a href="#" class="cbp-vm-icon cbp-vm-grid cbp-vm-selected" data-view="cbp-vm-view-grid">Grid View</a>
+        						<a href="#" class="cbp-vm-icon cbp-vm-list" data-view="cbp-vm-view-list">List View</a>
+        					</div>
+        					<ul class="cbp-vm-recent">
+    <div id="recently-added">
     <script id="recently-added-template" type="text/x-handlebars-template">
     {{#each apis}}
-
-<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
-                            <div class="white-wrapper add-margin-bottom-4x">
-                                <div class="thumbnail icon">
-									{{#if thumbnailurl}}
-										<div class="square-element">
-                                    		<img class="" src="{{ thumbnailurl }}" alt="<%=i18n.localize("API Thumbnail")%>">
-                                    	</div>										                               		
-									{{else}}     
-                                    	<div class="square-element setbgcolor">
-											<div class="api-name-icon"></div>
-											<div style="display: none">
-												<a title="<%=i18n.localize("Name")%>" href="" class="api-name">{{ name }}</a>
-											</div>
-										</div> 
-									{{/if}}
-									<a href="<%=jagg.getMappedUrl("/site/pages/item-info.jag")%>?name={{ name }}&version={{ version }}&provider={{ provider }}<%=urlPrefix%>" title="<%=i18n.localize("Browse APIs")%>">
-                                    	<div class="after">                                        
-                                    		<span class="fw-stack fw-lg">
-                                    			<i class="fw fw-circle-outline fw-stack-2x"></i>
-                                    			<i class="fw fw-view fw-stack-1x"></i>
-                                    		</span>                                        
-                                    	</div>
-									</a>
-                                </div>
-                                <div class="add-padding-2x app-data ">
-                                    <h4 class="truncate"><a title="API Browse" href="<%=jagg.getMappedUrl("/site/pages/item-info.jag")%>?name={{ name }}&version={{ version }}&provider={{ provider }}<%=urlPrefix%>">{{ name }}-{{ version }}</a></h4>
-                                    <h5 class="truncate" title="{{ displayOwner }}" data-toggle="tooltip" data-placement="bottom">{{ displayOwner }}</h5>
-									<input type="hidden" class="rating recent_rating" disabled="disabled" value="{{ rates }}" />
-                                </div>
-                            </div>
-                        </div>
-    {{/each}}   
-  </script>  
+<li>
+ <div class="cbp-vm-blockmain" onclick="myhref('<%=jagg.getMappedUrl("/site/pages/item-info.jag")%>?name={{ name }}&version={{ version }}&provider={{ provider }}<%=urlPrefix%>');" >
+				{{#if thumbnailurl}}
+					<div class="square-element">
+						<img class="" src="{{ thumbnailurl }}" alt="<%=i18n.localize("API Thumbnail")%>">
+					</div>
+				{{else}}
+                   <a class="cbp-vm-image" href="<%=jagg.getMappedUrl("/site/pages/item-info.jag")%>?name={{ name }}&version={{ version }}&provider={{ provider }}<%=urlPrefix%>"><i class="fw fw-api fw-5x"></i></a>
+				{{/if}}
+	<h3 class="cbp-vm-title"><a href="<%=jagg.getMappedUrl("/site/pages/item-info.jag")%>?name={{ name }}&version={{ version }}&provider={{ provider }}<%=urlPrefix%>" title="API Browse">{{ name }}-{{ version }}</a></h3>
+	<div class="cbp-vm-details">{{ displayOwner }}</div>
+	<div class="cbp-vm-price"><input type="hidden" class="rating recent_rating cbp-vm-icon cbp-vm-add" disabled="disabled" value="{{ rates }}"/></div>
+	</div>
+</li>
+    {{/each}}
+</ul>
+      </script>
     </div>
+    </ul>
+  </div>
+</div>
 </div>
 
 
@@ -57,8 +50,11 @@
 <script type="text/javascript">
   $(function(){
     jagg.post("/site/blocks/api/recently-added/ajax/list.jag", {
+      <% if(jagg.getTenantDomain()){ %>
+      tenant: "<%= jagg.getTenantDomain()%>",
+      <% } %>
       action:"getRecentlyAddedAPIs",
-      limit:5 
+      limit:4
     }, function (result) {
          if (result.error == false) {
           for(var i = 0; i < result.apis.length;i++){
