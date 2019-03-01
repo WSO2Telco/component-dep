@@ -139,7 +139,7 @@
 													<p id="name_help" class="hide"><%=i18n.localize("Display name to be shown in the API Store.")%></p>
 												</label>
 												<div class="col-sm-9">
-													<input type="text" class="form-control required validAPIName validateForwardSlashAtEnd validInput apiNameExists noSpace" maxlength="50" id="name" name="name" autofocus="autofocus" value=""/>
+													<input type="text" class="form-control required validAPIName validateForwardSlashAtEnd validInput apiNameExists noSpace" maxlength="170" id="name" name="name" autofocus="autofocus" value=""/>
 												</div>
 											</div>
 
@@ -154,14 +154,14 @@
 												<p id="context_help" class="hide"><%=i18n.localize("URI context path of the API (case sensitive).<br/> The supported formats are.. <br/> 1. /foo <br/> 2. /foo/bar <br/> 3. /foo/{version}/bar (case sensitive) - allows the version to be within the context")%></p>
 												</label>
 												<div class="col-sm-9">
-													<input type="text" class="form-control required validContextTemplate validateForwardSlashAtEnd validInput contextExists noSpace validTemplate validateVersionOnlyContext tenantContextExists validContext" id="context" maxlength="40" name="context" onchange="getContextValue()"  onkeyup="updateContextPattern()"  />
+													<input type="text" class="form-control required validContextTemplate validateForwardSlashAtEnd validInput contextExists noSpace validTemplate validateVersionOnlyContext tenantContextExists validContext" id="context" name="context" onchange="getContextValue()"  onkeyup="updateContextPattern()"  />
 												</div>
 											</div>
 
 											<div class="form-group">
 												<label class="col-sm-3 control-label" for="version"><%=i18n.localize("Version")%>:<span class="requiredAstrix">*</span></label>
 												<div class="col-sm-4">
-													<input type="text" class="form-control required validateAPIVersion validInput noSpace" placeholder="E.g., v1.0.0" maxlength="40" id="version" name="version" onchange="getContextValue()" value="" onkeyup="updateContextPattern()"/>
+													<input type="text" class="form-control required validateAPIVersion validInput noSpace" placeholder="E.g., v1.0.0" id="version" name="version" onchange="getContextValue()" value="" onkeyup="updateContextPattern()"/>
 												</div>
 											</div>
 											<% }else{ %>
