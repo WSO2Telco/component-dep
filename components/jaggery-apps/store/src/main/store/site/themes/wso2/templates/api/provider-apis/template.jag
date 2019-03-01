@@ -10,12 +10,7 @@
   <h2 class="truncate-children"><span><%=i18n.localize("More APIs from")%>  '<%= owner %>'</span></h2>
 </div>
   <div class="page-content">
-	<div id="cbp-vm" class="cbp-vm-switcher cbp-vm-view-grid">
-            <div class="cbp-vm-options">
-                <a href="#" class="cbp-vm-icon cbp-vm-grid cbp-vm-selected" data-view="cbp-vm-view-grid">Grid View</a>
-                <a href="#" class="cbp-vm-icon cbp-vm-list" data-view="cbp-vm-view-list">List View</a>
-            </div>
-        <ul>
+  	<div class="row">
     <%
     var urlPrefix;
     var tenant=request_tenant;
@@ -24,7 +19,7 @@
     var i, api, path,apis = outputs.apis, thumbURL;
     if(apis!=null && apis.length > 0){
         length = apis.length;
-        for(i = 0; i < 4; i++) {
+        for(i = 0; i < length; i++) {
             api = apis[i];
             thumbURL = api.thumbURL;
             if(thumbURL && thumbURL.indexOf("images/") == 0) {
@@ -35,25 +30,37 @@
             path = jagg.getMappedUrl("/site/pages/item-info.jag") + "?name=" + api.name + "&version=" + api.version +
                    "&provider=" + api.provider+ urlPrefix;
     %>
-         <li>
-            <div class="cbp-vm-blockmain" onclick="myhref('<%=path%>');" >
-                <% if(thumbURL == null) { %>
-					<a class="cbp-vm-image" href="<%=path%>"><i class="fw fw-api fw-5x"></i></a>
-					<h3 class="cbp-vm-title"><a href="<%=path%>" title="<%=i18n.localize("Name")%>"><%=api.name%></a></h3>
-					<div style="display: none">
-						<a href="" title="<%=i18n.localize("Name")%>" class="api-name"><%=api.name%></a>
-					</div>
-                <% } else { %>
-                    <div class="square-element">
-                    <img class="" src="<%=thumbURL%>" alt="<%=i18n.localize("API Thumbnail")%>">
-                    </div>
-                <% } %>
-                    <div class="cbp-vm-price">
-					<input type="hidden" class="rating cbp-vm-icon cbp-vm-add" disabled="disabled" value="<%=encode.forHtmlAttribute(api.rates)%>" />
-					</div>
-           </li>
+    <div class="col-xs-12 col-sm-4 col-md-3 col-lg-2">
+    			<div class="white-wrapper">
+                                <div class="thumbnail icon">
+                                	<% if(thumbURL == null) { %>
+                                		<div class="square-element setbgcolor">
+											<div class="api-name-icon"></div>
+											<div style="display: none">
+												<a href="" title="<%=i18n.localize("Name")%>" class="api-name"><%=api.name%></a>
+											</div>
+										</div> 
+                                    <% } else { %>
+                                    	<div class="square-element">
+                                    		<img class="" src="<%=thumbURL%>" alt="<%=i18n.localize("API Thumbnail")%>">
+                                    	</div>
+                                    <% } %>
+                                     <a href="<%=path%>" title="<%=i18n.localize("Browse APIs")%>">
+                                     	<div class="after">                                       
+		                                    <span class="fw-stack fw-lg">
+		                                    <i class="fw fw-circle-outline fw-stack-2x"></i>
+		                                    <i class="fw fw-view fw-stack-1x"></i>
+		                                    </span>		                                        
+		                                    </div>
+		                               </a>
+                                </div>
+                                <div class="add-padding-2x app-data ">
+                                    <h4 class="truncate"><a href="<%=path%>" title="<%=i18n.localize("Version")%>"><%=api.name%>-<%=api.version%></a></h4>
+                                    <input type="hidden" class="rating recent_rating" disabled="disabled" value="<%=encode.forHtmlAttribute(api.rating)%>" />
+                                </div>
+                            </div>
+               </div>
     <%  }} %>
-	</ul>
     </div>
   </div>
 
