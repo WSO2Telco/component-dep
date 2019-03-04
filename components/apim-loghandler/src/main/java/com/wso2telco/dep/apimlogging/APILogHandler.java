@@ -1,7 +1,8 @@
-package org.wso2telco.carbon.apimgt.impl.handlers;
+package com.wso2telco.dep.apimlogging;
 
 import org.wso2.carbon.registry.core.Registry;
 import org.wso2.carbon.registry.core.Resource;
+import org.wso2.carbon.registry.core.Tag;
 import org.wso2.carbon.registry.core.jdbc.handlers.Handler;
 import org.wso2.carbon.registry.core.jdbc.handlers.RequestContext;
 import org.wso2.carbon.registry.core.session.CurrentSession;
@@ -63,15 +64,21 @@ public class APILogHandler extends Handler {
                     
                     if (!oldResourceContentUptoOverview.equals(newResourceContentUptoOverview)) {
                         String logEntry = getLogEntryComparingResources(oldResourceContentUptoOverview, newResourceContentUptoOverview);
-                        log.info(logEntry);
+                    	if (!logEntry.equals("")) {
+                        	log.info(logEntry);
+                    	}
                     } else {
-                        //Do nothing since no update has been done
+                        //log for create new version
+                    	String logEntry = getLogEntryCreateNewVersion(newResourceContentUptoOverview);
+                    	if (!logEntry.equals("")) {
+                        	log.info(logEntry);
+                    	}
                     }
                 } else {
                 	//Do nothing since this is in API add mode
                 }
             } catch	(Exception e) {
-                log.error("error accessing the old resource", e);
+                log.error("error on put method", e);
             }
         }
     }
@@ -93,9 +100,43 @@ public class APILogHandler extends Handler {
             String logEntry = getLogEntryForDeletedResource(oldResourceContent);
             log.info(logEntry);
         } catch	(Exception e) {
-            log.error("error accessing the old resource", e);
+            log.error("error on delete method", e);
         }
     }
+    
+	public void applyTag(RequestContext requestContext) throws RegistryException {
+		try {
+			/*
+			String RESOURCE_PATH = String.valueOf(requestContext.getResourcePath());
+			Tag[] tags = requestContext.getRegistry().getTags(RESOURCE_PATH);
+			for (Tag tag : tags) {
+				log.info(tag);
+			}
+			*/
+			String tag = requestContext.getTag();
+            String logEntry = "Added tag - " + tag;
+            log.info(logEntry);
+		} catch (Exception e) {
+			log.error("error on applyTag method", e);
+		}
+	}
+    
+	public void removeTag(RequestContext requestContext) throws RegistryException {
+		try {
+			/*
+			String RESOURCE_PATH = String.valueOf(requestContext.getResourcePath());		
+			Tag[] tags = requestContext.getRegistry().getTags(RESOURCE_PATH);
+			for (Tag tag : tags) {
+				log.info(tag);
+			}
+			*/
+			String tag = requestContext.getTag();
+            String logEntry = "Removed tag - " + tag;
+            log.info(logEntry);
+		} catch (Exception e) {
+			log.error("error accessing ", e);
+		}
+	}
     
 	private static String getLogEntryComparingResources(String oldResourceContentUptoOverview, String newResourceContentUptoOverview) {
 		String logEntry = "";
@@ -117,6 +158,7 @@ public class APILogHandler extends Handler {
 				NodeList elementList = list.item(0).getChildNodes();
 
 				String status = getElementValue(rootElementNew, "status");
+				String apiName = getElementValue(rootElementNew, "name");
 				for (int i = 0; i < elementList.getLength(); i++) {
 					Node node = elementList.item(i);
 					if (node.getNodeType() == Node.ELEMENT_NODE) {
@@ -130,6 +172,7 @@ public class APILogHandler extends Handler {
 								} else {
 									logEntry += "API Updated by " + curUser;
 								}
+					        	logEntry += " | name - " + apiName;
 							}
 				        	logEntry += " | " + nodeName + " - " + nodeValue + " > " + nodeValueNew;
 						}
@@ -162,6 +205,34 @@ public class APILogHandler extends Handler {
 		}
 		return result;
 	}
+	
+	private static String getLogEntryCreateNewVersion(String newResourceContentUptoOverview) {
+		String logEntry = "";
+		try {
+			DocumentBuilderFactory factoryNew = DocumentBuilderFactory.newInstance();
+			DocumentBuilder builderNew = factoryNew.newDocumentBuilder();
+			InputSource inputSourceNew = new InputSource(new StringReader(newResourceContentUptoOverview));
+			Document documentNew = builderNew.parse(inputSourceNew);
+			Element rootElementNew = documentNew.getDocumentElement();
+
+			String status = getElementValue(rootElementNew, "status");
+			if (status.equals("CREATED")) {
+				String apiName = getElementValue(rootElementNew, "name");
+				String context = getElementValue(rootElementNew, "context");
+				String version = getElementValue(rootElementNew, "version");
+				logEntry += "API name - " + apiName;
+	        	logEntry += " | user - " + curUser;
+	        	logEntry += " | version - " + version;
+	        	logEntry += " | context - " + context;
+	        	logEntry += " | status - " + status;
+			} else {
+				//Do nothing
+			}           
+		} catch (Exception e) {
+            log.error("error on getLogEntryCreateNewVersion method", e);
+		}
+		return logEntry;
+	}
     
 	private static String getLogEntryForDeletedResource(String oldResourceContentUptoOverview) {
 		String logEntry = "";
@@ -177,12 +248,12 @@ public class APILogHandler extends Handler {
 			}
 			String apiName = getElementValue(rootElement, "name");
 			String apiDescription = getElementValue(rootElement, "description");
-			String contextTemplate = getElementValue(rootElement, "contextTemplate");
+			String context = getElementValue(rootElement, "context");
 			String version = getElementValue(rootElement, "version");
         	logEntry += " | name - " + apiName;
         	logEntry += " | description - " + apiName;
         	logEntry += " | version - " + version;
-        	logEntry += " | context - " + contextTemplate;
+        	logEntry += " | context - " + context;
         	
 		} catch (Exception e) {
             log.error("error getting log from deleted resource", e);
