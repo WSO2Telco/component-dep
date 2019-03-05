@@ -140,7 +140,7 @@ if (<%=isEnabledTutorialForThisTenant%>) {
             	}
              } else{
          %>
-    			<h2>APIs</h2>
+    			<h2 style="margin-top:20px">APIs</h2>
    			 <% } %>
    			 </div>
 
