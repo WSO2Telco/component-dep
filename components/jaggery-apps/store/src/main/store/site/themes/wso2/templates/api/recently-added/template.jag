@@ -74,7 +74,7 @@
   $(function(){
     jagg.post("/site/blocks/api/recently-added/ajax/list.jag", {
       action:"getRecentlyAddedAPIs",
-      limit:4
+      limit:6
     }, function (result) {
          if (result.error == false) {
           for(var i = 0; i < result.apis.length;i++){
