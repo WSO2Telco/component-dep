@@ -150,6 +150,7 @@
 		<module>components/webapps/ratecard-service</module>
 		<module>components/webapps/quota-service</module>
 		<module>components/workflow-core</module>
+		<module>components/apim-loghandler</module>
 		<module>features</module>
 	</modules>
 
