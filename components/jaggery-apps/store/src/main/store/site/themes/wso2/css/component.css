@@ -233,7 +233,7 @@ ul li:nth-child(odd) .cbp-vm-image i:hover {
 
 /* Large grid view */
 .cbp-vm-view-grid ul {
-	text-align: center;
+	text-align: left;
 }
 
 .cbp-vm-view-grid ul.cbp-vm-recent li {
