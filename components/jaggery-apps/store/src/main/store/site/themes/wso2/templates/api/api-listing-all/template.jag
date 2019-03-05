@@ -468,9 +468,9 @@ $(window).load(function(){
 function catchTheFirstAPINameForTutorial() {
     var isNewUserInteractiveTutorialStarted = localStorage.getItem("isNewUserInteractiveTutorialStarted");
     if (isNewUserInteractiveTutorialStarted) {
-      var apiName = $('.page-content').parent().find('.white-wrapper').children().find('.truncate')[0].textContent;
+      var apiName = $('.page-content').parent().find('.white-wrapper').children().find('.truncate')[0];
       if (apiName == 'undefined') {
-          apiName = $('.page-content').parent().find('.white-wrapper').children().find('.apiNameWrap')[0].textContent;
+          apiName = $('.page-content').parent().find('.white-wrapper').children().find('.apiNameWrap')[0];
           
       }
       localStorage.setItem("selectedAPIName", apiName);
