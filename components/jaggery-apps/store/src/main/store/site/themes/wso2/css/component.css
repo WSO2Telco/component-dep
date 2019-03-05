@@ -252,7 +252,7 @@ ul li:nth-child(odd) .cbp-vm-image i:hover {
 }
 
 .cbp-vm-view-grid ul li {
-	width: 24%;
+	width: 15.4%;
 	text-align: center;
 	/*padding: 18px;
 	min-height: 255px; */
@@ -260,6 +260,7 @@ ul li:nth-child(odd) .cbp-vm-image i:hover {
 	display: inline-block;
 	vertical-align: top;
 	background-color: #ffffff;
+	margin: 0.5%;
 }
 
 .cbp-vm-view-grid .cbp-vm-title {
@@ -268,6 +269,7 @@ ul li:nth-child(odd) .cbp-vm-image i:hover {
 	white-space: nowrap;
 	overflow: hidden;
 	text-overflow: ellipsis;
+	margin-top: 20px;
 }
 
 .cbp-vm-view-grid .cbp-vm-details {
@@ -285,6 +287,9 @@ ul li:nth-child(odd) .cbp-vm-image i:hover {
 
 .cbp-vm-view-grid .cbp-vm-blockmain:hover{ background-color: #ffffdd; }
 
+.cbp-vm-view-grid .thumbnail.icon {
+	max-height: 210px;
+}
 
 /* List view */
 .cbp-vm-view-list li {
@@ -350,6 +355,19 @@ ul li:nth-child(odd) .cbp-vm-image i:hover {
 
 .cbp-vm-view-list .cbp-vm-blockmain:hover{ background-color: #ffffdd}
 
+.cbp-vm-view-list .thumbnail.icon{
+	margin-bottom: 0rem;
+	padding: 5px 18px;
+	display: inline-block;
+	vertical-align: middle;
+	min-width: 150px;
+	min-height: 100px;
+}
+
+.cbp-vm-view-list .api-name-icon {
+	font-size: 5.5em;
+}
+
 /***** api-info style *****/
 
 .api-info-view {
@@ -363,6 +381,12 @@ ul li:nth-child(odd) .cbp-vm-image i:hover {
 	-webkit-transition: border 0.2s ease-in-out;
 	-o-transition: border 0.2s ease-in-out;
 	transition: border 0.2s ease-in-out;
+	max-height: 220px;
+}
+
+.api-img-view{
+	width: 100px;
+	height: 100px;
 }
 
 .api-info-view .cbp-vm-image i {

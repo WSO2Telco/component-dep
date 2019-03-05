@@ -1,5 +1,5 @@
 <% jagg.template("api/recently-added", function(inputs, outputs, jagg) { %>
-<% 
+<%
 
    var theme = jagg.getUserTheme().base;
    var themePath = jagg.url('/site/themes/'+theme+"/");
@@ -24,13 +24,36 @@
     {{#each apis}}
 <li>
  <div class="cbp-vm-blockmain" onclick="myhref('<%=jagg.getMappedUrl("/site/pages/item-info.jag")%>?name={{ name }}&version={{ version }}&provider={{ provider }}<%=urlPrefix%>');" >
+				<div class="thumbnail icon">
 				{{#if thumbnailurl}}
 					<div class="square-element">
 						<img class="" src="{{ thumbnailurl }}" alt="<%=i18n.localize("API Thumbnail")%>">
 					</div>
 				{{else}}
-                   <a class="cbp-vm-image" href="<%=jagg.getMappedUrl("/site/pages/item-info.jag")%>?name={{ name }}&version={{ version }}&provider={{ provider }}<%=urlPrefix%>"><i class="fw fw-api fw-5x"></i></a>
+				<!--<div class="api-name-icon">x</div>-->
+											<!--<div style="display: none">-->
+												<!--<a href="" class="api-name">{{api.name}}</a>-->
+											<!--</div>-->
+                   <!--<a class="cbp-vm-image" href="<%=jagg.getMappedUrl("/site/pages/item-info.jag")%>?name={{ name }}&version={{ version }}&provider={{ provider }}<%=urlPrefix%>">h</a>-->
+
+
+                   <div class="square-element setbgcolor">
+                        <div class="api-name-icon"></div>
+                        <div style="display: none">
+                            <a href="<%=jagg.getMappedUrl("/site/pages/item-info.jag")%>?name={{ name }}&version={{ version }}&provider={{ provider }}<%=urlPrefix%>" class="api-name">{{ name }}</a>
+                        </div>
+                    </div>
+
 				{{/if}}
+				<a href="<%=jagg.getMappedUrl("/site/pages/item-info.jag")%>?name={{ name }}&version={{ version }}&provider={{ provider }}<%=urlPrefix%>">
+	                                    <div class="after">
+	                                    <span class="fw-stack fw-lg">
+	                                    <i class="fw fw-circle-outline fw-stack-2x"></i>
+	                                    <i class="fw fw-view fw-stack-1x"></i>
+	                                    </span>
+	                                    </div>
+	                                   </a>
+                 </div>
 	<h3 class="cbp-vm-title"><a href="<%=jagg.getMappedUrl("/site/pages/item-info.jag")%>?name={{ name }}&version={{ version }}&provider={{ provider }}<%=urlPrefix%>" title="API Browse">{{ name }}-{{ version }}</a></h3>
 	<div class="cbp-vm-details">{{ displayOwner }}</div>
 	<div class="cbp-vm-price"><input type="hidden" class="rating recent_rating cbp-vm-icon cbp-vm-add" disabled="disabled" value="{{ rates }}"/></div>
@@ -50,9 +73,6 @@
 <script type="text/javascript">
   $(function(){
     jagg.post("/site/blocks/api/recently-added/ajax/list.jag", {
-      <% if(jagg.getTenantDomain()){ %>
-      tenant: "<%= jagg.getTenantDomain()%>",
-      <% } %>
       action:"getRecentlyAddedAPIs",
       limit:4
     }, function (result) {
