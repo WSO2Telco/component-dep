@@ -118,19 +118,17 @@ var result;
                     <div class="row-height">
                         <div class="col-xs-12 col-sm-12 col-md-4 col-lg-2 col-md-height col-sm-middle col-lg-top">
                             <div class="white-wrapper details-wrapper">
-                                <div class="thumbnail api-info-view">
-                                    <% if(thumbURL == null) { %>
-                                        <div class="square-element">
-                                           <a class="cbp-vm-image"><i class="fw fw-api fw-5x"></i></a>
-                                            <div style="display: none">
-                                                <a href="" title="api name" class="api-name">
-                                                    <%=encode.forHtml(api.name)%>
-                                                </a>
-                                            </div>
+                                <div class="thumbnail icon api-info-view">
+                                     <% if(thumbURL == null) { %>
+                                <div class="square-element setbgcolor">
+                                    <div class="api-name-icon"></div>
+                                        <div style="display: none">
+                                            <a href="" title="api name" class="api-name"><%=encode.forHtml(api.name)%></a>
                                         </div>
-                                        <% } else { %>
+                                </div>
+                             <% } else { %>
                                             <div class="square-element">
-                                                <img class="" src="<%=thumbURL%>" alt="<%=i18n.localize(" apiThumb ")%>">
+                                                <img src="<%=thumbURL%>" alt="<%=i18n.localize(" apiThumb ")%>">
                                             </div>
                                             <% } %>
 

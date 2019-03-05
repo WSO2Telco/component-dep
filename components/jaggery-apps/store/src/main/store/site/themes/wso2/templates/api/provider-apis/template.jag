@@ -21,33 +21,55 @@
     var tenant=request_tenant;
     urlPrefix = jagg.getTenantURLPrefix("&");
 
-    var i, api, path,apis = outputs.apis, thumbURL;
-    if(apis!=null && apis.length > 0){
-        length = apis.length;
-        for(i = 0; i < 4; i++) {
-            api = apis[i];
-            thumbURL = api.thumbURL;
-            if(thumbURL && thumbURL.indexOf("images/") == 0) {
-                thumbURL = null;
-            } else {
-                thumbURL = jagg.getRegistryPath(thumbURL);
-            }
-            path = jagg.getMappedUrl("/site/pages/item-info.jag") + "?name=" + api.name + "&version=" + api.version +
-                   "&provider=" + api.provider+ urlPrefix;
-    %>
-         <li>
-            <div class="cbp-vm-blockmain" onclick="myhref('<%=path%>');" >
+        var i, api, path,apis = outputs.apis, thumbURL;
+        if(apis!=null && apis.length > 0){
+            length = apis.length;
+            for(i = 0; i < 4; i++) {
+                api = apis[i];
+                thumbURL = api.thumbURL;
+                if(thumbURL && thumbURL.indexOf("images/") == 0) {
+                    thumbURL = null;
+                } else {
+                    thumbURL = jagg.getRegistryPath(thumbURL);
+                }
+                path = jagg.getMappedUrl("/site/pages/item-info.jag") + "?name=" + api.name + "&version=" + api.version +
+                    "&provider=" + api.provider+ urlPrefix;
+                %>
+                     <li>
+                        <div class="cbp-vm-blockmain" onclick="myhref('<%=path%>');" >
+
+                <div class="thumbnail icon">
                 <% if(thumbURL == null) { %>
-					<a class="cbp-vm-image" href="<%=path%>"><i class="fw fw-api fw-5x"></i></a>
-					<h3 class="cbp-vm-title"><a href="<%=path%>" title="<%=i18n.localize("Name")%>"><%=api.name%></a></h3>
-					<div style="display: none">
-						<a href="" title="<%=i18n.localize("Name")%>" class="api-name"><%=api.name%></a>
-					</div>
-                <% } else { %>
-                    <div class="square-element">
-                    <img class="" src="<%=thumbURL%>" alt="<%=i18n.localize("API Thumbnail")%>">
+					<div class="square-element setbgcolor">
+                        <% if ( api.status == "PROTOTYPED" || api.status == "prototyped") { %>
+                            <span class="api-prototype-icon" title="<%=i18n.localize("Prototyped")%>"><i class="fw fw-prototype fw-lg"></i></span>
+                         <% } %>
+                        <div class="api-name-icon"></div>
+                        <div style="display: none">
+                            <a href="" class="api-name" title="<%=i18n.localize("API Name")%>"><%=api.name%></a>
+                        </div>
                     </div>
+                <% } else { %>
+
+                    <div class="square-element">
+                        <img class="" src="<%=thumbURL%>" alt="<%=i18n.localize("API Thumbnail")%>">
+                        <% if ( api.status == "PROTOTYPED" || api.status == "prototyped") { %>
+                            <span class="api-prototype-icon" title="<%=i18n.localize("Prototyped")%>"><i class="fw fw-prototype fw-lg"></i></span>
+                        <% } %>
+                    </div>
+
                 <% } %>
+
+                <a href="<%=path%>" title="<%=i18n.localize("Browse APIs")%>">
+	                                    <div class="after">
+	                                    <span class="fw-stack fw-lg">
+	                                    <i class="fw fw-circle-outline fw-stack-2x"></i>
+	                                    <i class="fw fw-view fw-stack-1x"></i>
+	                                    </span>
+	                                    </div>
+	                                   </a>
+                 </div>
+                <h3 class="cbp-vm-title"><a href="<%=path%>" title="<%=i18n.localize("Name")%>"><%=api.name%></a></h3>
                     <div class="cbp-vm-price">
 					<input type="hidden" class="rating cbp-vm-icon cbp-vm-add" disabled="disabled" value="<%=encode.forHtmlAttribute(api.rates)%>" />
 			</div>

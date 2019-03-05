@@ -218,7 +218,7 @@ if (<%=isEnabledTutorialForThisTenant%>) {
 				                                		<div class="square-element setbgcolor">
 				                                		    <% if ( api.status == "PROTOTYPED" || api.status == "prototyped") { %>
                                                                 <span class="api-prototype-icon" title="<%=i18n.localize("Prototyped")%>"><i class="fw fw-prototype fw-lg"></i></span>
-                                                            <% } %>
+                                                             <% } %>
 															<div class="api-name-icon"></div>
 															<div style="display: none">
 																<a href="" class="api-name" title="<%=i18n.localize("API Name")%>"><%=api.name%></a>
@@ -263,7 +263,34 @@ if (<%=isEnabledTutorialForThisTenant%>) {
                 <%} else {%>
 <li>
    <div class="cbp-vm-blockmain" onclick="myhref('<%=path%>');" >
-	<a class="cbp-vm-image" href="<%=path%>"><i class="fw fw-api fw-5x"></i></a>
+	<div class="thumbnail icon">
+                                	<% if(thumbURL == null) { %>
+                                		<div class="square-element setbgcolor">
+                                		    <% if ( api.status == "PROTOTYPED" || api.status == "prototyped") { %>
+                                                <span class="api-prototype-icon" title="<%=i18n.localize("Prototyped")%>"><i class="fw fw-prototype fw-lg"></i></span>
+                                            <% } %>
+											<div class="api-name-icon"></div>
+											<div style="display: none">
+												<a href="" class="api-name" title="<%=i18n.localize("API Name")%>"><%=api.name%></a>
+											</div>
+										</div>
+                                    <% } else { %>
+                                    	<div class="square-element">
+                                    		<img class="" src="<%=thumbURL%>" alt="<%=i18n.localize("API Thumbnail")%>">
+                                    		<% if ( api.status == "PROTOTYPED" || api.status == "prototyped") { %>
+                                                <span class="api-prototype-icon" title="<%=i18n.localize("Prototyped")%>"><i class="fw fw-prototype fw-lg"></i></span>
+                                            <% } %>
+                                    	</div>
+                                    <% } %>
+                                     <a href="<%=path%>" title="<%=i18n.localize("Browse APIs")%>">
+	                                    <div class="after">
+	                                    <span class="fw-stack fw-lg">
+	                                    <i class="fw fw-circle-outline fw-stack-2x"></i>
+	                                    <i class="fw fw-view fw-stack-1x"></i>
+	                                    </span>
+	                                    </div>
+	                                   </a>
+                                </div>
 	<h3 class="cbp-vm-title"><a href="<%=path%>" title="<%=i18n.localize("API Name")%>: <%=encode.forHtml(api.name)%>"><%=encode.forHtml(api.name)%></a></h3>
 	<div class="cbp-vm-price"><a href="<%=path%>" title="<%=i18n.localize("Version")%>"><%=api.version%></a></div>
 	<div class="cbp-vm-details">
