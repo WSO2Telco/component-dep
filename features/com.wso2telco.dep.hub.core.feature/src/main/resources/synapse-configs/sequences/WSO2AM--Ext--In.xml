@@ -4,8 +4,18 @@
     <property expression="get-property('MessageID')" name="MESSAGE_ID" scope="default" type="STRING"/>
     <sequence key="httpHeaderSeq"/>
     <!-- Values log level = full; enable payload loggin. log level=custom; disable payload loggin for the request -->
-    <log level="custom">
-        <property expression="get-property('To')" name="API Request URL"/>
-        <property expression="$ctx:MESSAGE_ID" name="Request ID"/>
-    </log>
+    <class name="com.wso2telco.dep.user.masking.UserMaskingMediator"/>
+    <filter regex="^true$" source="get-property('ENABLE_WSO2AM_EXT_IN_PATH')">
+        <then>
+            <log level="custom">
+                <property expression="get-property('To')" name="API Request URL"/>
+                <property expression="$ctx:MESSAGE_ID" name="Request ID"/>
+            </log>
+        </then>
+        <else>
+            <log level="custom">
+                <property expression="$ctx:MESSAGE_ID" name="Request ID"/>
+            </log>
+        </else>
+    </filter>
 </sequence>
