@@ -56,7 +56,7 @@
                  </div>
 	<h3 class="cbp-vm-title"><a href="<%=jagg.getMappedUrl("/site/pages/item-info.jag")%>?name={{ name }}&version={{ version }}&provider={{ provider }}<%=urlPrefix%>" title="API Browse">{{ name }}-{{ version }}</a></h3>
 	<div class="cbp-vm-details">{{ displayOwner }}</div>
-	<div class="cbp-vm-price"><input type="hidden" class="rating recent_rating cbp-vm-icon cbp-vm-add" disabled="disabled" value="{{ rates }}"/></div>
+	<div class="cbp-vm-rating"><input type="hidden" class="rating recent_rating cbp-vm-icon cbp-vm-add" disabled="disabled" value="{{ rates }}"/></div>
 	</div>
 </li>
     {{/each}}

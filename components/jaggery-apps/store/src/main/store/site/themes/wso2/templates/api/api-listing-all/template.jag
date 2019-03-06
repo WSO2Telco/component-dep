@@ -292,7 +292,7 @@ if (<%=isEnabledTutorialForThisTenant%>) {
 	                                   </a>
                                 </div>
 	<h3 class="cbp-vm-title"><a href="<%=path%>" title="<%=i18n.localize("API Name")%>: <%=encode.forHtml(api.name)%>"><%=encode.forHtml(api.name)%></a></h3>
-	<div class="cbp-vm-price"><a href="<%=path%>" title="<%=i18n.localize("Version")%>"><%=api.version%></a></div>
+	<div class="cbp-vm-version"><a href="<%=path%>" title="<%=i18n.localize("Version")%>"><%=api.version%></a></div>
 	<div class="cbp-vm-details">
 		<%if(api.isAdvertiseOnly) {%>
 		<%=encode.forHtml(api.apiOwner)%>
@@ -303,7 +303,7 @@ if (<%=isEnabledTutorialForThisTenant%>) {
 		<% } %>
 	</div>
 	<% if(isRatingActivated){ %>
-	<div class="cbp-vm-price">
+	<div class="cbp-vm-rating">
 		<input type="hidden" class="rating cbp-vm-icon cbp-vm-add" disabled="disabled" value="<%=encode.forHtmlAttribute(api.rates)%>" />
 	</div>
 	<% } %>

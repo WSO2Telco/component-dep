@@ -182,7 +182,7 @@ ul li:nth-child(odd) .cbp-vm-image i:hover {
 	padding: 0;
 }
 
-.cbp-vm-price {
+.cbp-vm-version, .cbp-vm-rating {
 	color: #c0c0c0;
 }
 
@@ -253,7 +253,6 @@ ul li:nth-child(odd) .cbp-vm-image i:hover {
 }
 
 .cbp-vm-view-grid .cbp-vm-title {
-	font-size: 1.3em;
 	max-width: none;
 	white-space: nowrap;
 	overflow: hidden;
@@ -267,7 +266,8 @@ ul li:nth-child(odd) .cbp-vm-image i:hover {
 	margin: 0 auto;
 } 
 
-.cbp-vm-view-grid .cbp-vm-price {
+.cbp-vm-view-grid .cbp-vm-version,
+.cbp-vm-view-grid .cbp-vm-rating{
 	margin: 10px 0;
 	font-size: 1.2em;
 }
@@ -304,7 +304,8 @@ ul li:nth-child(odd) .cbp-vm-image i:hover {
 .cbp-vm-view-list .cbp-vm-image,
 .cbp-vm-view-list .cbp-vm-title,
 .cbp-vm-view-list .cbp-vm-details,
-.cbp-vm-view-list .cbp-vm-price,
+.cbp-vm-view-list .cbp-vm-version,
+.cbp-vm-view-list .cbp-vm-rating,
 .cbp-vm-view-list .cbp-vm-add {
 	display: inline-block;
 	vertical-align: middle;
@@ -324,7 +325,8 @@ ul li:nth-child(odd) .cbp-vm-image i:hover {
 	word-break: break-all;
 }
 
-.cbp-vm-view-list .cbp-vm-price {
+.cbp-vm-view-list .cbp-vm-version,
+.cbp-vm-view-list .cbp-vm-rating {
 	font-size: 1.1em;
 	width: 10%;
 }
