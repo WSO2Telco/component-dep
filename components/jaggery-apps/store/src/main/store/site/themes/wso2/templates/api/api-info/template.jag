@@ -332,7 +332,7 @@ var result;
 
                                             <button type="button" onclick="triggerSubscribe('<%=result%>')" id="subscribe-button" <%if(!tiersAvailable){%>disabled="disabled"<%}%>
                                             class="btn btn-primary btn-mobile<% if(!user) { %>need-login<% } %>">
-                                    <span class="icon fw-stack"
+                                    <span class="icon fw-stack">
                                         <i class="fw fw-subscribe fw-stack-1x"></i>
                                         <i class="fw fw-circle-outline fw-stack-2x"></i>
                                     </span>
