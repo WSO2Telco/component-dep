@@ -140,7 +140,7 @@ if (<%=isEnabledTutorialForThisTenant%>) {
             	}
              } else{
          %>
-    			<h2>APIs</h2>
+    			<h2 style="margin-top:20px">APIs</h2>
    			 <% } %>
    			 </div>
 
@@ -158,6 +158,13 @@ if (<%=isEnabledTutorialForThisTenant%>) {
                 <div class="col-sm-12 api-count-display"><span><%=String(from).split('.')[0]%> - <%=String(to).split('.')[0]%></span> of <span><%=String(outputs.totalLength).split('.')[0]%></span> <%=i18n.localize("APIs")%></div>
             <% }
         }%>
+
+        <div id="cbp-vm" class="cbp-vm-switcher cbp-vm-view-grid">
+            <div class="cbp-vm-options">
+                <a href="#" class="cbp-vm-icon cbp-vm-grid cbp-vm-selected" data-view="cbp-vm-view-grid">Grid View</a>
+                <a href="#" class="cbp-vm-icon cbp-vm-list" data-view="cbp-vm-view-list">List View</a>
+            </div>
+        <ul>
 
                 <%
 
@@ -211,7 +218,7 @@ if (<%=isEnabledTutorialForThisTenant%>) {
 				                                		<div class="square-element setbgcolor">
 				                                		    <% if ( api.status == "PROTOTYPED" || api.status == "prototyped") { %>
                                                                 <span class="api-prototype-icon" title="<%=i18n.localize("Prototyped")%>"><i class="fw fw-prototype fw-lg"></i></span>
-                                                            <% } %>
+                                                             <% } %>
 															<div class="api-name-icon"></div>
 															<div style="display: none">
 																<a href="" class="api-name" title="<%=i18n.localize("API Name")%>"><%=api.name%></a>
@@ -254,21 +261,9 @@ if (<%=isEnabledTutorialForThisTenant%>) {
                		</div>
 
                 <%} else {%>
-                
-                	<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
-                            <div class="white-wrapper add-margin-bottom-4x">
-                            	<%if(outputs.isMonetizationEnabled) {%>
-				                    <div class="ribbon-wrapper">
-				                    <%if (api.monetizationCategory.equalsIgnoreCase("Freemium")) { %>
-				                        <div class="ribbon-yellow">FREEMIUM</div>
-				                    <%} else if (api.monetizationCategory.equalsIgnoreCase("Free")) { %>
-				                        <div class="ribbon-green">FREE</div>
-				                    <%} else { %>
-				                        <div class="ribbon-blue">PAID</div>
-				                    <%}%>
-				                    </div>
-				                <%}%>
-                                <div class="thumbnail icon">
+<li>
+   <div class="cbp-vm-blockmain" onclick="myhref('<%=path%>');" >
+	<div class="thumbnail icon">
                                 	<% if(thumbURL == null) { %>
                                 		<div class="square-element setbgcolor">
                                 		    <% if ( api.status == "PROTOTYPED" || api.status == "prototyped") { %>
@@ -278,7 +273,7 @@ if (<%=isEnabledTutorialForThisTenant%>) {
 											<div style="display: none">
 												<a href="" class="api-name" title="<%=i18n.localize("API Name")%>"><%=api.name%></a>
 											</div>
-										</div> 
+										</div>
                                     <% } else { %>
                                     	<div class="square-element">
                                     		<img class="" src="<%=thumbURL%>" alt="<%=i18n.localize("API Thumbnail")%>">
@@ -288,35 +283,38 @@ if (<%=isEnabledTutorialForThisTenant%>) {
                                     	</div>
                                     <% } %>
                                      <a href="<%=path%>" title="<%=i18n.localize("Browse APIs")%>">
-	                                    <div class="after">                                       
+	                                    <div class="after">
 	                                    <span class="fw-stack fw-lg">
 	                                    <i class="fw fw-circle-outline fw-stack-2x"></i>
 	                                    <i class="fw fw-view fw-stack-1x"></i>
-	                                    </span>          
+	                                    </span>
 	                                    </div>
 	                                   </a>
                                 </div>
-                                <div class="add-padding-2x app-data ">
-                                    <h4 class="truncate"><a href="<%=path%>" title="<%=i18n.localize("API Name")%>: <%=encode.forHtml(api.name)%>"><%=encode.forHtml(api.name)%></a></h4>
-                                    <h5><a href="<%=path%>" title="<%=i18n.localize("Version")%>"><%=api.version%></a></h5>
-                                    <%if(api.isAdvertiseOnly) {%>
-                                    	<p class="truncate"><%=encode.forHtml(api.apiOwner)%></p>
-                                    <%} else if(api.apiBusinessOwner != null && api.apiBusinessOwner.trim() != "") {%>
-                                    	<p class="truncate"><%=encode.forHtml(api.apiBusinessOwner)%></p>
-                                    <%} else { %>
-                                    	<p class="truncate"><%=encode.forHtml(api.provider)%></p>
-                                    <% } %>
-                                    <% if(isRatingActivated){ %>
-                                        <input type="hidden" class="rating" disabled="disabled" value="<%=encode.forHtmlAttribute(api.rates)%>" />
-                                    <% } %>
-                                </div>
-                            </div>
-                        </div>
+	<h3 class="cbp-vm-title"><a href="<%=path%>" title="<%=i18n.localize("API Name")%>: <%=encode.forHtml(api.name)%>"><%=encode.forHtml(api.name)%></a></h3>
+	<div class="cbp-vm-version"><a href="<%=path%>" title="<%=i18n.localize("Version")%>"><%=api.version%></a></div>
+	<div class="cbp-vm-details">
+		<%if(api.isAdvertiseOnly) {%>
+		<%=encode.forHtml(api.apiOwner)%>
+		<%} else if(api.apiBusinessOwner != null && api.apiBusinessOwner.trim() != "") {%>
+			<%=encode.forHtml(api.apiBusinessOwner)%>
+		<%} else { %>
+			<%=encode.forHtml(api.provider)%>
+		<% } %>
+	</div>
+	<% if(isRatingActivated){ %>
+	<div class="cbp-vm-rating">
+		<input type="hidden" class="rating cbp-vm-icon cbp-vm-add" disabled="disabled" value="<%=encode.forHtmlAttribute(api.rates)%>" />
+	</div>
+	<% } %>
+   </div>
+</li>
                 <%}%>
                 <% } %>
+</ul>
+	</div>
 
-            
-            
+
             <!-- Pagination Start -->
             
             <%  if(numberOfPages > 1) { %>
@@ -470,9 +468,9 @@ $(window).load(function(){
 function catchTheFirstAPINameForTutorial() {
     var isNewUserInteractiveTutorialStarted = localStorage.getItem("isNewUserInteractiveTutorialStarted");
     if (isNewUserInteractiveTutorialStarted) {
-      var apiName = $('.page-content').parent().find('.white-wrapper').children().find('.truncate')[0].textContent;
+      var apiName = $('.page-content').parent().find('.white-wrapper').children().find('.truncate')[0];
       if (apiName == 'undefined') {
-          apiName = $('.page-content').parent().find('.white-wrapper').children().find('.apiNameWrap')[0].textContent;
+          apiName = $('.page-content').parent().find('.white-wrapper').children().find('.apiNameWrap')[0];
           
       }
       localStorage.setItem("selectedAPIName", apiName);
@@ -484,6 +482,10 @@ catchTheFirstAPINameForTutorial();
 
 
 
+</script>
+    <script type="text/javascript">
+        function myhref(web){
+          window.location.href = web;}
 </script>
 
 <%

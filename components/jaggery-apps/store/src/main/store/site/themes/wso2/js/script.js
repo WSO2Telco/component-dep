@@ -57,8 +57,13 @@ $(window).load(function() {
      */
     $('.sidebar-wrapper').on('affix.bs.affix', function() {
         var sidebarWidth = $(this).width();
+        var sidebarHeight = $('#tagcloud').height();
         $('.media').prepend('<div class="affix-spacer hidden-xs" style="width:' + sidebarWidth + 'px;float:left;height: 75vh"></div>');
-        $('.media .media-left').css({'width': sidebarWidth});
+        if(sidebarHeight < 600 || sidebarHeight == null){
+            $('.media .media-left').css({'width': sidebarWidth});
+        }else {
+            $('.media .media-left').css({'width': (sidebarWidth + 17)});
+        }
     }).on('affixed-top.bs.affix', function() {
         $('.affix-spacer').remove();
     });
