@@ -70,7 +70,7 @@
 	                                   </a>
                  </div>
                 <h3 class="cbp-vm-title"><a href="<%=path%>" title="<%=i18n.localize("Name")%>"><%=api.name%></a></h3>
-                    <div class="cbp-vm-price">
+                    <div class="cbp-vm-rating">
 					<input type="hidden" class="rating cbp-vm-icon cbp-vm-add" disabled="disabled" value="<%=encode.forHtmlAttribute(api.rates)%>" />
 			</div>
 			</div>
@@ -79,6 +79,12 @@
 	</ul>
     </div>
   </div>
+
+
+<script type="text/javascript">
+        function myhref(web){
+          window.location.href = web;}
+</script>
 
 <%}%>
 <% }); %>
