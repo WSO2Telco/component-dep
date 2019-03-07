@@ -34,6 +34,11 @@
             <artifactId>dbutils</artifactId>
         </dependency>
         <dependency>
+            <groupId>com.wso2telco.dep</groupId>
+            <artifactId>user-masking</artifactId>
+            <version>${com.wso2telco.dep.version}</version>
+        </dependency>
+        <dependency>
             <groupId>log4j</groupId>
             <artifactId>log4j</artifactId>
         </dependency>
@@ -69,7 +74,7 @@
                     <instructions>
                         <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
-                        <Export-Package>com.wso2telco.dep.*</Export-Package>
+                        <Export-Package>com.wso2telco.dep.oneapivalidation.*</Export-Package>
                         <DynamicImport-Package>*</DynamicImport-Package>
                     </instructions>
                 </configuration>

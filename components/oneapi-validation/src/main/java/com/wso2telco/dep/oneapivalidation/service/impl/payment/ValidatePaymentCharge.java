@@ -21,8 +21,12 @@ import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.dep.oneapivalidation.util.UrlValidator;
 import com.wso2telco.dep.oneapivalidation.util.Validation;
 import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
+import com.wso2telco.dep.user.masking.UserMaskHandler;
+import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
+
+import javax.crypto.BadPaddingException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -33,10 +37,27 @@ import org.apache.commons.logging.LogFactory;
  */
 public class ValidatePaymentCharge  implements IServiceValidate {
 
+    static Logger logger = Logger.getLogger(ValidatePaymentCharge.class);
+
     private Log log = LogFactory.getLog(ValidatePaymentCharge.class);
 
     /** The validation rules. */
     private final String[] validationRules = {"*", "transactions", "amount"};
+
+    /** user masking */
+    private boolean userAnonymization;
+
+    /** user masking encryption key */
+    private String maskingSecretKey;
+
+    public ValidatePaymentCharge() {
+
+    }
+
+    public ValidatePaymentCharge(boolean userAnonymization, String maskingSecretKey) {
+        this.userAnonymization = userAnonymization;
+        this.maskingSecretKey = maskingSecretKey;
+    }
 
     /* (non-Javadoc)
      * @see com.wso2telco.oneapivalidation.service.IServiceValidate#validate(java.lang.String)
@@ -68,6 +89,9 @@ public class ValidatePaymentCharge  implements IServiceValidate {
                 }
                 if (!jsonObj.isNull("endUserId")) {
                     endUserId = nullOrTrimmed(jsonObj.getString("endUserId"));
+                    if(this.userAnonymization) {
+                        endUserId = UserMaskHandler.maskUserId(endUserId, false, this.maskingSecretKey);
+                    }
                 }
                 if (!jsonObj.isNull("referenceCode")) {
                     referenceCode = nullOrTrimmed(jsonObj.getString("referenceCode"));
@@ -128,6 +152,9 @@ public class ValidatePaymentCharge  implements IServiceValidate {
             } catch (CustomException e){
                 log.error("Manipulating received JSON Object: " + e);
                 throw new CustomException(e.getErrcode(), e.getErrmsg(), e.getErrvar());
+            } catch (BadPaddingException e) {
+                logger.error("Error occurred while unmasking. Possible reason would be incorrect masking configuration. " , e);
+                throw new CustomException("SVC0001", "A service error occurred.", new String[]{"Invalid user mask configuration"});
             } catch (Exception e) {
                 log.error("Manipulating received JSON Object: " + e);
                 throw new CustomException("POL0299", "Unexpected Error", new String[]{""});
