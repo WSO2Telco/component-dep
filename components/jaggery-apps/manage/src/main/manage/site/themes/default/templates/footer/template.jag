@@ -8,14 +8,14 @@
                                           <ul class="help-links">
                                           	<h5><li><a href="">About Us</a></li></h5>
                                           	<h5><li><a href="" target="_blank">Our API</a></li></h5>
-                                          	<h5><li><a href="<%=jagg.getAbsoluteUrl("/site/pages/branding.jag?pageId=tutorials")%>" target="_blank">Tutorials</a></li></h5>
+                                          	<h5><li><a href="https://apigate.com/en/resources/featured/videos" target="_blank">Tutorials</a></li></h5>
                                           </ul>
                                    </div>
                                    <div class="span2">
                                           <ul class="help-links">
-                                          	<h5><li><a href="">Privacy Policy</a></li></h5>
-                                          	<h5><li><a href="<%=jagg.getAbsoluteUrl("/site/pages/branding.jag?pageId=terms-conditions")%>" target="_blank">Terms and Conditions</a></li></h5>
-                                          	<h5><li><a href="" target="_blank">Useful Guidelines</a></li></h5>
+                                          	<h5><li><a href="https://apigate.com/en/privacy-policy ">Privacy Policy</a></li></h5>
+                                          	<h5><li><a href="https://apigate.com/en/privacy-policy" target="_blank">Terms and Conditions</a></li></h5>
+                                          	<h5><li><a href="https://apigate.com/en/resources/products/documentation" target="_blank">Useful Guidelines</a></li></h5>
                                           </ul>
                                    </div>
                                    <div class="span2">

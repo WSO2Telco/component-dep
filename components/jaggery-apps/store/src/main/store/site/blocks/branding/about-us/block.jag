@@ -1,0 +1,12 @@
+<%
+jagg.block("branding/about-us", {
+    initializer:function (data) {
+
+    } ,
+ getInputs:function () {
+        return {
+        }
+    }
+
+});
+%>
