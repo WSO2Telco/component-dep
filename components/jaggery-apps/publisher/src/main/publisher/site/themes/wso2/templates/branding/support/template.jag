@@ -1,0 +1,15 @@
+<% jagg.template("branding/support", function(inputs, outputs, jagg) {
+%>
+<div id="listing">
+    <div class="page-header">
+	<h2>Support</h2>
+	</div>
+    <div class="content-section shadow-up">
+        <div class="content-data span5">
+			<p lang="en-GB" align="JUSTIFY">
+   			 <h3><strong>Support</strong></h3>
+			
+        </div>
+    </div>
+</div>
+<% }); %>
