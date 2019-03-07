@@ -30,13 +30,6 @@
 						<img class="" src="{{ thumbnailurl }}" alt="<%=i18n.localize("API Thumbnail")%>">
 					</div>
 				{{else}}
-				<!--<div class="api-name-icon">x</div>-->
-											<!--<div style="display: none">-->
-												<!--<a href="" class="api-name">{{api.name}}</a>-->
-											<!--</div>-->
-                   <!--<a class="cbp-vm-image" href="<%=jagg.getMappedUrl("/site/pages/item-info.jag")%>?name={{ name }}&version={{ version }}&provider={{ provider }}<%=urlPrefix%>">h</a>-->
-
-
                    <div class="square-element setbgcolor">
                         <div class="api-name-icon"></div>
                         <div style="display: none">

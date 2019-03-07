@@ -24,7 +24,7 @@
         var i, api, path,apis = outputs.apis, thumbURL;
         if(apis!=null && apis.length > 0){
             length = apis.length;
-            for(i = 0; i < 4; i++) {
+            for(i = 0; i < length && i < 6; i++) {
                 api = apis[i];
                 thumbURL = api.thumbURL;
                 if(thumbURL && thumbURL.indexOf("images/") == 0) {
