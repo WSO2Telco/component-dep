@@ -242,7 +242,7 @@ CREATE TABLE IF NOT EXISTS `sendsms_reqid` (
   `ID` int(20) NOT NULL AUTO_INCREMENT,
   `hub_requestid` varchar(255) DEFAULT NULL,
   `sender_address` varchar(40) DEFAULT NULL,
-  `delivery_address` varchar(40) DEFAULT NULL,
+  `delivery_address` varchar(255) DEFAULT NULL,
   `plugin_requestid` varchar(255) DEFAULT NULL,
   `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`ID`)

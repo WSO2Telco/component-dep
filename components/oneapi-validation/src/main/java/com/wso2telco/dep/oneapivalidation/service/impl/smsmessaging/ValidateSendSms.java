@@ -23,10 +23,15 @@ import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import com.wso2telco.dep.user.masking.UserMaskHandler;
+import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
 
- 
+import javax.crypto.BadPaddingException;
+
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class ValidateSendSms.
@@ -35,6 +40,23 @@ public class ValidateSendSms implements IServiceValidate {
 
     /** The validation rules. */
     private final String[] validationRules = {"outbound", "*", "requests"};
+
+    private static Logger logger = Logger.getLogger(ValidateSendSms.class);
+
+    /** user masking */
+    private boolean userAnonymization;
+
+    /** user masking encryption key */
+    private String maskingSecretKey;
+
+    public ValidateSendSms() {
+
+    }
+
+    public ValidateSendSms(boolean userAnonymization, String maskingSecretKey) {
+        this.userAnonymization = userAnonymization;
+        this.maskingSecretKey = maskingSecretKey;
+    }
 
     /* (non-Javadoc)
      * @see com.wso2telco.oneapivalidation.service.IServiceValidate#validate(java.lang.String)
@@ -58,7 +80,13 @@ public class ValidateSendSms implements IServiceValidate {
 
                 JSONArray addressArray = objOtboundSMSMessageRequest.getJSONArray("address");
                 for (int a = 0; a < addressArray.length(); a++) {
-                    addresses.add(nullOrTrimmed(addressArray.getString(a)));
+                    if(this.userAnonymization && UserMaskHandler.isMaskedUserId(addressArray.getString(a))) {
+                        addresses.add(nullOrTrimmed(UserMaskHandler.maskUserId(addressArray.getString(a), false, this.maskingSecretKey)));
+                    } else {
+                        addresses.add(nullOrTrimmed(addressArray.getString(a)));
+                    }
+
+
                 }
             }
 
@@ -93,9 +121,11 @@ public class ValidateSendSms implements IServiceValidate {
 
                 senderName = nullOrTrimmed(objOtboundSMSMessageRequest.getString("senderName"));
             }
+        } catch (BadPaddingException e) {
+            logger.error("Error occurred while unmasking. Possible reason would be incorrect masking configuration. " , e);
+            throw new CustomException("SVC0001", "A service error occurred.", new String[]{"Invalid user mask configuration"});
         } catch (Exception e) {
-            //logger.debug("Response JSON: " + "test");
-            System.out.println("Manipulating recived JSON Object: " + e);
+            logger.error("Manipulating recived JSON Object: " + e);
             throw new CustomException("POL0299", "Unexpected Error", new String[]{""});
         }
 
