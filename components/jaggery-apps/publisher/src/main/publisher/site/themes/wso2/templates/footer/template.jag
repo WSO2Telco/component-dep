@@ -57,7 +57,7 @@
                              <div  style="clear:both"></div>
                               <hr class="custom_hr" />
 
-                               <p style="text-align: center"> &copy; <script>document.write(new Date().getFullYear());</script> <a title="WSO2.Telco" href="https://apigate.com/" target="_blank"><span class="copyright_logo"></span> Inc</a>.</p>
+                               <p style="text-align: center"> &copy; <script>document.write(new Date().getFullYear());</script> <a title="WSO2.Telco" href="https://apigate.com/" target="_blank"><span class="copyright_logo"></span></a></p>
 
                                <!-- <a class="powered-by-logo pull-right" href="http://wso2telco.com" target="_blank"></a> -->
 
