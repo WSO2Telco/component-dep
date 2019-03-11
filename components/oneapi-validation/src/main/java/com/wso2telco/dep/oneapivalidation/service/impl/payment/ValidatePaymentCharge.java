@@ -22,7 +22,6 @@ import com.wso2telco.dep.oneapivalidation.util.UrlValidator;
 import com.wso2telco.dep.oneapivalidation.util.Validation;
 import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
 import com.wso2telco.dep.user.masking.UserMaskHandler;
-import org.apache.log4j.Logger;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -36,8 +35,6 @@ import org.apache.commons.logging.LogFactory;
  * The Class ValidatePaymentCharge.
  */
 public class ValidatePaymentCharge  implements IServiceValidate {
-
-    static Logger logger = Logger.getLogger(ValidatePaymentCharge.class);
 
     private Log log = LogFactory.getLog(ValidatePaymentCharge.class);
 
@@ -153,7 +150,7 @@ public class ValidatePaymentCharge  implements IServiceValidate {
                 log.error("Manipulating received JSON Object: " + e);
                 throw new CustomException(e.getErrcode(), e.getErrmsg(), e.getErrvar());
             } catch (BadPaddingException e) {
-                logger.error("Error occurred while unmasking. Possible reason would be incorrect masking configuration. " , e);
+                log.error("Error occurred while unmasking. Possible reason would be incorrect masking configuration. " , e);
                 throw new CustomException("SVC0001", "A service error occurred.", new String[]{"Invalid user mask configuration"});
             } catch (Exception e) {
                 log.error("Manipulating received JSON Object: " + e);

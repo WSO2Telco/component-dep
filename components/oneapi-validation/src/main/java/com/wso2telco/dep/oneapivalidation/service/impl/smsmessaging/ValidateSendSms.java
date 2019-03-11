@@ -25,9 +25,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.wso2telco.dep.user.masking.UserMaskHandler;
-import org.apache.log4j.Logger;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
 
 import javax.crypto.BadPaddingException;
 
@@ -41,7 +42,7 @@ public class ValidateSendSms implements IServiceValidate {
     /** The validation rules. */
     private final String[] validationRules = {"outbound", "*", "requests"};
 
-    private static Logger logger = Logger.getLogger(ValidateSendSms.class);
+    private static Log log = LogFactory.getLog(ValidateSendSms.class);
 
     /** user masking */
     private boolean userAnonymization;
@@ -122,10 +123,10 @@ public class ValidateSendSms implements IServiceValidate {
                 senderName = nullOrTrimmed(objOtboundSMSMessageRequest.getString("senderName"));
             }
         } catch (BadPaddingException e) {
-            logger.error("Error occurred while unmasking. Possible reason would be incorrect masking configuration. " , e);
+            log.error("Error occurred while unmasking. Possible reason would be incorrect masking configuration. " , e);
             throw new CustomException("SVC0001", "A service error occurred.", new String[]{"Invalid user mask configuration"});
         } catch (Exception e) {
-            logger.error("Manipulating recived JSON Object: " + e);
+            log.error("Manipulating recived JSON Object: " + e);
             throw new CustomException("POL0299", "Unexpected Error", new String[]{""});
         }
 
