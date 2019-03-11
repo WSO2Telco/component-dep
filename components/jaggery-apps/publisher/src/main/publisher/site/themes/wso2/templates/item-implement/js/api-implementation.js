@@ -118,7 +118,7 @@ $(document).ready(function(){
                 $('#'+thisID).buttonLoader('stop');
                 $( "body" ).trigger( "api_saved" );
                 if(!$("#hiddenGoToManage").val()){
-                    $('#apiSaved').show();
+                    $("#apiSaved").attr("style", "display: block ; position: fixed; height: 50px; width: 90% ; top: 20px; left: 5%; padding: 0px; list-style-type: none; z-index:999999999; text-align: center; padding-top : 15px");
                 }
                 setTimeout("hideMsg()", 3000);
              } else {
