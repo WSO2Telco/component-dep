@@ -21,8 +21,8 @@
                         <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2">
                                               <ul class="help-links">
                                               <%if (!user) { %>
-                                                    <li><h5><a class="disabled" target="_blank">Privacy Policy</a></h5></li>
-                                                    <li><h5><a class="disabled" target="_blank">Terms and Conditions</a></h5></li>
+                                                    <li><h5><a class="disabled" href="https://apigate.com/en/privacy-policy" target="_blank">Privacy Policy</a></h5></li>
+                                                    <li><h5><a class="disabled" href="<%=jagg.getAbsoluteUrl("/site/pages/branding.jag?pageId=terms-conditions")%>" target="_blank">Terms and Conditions</a></h5></li>
 
                                                 <% } else { %>
                                                     <li><h5><a href="https://apigate.com/en/privacy-policy" target="_blank">Privacy Policy</a></h5></li>
