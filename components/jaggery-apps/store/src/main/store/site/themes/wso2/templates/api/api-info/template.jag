@@ -179,13 +179,7 @@ var result;
                                                             <a class="remove_rating" title="remove rates"><i class="fw fw-error" style="font-size:11px;"></i></a>
                                                         </p>
                                                     </div>
-                                                    <% if(api.rates!=0) {%>
-                                                        <div class="col-xs-3 col-sm-3">
-                                                            <div class="average-rating">
-                                                                <%=api.rates%>
-                                                            </div>
-                                                        </div>
-                                                        <%} %>
+
                                                             <%} %>
                                                                 <% if(isRatingActivated){%>
 
