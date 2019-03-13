@@ -37,7 +37,7 @@
        $(document).ready(function () {
         if($.cookie('showAPIInfo')=="yes"){
         $('#apiInfo').show();
-        var date = Click one of the buttons below to get startednew Date();
+        var date = new Date();
         date.setTime(date.getTime() + (40* 1000));
         $.cookie('showAPIInfo', 'false',{ path: '/',expires: date });
          var t = setTimeout("hideMsg()", 3000);
