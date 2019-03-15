@@ -209,19 +209,25 @@ public class HubStartupObserver implements ServerStartupObserver {
                  */
                 if (getDeploymentType().startsWith(INTERNAL_GATEWAY)) {
 
-                    permissions = new Permission[] {
+                    permissions = new Permission[]{
                             new Permission("/permission/admin/login", EXECUTE_ACTION),
-                            new Permission("/permission/UIModulePermission/workFlowHistory/visible", EXECUTE_ACTION),
+                            new Permission("/permission/UIModulePermission/workFlowHistory", EXECUTE_ACTION),
                             new Permission("/permission/UIModulePermission/application/visible", EXECUTE_ACTION),
-                            new Permission("/permission/UIModulePermission/application/changeTiers", EXECUTE_ACTION),
-                            new Permission("/permission/UIModulePermission/subscription/visible", EXECUTE_ACTION),
-                            new Permission("/permission/UIModulePermission/edit-subscription", EXECUTE_ACTION)
-                            };
+                            new Permission("/permission/UIModulePermission/application/changeTiers", EXECUTE_ACTION)
+                    };
                 }
                 else if(getDeploymentType().startsWith(EXTERNAL_GATEWAY)){
                     permissions = new Permission[] {
                             new Permission("/permission/admin/login", EXECUTE_ACTION),
-                            new Permission("/permission/UIModulePermission", EXECUTE_ACTION) };
+                            new Permission("/permission/UIModulePermission/workFlowHistory/visible", EXECUTE_ACTION),
+                            new Permission("/permission/UIModulePermission/subscription", EXECUTE_ACTION),
+                            new Permission("/permission/UIModulePermission/application/visible", EXECUTE_ACTION),
+                            new Permission("/permission/UIModulePermission/application/changeTiers", EXECUTE_ACTION),
+                            new Permission("/permission/UIModulePermission/rate", EXECUTE_ACTION),
+                            new Permission("/permission/UIModulePermission/apiBlacklist", EXECUTE_ACTION),
+                            new Permission("/permission/UIModulePermission/rate", EXECUTE_ACTION),
+
+                            };
                 }
                 else if(getDeploymentType().startsWith(HUB)){
                     permissions = new Permission[] {
