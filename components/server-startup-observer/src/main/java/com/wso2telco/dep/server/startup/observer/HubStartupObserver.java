@@ -32,7 +32,6 @@ import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.File;
 import java.io.IOException;
-import java.util.ArrayList;
 
 import static java.nio.file.Files.readAllBytes;
 import static java.nio.file.Paths.get;
@@ -57,6 +56,7 @@ public class HubStartupObserver implements ServerStartupObserver {
     private static final String DEPLOYMENT_TYPE_SYSTEM_PARAM = "DEPLOYMENT_TYPE";
     private static final Log log = LogFactory.getLog(HubStartupObserver.class);
     private static final String EXECUTE_ACTION = "ui.execute";
+    private static final String BASIC_LOGIN_ACTION = "/permission/admin/login";
 
     @Override
     public void completingServerStartup() {
@@ -203,21 +203,21 @@ public class HubStartupObserver implements ServerStartupObserver {
 
                 Permission[] permissions = null;
                 permissions = new Permission[]{
-                        new Permission("/permission/admin/login", EXECUTE_ACTION)};
+                        new Permission(BASIC_LOGIN_ACTION, EXECUTE_ACTION)};
                 /**
                  * Checking Deployment type and Setting suitable permissions accrodingly.
                  */
                 if (getDeploymentType().startsWith(INTERNAL_GATEWAY)) {
 
                     permissions = new Permission[]{
-                            new Permission("/permission/admin/login", EXECUTE_ACTION),
+                            new Permission(BASIC_LOGIN_ACTION, EXECUTE_ACTION),
                             new Permission("/permission/UIModulePermission/workFlowHistory", EXECUTE_ACTION),
                             new Permission("/permission/UIModulePermission/application/visible", EXECUTE_ACTION),
                             new Permission("/permission/UIModulePermission/application/changeTiers", EXECUTE_ACTION)
                     };
                 } else if (getDeploymentType().startsWith(EXTERNAL_GATEWAY)) {
                     permissions = new Permission[]{
-                            new Permission("/permission/admin/login", EXECUTE_ACTION),
+                            new Permission(BASIC_LOGIN_ACTION, EXECUTE_ACTION),
                             new Permission("/permission/UIModulePermission/workFlowHistory/visible", EXECUTE_ACTION),
                             new Permission("/permission/UIModulePermission/subscription", EXECUTE_ACTION),
                             new Permission("/permission/UIModulePermission/application/visible", EXECUTE_ACTION),
@@ -228,7 +228,7 @@ public class HubStartupObserver implements ServerStartupObserver {
                     };
                 } else if (getDeploymentType().startsWith(HUB)) {
                     permissions = new Permission[]{
-                            new Permission("/permission/admin/login", EXECUTE_ACTION),
+                            new Permission(BASIC_LOGIN_ACTION, EXECUTE_ACTION),
                             new Permission("/permission/UIModulePermission", EXECUTE_ACTION)
                     };
                 }
