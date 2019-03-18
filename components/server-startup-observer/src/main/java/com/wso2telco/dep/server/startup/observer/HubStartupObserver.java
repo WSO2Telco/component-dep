@@ -49,8 +49,14 @@ public class HubStartupObserver implements ServerStartupObserver {
     private static final String MANAGE_APP_ADMIN_ROLE = "manage-app-admin";
     private static final String PRODUCT_PROFILE = "profile";
     private static final String PRODUCT_PROFILE_API_STORE = "api-store";
+    private static final String INTERNAL_GATEWAY = "internal_gateway";
+    private static final String EXTERNAL_GATEWAY = "external_gateway";
+    private static final String HUB = "hub";
     private static final String PRODUCT_PROFILE_DEFAULT = "default";
+    private static final String DEPLOYMENT_TYPE_SYSTEM_PARAM = "DEPLOYMENT_TYPE";
     private static final Log log = LogFactory.getLog(HubStartupObserver.class);
+    private static final String EXECUTE_ACTION = "ui.execute";
+    private static final String BASIC_LOGIN_ACTION = "/permission/admin/login";
 
     @Override
     public void completingServerStartup() {
@@ -182,7 +188,7 @@ public class HubStartupObserver implements ServerStartupObserver {
      * The role name is hard coded to 'manage-app-admin'. This role should be the same as
      * 'adminRole' of manage/src/main/manage/site/conf/site.json
      */
-    private void createDefaultRolesAndAssignToSuperAdmin () {
+    private void createDefaultRolesAndAssignToSuperAdmin() {
 
         String role = MANAGE_APP_ADMIN_ROLE;
 
@@ -194,10 +200,43 @@ public class HubStartupObserver implements ServerStartupObserver {
                 if (log.isDebugEnabled()) {
                     log.debug("Creating " + MANAGE_APP_ADMIN_ROLE + " role: " + role);
                 }
-                Permission[] loginPermission = new Permission[]{new Permission("/permission/admin/login", "ui.execute")};
+
+                Permission[] permissions = null;
+                permissions = new Permission[]{
+                        new Permission(BASIC_LOGIN_ACTION, EXECUTE_ACTION)};
+                /**
+                 * Checking Deployment type and Setting suitable permissions accrodingly.
+                 */
+                if (getDeploymentType().startsWith(INTERNAL_GATEWAY)) {
+
+                    permissions = new Permission[]{
+                            new Permission(BASIC_LOGIN_ACTION, EXECUTE_ACTION),
+                            new Permission("/permission/UIModulePermission/workFlowHistory", EXECUTE_ACTION),
+                            new Permission("/permission/UIModulePermission/application/visible", EXECUTE_ACTION),
+                            new Permission("/permission/UIModulePermission/application/changeTiers", EXECUTE_ACTION)
+                    };
+                } else if (getDeploymentType().startsWith(EXTERNAL_GATEWAY)) {
+                    permissions = new Permission[]{
+                            new Permission(BASIC_LOGIN_ACTION, EXECUTE_ACTION),
+                            new Permission("/permission/UIModulePermission/workFlowHistory/visible", EXECUTE_ACTION),
+                            new Permission("/permission/UIModulePermission/subscription", EXECUTE_ACTION),
+                            new Permission("/permission/UIModulePermission/application/visible", EXECUTE_ACTION),
+                            new Permission("/permission/UIModulePermission/application/changeTiers", EXECUTE_ACTION),
+                            new Permission("/permission/UIModulePermission/rate", EXECUTE_ACTION),
+                            new Permission("/permission/UIModulePermission/apiBlacklist", EXECUTE_ACTION),
+                            new Permission("/permission/UIModulePermission/rate", EXECUTE_ACTION)
+                    };
+                } else if (getDeploymentType().startsWith(HUB)) {
+                    permissions = new Permission[]{
+                            new Permission(BASIC_LOGIN_ACTION, EXECUTE_ACTION),
+                            new Permission("/permission/UIModulePermission", EXECUTE_ACTION)
+                    };
+                }
+
                 String superTenantName = ServiceReferenceHolder.getInstance().getRealmService().getBootstrapRealmConfiguration().getAdminUserName();
                 String[] userList = new String[]{superTenantName};
-                manager.addRole(role, userList, loginPermission);
+                manager.addRole(role, userList, permissions);
+
             }
         } catch (Exception e) {
             log.error("Error in assigning 'manage-app-admin' role to super tenant", e);
@@ -212,13 +251,18 @@ public class HubStartupObserver implements ServerStartupObserver {
         }
     }
 
-    private void handleError (String errorMsg, RegistryException e) {
+    private void handleError(String errorMsg, RegistryException e) {
         log.error(errorMsg, e);
         throw new RuntimeException(errorMsg, e);
     }
 
-    private void handleError (String errorMsg, IOException e) {
+    private void handleError(String errorMsg, IOException e) {
         log.error(errorMsg, e);
         throw new RuntimeException(errorMsg, e);
     }
+
+    private String getDeploymentType() {
+        return System.getProperty(DEPLOYMENT_TYPE_SYSTEM_PARAM);
+    }
+
 }
