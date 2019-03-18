@@ -56,7 +56,7 @@ public class HubStartupObserver implements ServerStartupObserver {
     private static final String PRODUCT_PROFILE_DEFAULT = "default";
     private static final String DEPLOYMENT_TYPE_SYSTEM_PARAM = "DEPLOYMENT_TYPE";
     private static final Log log = LogFactory.getLog(HubStartupObserver.class);
-    private static final String EXECUTE_ACTION = "ui.execute" ;
+    private static final String EXECUTE_ACTION = "ui.execute";
 
     @Override
     public void completingServerStartup() {
@@ -188,7 +188,7 @@ public class HubStartupObserver implements ServerStartupObserver {
      * The role name is hard coded to 'manage-app-admin'. This role should be the same as
      * 'adminRole' of manage/src/main/manage/site/conf/site.json
      */
-    private void createDefaultRolesAndAssignToSuperAdmin () {
+    private void createDefaultRolesAndAssignToSuperAdmin() {
 
         String role = MANAGE_APP_ADMIN_ROLE;
 
@@ -202,7 +202,7 @@ public class HubStartupObserver implements ServerStartupObserver {
                 }
 
                 Permission[] permissions = null;
-                permissions = new Permission[] {
+                permissions = new Permission[]{
                         new Permission("/permission/admin/login", EXECUTE_ACTION)};
                 /**
                  * Checking Deployment type and Setting suitable permissions accrodingly.
@@ -215,9 +215,8 @@ public class HubStartupObserver implements ServerStartupObserver {
                             new Permission("/permission/UIModulePermission/application/visible", EXECUTE_ACTION),
                             new Permission("/permission/UIModulePermission/application/changeTiers", EXECUTE_ACTION)
                     };
-                }
-                else if(getDeploymentType().startsWith(EXTERNAL_GATEWAY)){
-                    permissions = new Permission[] {
+                } else if (getDeploymentType().startsWith(EXTERNAL_GATEWAY)) {
+                    permissions = new Permission[]{
                             new Permission("/permission/admin/login", EXECUTE_ACTION),
                             new Permission("/permission/UIModulePermission/workFlowHistory/visible", EXECUTE_ACTION),
                             new Permission("/permission/UIModulePermission/subscription", EXECUTE_ACTION),
@@ -225,14 +224,13 @@ public class HubStartupObserver implements ServerStartupObserver {
                             new Permission("/permission/UIModulePermission/application/changeTiers", EXECUTE_ACTION),
                             new Permission("/permission/UIModulePermission/rate", EXECUTE_ACTION),
                             new Permission("/permission/UIModulePermission/apiBlacklist", EXECUTE_ACTION),
-                            new Permission("/permission/UIModulePermission/rate", EXECUTE_ACTION),
-
-                            };
-                }
-                else if(getDeploymentType().startsWith(HUB)){
-                    permissions = new Permission[] {
+                            new Permission("/permission/UIModulePermission/rate", EXECUTE_ACTION)
+                    };
+                } else if (getDeploymentType().startsWith(HUB)) {
+                    permissions = new Permission[]{
                             new Permission("/permission/admin/login", EXECUTE_ACTION),
-                            new Permission("/permission/UIModulePermission", EXECUTE_ACTION) };
+                            new Permission("/permission/UIModulePermission", EXECUTE_ACTION)
+                    };
                 }
 
                 String superTenantName = ServiceReferenceHolder.getInstance().getRealmService().getBootstrapRealmConfiguration().getAdminUserName();
@@ -253,12 +251,12 @@ public class HubStartupObserver implements ServerStartupObserver {
         }
     }
 
-    private void handleError (String errorMsg, RegistryException e) {
+    private void handleError(String errorMsg, RegistryException e) {
         log.error(errorMsg, e);
         throw new RuntimeException(errorMsg, e);
     }
 
-    private void handleError (String errorMsg, IOException e) {
+    private void handleError(String errorMsg, IOException e) {
         log.error(errorMsg, e);
         throw new RuntimeException(errorMsg, e);
     }
