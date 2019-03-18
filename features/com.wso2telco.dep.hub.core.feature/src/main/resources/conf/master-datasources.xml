@@ -52,7 +52,7 @@
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
-                    <url>jdbc:mysql://{database host}:{port}/hub_apimgtdb?autoReconnect=true&amp;relaxAutoCommit=true&amp;useSSL=false&amp;</url>
+                    <url>jdbc:mysql://{database host}:{port}/prodapimgtdb?autoReconnect=true&amp;relaxAutoCommit=true&amp;useSSL=false&amp;</url>
                     <username>{username}</username>
                     <password>{password}</password>
                     <driverClassName>com.mysql.jdbc.Driver</driverClassName>
@@ -73,7 +73,7 @@
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
-                    <url>jdbc:mysql://{database host}:{port}/hub_apistatsdb?autoReconnect=true&amp;relaxAutoCommit=true&amp;useSSL=false&amp;</url>
+                    <url>jdbc:mysql://{database host}:{port}/prodstatsdb?autoReconnect=true&amp;relaxAutoCommit=true&amp;useSSL=false&amp;</url>
                     <username>{username}</username>
                     <password>{password}</password>
                     <driverClassName>com.mysql.jdbc.Driver</driverClassName>
@@ -94,7 +94,7 @@
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
-                    <url>jdbc:mysql://{database host}:{port}/hub_mbdb?autoReconnect=true&amp;relaxAutoCommit=true&amp;useSSL=false&amp;</url>
+                    <url>jdbc:mysql://{database host}:{port}/prodmbdb?autoReconnect=true&amp;relaxAutoCommit=true&amp;useSSL=false&amp;</url>
                     <username>{username}</username>
                     <password>{password}</password>
                     <driverClassName>com.mysql.jdbc.Driver</driverClassName>
@@ -115,7 +115,7 @@
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
-                    <url>jdbc:mysql://{database host}:{port}/hub_userstoredb?autoReconnect=true&amp;relaxAutoCommit=true&amp;useSSL=false&amp;</url>
+                    <url>jdbc:mysql://{database host}:{port}/produmdb?autoReconnect=true&amp;relaxAutoCommit=true&amp;useSSL=false&amp;</url>
                     <username>{username}</username>
                     <password>{password}</password>
                     <driverClassName>com.mysql.jdbc.Driver</driverClassName>
@@ -136,7 +136,7 @@
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
-                    <url>jdbc:mysql://{database host}:{port}/hub_regdb?autoReconnect=true&amp;relaxAutoCommit=true&amp;useSSL=false&amp;</url>
+                    <url>jdbc:mysql://{database host}:{port}/prodregdb?autoReconnect=true&amp;relaxAutoCommit=true&amp;useSSL=false&amp;</url>
                     <username>{username}</username>
                     <password>{password}</password>
                     <driverClassName>com.mysql.jdbc.Driver</driverClassName>
@@ -157,7 +157,7 @@
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
-                    <url>jdbc:mysql://{database host}:{port}/hub_depdb?autoReconnect=true&amp;useSSL=false&amp;</url>
+                    <url>jdbc:mysql://{database host}:{port}/proddepdb?autoReconnect=true&amp;useSSL=false&amp;</url>
                     <username>{username}</username>
                     <password>{password}</password>
                     <driverClassName>com.mysql.jdbc.Driver</driverClassName>
@@ -220,7 +220,7 @@
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
-                    <url>jdbc:mysql://{database host}:{port}/hub_ratedb?autoReconnect=true&amp;useSSL=false&amp;</url>
+                    <url>jdbc:mysql://{database host}:{port}/prodratedb?autoReconnect=true&amp;useSSL=false&amp;</url>
                     <username>{username}</username>
                     <password>{password}</password>
                     <driverClassName>com.mysql.jdbc.Driver</driverClassName>
