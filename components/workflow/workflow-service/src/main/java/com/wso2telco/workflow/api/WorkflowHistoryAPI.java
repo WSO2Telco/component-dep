@@ -23,7 +23,6 @@ import com.wso2telco.dep.reportingservice.southbound.SbHostObjectUtils;
 import com.wso2telco.workflow.model.APISubscriptionDTO;
 import com.wso2telco.workflow.model.ApprovalDTO;
 import com.wso2telco.workflow.model.ApplicationStatusDTO;
-import com.wso2telco.workflow.model.ApprovalDTO;
 import com.wso2telco.workflow.service.WorkflowHistoryService;
 import com.wso2telco.workflow.utils.WorkflowServiceException;
 
@@ -45,6 +44,7 @@ import java.util.List;
 public class WorkflowHistoryAPI {
 
     private static final Log log = LogFactory.getLog(WorkflowHistoryAPI.class);
+    private static final String DEPLOYMENT_TYPE_SYSTEM_PARAM = "DEPLOYMENT_TYPE";
     
     @GET
     @Path("/approval/{app_id}")
@@ -193,6 +193,22 @@ public class WorkflowHistoryAPI {
             return Response.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).build();
         }
         return Response.status(HttpServletResponse.SC_OK).entity(jsonPayload).build();
+    }
+
+    @GET
+    @Path("/details")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getDeploymentType() {
+        String depType = null;
+        try{
+            depType =  System.getProperty(DEPLOYMENT_TYPE_SYSTEM_PARAM);
+            depType =  "{\"depType\":\""+depType+"\"}";
+        }
+        catch (Exception e){
+            log.error(e);
+            return Response.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).build();
+        }
+        return Response.status(HttpServletResponse.SC_OK).entity(depType).build();
     }
 
 
