@@ -196,7 +196,7 @@ public class WorkflowHistoryAPI {
     }
 
     @GET
-    @Path("/details")
+    @Path("/deptype")
     @Produces(MediaType.APPLICATION_JSON)
     public Response getDeploymentType() {
         String depType = null;
@@ -204,12 +204,10 @@ public class WorkflowHistoryAPI {
             depType =  System.getProperty(DEPLOYMENT_TYPE_SYSTEM_PARAM);
             depType =  "{\"depType\":\""+depType+"\"}";
         }
-        catch (Exception e){
+        catch (NullPointerException e){
             log.error(e);
             return Response.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).build();
         }
         return Response.status(HttpServletResponse.SC_OK).entity(depType).build();
     }
-
-
 }
