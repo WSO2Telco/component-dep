@@ -200,14 +200,14 @@ public class WorkflowHistoryAPI {
     @Produces(MediaType.APPLICATION_JSON)
     public Response getDeploymentType() {
         String depType = null;
-        try{
-            depType =  System.getProperty(DEPLOYMENT_TYPE_SYSTEM_PARAM);
-            depType =  "{\"depType\":\""+depType+"\"}";
-        }
-        catch (NullPointerException e){
-            log.error(e);
+
+        depType = System.getProperty(DEPLOYMENT_TYPE_SYSTEM_PARAM);
+
+        if (depType != null && !depType.isEmpty()) {
+            depType = "{\"depType\":\"" + depType + "\"}";
+            return Response.status(HttpServletResponse.SC_OK).entity(depType).build();
+        } else {
             return Response.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).build();
         }
-        return Response.status(HttpServletResponse.SC_OK).entity(depType).build();
     }
 }
