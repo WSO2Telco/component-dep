@@ -50,7 +50,7 @@ function updateStatus(status) {
     var apiName = $("#name").val();
     var version = $("#apiVersion").val();
     var provider = $("#provider").val();
-    var isSetDeprecation = $("#itemDiv1").val();
+    var isSetDeprecation = $("#itemDiv0").val();
     $(".modal-footer").html("");
     if (status == 'Deprecate') {
         var messageContent = i18n.t("Once the API is deprecated; you can only retire the API as the next step.Are you sure you want to deprecate the API") + " - " + apiName + " - " + version + "?";

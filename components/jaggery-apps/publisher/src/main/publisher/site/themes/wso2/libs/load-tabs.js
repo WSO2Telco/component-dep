@@ -473,7 +473,7 @@ var loadLC = function () {
                 var initialY = 10;
 // Center the graph
                 inner.attr("transform", "translate(" + [initialX, initialY] + ") scale(" + initialScale + ")");
-                zoom.translate([initialX, initialY]).scale(initialScale).event(svg);
+                zoom.translate([initialX, initialY]).scale(initialScale);
             } else {
                 if (json.message == "AuthenticateError") {
                     jagg.showLogin();
