@@ -63,7 +63,7 @@ public class ValidateRefund implements IServiceValidate {
         String notificationFormat = null;
         String originalServerReferenceCode = null;
         String transactionOperationStatus = null;
-        String doubleValidationRegex = "(\\d+(\\.\\d{1,2})?)";
+        String doubleValidationRegex = "(\\d+(\\.\\d{1,4})?)";
 
         try {
             JSONObject objJSONObject = new JSONObject(json);
@@ -100,7 +100,7 @@ public class ValidateRefund implements IServiceValidate {
             if (!objChargingInformation.isNull("amount")) {
                 if (!objChargingInformation.get("amount").toString().matches(doubleValidationRegex)) {
                     throw new CustomException("SVC0002", "Invalid input value for message part %1",
-                            new String[]{"amount should be a whole or two digit decimal positive number"});
+                            new String[]{"amount should be a whole or four digit decimal positive number"});
                 }
                 amount = Double.parseDouble(nullOrTrimmed(String.valueOf(objChargingInformation.get("amount"))));
             }
@@ -129,7 +129,7 @@ public class ValidateRefund implements IServiceValidate {
                 if (!objChargingMetaData.isNull("taxAmount")) {
                     if (!objChargingMetaData.get("taxAmount").toString().matches(doubleValidationRegex)) {
                         throw new CustomException("SVC0002", "Invalid input value for message part %1",
-                                new String[]{"taxAmount should be a whole or two digit decimal positive number"});
+                                new String[]{"taxAmount should be a whole or four digit decimal positive number"});
                     }
                     taxAmount = Double.parseDouble(nullOrTrimmed(String.valueOf(objChargingMetaData.get("taxAmount"))));
 
@@ -152,6 +152,9 @@ public class ValidateRefund implements IServiceValidate {
         } catch (JSONException e) {
             log.error("Manipulating received JSON Object: " + e);
             throw new CustomException("SVC0001", "", new String[]{"Incorrect JSON Object received"});
+        } catch (CustomException e){
+            log.error("Manipulating received JSON Object: " + e);
+            throw new CustomException(e.getErrcode(), e.getErrmsg(), e.getErrvar());
         } catch (Exception e) {
             log.error("Manipulating recived JSON Object: " + e);
             throw new CustomException("POL0299", "Unexpected Error", new String[]{""});

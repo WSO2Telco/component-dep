@@ -75,7 +75,7 @@ public class ValidatePaymentCharge  implements IServiceValidate {
             String purchaseCategoryCode = null;
             String channel = null;
             Double taxAmount = null;
-            String doubleValidationRegex = "(\\d+(\\.\\d{1,2})?)";
+            String doubleValidationRegex = "(\\d+(\\.\\d{1,4})?)";
 
             try {
                 JSONObject mainJSONObject = new JSONObject(json);
@@ -106,7 +106,7 @@ public class ValidatePaymentCharge  implements IServiceValidate {
                 if (!chargingInfo.isNull("amount")) {
                     if (!chargingInfo.get("amount").toString().matches(doubleValidationRegex)) {
                         throw new CustomException("SVC0002", "Invalid input value for message part %1",
-                                new String[]{"amount should be a whole or two digit decimal positive number"});
+                                new String[]{"amount should be a whole or four digit decimal positive number"});
                     }
                     amount = Double.parseDouble(nullOrTrimmed(String.valueOf(chargingInfo.get("amount"))));
                 }
@@ -132,7 +132,7 @@ public class ValidatePaymentCharge  implements IServiceValidate {
                     if (!chargingMetaData.isNull("taxAmount")) {
                         if (!chargingMetaData.get("taxAmount").toString().matches(doubleValidationRegex)) {
                             throw new CustomException("SVC0002", "Invalid input value for message part %1",
-                                    new String[]{"taxAmount should be a whole or two digit decimal positive number"});
+                                    new String[]{"taxAmount should be a whole or four digit decimal positive number"});
                         }
                         taxAmount = Double.parseDouble(nullOrTrimmed(String.valueOf(chargingMetaData.get("taxAmount"))));
 
