@@ -75,7 +75,8 @@ public class ValidatePaymentCharge  implements IServiceValidate {
             String purchaseCategoryCode = null;
             String channel = null;
             Double taxAmount = null;
-            String doubleValidationRegex = "(\\d+(\\.\\d{1,4})?)";
+            String tripleValidationRegex = "^[a-zA-Z]{3}$";
+            String quadrupleValidationRegex = "(\\d+(\\.\\d{1,4})?)";
 
             try {
                 JSONObject mainJSONObject = new JSONObject(json);
@@ -104,7 +105,7 @@ public class ValidatePaymentCharge  implements IServiceValidate {
                 JSONObject chargingInfo = (JSONObject) payAmount.get("chargingInformation");
 
                 if (!chargingInfo.isNull("amount")) {
-                    if (!chargingInfo.get("amount").toString().matches(doubleValidationRegex)) {
+                    if (!chargingInfo.get("amount").toString().matches(quadrupleValidationRegex)) {
                         throw new CustomException("SVC0002", "Invalid input value for message part %1",
                                 new String[]{"amount should be a whole or four digit decimal positive number"});
                     }
@@ -112,6 +113,10 @@ public class ValidatePaymentCharge  implements IServiceValidate {
                 }
                 if (!chargingInfo.isNull("currency")) {
                     currency = nullOrTrimmed(chargingInfo.getString("currency"));
+                    if (!currency.matches(tripleValidationRegex)) {
+                        throw new CustomException("SVC0002", "Invalid input value for message part %1",
+                                new String[]{"currency should be three character long string"});
+                    }
                 }
                 if (!chargingInfo.isNull("description")) {
                     description = nullOrTrimmed(chargingInfo.getString("description"));
@@ -130,7 +135,7 @@ public class ValidatePaymentCharge  implements IServiceValidate {
                         channel = nullOrTrimmed(chargingMetaData.getString("channel"));
                     }
                     if (!chargingMetaData.isNull("taxAmount")) {
-                        if (!chargingMetaData.get("taxAmount").toString().matches(doubleValidationRegex)) {
+                        if (!chargingMetaData.get("taxAmount").toString().matches(quadrupleValidationRegex)) {
                             throw new CustomException("SVC0002", "Invalid input value for message part %1",
                                     new String[]{"taxAmount should be a whole or four digit decimal positive number"});
                         }
