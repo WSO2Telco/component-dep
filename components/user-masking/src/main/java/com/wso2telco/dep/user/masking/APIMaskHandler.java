@@ -41,13 +41,14 @@ public class APIMaskHandler extends AbstractHandler {
             String apiId = (String) messageContext.getProperty(RESTConstants.SYNAPSE_REST_API);
             apiId = apiId.replace("--", "_").replace(":v", "_");
             APIIdentifier apiIdentifier = new APIIdentifier(apiId);
-            API api = getAPIInfoProductionEndpointConfigCache().get(apiIdentifier);
-            if (api == null) {
+            String apiProductionEndpoint = getAPIInfoProductionEndpointConfigCache().get(apiIdentifier);
+            if (apiProductionEndpoint == null) {
 				APIConsumer apiConsumer = getLoggedInUserConsumer();
-				api = apiConsumer.getAPI(apiIdentifier);
-				getAPIInfoProductionEndpointConfigCache().put(apiIdentifier, api);
+				API api = apiConsumer.getAPI(apiIdentifier);
+				apiProductionEndpoint = api.getEndpointConfig();
+				getAPIInfoProductionEndpointConfigCache().put(apiIdentifier, apiProductionEndpoint);
 			}
-            JSONObject response = new JSONObject(api.getEndpointConfig());
+            JSONObject response = new JSONObject(apiProductionEndpoint);
 			String productionEndpoint = response.getJSONObject("production_endpoints").get("url").toString();
 
 		    // Valudate this requires masking
@@ -354,7 +355,7 @@ public class APIMaskHandler extends AbstractHandler {
 		return APIManagerFactory.getInstance().getAPIConsumer(loggedInUser);
 	}
 
-	private Cache<APIIdentifier, API> getAPIInfoProductionEndpointConfigCache() {
+	private Cache<APIIdentifier, String> getAPIInfoProductionEndpointConfigCache() {
 		return Caching.getCacheManager(APIConstants.API_MANAGER_CACHE_MANAGER)
 				.getCache("API_INFO_PRODUCTION_ENDPOINT_CONFIG_CACHE");
 	}
