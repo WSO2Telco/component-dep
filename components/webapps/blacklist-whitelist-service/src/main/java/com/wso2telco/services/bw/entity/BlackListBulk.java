@@ -24,6 +24,8 @@ public class BlackListBulk {
     private String apiID;
     private String apiName;
     private String userID;
+    private String spName;
+    private String appID;
     private String[] msisdnList;
     private String validationRegex;
     private int validationPrefixGroup;
@@ -83,5 +85,21 @@ public class BlackListBulk {
 
     public void setValidationDigitsGroup(int validationDigitsGroup) {
         this.validationDigitsGroup = validationDigitsGroup;
+    }
+
+    public String getSpName() {
+        return spName;
+    }
+
+    public void setSpName(String spName) {
+        this.spName = spName;
+    }
+
+    public String getAppID() {
+        return appID;
+    }
+
+    public void setAppID(String appID) {
+        this.appID = appID;
     }
 }

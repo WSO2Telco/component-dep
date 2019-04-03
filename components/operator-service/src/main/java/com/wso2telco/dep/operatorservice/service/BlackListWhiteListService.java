@@ -26,10 +26,7 @@ import com.wso2telco.dep.operatorservice.exception.BlacklistException;
 import com.wso2telco.dep.operatorservice.exception.NumberBlackListException;
 import com.wso2telco.dep.operatorservice.exception.SubscriptionWhiteListException;
 import com.wso2telco.dep.operatorservice.exception.SubscriptionWhiteListException.SubscriptionWhiteListErrorType;
-import com.wso2telco.dep.operatorservice.model.BlackListDTO;
-import com.wso2telco.dep.operatorservice.model.MSISDNSearchDTO;
-import com.wso2telco.dep.operatorservice.model.MSISDNValidationDTO;
-import com.wso2telco.dep.operatorservice.model.WhiteListDTO;
+import com.wso2telco.dep.operatorservice.model.*;
 import edu.emory.mathcs.backport.java.util.Arrays;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -41,6 +38,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 public class BlackListWhiteListService {
 	Log LOG = LogFactory.getLog(BlackListWhiteListService.class);
@@ -64,6 +62,8 @@ public class BlackListWhiteListService {
 		final String apiID_ = dto.getApiID();
 		final String apiName_ = dto.getApiName();
 		final String userId_ = dto.getUserID();
+		final String spName = dto.getSpName();
+		final String appId = dto.getAppID();
 
 
 			try{
@@ -78,7 +78,7 @@ public class BlackListWhiteListService {
 				// load already black listed numbers
 				List<MsisdnDTO> alreadyBlacklisted;
 
-				alreadyBlacklisted = dao.getBlacklisted(apiID_);
+				alreadyBlacklisted = dao.getBlacklisted(spName, appId, apiID_);
 
 				// Remove already black listed from the list
 				for (MsisdnDTO msisdn : alreadyBlacklisted) {
@@ -97,14 +97,14 @@ public class BlackListWhiteListService {
 			}
 
 		try {
-			dao.blacklist(msisdnValidationDTO, apiID_, apiName_, userId_);
+			dao.blacklist(msisdnValidationDTO, spName, appId, apiID_, apiName_, userId_);
 		} catch (Exception e) {
 			LOG.error("blacklist ", e);
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
     }
 
-	public String[] loadBlacklisted(MSISDNSearchDTO searchDTO) throws BusinessException {
+	public BlackListedMsisdnSearchResultDTO loadBlacklisted(MSISDNSearchDTO searchDTO) throws BusinessException {
 		try {
 			return dao.getBlacklisted(searchDTO);
 		} catch (Exception e) {
@@ -113,9 +113,9 @@ public class BlackListWhiteListService {
 		}
 	}
 
-	public void removeBlacklist(int apiId, final String userMSISDN) throws BusinessException {
+	public void removeBlacklist(String spName, String appId, String apiId, final String userMSISDN) throws BusinessException {
 		try {
-			dao.removeBlacklist(apiId, userMSISDN);
+			dao.removeBlacklist(spName, appId, apiId, userMSISDN);
 		} catch (Exception e) {
 			LOG.error("removeBlacklist", e);
 			throw new NumberBlackListException(GenaralError.INTERNAL_SERVER_ERROR);
@@ -248,7 +248,7 @@ public class BlackListWhiteListService {
 
 	public  String getAllApisByUserAndApp(String userID, String appID) throws BusinessException {
 
-		List<String> appList = dao.getAllApisByUserAndApp(userID, appID);
+		Set<String> appList = dao.getAllApisByUserAndApp(userID, appID);
 
 		Gson gson = new GsonBuilder().create();
 		return gson.toJson(appList);
@@ -268,8 +268,8 @@ public class BlackListWhiteListService {
 
 				APIIdentifier apiIdentifier = subscribedAPI.getApiId();
 				String[] apiName = apiIdentifier.getApiName().split("[|]");
-				String apiFullName = apiIdentifier.getProviderName()+":"+apiName[0]+":"+apiIdentifier
-						.getVersion()+ ":" + apiName[1];
+				String apiFullName = apiIdentifier.getVersion() + ":" + apiName[1] + ":"
+						+ apiIdentifier.getProviderName()+":"+apiName[0];
 
 				if(!apiNameList.contains(apiFullName)){
 					apiNameList.add(apiFullName);
@@ -288,7 +288,7 @@ public class BlackListWhiteListService {
 		return  dao.getAPIId(providerName,apiName,apiVersion);
 	}
 
-	public String[] getAPIInfo(int apiId) throws BusinessException {
+	public String[] getAPIInfo(String apiId) throws BusinessException {
 		return dao.getAPIInfo(apiId);
 	}
 }

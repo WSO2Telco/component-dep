@@ -23,15 +23,12 @@ import java.util.List;
 import com.wso2telco.core.msisdnvalidator.MSISDN;
 
 public class MSISDNSearchDTO implements Serializable {
-
-	/**
-	 * 
-	 */
 	private static final long serialVersionUID = -7476682043789702438L;
-	/**
-	 * 
-	 */
+
+	private String spName;
+	private String appID;
 	private String apiID = null;
+	private int pageNo;	//for pagination
 
 
 	private List<MSISDN> msisdntoSearch;{
@@ -46,8 +43,32 @@ public class MSISDNSearchDTO implements Serializable {
 		this.apiID = apiID;
 	}
 
+	public String getSpName() {
+		return spName;
+	}
+
+	public void setSpName(String spName) {
+		this.spName = spName;
+	}
+
+	public String getAppID() {
+		return appID;
+	}
+
+	public void setAppID(String appID) {
+		this.appID = appID;
+	}
+
 	public void addMSISDN2Search(MSISDN msisdn) {
 		this.msisdntoSearch.add(msisdn);
 
+	}
+
+	public int getPageNo() {
+		return pageNo;
+	}
+
+	public void setPageNo(int pageNo) {
+		this.pageNo = pageNo;
 	}
 }
