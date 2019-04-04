@@ -27,3 +27,8 @@ ALTER TABLE blacklistmsisdn ADD COLUMN APP_ID VARCHAR(45) DEFAULT '_ALL_';
 ALTER TABLE blacklistmsisdn DROP INDEX UNQ_blacklistmsisdn;
 ALTER TABLE blacklistmsisdn ADD UNIQUE KEY UNQ_blacklistmsisdn (SP_NAME, APP_ID, API_ID, MSISDN);
 ```
+
+Add the following configuration to <DEP_HOME>/repository/conf/api-manager.xml
+```xml
+<MsisdnValidationService>http://<MEDIATOR_HOST>:<PORT>/services/msisdnValidation</MsisdnValidationService>
+```
