@@ -665,6 +665,44 @@ public class BillingDAO {
     }
 
     /**
+     * Gets the all subscriptions created by specific user
+     * @param username
+     * @return
+     * @throws Exception
+     */
+    public List<Subscription> getAllSubscriptionsByUser(String username) throws Exception {
+        StringBuilder sql = new StringBuilder();
+        sql.append("select * from ").append(ReportingTable.AM_SUBSCRIPTION.getTObject()).append(" WHERE CREATED_BY='").append(username).append("'");
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        List<Subscription> subscriptions = new ArrayList<Subscription>();
+        try {
+            conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+            ps = conn.prepareStatement(sql.toString());
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                Subscription subs = new Subscription();
+                subs.setApiId(rs.getInt("API_ID"));
+                subs.setAppId(rs.getInt("APPLICATION_ID"));
+                subs.setSubscriptionId(rs.getInt("SUBSCRIPTION_ID"));
+                subs.setCreatedBy(rs.getString("CREATED_BY"));
+                subs.setSubStatus(rs.getString("SUB_STATUS"));
+                subs.setSubsCreateState(rs.getString("SUBS_CREATE_STATE"));
+                subs.setTierId(rs.getString("TIER_ID"));
+
+                subscriptions.add(subs);
+            }
+
+        } catch (Exception e) {
+            handleException("getAllSubscriptionsByUser", e);
+        } finally {
+            DbUtils.closeAllConnections(ps, conn, rs);
+        }
+        return subscriptions;
+    }
+
+    /**
      * Gets the subscriberkey.
      *
      * @param userid the userid

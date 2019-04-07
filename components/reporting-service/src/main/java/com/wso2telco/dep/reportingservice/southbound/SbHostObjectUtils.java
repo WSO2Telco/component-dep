@@ -36,6 +36,7 @@ import java.util.Set;
 
 import javax.xml.stream.XMLStreamException;
 
+import com.wso2telco.dep.reportingservice.dao.*;
 import org.apache.axiom.om.OMElement;
 import org.apache.axiom.om.util.AXIOMUtil;
 import org.apache.axiom.om.xpath.AXIOMXPath;
@@ -70,11 +71,6 @@ import com.wso2telco.dep.reportingservice.BillingSubscription;
 import com.wso2telco.dep.reportingservice.HostObjectConstants;
 import com.wso2telco.dep.reportingservice.PaymentRequestDTO;
 import com.wso2telco.dep.reportingservice.Tax;
-import com.wso2telco.dep.reportingservice.dao.Approval;
-import com.wso2telco.dep.reportingservice.dao.BillingDAO;
-import com.wso2telco.dep.reportingservice.dao.OperatorDAO;
-import com.wso2telco.dep.reportingservice.dao.TaxDAO;
-import com.wso2telco.dep.reportingservice.dao.TxCardDAO;
 import com.wso2telco.dep.reportingservice.exception.ReportingServiceError;
 import com.wso2telco.dep.reportingservice.internal.HostObjectComponent;
 import com.wso2telco.dep.reportingservice.util.CategoryEntity;
@@ -2103,6 +2099,20 @@ public class SbHostObjectUtils {
 		List<String> subscriptions = billingDAO
 				.getAllSubscriptions();
 		Collections.sort(subscriptions, String.CASE_INSENSITIVE_ORDER);
+		return subscriptions;
+	}
+
+	/**
+	 * Get all subscriptions by userName
+	 *
+	 * @param userName
+	 * @return
+	 * @throws Exception
+	 */
+	public static List<Subscription> getAllSubscriptionsByUser(String userName) throws Exception {
+		BillingDAO billingDAO = new BillingDAO();
+		List<Subscription> subscriptions = null;
+		subscriptions = billingDAO.getAllSubscriptionsByUser(userName);
 		return subscriptions;
 	}
 
