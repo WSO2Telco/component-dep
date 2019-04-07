@@ -19,6 +19,7 @@ package com.wso2telco.workflow.api;
 
 import com.google.gson.Gson;
 import com.wso2telco.dep.operatorservice.service.OparatorService;
+import com.wso2telco.dep.reportingservice.dao.Subscription;
 import com.wso2telco.dep.reportingservice.southbound.SbHostObjectUtils;
 import com.wso2telco.workflow.model.APISubscriptionDTO;
 import com.wso2telco.workflow.model.ApprovalDTO;
@@ -91,6 +92,22 @@ public class WorkflowHistoryAPI {
         try {
             List<String> subscribers = SbHostObjectUtils.getAllSubscribers();
             jsonPayload = new Gson().toJson(subscribers);
+        } catch (Exception e) {
+            log.error(e);
+            return Response.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).build();
+        }
+        return Response.status(HttpServletResponse.SC_OK).entity(jsonPayload).build();
+    }
+
+    @GET
+    @Path("/subscriptions")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getAllSubscribersByUser(@HeaderParam("user-name") String userName){
+        String jsonPayload;
+        List<Subscription> subscriptions = null;
+        try{
+            subscriptions = SbHostObjectUtils.getAllSubscriptionsByUser(userName);
+            jsonPayload = new Gson().toJson(subscriptions);
         } catch (Exception e) {
             log.error(e);
             return Response.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).build();
