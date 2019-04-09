@@ -22,6 +22,7 @@ import com.wso2telco.dep.oneapivalidation.util.UrlValidator;
 import com.wso2telco.dep.oneapivalidation.util.Validation;
 import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
 import com.wso2telco.dep.user.masking.UserMaskHandler;
+import com.wso2telco.dep.user.masking.exceptions.UserMaskingException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -151,15 +152,15 @@ public class ValidatePaymentCharge  implements IServiceValidate {
             } catch (JSONException e) {
                 log.error("Manipulating received JSON Object: " + e);
                 throw new CustomException("SVC0001", "", new String[]{"Incorrect JSON Object received"});
-            } catch (CustomException e){
-                log.error("Manipulating received JSON Object: " + e);
-                throw new CustomException(e.getErrcode(), e.getErrmsg(), e.getErrvar());
-            } catch (BadPaddingException e) {
-                log.error("Error occurred while unmasking. Possible reason would be incorrect masking configuration. " , e);
-                throw new CustomException("SVC0001", "A service error occurred.", new String[]{"Invalid user mask configuration"});
-            } catch (Exception e) {
-                log.error("Manipulating received JSON Object: " + e);
-                throw new CustomException("POL0299", "Unexpected Error", new String[]{""});
+            } catch (NullPointerException npe) {
+                log.error("Accessing Currency which is nullable" + npe);
+                throw new CustomException("SVC0001", "", new String[]{"Accessing Currency which is nullable"});
+            }  catch (CustomException ce){
+                log.error("Manipulating received JSON Object: " + ce);
+                throw ce;
+            }  catch (UserMaskingException ume){//Bad Padding Exception removed.Error occurred while unmasking. Possible reason would be incorrect masking configuration.
+                log.error("Error occurred while unmasking. Possible reason would be incorrect masking configuration. " , ume);
+                throw new CustomException("SVC0003", ume.getMessage(), new String[]{"Invalid user mask configuration"});
             }
 
         ValidationRule[] rules = null;
