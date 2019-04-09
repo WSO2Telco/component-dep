@@ -154,15 +154,12 @@ public class ValidateRefund implements IServiceValidate {
                 log.debug("Manipulated received JSON Object: " + json);
             }
 
+        } catch (NullPointerException npe) {
+            log.error("Accessing Currency which is nullable" + npe);
+            throw new CustomException("SVC0001", "", new String[]{"Accessing Currency which is nullable"});
         } catch (JSONException e) {
             log.error("Manipulating received JSON Object: " + e);
             throw new CustomException("SVC0001", "", new String[]{"Incorrect JSON Object received"});
-        } catch (CustomException e){
-            log.error("Manipulating received JSON Object: " + e);
-            throw new CustomException(e.getErrcode(), e.getErrmsg(), e.getErrvar());
-        } catch (Exception e) {
-            log.error("Manipulating recived JSON Object: " + e);
-            throw new CustomException("POL0299", "Unexpected Error", new String[]{""});
         }
 
         ValidationRule[] rules = null;

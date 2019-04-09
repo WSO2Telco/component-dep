@@ -1,11 +1,13 @@
 package com.wso2telco.dep.user.masking;
 
+import com.wso2telco.dep.user.masking.exceptions.UserMaskingException;
 import com.wso2telco.dep.user.masking.utils.MaskingUtils;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.lang3.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
+import javax.crypto.BadPaddingException;
 import javax.crypto.Cipher;
 import javax.crypto.spec.SecretKeySpec;
 import java.io.UnsupportedEncodingException;
@@ -17,7 +19,7 @@ public class UserMaskHandler {
 
     private static final Log log = LogFactory.getLog(UserMaskHandler.class);
 
-    public static String maskUserId(String userId, boolean encript, String secretKey) throws Exception {
+    public static String maskUserId(String userId, boolean encript, String secretKey) throws UserMaskingException {
         String userPrefix = "";
         String returnedUserId = userId;
         if (userId.startsWith("tel:+")) {
@@ -154,15 +156,18 @@ public class UserMaskHandler {
      * @param secretKey
      * @return Encripted User ID
      */
-    private static String encrypt(String userId, String secretKey) throws  Exception {
+    private static String encrypt(String userId, String secretKey) throws UserMaskingException {
         String maskedId = null;
         try {
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             cipher.init(Cipher.ENCRYPT_MODE, getSecretKeySpec(secretKey));
             maskedId =  new String(Base64.encodeBase64(cipher.doFinal(userId.getBytes("UTF-8"))));
+        } catch (BadPaddingException bpe) {
+            log.error("Error occurred while unmasking. Possible reason would be incorrect masking configuration." , bpe);
+            throw new UserMaskingException("Error occurred while unmasking. Possible reason would be incorrect masking configuration.");
         } catch (Exception e) {
-            log.error("Error while encrypting.");
-            throw e;
+            log.error("Error while encrypting." + e);
+            throw new UserMaskingException("Error while encrypting.");
         }
         return maskedId;
     }
@@ -173,17 +178,21 @@ public class UserMaskHandler {
      * @param secretKey
      * @return User Id decoded
      */
-    private static String decrypt(String maskedUserId, String secretKey) throws Exception {
+    private static String decrypt(String maskedUserId, String secretKey) throws UserMaskingException {
         String userId = null;
         try {
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
             cipher.init(Cipher.DECRYPT_MODE, getSecretKeySpec(secretKey));
             userId = new String(cipher.doFinal(Base64.decodeBase64(maskedUserId.getBytes())));
+        } catch (BadPaddingException bpe) {
+            log.error("Error occurred while unmasking. Possible reason would be incorrect masking configuration." , bpe);
+            throw new UserMaskingException("Error while encrypting.");
         } catch (Exception e) {
-            log.warn("Error while decrypting User ID : " +  maskedUserId + "Possible reasons may be incorrect " +
-                    "user mask configuration, configuration changed without proper migration or already un-masked user id");
+            log.error("Error while decrypting User ID : " +  maskedUserId + "Possible reasons may be incorrect " +
+                    "user mask configuration, configuration changed without proper migration or already un-masked user id", e);
 
-            throw e;
+            throw new UserMaskingException("Error while decrypting User ID : " +  maskedUserId + "Possible reasons may be incorrect " +
+                    "user mask configuration, configuration changed without proper migration or already un-masked user id");
         }
         return userId;
     }
