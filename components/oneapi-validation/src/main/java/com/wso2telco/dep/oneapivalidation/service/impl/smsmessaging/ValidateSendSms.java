@@ -80,7 +80,7 @@ public class ValidateSendSms implements IServiceValidate {
                 JSONArray addressArray = objOtboundSMSMessageRequest.getJSONArray("address");
                 for (int a = 0; a < addressArray.length(); a++) {
                     if(this.userAnonymization && UserMaskHandler.isMaskedUserId(addressArray.getString(a))) {
-                        addresses.add(nullOrTrimmed(UserMaskHandler.maskUserId(addressArray.getString(a), false, this.maskingSecretKey)));
+                        addresses.add(nullOrTrimmed(UserMaskHandler.transcryptUserId(addressArray.getString(a), false, this.maskingSecretKey)));
                     } else {
                         addresses.add(nullOrTrimmed(addressArray.getString(a)));
                     }

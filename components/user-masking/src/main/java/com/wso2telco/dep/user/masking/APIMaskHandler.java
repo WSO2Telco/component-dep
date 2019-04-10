@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright  (c) 2019, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+ *
+ * WSO2.Telco Inc. licences this file to you under  the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.wso2telco.dep.user.masking;
 
 import com.wso2telco.dep.user.masking.exceptions.UserMaskingException;
@@ -92,13 +107,13 @@ public class APIMaskHandler extends AbstractHandler {
 				String userId = originalMSISDN;
 				//Convert User ID to masked User ID
 				if (!UserMaskHandler.isMaskedUserId(userId)) {
-					userId = UserMaskHandler.maskUserId(userId, true, maskingSecretKey);
+					userId = UserMaskHandler.transcryptUserId(userId, true, maskingSecretKey);
 				}
 				// Replace resource property with updated user ID since resource path contains user ID
 				if(!resource.contains(userId)) {
 					String urlUserId = resource.substring(resource.indexOf("/") + 1, resource.lastIndexOf("/transactions/amount"));
 					if (!UserMaskHandler.isMaskedUserId(URLDecoder.decode(urlUserId, "UTF-8"))) {
-						String resourceUserId = UserMaskHandler.maskUserId(URLDecoder.decode(urlUserId, "UTF-8"), true, maskingSecretKey);
+						String resourceUserId = UserMaskHandler.transcryptUserId(URLDecoder.decode(urlUserId, "UTF-8"), true, maskingSecretKey);
 						resource = "/" + URLEncoder.encode(resourceUserId, "UTF-8") + "/transactions/amount";
 					}
 					headersMap.put("RESOURCE", resource);
@@ -117,8 +132,8 @@ public class APIMaskHandler extends AbstractHandler {
 				for (int i = 0; i < addressArray.length(); i++) {
 					//Convert UserID to Masked User ID
 					String userId = addressArray.getString(i);
-					if (!UserMaskHandler.isMaskedUserId(userId) && isMaskingAllowedUserId(userId)) {
-						String maskedAddress = UserMaskHandler.maskUserId(userId, true, maskingSecretKey);
+					if (!UserMaskHandler.isMaskedUserId(userId) && MaskingUtils.isUnmaskedUserId(userId)) {
+						String maskedAddress = UserMaskHandler.transcryptUserId(userId, true, maskingSecretKey);
 						newAddressArray.put(maskedAddress);
 					} else {
 						newAddressArray.put(userId);
@@ -164,7 +179,7 @@ public class APIMaskHandler extends AbstractHandler {
 					if (UserMaskHandler.isMaskedUserId(userId)) {
 						String maskedUserId = userId;
 						try {
-							userId = UserMaskHandler.maskUserId(userId, false, maskingSecretKey);
+							userId = UserMaskHandler.transcryptUserId(userId, false, maskingSecretKey);
 						} catch (Exception e) {
 							log.error("Error occurred while unmaksing user id ", e);
 						}
@@ -195,7 +210,7 @@ public class APIMaskHandler extends AbstractHandler {
 						String userId = addressArray.getString(i);
 						if (UserMaskHandler.isMaskedUserId(userId)) {
 							try {
-								userId = UserMaskHandler.maskUserId(userId, false, maskingSecretKey);
+								userId = UserMaskHandler.transcryptUserId(userId, false, maskingSecretKey);
 							} catch (Exception e) {
 								log.error("Error occurred while unmaksing user id ", e);
 							}
@@ -218,7 +233,7 @@ public class APIMaskHandler extends AbstractHandler {
 								JSONObject newDeliveryInfo = new JSONObject();
 								newDeliveryInfo.put("deliveryStatus", (String) deliveryInfo.get("deliveryStatus"));
 								try {
-									newDeliveryInfo.put("address", UserMaskHandler.maskUserId((String) deliveryInfo.get("address"), false, maskingSecretKey));
+									newDeliveryInfo.put("address", UserMaskHandler.transcryptUserId((String) deliveryInfo.get("address"), false, maskingSecretKey));
 								} catch (Exception e) {
 									log.error("Error occurred while unmaksing user id ", e);
 								}
@@ -262,7 +277,7 @@ public class APIMaskHandler extends AbstractHandler {
 			JSONObject objAmountTransaction = (JSONObject) jsonBody.get("amountTransaction");
 			String transactionOperationStatus = objAmountTransaction.get("transactionOperationStatus").toString();
             String userId = objAmountTransaction.get("endUserId").toString();
-			if (transactionOperationStatus.equalsIgnoreCase("Charged") && isMaskingAllowedUserId(userId)) {
+			if (transactionOperationStatus.equalsIgnoreCase("Charged") && MaskingUtils.isUnmaskedUserId(userId)) {
 				isMaskingAllowAPI = true;
 			}
 
@@ -272,7 +287,7 @@ public class APIMaskHandler extends AbstractHandler {
 				if(!outboundSMSMessageRequest.isNull("address")) {
 					JSONArray addressArray =  outboundSMSMessageRequest.getJSONArray("address");
 					for (int i = 0; i < addressArray.length(); i++) {
-						if (isMaskingAllowedUserId(addressArray.getString(i))) {
+						if (MaskingUtils.isUnmaskedUserId(addressArray.getString(i))) {
 							isMaskingAllowAPI = true;
 							break;
 						}
@@ -281,21 +296,6 @@ public class APIMaskHandler extends AbstractHandler {
 			}
 		}
 		return isMaskingAllowAPI;
-	}
-
-	/**
-	 * This method is to filter the user ID bases on country or prefix in order to
-	 * decide whether this number is eligible for user masking
-	 * @param userId
-	 * @return true if masking allowed user ID
-	 */
-	private boolean isMaskingAllowedUserId(String userId) {
-		boolean isMaskingAllowedUserId = false;
-		String regex = MaskingUtils.getUserMaskingConfiguration("user.masking.feature.user.Id.filter.regex");
-		if (userId != null && regex != null) {
-			isMaskingAllowedUserId = userId.matches(regex);
-		}
-		return isMaskingAllowedUserId;
 	}
 
     /**

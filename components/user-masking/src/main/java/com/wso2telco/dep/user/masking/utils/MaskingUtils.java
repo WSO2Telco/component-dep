@@ -87,7 +87,7 @@ public class MaskingUtils {
 	 * @param userId
 	 * @return true if masking allowed user ID
 	 */
-	public static boolean isMaskingAllowedUserId(String userId) {
+	public static boolean isUnmaskedUserId(String userId) {
 		boolean isMaskingAllowedUserId = false;
 		String regex = MaskingUtils.getUserMaskingConfiguration("user.masking.feature.user.Id.filter.regex");
 		if (userId != null && regex != null) {
