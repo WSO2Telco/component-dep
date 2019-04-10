@@ -89,7 +89,7 @@ public class ValidatePaymentCharge  implements IServiceValidate {
                 if (!jsonObj.isNull("endUserId")) {
                     endUserId = nullOrTrimmed(jsonObj.getString("endUserId"));
                     if(this.userAnonymization) {
-                        endUserId = UserMaskHandler.maskUserId(endUserId, false, this.maskingSecretKey);
+                        endUserId = UserMaskHandler.transcryptUserId(endUserId, false, this.maskingSecretKey);
                     }
                 }
                 if (!jsonObj.isNull("referenceCode")) {

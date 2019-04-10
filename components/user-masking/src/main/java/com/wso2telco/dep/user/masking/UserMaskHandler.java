@@ -1,3 +1,18 @@
+/*******************************************************************************
+ * Copyright  (c) 2019, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+ *
+ * WSO2.Telco Inc. licences this file to you under  the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ *   http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ ******************************************************************************/
 package com.wso2telco.dep.user.masking;
 
 import com.wso2telco.dep.user.masking.exceptions.UserMaskingException;
@@ -19,34 +34,29 @@ public class UserMaskHandler {
 
     private static final Log log = LogFactory.getLog(UserMaskHandler.class);
 
-    public static String maskUserId(String userId, boolean encript, String secretKey) throws UserMaskingException {
-        String userPrefix = "";
+    /**
+     *
+     * @param userId
+     * @param encript
+     * @param secretKey
+     * @return get masked/unmasked user ID
+     */
+    public static String transcryptUserId(String userId, boolean encript, String secretKey) throws UserMaskingException {
         String returnedUserId = userId;
-        if (userId.startsWith("tel:+")) {
-            userId = userId.substring(5);
-            userPrefix = "tel:+";
-        } else if (userId.startsWith("tel:")) {
-            userId = userId.substring(4);
-            userPrefix = "tel:";
-        } else if (userId.startsWith("tel")) {
-            userPrefix = "tel";
-            userId = userId.substring(3);
-        } else if (userId.startsWith("+")) {
-            userPrefix = "+";
-            userId = userId.substring(1);
-        }
+        UserId userIdObj = new UserId(userId);
 
         if (secretKey != null && !secretKey.isEmpty()) {
             if (encript) {
-                returnedUserId = encrypt(userId, secretKey);
+                returnedUserId = encrypt(userIdObj.getReturnUserId(), secretKey);
             } else {
-                returnedUserId = decrypt(userId, secretKey);
+                returnedUserId = decrypt(userIdObj.getReturnUserId(), secretKey);
             }
         } else {
             log.error("Error while getting configuration, MSISDN_ENCRIPTION_KEY is not provided");
+            userIdObj.setUserPrefix("");
         }
 
-        return userPrefix + returnedUserId;
+        return userIdObj.getUserPrefix() + returnedUserId;
     }
 
     /**
@@ -59,7 +69,7 @@ public class UserMaskHandler {
             String maskingSecretKey = MaskingUtils.getUserMaskingConfiguration(
                     "user.masking.feature.masking.secret.key");
             try {
-                return maskUserId(userId, true, maskingSecretKey);
+                return transcryptUserId(userId, true, maskingSecretKey);
             } catch (Exception e) {
                 log.warn("msisdn is already masked or incorrect user mask configuration exists.");
                 return userId;
@@ -74,17 +84,16 @@ public class UserMaskHandler {
      * @return get unmasked user ID
      */
     public static String getUserMaskIfAllowed(String userId) {
-        if (StringUtils.isNotEmpty(userId)) {
-            String maskingSecretKey = MaskingUtils.getUserMaskingConfiguration(
-                    "user.masking.feature.masking.secret.key");
-            try {
-                if (MaskingUtils.isUserAnonymizationEnabled() && MaskingUtils.isMaskingAllowedUserId(userId)) {
-                    return maskUserId(userId, true, maskingSecretKey);
-                }
-            } catch (Exception e) {
-                log.warn("msisdn is already masked or incorrect user mask configuration exists.");
-                return userId;
+        try {
+            if (StringUtils.isNotEmpty(userId) && MaskingUtils.isUserAnonymizationEnabled() &&
+                    MaskingUtils.isUnmaskedUserId(userId)) {
+                String maskingSecretKey = MaskingUtils.getUserMaskingConfiguration(
+                        "user.masking.feature.masking.secret.key");
+                return transcryptUserId(userId, true, maskingSecretKey);
             }
+        } catch (Exception e) {
+            log.warn("msisdn is already masked or incorrect user mask configuration exists.");
+            return userId;
         }
         return userId;
     }
@@ -99,7 +108,7 @@ public class UserMaskHandler {
             String maskingSecretKey = MaskingUtils.getUserMaskingConfiguration(
                     "user.masking.feature.masking.secret.key");
             try {
-                return maskUserId(userMask, false, maskingSecretKey);
+                return transcryptUserId(userMask, false, maskingSecretKey);
             } catch (Exception e) {
                 log.warn("msisdn is already unmasked or incorrect user mask configuration exists.");
                 return userMask;
@@ -118,7 +127,7 @@ public class UserMaskHandler {
             String maskingSecretKey = MaskingUtils.getUserMaskingConfiguration(
                     "user.masking.feature.masking.secret.key");
             try {
-                return maskUserId(userMask, false, maskingSecretKey);
+                return transcryptUserId(userMask, false, maskingSecretKey);
             } catch (Exception e) {
                 if (isCorrectlyFormattedMSISDN(userMask)){
                     return userMask;
@@ -214,5 +223,48 @@ public class UserMaskHandler {
             throw e;
         }
         return secretKeySpec;
+    }
+
+    private static class UserId{
+        private String userPrefix = "";
+        private String returnUserId = "";
+
+        public UserId(String userId){
+            separateUserId(userId);
+        }
+
+        /**
+         *
+         * @param userId
+         */
+        private void separateUserId(String userId){
+            if (userId.startsWith("tel:+")) {
+                returnUserId = userId.substring(5);
+                userPrefix = "tel:+";
+            } else if (userId.startsWith("tel:")) {
+                returnUserId = userId.substring(4);
+                userPrefix = "tel:";
+            } else if (userId.startsWith("tel")) {
+                returnUserId = userId.substring(3);
+                userPrefix = "tel";
+            } else if (userId.startsWith("+")) {
+                returnUserId = userId.substring(1);
+                userPrefix = "+";
+            } else {
+                returnUserId = userId;
+            }
+        }
+
+        public void setUserPrefix(String userPrefix) {
+            this.userPrefix = userPrefix;
+        }
+
+        public String getUserPrefix() {
+            return userPrefix;
+        }
+
+        public String getReturnUserId() {
+            return returnUserId;
+        }
     }
 }
