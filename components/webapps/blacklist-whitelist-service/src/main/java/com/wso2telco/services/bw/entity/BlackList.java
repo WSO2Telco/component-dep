@@ -24,6 +24,8 @@ public class BlackList {
     private String apiID;
     private String apiName;
     private String userID;
+    private String spName;
+    private String appId;
     
     public String getAPIID(){
         return this.apiID;
@@ -47,5 +49,21 @@ public class BlackList {
     
     public String setUserID(String userID){
         return this.userID = userID;
+    }
+
+    public String getSpName() {
+        return spName;
+    }
+
+    public void setSpName(String spName) {
+        this.spName = spName;
+    }
+
+    public String getAppId() {
+        return appId;
+    }
+
+    public void setAppId(String appId) {
+        this.appId = appId;
     }
 }
