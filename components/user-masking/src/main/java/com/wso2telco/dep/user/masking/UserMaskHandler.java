@@ -37,22 +37,22 @@ public class UserMaskHandler {
     /**
      *
      * @param userId
-     * @param encript
+     * @param encrypt
      * @param secretKey
      * @return get masked/unmasked user ID
      */
-    public static String transcryptUserId(String userId, boolean encript, String secretKey) throws UserMaskingException {
+    public static String transcryptUserId(String userId, boolean encrypt, String secretKey) throws UserMaskingException {
         String returnedUserId = userId;
         UserId userIdObj = new UserId(userId);
 
         if (secretKey != null && !secretKey.isEmpty()) {
-            if (encript) {
+            if (encrypt) {
                 returnedUserId = encrypt(userIdObj.getReturnUserId(), secretKey);
             } else {
                 returnedUserId = decrypt(userIdObj.getReturnUserId(), secretKey);
             }
         } else {
-            log.error("Error while getting configuration, MSISDN_ENCRIPTION_KEY is not provided");
+            log.error("Error while getting configuration, MSISDN_ENCRYPTION_KEY is not provided");
             userIdObj.setUserPrefix("");
         }
 
@@ -70,8 +70,8 @@ public class UserMaskHandler {
                     "user.masking.feature.masking.secret.key");
             try {
                 return transcryptUserId(userId, true, maskingSecretKey);
-            } catch (Exception e) {
-                log.warn("msisdn is already masked or incorrect user mask configuration exists.");
+            } catch (UserMaskingException ume) {
+                log.warn("msisdn is already masked or incorrect user mask configuration exists.", ume);
                 return userId;
             }
         }
@@ -91,8 +91,8 @@ public class UserMaskHandler {
                         "user.masking.feature.masking.secret.key");
                 return transcryptUserId(userId, true, maskingSecretKey);
             }
-        } catch (Exception e) {
-            log.warn("msisdn is already masked or incorrect user mask configuration exists.");
+        } catch (UserMaskingException ume) {
+            log.warn("msisdn is already masked or incorrect user mask configuration exists. ", ume);
             return userId;
         }
         return userId;
@@ -109,8 +109,8 @@ public class UserMaskHandler {
                     "user.masking.feature.masking.secret.key");
             try {
                 return transcryptUserId(userMask, false, maskingSecretKey);
-            } catch (Exception e) {
-                log.warn("msisdn is already unmasked or incorrect user mask configuration exists.");
+            } catch (UserMaskingException ume) {
+                log.warn("msisdn is already unmasked or incorrect user mask configuration exists.", ume);
                 return userMask;
             }
         }
@@ -128,12 +128,12 @@ public class UserMaskHandler {
                     "user.masking.feature.masking.secret.key");
             try {
                 return transcryptUserId(userMask, false, maskingSecretKey);
-            } catch (Exception e) {
+            } catch (UserMaskingException ume) {
                 if (isCorrectlyFormattedMSISDN(userMask)){
                     return userMask;
                 }
                 log.warn("msisdn is already unmasked, incorrect user mask configuration exists or previous user " +
-                        "masking configuration changed");
+                        "masking configuration changed", ume);
             }
         }
         return userMask;
@@ -163,7 +163,7 @@ public class UserMaskHandler {
      *
      * @param userId
      * @param secretKey
-     * @return Encripted User ID
+     * @return Encrypted User ID
      */
     private static String encrypt(String userId, String secretKey) throws UserMaskingException {
         String maskedId = null;

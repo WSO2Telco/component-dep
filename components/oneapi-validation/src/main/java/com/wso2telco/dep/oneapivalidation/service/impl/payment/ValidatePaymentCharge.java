@@ -68,7 +68,7 @@ public class ValidatePaymentCharge  implements IServiceValidate {
             String originalServerReferenceCode = null;
             String referenceCode = null;
             String description = null;
-            String currency = null;
+            String currency = "";
             Double amount = null;
 
             String clientCorrelator = null;
@@ -152,13 +152,10 @@ public class ValidatePaymentCharge  implements IServiceValidate {
             } catch (JSONException e) {
                 log.error("Manipulating received JSON Object: " + e);
                 throw new CustomException("SVC0001", "", new String[]{"Incorrect JSON Object received"});
-            } catch (NullPointerException npe) {
-                log.error("Accessing Currency which is nullable" + npe);
-                throw new CustomException("SVC0001", "", new String[]{"Accessing Currency which is nullable"});
-            }  catch (CustomException ce){
+            } catch (CustomException ce){
                 log.error("Manipulating received JSON Object: " + ce);
                 throw ce;
-            }  catch (UserMaskingException ume){//Bad Padding Exception removed.Error occurred while unmasking. Possible reason would be incorrect masking configuration.
+            } catch (UserMaskingException ume){//Bad Padding Exception removed.Error occurred while unmasking. Possible reason would be incorrect masking configuration.
                 log.error("Error occurred while unmasking. Possible reason would be incorrect masking configuration. " , ume);
                 throw new CustomException("SVC0003", ume.getMessage(), new String[]{"Invalid user mask configuration"});
             }
