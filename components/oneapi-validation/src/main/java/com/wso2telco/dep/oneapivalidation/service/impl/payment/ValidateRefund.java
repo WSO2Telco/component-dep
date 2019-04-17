@@ -47,7 +47,7 @@ public class ValidateRefund implements IServiceValidate {
         String clientCorrelator = null;
         String endUserId = null;
         Double amount = null;
-        String currency = null;
+        String currency = "";
         String description = null;
         String code = null;
         String onBehalfOf = null;
@@ -154,9 +154,6 @@ public class ValidateRefund implements IServiceValidate {
                 log.debug("Manipulated received JSON Object: " + json);
             }
 
-        } catch (NullPointerException npe) {
-            log.error("Accessing Currency which is nullable" + npe);
-            throw new CustomException("SVC0001", "", new String[]{"Accessing Currency which is nullable"});
         } catch (JSONException e) {
             log.error("Manipulating received JSON Object: " + e);
             throw new CustomException("SVC0001", "", new String[]{"Incorrect JSON Object received"});
