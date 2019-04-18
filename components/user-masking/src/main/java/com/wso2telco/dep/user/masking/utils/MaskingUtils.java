@@ -27,9 +27,12 @@ import java.util.Properties;
 public class MaskingUtils {
 
 	private static final Log log = LogFactory.getLog(MaskingUtils.class);
-	private static final String USER_MASKING_PROPERTIES_FILE = "user-masking.properties";
+	public static final String USER_MASKING_PROPERTIES_FILE = "user-masking.properties";
+	public static final String USER_MASKING_ENABLED = "user.masking.feature.enable";
+	public static final String USER_MASKING_SECRET_KEY = "user.masking.feature.masking.secret.key";
+	public static final String USER_MASKING_DEFAULT_MSISDN_REGEX = "default.msisdn.regex";
+	public static final String USER_MASKING_USER_ID_FILTER_REGEX = "user.masking.feature.user.Id.filter.regex";
 	private static Properties props = null;
-
 
 	/**
 	 *
@@ -104,7 +107,7 @@ public class MaskingUtils {
 	 */
 	public static boolean isUnmaskedUserId(String userId) {
 		boolean isMaskingAllowedUserId = false;
-		String regex = MaskingUtils.getUserMaskingConfiguration("user.masking.feature.user.Id.filter.regex");
+		String regex = MaskingUtils.getUserMaskingConfiguration(USER_MASKING_USER_ID_FILTER_REGEX);
 		if (userId != null && regex != null) {
 			isMaskingAllowedUserId = userId.matches(regex);
 		}
