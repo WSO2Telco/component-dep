@@ -31,9 +31,13 @@ public class UserMaskingConfiguration {
                 "] user Id Filter Regex: [" + this.userIdFilterRegex + "]");
     }
 
-    public static UserMaskingConfiguration getInstance(){
+    public static UserMaskingConfiguration getInstance(){// no synchronized methods because perf hit
         if(SINGLE_INSTANCE == null){
-            SINGLE_INSTANCE = new UserMaskingConfiguration();
+            synchronized (UserMaskingConfiguration.class){
+                if(SINGLE_INSTANCE == null)// test again because eliminate recreating. few thread may wait at
+                    // synchronized block and create few instances if this test not there
+                SINGLE_INSTANCE = new UserMaskingConfiguration();
+            }
         }
 
         return SINGLE_INSTANCE;
