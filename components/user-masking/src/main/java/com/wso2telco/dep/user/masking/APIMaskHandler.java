@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.wso2telco.dep.user.masking;
 
+import com.wso2telco.dep.user.masking.configuration.UserMaskingConfiguration;
 import com.wso2telco.dep.user.masking.exceptions.UserMaskingException;
 import com.wso2telco.dep.user.masking.utils.APIType;
 import com.wso2telco.dep.user.masking.utils.MaskingUtils;
@@ -57,12 +58,14 @@ public class APIMaskHandler extends AbstractHandler {
             apiId = apiId.replace("--", "_").replace(":v", "_");
             APIIdentifier apiIdentifier = new APIIdentifier(apiId);
             String apiProductionEndpoint = getAPIInfoProductionEndpointConfigCache().get(apiIdentifier);
+
             if (apiProductionEndpoint == null) {
 				APIConsumer apiConsumer = getLoggedInUserConsumer();
 				API api = apiConsumer.getAPI(apiIdentifier);
 				apiProductionEndpoint = api.getEndpointConfig();
 				getAPIInfoProductionEndpointConfigCache().put(apiIdentifier, apiProductionEndpoint);
 			}
+
             JSONObject response = new JSONObject(apiProductionEndpoint);
 			String productionEndpoint = response.getJSONObject("production_endpoints").get("url").toString();
 
@@ -76,16 +79,19 @@ public class APIMaskHandler extends AbstractHandler {
 
 		} catch (APIManagementException e) {
 			log.error("Error while creating the APIIdentifier and retreiving api id from database", e);
-		} catch (UserMaskingException e) {
-			log.error("Error while masking user data", e);
+		} catch (UserMaskingException ume) {
+			log.error("Error while masking user data", ume);
 			return  false;
-		} catch (Exception e) {
-			log.error("Error while getting validator class", e);
+		} catch (XMLStreamException xmlSEx){
+			log.error("Error while getting validator class", xmlSEx);
+		} catch (IOException ioEx){
+			log.error("Error while getting validator class", ioEx);
 		}
+
 		return true;
 	}
 
-	private void maskRequestData(MessageContext messageContext) throws Exception {
+	private void maskRequestData(MessageContext messageContext) throws UserMaskingException {
 
 		try {
 			// Getting the json payload to string
