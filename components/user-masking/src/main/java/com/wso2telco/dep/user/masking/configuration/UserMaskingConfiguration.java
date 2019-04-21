@@ -6,12 +6,11 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import javax.annotation.PostConstruct;
-import javax.inject.Singleton;
 import java.util.Properties;
 
-@Singleton
 public class UserMaskingConfiguration {
 
+    private static UserMaskingConfiguration SINGLE_INSTANCE = null;
     private static final Log log = LogFactory.getLog(UserMaskingConfiguration.class);
     private String userMaskingEnabled = null;
     private String secretKey = null;
@@ -19,20 +18,7 @@ public class UserMaskingConfiguration {
     private String userIdFilterRegex = null;
     private String userMask = null;
 
-    public UserMaskingConfiguration(){
-        log.debug("########################## working ####################");
-        log.error("########################## working error ####################");
-        log.info("########################## working info ####################");
-    }
-    /**
-     * Load user-masking.properties
-     * pupulate user masking properties
-     */
-    @PostConstruct
-    public void populateUserMaskingProperties(){
-        log.debug("########################## pcworking ####################");
-        log.error("##########################pc working error ####################");
-        log.info("##########################pc working info ####################");
+    private UserMaskingConfiguration(){
         Properties props = PropertyFileReader.getFileReader().getProperties(MaskingUtils.USER_MASKING_PROPERTIES_FILE);
 
         this.userMaskingEnabled = props.getProperty(MaskingUtils.USER_MASKING_ENABLED);
@@ -40,7 +26,17 @@ public class UserMaskingConfiguration {
         this.defaultMSISNDRegex = props.getProperty(MaskingUtils.USER_MASKING_DEFAULT_MSISDN_REGEX);
         this.userIdFilterRegex = props.getProperty(MaskingUtils.USER_MASKING_USER_ID_FILTER_REGEX);
 
-        System.out.println("##############" + userMaskingEnabled + secretKey+ defaultMSISNDRegex+userIdFilterRegex);
+        log.debug("user masking property: [" + this.userMaskingEnabled + "] secret key: ["+
+                this.secretKey + "] default MSISDN Regex: [" + this.defaultMSISNDRegex +
+                "] user Id Filter Regex: [" + this.userIdFilterRegex + "]");
+    }
+
+    public static UserMaskingConfiguration getInstance(){
+        if(SINGLE_INSTANCE == null){
+            SINGLE_INSTANCE = new UserMaskingConfiguration();
+        }
+
+        return SINGLE_INSTANCE;
     }
 
     public String getUserMaskingEnabled() {
