@@ -50,8 +50,7 @@ function updateStatus(status) {
     var apiName = $("#name").val();
     var version = $("#apiVersion").val();
     var provider = $("#provider").val();
-    // Following code gets the value of checkbox 'Deprecate ..' in Lifecycle tab in created state of an API.
-    var isSetDeprecation = $('input[data-itm*="Deprecate"]').val();
+    var isSetDeprecation = $("#itemDiv1").val();
     $(".modal-footer").html("");
     if (status == 'Deprecate') {
         var messageContent = i18n.t("Once the API is deprecated; you can only retire the API as the next step.Are you sure you want to deprecate the API") + " - " + apiName + " - " + version + "?";
@@ -277,7 +276,7 @@ var publishedInExternalStores=<%=publishedInExternalStores%>;
                       <div class="form-group">
                          <label class="control-label col-sm-3"></label>
                        <label class="checkbox col-sm-3" id="itemsDivfromLCXML<%=String(j)%>">
-                            <input type="checkbox" id="itemDiv<%=String(j)%>" name="itemDiv" onChange="setChecklistItemVal(itemDiv<%=String(j)%>,<%=itemOrder%>)" value="<%=itemValue%>" <%if(itemValue=="true"){%>checked<%}%> data-itm="<%=itemName%>" >
+                            <input type="checkbox" id="itemDiv<%=String(j)%>" name="itemDiv" onChange="setChecklistItemVal(itemDiv<%=String(j)%>,<%=itemOrder%>)" value="<%=itemValue%>" <%if(itemValue=="true"){%>checked<%}%>>
                               <span class="helper"><%=i18n.localize(itemName, itemName)%></span>
                        </label>
                      </div>
@@ -288,7 +287,7 @@ var publishedInExternalStores=<%=publishedInExternalStores%>;
                             <div class="form-group">
                                <label class="control-label col-sm-3"></label>
                                    <label class="checkbox col-sm-3" id="itemsDivfromLCXML<%=String(j)%>">
-                                    <input type="checkbox" id="itemDiv<%=String(j)%>" name="itemDiv" onChange="setChecklistItemVal(itemDiv<%=String(j)%>,<%=itemOrder%>)" value="<%=itemValue%>" <%if(itemValue=="true"){%>checked<%}%> data-itm="<%=itemName%>" >
+                                    <input type="checkbox" id="itemDiv<%=String(j)%>" name="itemDiv" onChange="setChecklistItemVal(itemDiv<%=String(j)%>,<%=itemOrder%>)" value="<%=itemValue%>" <%if(itemValue=="true"){%>checked<%}%>>
                                     <span class="helper"><%=i18n.localize(itemName, itemName)%></span>
                                 </label>
                               </div>
