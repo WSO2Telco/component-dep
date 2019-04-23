@@ -102,7 +102,7 @@ public class APIMaskHandler extends AbstractHandler {
 			Map headersMap = (Map) headers;
 			String resource = (String)headersMap.get("RESOURCE");
 			APIType apiType = MaskingUtils.getAPIType(messageContext);
-			String maskingSecretKey = MaskingUtils.getUserMaskingConfiguration("user.masking.feature.masking.secret.key");
+			String maskingSecretKey = UserMaskingConfiguration.getInstance().getSecretKey();
 
 			if (APIType.PAYMENT.equals(apiType)) {
 				// Extract user ID with request
@@ -153,7 +153,7 @@ public class APIMaskHandler extends AbstractHandler {
 
 			// Set transport header indicating the request uses user anonymization
 			headersMap.put("USER_ANONYMIZATION", "true");
-		} catch (Exception e) {
+		} catch (UnsupportedEncodingException e) {
 			log.error("Error while masking user request", e);
 			throw new UserMaskingException(e);
 		}
@@ -173,7 +173,7 @@ public class APIMaskHandler extends AbstractHandler {
 			String jsonString = JsonUtil.jsonPayloadToString(((Axis2MessageContext) messageContext).getAxis2MessageContext());
 			JSONObject jsonBody = new JSONObject(jsonString);
 			APIType apiType = MaskingUtils.getAPIType(messageContext);
-			String maskingSecretKey = MaskingUtils.getUserMaskingConfiguration("user.masking.feature.masking.secret.key");
+			String maskingSecretKey = UserMaskingConfiguration.getInstance().getSecretKey();
 			if (APIType.PAYMENT.equals(apiType)) {
 				// Extract user ID with request
 				if (!jsonBody.isNull("amountTransaction")) {
@@ -217,7 +217,7 @@ public class APIMaskHandler extends AbstractHandler {
 						if (UserMaskHandler.isMaskedUserId(userId)) {
 							try {
 								userId = UserMaskHandler.transcryptUserId(userId, false, maskingSecretKey);
-							} catch (Exception e) {
+							} catch (UserMaskingException e) {
 								log.error("Error occurred while unmaksing user id ", e);
 							}
 							newAddressArray.put(userId);
