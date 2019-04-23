@@ -15,6 +15,7 @@
  ******************************************************************************/
 package com.wso2telco.dep.user.masking;
 
+import com.wso2telco.dep.user.masking.configuration.UserMaskingConfiguration;
 import com.wso2telco.dep.user.masking.exceptions.UserMaskingException;
 import com.wso2telco.dep.user.masking.utils.MaskingUtils;
 import org.apache.commons.codec.binary.Base64;
@@ -66,8 +67,8 @@ public class UserMaskHandler {
      */
     public static String getUserMask(String userId) {
         if (StringUtils.isNotEmpty(userId)) {
-            String maskingSecretKey = MaskingUtils.getUserMaskingConfiguration(
-                    "user.masking.feature.masking.secret.key");
+            String maskingSecretKey = UserMaskingConfiguration.getInstance().getSecretKey();
+
             try {
                 return transcryptUserId(userId, true, maskingSecretKey);
             } catch (UserMaskingException ume) {
@@ -87,8 +88,8 @@ public class UserMaskHandler {
         try {
             if (StringUtils.isNotEmpty(userId) && MaskingUtils.isUserAnonymizationEnabled() &&
                     MaskingUtils.isUnmaskedUserId(userId)) {
-                String maskingSecretKey = MaskingUtils.getUserMaskingConfiguration(
-                        "user.masking.feature.masking.secret.key");
+                String maskingSecretKey = UserMaskingConfiguration.getInstance().getSecretKey();
+
                 return transcryptUserId(userId, true, maskingSecretKey);
             }
         } catch (UserMaskingException ume) {
@@ -105,8 +106,7 @@ public class UserMaskHandler {
      */
     public static String getUserId(String userMask) {
         if (StringUtils.isNotEmpty(userMask)) {
-            String maskingSecretKey = MaskingUtils.getUserMaskingConfiguration(
-                    "user.masking.feature.masking.secret.key");
+            String maskingSecretKey = UserMaskingConfiguration.getInstance().getSecretKey();
             try {
                 return transcryptUserId(userMask, false, maskingSecretKey);
             } catch (UserMaskingException ume) {
@@ -124,8 +124,7 @@ public class UserMaskHandler {
      */
     public static String getProperlyMaskedUserId(String userMask) {
         if (StringUtils.isNotEmpty(userMask)) {
-            String maskingSecretKey = MaskingUtils.getUserMaskingConfiguration(
-                    "user.masking.feature.masking.secret.key");
+            String maskingSecretKey = UserMaskingConfiguration.getInstance().getSecretKey();
             try {
                 return transcryptUserId(userMask, false, maskingSecretKey);
             } catch (UserMaskingException ume) {
@@ -145,7 +144,7 @@ public class UserMaskHandler {
      * @return true if a masked user ID
      */
     public static boolean isMaskedUserId(String userId) {
-        String defaultRegex = "^((((tel:){1}(\\+){0,1})|((tel:){0,1}(\\+){1}))([a-zA-Z0-9]+))$";
+        String defaultRegex = UserMaskingConfiguration.getInstance().getDefaultMSISNDRegex();
         return  !userId.matches(defaultRegex);
     }
 
@@ -155,7 +154,7 @@ public class UserMaskHandler {
      * @return true if a masked user ID
      */
     public static boolean isCorrectlyFormattedMSISDN(String userId) {
-        String defaultRegex = "^((((tel:){1}(\\+){0,1})|((tel:){0,1}(\\+){1}))([a-zA-Z0-9]+))$";
+        String defaultRegex = UserMaskingConfiguration.getInstance().getDefaultMSISNDRegex();
         return  userId.matches(defaultRegex);
     }
 

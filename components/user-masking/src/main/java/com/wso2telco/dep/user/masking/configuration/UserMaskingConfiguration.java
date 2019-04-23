@@ -34,7 +34,7 @@ public class UserMaskingConfiguration {
     public static UserMaskingConfiguration getInstance(){// no synchronized methods because perf hit
         if(SINGLE_INSTANCE == null){
             synchronized (UserMaskingConfiguration.class){
-                if(SINGLE_INSTANCE == null)// test again because eliminate recreating. few thread may wait at
+                if(SINGLE_INSTANCE == null)// test again because to eliminate recreating. few thread may wait at
                     // synchronized block and create few instances if this test not there
                 SINGLE_INSTANCE = new UserMaskingConfiguration();
             }

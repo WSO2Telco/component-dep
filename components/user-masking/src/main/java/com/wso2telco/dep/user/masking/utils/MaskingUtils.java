@@ -16,6 +16,7 @@
 package com.wso2telco.dep.user.masking.utils;
 
 import com.wso2telco.core.dbutils.fileutils.PropertyFileReader;
+import com.wso2telco.dep.user.masking.configuration.UserMaskingConfiguration;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
@@ -68,9 +69,9 @@ public class MaskingUtils {
 	 */
 	public static boolean isUserAnonymizationEnabled() {
 		boolean isUserAnonymizationEnabled = false;
-		if(getUserMaskingConfiguration("user.masking.feature.enable") != null) {
+		if(UserMaskingConfiguration.getInstance().getUserMaskingEnabled() != null) {
 			try {
-				isUserAnonymizationEnabled = Boolean.valueOf(getUserMaskingConfiguration("user.masking.feature.enable"));
+				isUserAnonymizationEnabled = Boolean.valueOf(UserMaskingConfiguration.getInstance().getUserMaskingEnabled());
 			} catch (Exception e) {
 				String errorMessage = "Invalid for configration in user-masking.properties :  user.masking.feature.enable";
 				log.error(errorMessage, e);
@@ -107,7 +108,8 @@ public class MaskingUtils {
 	 */
 	public static boolean isUnmaskedUserId(String userId) {
 		boolean isMaskingAllowedUserId = false;
-		String regex = MaskingUtils.getUserMaskingConfiguration(USER_MASKING_USER_ID_FILTER_REGEX);
+		String regex = UserMaskingConfiguration.getInstance().getUserIdFilterRegex();
+
 		if (userId != null && regex != null) {
 			isMaskingAllowedUserId = userId.matches(regex);
 		}
