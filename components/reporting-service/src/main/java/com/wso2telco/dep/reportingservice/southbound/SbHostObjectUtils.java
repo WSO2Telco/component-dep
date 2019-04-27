@@ -2103,20 +2103,6 @@ public class SbHostObjectUtils {
 	}
 
 	/**
-	 * Get all subscriptions by userName
-	 *
-	 * @param userName
-	 * @return
-	 * @throws Exception
-	 */
-	public static List<Subscription> getAllSubscriptionsByUser(String userName) throws Exception {
-		BillingDAO billingDAO = new BillingDAO();
-		List<Subscription> subscriptions = null;
-		subscriptions = billingDAO.getAllSubscriptionsByUser(userName);
-		return subscriptions;
-	}
-
-	/**
 	 * Gets the operation types.
 	 *
 	 * @return the operation types
