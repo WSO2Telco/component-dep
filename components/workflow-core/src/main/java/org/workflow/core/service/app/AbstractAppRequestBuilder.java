@@ -173,8 +173,8 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
             for (String criteria : filterCriterias) {
                 String[] criteriaArray = criteria.split(":");
                 if (criteriaArray.length == 2 && !criteriaArray[0].trim().isEmpty() && !criteriaArray[1].trim().isEmpty()
-                        && historyFilterMap().containsKey(criteriaArray[0].trim().toLowerCase())) {
-                    varMap.put(historyFilterMap().get(criteriaArray[0].trim().toLowerCase()), criteriaArray[1]);
+                        && subHistoryFilterMap().containsKey(criteriaArray[0].trim().toLowerCase())) {
+                    varMap.put(subHistoryFilterMap().get(criteriaArray[0].trim().toLowerCase()), criteriaArray[1]);
                 }
             }
         }
@@ -198,7 +198,7 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
         }
 
         if (varMap.containsKey(SubscriptionHistoryVariable.APPNAME.key())) {
-            applicationName = varMap.get(SubscriptionHistoryVariable.APINAME.key());
+            applicationName = varMap.get(SubscriptionHistoryVariable.APPNAME.key());
         }
 
         if (varMap.containsKey(SubscriptionHistoryVariable.TIER.key())) {
