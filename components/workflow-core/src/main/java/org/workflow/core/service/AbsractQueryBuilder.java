@@ -243,6 +243,11 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
         filter.put("operator",HistoryVariable.OPARATOR.key());
         filter.put("status", HistoryVariable.STATUS.key());
         filter.put("createdby", HistoryVariable.SP.key());
+        return filter;
+    }
+
+    protected Map<String, String> subHistoryFilterMap() {
+        Map<String, String> filter = new HashMap<String, String>();
         filter.put("subscriptionid", SubscriptionHistoryVariable.ID.key());
         filter.put("subid", SubscriptionHistoryVariable.ID.key());
         filter.put("app", SubscriptionHistoryVariable.APPNAME.key());
