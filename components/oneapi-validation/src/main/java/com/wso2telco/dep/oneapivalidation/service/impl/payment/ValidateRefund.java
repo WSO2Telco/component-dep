@@ -164,7 +164,7 @@ public class ValidateRefund implements IServiceValidate {
                 code = nullOrTrimmed(objChargingInformation.get("code").toString());
             }
 
-            if (objPaymentAmount.has("chargingMetaData")) {
+            if (objPaymentAmount.has("chargingMetaData") && !objPaymentAmount.isNull("chargingMetaData")) {
                 JSONObject objChargingMetaData = (JSONObject) objPaymentAmount.get("chargingMetaData");
 
                 if (!objChargingMetaData.isNull("onBehalfOf")) {
