@@ -73,7 +73,7 @@ public class MaskingUtils {
 			try {
 				isUserAnonymizationEnabled = Boolean.valueOf(UserMaskingConfiguration.getInstance().getUserMaskingEnabled());
 			} catch (Exception e) {
-				String errorMessage = "Invalid for configration in user-masking.properties :  user.masking.feature.enable";
+				String errorMessage = "Invalid for configuration in user-masking.properties :  user.masking.feature.enable";
 				log.error(errorMessage, e);
 			}
 		}
