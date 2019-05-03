@@ -16,6 +16,8 @@
 package com.wso2telco.dep.oneapivalidation.util;
 
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
+import com.wso2telco.dep.user.masking.UserMaskHandler;
+import com.wso2telco.dep.user.masking.configuration.UserMaskingConfiguration;
 import org.apache.log4j.Logger;
 import org.wso2.carbon.utils.CarbonUtils;
 

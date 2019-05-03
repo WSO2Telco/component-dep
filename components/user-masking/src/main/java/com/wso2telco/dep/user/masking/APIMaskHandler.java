@@ -69,7 +69,7 @@ public class APIMaskHandler extends AbstractHandler {
             JSONObject response = new JSONObject(apiProductionEndpoint);
 			String productionEndpoint = response.getJSONObject("production_endpoints").get("url").toString();
 
-		    // Valudate this requires masking
+		    // Validate this requires masking
 			if (MaskingUtils.isUserAnonymizationEnabled() && isMaskingAllowedAPI(messageContext)) {
 				maskRequestData(messageContext);
 				setEndpointURL(messageContext, productionEndpoint);
@@ -78,7 +78,7 @@ public class APIMaskHandler extends AbstractHandler {
 			}
 
 		} catch (APIManagementException e) {
-			log.error("Error while creating the APIIdentifier and retreiving api id from database", e);
+			log.error("Error while creating the APIIdentifier and retrieving api id from database", e);
 		} catch (UserMaskingException ume) {
 			log.error("Error while masking user data", ume);
 			return  false;
@@ -283,7 +283,8 @@ public class APIMaskHandler extends AbstractHandler {
 			JSONObject objAmountTransaction = (JSONObject) jsonBody.get("amountTransaction");
 			String transactionOperationStatus = objAmountTransaction.get("transactionOperationStatus").toString();
             String userId = objAmountTransaction.get("endUserId").toString();
-			if (transactionOperationStatus.equalsIgnoreCase("Charged") && MaskingUtils.isUnmaskedUserId(userId)) {
+			if ((transactionOperationStatus.equalsIgnoreCase("Charged") || transactionOperationStatus.equalsIgnoreCase("Refunded"))
+					&& MaskingUtils.isUnmaskedUserId(userId)) {
 				isMaskingAllowAPI = true;
 			}
 
