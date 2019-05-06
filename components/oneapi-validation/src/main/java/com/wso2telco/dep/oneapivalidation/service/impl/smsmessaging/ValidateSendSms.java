@@ -124,9 +124,12 @@ public class ValidateSendSms implements IServiceValidate {
                 senderAddress = nullOrTrimmed(objOtboundSMSMessageRequest.getString("senderAddress"));
             }
 
-            JSONObject objOutboundSMSTextMessage = (JSONObject) objOtboundSMSMessageRequest.get("outboundSMSTextMessage");
-            if (!objOutboundSMSTextMessage.isNull("message")) {
-                 message = nullOrTrimmed(objOutboundSMSTextMessage.getString("message"));
+            if (!objOtboundSMSMessageRequest.isNull("outboundSMSTextMessage")) {
+                JSONObject objOutboundSMSTextMessage = (JSONObject) objOtboundSMSMessageRequest.get(
+                        "outboundSMSTextMessage");
+                if (!objOutboundSMSTextMessage.isNull("message")) {
+                    message = nullOrTrimmed(objOutboundSMSTextMessage.getString("message"));
+                }
             }
 
             if (!objOtboundSMSMessageRequest.isNull("clientCorrelator")) {
