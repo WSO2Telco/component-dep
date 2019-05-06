@@ -18,6 +18,7 @@ package com.wso2telco.dep.oneapivalidation.util;
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.dep.user.masking.UserMaskHandler;
 import com.wso2telco.dep.user.masking.configuration.UserMaskingConfiguration;
+import com.wso2telco.dep.user.masking.exceptions.UserMaskingException;
 import org.apache.log4j.Logger;
 import org.wso2.carbon.utils.CarbonUtils;
 
@@ -187,7 +188,18 @@ public class Validation {
         if (tel != null) {
             if (tel.matches(telFormats)) {
                 matched = true;
-                logger.debug("MSISDN:  " + tel + " matches regex: " + telFormats);
+
+                if (logger.isDebugEnabled()) {
+                    if (Boolean.valueOf(UserMaskingConfiguration.getInstance().getUserMaskingEnabled())) {
+                        try {
+                            tel = UserMaskHandler.transcryptUserId(tel, true,
+                                    UserMaskingConfiguration.getInstance().getSecretKey());
+                        } catch (UserMaskingException e) {
+                            logger.error(e.getMessage());
+                        }
+                        logger.debug("MSISDN:  " + tel + " matches regex: " + telFormats);
+                    }
+                }
             }
         }
         return matched;
