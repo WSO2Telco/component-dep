@@ -178,26 +178,26 @@ public class Validation {
     /**
      * Checks if is correctly formatted number.
      *
-     * @param tel the tel
+     * @param formattedMsisdn the tel
      * @return true, if is correctly formatted number
      */
 
-    public static boolean isCorrectlyFormattedNumber(String tel) {
+    public static boolean isCorrectlyFormattedNumber(String formattedMsisdn) {
         boolean matched = false;
 
-        if (tel != null) {
-            if (tel.matches(telFormats)) {
+        if (formattedMsisdn != null) {
+            if (formattedMsisdn.matches(telFormats)) {
                 matched = true;
 
                 if (logger.isDebugEnabled()) {
                     if (Boolean.valueOf(UserMaskingConfiguration.getInstance().getUserMaskingEnabled())) {
                         try {
-                            tel = UserMaskHandler.transcryptUserId(tel, true,
+                            formattedMsisdn = UserMaskHandler.transcryptUserId(formattedMsisdn, true,
                                     UserMaskingConfiguration.getInstance().getSecretKey());
                         } catch (UserMaskingException e) {
                             logger.error(e.getMessage());
                         }
-                        logger.debug("MSISDN:  " + tel + " matches regex: " + telFormats);
+                        logger.debug("MSISDN:  " + formattedMsisdn + " matches regex: " + telFormats);
                     }
                 }
             }
