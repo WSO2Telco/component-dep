@@ -1,3 +1,18 @@
+/**
+ * Copyright (c) 2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
+ *
+ * WSO2.Telco Inc. licences this file to you under the Apache License, Version 2.0 (the "License");
+ * you may not use this file except in compliance with the License.
+ * You may obtain a copy of the License at
+ *
+ * http://www.apache.org/licenses/LICENSE-2.0
+ *
+ * Unless required by applicable law or agreed to in writing, software
+ * distributed under the License is distributed on an "AS IS" BASIS,
+ * WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ * See the License for the specific language governing permissions and
+ * limitations under the License.
+ */
 package org.workflow.core.service.app;
 
 import com.wso2telco.core.dbutils.exception.BusinessException;
@@ -11,7 +26,11 @@ import org.workflow.core.dboperation.DatabaseHandler;
 import org.workflow.core.execption.WorkflowExtensionException;
 import org.workflow.core.model.*;
 import org.workflow.core.service.AbsractQueryBuilder;
-import org.workflow.core.util.*;
+import org.workflow.core.util.AppVariable;
+import org.workflow.core.util.DeploymentTypes;
+import org.workflow.core.util.HistoryVariable;
+import org.workflow.core.util.Messages;
+import org.workflow.core.util.WorkFlowVariables;
 
 import java.util.*;
 
@@ -150,72 +169,11 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
         return handler.getApprovalHistory(subscriber, applicationName, applicationId, operator, status, offset, count);
     }
 
-    public SubscriptionHistoryResponse getSubscriptionApprovalHistory(int subscriptionId , String apiName, String applicationName, String tier, String operator, String createdBy, int offset, int count) throws BusinessException {
-        DatabaseHandler handler = new DatabaseHandler();
-        return handler.getSubscriptionApprovalHistory(subscriptionId, apiName, applicationName, tier , operator, createdBy, offset, count);
-    }
-
     @Override
     protected abstract Callback buildApprovalRequest(ApprovalRequest approvalRequest, UserProfileDTO userProfile) throws BusinessException;
 
     protected String getProcessDefinitionKey() {
         return depType.getAppProcessType();
-    }
-
-    @Override
-    public Callback getSubscriptionHistoryData(TaskSearchDTO searchDTO, UserProfileDTO userProfile) throws BusinessException {
-        String filterStr = searchDTO.getFilterBy();
-        final Map<String, String> varMap = new HashMap<String, String>();
-        Callback returnCall;
-
-        if (filterStr != null && !filterStr.trim().isEmpty()) {
-            final String[] filterCriterias = filterStr.split(",");
-            for (String criteria : filterCriterias) {
-                String[] criteriaArray = criteria.split(":");
-                if (criteriaArray.length == 2 && !criteriaArray[0].trim().isEmpty() && !criteriaArray[1].trim().isEmpty()
-                        && subHistoryFilterMap().containsKey(criteriaArray[0].trim().toLowerCase())) {
-                    varMap.put(subHistoryFilterMap().get(criteriaArray[0].trim().toLowerCase()), criteriaArray[1]);
-                }
-            }
-        }
-
-        int subscriptionId;
-        String apiName = ALL;
-        String applicationName =ALL;
-        String tier = ALL;
-        String operator = userProfile.getUserName().toUpperCase();
-        String createdBy = ALL;
-
-        if (varMap.containsKey(SubscriptionHistoryVariable.ID.key())) {
-            subscriptionId = Integer.parseInt(varMap.get(SubscriptionHistoryVariable.ID.key()));
-        }
-        else {
-            subscriptionId = 0;
-        }
-
-        if(varMap.containsKey(SubscriptionHistoryVariable.APINAME.key())){
-            apiName = varMap.get(SubscriptionHistoryVariable.APINAME.key());
-        }
-
-        if (varMap.containsKey(SubscriptionHistoryVariable.APPNAME.key())) {
-            applicationName = varMap.get(SubscriptionHistoryVariable.APPNAME.key());
-        }
-
-        if (varMap.containsKey(SubscriptionHistoryVariable.TIER.key())) {
-            tier = varMap.get(SubscriptionHistoryVariable.TIER.key());
-        }
-
-        if (varMap.containsKey(SubscriptionHistoryVariable.CREATED_BY.key())) {
-            createdBy = varMap.get(SubscriptionHistoryVariable.CREATED_BY.key());
-        }
-
-        try {
-            SubscriptionHistoryResponse apiRequests = getSubscriptionApprovalHistory( subscriptionId, apiName, applicationName, tier, operator, createdBy, searchDTO.getStart(), searchDTO.getBatchSize());
-            returnCall = new Callback().setPayload(apiRequests).setSuccess(true).setMessage(Messages.APPLICATION_HISTORY_SUCCESS.getValue());
-        } catch (Exception e) {
-            returnCall = new Callback().setPayload(e.getMessage()).setSuccess(false).setMessage(Messages.APPLICATION_HISTORY_FAILED.getValue());
-        }
-        return returnCall;
     }
 
     @Override
