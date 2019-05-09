@@ -4,14 +4,15 @@ import com.wso2telco.core.dbutils.DbUtils;
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.exception.GenaralError;
 import com.wso2telco.core.dbutils.util.DataSourceNames;
+import com.wso2telco.dep.reportingservice.dao.Subscription;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.netbeans.lib.cvsclient.commandLine.command.status;
 import org.workflow.core.model.HistoryDetails;
 import org.workflow.core.model.HistoryResponse;
 import org.workflow.core.model.SubscriptionHistoryDetails;
 import org.workflow.core.model.SubscriptionHistoryResponse;
 import org.workflow.core.util.Tables;
+import org.wso2.carbon.apimgt.impl.utils.APIMgtDBUtil;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
@@ -185,7 +186,7 @@ public class DatabaseHandler {
         return historyResponse;
     }
 
-    public SubscriptionHistoryResponse getSubscriptionApprovalHistory(int subscriptionId, String apiName, String applicationName, String tier, String operator, String createdBy, int offset, int count) throws BusinessException {
+    public SubscriptionHistoryResponse getSubscriptionApprovalHistory(Subscription filterObject, String operator, int offset, int count) throws BusinessException {
 
         Connection conn = null;
         PreparedStatement ps = null;
@@ -195,13 +196,19 @@ public class DatabaseHandler {
         SubscriptionHistoryResponse subshistoryResponse = new SubscriptionHistoryResponse();
         String apimgtDB = DbUtils.getDbNames().get(DataSourceNames.WSO2AM_DB);
 
+        int subscriptionId = filterObject.getSubscriptionId();
+        String apiName = filterObject.getApiName();
+        String applicationName = filterObject.getAppName();
+        String tier = filterObject.getTierId();
+
         sql.append("SELECT sub.SUBSCRIPTION_ID, sub.TIER_ID, sub.API_ID, api.API_NAME, api.API_VERSION, api.API_PROVIDER, sub.APPLICATION_ID, app.NAME as application_name, sub.SUB_STATUS, sub.CREATED_BY FROM  ")
                 .append(apimgtDB + "." + Tables.AM_SUBSCRIPTION.getTObject() + " sub,")
                 .append(apimgtDB + "." + Tables.AM_APPLICATION.getTObject() + " app,")
                 .append(apimgtDB + "." + Tables.AM_API.getTObject() + " api ")
                 .append("WHERE app.APPLICATION_ID = sub.APPLICATION_ID and api.API_ID = sub.API_ID and ")
-                .append("sub.CREATED_BY LIKE ? and sub.SUBSCRIPTION_ID LIKE ? and api.API_NAME LIKE ? and ")
-                .append("app.NAME LIKE ? and sub.TIER_ID LIKE ? ")
+                .append("sub.SUBSCRIPTION_ID LIKE ? and api.API_NAME LIKE ? and ")
+                .append("app.NAME LIKE ? and sub.TIER_ID LIKE ? and ")
+                .append("sub.SUBSCRIPTION_ID IN (SELECT WF.subscriptionid FROM hub_depdb.workflow_subscription_approval WF WHERE approvedby = ?) ")
                 .append("ORDER BY SUBSCRIPTION_ID ")
                 .append(" LIMIT ?,?");
 
@@ -210,36 +217,31 @@ public class DatabaseHandler {
             conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
             ps = conn.prepareStatement(sql.toString());
 
-            if (operator.equals(ALL)) {
+            if (subscriptionId == 0) {
                 ps.setString(1, "%");
             } else {
-                ps.setString(1, operator);
-            }
-
-            if (subscriptionId == 0) {
-                ps.setString(2, "%");
-            } else {
-                ps.setInt(2, subscriptionId);
+                ps.setInt(1, subscriptionId);
             }
 
             if (apiName.equals(ALL)) {
-                ps.setString(3, "%");
+                ps.setString(2, "%");
             } else {
-                ps.setString(3, apiName);
+                ps.setString(2, apiName);
             }
 
             if (applicationName.equals(ALL)) {
-                ps.setString(4, "%");
+                ps.setString(3, "%");
             } else {
-                ps.setString(4, applicationName);
+                ps.setString(3, applicationName);
             }
 
             if (tier.equals(ALL)) {
-                ps.setString(5, "%");
+                ps.setString(4, "%");
             } else {
-                ps.setString(5, tier);
+                ps.setString(4, tier);
             }
 
+            ps.setString(5,operator);
             ps.setInt(6, offset);
             ps.setInt(7, count);
 
@@ -253,9 +255,7 @@ public class DatabaseHandler {
             subshistoryResponse.setSubscriptions(subsApprovalList);
             subshistoryResponse.setStart(offset);
             subshistoryResponse.setSize(size);
-            //change this.
             subshistoryResponse.setTotal(10);
-
 
         } catch (Exception e) {
             handleException("getSubscriptionApprovalHistory", e);
@@ -265,7 +265,7 @@ public class DatabaseHandler {
         return subshistoryResponse;
     }
 
-        public int getApplicationCount(int applicationId, String applicationName, String subscriber, String operator, String status) throws BusinessException {
+    public int getApplicationCount(int applicationId, String applicationName, String subscriber, String operator, String status) throws BusinessException {
 
         StringBuilder sql = new StringBuilder();
         Connection conn = null;
@@ -335,5 +335,79 @@ public class DatabaseHandler {
         }
 
         return count;
+    }
+
+    public Integer insertSubscriptionApprovalHistory(String taskId, String taskType, String approvedBy, String appId, String apiName) throws BusinessException {
+        StringBuilder sql = new StringBuilder();
+        Connection conn = null;
+        PreparedStatement ps = null;
+        int subscriptionId = 0;
+        int rs = 0;
+
+        String depDB = DbUtils.getDbNames().get(DataSourceNames.WSO2TELCO_DEP_DB);
+
+
+        sql.append("INSERT INTO ").append(depDB+"."+Tables.DEP_SUBSCRIPTION_APPROVAL.getTObject()+" (taskid, tasktype, subscriptionid, approvedby) VALUES (?,?,?,?)");
+
+        try {
+            conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
+            subscriptionId = getSubscriptionID(apiName, appId);
+            ps = conn.prepareStatement(sql.toString());
+            ps.setInt(1, Integer.parseInt(taskId));
+            ps.setString(2, taskType);
+            ps.setInt(3, subscriptionId);
+            ps.setString(4, approvedBy);
+            rs = ps.executeUpdate();
+
+        } catch (Exception e) {
+            handleException("subscription approval persistent", e);
+        } finally {
+            DbUtils.closeAllConnections(ps, conn, null);
+        }
+        return rs;
+    }
+
+    /**
+     * This function can be used to obtain SubscriptionID
+     * @param apiName
+     * @param applicationId
+     * @return int
+     * @throws SQLException
+     * @throws BusinessException
+     */
+    public int getSubscriptionID(String apiName, String applicationId) throws SQLException, BusinessException {
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String apimgtDB = DbUtils.getDbNames().get(DataSourceNames.WSO2AM_DB);
+        try{
+            conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+
+            String sql = "SELECT SUBS.SUBSCRIPTION_ID AS " +
+                    "SUBSCRIPTION_ID FROM " + apimgtDB + ".AM_SUBSCRIPTION SUBS, " + apimgtDB +".AM_APPLICATION APP, " + apimgtDB +".AM_API API WHERE API.API_ID = (SELECT API.API_ID FROM AM_API API WHERE API.API_NAME = ?) " +
+                    "AND APP.APPLICATION_ID = ? AND SUBS.APPLICATION_ID = APP.APPLICATION_ID AND API.API_ID = SUBS.API_ID " +
+                    "AND SUBS.SUB_STATUS != 'BlacklistWhitelistConstants.SubscriptionStatus.REJECTED ' ORDER BY APP.NAME";
+
+            ps = conn.prepareStatement(sql);
+
+            ps.setString(1, apiName);
+            ps.setInt(2, Integer.parseInt(applicationId));
+            rs = ps.executeQuery();
+
+            while (rs.next()) {
+                return rs.getInt("SUBSCRIPTION_ID");
+            }
+        }
+        catch (SQLException e) {
+            handleException("subscription approval persistent", e);
+            throw e;
+        } catch (Exception e) {
+            handleException("Error while retrieving subscription ID", e);
+        } finally {
+            APIMgtDBUtil.closeAllConnections(ps, conn, rs);
+        }
+
+
+        return -1;
     }
 }

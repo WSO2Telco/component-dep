@@ -29,7 +29,8 @@ public enum Tables {
 	AM_SUBSCRIBER("AM_SUBSCRIBER"),
 	AM_SUBSCRIPTION("AM_SUBSCRIPTION"),
 	DEP_OPERATORS("operators"),
-	DEP_OPERATOR_APPS("operatorapps");
+	DEP_OPERATOR_APPS("operatorapps"),
+	DEP_SUBSCRIPTION_APPROVAL("workflow_subscription_approval");
 
 	/**
 	 * Instantiates a new reporting table.

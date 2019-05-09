@@ -151,24 +151,4 @@ public class ApplicationRest {
         }
         return response;
     }
-
-    @GET
-    @Path("/subshistory")
-    public Response subscriptionApprovalHistory(@HeaderParam("user-name") String userName,
-                                    @QueryParam("start") int start, @QueryParam("filterBy") String filterBy) {
-        Response response;
-        try {
-            WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
-            TaskSearchDTO searchD = new TaskSearchDTO();
-            searchD.setStart(start);
-            searchD.setFilterBy(filterBy);
-            UserProfileRetriever userProfileRetriever = new UserProfileRetriever();
-            UserProfileDTO userProfile = userProfileRetriever.getUserProfile(userName);
-            Callback callback = workFlowDelegator.getSubscriptionApprovalHistory(searchD, userProfile);
-            response = Response.status(Response.Status.OK).entity(callback).build();
-        } catch (Exception e) {
-            response =  Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
-        }
-        return response;
-    }
 }
