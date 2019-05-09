@@ -84,4 +84,9 @@ public class HubAppRequestBuilder extends AbstractAppRequestBuilder {
 
         return executeTaskApprovalRequest(approvalRequest, request);
     }
+
+    @Override
+    public Callback getSubscriptionHistoryData(TaskSearchDTO searchDTO, UserProfileDTO userProfile) throws BusinessException {
+        return null;
+    }
 }
