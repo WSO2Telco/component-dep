@@ -23,7 +23,7 @@ public enum APIType {
 	PAYMENT("payment","Payment API Service"),
 	PAYMENT_V2("payment-v2","Payment API Service"),
 	LOCATION("location","location API Service"),
-	SMS("smsmessaging","SMS Messageing API Service ");
+	SMS("smsmessaging","SMS Messaging API Service ");
 	private String key;
 	private String description;
 

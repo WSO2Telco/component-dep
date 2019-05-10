@@ -19,6 +19,7 @@ import com.wso2telco.dep.user.masking.configuration.UserMaskingConfiguration;
 import com.wso2telco.dep.user.masking.exceptions.UserMaskingException;
 import com.wso2telco.dep.user.masking.utils.APIType;
 import com.wso2telco.dep.user.masking.utils.MaskingUtils;
+import org.apache.axis2.AxisFault;
 import org.apache.axis2.addressing.EndpointReference;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -99,18 +100,15 @@ public class APIMaskHandler extends AbstractHandler {
 			JSONObject jsonBody = new JSONObject(jsonString);
 
 			Object headers = ((Axis2MessageContext) messageContext).getAxis2MessageContext().getProperty(org.apache.axis2.context.MessageContext.TRANSPORT_HEADERS);
-			Map headersMap = (Map) headers;
-			String resource = (String)headersMap.get("RESOURCE");
+			Map<String, String> headersMap = (Map) headers;
+			String resource = headersMap.get("RESOURCE");
 			APIType apiType = MaskingUtils.getAPIType(messageContext);
 			String maskingSecretKey = UserMaskingConfiguration.getInstance().getSecretKey();
 
 			if (APIType.PAYMENT.equals(apiType)) {
 				// Extract user ID with request
 				JSONObject objAmountTransaction = (JSONObject) jsonBody.get("amountTransaction");
-				String transactionOperationStatus = objAmountTransaction.get("transactionOperationStatus").toString();
-				String originalMSISDN = (String) objAmountTransaction.get("endUserId");
-				// User ID for request
-				String userId = originalMSISDN;
+				String userId = (String) objAmountTransaction.get("endUserId");
 				//Convert User ID to masked User ID
 				if (!UserMaskHandler.isMaskedUserId(userId)) {
 					userId = UserMaskHandler.transcryptUserId(userId, true, maskingSecretKey);
@@ -160,15 +158,15 @@ public class APIMaskHandler extends AbstractHandler {
 	}
 
 	/**
-	 * Un mask user ID to orignal values before sending to service provider
-	 * @param messageContext
+	 * Un mask user ID to original values before sending to service provider
+	 * @param messageContext Message Context
 	 * @return boolean
 	 */
 	@Override
 	public boolean handleResponse(MessageContext messageContext) {
 		Object headers = ((Axis2MessageContext) messageContext).getAxis2MessageContext().getProperty(org.apache.axis2.context.MessageContext.TRANSPORT_HEADERS);
 		Map headersMap = (Map) headers;
-		if(Boolean.valueOf((String)headersMap.get("USER_ANONYMIZATION")).booleanValue()) {
+		if(Boolean.valueOf((String)headersMap.get("USER_ANONYMIZATION"))) {
 			// Getting the json payload to string
 			String jsonString = JsonUtil.jsonPayloadToString(((Axis2MessageContext) messageContext).getAxis2MessageContext());
 			JSONObject jsonBody = new JSONObject(jsonString);
@@ -178,7 +176,6 @@ public class APIMaskHandler extends AbstractHandler {
 				// Extract user ID with request
 				if (!jsonBody.isNull("amountTransaction")) {
 					JSONObject objAmountTransaction = (JSONObject) jsonBody.get("amountTransaction");
-					String transactionOperationStatus = objAmountTransaction.get("transactionOperationStatus").toString();
 					String userId = (String) objAmountTransaction.get("endUserId");
 					String resourceURL = (String) objAmountTransaction.get("resourceURL");
 					//Convert Masked UserID to User ID
@@ -187,7 +184,7 @@ public class APIMaskHandler extends AbstractHandler {
 						try {
 							userId = UserMaskHandler.transcryptUserId(userId, false, maskingSecretKey);
 						} catch (Exception e) {
-							log.error("Error occurred while unmaksing user id ", e);
+							log.error("Error occurred while unmasking user id ", e);
 						}
 						// Updated payload with Masked user ID
 						objAmountTransaction.put("endUserId", userId);
@@ -218,7 +215,7 @@ public class APIMaskHandler extends AbstractHandler {
 							try {
 								userId = UserMaskHandler.transcryptUserId(userId, false, maskingSecretKey);
 							} catch (UserMaskingException e) {
-								log.error("Error occurred while unmaksing user id ", e);
+								log.error("Error occurred while unmasking user id ", e);
 							}
 							newAddressArray.put(userId);
 						} else {
@@ -237,11 +234,11 @@ public class APIMaskHandler extends AbstractHandler {
 							for (int i = 0; i < deliveryInfoArray.length(); i++) {
 								JSONObject deliveryInfo = (JSONObject) deliveryInfoArray.get(i);
 								JSONObject newDeliveryInfo = new JSONObject();
-								newDeliveryInfo.put("deliveryStatus", (String) deliveryInfo.get("deliveryStatus"));
+								newDeliveryInfo.put("deliveryStatus", deliveryInfo.get("deliveryStatus"));
 								try {
 									newDeliveryInfo.put("address", UserMaskHandler.transcryptUserId((String) deliveryInfo.get("address"), false, maskingSecretKey));
 								} catch (Exception e) {
-									log.error("Error occurred while unmaksing user id ", e);
+									log.error("Error occurred while unmasking user id ", e);
 								}
 								newDeliveryInfoArray.put(i, newDeliveryInfo);
 							}
@@ -261,8 +258,8 @@ public class APIMaskHandler extends AbstractHandler {
 
     /**
      *  This method is to decide whether the request need to mask user ID
-     * @param messageContext
-     * @return
+     * @param messageContext Message Context
+     * @return true if masking is allowed for the API, false otherwise
      * @throws IOException
      * @throws XMLStreamException
      */
@@ -312,8 +309,12 @@ public class APIMaskHandler extends AbstractHandler {
      */
 	private void updateJsonPayload(String jsonBody, MessageContext messageContext) {
 		if(jsonBody != null) {
-			JsonUtil.newJsonPayload(((Axis2MessageContext) messageContext).getAxis2MessageContext(), jsonBody,
-					true, true);
+			try {
+				JsonUtil.getNewJsonPayload(((Axis2MessageContext) messageContext).getAxis2MessageContext(), jsonBody,
+						true, true);
+			} catch (AxisFault axisFault) {
+				log.error("Error updating JSON payload. ", axisFault);
+			}
 		}
 	}
 

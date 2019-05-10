@@ -5,17 +5,16 @@ import com.wso2telco.dep.user.masking.utils.MaskingUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
-import javax.annotation.PostConstruct;
 import java.util.Properties;
 
 public class UserMaskingConfiguration {
 
     private static UserMaskingConfiguration SINGLE_INSTANCE = null;
     private static final Log log = LogFactory.getLog(UserMaskingConfiguration.class);
-    private String userMaskingEnabled = null;
-    private String secretKey = null;
-    private String defaultMSISNDRegex = null;
-    private String userIdFilterRegex = null;
+    private String userMaskingEnabled ;
+    private String secretKey;
+    private String defaultMSISNDRegex;
+    private String userIdFilterRegex;
     private String userMask = null;
 
     private UserMaskingConfiguration(){

@@ -37,9 +37,9 @@ public class UserMaskHandler {
 
     /**
      *
-     * @param userId
-     * @param encrypt
-     * @param secretKey
+     * @param userId UserId to be transcripted
+     * @param encrypt true for encryption, false for decryption
+     * @param secretKey The secret key to be used as the key
      * @return get masked/unmasked user ID
      */
     public static String transcryptUserId(String userId, boolean encrypt, String secretKey) throws UserMaskingException {
@@ -62,7 +62,7 @@ public class UserMaskHandler {
 
     /**
      *
-     * @param userId
+     * @param userId User ID
      * @return get unmasked user ID
      */
     public static String getUserMask(String userId) {
@@ -81,7 +81,7 @@ public class UserMaskHandler {
 
     /**
      *
-     * @param userId
+     * @param userId User ID
      * @return get unmasked user ID
      */
     public static String getUserMaskIfAllowed(String userId) {
@@ -101,8 +101,8 @@ public class UserMaskHandler {
 
     /**
      * Get user Id for user mask
-     * @param userMask
-     * @return
+     * @param userMask Mask to be decrypted
+     * @return User ID of the masked user ID
      */
     public static String getUserId(String userMask) {
         if (StringUtils.isNotEmpty(userMask)) {
@@ -119,8 +119,8 @@ public class UserMaskHandler {
 
     /**
      * Get user Id for user mask
-     * @param userMask
-     * @return
+     * @param userMask User mask
+     * @return user Id
      */
     public static String getProperlyMaskedUserId(String userMask) {
         if (StringUtils.isNotEmpty(userMask)) {
@@ -140,7 +140,7 @@ public class UserMaskHandler {
 
     /**
      * Validate given user is a masked user
-     * @param userId
+     * @param userId user id
      * @return true if a masked user ID
      */
     public static boolean isMaskedUserId(String userId) {
@@ -150,7 +150,7 @@ public class UserMaskHandler {
 
     /**
      * Validate given user is a masked user
-     * @param userId
+     * @param userId User Id
      * @return true if a masked user ID
      */
     public static boolean isCorrectlyFormattedMSISDN(String userId) {
@@ -160,12 +160,12 @@ public class UserMaskHandler {
 
     /**
      *
-     * @param userId
-     * @param secretKey
+     * @param userId User Id
+     * @param secretKey Secret key to be used as the encryption key
      * @return Encrypted User ID
      */
     private static String encrypt(String userId, String secretKey) throws UserMaskingException {
-        String maskedId = null;
+        String maskedId;
         try {
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5Padding");
             cipher.init(Cipher.ENCRYPT_MODE, getSecretKeySpec(secretKey));
@@ -182,12 +182,12 @@ public class UserMaskHandler {
 
     /**
      *
-     * @param maskedUserId
-     * @param secretKey
+     * @param maskedUserId Masked user Id to be decrypted
+     * @param secretKey Secret key to be used as the decryption key
      * @return User Id decoded
      */
     private static String decrypt(String maskedUserId, String secretKey) throws UserMaskingException {
-        String userId = null;
+        String userId;
         try {
             Cipher cipher = Cipher.getInstance("AES/ECB/PKCS5PADDING");
             cipher.init(Cipher.DECRYPT_MODE, getSecretKeySpec(secretKey));
@@ -206,8 +206,8 @@ public class UserMaskHandler {
     }
 
     private static SecretKeySpec getSecretKeySpec(String secretKey) throws Exception {
-        MessageDigest sha = null;
-        SecretKeySpec secretKeySpec = null;
+        MessageDigest sha;
+        SecretKeySpec secretKeySpec;
         try {
             byte[] key = secretKey.getBytes("UTF-8");
             sha = MessageDigest.getInstance("SHA-256");
@@ -234,7 +234,7 @@ public class UserMaskHandler {
 
         /**
          *
-         * @param userId
+         * @param userId User Id
          */
         private void separateUserId(String userId){
             if (userId.startsWith("tel:+")) {
