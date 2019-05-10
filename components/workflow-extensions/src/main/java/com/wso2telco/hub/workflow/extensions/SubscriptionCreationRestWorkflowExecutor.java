@@ -121,8 +121,9 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
             SubscriptionWorkflowDTO subscriptionWorkFlowDTO = (SubscriptionWorkflowDTO) workflowDTO;
 
             String callBackURL = subscriptionWorkFlowDTO.getCallbackUrl();
-            int applicationId = APIUtil.getApplicationId(subscriptionWorkFlowDTO.getApplicationName(),
-                    subscriptionWorkFlowDTO.getSubscriber());
+//            int applicationId = APIUtil.getApplicationId(subscriptionWorkFlowDTO.getApplicationName(),
+//                    subscriptionWorkFlowDTO.getSubscriber());
+            int applicationId = ApiMgtDAO.getInstance().getSubscriptionById(Integer.parseInt(workflowDTO.getWorkflowReference())).getApplication().getId();
             String applicationIdStr = String.valueOf(applicationId);
 
             // Obtain application details.
