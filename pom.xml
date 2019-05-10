@@ -96,6 +96,10 @@
 
 		<!-- Carbon Mediation version -->
 		<carbon.mediation.version>4.6.1</carbon.mediation.version>
+
+		<!-- Unit test library versions -->
+		<org.testng.version>6.14.3</org.testng.version>
+		<org.assertj.version>3.11.1</org.assertj.version>
 	</properties>
 
 	<prerequisites>
@@ -812,13 +816,13 @@
 			<dependency>
 				<groupId>org.testng</groupId>
 				<artifactId>testng</artifactId>
-				<version>6.14.3</version>
+				<version>${org.testng.version}</version>
 				<scope>test</scope>
 			</dependency>
 			<dependency>
 				<groupId>org.assertj</groupId>
 				<artifactId>assertj-core</artifactId>
-				<version>3.11.1</version>
+				<version>${org.assertj.version}</version>
 				<scope>test</scope>
 			</dependency>
 		</dependencies>

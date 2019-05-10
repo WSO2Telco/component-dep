@@ -8,5 +8,5 @@ package com.wso2telco.dep.oneapi.constant.ussd;
  */
 public final class USSDResourceConstants {
 
-    public static final String RESOURCE_PATH_OUTBOUND = "outbound";
+    public static final String OUTBOUND = "outbound";
 }

@@ -70,12 +70,14 @@ public class ValidateUssdSend implements IServiceValidate {
                 ussdAction = nullOrTrimmed(requestData.getString("ussdAction"));
             }
 
-            JSONObject responseRequest = requestData.getJSONObject("responseRequest");
-            if (!responseRequest.isNull("notifyURL")) {
-                notifyUrl = nullOrTrimmed(responseRequest.getString("notifyURL"));
-            }
-            if (!responseRequest.isNull("callbackData")) {
-                callbackData = nullOrTrimmed(responseRequest.getString("callbackData"));
+            if (!requestData.isNull("responseRequest")) {
+                JSONObject responseRequest = requestData.getJSONObject("responseRequest");
+                if (!responseRequest.isNull("notifyURL")) {
+                    notifyUrl = nullOrTrimmed(responseRequest.getString("notifyURL"));
+                }
+                if (!responseRequest.isNull("callbackData")) {
+                    callbackData = nullOrTrimmed(responseRequest.getString("callbackData"));
+                }
             }
 
         } catch (Exception e) {
@@ -92,7 +94,7 @@ public class ValidateUssdSend implements IServiceValidate {
             new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "outboundUSSDMessage", message),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "clientCorrelator", clientCorrelator),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "ussdAction", ussdAction),
-            new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "notifyURL", notifyUrl),
+            new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "notifyURL", notifyUrl),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "callbackData", callbackData),};
         Validation.checkRequestParams(rules);
     }

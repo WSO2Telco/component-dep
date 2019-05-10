@@ -8,5 +8,5 @@ package com.wso2telco.dep.oneapi.constant.payment;
  */
 public final class PaymentResourceConstants {
 
-    public static final String RESOURCE_PATH_TRANSACTIONS = "transactions";
+    public static final String TRANSACTIONS = "transactions";
 }

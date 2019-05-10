@@ -8,7 +8,13 @@ package com.wso2telco.dep.oneapi.constant.ussd;
  */
 public final class USSDKeyConstants {
 
-    public static final String KEY_OUT_BOUND_USSD_MESSAGE_REQUEST = "outboundUSSDMessageRequest";
+    public static final String OUT_BOUND_USSD_MESSAGE_REQUEST = "outboundUSSDMessageRequest";
 
-    public static final String KEY_ADDRESS = "address";
+    public static final String ADDRESS = "address";
+
+    public static final String NOTIFY_URL = "notifyURL";
+
+    public static final String RESPONSE_REQUEST = "responseRequest";
+
+    public static final String USSD_ACTION= "ussdAction";
 }

@@ -8,7 +8,7 @@ package com.wso2telco.dep.oneapi.constant.payment;
  */
 public final class PaymentKeyConstants {
 
-    public static final String KEY_AMOUNT_TRANSACTION = "amountTransaction";
+    public static final String AMOUNT_TRANSACTION = "amountTransaction";
 
-    public static final String KEY_END_USER_ID = "endUserId";
+    public static final String END_USER_ID = "endUserId";
 }
