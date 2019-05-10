@@ -33,7 +33,6 @@ import org.workflow.core.service.AbsractQueryBuilder;
 import org.workflow.core.util.AppVariable;
 import org.workflow.core.util.DeploymentTypes;
 import org.workflow.core.util.Messages;
-import org.workflow.core.util.WorkFlowVariables;
 
 import java.text.ParseException;
 import java.util.*;
@@ -247,40 +246,10 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
         return handler.getSubscriptionApprovalHistory(filterObject,operator, offset, count);
     }
 
-    public Integer subscriptionApproval(String taskId, String taskType, String approvedBy, String appId, String apiName) throws BusinessException {
-        DatabaseHandler handler = new DatabaseHandler();
-        return handler.insertSubscriptionApprovalHistory(taskId, taskType, approvedBy, appId, apiName);
-    }
-
     protected Callback executeTaskApprovalRequest(TaskApprovalRequest approvalRequest, ApprovalRequest request) throws BusinessException {
         ActivityRestClient activityClient = RestClientFactory.getInstance().getClient(getProcessDefinitionKey());
         Callback returnCall;
-        String taskId = request.getTaskId();
-        String taskType = null;
-        String approvedBy = null;
-        String apiName = null;
-        String appId = null;
         try {
-            /** Retrieving approved user from approval request**/
-            for(RequestVariable variable : approvalRequest.getVariables()){
-                if(variable.getName().equals(WorkFlowVariables.COMPLETED_BY.getValue())){
-                    approvedBy = variable.getValue();
-                    break;
-                }
-            }
-
-            taskType = request.getTaskType();
-            apiName = request.getApiName();
-            appId = request.getAppId();
-
-            /** Saving Task information with task approved user - DEP_DB **/
-            if(subscriptionApproval(taskId,taskType,approvedBy,appId,apiName) != 0){
-                log.info("Approval : Saved Successfully in DEP_DB");
-            }
-            else {
-                log.error("Approval request Persist Error");
-            }
-
             activityClient.approveTask(request.getTaskId(), approvalRequest);
             returnCall = new Callback().setPayload(null).setSuccess(true).setMessage(Messages.SUBSCRIPTION_APPROVAL_SUCCESS.getValue());
         } catch (WorkflowExtensionException e) {

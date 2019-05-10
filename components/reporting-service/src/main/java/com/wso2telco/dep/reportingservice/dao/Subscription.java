@@ -48,34 +48,6 @@ public class Subscription {
     /** The created by. */
     private String createdBy;
 
-    /** DEFAULT CONSTRUCTOR */
-    public Subscription() {
-    }
-
-    /** PARAMETERIZED CONSTRUCTOR */
-    public Subscription(int subscriptionId, String tierId, int apiId, int appId, String subStatus, String subsCreateState, String createdBy) {
-        this.subscriptionId = subscriptionId;
-        this.tierId = tierId;
-        this.apiId = apiId;
-        this.appId = appId;
-        this.subStatus = subStatus;
-        this.subsCreateState = subsCreateState;
-        this.createdBy = createdBy;
-    }
-
-    /** PARAMETERIZED CONSTRUCTOR */
-    public Subscription(int subscriptionId, String tierId, int apiId, String apiName, int appId, String appName, String subStatus, String subsCreateState, String createdBy) {
-        this.subscriptionId = subscriptionId;
-        this.tierId = tierId;
-        this.apiId = apiId;
-        this.apiName = apiName;
-        this.appId = appId;
-        this.appName = appName;
-        this.subStatus = subStatus;
-        this.subsCreateState = subsCreateState;
-        this.createdBy = createdBy;
-    }
-
     public int getSubscriptionId() {
         return subscriptionId;
     }
