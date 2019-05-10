@@ -26,11 +26,11 @@ public enum Tables {
 	/** The am application. */
 	AM_APPLICATION("AM_APPLICATION"),
 	AM_API("AM_API"),
+	AM_SUB_APPROVAL_AUDIT("sub_approval_audit"),
 	AM_SUBSCRIBER("AM_SUBSCRIBER"),
 	AM_SUBSCRIPTION("AM_SUBSCRIPTION"),
 	DEP_OPERATORS("operators"),
-	DEP_OPERATOR_APPS("operatorapps"),
-	DEP_SUBSCRIPTION_APPROVAL("workflow_subscription_approval");
+	DEP_OPERATOR_APPS("operatorapps");
 
 	/**
 	 * Instantiates a new reporting table.
