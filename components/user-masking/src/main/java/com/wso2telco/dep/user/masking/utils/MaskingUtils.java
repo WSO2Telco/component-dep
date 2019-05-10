@@ -37,8 +37,8 @@ public class MaskingUtils {
 
 	/**
 	 *
-	 * @param messageContext
-	 * @return APIType
+	 * @param messageContext Message Conext
+	 * @return APIType See {@link APIType} for return values
 	 */
 	public static APIType getAPIType(MessageContext messageContext) {
 		APIType apiType = null;
@@ -91,7 +91,7 @@ public class MaskingUtils {
 
 	/**
 	 * Load user-masking.properties
-	 * @return Propertiess
+	 * @return Properties
 	 */
 	public static Properties loadUserMaskingProperties(){
 		if (props == null) {
@@ -103,7 +103,7 @@ public class MaskingUtils {
 	/**
 	 * This method is to filter the user ID bases on country or prefix in order to
 	 * decide whether this number is eligible for user masking
-	 * @param userId
+	 * @param userId User id to be checked
 	 * @return true if masking allowed user ID
 	 */
 	public static boolean isUnmaskedUserId(String userId) {
