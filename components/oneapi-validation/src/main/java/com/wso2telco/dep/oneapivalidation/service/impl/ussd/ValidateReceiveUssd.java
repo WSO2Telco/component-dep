@@ -15,13 +15,12 @@
  ******************************************************************************/
 package com.wso2telco.dep.oneapivalidation.service.impl.ussd;
 
-import org.json.JSONObject;
-
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.dep.oneapivalidation.util.UrlValidator;
 import com.wso2telco.dep.oneapivalidation.util.Validation;
 import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
+import org.json.JSONObject;
 
  
 // TODO: Auto-generated Javadoc
@@ -74,15 +73,15 @@ public class ValidateReceiveUssd implements IServiceValidate {
             if (!requestData.isNull("ussdAction")) {
                 ussdAction = nullOrTrimmed(requestData.getString("ussdAction"));
             }
-
-            JSONObject responseRequest = requestData.getJSONObject("responseRequest");
-            if (!responseRequest.isNull("notifyURL")) {
-                notifyUrl = nullOrTrimmed(responseRequest.getString("notifyURL"));
+            if (!requestData.isNull("responseRequest")) {
+                JSONObject responseRequest = requestData.getJSONObject("responseRequest");
+                if (!responseRequest.isNull("notifyURL")) {
+                    notifyUrl = nullOrTrimmed(responseRequest.getString("notifyURL"));
+                }
+                if (!responseRequest.isNull("callbackData")) {
+                    callbackData = nullOrTrimmed(responseRequest.getString("callbackData"));
+                }
             }
-            if (!responseRequest.isNull("callbackData")) {
-                callbackData = nullOrTrimmed(responseRequest.getString("callbackData"));
-            }
-
         } catch (Exception e) {
 
             throw new CustomException("POL0299", "Unexpected Error", new String[]{"Incorrect JSON Object received"});
