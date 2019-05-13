@@ -17,4 +17,6 @@ public final class USSDKeyConstants {
     public static final String RESPONSE_REQUEST = "responseRequest";
 
     public static final String USSD_ACTION= "ussdAction";
+
+    public static final String SHORT_CODE= "shortCode";
 }
