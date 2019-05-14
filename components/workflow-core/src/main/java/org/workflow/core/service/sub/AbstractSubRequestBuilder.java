@@ -20,7 +20,6 @@ import com.wso2telco.core.dbutils.util.ApprovalRequest;
 import com.wso2telco.core.dbutils.util.Callback;
 import com.wso2telco.core.userprofile.dto.UserProfileDTO;
 import com.wso2telco.dep.operatorservice.service.OparatorService;
-import com.wso2telco.dep.reportingservice.dao.Subscription;
 import org.workflow.core.activity.ActivityRestClient;
 import org.workflow.core.activity.RestClientFactory;
 import org.workflow.core.activity.TaskApprovalRequest;
@@ -241,7 +240,7 @@ abstract class AbstractSubRequestBuilder extends AbsractQueryBuilder {
         return null;
     }
 
-    public SubscriptionHistoryResponse getSubscriptionApprovalHistory(Subscription filterObject ,String operator, int offset, int count) throws BusinessException {
+    public SubscriptionHistoryResponse getSubscriptionApprovalHistory(SubscriptionFilter filterObject , String operator, int offset, int count) throws BusinessException {
         DatabaseHandler handler = new DatabaseHandler();
         return handler.getSubscriptionApprovalHistory(filterObject,operator, offset, count);
     }

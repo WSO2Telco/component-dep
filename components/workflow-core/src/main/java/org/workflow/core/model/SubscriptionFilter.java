@@ -14,12 +14,12 @@
  * limitations under the License.
  */
 
-package com.wso2telco.dep.reportingservice.dao;
+package org.workflow.core.model;
 
 /**
  * Class Subscription
  */
-public class Subscription {
+public class SubscriptionFilter {
 
     /** The subscription_id. */
     private int subscriptionId;
