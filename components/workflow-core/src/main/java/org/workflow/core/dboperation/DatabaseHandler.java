@@ -4,13 +4,9 @@ import com.wso2telco.core.dbutils.DbUtils;
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.exception.GenaralError;
 import com.wso2telco.core.dbutils.util.DataSourceNames;
-import com.wso2telco.dep.reportingservice.dao.Subscription;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.workflow.core.model.HistoryDetails;
-import org.workflow.core.model.HistoryResponse;
-import org.workflow.core.model.SubscriptionHistoryDetails;
-import org.workflow.core.model.SubscriptionHistoryResponse;
+import org.workflow.core.model.*;
 import org.workflow.core.util.Tables;
 
 import java.sql.Connection;
@@ -184,7 +180,7 @@ public class DatabaseHandler {
         return historyResponse;
     }
 
-    public SubscriptionHistoryResponse getSubscriptionApprovalHistory(Subscription filterObject, String operator, int offset, int count) throws BusinessException {
+    public SubscriptionHistoryResponse getSubscriptionApprovalHistory(SubscriptionFilter filterObject, String operator, int offset, int count) throws BusinessException {
 
         Connection conn = null;
         PreparedStatement ps = null;
