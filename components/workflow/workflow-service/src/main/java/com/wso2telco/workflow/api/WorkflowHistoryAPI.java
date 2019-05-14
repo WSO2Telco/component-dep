@@ -45,7 +45,8 @@ import java.util.List;
 public class WorkflowHistoryAPI {
 
     private static final Log log = LogFactory.getLog(WorkflowHistoryAPI.class);
-    
+    private static final String DEPLOYMENT_TYPE_SYSTEM_PARAM = "DEPLOYMENT_TYPE";
+
     @GET
     @Path("/approval/{app_id}")
     @Produces("application/json")
@@ -195,5 +196,19 @@ public class WorkflowHistoryAPI {
         return Response.status(HttpServletResponse.SC_OK).entity(jsonPayload).build();
     }
 
+    @GET
+    @Path("/deptype")
+    @Produces(MediaType.APPLICATION_JSON)
+    public Response getDeploymentType() {
+        String depType = null;
 
+        depType = System.getProperty(DEPLOYMENT_TYPE_SYSTEM_PARAM);
+
+        if (depType != null && !depType.isEmpty()) {
+            depType = "{\"depType\":\"" + depType + "\"}";
+            return Response.status(HttpServletResponse.SC_OK).entity(depType).build();
+        } else {
+            return Response.status(HttpServletResponse.SC_INTERNAL_SERVER_ERROR).build();
+        }
+    }
 }

@@ -80,6 +80,11 @@ public class ExtGtwSubRequestBuilder extends AbstractSubRequestBuilder {
     }
 
     @Override
+    public Callback getSubscriptionHistoryData(TaskSearchDTO searchDTO, UserProfileDTO userProfile) throws BusinessException {
+        return null;
+    }
+
+    @Override
     protected Callback buildAllTaskResponse(TaskSearchDTO searchDTO, TaskList taskList, UserProfileDTO userProfile) throws BusinessException {
 
         TaskList allTaskList = taskList;

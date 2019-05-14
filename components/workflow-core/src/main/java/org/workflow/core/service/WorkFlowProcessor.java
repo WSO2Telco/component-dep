@@ -14,6 +14,7 @@ public interface WorkFlowProcessor {
 	public Callback searchPending(TaskSearchDTO searchDTO, final UserProfileDTO userProfile, String assigenee) throws BusinessException ;
 	public Callback getGraphData(final UserProfileDTO userProfile) throws BusinessException;
 	public Callback getHistoryData(final TaskSearchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException;
+	public Callback getSubscriptionHistoryData(final TaskSearchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException;
 	public Callback approveTask(final ApprovalRequest approvalRequest, final UserProfileDTO userProfile) throws BusinessException;
 	public Callback assignTask(final AssignRequest assignRequest, final UserProfileDTO userProfile) throws BusinessException;
 }

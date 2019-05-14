@@ -6,8 +6,7 @@ import com.wso2telco.core.dbutils.exception.GenaralError;
 import com.wso2telco.core.dbutils.util.DataSourceNames;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.workflow.core.model.HistoryDetails;
-import org.workflow.core.model.HistoryResponse;
+import org.workflow.core.model.*;
 import org.workflow.core.util.Tables;
 
 import java.sql.Connection;
@@ -181,9 +180,102 @@ public class DatabaseHandler {
         return historyResponse;
     }
 
+    public SubscriptionHistoryResponse getSubscriptionApprovalHistory(SubscriptionFilter filterObject, String operator, int offset, int count) throws BusinessException {
+
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String sql = null;
+        List<SubscriptionHistoryDetails> subsApprovalList = new ArrayList<SubscriptionHistoryDetails>();
+        SubscriptionHistoryResponse subshistoryResponse = new SubscriptionHistoryResponse();
+        String apimgtDB = DbUtils.getDbNames().get(DataSourceNames.WSO2AM_DB);
+        String statDB = DbUtils.getDbNames().get(DataSourceNames.WSO2AM_STATS_DB);
+
+        int subscriptionId = filterObject.getSubscriptionId();
+        String apiName = filterObject.getApiName();
+        String applicationName = filterObject.getAppName();
+        String tier = filterObject.getTierId();
+        String createdBy = filterObject.getCreatedBy();
+
+        sql = "SELECT sub.SUBSCRIPTION_ID, sub.TIER_ID, sub.API_ID, api.API_NAME, api.API_VERSION, api.API_PROVIDER, sub.APPLICATION_ID, app.NAME as application_name, sub.SUB_STATUS, sub.CREATED_BY " +
+                "FROM " +
+                 apimgtDB + "." + Tables.AM_SUBSCRIPTION.getTObject() + " sub,"+
+                 apimgtDB + "." + Tables.AM_APPLICATION.getTObject() + " app,"+
+                 apimgtDB + "." + Tables.AM_API.getTObject() + " api " +
+                 "WHERE app.APPLICATION_ID = sub.APPLICATION_ID and api.API_ID = sub.API_ID and "+
+                 "app.APPLICATION_ID = sub.APPLICATION_ID and api.API_ID = sub.API_ID and "+
+                 "sub.SUBSCRIPTION_ID LIKE ? and api.API_NAME LIKE ? and "+
+                 "app.NAME LIKE ? and sub.TIER_ID LIKE ? and sub.CREATED_BY LIKE ? and "+
+                 "sub.SUBSCRIPTION_ID IN " +
+                 "( SELECT distinct sub.SUBSCRIPTION_ID FROM " +
+                 apimgtDB + "." + Tables.AM_SUBSCRIPTION.getTObject() + " sub "+
+                 "INNER JOIN " +
+                 statDB + "." + Tables.AM_SUB_APPROVAL_AUDIT.getTObject() + " audit "+
+                "ON audit.APP_ID = sub.APPLICATION_ID WHERE audit.COMPLETED_BY_USER = ?) "+
+                 "ORDER BY SUBSCRIPTION_ID "+
+                 " LIMIT ?,?";
+
+        try {
+            conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+            ps = conn.prepareStatement(sql);
+
+            if (subscriptionId == 0) {
+                ps.setString(1, "%");
+            } else {
+                ps.setInt(1, subscriptionId);
+            }
+
+            if (apiName.equals(ALL)) {
+                ps.setString(2, "%");
+            } else {
+                ps.setString(2, apiName);
+            }
+
+            if (applicationName.equals(ALL)) {
+                ps.setString(3, "%");
+            } else {
+                ps.setString(3, applicationName);
+            }
+
+            if (tier.equals(ALL)) {
+                ps.setString(4, "%");
+            } else {
+                ps.setString(4, tier);
+            }
+
+            if (createdBy.equals(ALL)) {
+                ps.setString(5, "%");
+            } else {
+                ps.setString(5, createdBy);
+            }
+
+            ps.setString(6,operator);
+            ps.setInt(7, offset);
+            ps.setInt(8, count);
+
+            int size = 0;
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                subsApprovalList.add(new SubscriptionHistoryDetails(rs));
+                size++;
+            }
+
+            subshistoryResponse.setSubscriptions(subsApprovalList);
+            subshistoryResponse.setStart(offset);
+            subshistoryResponse.setSize(size);
+            subshistoryResponse.setTotal(getSubscriptionTotal(operator));
+
+        } catch (Exception e) {
+            handleException("getSubscriptionApprovalHistory", e);
+        } finally {
+            DbUtils.closeAllConnections(ps, conn, rs);
+        }
+        return subshistoryResponse;
+    }
+
     public int getApplicationCount(int applicationId, String applicationName, String subscriber, String operator, String status) throws BusinessException {
 
-        StringBuilder sql = new StringBuilder();
+        String sql = null;
         Connection conn = null;
         PreparedStatement ps = null;
         ResultSet rs = null;
@@ -191,23 +283,21 @@ public class DatabaseHandler {
         String apimgtDB = DbUtils.getDbNames().get(DataSourceNames.WSO2AM_DB);
         int count = 0;
 
-        sql.append("SELECT count(*) as count FROM ")
-                .append("(SELECT application_id, name,created_by,IF(description IS NULL, 'Not Specified', description) AS description,")
-                .append("ELT(FIELD(application_status, 'CREATED', 'APPROVED', 'REJECTED'), 'PENDING APPROVE', 'APPROVED', 'REJECTED') AS app_status,")
-                .append("(SELECT GROUP_CONCAT(opco.operatorname SEPARATOR ',') FROM " + depDB + "." + Tables.DEP_OPERATOR_APPS.getTObject())
-                .append(" opcoApp INNER JOIN " + depDB + "." + Tables.DEP_OPERATORS.getTObject() + " opco ON opcoApp.operatorid = opco.id WHERE ")
-                .append("opcoApp.isactive = 1 AND opcoApp.applicationid = amapp.application_id GROUP BY opcoApp.applicationid) AS oparators ")
-                .append("FROM " + apimgtDB + "." + Tables.AM_APPLICATION.getTObject() + " amapp ")
-                .append("WHERE EXISTS( SELECT 1 FROM " + depDB + "." + Tables.DEP_OPERATOR_APPS.getTObject())
-                .append(" opcoApp INNER JOIN " + depDB + "." + Tables.DEP_OPERATORS.getTObject() + " opco ON opcoApp.operatorid = opco.id WHERE ")
-                .append("opcoApp.isactive LIKE ? AND opcoApp.applicationid = amapp.application_id AND ")
-                .append("opco.operatorname LIKE ? AND amapp.application_id LIKE ? AND amapp.name LIKE ? AND amapp.subscriber_id LIKE ? ) ")
-                .append("AND amapp.application_status LIKE ? ")
-                .append("ORDER BY application_id) t");
+         sql =  "SELECT count(*) as count FROM (SELECT application_id, name,created_by,IF(description IS NULL, 'Not Specified', description) AS description," +
+                "ELT(FIELD(application_status, 'CREATED', 'APPROVED', 'REJECTED'), 'PENDING APPROVE', 'APPROVED', 'REJECTED') " +
+                "AS app_status,(SELECT GROUP_CONCAT(opco.operatorname SEPARATOR ',') FROM " + depDB + "." + Tables.DEP_OPERATOR_APPS.getTObject() +
+                " opcoApp INNER JOIN " + depDB + "." + Tables.DEP_OPERATORS.getTObject() + " opco ON opcoApp.operatorid = opco.id WHERE "+
+                 " opcoApp.isactive = 1 AND opcoApp.applicationid = amapp.application_id GROUP BY opcoApp.applicationid) AS oparators "+
+                 "FROM " + apimgtDB + "." + Tables.AM_APPLICATION.getTObject() + " amapp "+
+                 "WHERE EXISTS( SELECT 1 FROM " + depDB + "." + Tables.DEP_OPERATOR_APPS.getTObject()+
+                 " opcoApp INNER JOIN " + depDB + "." + Tables.DEP_OPERATORS.getTObject() + " opco ON opcoApp.operatorid = opco.id WHERE "+
+                 "opcoApp.isactive LIKE ? AND opcoApp.applicationid = amapp.application_id AND "+
+                 "opco.operatorname LIKE ? AND amapp.application_id LIKE ? AND amapp.name LIKE ? AND amapp.subscriber_id LIKE ? ) AND amapp.application_status LIKE ? "+
+                 "ORDER BY application_id) t";
 
         try {
             conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
-            ps = conn.prepareStatement(sql.toString());
+            ps = conn.prepareStatement(sql);
             if (operator.equals(ALL)) {
                 ps.setString(1, "%");
                 ps.setString(2, "%");
@@ -246,6 +336,37 @@ public class DatabaseHandler {
 
         } catch (Exception e) {
             handleException("getSubscriberkey", e);
+        } finally {
+            DbUtils.closeAllConnections(ps, conn, rs);
+        }
+
+        return count;
+    }
+
+    /** Subscription Total
+     * @param operator**/
+    public int getSubscriptionTotal(String operator) throws BusinessException {
+
+        String sql = null;
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String statDB = DbUtils.getDbNames().get(DataSourceNames.WSO2AM_STATS_DB);
+        int count = 0;
+
+        sql ="SELECT * FROM "+statDB+"."+Tables.AM_SUB_APPROVAL_AUDIT.getTObject() + " audit WHERE audit.COMPLETED_BY_USER = ? ";
+
+        try {
+            conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
+            ps = conn.prepareStatement(sql);
+            ps.setString(1,operator);
+            rs = ps.executeQuery();
+            if (rs.next()) {
+                count = rs.getInt(1);
+            }
+
+        } catch (Exception e) {
+            handleException("getSubscriptionTotal ERROR", e);
         } finally {
             DbUtils.closeAllConnections(ps, conn, rs);
         }

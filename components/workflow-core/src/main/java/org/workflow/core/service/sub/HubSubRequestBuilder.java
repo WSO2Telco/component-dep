@@ -77,6 +77,11 @@ class HubSubRequestBuilder extends AbstractSubRequestBuilder {
     }
 
     @Override
+    public Callback getSubscriptionHistoryData(TaskSearchDTO searchDTO, UserProfileDTO userProfile) throws BusinessException {
+        return null;
+    }
+
+    @Override
     protected String getCandidateGroup(UserProfileDTO userProfileDTO) {
         //return userProfileDTO.getUserName();
     	if(isAdmin(userProfileDTO)){
