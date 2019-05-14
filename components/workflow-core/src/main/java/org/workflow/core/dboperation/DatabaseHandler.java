@@ -199,6 +199,7 @@ public class DatabaseHandler {
         String apiName = filterObject.getApiName();
         String applicationName = filterObject.getAppName();
         String tier = filterObject.getTierId();
+        String createdBy = filterObject.getCreatedBy();
 
         sql = "SELECT sub.SUBSCRIPTION_ID, sub.TIER_ID, sub.API_ID, api.API_NAME, api.API_VERSION, api.API_PROVIDER, sub.APPLICATION_ID, app.NAME as application_name, sub.SUB_STATUS, sub.CREATED_BY " +
                 "FROM " +
@@ -208,7 +209,7 @@ public class DatabaseHandler {
                  "WHERE app.APPLICATION_ID = sub.APPLICATION_ID and api.API_ID = sub.API_ID and "+
                  "app.APPLICATION_ID = sub.APPLICATION_ID and api.API_ID = sub.API_ID and "+
                  "sub.SUBSCRIPTION_ID LIKE ? and api.API_NAME LIKE ? and "+
-                 "app.NAME LIKE ? and sub.TIER_ID LIKE ? and "+
+                 "app.NAME LIKE ? and sub.TIER_ID LIKE ? and sub.CREATED_BY LIKE ? and "+
                  "sub.SUBSCRIPTION_ID IN " +
                  "( SELECT distinct sub.SUBSCRIPTION_ID FROM " +
                  apimgtDB + "." + Tables.AM_SUBSCRIPTION.getTObject() + " sub "+
@@ -246,9 +247,15 @@ public class DatabaseHandler {
                 ps.setString(4, tier);
             }
 
-            ps.setString(5,operator);
-            ps.setInt(6, offset);
-            ps.setInt(7, count);
+            if (createdBy.equals(ALL)) {
+                ps.setString(5, "%");
+            } else {
+                ps.setString(5, createdBy);
+            }
+
+            ps.setString(6,operator);
+            ps.setInt(7, offset);
+            ps.setInt(8, count);
 
             int size = 0;
             rs = ps.executeQuery();
