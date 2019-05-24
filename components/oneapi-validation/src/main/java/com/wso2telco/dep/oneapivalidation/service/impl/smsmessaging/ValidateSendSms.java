@@ -20,17 +20,16 @@ import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.dep.oneapivalidation.util.UrlValidator;
 import com.wso2telco.dep.oneapivalidation.util.Validation;
 import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
-
-import java.util.ArrayList;
-import java.util.List;
-
 import com.wso2telco.dep.user.masking.UserMaskHandler;
 import com.wso2telco.dep.user.masking.configuration.UserMaskingConfiguration;
 import com.wso2telco.dep.user.masking.exceptions.UserMaskingException;
-import org.json.JSONArray;
-import org.json.JSONObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONArray;
+import org.json.JSONObject;
+
+import java.util.ArrayList;
+import java.util.List;
 
 // TODO: Auto-generated Javadoc
 /**
@@ -46,16 +45,16 @@ public class ValidateSendSms implements IServiceValidate {
     /** user masking */
     private boolean userAnonymization;
 
-    /** user masking encryption key */
-    private String maskingSecretKey;
+    /** masked msisdn */
+    private String userMaskingSecretKey;
 
     public ValidateSendSms() {
 
     }
 
-    public ValidateSendSms(boolean userAnonymization, String maskingSecretKey) {
+    public ValidateSendSms(boolean userAnonymization, String userMaskingSecretKey) {
         this.userAnonymization = userAnonymization;
-        this.maskingSecretKey = maskingSecretKey;
+        this.userMaskingSecretKey = userMaskingSecretKey;
     }
 
     /* (non-Javadoc)
@@ -80,13 +79,12 @@ public class ValidateSendSms implements IServiceValidate {
 
                 JSONArray addressArray = objOtboundSMSMessageRequest.getJSONArray("address");
                 for (int a = 0; a < addressArray.length(); a++) {
-                    if(Boolean.valueOf(UserMaskingConfiguration.getInstance().getUserMaskingEnabled())) {
-                        addresses.add(nullOrTrimmed(UserMaskHandler.transcryptUserId(addressArray.getString(a), false, this.maskingSecretKey)));
+                    if(this.userAnonymization) {
+                        addresses.add(nullOrTrimmed(UserMaskHandler.transcryptUserId(addressArray.getString(a),
+                                false, this.userMaskingSecretKey)));
                     } else {
                         addresses.add(nullOrTrimmed(addressArray.getString(a)));
                     }
-
-
                 }
             }
 

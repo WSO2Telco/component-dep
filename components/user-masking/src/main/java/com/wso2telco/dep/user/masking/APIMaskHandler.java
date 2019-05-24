@@ -110,13 +110,13 @@ public class APIMaskHandler extends AbstractHandler {
 				JSONObject objAmountTransaction = (JSONObject) jsonBody.get("amountTransaction");
 				String userId = (String) objAmountTransaction.get("endUserId");
 				//Convert User ID to masked User ID
-				if (!Boolean.valueOf(UserMaskingConfiguration.getInstance().getUserMaskingEnabled())) {
+				if (Boolean.valueOf(UserMaskingConfiguration.getInstance().getUserMaskingEnabled())) {
 					userId = UserMaskHandler.transcryptUserId(userId, true, maskingSecretKey);
 				}
 				// Replace resource property with updated user ID since resource path contains user ID
 				if(!resource.contains(userId)) {
 					String urlUserId = resource.substring(resource.indexOf("/") + 1, resource.lastIndexOf("/transactions/amount"));
-					if (!Boolean.valueOf(UserMaskingConfiguration.getInstance().getUserMaskingEnabled())) {
+					if (Boolean.valueOf(UserMaskingConfiguration.getInstance().getUserMaskingEnabled())) {
 						String resourceUserId = UserMaskHandler.transcryptUserId(URLDecoder.decode(urlUserId, "UTF-8"), true, maskingSecretKey);
 						resource = "/" + URLEncoder.encode(resourceUserId, "UTF-8") + "/transactions/amount";
 					}
@@ -281,7 +281,7 @@ public class APIMaskHandler extends AbstractHandler {
 			String transactionOperationStatus = objAmountTransaction.get("transactionOperationStatus").toString();
             String userId = objAmountTransaction.get("endUserId").toString();
 			if ((transactionOperationStatus.equalsIgnoreCase("Charged") || transactionOperationStatus.equalsIgnoreCase("Refunded"))
-					&& MaskingUtils.isUnmaskedUserId(userId)) {
+					&& Boolean.valueOf(UserMaskingConfiguration.getInstance().getUserMaskingEnabled())) {
 				isMaskingAllowAPI = true;
 			}
 
