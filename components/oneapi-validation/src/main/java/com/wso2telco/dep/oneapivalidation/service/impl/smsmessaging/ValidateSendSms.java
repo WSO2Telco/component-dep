@@ -25,6 +25,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.wso2telco.dep.user.masking.UserMaskHandler;
+import com.wso2telco.dep.user.masking.configuration.UserMaskingConfiguration;
 import com.wso2telco.dep.user.masking.exceptions.UserMaskingException;
 import org.json.JSONArray;
 import org.json.JSONObject;
@@ -79,7 +80,7 @@ public class ValidateSendSms implements IServiceValidate {
 
                 JSONArray addressArray = objOtboundSMSMessageRequest.getJSONArray("address");
                 for (int a = 0; a < addressArray.length(); a++) {
-                    if(this.userAnonymization && UserMaskHandler.isMaskedUserId(addressArray.getString(a))) {
+                    if(Boolean.valueOf(UserMaskingConfiguration.getInstance().getUserMaskingEnabled())) {
                         addresses.add(nullOrTrimmed(UserMaskHandler.transcryptUserId(addressArray.getString(a), false, this.maskingSecretKey)));
                     } else {
                         addresses.add(nullOrTrimmed(addressArray.getString(a)));

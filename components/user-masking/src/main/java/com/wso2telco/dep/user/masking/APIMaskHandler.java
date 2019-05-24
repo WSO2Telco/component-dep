@@ -110,13 +110,13 @@ public class APIMaskHandler extends AbstractHandler {
 				JSONObject objAmountTransaction = (JSONObject) jsonBody.get("amountTransaction");
 				String userId = (String) objAmountTransaction.get("endUserId");
 				//Convert User ID to masked User ID
-				if (!UserMaskHandler.isMaskedUserId(userId)) {
+				if (!Boolean.valueOf(UserMaskingConfiguration.getInstance().getUserMaskingEnabled())) {
 					userId = UserMaskHandler.transcryptUserId(userId, true, maskingSecretKey);
 				}
 				// Replace resource property with updated user ID since resource path contains user ID
 				if(!resource.contains(userId)) {
 					String urlUserId = resource.substring(resource.indexOf("/") + 1, resource.lastIndexOf("/transactions/amount"));
-					if (!UserMaskHandler.isMaskedUserId(URLDecoder.decode(urlUserId, "UTF-8"))) {
+					if (!Boolean.valueOf(UserMaskingConfiguration.getInstance().getUserMaskingEnabled())) {
 						String resourceUserId = UserMaskHandler.transcryptUserId(URLDecoder.decode(urlUserId, "UTF-8"), true, maskingSecretKey);
 						resource = "/" + URLEncoder.encode(resourceUserId, "UTF-8") + "/transactions/amount";
 					}
@@ -136,7 +136,7 @@ public class APIMaskHandler extends AbstractHandler {
 				for (int i = 0; i < addressArray.length(); i++) {
 					//Convert UserID to Masked User ID
 					String userId = addressArray.getString(i);
-					if (!UserMaskHandler.isMaskedUserId(userId) && MaskingUtils.isUnmaskedUserId(userId)) {
+					if (Boolean.valueOf(UserMaskingConfiguration.getInstance().getUserMaskingEnabled())) {
 						String maskedAddress = UserMaskHandler.transcryptUserId(userId, true, maskingSecretKey);
 						newAddressArray.put(maskedAddress);
 					} else {
@@ -179,7 +179,7 @@ public class APIMaskHandler extends AbstractHandler {
 					String userId = (String) objAmountTransaction.get("endUserId");
 					String resourceURL = (String) objAmountTransaction.get("resourceURL");
 					//Convert Masked UserID to User ID
-					if (UserMaskHandler.isMaskedUserId(userId)) {
+					if (Boolean.valueOf(UserMaskingConfiguration.getInstance().getUserMaskingEnabled())) {
 						String maskedUserId = userId;
 						try {
 							userId = UserMaskHandler.transcryptUserId(userId, false, maskingSecretKey);
@@ -211,7 +211,7 @@ public class APIMaskHandler extends AbstractHandler {
 					for (int i = 0; i < addressArray.length(); i++) {
 						//Convert Masked UserID to User ID
 						String userId = addressArray.getString(i);
-						if (UserMaskHandler.isMaskedUserId(userId)) {
+						if (Boolean.valueOf(UserMaskingConfiguration.getInstance().getUserMaskingEnabled())) {
 							try {
 								userId = UserMaskHandler.transcryptUserId(userId, false, maskingSecretKey);
 							} catch (UserMaskingException e) {
