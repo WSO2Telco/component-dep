@@ -11,7 +11,7 @@ public class UserMaskingConfiguration {
 
     private static UserMaskingConfiguration SINGLE_INSTANCE = null;
     private static final Log log = LogFactory.getLog(UserMaskingConfiguration.class);
-    private String userMaskingEnabled ;
+    private boolean userMaskingEnabled ;
     private String secretKey;
     private String defaultMSISNDRegex;
     private String userIdFilterRegex;
@@ -20,7 +20,7 @@ public class UserMaskingConfiguration {
     private UserMaskingConfiguration(){
         Properties props = PropertyFileReader.getFileReader().getProperties(MaskingUtils.USER_MASKING_PROPERTIES_FILE);
 
-        this.userMaskingEnabled = props.getProperty(MaskingUtils.USER_MASKING_ENABLED);
+        this.userMaskingEnabled = Boolean.valueOf(props.getProperty(MaskingUtils.USER_MASKING_ENABLED));
         this.secretKey = props.getProperty(MaskingUtils.USER_MASKING_SECRET_KEY);
         this.defaultMSISNDRegex = props.getProperty(MaskingUtils.USER_MASKING_DEFAULT_MSISDN_REGEX);
         this.userIdFilterRegex = props.getProperty(MaskingUtils.USER_MASKING_USER_ID_FILTER_REGEX);
@@ -42,11 +42,11 @@ public class UserMaskingConfiguration {
         return SINGLE_INSTANCE;
     }
 
-    public String getUserMaskingEnabled() {
+    public boolean getUserMaskingEnabled() {
         return userMaskingEnabled;
     }
 
-    public void setUserMaskingEnabled(String userMaskingEnabled) {
+    public void setUserMaskingEnabled(boolean userMaskingEnabled) {
         this.userMaskingEnabled = userMaskingEnabled;
     }
 

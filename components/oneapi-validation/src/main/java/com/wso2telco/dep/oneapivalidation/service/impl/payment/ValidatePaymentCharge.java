@@ -21,12 +21,9 @@ import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.dep.oneapivalidation.util.UrlValidator;
 import com.wso2telco.dep.oneapivalidation.util.Validation;
 import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
-import com.wso2telco.dep.user.masking.UserMaskHandler;
-import com.wso2telco.dep.user.masking.exceptions.UserMaskingException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import javax.crypto.BadPaddingException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
@@ -46,15 +43,15 @@ public class ValidatePaymentCharge  implements IServiceValidate {
     private boolean userAnonymization;
 
     /** user masking encryption key */
-    private String maskingSecretKey;
+    private String unmaskedEndUserId;
 
     public ValidatePaymentCharge() {
 
     }
 
-    public ValidatePaymentCharge(boolean userAnonymization, String maskingSecretKey) {
+    public ValidatePaymentCharge(boolean userAnonymization, String unmaskedEndUserId) {
         this.userAnonymization = userAnonymization;
-        this.maskingSecretKey = maskingSecretKey;
+        this.unmaskedEndUserId = unmaskedEndUserId;
     }
 
     /* (non-Javadoc)
@@ -86,11 +83,10 @@ public class ValidatePaymentCharge  implements IServiceValidate {
                 if (!jsonObj.isNull("clientCorrelator")) {
                     clientCorrelator = nullOrTrimmed(jsonObj.getString("clientCorrelator"));
                 }
-                if (!jsonObj.isNull("endUserId")) {
+                if (this.userAnonymization) {
+                    endUserId = nullOrTrimmed(this.unmaskedEndUserId);
+                } else {
                     endUserId = nullOrTrimmed(jsonObj.getString("endUserId"));
-                    if(this.userAnonymization) {
-                        endUserId = UserMaskHandler.transcryptUserId(endUserId, false, this.maskingSecretKey);
-                    }
                 }
                 if (!jsonObj.isNull("referenceCode")) {
                     referenceCode = nullOrTrimmed(jsonObj.getString("referenceCode"));
@@ -155,9 +151,6 @@ public class ValidatePaymentCharge  implements IServiceValidate {
             } catch (CustomException ce){
                 log.error("Manipulating received JSON Object: " + ce);
                 throw ce;
-            } catch (UserMaskingException ume){//Bad Padding Exception removed.Error occurred while unmasking. Possible reason would be incorrect masking configuration.
-                log.error("Error occurred while unmasking. Possible reason would be incorrect masking configuration. " , ume);
-                throw new CustomException("SVC0003", ume.getMessage(), new String[]{"Invalid user mask configuration"});
             }
 
         ValidationRule[] rules = null;

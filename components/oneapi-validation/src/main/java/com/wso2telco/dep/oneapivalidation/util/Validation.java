@@ -190,7 +190,7 @@ public class Validation {
                 matched = true;
 
                 if (logger.isDebugEnabled()) {
-                    if (Boolean.valueOf(UserMaskingConfiguration.getInstance().getUserMaskingEnabled())) {
+                    if (UserMaskingConfiguration.getInstance().getUserMaskingEnabled()) {
                         try {
                             formattedMsisdn = UserMaskHandler.transcryptUserId(formattedMsisdn, true,
                                     UserMaskingConfiguration.getInstance().getSecretKey());

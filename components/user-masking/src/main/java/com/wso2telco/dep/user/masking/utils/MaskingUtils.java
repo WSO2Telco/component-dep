@@ -69,9 +69,9 @@ public class MaskingUtils {
 	 */
 	public static boolean isUserAnonymizationEnabled() {
 		boolean isUserAnonymizationEnabled = false;
-		if(UserMaskingConfiguration.getInstance().getUserMaskingEnabled() != null) {
+		if(UserMaskingConfiguration.getInstance().getUserMaskingEnabled()) {
 			try {
-				isUserAnonymizationEnabled = Boolean.valueOf(UserMaskingConfiguration.getInstance().getUserMaskingEnabled());
+				isUserAnonymizationEnabled = UserMaskingConfiguration.getInstance().getUserMaskingEnabled();
 			} catch (Exception e) {
 				String errorMessage = "Invalid for configuration in user-masking.properties :  user.masking.feature.enable";
 				log.error(errorMessage, e);

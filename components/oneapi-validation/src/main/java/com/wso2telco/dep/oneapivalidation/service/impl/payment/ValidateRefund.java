@@ -16,18 +16,15 @@
 package com.wso2telco.dep.oneapivalidation.service.impl.payment;
 
 
-import com.wso2telco.dep.user.masking.UserMaskHandler;
-import com.wso2telco.dep.user.masking.exceptions.UserMaskingException;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.json.JSONException;
-import org.json.JSONObject;
-
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.dep.oneapivalidation.util.UrlValidator;
 import com.wso2telco.dep.oneapivalidation.util.Validation;
 import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.json.JSONException;
+import org.json.JSONObject;
 
  
 // TODO: Auto-generated Javadoc
@@ -42,13 +39,13 @@ public class ValidateRefund implements IServiceValidate {
     private final String[] validationRules = {"*", "transactions", "amount"};
 
     private boolean userAnonymization;
-    private String maskingSecretKey;
+    private String unmaskedEndUserId;
 
     public ValidateRefund() {}
 
-    public ValidateRefund(boolean userAnonymization, String maskingSecretKey) {
+    public ValidateRefund(boolean userAnonymization, String unmaskedEndUserId) {
         this.userAnonymization = userAnonymization;
-        this.maskingSecretKey = maskingSecretKey;
+        this.unmaskedEndUserId = unmaskedEndUserId;
     }
 
 
@@ -86,11 +83,10 @@ public class ValidateRefund implements IServiceValidate {
             if (!objAmountTransaction.isNull("clientCorrelator") ) {
                 clientCorrelator = nullOrTrimmed(objAmountTransaction.get("clientCorrelator").toString());
             }
-            if (!objAmountTransaction.isNull("endUserId")) {
+            if (this.userAnonymization) {
+                endUserId = nullOrTrimmed(this.unmaskedEndUserId);
+            } else {
                 endUserId = nullOrTrimmed(objAmountTransaction.getString("endUserId"));
-                if(this.userAnonymization) {
-                    endUserId = UserMaskHandler.transcryptUserId(endUserId, false, this.maskingSecretKey);
-                }
             }
             if (!objAmountTransaction.isNull("callbackData") ) {
                 callbackData = nullOrTrimmed(objAmountTransaction.get("callbackData").toString());
@@ -173,9 +169,6 @@ public class ValidateRefund implements IServiceValidate {
         } catch (JSONException e) {
             log.error("Manipulating received JSON Object: " + e);
             throw new CustomException("SVC0001", "", new String[]{"Incorrect JSON Object received"});
-        } catch (UserMaskingException e) {
-            log.error("Error occurred while unmasking. Possible reason would be incorrect masking configuration.", e);
-            throw new CustomException("SVC0003", e.getMessage(), new String[]{"Invalid user mask configuration"});
         }
 
         ValidationRule[] rules = null;
