@@ -83,11 +83,10 @@ public class ValidatePaymentCharge  implements IServiceValidate {
                 if (!jsonObj.isNull("clientCorrelator")) {
                     clientCorrelator = nullOrTrimmed(jsonObj.getString("clientCorrelator"));
                 }
-                if (!jsonObj.isNull("endUserId")) {
+                if (this.userAnonymization) {
+                    endUserId = nullOrTrimmed(this.unmaskedEndUserId);
+                } else {
                     endUserId = nullOrTrimmed(jsonObj.getString("endUserId"));
-                    if(this.userAnonymization) {
-                        endUserId = this.unmaskedEndUserId;
-                    }
                 }
                 if (!jsonObj.isNull("referenceCode")) {
                     referenceCode = nullOrTrimmed(jsonObj.getString("referenceCode"));

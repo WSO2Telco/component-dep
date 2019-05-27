@@ -83,11 +83,10 @@ public class ValidateRefund implements IServiceValidate {
             if (!objAmountTransaction.isNull("clientCorrelator") ) {
                 clientCorrelator = nullOrTrimmed(objAmountTransaction.get("clientCorrelator").toString());
             }
-            if (!objAmountTransaction.isNull("endUserId")) {
+            if (this.userAnonymization) {
+                endUserId = nullOrTrimmed(this.unmaskedEndUserId);
+            } else {
                 endUserId = nullOrTrimmed(objAmountTransaction.getString("endUserId"));
-                if(this.userAnonymization) {
-                    endUserId = this.unmaskedEndUserId;
-                }
             }
             if (!objAmountTransaction.isNull("callbackData") ) {
                 callbackData = nullOrTrimmed(objAmountTransaction.get("callbackData").toString());
