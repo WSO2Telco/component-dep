@@ -138,7 +138,7 @@ public class Validation {
 
     static String readCustomRegex() {
         String telFormatTemp = null;
-        String defaultRegex = "^((((tel:){1}(\\+){0,1})|((tel:){0,1}(\\+){1}))([a-zA-Z0-9]+))$";
+        String defaultRegex = "^((((tel:){1}(\\+){0,1})|((tel:){0,1}(\\+){1}))?([0-9]+))$";
 
         try {
             String customRegex = oneAPIValidationConfMap.getProperty("validation.regex");
