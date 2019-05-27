@@ -15,11 +15,12 @@
  ******************************************************************************/
 package com.wso2telco.dep.oneapivalidation.util;
 
+import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import org.apache.log4j.Logger;
 
-import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
+import static com.wso2telco.dep.oneapivalidation.util.Validation.isCorrectlyFormattedNumber;
 
- 
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class UrlValidator.
@@ -52,6 +53,10 @@ public class UrlValidator {
                     if (requestParts[i] == null || requestParts[i].isEmpty()) {
                         errorMessage = "parameter" + " at component [" + i + "] ";
                         valid = false;
+                    } else if (!isCorrectlyFormattedNumber(requestParts[i])) {
+
+                        throw new CustomException("SVC0004", "endUserId format invalid. %1",
+                                new String[]{requestParts[i]});
                     }
                 } else if (!requestParts[i].equals(validationRules[i])) {
                     if (valid) {
