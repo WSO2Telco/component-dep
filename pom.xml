@@ -20,7 +20,7 @@
 	<groupId>com.wso2telco.dep</groupId>
 	<artifactId>component-dep</artifactId>
 	<packaging>pom</packaging>
-	<version>2.4.5-SNAPSHOT</version>
+	<version>3.0.1-SNAPSHOT</version>
 	<name>WSO2Telco -Digital Enable Platform Component</name>
 	<description>WSO2Telco DEP Aggregate Pom</description>
 	<url>http://wso2telco.com</url>
@@ -33,8 +33,8 @@
 
 	<properties>
 		<!-- WSO2.Telco versions -->
-		<com.wso2telco.dep.version>2.4.5-SNAPSHOT</com.wso2telco.dep.version>
-		<com.wso2telco.core.version>2.4.3</com.wso2telco.core.version>
+		<com.wso2telco.dep.version>3.0.1-SNAPSHOT</com.wso2telco.dep.version>
+		<com.wso2telco.core.version>2.4.5</com.wso2telco.core.version>
 
 		<log4j.version>1.2.13</log4j.version>
 		<com.google.code.gson.version>2.3.1</com.google.code.gson.version>
@@ -43,7 +43,7 @@
 		<junit.version>3.8.1</junit.version>
 		<org.apache.synapse.core.version>2.1.7-wso2v3</org.apache.synapse.core.version>
 		<org.wso2.carbon.commons.version>4.4.8</org.wso2.carbon.commons.version>
-		<org.wso2.carbon.apimgt.version>6.0.4</org.wso2.carbon.apimgt.version>
+		<org.wso2.carbon.apimgt.version>6.3.95</org.wso2.carbon.apimgt.version>
 		<org.wso2.hazelcast>3.5.2.wso2v1</org.wso2.hazelcast>
 		<rhino.wso2.version>1.7.0.R4.wso2v1</rhino.wso2.version>
 		<org.jaggeryjs.version>0.12.6</org.jaggeryjs.version>
