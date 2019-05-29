@@ -24,6 +24,8 @@ import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -186,6 +188,14 @@ public class Validation {
         boolean matched = false;
 
         if (formattedMsisdn != null) {
+            if (formattedMsisdn != null) {
+                if (!formattedMsisdn.contains("+")) {
+                    try {
+                        formattedMsisdn = URLDecoder.decode(formattedMsisdn, "UTF-8");
+                    } catch (UnsupportedEncodingException e) {
+                        logger.error("Unable to decode MSISDN",e);
+                    }
+                }
             if (formattedMsisdn.matches(telFormats)) {
                 matched = true;
 
