@@ -16,6 +16,7 @@
 package com.wso2telco.dep.oneapivalidation.service.impl.payment;
 
 
+import com.wso2telco.dep.oneapivalidation.delegator.ValidationDelegator;
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.dep.oneapivalidation.util.UrlValidator;
@@ -45,13 +46,45 @@ public class ValidatePaymentCharge  implements IServiceValidate {
     /** user masking encryption key */
     private String unmaskedEndUserId;
 
-    public ValidatePaymentCharge() {
+    /** Validation */
+    private ValidationDelegator validationDelegator;
 
+    @Deprecated
+    public ValidatePaymentCharge() {
+        this.validationDelegator = ValidationDelegator.getInstance();
     }
 
+    /**
+     *
+     * @param validationDelegator
+     */
+    public ValidatePaymentCharge(ValidationDelegator validationDelegator) {
+        this.validationDelegator = validationDelegator;
+    }
+
+    /**
+     *
+     * @param userAnonymization
+     * @param unmaskedEndUserId
+     */
+    @Deprecated
     public ValidatePaymentCharge(boolean userAnonymization, String unmaskedEndUserId) {
         this.userAnonymization = userAnonymization;
         this.unmaskedEndUserId = unmaskedEndUserId;
+        this.validationDelegator = ValidationDelegator.getInstance();
+    }
+
+    /**
+     *
+     * @param userAnonymization
+     * @param unmaskedEndUserId
+     * @param validationDelegator
+     */
+    public ValidatePaymentCharge(boolean userAnonymization, String unmaskedEndUserId,
+                                 ValidationDelegator validationDelegator) {
+        this.userAnonymization = userAnonymization;
+        this.unmaskedEndUserId = unmaskedEndUserId;
+        this.validationDelegator = validationDelegator;
     }
 
     /* (non-Javadoc)
@@ -169,7 +202,7 @@ public class ValidatePaymentCharge  implements IServiceValidate {
                 new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL_PAYMENT_CHANNEL, "channel", channel),
                 new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL_DOUBLE_GE_ZERO, "taxAmount", taxAmount),};
 
-            Validation.checkRequestParams(rules);
+            validationDelegator.checkRequestParams(rules);
 
     }
 

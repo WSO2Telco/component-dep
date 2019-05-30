@@ -16,6 +16,7 @@
 package com.wso2telco.dep.oneapivalidation.service.impl.payment;
 
 
+import com.wso2telco.dep.oneapivalidation.delegator.ValidationDelegator;
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.dep.oneapivalidation.util.UrlValidator;
@@ -41,11 +42,43 @@ public class ValidateRefund implements IServiceValidate {
     private boolean userAnonymization;
     private String unmaskedEndUserId;
 
-    public ValidateRefund() {}
+    private ValidationDelegator validationDelegator;
 
+    @Deprecated
+    public ValidateRefund() {
+        this.validationDelegator = ValidationDelegator.getInstance();
+    }
+
+    /**
+     *
+     * @param validationDelegator
+     */
+    public ValidateRefund(ValidationDelegator validationDelegator) {
+        this.validationDelegator = validationDelegator;
+    }
+
+    /**
+     *
+     * @param userAnonymization
+     * @param unmaskedEndUserId
+     */
+    @Deprecated
     public ValidateRefund(boolean userAnonymization, String unmaskedEndUserId) {
         this.userAnonymization = userAnonymization;
         this.unmaskedEndUserId = unmaskedEndUserId;
+        this.validationDelegator = ValidationDelegator.getInstance();
+    }
+    /**
+     *
+     * @param userAnonymization
+     * @param unmaskedEndUserId
+     * @param validationDelegator
+     */
+    public ValidateRefund(boolean userAnonymization, String unmaskedEndUserId,
+                          ValidationDelegator validationDelegator) {
+        this.userAnonymization = userAnonymization;
+        this.unmaskedEndUserId = unmaskedEndUserId;
+        this.validationDelegator = validationDelegator;
     }
 
 
@@ -194,7 +227,7 @@ public class ValidateRefund implements IServiceValidate {
             new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "originalServerReferenceCode", originalServerReferenceCode),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "transactionOperationStatus", transactionOperationStatus, "Refunded")};
 
-        Validation.checkRequestParams(rules);
+        validationDelegator.checkRequestParams(rules);
     }
 
     /* (non-Javadoc)
