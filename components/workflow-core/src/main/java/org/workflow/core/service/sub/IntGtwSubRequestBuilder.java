@@ -152,7 +152,11 @@ public class IntGtwSubRequestBuilder extends AbstractSubRequestBuilder {
 
     @Override
     protected String getCandidateGroup(UserProfileDTO userProfileDTO) {
-        return userProfileDTO.getDepartment();
+        if(isAdmin(userProfileDTO)){
+            return WorkFlowVariables.GATEWAY_ADMIN_ROLE.getValue();
+        }else {
+            return userProfileDTO.getDepartment();
+        }
     }
 
     @Override
