@@ -136,7 +136,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
 
             Application subscribedApp = consumer.getApplicationById(applicationId);
 
-            String providerName = subscriptionWorkFlowDTO.getApiProvider().toLowerCase();
+            String providerName = subscriptionWorkFlowDTO.getApiProvider();
             String apiName = subscriptionWorkFlowDTO.getApiName();
             String version = subscriptionWorkFlowDTO.getApiVersion();
             APIIdentifier apiIdentifier = new APIIdentifier(providerName, apiName, version);
