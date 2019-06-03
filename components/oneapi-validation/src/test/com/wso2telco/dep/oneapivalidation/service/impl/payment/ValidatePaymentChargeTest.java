@@ -1,5 +1,3 @@
-package com.wso2telco.dep.oneapivalidation.service.impl.payment;
-
 /**
  * Copyright (c) 2019, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
  * <p>
@@ -15,6 +13,7 @@ package com.wso2telco.dep.oneapivalidation.service.impl.payment;
  * See the License for the specific language governing permissions and
  * limitations under the License.
  */
+package com.wso2telco.dep.oneapivalidation.service.impl.payment;
 
 import com.wso2telco.dep.oneapivalidation.delegator.ValidationDelegator;
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
