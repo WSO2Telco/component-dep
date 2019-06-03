@@ -22,10 +22,7 @@ import com.wso2telco.core.dbutils.util.AssignRequest;
 import com.wso2telco.core.dbutils.util.Callback;
 import com.wso2telco.core.userprofile.dto.UserProfileDTO;
 import org.apache.commons.logging.Log;
-import org.workflow.core.activity.ActivityRestClient;
-import org.workflow.core.activity.ProcessSearchRequest;
-import org.workflow.core.activity.RestClientFactory;
-import org.workflow.core.activity.TaskAssignRequest;
+import org.workflow.core.activity.*;
 import org.workflow.core.execption.WorkflowExtensionException;
 import org.workflow.core.model.*;
 import org.workflow.core.util.*;
@@ -66,19 +63,21 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
     protected abstract String getCandidateGroup(UserProfileDTO userProfileDTO);
 
     public Callback searchPending(TaskSearchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException {
-        ProcessSearchRequest processRequest = buildSearchRequest(searchDTO, userProfile);
-        processRequest.setCandidateGroup(getCandidateGroup(userProfile));
-        if(processRequest.getCandidateGroup() == null){
+        ProcessAllTaskSearchRequest processRequest = buildAllTaskSearchRequest(searchDTO, userProfile);
+        if(getCandidateGroup(userProfile).equals(WorkFlowVariables.GATEWAY_ADMIN_ROLE.getValue())){
             processRequest.setUnassigned(true);
+            processRequest.setCandidateGroup(null);
         }
-        TaskList taskList = executeRequest(processRequest);
+        else{
+            processRequest.setCandidateGroup(getCandidateGroup(userProfile));
+        }
+        TaskList taskList = executeAllTaskRequest(processRequest);
         return buildAllTaskResponse(searchDTO, taskList, userProfile);
     }
 
     @Override
     public Callback searchPending(TaskSearchDTO searchDTO, UserProfileDTO userProfile, String assigenee) throws BusinessException {
         ProcessSearchRequest processRequest = buildSearchRequest(searchDTO, userProfile);
-        processRequest.setUnassigned(false);
         processRequest.setAssignee(assigenee);
         TaskList taskList = executeRequest(processRequest);
         return buildMyTaskResponse(searchDTO, taskList, userProfile);
@@ -104,6 +103,26 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
         return taskList;
     }
 
+    public TaskList executeAllTaskRequest(ProcessAllTaskSearchRequest processRequest) throws BusinessException {
+        TaskList taskList;
+        ActivityRestClient activityClient = RestClientFactory.getInstance().getClient(getProcessDefinitionKey());
+
+        try {
+            taskList = activityClient.getTasks(processRequest);
+
+            for (Task task : taskList.getData()) {
+                TaskVariableResponse[] vars = activityClient.getVariables(String.valueOf(task.getId()));
+                task.setVariables(vars);
+            }
+
+        } catch (WorkflowExtensionException e) {
+            log.error("", e);
+            throw new BusinessException(e);
+        }
+
+        return taskList;
+    }
+
     @Override
     public ProcessSearchRequest buildSearchRequest(TaskSearchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException {
         ProcessSearchRequest request = new ProcessSearchRequest();
@@ -111,6 +130,47 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
         request.setStart(searchDTO.getStart());
         request.setSort(searchDTO.getSortBy());
         request.setProcessDefinitionKey(getProcessDefinitionKey());
+
+        String filterStr = searchDTO.getFilterBy();
+        /**
+         * if the request need to be filtered the string must be formated as
+         * filterby:value,filterby2:value
+         */
+        if (filterStr != null && !filterStr.trim().isEmpty()) {
+            /**
+             * split the multiple filter criteria by ,
+             */
+            final String[] filterCriterias = filterStr.split(",");
+            for (String criteria : filterCriterias) {
+                /**
+                 * split the criteria by : to separate out the name and value ,
+                 */
+                String[] criteriaArray = criteria.split(":");
+                /**
+                 * validate name and value. Both should not be null. and filer name should be
+                 * defined at the filter map .if not ignore adding.
+                 */
+                if (criteriaArray.length == 2 && !criteriaArray[0].trim().isEmpty() && !criteriaArray[1].trim().isEmpty()
+                        && getFilterMap().containsKey(criteriaArray[0].trim().toLowerCase())) {
+                    /**
+                     * add process variable
+                     */
+                    Variable var = new Variable(getFilterMap().get(criteriaArray[0].toLowerCase()), criteriaArray[1]);
+                    request.addProcessVariable(var);
+                }
+            }
+        }
+
+        return request;
+    }
+
+    @Override
+    public ProcessAllTaskSearchRequest buildAllTaskSearchRequest(TaskSearchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException {
+        ProcessAllTaskSearchRequest request = new ProcessAllTaskSearchRequest();
+        request.setSize(searchDTO.getBatchSize());
+        request.setSort(searchDTO.getSortBy());
+        request.setProcessDefinitionKey(getProcessDefinitionKey());
+        request.setStart(searchDTO.getStart());
 
         String filterStr = searchDTO.getFilterBy();
         /**

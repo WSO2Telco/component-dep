@@ -5,15 +5,14 @@ import org.workflow.core.model.Variable;
 import java.util.ArrayList;
 import java.util.List;
 
-public class ProcessSearchRequest {
-
+public class ProcessAllTaskSearchRequest {
+    private boolean unassigned = true;
     private byte size = 10;
     private int start = 0;
     private String order = "desc";
     private String sort = "createTime";
     private String candidateGroup;
     private  String processDefinitionKey;
-    private String assignee;
     private static final byte MINBATCHSIZE = 0;
     private static final byte MAXBATCHSIZE = 0;
     private static final int MINSTARTINDEX = 0;
@@ -93,11 +92,11 @@ public class ProcessSearchRequest {
         }
     }
 
-    public String getAssignee() {
-        return assignee;
+    public boolean isUnassigned() {
+        return unassigned;
     }
 
-    public void setAssignee(String assignee) {
-        this.assignee = assignee;
+    public void setUnassigned(boolean Unassigned) {
+        this.unassigned = Unassigned;
     }
 }
