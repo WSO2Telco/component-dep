@@ -68,6 +68,9 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
     public Callback searchPending(TaskSearchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException {
         ProcessSearchRequest processRequest = buildSearchRequest(searchDTO, userProfile);
         processRequest.setCandidateGroup(getCandidateGroup(userProfile));
+        if(processRequest.getCandidateGroup() == null){
+            processRequest.setUnassigned(true);
+        }
         TaskList taskList = executeRequest(processRequest);
         return buildAllTaskResponse(searchDTO, taskList, userProfile);
     }
@@ -75,6 +78,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
     @Override
     public Callback searchPending(TaskSearchDTO searchDTO, UserProfileDTO userProfile, String assigenee) throws BusinessException {
         ProcessSearchRequest processRequest = buildSearchRequest(searchDTO, userProfile);
+        processRequest.setUnassigned(false);
         processRequest.setAssignee(assigenee);
         TaskList taskList = executeRequest(processRequest);
         return buildMyTaskResponse(searchDTO, taskList, userProfile);
@@ -286,5 +290,15 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
             }
         }
         return isAdmin;
+    }
+
+    protected boolean isSuperAdmin(UserProfileDTO userProfile) {
+        String[] userRoles = userProfile.getUserRoles();
+        for (String role : userRoles) {
+            if (role.trim().equals(WorkFlowVariables.GATEWAY_ADMIN_ROLE.getValue())) {
+                return true;
+            }
+        }
+        return false;
     }
 }

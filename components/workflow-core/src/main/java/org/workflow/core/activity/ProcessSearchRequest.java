@@ -7,6 +7,7 @@ import java.util.List;
 
 public class ProcessSearchRequest {
 
+    private boolean unassigned = false;
     private byte size = 10;
     private int start = 0;
     private String order = "desc";
@@ -101,5 +102,11 @@ public class ProcessSearchRequest {
         this.assignee = assignee;
     }
 
+    public boolean isUnassigned() {
+        return unassigned;
+    }
 
+    public void setUnassigned(boolean Unassigned) {
+        this.unassigned = Unassigned;
+    }
 }
