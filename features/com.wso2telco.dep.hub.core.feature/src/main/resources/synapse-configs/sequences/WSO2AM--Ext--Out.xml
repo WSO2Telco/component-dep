@@ -10,8 +10,13 @@
 	</class>
         <!-- Values log level = full; enable payload loggin. log level=custom; disable payload loggin for the response -->
 	<log level="custom">
-        	<property name="API Response Status" expression="$axis2:HTTP_SC"/>
-        	<property name="Request ID" expression="$ctx:MESSAGE_ID"/>
+		<property name="API Response Status" expression="$axis2:HTTP_SC"/>
+		<property name="Request ID" expression="get-property('MESSAGE_ID')"/>
 		<property name="Response Time(ms)" expression="$ctx:RESPONSE_TIME"/>
-    	</log>
+		<property name="API" expression="$ctx:API_NAME"/>
+		<property name="Version" expression="get-property('SYNAPSE_REST_API_VERSION')"/>
+		<property name="Application Name" expression="$ctx:api.ut.application.name"/>
+		<property name="Application ID" expression="$ctx:api.ut.application.id"/>
+		<property name="User Name" expression="$ctx:api.ut.userName"/>
+	</log>
 </sequence>
