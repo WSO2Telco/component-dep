@@ -14,6 +14,10 @@ public interface ActivityRestClient {
     @Headers("Content-Type: application/json")
     TaskList getTasks(ProcessSearchRequest request) throws WorkflowExtensionException;
 
+    @RequestLine("POST query/tasks")
+    @Headers("Content-Type: application/json")
+    TaskList getTasks(ProcessAllTaskSearchRequest request) throws WorkflowExtensionException;
+
     @RequestLine("POST query/tasks?processDefinitionKey={appParam}")
     @Headers("Content-Type: application/json")
     TaskList getTasks(@Param("appParam") String appParam, ProcessSearchRequest request) throws WorkflowExtensionException;

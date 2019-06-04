@@ -152,7 +152,14 @@ public class IntGtwSubRequestBuilder extends AbstractSubRequestBuilder {
 
     @Override
     protected String getCandidateGroup(UserProfileDTO userProfileDTO) {
-        return userProfileDTO.getDepartment();
+        if(isSuperAdmin(userProfileDTO)){
+            if(userProfileDTO.getDepartment() != null){
+                return userProfileDTO.getDepartment();
+            }
+            return userProfileDTO.getUserName().toLowerCase();
+        }else {
+            return userProfileDTO.getDepartment();
+        }
     }
 
     @Override
