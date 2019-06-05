@@ -15,16 +15,17 @@
  ******************************************************************************/
 package com.wso2telco.dep.oneapivalidation.service.impl.smsmessaging;
 
+import com.wso2telco.dep.oneapivalidation.delegator.ValidationDelegator;
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.dep.oneapivalidation.util.UrlValidator;
-import com.wso2telco.dep.oneapivalidation.util.Validation;
 import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
 import com.wso2telco.dep.user.masking.UserMaskHandler;
 import com.wso2telco.dep.user.masking.exceptions.UserMaskingException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONArray;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import java.util.ArrayList;
@@ -47,13 +48,44 @@ public class ValidateSendSms implements IServiceValidate {
     /** masked msisdn */
     private String userMaskingSecretKey;
 
-    public ValidateSendSms() {
+    private ValidationDelegator validationDelegator;
 
+    @Deprecated
+    public ValidateSendSms() {
+        this.validationDelegator = ValidationDelegator.getInstance();
     }
 
+    /**
+     *
+     * @param validationDelegator
+     */
+    public ValidateSendSms(ValidationDelegator validationDelegator) {
+        this.validationDelegator = validationDelegator;
+    }
+
+    /**
+     *
+     * @param userAnonymization
+     * @param userMaskingSecretKey
+     */
+    @Deprecated
     public ValidateSendSms(boolean userAnonymization, String userMaskingSecretKey) {
         this.userAnonymization = userAnonymization;
         this.userMaskingSecretKey = userMaskingSecretKey;
+        this.validationDelegator = ValidationDelegator.getInstance();
+    }
+
+    /**
+     *
+     * @param userAnonymization
+     * @param userMaskingSecretKey
+     * @param validationDelegator
+     */
+    public ValidateSendSms(boolean userAnonymization, String userMaskingSecretKey,
+                           ValidationDelegator validationDelegator) {
+        this.userAnonymization = userAnonymization;
+        this.userMaskingSecretKey = userMaskingSecretKey;
+        this.validationDelegator = validationDelegator;
     }
 
     /* (non-Javadoc)
@@ -118,6 +150,9 @@ public class ValidateSendSms implements IServiceValidate {
 
                 senderName = nullOrTrimmed(objOtboundSMSMessageRequest.getString("senderName"));
             }
+        } catch (JSONException e) {
+            log.error("Manipulating received JSON Object: " + e);
+            throw new CustomException("SVC0001", "", new String[]{"Incorrect JSON Object received"});
         } catch (UserMaskingException ume) {
             log.error("Error occurred while unmasking. Possible reason would be incorrect masking configuration. " , ume);
             throw new CustomException("SVC0003", ume.getMessage(), new String[]{"Invalid user mask configuration"});
@@ -132,7 +167,7 @@ public class ValidateSendSms implements IServiceValidate {
             new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL_URL, "notifyURL", notifyURL),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "callbackData", callbackData),};
 
-        Validation.checkRequestParams(rules);
+        validationDelegator.checkRequestParams(rules);
     }
 
     /**
