@@ -36,10 +36,12 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.CarbonConstants;
 
 public class APIPublisherApprovalDBUpdater implements JavaDelegate {
 
 	private static final Log log = LogFactory.getLog(APIPublisherApprovalDBUpdater.class);
+    private static Log auditLog = CarbonConstants.AUDIT_LOG;
 
     public void execute(DelegateExecution arg0) throws Exception {
 
@@ -135,6 +137,7 @@ public class APIPublisherApprovalDBUpdater implements JavaDelegate {
 				+ ", API version - " + apiVersion
 				+ ", Tier - " + adminSelectedTier;
         log.info(logEntry);
+        auditLog.info(logEntry);
 
     }
 }

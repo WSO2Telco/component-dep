@@ -30,10 +30,12 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.CarbonConstants;
 
 public class CallbackServiceInvokeTask implements JavaDelegate {
 
     private static final Log log = LogFactory.getLog(CallbackServiceInvokeTask.class);
+    private static Log auditLog = CarbonConstants.AUDIT_LOG;
 
     public void execute(DelegateExecution arg0) throws Exception {
 
@@ -58,8 +60,10 @@ public class CallbackServiceInvokeTask implements JavaDelegate {
                 .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminUserName, adminPassword))
                 .target(WorkflowHttpClient.class, callbackUrl);
 
-        log.info("Application creation workflow reference Id: " + refId + ", Hub Admin Approval Status: " +
-                approvalStatus);
+        String ref = "Application creation workflow reference Id: " + refId + ", Hub Admin Approval Status: " +
+                approvalStatus;
+        log.info(ref);
+        auditLog.info(ref);
 
         try {
             if(!arg0.getVariable(Constants.DEPLOYMENT_TYPE).toString().equalsIgnoreCase(Constants.HUB)){

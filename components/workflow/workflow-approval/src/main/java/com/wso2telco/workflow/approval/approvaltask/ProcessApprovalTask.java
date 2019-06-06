@@ -38,6 +38,7 @@ import feign.jackson.JacksonEncoder;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.CarbonConstants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,6 +48,7 @@ import java.util.List;
 public class ProcessApprovalTask implements WorkflowApprovalTask {
 
 	private static final Log log = LogFactory.getLog(ProcessApprovalTask.class);
+	private static Log auditLog = CarbonConstants.AUDIT_LOG;
 
 	@Override
 	public void executeHubAdminApplicationApproval(DelegateExecution arg0) throws ApprovalWorkflowException {
@@ -66,6 +68,7 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	        arg0.setVariable(Constants.ADMIN_SELECTED_TIER,selectedTier);
 
 	        log.info("In HubDataUpdater, Hub admin approval status: " + status);
+			auditLog.info("In HubDataUpdater, Hub admin approval status: " + status);
 
 	        AuthRequestInterceptor authRequestInterceptor = new AuthRequestInterceptor();
 	        HubWorkflowApi api = Feign.builder()
@@ -106,9 +109,11 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	        		+ ", Application name - " + applicationName
 	        		+ ", Tier - " + selectedTier;
 	        log.info(logEntry);
+			auditLog.info(logEntry);
 		} catch (Exception e) {
 			String errorMessage = "Error in ProcessApprovalTask.executeHubAdminApplicationApproval";
 			log.error(errorMessage, e);
+			auditLog.error(errorMessage, e);
 			throw new ApprovalWorkflowException(errorMessage, e);
 		}
 	}
@@ -156,6 +161,7 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	                operatorsRoles.add(operator.trim() + Constants.ADMIN_ROLE);
 
 	                log.info("Operator '" + operator.trim() + "' added to operatorList");
+					auditLog.info("Operator '" + operator.trim() + "' added to operatorList");
 	            }
 	        }
 
@@ -163,6 +169,7 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	        arg0.setVariable("operatorRoles", operatorsRoles);
 
 	        log.info("In HubDataUpdater, Hub admin approval status: " + status);
+			auditLog.info("In HubDataUpdater, Hub admin approval status: " + status);
 
 	        Subscription subscription = new Subscription();
 	            subscription.setApiName(apiName);
@@ -184,6 +191,7 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	        		+ ", Rate - " + selectedRate
 	        		+ ", Tier - " + selectedTier;
 	        log.info(logEntry);
+			auditLog.info(logEntry);
 		} catch (Exception e) {
 			String errorMessage = "Error in ProcessApprovalTask.executeHubAdminSubscriptionApproval";
 			log.error(errorMessage, e);
@@ -208,9 +216,11 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	        		+ ", Application name - " + applicationName
 	        		+ ", Tier - " + selectedTier;
 	        log.info(logEntry);
+			auditLog.info(logEntry);
 		} catch (Exception e) {
 			String errorMessage = "Error in ProcessApprovalTask.executeOperatorAdminApplicationApproval";
 			log.error(errorMessage, e);
+			auditLog.error(errorMessage, e);
 			throw new ApprovalWorkflowException(errorMessage, e);
 		}
 	}
@@ -236,9 +246,11 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	        		+ ", API version - " + apiVersion
 	        		+ ", Tier - " + selectedTier;
 	        log.info(logEntry);
+			auditLog.info(logEntry);
 		} catch (Exception e) {
 			String errorMessage = "Error in ProcessApprovalTask.executeOperatorAdminSubscriptionApproval";
 			log.error(errorMessage, e);
+			auditLog.error(errorMessage, e);
 			throw new ApprovalWorkflowException(errorMessage, e);
 		}
 	}
