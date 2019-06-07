@@ -94,7 +94,7 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
     private static final String SERVICE_URL = "serviceURL";
     private static final String MANDATE_SERVICE_HOST = "mandate.service.host";
     private static final String MANDATE_SERVICE_URL = "mandateServiceURL";
-    private static Log auditLog = CarbonConstants.AUDIT_LOG;
+    private static final Log auditLog = CarbonConstants.AUDIT_LOG;
 
     private String serviceEndpoint;
     private String username;

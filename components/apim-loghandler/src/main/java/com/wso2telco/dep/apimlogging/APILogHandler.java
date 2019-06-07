@@ -26,7 +26,7 @@ import org.xml.sax.InputSource;
 public class APILogHandler extends Handler {
 
     private static final Log log = LogFactory.getLog(APILogHandler.class);
-	private static Log auditLog = CarbonConstants.AUDIT_LOG;
+	private static final Log auditLog = CarbonConstants.AUDIT_LOG;
     private static String curUser = "";
     
     public void put(RequestContext requestContext) {

@@ -41,7 +41,7 @@ import org.wso2.carbon.CarbonConstants;
 public class APIPublisherApprovalDBUpdater implements JavaDelegate {
 
 	private static final Log log = LogFactory.getLog(APIPublisherApprovalDBUpdater.class);
-    private static Log auditLog = CarbonConstants.AUDIT_LOG;
+    private static final Log auditLog = CarbonConstants.AUDIT_LOG;
 
     public void execute(DelegateExecution arg0) throws Exception {
 

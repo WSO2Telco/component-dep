@@ -42,7 +42,7 @@ import java.util.Collection;
 public class OperatorListConverter implements JavaDelegate {
 
     private static final Log log = LogFactory.getLog(OperatorListConverter.class);
-    private static Log auditLog = CarbonConstants.AUDIT_LOG;
+    private static final Log auditLog = CarbonConstants.AUDIT_LOG;
 
     public void execute(DelegateExecution arg0) throws Exception {
 
