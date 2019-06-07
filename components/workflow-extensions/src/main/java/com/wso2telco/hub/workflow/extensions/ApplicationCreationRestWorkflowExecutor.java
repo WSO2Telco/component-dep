@@ -216,11 +216,9 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
                     appWorkFlowDTO.getExternalWorkflowReference() + " created successfully");
         } catch (APIManagementException e) {
             log.error("Error in obtaining APIConsumer", e);
-            auditLog.error("Error in obtaining APIConsumer", e);
             throw new WorkflowException("Error in obtaining APIConsumer", e);
         } catch (UserStoreException e) {
             log.error("Error in obtaining APIConsumer", e);
-            auditLog.error("Error in obtaining APIConsumer", e);
             throw new WorkflowException("Error in obtaining APIConsumer", e);
         }
         return new GeneralWorkflowResponse();
@@ -263,7 +261,6 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
             String msg = "Error occurred when retrieving the Application creation with workflow ID :" + workFlowDTO
                     .getWorkflowReference();
             log.error(msg, e);
-            auditLog.error(msg, e);
             throw new WorkflowException(msg, e);
         }
 

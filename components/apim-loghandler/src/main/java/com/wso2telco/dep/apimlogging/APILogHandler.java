@@ -43,7 +43,6 @@ public class APILogHandler extends Handler {
             }
         } catch	(Exception e) {
             log.error("error accessing the new resource", e);
-			auditLog.error("error accessing the new resource", e);
         }
         if (!newResourceContent.equalsIgnoreCase("")) {
             try {
@@ -84,7 +83,6 @@ public class APILogHandler extends Handler {
                 }
             } catch	(Exception e) {
                 log.error("error on put method", e);
-                auditLog.error("error on put method", e);
             }
         }
     }
@@ -108,7 +106,6 @@ public class APILogHandler extends Handler {
             auditLog.info(logEntry);
         } catch	(Exception e) {
             log.error("error on delete method", e);
-            auditLog.error("error on delete method", e);
         }
     }
     
@@ -127,7 +124,6 @@ public class APILogHandler extends Handler {
             auditLog.info(logEntry);
 		} catch (Exception e) {
 			log.error("error on applyTag method", e);
-			auditLog.error("error on applyTag method", e);
 		}
 	}
     
@@ -146,7 +142,6 @@ public class APILogHandler extends Handler {
             auditLog.info(logEntry);
 		} catch (Exception e) {
 			log.error("error accessing ", e);
-			auditLog.error("error accessing ", e);
 		}
 	}
     
@@ -193,7 +188,6 @@ public class APILogHandler extends Handler {
 			}            
 		} catch (Exception e) {
             log.error("error comparing the resources", e);
-            auditLog.error("error comparing the resources", e);
 		}
 		return logEntry;
 	}
@@ -243,7 +237,6 @@ public class APILogHandler extends Handler {
 			}           
 		} catch (Exception e) {
             log.error("error on getLogEntryCreateNewVersion method", e);
-            auditLog.error("error on getLogEntryCreateNewVersion method", e);
 		}
 		return logEntry;
 	}
@@ -271,7 +264,6 @@ public class APILogHandler extends Handler {
         	
 		} catch (Exception e) {
             log.error("error getting log from deleted resource", e);
-            auditLog.error("error getting log from deleted resource", e);
 		}
 		return logEntry;
 	}

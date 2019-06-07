@@ -113,7 +113,6 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 		} catch (Exception e) {
 			String errorMessage = "Error in ProcessApprovalTask.executeHubAdminApplicationApproval";
 			log.error(errorMessage, e);
-			auditLog.error(errorMessage, e);
 			throw new ApprovalWorkflowException(errorMessage, e);
 		}
 	}
@@ -220,7 +219,6 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 		} catch (Exception e) {
 			String errorMessage = "Error in ProcessApprovalTask.executeOperatorAdminApplicationApproval";
 			log.error(errorMessage, e);
-			auditLog.error(errorMessage, e);
 			throw new ApprovalWorkflowException(errorMessage, e);
 		}
 	}
@@ -250,7 +248,6 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 		} catch (Exception e) {
 			String errorMessage = "Error in ProcessApprovalTask.executeOperatorAdminSubscriptionApproval";
 			log.error(errorMessage, e);
-			auditLog.error(errorMessage, e);
 			throw new ApprovalWorkflowException(errorMessage, e);
 		}
 	}
