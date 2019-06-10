@@ -48,7 +48,7 @@ import java.util.List;
 public class ProcessApprovalTask implements WorkflowApprovalTask {
 
 	private static final Log log = LogFactory.getLog(ProcessApprovalTask.class);
-	private static Log auditLog = CarbonConstants.AUDIT_LOG;
+	private static final Log auditLog = CarbonConstants.AUDIT_LOG;
 
 	@Override
 	public void executeHubAdminApplicationApproval(DelegateExecution arg0) throws ApprovalWorkflowException {
