@@ -30,10 +30,12 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.CarbonConstants;
 
 public class OperatorWorkflowCallback implements JavaDelegate {
 
     private static final Log log = LogFactory.getLog(OperatorWorkflowCallback.class);
+    private static final Log auditLog = CarbonConstants.AUDIT_LOG;
 
     public void execute(DelegateExecution arg0) throws Exception {
 
@@ -51,8 +53,10 @@ public class OperatorWorkflowCallback implements JavaDelegate {
                 .requestInterceptor(authRequestInterceptor.getBasicAuthRequestInterceptor(adminUserName,adminPassword))
                 .target(HubWorkflowCallbackApi.class, callbackUrl);
 
-        log.info("Application creation workflow reference Id: " + refId + ", Operator Admin Approval Status: " +
-                opAdminApprovalStatus + ", operator: " + arg0.getVariable(Constants.OPERATOR).toString());
+        String approvalLog = "Application creation workflow reference Id: " + refId + ", Operator Admin Approval Status: " +
+                opAdminApprovalStatus + ", operator: " + arg0.getVariable(Constants.OPERATOR).toString();
+        log.info(approvalLog);
+        auditLog.info(approvalLog);
 
         try {
             if(!arg0.getVariable(Constants.DEPLOYMENT_TYPE).toString().equalsIgnoreCase(Constants.HUB)){

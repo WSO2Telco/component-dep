@@ -34,6 +34,7 @@ import org.activiti.engine.delegate.DelegateExecution;
 import org.activiti.engine.delegate.JavaDelegate;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.CarbonConstants;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -41,6 +42,7 @@ import java.util.Collection;
 public class OperatorListConverter implements JavaDelegate {
 
     private static final Log log = LogFactory.getLog(OperatorListConverter.class);
+    private static final Log auditLog = CarbonConstants.AUDIT_LOG;
 
     public void execute(DelegateExecution arg0) throws Exception {
 
@@ -57,7 +59,9 @@ public class OperatorListConverter implements JavaDelegate {
         Collection<String> operatorNames = new ArrayList<String>();
         for(String operator : operatorList) {
             operatorNames.add(operator.trim());
-            log.info("Operator '" + operator.trim() + "' added to operatorList");
+            String msg = "Operator '" + operator.trim() + "' added to operatorList";
+            log.info(msg);
+            auditLog.info(msg);
         }
         arg0.setVariable("operatorList", operatorNames);
     }
