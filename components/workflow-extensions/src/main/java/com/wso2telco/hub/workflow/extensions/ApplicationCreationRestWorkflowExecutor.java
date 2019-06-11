@@ -27,7 +27,6 @@ import org.apache.commons.logging.LogFactory;
 import org.workflow.core.WorkflowErrorDecoder;
 import org.workflow.core.execption.WorkflowExtensionException;
 import org.workflow.core.util.WorkFlowHealper;
-import org.wso2.carbon.CarbonConstants;
 import org.wso2.carbon.apimgt.api.APIConsumer;
 import org.wso2.carbon.apimgt.api.APIManagementException;
 import org.wso2.carbon.apimgt.api.WorkflowResponse;
@@ -94,7 +93,6 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
     private static final String SERVICE_URL = "serviceURL";
     private static final String MANDATE_SERVICE_HOST = "mandate.service.host";
     private static final String MANDATE_SERVICE_URL = "mandateServiceURL";
-    private static final Log auditLog = CarbonConstants.AUDIT_LOG;
 
     private String serviceEndpoint;
     private String username;
@@ -173,11 +171,9 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
                 throw new WorkflowException("No operator(s) defined!!");
             }
             if (log.isDebugEnabled()) {
-                String logm = "Application name: " + applicationName + ", deployment type: " + deploymentType + ", callback url: " + callBackURL +
+                log.debug("Application name: " + applicationName + ", deployment type: " + deploymentType + ", callback url: " + callBackURL +
                         ", workflow reference id: " + workflorRefId + ", service endpoint: " + serviceEndpoint + ", tier: " + tier + ", description: " + description +
-                        ", tenantDomain: " + tenantDomain + ", userName: " + userName + ",externalWorkflowReference :" + externalWorkflowReference + ",tiers :" + tiers;
-                log.debug(logm);
-                auditLog.debug(logm);
+                        ", tenantDomain: " + tenantDomain + ", userName: " + userName + ",externalWorkflowReference :" + externalWorkflowReference + ",tiers :" + tiers);
             }
 
             List<Variable> variables = new ArrayList<Variable>();
@@ -209,10 +205,8 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
 
             if (log.isDebugEnabled()) {
                 log.debug("Process definition url: " + processInstanceResponse.getProcessDefinitionUrl());
-                auditLog.debug("Process definition url: " + processInstanceResponse.getProcessDefinitionUrl());
             }
-
-            auditLog.info("Application Creation approval process instance task with business key " +
+            log.info("Application Creation approval process instance task with business key " +
                     appWorkFlowDTO.getExternalWorkflowReference() + " created successfully");
         } catch (APIManagementException e) {
             log.error("Error in obtaining APIConsumer", e);
@@ -230,10 +224,8 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
         try {
             if (dao.getApplicationById(Integer.parseInt(workFlowDTO.getWorkflowReference())) != null) {
                 super.complete(workFlowDTO);
-                String msgm ="Application Creation [Complete] Workflow Invoked. Workflow ID : " + workFlowDTO
-                        .getExternalWorkflowReference() + "Workflow State : " + workFlowDTO.getStatus();
-                log.info(msgm);
-                auditLog.info(msgm);
+                log.info("Application Creation [Complete] Workflow Invoked. Workflow ID : " + workFlowDTO
+                        .getExternalWorkflowReference() + "Workflow State : " + workFlowDTO.getStatus());
 
                 String status = null;
                 if (WorkflowStatus.CREATED.equals(workFlowDTO.getStatus())) {
@@ -249,7 +241,6 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
                 } catch (APIManagementException e) {
                     String msg = "Error occurred when updating the status of the Application creation " + "process";
                     log.error(msg, e);
-                    auditLog.error(msg, e);
                     throw new WorkflowException(msg, e);
                 }
 
@@ -264,10 +255,8 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
             throw new WorkflowException(msg, e);
         }
 
-        String msgOnCompletion = "Application Creation approval process completed. Workflow ID : " + workFlowDTO
-                .getExternalWorkflowReference() + " Workflow State : " + workFlowDTO.getStatus();
-        log.info(msgOnCompletion);
-        auditLog.info(msgOnCompletion);
+        log.info("Application Creation approval process completed. Workflow ID : " + workFlowDTO
+                .getExternalWorkflowReference() + " Workflow State : " + workFlowDTO.getStatus());
 
         return new GeneralWorkflowResponse();
     }
@@ -318,10 +307,8 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
             log.error(e);
         }
 
-        String logm = "Application Creation approval process instance task with business key " +
-                workflowExtRef + " deleted successfully";
-        log.info(logm);
-        auditLog.info(logm);
+        log.info("Application Creation approval process instance task with business key " +
+                workflowExtRef + " deleted successfully");
 
     }
     /**\
