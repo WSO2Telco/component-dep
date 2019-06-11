@@ -1,6 +1,5 @@
 package com.wso2telco.dep.apimlogging;
 
-import org.wso2.carbon.CarbonConstants;
 import org.wso2.carbon.registry.core.Registry;
 import org.wso2.carbon.registry.core.Resource;
 import org.wso2.carbon.registry.core.Tag;
@@ -26,7 +25,6 @@ import org.xml.sax.InputSource;
 public class APILogHandler extends Handler {
 
     private static final Log log = LogFactory.getLog(APILogHandler.class);
-	private static final Log auditLog = CarbonConstants.AUDIT_LOG;
     private static String curUser = "";
     
     public void put(RequestContext requestContext) {
@@ -68,14 +66,12 @@ public class APILogHandler extends Handler {
                         String logEntry = getLogEntryComparingResources(oldResourceContentUptoOverview, newResourceContentUptoOverview);
                     	if (!logEntry.equals("")) {
                         	log.info(logEntry);
-                        	auditLog.info(logEntry);
                     	}
                     } else {
                         //log for create new version
                     	String logEntry = getLogEntryCreateNewVersion(newResourceContentUptoOverview);
                     	if (!logEntry.equals("")) {
                         	log.info(logEntry);
-                        	auditLog.info(logEntry);
                     	}
                     }
                 } else {
@@ -103,7 +99,6 @@ public class APILogHandler extends Handler {
 
             String logEntry = getLogEntryForDeletedResource(oldResourceContent);
             log.info(logEntry);
-            auditLog.info(logEntry);
         } catch	(Exception e) {
             log.error("error on delete method", e);
         }
@@ -121,7 +116,6 @@ public class APILogHandler extends Handler {
 			String tag = requestContext.getTag();
             String logEntry = "Added tag - " + tag;
             log.info(logEntry);
-            auditLog.info(logEntry);
 		} catch (Exception e) {
 			log.error("error on applyTag method", e);
 		}
@@ -139,7 +133,6 @@ public class APILogHandler extends Handler {
 			String tag = requestContext.getTag();
             String logEntry = "Removed tag - " + tag;
             log.info(logEntry);
-            auditLog.info(logEntry);
 		} catch (Exception e) {
 			log.error("error accessing ", e);
 		}

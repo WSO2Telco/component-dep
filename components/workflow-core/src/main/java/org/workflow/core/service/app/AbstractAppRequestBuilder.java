@@ -169,15 +169,67 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
         return handler.getApprovalHistory(subscriber, applicationName, applicationId, operator, status, offset, count);
     }
 
-    public HistoryResponse getApprovalHistoryWithPendingJobs(String subscriber, String applicationName, int applicationId, String operator, String status, int offset, int count) throws BusinessException {
-        DatabaseHandler handler = new DatabaseHandler();
-        return handler.getApprovalHistoryWithPendingJobs(subscriber, applicationName, applicationId, operator, status, offset, count);
-    }
-
     @Override
     protected abstract Callback buildApprovalRequest(ApprovalRequest approvalRequest, UserProfileDTO userProfile) throws BusinessException;
 
     protected String getProcessDefinitionKey() {
         return depType.getAppProcessType();
+    }
+
+    @Override
+    public Callback getHistoryData(TaskSearchDTO searchDTO, UserProfileDTO userProfile) throws BusinessException {
+
+        String filterStr = searchDTO.getFilterBy();
+        final Map<String, String> varMap = new HashMap<String, String>();
+        Callback returnCall;
+
+        if (filterStr != null && !filterStr.trim().isEmpty()) {
+            final String[] filterCriterias = filterStr.split(",");
+            for (String criteria : filterCriterias) {
+                String[] criteriaArray = criteria.split(":");
+                if (criteriaArray.length == 2 && !criteriaArray[0].trim().isEmpty() && !criteriaArray[1].trim().isEmpty()
+                        && historyFilterMap().containsKey(criteriaArray[0].trim().toLowerCase())) {
+                    varMap.put(historyFilterMap().get(criteriaArray[0].trim().toLowerCase()), criteriaArray[1]);
+                }
+            }
+        }
+
+        String subscriber = ALL;
+        int applicationId;
+        String applicationName =ALL;
+        String operator = ALL;
+        String status = ALL;
+
+        if (varMap.containsKey(HistoryVariable.SP.key())) {
+            subscriber = varMap.get(HistoryVariable.SP.key());
+        }
+
+        if(varMap.containsKey(HistoryVariable.NAME.key())){
+            applicationName = varMap.get(HistoryVariable.NAME.key());
+        }
+
+        if(varMap.containsKey(HistoryVariable.ID.key())) {
+            applicationId = Integer.parseInt(varMap.get(HistoryVariable.ID.key()));
+        }else {
+            applicationId = 0;
+        }
+
+        if (varMap.containsKey(HistoryVariable.STATUS.key())) {
+            status = varMap.get(HistoryVariable.STATUS.key());
+        }
+
+        if(!isAdmin(userProfile)){
+            operator = userProfile.getUserName().toUpperCase();
+        }else if(varMap.containsKey(HistoryVariable.OPARATOR.key())){
+            operator = varMap.get(HistoryVariable.OPARATOR.key());
+        }
+
+        try {
+            HistoryResponse apiRequests = getApprovalHistory( subscriber, applicationName, applicationId, operator, status, searchDTO.getStart(), searchDTO.getBatchSize());
+            returnCall = new Callback().setPayload(apiRequests).setSuccess(true).setMessage(Messages.APPLICATION_HISTORY_SUCCESS.getValue());
+        } catch (Exception e) {
+            returnCall = new Callback().setPayload(e.getMessage()).setSuccess(false).setMessage(Messages.APPLICATION_HISTORY_FAILED.getValue());
+        }
+        return returnCall;
     }
 }
