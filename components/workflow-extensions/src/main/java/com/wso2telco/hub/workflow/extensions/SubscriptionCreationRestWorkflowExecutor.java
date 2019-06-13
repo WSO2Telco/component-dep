@@ -38,6 +38,7 @@ import feign.jackson.JacksonEncoder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.workflow.core.execption.WorkflowExtensionException;
+import org.wso2.carbon.CarbonConstants;
 import org.wso2.carbon.apimgt.api.APIConsumer;
 import org.wso2.carbon.apimgt.api.APIManagementException;
 import org.wso2.carbon.apimgt.api.APIProvider;
@@ -92,6 +93,8 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
     private static final String PUBLISHER_ROLE_START_WITH = "workflow.Publisher.role.start.with";
     private static final String PUBLISHER_ROLE_END_WITH = "workflow.Publisher.role.end.with";
     private static final String API_PUB_DEPARTMENT = "department";
+    private static Log auditLog = CarbonConstants.AUDIT_LOG;
+
     private String serviceEndpoint;
     private String username;
     private String password;
@@ -108,7 +111,9 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
 
         try {
             if (log.isDebugEnabled()) {
-                log.debug("Service endpoint: " + serviceEndpoint + ", username: " + username);
+                String msg = "Service endpoint: " + serviceEndpoint + ", username: " + username;
+                log.debug(msg);
+                auditLog.debug(msg);
             }
             super.execute(workflowDTO);
 
@@ -218,9 +223,11 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
             }
 
             if (log.isDebugEnabled()) {
-                log.debug("Application name: " + applicationName + ", deployment type: " + deploymentType +
+                String logmessage = "Application name: " + applicationName + ", deployment type: " + deploymentType +
                         ", callback url: " + callBackURL +
-                        ", workflow reference id: " + workflowRefId + ", service endpoint: " + serviceEndpoint);
+                        ", workflow reference id: " + workflowRefId + ", service endpoint: " + serviceEndpoint;
+                log.debug(logmessage);
+                auditLog.debug(logmessage);
             }
 
             //get API publisher role
@@ -277,11 +284,15 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
             }
 
             if (log.isDebugEnabled()) {
-                log.debug("Process definition url: " + processInstanceResponse.getProcessDefinitionUrl());
+                String msg = "Process definition url: " + processInstanceResponse.getProcessDefinitionUrl();
+                log.debug(msg);
+                auditLog.debug(msg);
             }
 
-            log.info("Subscription Creation approval process instance task with Id " +
-                    processInstanceResponse.getId() + " created successfully");
+            String logmessage = "Subscription Creation approval process instance task with Id " +
+                    processInstanceResponse.getId() + " created successfully";
+            log.info(logmessage);
+            auditLog.info(logmessage);
         } catch (APIManagementException e) {
             throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
         } catch (UserStoreException e) {
@@ -296,8 +307,10 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
     public WorkflowResponse complete(WorkflowDTO workFlowDTO) throws WorkflowException {
         workFlowDTO.setUpdatedTime(System.currentTimeMillis());
         super.complete(workFlowDTO);
-        log.info("Subscription Creation [Complete] Workflow Invoked. Workflow ID : " +
-                workFlowDTO.getExternalWorkflowReference() + "Workflow State : " + workFlowDTO.getStatus());
+        String logm = "Subscription Creation [Complete] Workflow Invoked. Workflow ID : " +
+                workFlowDTO.getExternalWorkflowReference() + "Workflow State : " + workFlowDTO.getStatus();
+        log.info(logm);
+        auditLog.info(logm);
 
         if (WorkflowStatus.APPROVED.equals(workFlowDTO.getStatus()) ||
                 WorkflowStatus.REJECTED.equals(workFlowDTO.getStatus())) {
@@ -316,11 +329,13 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
                     apiMgtDAO.updateSubscriptionStatus(Integer.parseInt(workFlowDTO.getWorkflowReference()), status);
                 } catch (APIManagementException e) {
                     log.error("Could not complete subscription creation workflow", e);
+                    auditLog.error("Could not complete subscription creation workflow", e);
                     throw new WorkflowException("Could not complete subscription creation workflow", e);
                 }
 
             } else {
                 log.error("Could not complete subscription creation workflow. Approval status is invalid.");
+                auditLog.error("Could not complete subscription creation workflow. Approval status is invalid.");
             }
         }
         return null;
@@ -368,9 +383,10 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
         } catch (WorkflowExtensionException e) {
             throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
         }
-
-        log.info("Application Creation approval process instance task with business key " +
-                workflowExtRef + " deleted successfully");
+        String deletelog = "[Subscription Deleted] Subscription approval process instance task with business key " +
+                workflowExtRef + " deleted successfully";
+        log.info(deletelog);
+        auditLog.info(deletelog);
     }
 
     private String getDeploymentType() {

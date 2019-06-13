@@ -293,8 +293,9 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
         }
 
         // if application has a subscription task clean
+        String applicationId = null;
         try {
-            String applicationId = workflowDTO.getWorkflowReference();
+            applicationId = workflowDTO.getWorkflowReference();
             WorkflowDAO workflowDAO = new WorkflowDAO();
             List<WorkflowReferenceDTO> workflowByAppId = workflowDAO.findWorkflowByAppId(applicationId);
             for (WorkflowReferenceDTO workflowReferenceDTO : workflowByAppId) {
@@ -310,6 +311,14 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
         log.info("Application Creation approval process instance task with business key " +
                 workflowExtRef + " deleted successfully");
 
+        try {
+            Application app = dao.getApplicationById(Integer.parseInt(applicationId));
+            String audit = "{\"action\":\"deleted\",\"typ\":\"Application\",\"info\":\"{\\\"tier\\\":"+app.getTier()+",\\\"name\\\":"+app.getName()+",\\\"callbackURL\\\":"+app.getCallbackUrl()+"}\"}";
+            log.info(audit);
+
+        } catch (APIManagementException e) {
+            e.printStackTrace();
+        }
     }
     /**\
      * replaced by WorkFlowHealper.getDeploymentType()
