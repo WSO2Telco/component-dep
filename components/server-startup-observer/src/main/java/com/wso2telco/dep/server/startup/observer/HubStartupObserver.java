@@ -32,6 +32,8 @@ import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.File;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.Arrays;
 
 import static java.nio.file.Files.readAllBytes;
 import static java.nio.file.Paths.get;
@@ -51,6 +53,10 @@ public class HubStartupObserver implements ServerStartupObserver {
     private static final String PRODUCT_PROFILE_API_STORE = "api-store";
     private static final String PRODUCT_PROFILE_DEFAULT = "default";
     private static final Log log = LogFactory.getLog(HubStartupObserver.class);
+    private static final String DEPLOYMENT_TYPE_HUB = "hub";
+    private static final String DEPLOYMENT_TYPE_EGW = "external_gateway";
+    private static final String DEPLOYMENT_TYPE_IGW = "internal_gateway_type2";
+    private static final String DEPLOYMENT_TYPE_SYSTEM_PARAM = "DEPLOYMENT_TYPE";
 
     @Override
     public void completingServerStartup() {
@@ -194,13 +200,41 @@ public class HubStartupObserver implements ServerStartupObserver {
                 if (log.isDebugEnabled()) {
                     log.debug("Creating " + MANAGE_APP_ADMIN_ROLE + " role: " + role);
                 }
-                Permission[] loginPermission = new Permission[]{new Permission("/permission/admin/login", "ui.execute")};
+                ArrayList<Permission> permissions = new ArrayList<Permission>();
+                permissions.add(new Permission("/permission/admin/login", "ui.execute"));
+                
+                addManagePermissions(permissions);
+                
                 String superTenantName = ServiceReferenceHolder.getInstance().getRealmService().getBootstrapRealmConfiguration().getAdminUserName();
                 String[] userList = new String[]{superTenantName};
-                manager.addRole(role, userList, loginPermission);
+                manager.addRole(role, userList, (permissions.toArray(new Permission[permissions.size()])));
             }
         } catch (Exception e) {
             log.error("Error in assigning 'manage-app-admin' role to super tenant", e);
+        }
+    }
+
+    private void addManagePermissions(ArrayList<Permission> permissions) {
+        String deploymentType = System.getProperty(DEPLOYMENT_TYPE_SYSTEM_PARAM);
+        switch (deploymentType){
+            case DEPLOYMENT_TYPE_IGW:
+                //TODO: Implement logic
+            case DEPLOYMENT_TYPE_EGW:
+                permissions.add(new Permission("/permission/UIModulePermission/apiBlacklist","ui.execute"));
+                permissions.add(new Permission("/permission/UIModulePermission/whiteList","ui.execute"));
+
+                permissions.add(new Permission("/permission/UIModulePermission/application/visible","ui.execute"));
+                permissions.add(new Permission("/permission/UIModulePermission/application/changeTiers","ui.execute"));
+
+                permissions.add(new Permission("/permission/UIModulePermission/subscription/visible","ui.execute"));
+                permissions.add(new Permission("/permission/UIModulePermission/subscription/changeTiers","ui.execute"));
+
+                permissions.add(new Permission("/permission/UIModulePermission/workFlowHistory/visible","ui.execute"));
+                permissions.add(new Permission("/permission/UIModulePermission/workFlowHistory/showApprovedOn","ui.execute"));
+
+
+            case DEPLOYMENT_TYPE_HUB:
+                //TODO: Implement logic
         }
     }
 
