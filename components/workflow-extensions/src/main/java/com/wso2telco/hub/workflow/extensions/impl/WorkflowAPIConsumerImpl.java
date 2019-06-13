@@ -33,7 +33,7 @@ public class WorkflowAPIConsumerImpl implements WorkflowAPIConsumer {
 	@Override
 	public int getAPIID(APIIdentifier apiId) throws APIManagementException {
 		int id = -1;
-		Connection connection;
+		Connection connection = null;
 		
 		try {
 			connection = APIMgtDBUtil.getConnection();
@@ -43,6 +43,8 @@ public class WorkflowAPIConsumerImpl implements WorkflowAPIConsumer {
 			handleException("Failed to retrieve api id. ", e);
 		} catch (APIManagementException e) {
 			handleException("Error occured in retrieving api id. ", e);
+		} finally {
+			APIMgtDBUtil.closeAllConnections(null, connection, null);
 		}
 		return id;
 	}
