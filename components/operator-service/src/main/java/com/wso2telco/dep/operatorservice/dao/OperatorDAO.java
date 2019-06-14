@@ -828,7 +828,7 @@ public class OperatorDAO {
             ps.setString(1, apiName);
             ps.setString(2, applicationId);
             ps.executeUpdate();
-
+			log.info("API Subscription Deleted. API_NAME : "+apiName+" | APPLICATION_ID : "+applicationId);
         } catch (SQLException e) {
             log.error("database operation error in remove API Subscription : ", e);
             throw e;
@@ -850,6 +850,7 @@ public class OperatorDAO {
 			ps.setString(1, applicationId);
 			ps.setString(2, getApiIDFromName(apiName,version));
 			ps.executeUpdate();
+			log.info("API Subscription Deleted. API_NAME : "+apiName+" | APPLICATION_ID : "+applicationId);
 		} catch (SQLException e) {
 			log.error("database operation error in remove API Subscription : ", e);
 			throw e;
@@ -920,9 +921,9 @@ public class OperatorDAO {
             ps = con.prepareStatement(query);
             ps.setString(1, applicationId);
             ps.executeUpdate();
-
+			log.info("API Subscription Deleted. APPLICATION_ID : "+applicationId);
         } catch (SQLException e) {
-            log.error("database operation error in remove application : ", e);
+            log.error("database operation error in remove subscription : ", e);
             throw e;
         } catch (Exception e) {
             log.error("database operation error in remove API Subscription : ", e);
