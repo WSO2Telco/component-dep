@@ -6,16 +6,16 @@ import com.wso2telco.core.dbutils.util.Callback;
 import com.wso2telco.core.userprofile.dto.UserProfileDTO;
 import org.apache.commons.logging.LogFactory;
 import org.workflow.core.activity.TaskApprovalRequest;
+import org.workflow.core.model.HistoryResponse;
 import org.workflow.core.model.RequestVariable;
 import org.workflow.core.model.TaskSearchDTO;
 import org.workflow.core.util.DeploymentTypes;
+import org.workflow.core.util.HistoryVariable;
+import org.workflow.core.util.Messages;
 import org.workflow.core.util.WorkFlowVariables;
 
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
-import java.util.Locale;
+import java.util.*;
 
 /**
  * Copyright (c) 2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
@@ -73,6 +73,63 @@ public class ExtGtwAppRequestBuilder extends AbstractAppRequestBuilder {
         approvalRequest.setVariables(variables);
 
         return super.executeTaskApprovalRequest(approvalRequest, request);
+    }
+
+    @Override
+    public Callback getHistoryData(TaskSearchDTO searchDTO, UserProfileDTO userProfile) throws BusinessException {
+
+        String filterStr = searchDTO.getFilterBy();
+        final Map<String, String> varMap = new HashMap<String, String>();
+        Callback returnCall;
+
+        if (filterStr != null && !filterStr.trim().isEmpty()) {
+            final String[] filterCriterias = filterStr.split(",");
+            for (String criteria : filterCriterias) {
+                String[] criteriaArray = criteria.split(":");
+                if (criteriaArray.length == 2 && !criteriaArray[0].trim().isEmpty() && !criteriaArray[1].trim().isEmpty()
+                        && historyFilterMap().containsKey(criteriaArray[0].trim().toLowerCase())) {
+                    varMap.put(historyFilterMap().get(criteriaArray[0].trim().toLowerCase()), criteriaArray[1]);
+                }
+            }
+        }
+
+        String subscriber = ALL;
+        int applicationId;
+        String applicationName =ALL;
+        String operator = ALL;
+        String status = ALL;
+
+        if (varMap.containsKey(HistoryVariable.SP.key())) {
+            subscriber = varMap.get(HistoryVariable.SP.key());
+        }
+
+        if(varMap.containsKey(HistoryVariable.NAME.key())){
+            applicationName = varMap.get(HistoryVariable.NAME.key());
+        }
+
+        if(varMap.containsKey(HistoryVariable.ID.key())) {
+            applicationId = Integer.parseInt(varMap.get(HistoryVariable.ID.key()));
+        }else {
+            applicationId = 0;
+        }
+
+        if (varMap.containsKey(HistoryVariable.STATUS.key())) {
+            status = varMap.get(HistoryVariable.STATUS.key());
+        }
+
+        if(!isAdmin(userProfile)){
+            operator = userProfile.getUserName().toUpperCase();
+        }else if(varMap.containsKey(HistoryVariable.OPARATOR.key())){
+            operator = varMap.get(HistoryVariable.OPARATOR.key());
+        }
+
+        try {
+            HistoryResponse apiRequests = getApprovalHistory( subscriber, applicationName, applicationId, operator, status, searchDTO.getStart(), searchDTO.getBatchSize());
+            returnCall = new Callback().setPayload(apiRequests).setSuccess(true).setMessage(Messages.APPLICATION_HISTORY_SUCCESS.getValue());
+        } catch (Exception e) {
+            returnCall = new Callback().setPayload(e.getMessage()).setSuccess(false).setMessage(Messages.APPLICATION_HISTORY_FAILED.getValue());
+        }
+        return returnCall;
     }
 
     @Override
