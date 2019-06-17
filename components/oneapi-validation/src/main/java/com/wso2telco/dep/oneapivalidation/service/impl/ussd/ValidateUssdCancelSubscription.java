@@ -15,20 +15,18 @@
  ******************************************************************************/
 package com.wso2telco.dep.oneapivalidation.service.impl.ussd;
 
+import java.util.Arrays;
+
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
-import com.wso2telco.dep.oneapivalidation.util.UrlValidator;
+import com.wso2telco.dep.oneapivalidation.util.Validation;
+import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
 
-
- 
 // TODO: Auto-generated Javadoc
 /**
  * The Class ValidateUssdCancelSubscription.
  */
 public class ValidateUssdCancelSubscription implements IServiceValidate {
-
-    /** The validation rules. */
-    private final String[] validationRules = {"inbound", "subscriptions", "*"};
 
     /* (non-Javadoc)
      * @see com.wso2telco.oneapivalidation.service.IServiceValidate#validate(java.lang.String)
@@ -37,19 +35,29 @@ public class ValidateUssdCancelSubscription implements IServiceValidate {
         throw new UnsupportedOperationException("Not supported yet.");
     }
 
-    /* (non-Javadoc)
-     * @see com.wso2telco.oneapivalidation.service.IServiceValidate#validateUrl(java.lang.String)
+    /**
+     * in ValidateUssdCancelSubscription flow url pattern is like, http://<host>:8280/ussd/v1/inbound/subscriptions/{id}
+     * url contains 3 components.
+     *
+     * {@inheritDoc}
      */
     public void validateUrl(String pathInfo) throws CustomException {
-        String[] requestParts = null;
+        String[] requestParts = new String[3];
         if (pathInfo != null) {
             if (pathInfo.startsWith("/")) {
                 pathInfo = pathInfo.substring(1);
             }
-            requestParts = pathInfo.split("/");
+            requestParts = Arrays.copyOf(pathInfo.split("/"), 3);
         }
 
-        UrlValidator.validateRequest(requestParts, validationRules);
+        ValidationRule validationRuleInbound = new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_URL,
+            "inbound", requestParts[0]);
+        ValidationRule validationRuleSubscriptions = new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_URL,
+            "subscriptions", requestParts[1]);
+        ValidationRule validationRuleSubscriptionId = new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_URL,
+            "subscriptionID", requestParts[2]);
+        Validation.checkRequestParams(
+            new ValidationRule[] { validationRuleInbound, validationRuleSubscriptions, validationRuleSubscriptionId });
     }
 
     /* (non-Javadoc)
