@@ -50,11 +50,11 @@ public class ValidateUssdCancelSubscription implements IServiceValidate {
             requestParts = Arrays.copyOf(pathInfo.split("/"), 3);
         }
 
-        ValidationRule validationRuleInbound = new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_URL,
+        ValidationRule validationRuleInbound = new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY,
             "inbound", requestParts[0]);
-        ValidationRule validationRuleSubscriptions = new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_URL,
+        ValidationRule validationRuleSubscriptions = new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY,
             "subscriptions", requestParts[1]);
-        ValidationRule validationRuleSubscriptionId = new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_URL,
+        ValidationRule validationRuleSubscriptionId = new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY,
             "subscriptionID", requestParts[2]);
         Validation.checkRequestParams(
             new ValidationRule[] { validationRuleInbound, validationRuleSubscriptions, validationRuleSubscriptionId });
