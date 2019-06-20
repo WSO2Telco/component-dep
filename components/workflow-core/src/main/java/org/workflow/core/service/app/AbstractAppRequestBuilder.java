@@ -128,7 +128,7 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
         Callback returnCall;
 
         for (Range month : months) {
-            taskList = activityClient.getHistoricTasks(month.getStart(), month.getEnd(), getProcessDefinitionKey(), user);
+            taskList = activityClient.getHistoricTasks(month.getStart(), month.getEnd(), getProcessDefinitionKey(), user.toLowerCase());
             data.add(taskList.getTotal());
 
         }
