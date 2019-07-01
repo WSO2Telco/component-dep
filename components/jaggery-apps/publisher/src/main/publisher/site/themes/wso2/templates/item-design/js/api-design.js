@@ -154,15 +154,17 @@ function APIDesigner(){
         if(this.soap_resource_created == undefined){
             var soapRestMapping = JSON.parse($('#sequenceMapping').val());
             var soapRestOutMapping = JSON.parse($('#sequenceOutMapping').val());
-            var resourceDetails = $.trim($(this).parent().text().replace(/[\t\n]+/g,''));
-            resourceDetails = resourceDetails.replace(/\s/g,'');
-            var method = resourceDetails.substring(0, resourceDetails.indexOf("/"));
-            var path = resourceDetails.substring(resourceDetails.indexOf("/") + 1, resourceDetails.indexOf("+"));
-            var key = path + "_" + method;
-            var inSeqContent = soapRestMapping[key].content;
-            var outSeqContent = soapRestOutMapping[key].content;
-            event.data.render_soap_to_rest_resource($(this).parent().next().find('.resource_body'), inSeqContent, outSeqContent, key);
-            this.soap_resource_created = true;
+            var resourceDetailsArr = $(this).parent().data("path").split(".");
+            if(resourceDetailsArr.length > 3) {
+                var method = resourceDetailsArr[3];
+                var path = resourceDetailsArr[2].substring(1);
+                var key = path + "_" + method;
+                var inSeqContent = soapRestMapping[key].content;
+                var outSeqContent = soapRestOutMapping[key].content;
+                event.data.render_soap_to_rest_resource($(this).parent().next().find('.resource_body'), inSeqContent,
+                outSeqContent, key);
+                this.soap_resource_created = true;
+            }
             $(this).parent().next().find('.resource_body').show();
         }
         else{
@@ -289,7 +291,7 @@ APIDesigner.prototype.check_if_resource_exist = function(path, method){
 }
 
 APIDesigner.prototype.load_api_base_document = function (api_doc_version) {
-    if (api_doc_version == supportedOpenAPI3Version){
+    if (this.is_supported_openapi_version(api_doc_version)){
         this.load_api_document(openapi3_api_doc);
     } else{
         this.load_api_document(swagger2_api_doc);
@@ -298,7 +300,7 @@ APIDesigner.prototype.load_api_base_document = function (api_doc_version) {
 
 APIDesigner.prototype.is_openapi3 = function () {
     var isOpenAPI3 = false;
-    if (this.api_doc.openapi != undefined && this.api_doc.openapi == supportedOpenAPI3Version) {
+    if (this.api_doc.openapi != undefined && this.is_supported_openapi_version(this.api_doc.openapi.trim())) {
         isOpenAPI3 = true;
     }
     return isOpenAPI3;
@@ -330,6 +332,11 @@ APIDesigner.prototype.add_default_resource = function(){
     $(".http_verb_select:lt(5)").attr("checked","checked");
     $("#inputResource").val("Default");
     $("#add_resource").trigger('click');
+}
+
+APIDesigner.prototype.is_supported_openapi_version = function (version) {
+    // support for 3.0.x versions
+    return /^3\.0\.\d{1,}$/.test(version);
 }
 
 APIDesigner.prototype.get_scopes = function() {
@@ -527,7 +534,8 @@ APIDesigner.prototype.init_controllers = function(){
         var paramName = API_DESIGNER.api_doc.paths[operations][operation]['parameters'][i]['name'];
 
         // @todo: param_string
-        jagg.message({content: 'Do you want to delete the parameter <strong>' + paramName + '</strong> ?',
+        jagg.message({content: 'Do you want to delete the parameter <strong>'
+                                    + Handlebars.Utils.escapeExpression(paramName) + '</strong> ?',
             type: 'confirm', title: i18n.t("Delete Parameter"),
             okCallback: function () {
                 API_DESIGNER = APIDesigner();
@@ -1136,7 +1144,19 @@ APIDesigner.prototype.render_resource = function(container){
     };
 
 APIDesigner.prototype.query = function(path){
-    return JSONPath(path, this.api_doc);
+    var operation = JSONPath(path, this.api_doc);
+    // Check for $ref element in all available parameters and resolve to actual definition else return inline definition
+    if (operation[0].parameters) {
+        operation[0].parameters = operation[0].parameters.map(function (param) {
+                if (param["$ref"] !== undefined) {
+                    return this.query(param["$ref"].replace("#","$").replace(/\//g,"."), this.api_doc)[0];
+                } else {
+                    return param;
+                }
+            }.bind(this));
+    }
+
+    return operation;
 }
 
 APIDesigner.prototype.add_resource = function(resource, path){
@@ -1378,6 +1398,7 @@ $(document).ready(function(){
                 title: i18n.t("Resource not specified"),
                 anotherDialog:true,
                 okCallback:function(){
+                    $('#messageModal').modal('hide');
                     var designer = APIDesigner();
                     designer.add_default_resource();
                     $("#design_form").submit();
@@ -1494,6 +1515,17 @@ $(document).ready(function(){
             output.src = URL.createObjectURL(this.files[0]);
         }
     });
+    
+    if($("#wsdl").val()) {
+		var wsdlInputVal = $("#wsdl").val();
+		if(wsdlInputVal.endsWith(".zip")) {
+		   $("#fileUploadSection").show();
+		   $("#wsdlurlInputSection").hide();
+		   
+		} else {
+		   $("#fileUploadSection").hide();	
+		}
+    }
 });
 
 var thisID;
@@ -1629,7 +1661,7 @@ var getSoapToRestPathMap = function () {
         var designer = new APIDesigner();
         designer.load_api_document(swagger2_api_doc);
         $("#wsdl-content").hide();
-        $(".resource_create").hide();
+        $(".resource_create").show();
         $('#resource_details').show();
         $('#soap-swagger-editor').show();
         isSoapView = true;

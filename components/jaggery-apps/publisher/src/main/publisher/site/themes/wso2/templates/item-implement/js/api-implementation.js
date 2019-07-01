@@ -254,9 +254,18 @@ $(document).ready(function(){
                 });               
             });
         $("#prototype_form").submit();
-	return false;                         
-    });    
-    
+	return false;
+    });
+
+    $("#savePrototypeBtn").click(function(e){
+	var n = noty({
+                        theme: 'wso2',
+                        text: $('#save-prototype-success').text(),
+                        layout:'top',
+                        type:'success',
+                        timeout : '1000'
+	});
+    });
 
     if( $("#toggleCorsPrototyped").attr('checked') ) {
         $('#corsTablePrototyped').show();
@@ -298,7 +307,7 @@ $(document).ready(function(){
     else {
         $('#toggleSequence').parent().next().hide();
     }
-    
+
     $('#upload_sequence').attr('disabled','disabled');
     $('.toggleRadios input[type=radio]').click(function(){
         if (typeof jsonFile != 'undefined') {
@@ -318,7 +327,7 @@ $(document).ready(function(){
     });
 
     $('#upload_sequence').click(function () {
-    	
+
     	$('#upload_sequence').buttonLoader('start');
         	var type = $(".modal-body #flow_id").val();
         	uploadSequence(type);
@@ -427,7 +436,6 @@ var hideMsg = function () {
     $('#apiSaved').hide("slow");
 }
 
-
 function showGatewayFailure(message) {
     if (message.split("||")[1] == "warning") {
         var environmentsFailed = JSON.parse(message.split("||")[0]);
@@ -461,7 +469,7 @@ function showGatewayFailure(message) {
     }
     else {
 
-        jagg.message({content: responseText.message, type: "error"});
+        jagg.message({content: message, type: "error"});
     }
 }
 

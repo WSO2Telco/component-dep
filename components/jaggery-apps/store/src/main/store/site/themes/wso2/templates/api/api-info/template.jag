@@ -34,7 +34,7 @@ var result;
     
     //check whether logged in domain and store domain is same
     if(tenant.toLocaleLowerCase() != userDomain.toLocaleLowerCase()){
-      var subscriptionAvailability = api.subscriptionAvailability;
+     var subscriptionAvailability = api.subscriptionAvailability;
       if (subscriptionAvailability == 'all_tenants') {
         subsPermitted = true;
       } else if (subscriptionAvailability == 'specific_tenants') {
@@ -341,9 +341,9 @@ var result;
                                             <span id="subsBtnDesc" class="help-block"><%=i18n.localize("You may not be entitled to any of the available tiers")%></span>
                                     <%}%>
                                 </button>
-                                </form>
-                                <%} else {%>
-                                    <%if (api.isAdvertiseOnly && api.redirectURL != null) {
+                            </form>
+                        <%} else {%>
+                                <%if (api.isAdvertiseOnly && api.redirectURL != null) {
                                     var tenantDomain = 'carbon.super';
                                 if(api.redirectURL.indexOf("?") != -1){
                                     tenantDomain = api.redirectURL.split("?")[1];
@@ -354,38 +354,38 @@ var result;
                                 }
                                 var path = api.redirectURL + "/apis/info?name=" + api.name + "&version=" + api.version + "&provider=" + api.apiOwner +"&tenant=" + tenantDomain;
                               %>
-                                        <a id="store-redirect-link" class="btn btn-primary btn-mobile" href="<%=path%>" target="_" title="store url">
-                                            <span class="icon fw-stack">
+                                <a id="store-redirect-link" class="btn btn-primary btn-mobile" href="<%=path%>" target="_" title="store url">
+                                    <span class="icon fw-stack">
                                         <i class="fw fw-subscribe fw-stack-1x"></i>
                                         <i class="fw fw-circle-outline fw-stack-2x"></i>
                                     </span>
                                             <%=i18n.localize("Visit Publisher Store")%>
 
-                                        </a>
-                                        <%}%>
-                                            <%} %>
+                                </a>
+                             <%}%>
+                        <%} %>
                         </div>
                     </div>
                 </div>
                 <% jagg.includeBlock("ui/tab", outputs.tabs); %>
 
                     <div class="api-info">
-                        <div class="row">
-                            <div class="col-sm-12">
+            <div class="row">
+                <div class="col-sm-12">
 
-                                <%if (api.isAdvertiseOnly && api.redirectURL != null) {
-                          var tenantDomain = 'carbon.super';
+                    <%if (api.isAdvertiseOnly && api.redirectURL != null) {
+                        var tenantDomain = 'carbon.super';
                         if(api.redirectURL.indexOf("?") != -1){
-              tenantDomain = api.redirectURL.split("?")[1];
-            } else if (api.apiOwner != null && api.apiOwner.indexOf("@") != -1) {
-              tenantDomain = api.apiOwner.split("@")[1];
-            } else if (api.apiOwner != null && api.apiOwner.indexOf("-AT-") != -1) {
-              tenantDomain = MultitenantUtils.getTenantDomain(APIUtil.replaceEmailDomainBack(api.apiOwner));
-            }
-                      var path = api.redirectURL + "/apis/info?name=" + api.name + "&version=" + api.version + "&provider=" + api.apiOwner +"&tenant=" + tenantDomain;
+							tenantDomain = api.redirectURL.split("?")[1];
+						} else if (api.apiOwner != null && api.apiOwner.indexOf("@") != -1) {
+							tenantDomain = api.apiOwner.split("@")[1];
+						} else if (api.apiOwner != null && api.apiOwner.indexOf("-AT-") != -1) {
+							tenantDomain = MultitenantUtils.getTenantDomain(APIUtil.replaceEmailDomainBack(api.apiOwner));
+						}
+                    var path = api.redirectURL + "/apis/info?name=" + api.name + "&version=" + api.version + "&provider=" + api.apiOwner +"&tenant=" + tenantDomain;
                     %>
-                                    <div id="store-redirect-link1" class="span4 title-section">
-                                        <a class="btn btn-primary" title="<%=i18n.localize(" Visit Publisher Store ")%>" href="<%=path%>" target="_">
+                    <div id="store-redirect-link1" class="span4 title-section">
+			<a class="btn btn-primary" title="<%=i18n.localize("Visit Publisher Store")%>" href="<%=path%>" target="_">
                                             <%=i18n.localize("Visit Publisher Store")%>
                                         </a>
                                     </div>
@@ -518,7 +518,7 @@ function startAPIStoreInteractiveTutorial() {
 
 function getHTTPMethod() {
     if (!localStorage.getItem("intractiveTutorialHTTPMethod")) {
-        var httpMethod = $('#default_endpoint_list').children().find('.heading').find(".http_method").find(".toggleOperation")[0].textContent;
+        var httpMethod = $('.opblock').children().find('.opblock-summary').prevObject["0"].firstChild.textContent;
         localStorage.setItem("intractiveTutorialHTTPMethod", httpMethod);
     }
 }
