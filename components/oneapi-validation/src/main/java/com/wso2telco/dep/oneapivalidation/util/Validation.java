@@ -21,6 +21,8 @@ import org.wso2.carbon.utils.CarbonUtils;
 
 import java.io.File;
 import java.io.FileInputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
 import java.util.HashSet;
 import java.util.Properties;
 import java.util.Set;
@@ -135,7 +137,7 @@ public class Validation {
 
     static String readCustomRegex() {
         String telFormatTemp = null;
-        String defaultRegex = "^((((tel:){1}(\\+){0,1})|((tel:){0,1}(\\+){1}))([a-zA-Z0-9]+))$";
+        String defaultRegex = "^((((tel:){1}(\\+){0,1})|((tel:){0,1}(\\+){1}))?([0-9]+))$";
 
         try {
             String customRegex = oneAPIValidationConfMap.getProperty("validation.regex");
@@ -183,6 +185,13 @@ public class Validation {
         boolean matched = false;
 
         if (tel != null) {
+            if (!tel.contains("+")) {
+                try {
+                    tel = URLDecoder.decode(tel, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    logger.error("Unable to decode MSISDN",e);
+                }
+            }
             if (tel.matches(telFormats)) {
                 matched = true;
                 logger.debug("MSISDN:  " + tel + " matches regex: " + telFormats);
