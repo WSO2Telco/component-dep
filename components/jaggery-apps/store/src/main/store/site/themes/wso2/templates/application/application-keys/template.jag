@@ -1,11 +1,11 @@
-<% jagg.template("application/application-keys", function(inputs, outputs, jagg) { 
-//@todo if prodkey and consumer is null 
+<% jagg.template("application/application-keys", function(inputs, outputs, jagg) {
+//@todo if prodkey and consumer is null
 //@todo place holder when generating keys ie generating.....
 //@todo check production keys with workflows
 //@todo need to username and password to password grant curl
 //@todo check the ui with scope selection
 //@todo add help buttons
-	var type = outputs.type;
+    var type = outputs.type;
     var app = outputs.app;
 
     var gatewayurlendpoint = outputs.gatewayurl;
@@ -35,17 +35,17 @@
         consumerSecretBtnStyle = "display: none;";
     }
 
-%>
+    %>
 
-<script>
-    var isHashEnabled = '<%=isHashEnabled%>';
+    <script>
+        var isHashEnabled = '<%=isHashEnabled%>';
 </script>
 
 <script id="keys-template" type="text/x-handlebars-template">
 	{{#*inline "callback_url" }}
 	  <div class="form-group">
 	    <label class="" for="ConsumerKey"><%=i18n.localize("Callback URL")%></label>
-        <input type="text" class="form-control callback_url" title="" placeholder="" value="{{callbackUrl}}">	      
+        <input type="text" class="form-control callback_url" title="" placeholder="" value="{{callbackUrl}}">
 	  </div>
 	{{/inline}}
 
@@ -54,22 +54,22 @@
 		  <div class="col-md-12">
             <h4><%=i18n.localize("Grant Types")%></h4>
 			<p><%=i18n.localize("The application can use the following grant types to generate Access Tokens. Based on the application requirement, you can enable or disable grant types for this application.")%></p>
-			<div class="row add-padding-left-2x add-padding-bottom-2x">			
-			{{#each grants}}	
-			  <div class="col-xs-6 col-sm-3 add-padding-1x">			
+			<div class="row add-padding-left-2x add-padding-bottom-2x">
+			{{#each grants}}
+			  <div class="col-xs-6 col-sm-3 add-padding-1x">
 				<label class="checkbox">
 				  <input type="checkbox" class="grants" {{#if disabled }}disabled="disabled"{{/if}} {{#if selected }}checked="checked"{{/if}} value="{{ key }}" />
 				  <span class="helper" title="{{ key }}">{{ name }}</span>
 				</label>
 			  </div>
 			{{/each}}
-			</div>			
+			</div>
 		  </div>
-		</div> 
+		</div>
 	{{/inline}}
 
   {{#if ConsumerKey }}
-	<div class="row">	  
+	<div class="row">
 	  <div class="col-md-12 col-lg-9">
 	    <div class="add-margin-bottom-4x">
 	  	    <button type="button" class="btn btn-secondary show_keys">{{# if show_keys }}<%=i18n.localize("Hide Keys")%>{{else}}<%=i18n.localize("Show Keys")%>{{/if}}</button>
@@ -83,7 +83,7 @@
 		      	<button class="btn btn-default copy-button" data-clipboard-text="{{ConsumerKey}}"
 		      	        type="button" title="<%=i18n.localize("Copy")%>">
                     <i class="fw fw-copy"></i>
-                </button>		      
+                </button>
 		      </div>
 		    </div>
 		  </div>
@@ -96,7 +96,7 @@
 		      	<button class="btn btn-default copy-button" data-clipboard-text="{{ConsumerSecret}}"
 		      	        type="button" title="<%=i18n.localize("Copy")%>">
                     <i class="fw fw-copy"></i>
-                </button>		      
+                </button>
 		      </div>
 		    </div>
 		  </div>
@@ -125,7 +125,7 @@
 			<a data-clipboard-text='curl -k -d "grant_type=client_credentials" -H "Authorization: Basic {{basickey}}"  {{gatewayurlendpoint}}/token ' class="pull-right copy-button"  title="<%=i18n.localize("Copy")%>"><i class="fw fw-copy"></i></a><textarea class="curl_command">curl -k -d "grant_type=client_credentials" \
 	    -H "Authorization: Basic {{# if show_keys }}{{basickey}}{{else}}Base64(consumer-key:consumer-secret){{/if}}" \
 	      {{gatewayurlendpoint}}/token</textarea></pre>
-	        </div>        
+	        </div>
 		  </div>
 		</div>
 		{{#if not_jwt }}
@@ -137,7 +137,7 @@
 		      <div class="input-group-btn">
 		      	<button class="btn btn-default copy-button" data-clipboard-text="{{Key}}"  type="button" title="<%=i18n.localize("Copy")%>">
                     <i class="fw fw-copy"></i>
-                </button>		      
+                </button>
 		      </div>
 		    </div>
 		  </div>
@@ -175,12 +175,8 @@
                       <div class="input-group-addon"><%=i18n.localize("Seconds")%></div>
                     </div>
             </div>
-            {{#if ClientCredentials}}
-                <button class=" btn btn-primary regenerate" data-load-text="<%= i18n.localize("Generating") %>"><%=i18n.localize("Re-generate")%></button>
-            {{else}}
-                <button disabled="disabled" class=" btn btn-primary regenerate" data-load-text="<%= i18n.localize("Generating") %>"><%=i18n.localize("Re-generate")%></button>
-            {{/if}}
-		</form>		  	
+            <button class=" btn btn-primary regenerate" data-load-text="<%= i18n.localize("Generating") %>"><%=i18n.localize("Re-generate")%></button>
+		</form>
 	  </div>
 	</div>
 	<br />
@@ -258,7 +254,7 @@
 	  	{{#if provide_keys_form }}
 	  	<h4>Provide Keys</h4>
 		<div class="row">
-		  <div class="col-md-12 col-lg-6">	  	
+		  <div class="col-md-12 col-lg-6">
 		  <fieldset>
 		  <div class="form-group">
 		    <label class="" for="ConsumerKey"><%=i18n.localize("Consumer Key")%></label>
@@ -278,7 +274,7 @@
 	  	{{else}}
 	  	  <h4><%=i18n.localize("Map Existing OAuth Keys")%></h4>
 	  	  <p><%=i18n.localize("If you already have an OAuth application registered with the IdP, you can use those keys without generating one.")%></p>
-		  <div class="form-group">	    
+		  <div class="form-group">
 		    <button  class="btn btn-secondory provide_keys"><%=i18n.localize("Provide Keys")%></button>
 		  </div>
 		{{/if}}
@@ -378,7 +374,7 @@
 		      <div class="input-group-btn">
 		      	<button class="btn btn-default copy-button" data-clipboard-text="{{Key}}"  type="button" title="<%=i18n.localize("Copy")%>">
                     <i class="fw fw-copy"></i>
-                </button>		      
+                </button>
 		      </div>
 		    </div>
 		  </div>
