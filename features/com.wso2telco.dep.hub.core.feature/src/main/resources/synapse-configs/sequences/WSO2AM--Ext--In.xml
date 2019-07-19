@@ -14,6 +14,10 @@
         <else/>
     </filter>
     <log level="custom">
+<<<<<<< HEAD
+=======
+        <property name="API Request URL" expression="get-property('To')"/>
+>>>>>>> aa199e6b76d7aa67acd56662ed81655c18692ebc
         <property name="Request ID" expression="get-property('MESSAGE_ID')"/>
         <property name="API" expression="$ctx:API_NAME"/>
         <property name="Version" expression="get-property('SYNAPSE_REST_API_VERSION')"/>
