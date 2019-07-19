@@ -81,13 +81,13 @@ public class ValidateUssdSubscription implements IServiceValidate {
             ValidationRule[] rules = new ValidationRule[]{
                     new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "clientCorrelator", clientCorrelator),
                     new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "notifyURL", notifyUrl),
-                    new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "callbackData", callbackData),
-                    new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "keyword", keyword),
+                    new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, USSDKeyConstants.CALLBACK_DATA, callbackData),
+                    new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, USSDKeyConstants.KEYWORD, keyword),
                     new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, USSDKeyConstants.SHORT_CODE, shortCode)};
 
             Validation.checkRequestParams(rules);
 
-            if (requestData.has("shortCodes")) {
+            if (requestData.isNull("shortCodes")) {
                 JSONArray shortCodesArray = requestData.getJSONArray("shortCodes");
 
                 if (shortCodesArray.length() != 0) {
@@ -115,6 +115,22 @@ public class ValidateUssdSubscription implements IServiceValidate {
                 } else {
                     throw new CustomException("SVC0002", "Invalid input value for message part %1", new String[]{"Empty sortcodes list"});
                 }
+            } else if (requestData.isNull("shortCode")) {
+                ValidationRule[] shortCodeRules = new ValidationRule[2];
+
+                String sCode = null;
+                if (requestData.has("shortCode")) {
+                    sCode = nullOrTrimmed(requestData.getString("shortCode"));
+                }
+                shortCodeRules[0] = new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "shortCode", sCode);
+                if (requestData.has("keyword")) {
+                    keyword = nullOrTrimmed(requestData.getString("keyword"));
+                }
+                shortCodeRules[1] = new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "keyword", keyword);
+
+                Validation.checkRequestParams(shortCodeRules);
+            } else {
+                throw new CustomException("SVC0002", "Invalid input value for message part %1", new String[]{"Missing mandatory parameter: shortCode"});
             }
 
         } catch (Exception e) {
