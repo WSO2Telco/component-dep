@@ -70,11 +70,11 @@ public class ValidateUssdSubscription implements IServiceValidate {
                         new String[]{"Missing mandatory parameter: callbackReference"});
             }
 
-            if (requestData.has(USSDKeyConstants.SHORT_CODE) && !requestData.isNull(USSDKeyConstants.SHORT_CODE)) {
+            if (!requestData.isNull(USSDKeyConstants.SHORT_CODE)) {
                 shortCode = nullOrTrimmed(requestData.getString(USSDKeyConstants.SHORT_CODE));
             }
 
-            if (requestData.has("keyword") && !requestData.isNull("keyword")) {
+            if (!requestData.isNull("keyword")) {
                 keyword = nullOrTrimmed(requestData.getString("keyword"));
             }
 
