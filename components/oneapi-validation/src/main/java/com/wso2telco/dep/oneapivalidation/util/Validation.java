@@ -188,14 +188,13 @@ public class Validation {
         boolean matched = false;
 
         if (formattedMsisdn != null) {
-            if (formattedMsisdn != null) {
-                if (!formattedMsisdn.contains("+")) {
-                    try {
-                        formattedMsisdn = URLDecoder.decode(formattedMsisdn, "UTF-8");
-                    } catch (UnsupportedEncodingException e) {
-                        logger.error("Unable to decode MSISDN",e);
-                    }
+            if (!formattedMsisdn.contains("+")) {
+                try {
+                    formattedMsisdn = URLDecoder.decode(formattedMsisdn, "UTF-8");
+                } catch (UnsupportedEncodingException e) {
+                    logger.error("Unable to decode MSISDN", e);
                 }
+            }
             if (formattedMsisdn.matches(telFormats)) {
                 matched = true;
 
@@ -211,9 +210,11 @@ public class Validation {
                     }
                 }
             }
+
         }
         return matched;
     }
+
 
     public static String getValidationRegex() {
         return telFormats;
