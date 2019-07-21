@@ -27,6 +27,7 @@ import com.wso2telco.dep.operatorservice.util.BlacklistWhitelistConstants;
 import com.wso2telco.dep.operatorservice.util.OparatorError;
 import com.wso2telco.dep.operatorservice.util.OparatorTable;
 import com.wso2telco.dep.operatorservice.util.SQLConstants;
+import com.wso2telco.dep.user.masking.UserMaskHandler;
 import org.apache.commons.lang.StringUtils;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -80,9 +81,8 @@ public class BlackListWhiteListDAO {
 			conn.setAutoCommit(false);
 
 			for (MsisdnDTO msisdn : msisdns.getValidProcessed()) {
-
 					ps.setString(1, msisdn.getPrefix());
-					ps.setString(2, msisdn.getDigits());
+					ps.setString(2, UserMaskHandler.getUserMaskIfAllowed(msisdn.getDigits()));
 					ps.setString(3, apiID);
 					ps.setString(4, apiName);
 					ps.setString(5, userID);
@@ -119,7 +119,8 @@ public class BlackListWhiteListDAO {
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
-				returnList.add(new MsisdnDTO(rs.getString("prefix"), rs.getString("msisdn")));
+				returnList.add(new MsisdnDTO(rs.getString("prefix"),
+						UserMaskHandler.getProperlyMaskedUserId(rs.getString("msisdn"))));
 			}
 
 		} catch (SQLException e) {
@@ -163,7 +164,8 @@ public class BlackListWhiteListDAO {
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
-				returnList.add(new MsisdnDTO(rs.getString("PREFIX"),rs.getString(BlacklistWhitelistConstants.DAOConstants.MSISDN)));
+				returnList.add(new MsisdnDTO(rs.getString("PREFIX"),
+						UserMaskHandler.getProperlyMaskedUserId(rs.getString(BlacklistWhitelistConstants.DAOConstants.MSISDN))));
 			}
 
 		} catch (SQLException e) {
@@ -204,7 +206,7 @@ public class BlackListWhiteListDAO {
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
-				returnList.add(rs.getString(BlacklistWhitelistConstants.DAOConstants.MSISDN));
+				returnList.add(UserMaskHandler.getProperlyMaskedUserId(rs.getString(BlacklistWhitelistConstants.DAOConstants.MSISDN)));
 			}
 
 		} catch (SQLException e) {
@@ -218,7 +220,6 @@ public class BlackListWhiteListDAO {
     }
 
 	public void removeBlacklist(final int apiId, final String userMSISDN) throws Exception {
-
 		StringBuilder sql = new StringBuilder();
 		sql.append("DELETE FROM ");
 		sql.append(OparatorTable.BLACKLIST_MSISDN.getTObject());
@@ -233,7 +234,7 @@ public class BlackListWhiteListDAO {
 			ps = conn.prepareStatement(sql.toString());
 
 			ps.setInt(1, apiId);
-			ps.setString(2, userMSISDN);
+			ps.setString(2, UserMaskHandler.getUserMask(userMSISDN));
 
 			ps.executeUpdate();
 
@@ -278,7 +279,7 @@ public class BlackListWhiteListDAO {
 
 				ps.setString(1, subscriptionId);
 				ps.setString(2, msisdn.getPrefix());
-				ps.setString(3, msisdn.getDigits());
+				ps.setString(3, UserMaskHandler.getUserMaskIfAllowed(msisdn.getDigits()));
 				ps.setString(4, apiID);
 				ps.setString(5, applicationID);
 				ps.setString(6, msisdns.getValidationRegex());
@@ -342,7 +343,7 @@ public class BlackListWhiteListDAO {
 		try {
 			conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
 			ps = conn.prepareStatement(sql.toString());
-			ps.setString(1, userMSISDN);
+			ps.setString(1, UserMaskHandler.getUserMaskIfAllowed(userMSISDN));
 			ps.execute();
 		} catch (Exception e) {
 			throw e;
@@ -369,7 +370,7 @@ public class BlackListWhiteListDAO {
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
-				whiteList.add(rs.getString(BlacklistWhitelistConstants.DAOConstants.MSISDN));
+				whiteList.add(UserMaskHandler.getProperlyMaskedUserId(rs.getString(BlacklistWhitelistConstants.DAOConstants.MSISDN)));
 			}
 			return whiteList;
 

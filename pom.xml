@@ -125,6 +125,7 @@
 		<module>components/reporting-service</module>
 		<module>components/verification-handler</module>
 		<module>components/validator-handler</module>
+		<module>components/user-masking</module>
 		<module>components/operator-service</module>
 		<module>components/mediator</module>
 		<!--module>components/publish-events/publish-events-data</module> <module>components/publish-events/publish-events-extensions</module -->
@@ -136,6 +137,7 @@
 		<module>components/webapps/blacklist-whitelist-service</module>
 		<module>components/webapps/aggregator-blacklist</module>
 		<module>components/webapps/operator-onboard</module>
+        <module>components/webapps/usermask-service</module>
 		<module>components/jaggery-apps/manage</module>
 		<module>components/jaggery-apps/publisher</module>
 		<module>components/jaggery-apps/admin</module>
@@ -341,6 +343,12 @@
 			<dependency>
 				<groupId>com.wso2telco.dep</groupId>
 				<artifactId>operator-service</artifactId>
+				<version>${com.wso2telco.dep.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.wso2telco.dep</groupId>
+				<artifactId>user-masking</artifactId>
 				<version>${com.wso2telco.dep.version}</version>
 				<scope>provided</scope>
 			</dependency>
@@ -806,6 +814,25 @@
 				<groupId>org.wso2.carbon.mediation</groupId>
 				<artifactId>org.wso2.carbon.event.sink</artifactId>
 				<version>${carbon.mediation.version}</version>
+			</dependency>
+			<!--Unit test dependencies -->
+			<dependency>
+				<groupId>org.testng</groupId>
+				<artifactId>testng</artifactId>
+				<version>6.14.3</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.assertj</groupId>
+				<artifactId>assertj-core</artifactId>
+				<version>3.11.1</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-all</artifactId>
+				<version>1.10.19</version>
+				<scope>test</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

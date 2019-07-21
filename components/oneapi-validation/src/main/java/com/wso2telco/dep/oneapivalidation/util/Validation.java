@@ -16,6 +16,9 @@
 package com.wso2telco.dep.oneapivalidation.util;
 
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
+import com.wso2telco.dep.user.masking.UserMaskHandler;
+import com.wso2telco.dep.user.masking.configuration.UserMaskingConfiguration;
+import com.wso2telco.dep.user.masking.exceptions.UserMaskingException;
 import org.apache.log4j.Logger;
 import org.wso2.carbon.utils.CarbonUtils;
 
@@ -177,28 +180,41 @@ public class Validation {
     /**
      * Checks if is correctly formatted number.
      *
-     * @param tel the tel
+     * @param formattedMsisdn the tel
      * @return true, if is correctly formatted number
      */
 
-    public static boolean isCorrectlyFormattedNumber(String tel) {
+    public static boolean isCorrectlyFormattedNumber(String formattedMsisdn) {
         boolean matched = false;
 
-        if (tel != null) {
-            if (!tel.contains("+")) {
+        if (formattedMsisdn != null) {
+            if (!formattedMsisdn.contains("+")) {
                 try {
-                    tel = URLDecoder.decode(tel, "UTF-8");
+                    formattedMsisdn = URLDecoder.decode(formattedMsisdn, "UTF-8");
                 } catch (UnsupportedEncodingException e) {
-                    logger.error("Unable to decode MSISDN",e);
+                    logger.error("Unable to decode MSISDN", e);
                 }
             }
-            if (tel.matches(telFormats)) {
+            if (formattedMsisdn.matches(telFormats)) {
                 matched = true;
-                logger.debug("MSISDN:  " + tel + " matches regex: " + telFormats);
+
+                if (logger.isDebugEnabled()) {
+                    if (UserMaskingConfiguration.getInstance().getUserMaskingEnabled()) {
+                        try {
+                            formattedMsisdn = UserMaskHandler.transcryptUserId(formattedMsisdn, true,
+                                    UserMaskingConfiguration.getInstance().getSecretKey());
+                        } catch (UserMaskingException e) {
+                            logger.error(e.getMessage());
+                        }
+                        logger.debug("MSISDN:  " + formattedMsisdn + " matches regex: " + telFormats);
+                    }
+                }
             }
+
         }
         return matched;
     }
+
 
     public static String getValidationRegex() {
         return telFormats;
