@@ -16,11 +16,13 @@
 package com.wso2telco.dep.oneapivalidation.service.impl.payment;
 
 
+import com.wso2telco.dep.oneapivalidation.delegator.ValidationDelegator;
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.dep.oneapivalidation.util.UrlValidator;
 import com.wso2telco.dep.oneapivalidation.util.Validation;
 import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
@@ -38,6 +40,53 @@ public class ValidatePaymentCharge  implements IServiceValidate {
     /** The validation rules. */
     private final String[] validationRules = {"*", "transactions", "amount"};
 
+    /** user masking */
+    private boolean userAnonymization;
+
+    /** user masking encryption key */
+    private String unmaskedEndUserId;
+
+    /** Validation */
+    private ValidationDelegator validationDelegator;
+
+    @Deprecated
+    public ValidatePaymentCharge() {
+        this.validationDelegator = ValidationDelegator.getInstance();
+    }
+
+    /**
+     *
+     * @param validationDelegator
+     */
+    public ValidatePaymentCharge(ValidationDelegator validationDelegator) {
+        this.validationDelegator = validationDelegator;
+    }
+
+    /**
+     *
+     * @param userAnonymization
+     * @param unmaskedEndUserId
+     */
+    @Deprecated
+    public ValidatePaymentCharge(boolean userAnonymization, String unmaskedEndUserId) {
+        this.userAnonymization = userAnonymization;
+        this.unmaskedEndUserId = unmaskedEndUserId;
+        this.validationDelegator = ValidationDelegator.getInstance();
+    }
+
+    /**
+     *
+     * @param userAnonymization
+     * @param unmaskedEndUserId
+     * @param validationDelegator
+     */
+    public ValidatePaymentCharge(boolean userAnonymization, String unmaskedEndUserId,
+                                 ValidationDelegator validationDelegator) {
+        this.userAnonymization = userAnonymization;
+        this.unmaskedEndUserId = unmaskedEndUserId;
+        this.validationDelegator = validationDelegator;
+    }
+
     /* (non-Javadoc)
      * @see com.wso2telco.oneapivalidation.service.IServiceValidate#validate(java.lang.String)
      */
@@ -49,7 +98,7 @@ public class ValidatePaymentCharge  implements IServiceValidate {
             String originalServerReferenceCode = null;
             String referenceCode = null;
             String description = null;
-            String currency = null;
+            String currency = "";
             Double amount = null;
 
             String clientCorrelator = null;
@@ -57,7 +106,8 @@ public class ValidatePaymentCharge  implements IServiceValidate {
             String purchaseCategoryCode = null;
             String channel = null;
             Double taxAmount = null;
-            String doubleValidationRegex = "(\\d+(\\.\\d{1,2})?)";
+            String tripleValidationRegex = "^[a-zA-Z]{3}$";
+            String quadrupleValidationRegex = "(\\d+(\\.\\d{1,4})?)";
 
             try {
                 JSONObject mainJSONObject = new JSONObject(json);
@@ -66,7 +116,9 @@ public class ValidatePaymentCharge  implements IServiceValidate {
                 if (!jsonObj.isNull("clientCorrelator")) {
                     clientCorrelator = nullOrTrimmed(jsonObj.getString("clientCorrelator"));
                 }
-                if (!jsonObj.isNull("endUserId")) {
+                if (this.userAnonymization) {
+                    endUserId = nullOrTrimmed(this.unmaskedEndUserId);
+                } else {
                     endUserId = nullOrTrimmed(jsonObj.getString("endUserId"));
                 }
                 if (!jsonObj.isNull("referenceCode")) {
@@ -83,14 +135,18 @@ public class ValidatePaymentCharge  implements IServiceValidate {
                 JSONObject chargingInfo = (JSONObject) payAmount.get("chargingInformation");
 
                 if (!chargingInfo.isNull("amount")) {
-                    if (!chargingInfo.get("amount").toString().matches(doubleValidationRegex)) {
+                    if (!chargingInfo.get("amount").toString().matches(quadrupleValidationRegex)) {
                         throw new CustomException("SVC0002", "Invalid input value for message part %1",
-                                new String[]{"amount should be a whole or two digit decimal positive number"});
+                                new String[]{"amount should be a whole or four digit decimal positive number"});
                     }
                     amount = Double.parseDouble(nullOrTrimmed(String.valueOf(chargingInfo.get("amount"))));
                 }
                 if (!chargingInfo.isNull("currency")) {
                     currency = nullOrTrimmed(chargingInfo.getString("currency"));
+                    if (!currency.matches(tripleValidationRegex)) {
+                        throw new CustomException("SVC0002", "Invalid input value for message part %1",
+                                new String[]{"currency should be three character long string"});
+                    }
                 }
                 if (!chargingInfo.isNull("description")) {
                     description = nullOrTrimmed(chargingInfo.getString("description"));
@@ -109,9 +165,9 @@ public class ValidatePaymentCharge  implements IServiceValidate {
                         channel = nullOrTrimmed(chargingMetaData.getString("channel"));
                     }
                     if (!chargingMetaData.isNull("taxAmount")) {
-                        if (!chargingMetaData.get("taxAmount").toString().matches(doubleValidationRegex)) {
+                        if (!chargingMetaData.get("taxAmount").toString().matches(quadrupleValidationRegex)) {
                             throw new CustomException("SVC0002", "Invalid input value for message part %1",
-                                    new String[]{"taxAmount should be a whole or two digit decimal positive number"});
+                                    new String[]{"taxAmount should be a whole or four digit decimal positive number"});
                         }
                         taxAmount = Double.parseDouble(nullOrTrimmed(String.valueOf(chargingMetaData.get("taxAmount"))));
 
@@ -125,12 +181,9 @@ public class ValidatePaymentCharge  implements IServiceValidate {
             } catch (JSONException e) {
                 log.error("Manipulating received JSON Object: " + e);
                 throw new CustomException("SVC0001", "", new String[]{"Incorrect JSON Object received"});
-            } catch (CustomException e){
-                log.error("Manipulating received JSON Object: " + e);
-                throw new CustomException(e.getErrcode(), e.getErrmsg(), e.getErrvar());
-            } catch (Exception e) {
-                log.error("Manipulating received JSON Object: " + e);
-                throw new CustomException("POL0299", "Unexpected Error", new String[]{""});
+            } catch (CustomException ce){
+                log.error("Manipulating received JSON Object: " + ce);
+                throw ce;
             }
 
         ValidationRule[] rules = null;
@@ -149,7 +202,7 @@ public class ValidatePaymentCharge  implements IServiceValidate {
                 new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL_PAYMENT_CHANNEL, "channel", channel),
                 new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL_DOUBLE_GE_ZERO, "taxAmount", taxAmount),};
 
-            Validation.checkRequestParams(rules);
+            validationDelegator.checkRequestParams(rules);
 
     }
 

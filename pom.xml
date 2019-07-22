@@ -129,6 +129,7 @@
 		<module>components/reporting-service</module>
 		<module>components/verification-handler</module>
 		<module>components/validator-handler</module>
+		<module>components/user-masking</module>
 		<module>components/operator-service</module>
 		<!--module>components/publish-events/publish-events-data</module> <module>components/publish-events/publish-events-extensions</module -->
 		<module>components/workflow/workflow-approval</module>
@@ -139,6 +140,7 @@
 		<module>components/webapps/blacklist-whitelist-service</module>
 		<module>components/webapps/aggregator-blacklist</module>
 		<module>components/webapps/operator-onboard</module>
+        <module>components/webapps/usermask-service</module>
 		<module>components/jaggery-apps/manage</module>
 		<module>components/jaggery-apps/publisher</module>
 		<module>components/jaggery-apps/admin</module>
@@ -345,6 +347,12 @@
 			<dependency>
 				<groupId>com.wso2telco.dep</groupId>
 				<artifactId>operator-service</artifactId>
+				<version>${com.wso2telco.dep.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.wso2telco.dep</groupId>
+				<artifactId>user-masking</artifactId>
 				<version>${com.wso2telco.dep.version}</version>
 				<scope>provided</scope>
 			</dependency>
@@ -828,6 +836,12 @@
 				<groupId>org.assertj</groupId>
 				<artifactId>assertj-core</artifactId>
 				<version>${org.assertj.version}</version>
+				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.mockito</groupId>
+				<artifactId>mockito-all</artifactId>
+				<version>1.10.19</version>
 				<scope>test</scope>
 			</dependency>
 		</dependencies>
