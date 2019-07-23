@@ -22,11 +22,11 @@ import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.dep.oneapivalidation.util.UrlValidator;
 import com.wso2telco.dep.oneapivalidation.util.Validation;
 import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
-import org.json.JSONException;
-import org.json.JSONObject;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 // TODO: Auto-generated Javadoc
@@ -152,7 +152,7 @@ public class ValidatePaymentCharge  implements IServiceValidate {
                     description = nullOrTrimmed(chargingInfo.getString("description"));
                 }
 
-                if(payAmount.has("chargingMetaData")) {
+                if (payAmount.has("chargingMetaData") && !payAmount.isNull("chargingMetaData")) {
                     JSONObject chargingMetaData = (JSONObject) payAmount.get("chargingMetaData");
 
                     if (!chargingMetaData.isNull("onBehalfOf")) {

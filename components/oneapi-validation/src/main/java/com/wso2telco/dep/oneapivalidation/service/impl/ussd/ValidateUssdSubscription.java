@@ -15,12 +15,12 @@
  ******************************************************************************/
 package com.wso2telco.dep.oneapivalidation.service.impl.ussd;
 
+import com.wso2telco.dep.oneapi.constant.ussd.USSDKeyConstants;
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.dep.oneapivalidation.util.UrlValidator;
 import com.wso2telco.dep.oneapivalidation.util.Validation;
 import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
-
 import org.json.JSONArray;
 import org.json.JSONObject;
 
@@ -45,6 +45,8 @@ public class ValidateUssdSubscription implements IServiceValidate {
         String callbackData = null;
         String notifyUrl = null;
         String clientCorrelator = null;
+        String keyword = null;
+        String shortCode = null;
 
         try {
             JSONObject objJSONObject = new JSONObject(json);
@@ -63,36 +65,48 @@ public class ValidateUssdSubscription implements IServiceValidate {
                 if (!callbackReference.isNull("notifyURL")) {
                     notifyUrl = nullOrTrimmed(callbackReference.getString("notifyURL"));
                 }
+            } else {
+                throw new CustomException("SVC0002", "Invalid input value for message part %1",
+                        new String[]{"Missing mandatory parameter: callbackReference"});
             }
 
-            ValidationRule[] rules = null;
+            if (!requestData.isNull(USSDKeyConstants.SHORT_CODE)) {
+                shortCode = nullOrTrimmed(requestData.getString(USSDKeyConstants.SHORT_CODE));
+            }
 
-            rules = new ValidationRule[]{
+            if (!requestData.isNull("keyword")) {
+                keyword = nullOrTrimmed(requestData.getString("keyword"));
+            }
+
+            ValidationRule[] rules = new ValidationRule[]{
                     new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "clientCorrelator", clientCorrelator),
                     new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "notifyURL", notifyUrl),
-                    new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "callbackData", callbackData),};
+                    new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, USSDKeyConstants.CALLBACK_DATA, callbackData),
+                    new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, USSDKeyConstants.KEYWORD, keyword),
+                    new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, USSDKeyConstants.SHORT_CODE, shortCode)};
 
             Validation.checkRequestParams(rules);
 
-            if (requestData.has("shortCodes")) {
+            if (requestData.isNull("shortCodes")) {
                 JSONArray shortCodesArray = requestData.getJSONArray("shortCodes");
 
                 if (shortCodesArray.length() != 0) {
 
                     List<ValidationRule> shortCodeListRules = new ArrayList<ValidationRule>();
 
-                    for (int i=0; i<shortCodesArray.length(); i++) {
-                        JSONObject shortCode = shortCodesArray.getJSONObject(i);
+                    for (int i = 0; i < shortCodesArray.length(); i++) {
+                        JSONObject shortCodeArray = shortCodesArray.getJSONObject(i);
 
                         String sCode = null;
-                        if (shortCode.has("shortCode")) {
-                            sCode = nullOrTrimmed(shortCode.getString("shortCode"));
+                        if (shortCodeArray.has(USSDKeyConstants.SHORT_CODE)) {
+                            sCode = nullOrTrimmed(shortCodeArray.getString(USSDKeyConstants.SHORT_CODE));
                         }
-                        shortCodeListRules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "shortCode" + i, sCode));
+                        shortCodeListRules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY,
+                                USSDKeyConstants.SHORT_CODE + i, sCode));
 
                         String oCode = null;
-                        if (shortCode.has("operatorCode")) {
-                            oCode = nullOrTrimmed(shortCode.getString("operatorCode"));
+                        if (shortCodeArray.has("operatorCode")) {
+                            oCode = nullOrTrimmed(shortCodeArray.getString("operatorCode"));
                         }
                         shortCodeListRules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "operatorCode" + i, oCode));
                     }
@@ -101,7 +115,7 @@ public class ValidateUssdSubscription implements IServiceValidate {
                 } else {
                     throw new CustomException("SVC0002", "Invalid input value for message part %1", new String[]{"Empty sortcodes list"});
                 }
-            } else if (requestData.has("shortCode")) {
+            } else if (requestData.isNull("shortCode")) {
                 ValidationRule[] shortCodeRules = new ValidationRule[2];
 
                 String sCode = null;
@@ -109,8 +123,6 @@ public class ValidateUssdSubscription implements IServiceValidate {
                     sCode = nullOrTrimmed(requestData.getString("shortCode"));
                 }
                 shortCodeRules[0] = new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "shortCode", sCode);
-
-                String keyword = null;
                 if (requestData.has("keyword")) {
                     keyword = nullOrTrimmed(requestData.getString("keyword"));
                 }
@@ -122,9 +134,6 @@ public class ValidateUssdSubscription implements IServiceValidate {
             }
 
         } catch (Exception e) {
-
-            System.out.println("Manipulating received JSON Object: " + e);
-
             if (e instanceof CustomException)
                 throw new CustomException(((CustomException) e).getErrcode(), ((CustomException) e).getErrmsg(), ((CustomException) e).getErrvar());
             else
