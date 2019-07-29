@@ -90,6 +90,7 @@
 		<carbon.identity.version>5.1.1</carbon.identity.version>
 		<org.hibernate.version>5.2.1.Final</org.hibernate.version>
 		<cxf-bundle.wso2.version>2.7.16.wso2v1</cxf-bundle.wso2.version>
+		<com.sun.jersey.version>1.8</com.sun.jersey.version>
 
 		<!-- Analytic Commons version -->
 		<carbon.analytics.common.version>5.1.0</carbon.analytics.common.version>
@@ -806,6 +807,11 @@
 				<groupId>org.wso2.carbon.mediation</groupId>
 				<artifactId>org.wso2.carbon.event.sink</artifactId>
 				<version>${carbon.mediation.version}</version>
+			</dependency>
+			<dependency>
+				<groupId>org.glassfish.jersey.media</groupId>
+				<artifactId>jersey-media-multipart</artifactId>
+				<version>2.27</version>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

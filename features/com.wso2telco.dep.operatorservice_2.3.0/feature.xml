@@ -1,7 +1,0 @@
-<?xml version="1.0" encoding="UTF-8" standalone="no"?>
-<feature id="com.wso2telco.dep.operatorservice" label="WSO2.Telco Operator Service" provider-name="%providerName" version="2.3.0">
-  <description>This feature contains the server bundles required for operator service</description>
-  <copyright>%copyright</copyright>
-  <license url="%licenseURL">%license</license>
-  <plugin id="com.wso2telco.dep.operator-service" unpack="false" version="2.3.0"/>
-</feature>

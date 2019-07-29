@@ -30,7 +30,8 @@ public class BlacklistWhitelistConstants {
 		public static final String API_PROVIDER = "API_PROVIDER";
 		public static final String APPNAME = "APPNAME";
 		public static final String APPLICATION_ID = "APPLICATION_ID";
-
+		public static final String USER_ID = "USER_ID";
+		public static final String SERVICE_PROVIDER = "SERVICE_PROVIDER";
 		private DAOConstants(){
 		}
 	}
