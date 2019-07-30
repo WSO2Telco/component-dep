@@ -67,8 +67,8 @@ public class BlackListWhiteListDAO {
 		StringBuilder sql = new StringBuilder();
 		sql.append(" INSERT IGNORE INTO ");
 		sql.append(OparatorTable.API_BLACKLIST_WHITELIST.getTObject());
-            sql.append("(api_id,app_id,msisdn,action, SERVICE_PROVIDER)");
-		sql.append(" VALUES (?, ?, ?, ?,?)");
+            sql.append("(api_id,app_id,msisdn,action, SERVICE_PROVIDER, user)");
+		sql.append(" VALUES (?, ?, ?, ?,?, ?)");
 
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -87,6 +87,7 @@ public class BlackListWhiteListDAO {
 					ps.setString(3, m);
 					ps.setString(4, dto.getAction());
 					ps.setString(5,dto.getServiceProvider());
+					ps.setString(6,dto.getUser());
 					ps.addBatch();
 
 					batchLimit--;
@@ -231,7 +232,7 @@ public class BlackListWhiteListDAO {
 	public void streamBlacklistByApi(BlacklistWhitelistDTO dto,int offset, int limit, OutputStream out) throws Exception {
 		StringBuilder sql = new StringBuilder();
 
-		sql.append("SELECT apis.API_NAME, apps.NAME, apps.CREATED_BY, bw.MSISDN, bw.ACTION, bw.CREATED, bw.LAST_MODIFIED");
+		sql.append("SELECT apis.API_NAME, apps.NAME, apps.CREATED_BY, bw.MSISDN, bw.ACTION, bw.user, bw.CREATED, bw.LAST_MODIFIED");
 		sql.append(" FROM ");
 		sql.append(OparatorTable.API_BLACKLIST_WHITELIST.getTObject());
 		sql.append(" AS bw, ");
@@ -273,7 +274,7 @@ public class BlackListWhiteListDAO {
 			if(rs.next()){
 				StringBuilder sb = new StringBuilder();
 
-				sb.append("API_NAME, NAME, CREATED_BY, MSISDN, ACTION, CREATED, LAST_MODIFIED");
+				sb.append("API_NAME, NAME, CREATED_BY, MSISDN, ACTION, ADDED_BY, CREATED, LAST_MODIFIED");
 				//MOVE WRITING TO STREAM TO SELF CONTAINED METHOD??
 				out.write((sb.toString().getBytes()));
 				out.write("\n".getBytes());
@@ -292,6 +293,8 @@ public class BlackListWhiteListDAO {
 					sb.append(",");
 					sb.append(rs.getString("ACTION"));
 					sb.append(",");
+                    sb.append(rs.getString("USER"));
+                    sb.append(",");
 					sb.append(rs.getString("CREATED"));
 					sb.append(",");
 					sb.append(rs.getString("LAST_MODIFIED"));

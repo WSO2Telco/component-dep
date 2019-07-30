@@ -226,7 +226,7 @@ public class Queries {
 	@POST
 	@Path("/bulkAdd/{app}/{api}")
 	@Consumes(MediaType.MULTIPART_FORM_DATA)
-	public Response bulkBlacklist(@PathParam("app") String app, @PathParam("api") String api, @Multipart("file") InputStream uploadedInputStream, @Multipart("action") String action, @Multipart("sp") String sp) {
+	public Response bulkBlacklist(@PathParam("app") String app, @PathParam("api") String api, @Multipart("file") InputStream uploadedInputStream, @Multipart("action") String action, @Multipart("sp") String sp, @Multipart("user") String user) {
 
 		APIBlacklistWhitelistResponseDTO response;
 		BlacklistWhitelistDTO blacklistWhitelistDTO = new BlacklistWhitelistDTO();
@@ -243,6 +243,7 @@ public class Queries {
 		blacklistWhitelistDTO.setApiID(api);
 		blacklistWhitelistDTO.setAction(action);
 		blacklistWhitelistDTO.setServiceProvider(sp);
+		blacklistWhitelistDTO.setUser(user);
 
 
 		br = new BufferedReader(new InputStreamReader(uploadedInputStream, StandardCharsets.UTF_8));

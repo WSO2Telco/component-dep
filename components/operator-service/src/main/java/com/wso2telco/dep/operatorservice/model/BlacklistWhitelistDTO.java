@@ -25,6 +25,7 @@ public class BlacklistWhitelistDTO {
     private String serviceProvider;
     private List<String> msisdnList;
     private String action;
+    private String user;
 
     public BlacklistWhitelistDTO() {
         this.apiID = null;
@@ -76,5 +77,13 @@ public class BlacklistWhitelistDTO {
 
     public void addMsisdn(String msisdn){
         msisdnList.add(msisdn);
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
     }
 }
