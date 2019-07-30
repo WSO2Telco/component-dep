@@ -66,6 +66,8 @@ public class BlackListWhiteListService {
 
 		List<String> valid = new ArrayList<>();
 		List<String> invalid = new ArrayList<>();
+		APIBlacklistWhitelistResponseDTO responseDTO = new APIBlacklistWhitelistResponseDTO(0,0);
+		int success = 0;
 
 		Matcher matcher;
 		try {
@@ -81,8 +83,11 @@ public class BlackListWhiteListService {
 
 			if (!valid.isEmpty()) {
 				dto.setMsisdnList(valid);
-				dao.blacklist(dto);
+				success = dao.blacklist(dto);
 			}
+
+			responseDTO.setProcessed(success);
+			responseDTO.setFailed(invalid.size() + (valid.size() - success));
 
 		} catch (Exception e) {
 			LOG.error("Unable to process blacklist", e);
@@ -93,7 +98,7 @@ public class BlackListWhiteListService {
 			LOG.error("Could not process due to invalid format: " + invalid);
 		}
 
-		return new APIBlacklistWhitelistResponseDTO(valid.size(),invalid.size());
+		return responseDTO;
     }
 
 	public BlacklistWhitelistCountResponseDTO count(BlacklistWhitelistDTO dto) throws BusinessException {

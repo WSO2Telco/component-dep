@@ -61,7 +61,7 @@ public class BlackListWhiteListDAO {
 	 * @param userID
 	 * @throws Exception
 	 */
-	public void blacklist(BlacklistWhitelistDTO dto)
+	public int blacklist(BlacklistWhitelistDTO dto)
 			throws Exception {
 
 		StringBuilder sql = new StringBuilder();
@@ -72,6 +72,8 @@ public class BlackListWhiteListDAO {
 
 		Connection conn = null;
 		PreparedStatement ps = null;
+
+		int success = 0;
 
 		try {
 			conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
@@ -93,11 +95,23 @@ public class BlackListWhiteListDAO {
 					batchLimit--;
 
 					if(batchLimit == 0){
-                        ps.executeBatch();
+						int[] result = ps.executeBatch();
+						for(int a : result){
+							if(a==1){
+								success++;
+							}
+						}
                         batchLimit = 100;
                     }
 			}
-			ps.executeBatch();
+			int[] result =  ps.executeBatch();
+
+			for(int a : result){
+				if(a==1){
+					success++;
+				}
+			}
+
 		} catch (Exception e) {
 			if(conn != null){
                 conn.rollback();
@@ -110,6 +124,7 @@ public class BlackListWhiteListDAO {
 			DbUtils.closeAllConnections(ps, conn, null);
 		}
 
+		return success;
 	}
 
 
