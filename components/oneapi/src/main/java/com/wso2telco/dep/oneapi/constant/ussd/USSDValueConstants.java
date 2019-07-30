@@ -21,4 +21,12 @@ public final class USSDValueConstants {
     public static final String MTINIT = "mtinit";
 
     public static final String MTCONT = "mtcont";
+
+    public static final String MTFIN = "mtfin";
+
+    public static final String MOINIT = "moinit";
+
+    public static final String MOCONT = "mocont";
+
+    public static final String MOFIN = "mofin";
 }

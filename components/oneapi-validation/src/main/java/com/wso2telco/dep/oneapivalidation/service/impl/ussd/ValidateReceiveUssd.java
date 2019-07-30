@@ -22,7 +22,9 @@ import com.wso2telco.dep.oneapivalidation.util.Validation;
 import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
 import org.json.JSONObject;
 
- 
+import static com.wso2telco.dep.oneapi.constant.ussd.USSDValueConstants.*;
+
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class ValidateReceiveUssd.
@@ -73,6 +75,13 @@ public class ValidateReceiveUssd implements IServiceValidate {
             if (!requestData.isNull("ussdAction")) {
                 ussdAction = nullOrTrimmed(requestData.getString("ussdAction"));
             }
+
+            if (!(ussdAction.equals(MTCONT) || ussdAction.equals(MOINIT) || ussdAction.equals(MOCONT))) {
+
+                throw new CustomException("SVC0002", "Invalid input value for message part %1",
+                        new String[]{"Invalid ussdAction"});
+            }
+
             if (!requestData.isNull("responseRequest")) {
                 JSONObject responseRequest = requestData.getJSONObject("responseRequest");
                 if (!responseRequest.isNull("notifyURL")) {

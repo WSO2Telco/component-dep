@@ -20,10 +20,11 @@ import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.dep.oneapivalidation.util.UrlValidator;
 import com.wso2telco.dep.oneapivalidation.util.Validation;
 import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
-
 import org.json.JSONObject;
 
- 
+import static com.wso2telco.dep.oneapi.constant.ussd.USSDValueConstants.*;
+
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class ValidateUssdSend.
@@ -68,6 +69,11 @@ public class ValidateUssdSend implements IServiceValidate {
             }
             if (!requestData.isNull("ussdAction")) {
                 ussdAction = nullOrTrimmed(requestData.getString("ussdAction"));
+            }
+
+            if (!(ussdAction.equals(MTINIT))) {
+                throw new CustomException("SVC0002", "Invalid input value for message part %1",
+                        new String[]{"Invalid ussdAction"});
             }
 
             if (!requestData.isNull("responseRequest")) {
