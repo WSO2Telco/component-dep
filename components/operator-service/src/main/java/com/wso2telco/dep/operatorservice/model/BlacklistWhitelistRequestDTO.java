@@ -5,6 +5,7 @@ public class BlacklistWhitelistRequestDTO {
     private String msisdn;
     private String action;
     private String sp;
+    private String user;
 
     public String getMsisdn() {
         return msisdn;
@@ -28,5 +29,13 @@ public class BlacklistWhitelistRequestDTO {
 
     public void setSp(String sp) {
         this.sp = sp;
+    }
+
+    public String getUser() {
+        return user;
+    }
+
+    public void setUser(String user) {
+        this.user = user;
     }
 }

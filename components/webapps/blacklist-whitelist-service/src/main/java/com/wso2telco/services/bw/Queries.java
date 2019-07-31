@@ -112,6 +112,7 @@ public class Queries {
 		blacklistWhitelistDTO.addMsisdn(requestDTO.getMsisdn());
 		blacklistWhitelistDTO.setAction(requestDTO.getAction());
 		blacklistWhitelistDTO.setServiceProvider(requestDTO.getSp());
+		blacklistWhitelistDTO.setUser(requestDTO.getUser());
 
 		try {
 			Response.Status status = Response.Status.CREATED;
@@ -203,6 +204,7 @@ public class Queries {
 						} catch (Exception e) {
 							throw new WebApplicationException(e);
 						}
+
 
 					}
 				};
