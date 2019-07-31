@@ -49,12 +49,11 @@ import java.util.zip.ZipOutputStream;
 public class BlackListWhiteListService {
 	Log LOG = LogFactory.getLog(BlackListWhiteListService.class);
 	private BlackListWhiteListDAO dao;
-	Pattern validationRegexPattern;
+	private Pattern bwRegex = Pattern.compile("\\d+");
 
 	public BlackListWhiteListService()
 	{
 		dao = new BlackListWhiteListDAO();
-		validationRegexPattern = Pattern.compile(Validation.getValidationRegex());
 	}
 
     /**
@@ -73,9 +72,9 @@ public class BlackListWhiteListService {
 		try {
 
 			for (String m : dto.getMsisdnList()) {
-				matcher = validationRegexPattern.matcher(m);
+				matcher = bwRegex.matcher(m);
 				if (matcher.matches()) {
-					valid.add(matcher.group(Validation.getDigitsGroup()));
+					valid.add(m);
 				} else {
 					invalid.add(m);
 				}
@@ -112,9 +111,8 @@ public class BlackListWhiteListService {
 
 	public void remove(BlacklistWhitelistDTO dto) throws BusinessException {
 		try {
-			Matcher matcher = validationRegexPattern.matcher(dto.getMsisdnList().get(0));
+			Matcher matcher = bwRegex.matcher(dto.getMsisdnList().get(0));
 			if (matcher.matches()) {
-				dto.getMsisdnList().set(0,matcher.group(Validation.getDigitsGroup()));
 				dao.remove(dto);
 			}
 		} catch (Exception e) {
@@ -342,9 +340,8 @@ public class BlackListWhiteListService {
 	public BlacklistWhitelistSearchResponseDTO search(BlacklistWhitelistDTO dto) throws Exception {
 		BlacklistWhitelistSearchResponseDTO responseDTO = new BlacklistWhitelistSearchResponseDTO();
 		//validate
-		Matcher matcher = validationRegexPattern.matcher(dto.getMsisdnList().get(0));
+		Matcher matcher = bwRegex.matcher(dto.getMsisdnList().get(0));
 		if (matcher.matches()) {
-			dto.getMsisdnList().set(0,matcher.group(Validation.getDigitsGroup()));
 			boolean exists = dao.checkIfBlacklistWhilistExists(dto);
 			responseDTO.setExists(exists);
 
