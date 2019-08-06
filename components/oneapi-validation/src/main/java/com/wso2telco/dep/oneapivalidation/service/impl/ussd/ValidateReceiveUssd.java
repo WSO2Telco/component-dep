@@ -76,7 +76,7 @@ public class ValidateReceiveUssd implements IServiceValidate {
                 ussdAction = nullOrTrimmed(requestData.getString("ussdAction"));
             }
 
-            if (!(ussdAction.equals(MTCONT) || ussdAction.equals(MOINIT) || ussdAction.equals(MOCONT))) {
+            if (!(MTCONT.equals(ussdAction) || MOINIT.equals(ussdAction) || MOCONT.equals(ussdAction))) {
 
                 throw new CustomException("SVC0002", "Invalid input value for message part %1",
                         new String[]{"Invalid ussdAction"});
