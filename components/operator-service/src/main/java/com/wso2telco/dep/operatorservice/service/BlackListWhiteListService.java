@@ -21,9 +21,7 @@ import com.google.gson.GsonBuilder;
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.exception.GenaralError;
 import com.wso2telco.dep.oneapivalidation.util.MsisdnDTO;
-import com.wso2telco.dep.oneapivalidation.util.Validation;
 import com.wso2telco.dep.operatorservice.dao.BlackListWhiteListDAO;
-import com.wso2telco.dep.operatorservice.exception.BlacklistException;
 import com.wso2telco.dep.operatorservice.exception.NumberBlackListException;
 import com.wso2telco.dep.operatorservice.exception.SubscriptionWhiteListException;
 import com.wso2telco.dep.operatorservice.exception.SubscriptionWhiteListException.SubscriptionWhiteListErrorType;
@@ -342,7 +340,7 @@ public class BlackListWhiteListService {
 		//validate
 		Matcher matcher = bwRegex.matcher(dto.getMsisdnList().get(0));
 		if (matcher.matches()) {
-			boolean exists = dao.checkIfBlacklistWhilistExists(dto);
+			boolean exists = dao.checkIfBlacklistWhitelistExists(dto);
 			responseDTO.setExists(exists);
 
 			if (!exists) {

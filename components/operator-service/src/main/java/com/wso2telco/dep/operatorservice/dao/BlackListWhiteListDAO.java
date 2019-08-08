@@ -324,7 +324,7 @@ public class BlackListWhiteListDAO {
 		}
 	}
 
-	public boolean checkIfBlacklistWhilistExists(BlacklistWhitelistDTO dto) throws Exception {
+	public boolean checkIfBlacklistWhitelistExists(BlacklistWhitelistDTO dto) throws Exception {
 		boolean isExist = false;
 
 		Connection conn = null;
