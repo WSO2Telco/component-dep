@@ -16,13 +16,11 @@
 
 package com.wso2telco.dep.operatorservice.dao;
 
-import com.mysql.jdbc.exceptions.MySQLIntegrityConstraintViolationException;
 import com.wso2telco.core.dbutils.DbUtils;
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.util.DataSourceNames;
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.dep.oneapivalidation.util.MsisdnDTO;
-import com.wso2telco.dep.operatorservice.exception.BlacklistException;
 import com.wso2telco.dep.operatorservice.model.BlacklistWhitelistCountResponseDTO;
 import com.wso2telco.dep.operatorservice.model.BlacklistWhitelistDTO;
 import com.wso2telco.dep.operatorservice.model.MSISDNValidationDTO;
