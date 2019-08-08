@@ -358,27 +358,19 @@ CREATE TABLE IF NOT EXISTS subscription_rates (
 /*
 * Tables for whitelist & blacklist
 */
-CREATE TABLE IF NOT EXISTS `blacklistmsisdn` (
- `Index` int(11) NOT NULL AUTO_INCREMENT PRIMARY KEY,
- `PREFIX` varchar(45) NOT NULL,
- `MSISDN` varchar(45) NOT NULL,
- `API_ID` varchar(45) NOT NULL,
- `API_NAME` varchar(45) NOT NULL,
- `USER_ID` varchar(45) NOT NULL,
- `VALIDATION_REGEX` varchar(300),
-  UNIQUE KEY `UNQ_blacklistmsisdn` (`API_NAME`, `MSISDN`));
-
-CREATE TABLE IF NOT EXISTS`subscription_WhiteList` (
-  `index` int(11) NOT NULL AUTO_INCREMENT,
-  `subscriptionID` varchar(45) NOT NULL,
-  `prefix` varchar(45) NOT NULL,
-  `msisdn` varchar(45) NOT NULL ,
+CREATE TABLE `api_blacklist_whitelist` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `api_id` varchar(45) NOT NULL,
-  `application_id` varchar(45) NOT NULL,
-  `validation_regex` varchar(300),
-  PRIMARY KEY (`index`),
-  UNIQUE white_label_unique_con(subscriptionID, msisdn, api_id, application_id)
-);
+  `app_id` varchar(45) NOT NULL,
+  `msisdn` varchar(45) NOT NULL,
+  `action` varchar(45) NOT NULL,
+  `service_provider` varchar(45) NOT NULL,
+   `user` varchar(45) NOT NULL,
+  `created` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
+  `last_modified` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `unique` (`api_id`,`app_id`,`msisdn`,`action`,`service_provider`,`user`)
+) ENGINE=InnoDB AUTO_INCREMENT=1 DEFAULT CHARSET=latin1;
 
 CREATE TABLE IF NOT EXISTS `admin_comments` (
   `TaskID` int(11) NOT NULL,
