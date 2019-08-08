@@ -53,10 +53,6 @@ public class BlackListWhiteListDAO {
 	/**
 	 * blacklist list given msisdns
 	 *
-	 * @param msisdns
-	 * @param apiID
-	 * @param apiName
-	 * @param userID
 	 * @throws Exception
 	 */
 	public int blacklist(BlacklistWhitelistDTO dto)
@@ -202,7 +198,6 @@ public class BlackListWhiteListDAO {
 
 	/**
 	 * Retrieves the number of blacklist entries for a particular API ID
-	 * @param apiId API ID of blacklisted numbers to get count of
 	 * @return
 	 * @throws Exception
 	 */
@@ -456,7 +451,6 @@ public class BlackListWhiteListDAO {
 	/**
 	 * when the subscription id is known
 	 *
-	 * @param userMSISDNs
 	 * @param subscriptionId
 	 * @param apiID
 	 * @param applicationID
