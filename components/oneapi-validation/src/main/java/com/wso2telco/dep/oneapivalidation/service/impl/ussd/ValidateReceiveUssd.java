@@ -15,15 +15,16 @@
  ******************************************************************************/
 package com.wso2telco.dep.oneapivalidation.service.impl.ussd;
 
-import org.json.JSONObject;
-
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.dep.oneapivalidation.util.UrlValidator;
 import com.wso2telco.dep.oneapivalidation.util.Validation;
 import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
+import org.json.JSONObject;
 
- 
+import static com.wso2telco.dep.oneapi.constant.ussd.USSDValueConstants.*;
+
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class ValidateReceiveUssd.
@@ -75,14 +76,21 @@ public class ValidateReceiveUssd implements IServiceValidate {
                 ussdAction = nullOrTrimmed(requestData.getString("ussdAction"));
             }
 
-            JSONObject responseRequest = requestData.getJSONObject("responseRequest");
-            if (!responseRequest.isNull("notifyURL")) {
-                notifyUrl = nullOrTrimmed(responseRequest.getString("notifyURL"));
-            }
-            if (!responseRequest.isNull("callbackData")) {
-                callbackData = nullOrTrimmed(responseRequest.getString("callbackData"));
+            if (!(MTCONT.equals(ussdAction) || MOINIT.equals(ussdAction) || MOCONT.equals(ussdAction))) {
+
+                throw new CustomException("SVC0002", "Invalid input value for message part %1",
+                        new String[]{"Invalid ussdAction"});
             }
 
+            if (!requestData.isNull("responseRequest")) {
+                JSONObject responseRequest = requestData.getJSONObject("responseRequest");
+                if (!responseRequest.isNull("notifyURL")) {
+                    notifyUrl = nullOrTrimmed(responseRequest.getString("notifyURL"));
+                }
+                if (!responseRequest.isNull("callbackData")) {
+                    callbackData = nullOrTrimmed(responseRequest.getString("callbackData"));
+                }
+            }
         } catch (Exception e) {
 
             throw new CustomException("POL0299", "Unexpected Error", new String[]{"Incorrect JSON Object received"});

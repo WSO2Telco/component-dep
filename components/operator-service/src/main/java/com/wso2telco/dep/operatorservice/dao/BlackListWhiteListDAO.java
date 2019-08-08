@@ -90,6 +90,7 @@ public class BlackListWhiteListDAO {
 					ps.setString(4, dto.getAction());
 					ps.setString(5,dto.getServiceProvider());
 					ps.setString(6,dto.getUser());
+
 					ps.addBatch();
 
 					batchLimit--;
@@ -142,7 +143,8 @@ public class BlackListWhiteListDAO {
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
-				returnList.add(new MsisdnDTO(rs.getString("prefix"), rs.getString("msisdn")));
+				returnList.add(new MsisdnDTO(rs.getString("prefix"),
+						rs.getString("msisdn")));
 			}
 
 		} catch (SQLException e) {
@@ -186,7 +188,8 @@ public class BlackListWhiteListDAO {
 			rs = ps.executeQuery();
 
 			while (rs.next()) {
-				returnList.add(new MsisdnDTO(rs.getString("PREFIX"),rs.getString(BlacklistWhitelistConstants.DAOConstants.MSISDN)));
+				returnList.add(new MsisdnDTO(rs.getString("PREFIX"),
+						rs.getString(BlacklistWhitelistConstants.DAOConstants.MSISDN)));
 			}
 
 		} catch (SQLException e) {

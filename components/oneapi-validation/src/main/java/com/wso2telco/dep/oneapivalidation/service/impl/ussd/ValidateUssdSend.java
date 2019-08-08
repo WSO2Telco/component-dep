@@ -20,10 +20,11 @@ import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.dep.oneapivalidation.util.UrlValidator;
 import com.wso2telco.dep.oneapivalidation.util.Validation;
 import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
-
 import org.json.JSONObject;
 
- 
+import static com.wso2telco.dep.oneapi.constant.ussd.USSDValueConstants.*;
+
+
 // TODO: Auto-generated Javadoc
 /**
  * The Class ValidateUssdSend.
@@ -70,12 +71,19 @@ public class ValidateUssdSend implements IServiceValidate {
                 ussdAction = nullOrTrimmed(requestData.getString("ussdAction"));
             }
 
-            JSONObject responseRequest = requestData.getJSONObject("responseRequest");
-            if (!responseRequest.isNull("notifyURL")) {
-                notifyUrl = nullOrTrimmed(responseRequest.getString("notifyURL"));
+            if (!(MTINIT.equals(ussdAction))) {
+                throw new CustomException("SVC0002", "Invalid input value for message part %1",
+                        new String[]{"Invalid ussdAction"});
             }
-            if (!responseRequest.isNull("callbackData")) {
-                callbackData = nullOrTrimmed(responseRequest.getString("callbackData"));
+
+            if (!requestData.isNull("responseRequest")) {
+                JSONObject responseRequest = requestData.getJSONObject("responseRequest");
+                if (!responseRequest.isNull("notifyURL")) {
+                    notifyUrl = nullOrTrimmed(responseRequest.getString("notifyURL"));
+                }
+                if (!responseRequest.isNull("callbackData")) {
+                    callbackData = nullOrTrimmed(responseRequest.getString("callbackData"));
+                }
             }
 
         } catch (Exception e) {
@@ -92,7 +100,7 @@ public class ValidateUssdSend implements IServiceValidate {
             new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "outboundUSSDMessage", message),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "clientCorrelator", clientCorrelator),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "ussdAction", ussdAction),
-            new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "notifyURL", notifyUrl),
+            new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "notifyURL", notifyUrl),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "callbackData", callbackData),};
         Validation.checkRequestParams(rules);
     }

@@ -242,7 +242,7 @@ CREATE TABLE IF NOT EXISTS `sendsms_reqid` (
   `ID` int(20) NOT NULL AUTO_INCREMENT,
   `hub_requestid` varchar(255) DEFAULT NULL,
   `sender_address` varchar(40) DEFAULT NULL,
-  `delivery_address` varchar(40) DEFAULT NULL,
+  `delivery_address` varchar(255) DEFAULT NULL,
   `plugin_requestid` varchar(255) DEFAULT NULL,
   `created_date` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
   PRIMARY KEY (`ID`)
@@ -416,10 +416,6 @@ INSERT INTO `workflow_api_key_mappings` (`API_NAME`, `API_KEY`) VALUES ('smsmess
 INSERT INTO `workflow_api_key_mappings` (`API_NAME`, `API_KEY`) VALUES ('payment', 'payment');
 INSERT INTO `workflow_api_key_mappings` (`API_NAME`, `API_KEY`) VALUES ('location', 'location');
 
---
--- Default message types
---
-INSERT INTO `mdtxmsgtype` (`msgtypedid`, `msgtype`) VALUES ('1', 'paymentrequest'),('2', 'paymentresponse'), ('3', 'refundrequest'),('4', 'refundresponse');
 
 --
 -- Quota Limit table.

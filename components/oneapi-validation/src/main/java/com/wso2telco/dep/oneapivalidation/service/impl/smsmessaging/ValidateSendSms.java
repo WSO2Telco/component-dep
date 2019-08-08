@@ -15,18 +15,22 @@
  ******************************************************************************/
 package com.wso2telco.dep.oneapivalidation.service.impl.smsmessaging;
 
+import com.wso2telco.dep.oneapivalidation.delegator.ValidationDelegator;
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.dep.oneapivalidation.util.UrlValidator;
-import com.wso2telco.dep.oneapivalidation.util.Validation;
 import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
+import com.wso2telco.dep.user.masking.UserMaskHandler;
+import com.wso2telco.dep.user.masking.exceptions.UserMaskingException;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.json.JSONArray;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 import java.util.ArrayList;
 import java.util.List;
-import org.json.JSONArray;
-import org.json.JSONObject;
 
- 
 // TODO: Auto-generated Javadoc
 /**
  * The Class ValidateSendSms.
@@ -35,6 +39,54 @@ public class ValidateSendSms implements IServiceValidate {
 
     /** The validation rules. */
     private final String[] validationRules = {"outbound", "*", "requests"};
+
+    private static Log log = LogFactory.getLog(ValidateSendSms.class);
+
+    /** user masking */
+    private boolean userAnonymization;
+
+    /** masked msisdn */
+    private String userMaskingSecretKey;
+
+    private ValidationDelegator validationDelegator;
+
+    @Deprecated
+    public ValidateSendSms() {
+        this.validationDelegator = ValidationDelegator.getInstance();
+    }
+
+    /**
+     *
+     * @param validationDelegator
+     */
+    public ValidateSendSms(ValidationDelegator validationDelegator) {
+        this.validationDelegator = validationDelegator;
+    }
+
+    /**
+     *
+     * @param userAnonymization
+     * @param userMaskingSecretKey
+     */
+    @Deprecated
+    public ValidateSendSms(boolean userAnonymization, String userMaskingSecretKey) {
+        this.userAnonymization = userAnonymization;
+        this.userMaskingSecretKey = userMaskingSecretKey;
+        this.validationDelegator = ValidationDelegator.getInstance();
+    }
+
+    /**
+     *
+     * @param userAnonymization
+     * @param userMaskingSecretKey
+     * @param validationDelegator
+     */
+    public ValidateSendSms(boolean userAnonymization, String userMaskingSecretKey,
+                           ValidationDelegator validationDelegator) {
+        this.userAnonymization = userAnonymization;
+        this.userMaskingSecretKey = userMaskingSecretKey;
+        this.validationDelegator = validationDelegator;
+    }
 
     /* (non-Javadoc)
      * @see com.wso2telco.oneapivalidation.service.IServiceValidate#validate(java.lang.String)
@@ -58,7 +110,12 @@ public class ValidateSendSms implements IServiceValidate {
 
                 JSONArray addressArray = objOtboundSMSMessageRequest.getJSONArray("address");
                 for (int a = 0; a < addressArray.length(); a++) {
-                    addresses.add(nullOrTrimmed(addressArray.getString(a)));
+                    if(this.userAnonymization) {
+                        addresses.add(nullOrTrimmed(UserMaskHandler.transcryptUserId(addressArray.getString(a),
+                                false, this.userMaskingSecretKey)));
+                    } else {
+                        addresses.add(nullOrTrimmed(addressArray.getString(a)));
+                    }
                 }
             }
 
@@ -67,9 +124,12 @@ public class ValidateSendSms implements IServiceValidate {
                 senderAddress = nullOrTrimmed(objOtboundSMSMessageRequest.getString("senderAddress"));
             }
 
-            JSONObject objOutboundSMSTextMessage = (JSONObject) objOtboundSMSMessageRequest.get("outboundSMSTextMessage");
-            if (!objOutboundSMSTextMessage.isNull("message")) {
-                 message = nullOrTrimmed(objOutboundSMSTextMessage.getString("message"));
+            if (!objOtboundSMSMessageRequest.isNull("outboundSMSTextMessage")) {
+                JSONObject objOutboundSMSTextMessage = (JSONObject) objOtboundSMSMessageRequest.get(
+                        "outboundSMSTextMessage");
+                if (!objOutboundSMSTextMessage.isNull("message")) {
+                    message = nullOrTrimmed(objOutboundSMSTextMessage.getString("message"));
+                }
             }
 
             if (!objOtboundSMSMessageRequest.isNull("clientCorrelator")) {
@@ -93,10 +153,12 @@ public class ValidateSendSms implements IServiceValidate {
 
                 senderName = nullOrTrimmed(objOtboundSMSMessageRequest.getString("senderName"));
             }
-        } catch (Exception e) {
-            //logger.debug("Response JSON: " + "test");
-            System.out.println("Manipulating recived JSON Object: " + e);
-            throw new CustomException("POL0299", "Unexpected Error", new String[]{""});
+        } catch (JSONException e) {
+            log.error("Manipulating received JSON Object: " + e);
+            throw new CustomException("SVC0001", "", new String[]{"Incorrect JSON Object received"});
+        } catch (UserMaskingException ume) {
+            log.error("Error occurred while unmasking. Possible reason would be incorrect masking configuration. " , ume);
+            throw new CustomException("SVC0003", ume.getMessage(), new String[]{"Invalid user mask configuration"});
         }
 
         ValidationRule[] rules = {
@@ -108,7 +170,7 @@ public class ValidateSendSms implements IServiceValidate {
             new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL_URL, "notifyURL", notifyURL),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "callbackData", callbackData),};
 
-        Validation.checkRequestParams(rules);
+        validationDelegator.checkRequestParams(rules);
     }
 
     /**

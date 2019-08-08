@@ -1,0 +1,16 @@
+<sequence name="_throttle_out_handler_" xmlns="http://ws.apache.org/ns/synapse">    
+    <property name="X-JWT-Assertion" scope="transport" action="remove"/>
+    <class name="org.wso2.carbon.apimgt.gateway.handlers.analytics.APIMgtThrottleUsageHandler"/>
+    <log level="custom">
+        <property name="Error Message" expression="$ctx:ERROR_MESSAGE"/>
+        <property name="Throttle Out Reason" expression="$ctx:THROTTLED_OUT_REASON"/>
+        <property name="API Request URL" expression="get-property('To')"/>
+        <property name="Request ID" expression="get-property('MESSAGE_ID')"/>
+        <property name="API" expression="$ctx:API_NAME"/>
+        <property name="Version" expression="get-property('SYNAPSE_REST_API_VERSION')"/>
+        <property name="Application Name" expression="$ctx:api.ut.application.name"/>
+        <property name="Application ID" expression="$ctx:api.ut.application.id"/>
+        <property name="User Name" expression="$ctx:api.ut.userName"/>
+    </log>
+    <sequence key="_cors_request_handler_"/>
+</sequence>

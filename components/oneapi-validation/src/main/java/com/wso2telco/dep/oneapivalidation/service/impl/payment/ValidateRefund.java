@@ -16,16 +16,16 @@
 package com.wso2telco.dep.oneapivalidation.service.impl.payment;
 
 
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
-import org.json.JSONException;
-import org.json.JSONObject;
-
+import com.wso2telco.dep.oneapivalidation.delegator.ValidationDelegator;
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.dep.oneapivalidation.util.UrlValidator;
 import com.wso2telco.dep.oneapivalidation.util.Validation;
 import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.json.JSONException;
+import org.json.JSONObject;
 
  
 // TODO: Auto-generated Javadoc
@@ -39,6 +39,49 @@ public class ValidateRefund implements IServiceValidate {
     /** The validation rules. */
     private final String[] validationRules = {"*", "transactions", "amount"};
 
+    private boolean userAnonymization;
+    private String unmaskedEndUserId;
+
+    private ValidationDelegator validationDelegator;
+
+    @Deprecated
+    public ValidateRefund() {
+        this.validationDelegator = ValidationDelegator.getInstance();
+    }
+
+    /**
+     *
+     * @param validationDelegator
+     */
+    public ValidateRefund(ValidationDelegator validationDelegator) {
+        this.validationDelegator = validationDelegator;
+    }
+
+    /**
+     *
+     * @param userAnonymization
+     * @param unmaskedEndUserId
+     */
+    @Deprecated
+    public ValidateRefund(boolean userAnonymization, String unmaskedEndUserId) {
+        this.userAnonymization = userAnonymization;
+        this.unmaskedEndUserId = unmaskedEndUserId;
+        this.validationDelegator = ValidationDelegator.getInstance();
+    }
+    /**
+     *
+     * @param userAnonymization
+     * @param unmaskedEndUserId
+     * @param validationDelegator
+     */
+    public ValidateRefund(boolean userAnonymization, String unmaskedEndUserId,
+                          ValidationDelegator validationDelegator) {
+        this.userAnonymization = userAnonymization;
+        this.unmaskedEndUserId = unmaskedEndUserId;
+        this.validationDelegator = validationDelegator;
+    }
+
+
     /* (non-Javadoc)
      * @see com.wso2telco.oneapivalidation.service.IServiceValidate#validate(java.lang.String)
      */
@@ -47,7 +90,7 @@ public class ValidateRefund implements IServiceValidate {
         String clientCorrelator = null;
         String endUserId = null;
         Double amount = null;
-        String currency = null;
+        String currency = "";
         String description = null;
         String code = null;
         String onBehalfOf = null;
@@ -63,7 +106,8 @@ public class ValidateRefund implements IServiceValidate {
         String notificationFormat = null;
         String originalServerReferenceCode = null;
         String transactionOperationStatus = null;
-        String doubleValidationRegex = "(\\d+(\\.\\d{1,2})?)";
+        String tripleValidationRegex = "^[a-zA-Z]{3}$";
+        String quadrupleValidationRegex = "(\\d+(\\.\\d{1,4})?)";
 
         try {
             JSONObject objJSONObject = new JSONObject(json);
@@ -72,8 +116,10 @@ public class ValidateRefund implements IServiceValidate {
             if (!objAmountTransaction.isNull("clientCorrelator") ) {
                 clientCorrelator = nullOrTrimmed(objAmountTransaction.get("clientCorrelator").toString());
             }
-            if (!objAmountTransaction.isNull("endUserId") ) {
-                endUserId = nullOrTrimmed(objAmountTransaction.get("endUserId").toString());
+            if (this.userAnonymization) {
+                endUserId = nullOrTrimmed(this.unmaskedEndUserId);
+            } else {
+                endUserId = nullOrTrimmed(objAmountTransaction.getString("endUserId"));
             }
             if (!objAmountTransaction.isNull("callbackData") ) {
                 callbackData = nullOrTrimmed(objAmountTransaction.get("callbackData").toString());
@@ -98,14 +144,18 @@ public class ValidateRefund implements IServiceValidate {
             JSONObject objChargingInformation = (JSONObject) objPaymentAmount.get("chargingInformation");
 
             if (!objChargingInformation.isNull("amount")) {
-                if (!objChargingInformation.get("amount").toString().matches(doubleValidationRegex)) {
+                if (!objChargingInformation.get("amount").toString().matches(quadrupleValidationRegex)) {
                     throw new CustomException("SVC0002", "Invalid input value for message part %1",
-                            new String[]{"amount should be a whole or two digit decimal positive number"});
+                            new String[]{"amount should be a whole or four digit decimal positive number"});
                 }
                 amount = Double.parseDouble(nullOrTrimmed(String.valueOf(objChargingInformation.get("amount"))));
             }
             if (!objChargingInformation.isNull("currency")) {
                 currency = nullOrTrimmed(objChargingInformation.get("currency").toString());
+                if (!currency.matches(tripleValidationRegex)) {
+                    throw new CustomException("SVC0002", "Invalid input value for message part %1",
+                            new String[]{"currency should be three character long string"});
+                }
             }
             if (!objChargingInformation.isNull("description") ) {
                 description = nullOrTrimmed(objChargingInformation.get("description").toString());
@@ -114,7 +164,7 @@ public class ValidateRefund implements IServiceValidate {
                 code = nullOrTrimmed(objChargingInformation.get("code").toString());
             }
 
-            if (objPaymentAmount.has("chargingMetaData")) {
+            if (objPaymentAmount.has("chargingMetaData") && !objPaymentAmount.isNull("chargingMetaData")) {
                 JSONObject objChargingMetaData = (JSONObject) objPaymentAmount.get("chargingMetaData");
 
                 if (!objChargingMetaData.isNull("onBehalfOf")) {
@@ -127,9 +177,9 @@ public class ValidateRefund implements IServiceValidate {
                     channel = nullOrTrimmed(objChargingMetaData.get("channel").toString());
                 }
                 if (!objChargingMetaData.isNull("taxAmount")) {
-                    if (!objChargingMetaData.get("taxAmount").toString().matches(doubleValidationRegex)) {
+                    if (!objChargingMetaData.get("taxAmount").toString().matches(quadrupleValidationRegex)) {
                         throw new CustomException("SVC0002", "Invalid input value for message part %1",
-                                new String[]{"taxAmount should be a whole or two digit decimal positive number"});
+                                new String[]{"taxAmount should be a whole or four digit decimal positive number"});
                     }
                     taxAmount = Double.parseDouble(nullOrTrimmed(String.valueOf(objChargingMetaData.get("taxAmount"))));
 
@@ -152,9 +202,6 @@ public class ValidateRefund implements IServiceValidate {
         } catch (JSONException e) {
             log.error("Manipulating received JSON Object: " + e);
             throw new CustomException("SVC0001", "", new String[]{"Incorrect JSON Object received"});
-        } catch (Exception e) {
-            log.error("Manipulating recived JSON Object: " + e);
-            throw new CustomException("POL0299", "Unexpected Error", new String[]{""});
         }
 
         ValidationRule[] rules = null;
@@ -180,7 +227,7 @@ public class ValidateRefund implements IServiceValidate {
             new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "originalServerReferenceCode", originalServerReferenceCode),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "transactionOperationStatus", transactionOperationStatus, "Refunded")};
 
-        Validation.checkRequestParams(rules);
+        validationDelegator.checkRequestParams(rules);
     }
 
     /* (non-Javadoc)
