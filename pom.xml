@@ -42,7 +42,7 @@
 		<junit.version>3.8.1</junit.version>
 		<org.apache.synapse.core.version>2.1.7-wso2v3</org.apache.synapse.core.version>
 		<org.wso2.carbon.commons.version>4.4.8</org.wso2.carbon.commons.version>
-		<org.wso2.carbon.apimgt.version>6.0.4</org.wso2.carbon.apimgt.version>
+		<org.wso2.carbon.apimgt.version>6.3.95</org.wso2.carbon.apimgt.version>
 		<org.wso2.hazelcast>3.5.2.wso2v1</org.wso2.hazelcast>
 		<rhino.wso2.version>1.7.0.R4.wso2v1</rhino.wso2.version>
 		<org.jaggeryjs.version>0.12.6</org.jaggeryjs.version>
@@ -66,7 +66,6 @@
 		<org.apache.ws.commons.axiom.wso2.version>1.2.11.wso2v9</org.apache.ws.commons.axiom.wso2.version>
 		<org.wso2.carbon.version>4.4.7</org.wso2.carbon.version>
 		<synapse.version>2.1.7-wso2v3</synapse.version>
-		<carbon.apimgt.version>6.0.4</carbon.apimgt.version>
 		<com.h2database.wso2.version>1.2.140.wso2v3</com.h2database.wso2.version>
 		<org.apache.ws.commons.axiom.version>1.2.18</org.apache.ws.commons.axiom.version>
 		<com.sun.mail.version>1.5.5</com.sun.mail.version>
