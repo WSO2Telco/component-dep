@@ -1,5 +1,8 @@
 package com.wso2telco.dep.operatorservice.model;
 
+/**
+ * DTO class for blacklist whitelist service response
+ */
 public class APIBlacklistWhitelistResponseDTO {
     boolean validationError;
     int processed;

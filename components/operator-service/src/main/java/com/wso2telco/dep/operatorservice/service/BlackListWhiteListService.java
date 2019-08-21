@@ -98,6 +98,12 @@ public class BlackListWhiteListService {
 		return responseDTO;
     }
 
+	/**
+	 * Returns the count of a entries for blacklist whitelist combination
+	 * @param dto BlacklistWhiltelistDTO
+	 * @return BlacklistWhitelistCountResponseDTO
+	 * @throws BusinessException
+	 */
 	public BlacklistWhitelistCountResponseDTO count(BlacklistWhitelistDTO dto) throws BusinessException {
 		try {
 			return dao.getCount(dto);
@@ -107,6 +113,11 @@ public class BlackListWhiteListService {
 		}
 	}
 
+	/**
+	 * Removes a blacklist whitelist entry
+	 * @param dto BlacklistWhitelistDTO
+	 * @throws BusinessException
+	 */
 	public void remove(BlacklistWhitelistDTO dto) throws BusinessException {
 		try {
 			Matcher matcher = bwRegex.matcher(dto.getMsisdnList().get(0));
@@ -316,6 +327,12 @@ public class BlackListWhiteListService {
 		return blacklistPages;
 	}
 
+	/**
+	 * Writes the blacklist whitelist entries to the given output stream as a zip file
+	 * @param dto BlacklistWhitelistDTO
+	 * @param out Outputstream
+	 * @throws Exception
+	 */
 	public void getBlacklistAsZip(BlacklistWhitelistDTO dto, OutputStream out) throws Exception {
 		List<PaginationDTO> pages = getBlacklistPages(dto,1000000);
 		int index = 1;
@@ -335,6 +352,12 @@ public class BlackListWhiteListService {
 		out.close();
 	}
 
+	/**
+	 * Searches for a valid blacklist whitelist entry
+	 * @param dto BlacklistWhitelistDTO
+	 * @return
+	 * @throws Exception
+	 */
 	public BlacklistWhitelistSearchResponseDTO search(BlacklistWhitelistDTO dto) throws Exception {
 		BlacklistWhitelistSearchResponseDTO responseDTO = new BlacklistWhitelistSearchResponseDTO();
 		//validate

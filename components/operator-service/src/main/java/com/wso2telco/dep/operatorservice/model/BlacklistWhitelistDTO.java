@@ -19,6 +19,9 @@ package com.wso2telco.dep.operatorservice.model;
 import java.util.ArrayList;
 import java.util.List;
 
+/**
+ * DTO for Blacklist Whitelist operations
+ */
 public class BlacklistWhitelistDTO {
     private String apiID;
     private String appId;

@@ -1,5 +1,8 @@
 package com.wso2telco.dep.operatorservice.model;
 
+/**
+ * DTO for blacklist whitelist requests
+ */
 public class BlacklistWhitelistRequestDTO {
 
     private String msisdn;
