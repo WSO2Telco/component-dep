@@ -328,12 +328,11 @@ public class Queries {
 	@Path("/apis/{userId}/{appId}")
 	@Produces(MediaType.APPLICATION_JSON)
 	public Response getAllApisByUserAndApp(@PathParam("userId") String userId, @PathParam("appId") String appId) {
-		String jsonString = null;
 		try {
 			userId = replaceAllWithWildcard(userId);
 			appId = replaceAllWithWildcard(appId);
 
-			jsonString = blackListWhiteListService.getAllApisByUserAndApp(userId, appId);
+			String jsonString = blackListWhiteListService.getAllApisByUserAndApp(userId, appId);
 			return Response.status(Response.Status.OK).entity(jsonString).build();
 		} catch (BusinessException e) {
 			return Response.status(Response.Status.BAD_REQUEST).build();
