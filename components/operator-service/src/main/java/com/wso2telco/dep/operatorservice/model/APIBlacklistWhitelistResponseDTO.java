@@ -8,10 +8,10 @@ public class APIBlacklistWhitelistResponseDTO {
     int processed;
     int failed;
 
-    public APIBlacklistWhitelistResponseDTO(int processed, int failed) {
-        this.processed = processed;
-        this.failed = failed;
-        validationError = failed > 0;
+    public APIBlacklistWhitelistResponseDTO() {
+        this.processed = 0;
+        this.failed = 0;
+        validationError = false;
     }
 
     public boolean isValidationError() {

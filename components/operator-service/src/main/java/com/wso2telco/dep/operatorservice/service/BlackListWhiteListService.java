@@ -63,7 +63,7 @@ public class BlackListWhiteListService {
 
 		List<String> valid = new ArrayList<>();
 		List<String> invalid = new ArrayList<>();
-		APIBlacklistWhitelistResponseDTO responseDTO = new APIBlacklistWhitelistResponseDTO(0,0);
+		APIBlacklistWhitelistResponseDTO responseDTO = new APIBlacklistWhitelistResponseDTO();
 		int success = 0;
 
 		Matcher matcher;
