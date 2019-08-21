@@ -76,11 +76,11 @@ public class BlackListWhiteListDAO {
 			conn.setAutoCommit(false);
 
 			int batchLimit = 100;
-			for (String m : dto.getMsisdnList()) {
+			for (String msisdn : dto.getMsisdnList()) {
 
 					ps.setString(1, dto.getApiID());
 					ps.setString(2, dto.getAppId());
-					ps.setString(3, m);
+					ps.setString(3, msisdn);
 					ps.setString(4, dto.getAction());
 					ps.setString(5,dto.getServiceProvider());
 					ps.setString(6,dto.getUser());
