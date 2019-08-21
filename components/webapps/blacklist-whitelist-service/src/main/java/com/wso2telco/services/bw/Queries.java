@@ -299,7 +299,7 @@ public class Queries {
 	@GET
 	@Path("/subscribers")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getAllSubscribers() throws SQLException, BusinessException {
+	public Response getAllSubscribers() throws BusinessException {
 
 		String jsonString = blackListWhiteListService.getAllSubscribedUsers();
 		return Response.status(Response.Status.OK).entity(jsonString).build();
@@ -308,7 +308,7 @@ public class Queries {
 	@GET
 	@Path("/apps/{userId}/{operatorId}")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getAllApplicationsByUser(@PathParam("userId") String userId,@PathParam("operatorId") String operatorId) throws SQLException, BusinessException {
+	public Response getAllApplicationsByUser(@PathParam("userId") String userId,@PathParam("operatorId") String operatorId) throws BusinessException {
 
 		//Gson gson = new GsonBuilder().serializeNulls().create();
 		//Id userID = gson.fromJson(jsonBody, Id.class);
@@ -345,7 +345,7 @@ public class Queries {
 	@GET
 	@Path("/apis")
 	@Produces(MediaType.APPLICATION_JSON)
-	public Response getAllApi() throws SQLException, BusinessException {
+	public Response getAllApi() throws BusinessException {
 		String jsonString = blackListWhiteListService.getAllAPIs();
 		return Response.status(Response.Status.OK).entity(jsonString).build();
 	}
