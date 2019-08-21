@@ -107,7 +107,7 @@ public class BlackListWhiteListDAO {
 				}
 			}
 
-		} catch (Exception e) {
+		} catch (SQLException e) {
 			if(conn != null){
                 conn.rollback();
             }
