@@ -258,7 +258,7 @@ public class Queries {
 			return Response.status(status).entity(gson.toJson(response)).build();
 		} catch (IOException | BusinessException e) {
 			LOG.error("Unable to process upload", e);
-			return Response.status(500).build();
+			return Response.status(Response.Status.BAD_REQUEST).build();
 		}
 
 	}
