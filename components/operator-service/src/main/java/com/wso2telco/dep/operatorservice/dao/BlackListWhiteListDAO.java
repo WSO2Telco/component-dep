@@ -50,19 +50,78 @@ public class BlackListWhiteListDAO {
 
 	private static final Log log = LogFactory.getLog(BlackListWhiteListDAO.class);
 
+	private static final String streamBlacklistQuery = "SELECT apis.API_NAME, apps.NAME, apps.CREATED_BY, bw.MSISDN, " +
+			"bw.ACTION, bw.user, bw.CREATED, bw.LAST_MODIFIED" +
+			" FROM " +
+			OparatorTable.API_BLACKLIST_WHITELIST.getTObject() +
+			" AS bw, " +
+			DbUtils.getDbNames().get(DataSourceNames.WSO2AM_DB) +
+			".am_application " +
+			" AS apps, " +
+			DbUtils.getDbNames().get(DataSourceNames.WSO2AM_DB) +
+			".am_api " +
+			" AS apis " +
+			" WHERE 1=1 " +
+			" AND bw.API_ID LIKE ? " +
+			" AND bw.APP_ID LIKE ? " +
+			" AND bw.SERVICE_PROVIDER LIKE ? " +
+			" AND bw.ACTION = ? " +
+			" AND apps.application_id = app_id " +
+			" AND apis.API_ID = bw.API_ID " +
+			" LIMIT ?" +
+			" OFFSET ?";
+
+	private static final String blacklistQuery = " INSERT IGNORE INTO " +
+			OparatorTable.API_BLACKLIST_WHITELIST.getTObject() +
+			"(api_id,app_id,msisdn,action, SERVICE_PROVIDER, user)" +
+			" VALUES (?, ?, ?, ?,?, ?)";
+
+	private static final String blacklistCountQuery = "SELECT count(*) as count" +
+			" FROM " +
+			OparatorTable.API_BLACKLIST_WHITELIST.getTObject() +
+			" WHERE 1=1 " +
+			" AND API_ID LIKE ? " +
+			" AND APP_ID LIKE ? " +
+			" AND ACTION = ? " +
+			" AND SERVICE_PROVIDER LIKE ? ";
+
+	private static final String checkIfbwExistsQuery = "SELECT EXISTS(SELECT 1 FROM " +
+			OparatorTable.API_BLACKLIST_WHITELIST.getTObject() +
+			" WHERE " +
+			"MSISDN = ? " +
+			" AND " +
+			" API_ID LIKE ? " +
+			" AND " +
+			" APP_ID LIKE ?" +
+			" AND SERVICE_PROVIDER LIKE ?" +
+			" AND " +
+			" action = ?) AS result";
+
+	private static final String getCountQuery =
+			"SELECT count(*) AS count FROM " +
+					OparatorTable.API_BLACKLIST_WHITELIST.getTObject() +
+					" WHERE " +
+					" API_ID LIKE ? " +
+					" AND " +
+					" APP_ID LIKE ? " +
+					" AND SERVICE_PROVIDER LIKE ?" +
+					" AND " +
+					" action = ?";
+
+	private static final String deleteBwQuery = "DELETE FROM " +
+			OparatorTable.API_BLACKLIST_WHITELIST.getTObject() +
+			" WHERE API_ID LIKE ?" +
+			" AND APP_ID LIKE ?" +
+			" AND MSISDN = ?" +
+			" AND ACTION = ?" +
+			" AND SERVICE_PROVIDER LIKE ?";
+
 	/**
 	 * blacklist list given msisdns
 	 *
 	 * @throws Exception
 	 */
-	public int blacklist(BlacklistWhitelistDTO dto)
-			throws Exception {
-
-		StringBuilder sql = new StringBuilder();
-		sql.append(" INSERT IGNORE INTO ");
-		sql.append(OparatorTable.API_BLACKLIST_WHITELIST.getTObject());
-            sql.append("(api_id,app_id,msisdn,action, SERVICE_PROVIDER, user)");
-		sql.append(" VALUES (?, ?, ?, ?,?, ?)");
+	public int blacklist(BlacklistWhitelistDTO dto) throws Exception {
 
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -71,7 +130,7 @@ public class BlackListWhiteListDAO {
 
 		try {
 			conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
-			ps = conn.prepareStatement(sql.toString());
+			ps = conn.prepareStatement(blacklistQuery);
 
 			conn.setAutoCommit(false);
 
@@ -202,17 +261,6 @@ public class BlackListWhiteListDAO {
 	 * @throws Exception
 	 */
 	public int getBlacklistCountByApi(BlacklistWhitelistDTO dto) throws Exception {
-		StringBuilder sql = new StringBuilder();
-
-		sql.append("SELECT count(*) as count");
-		sql.append(" FROM ");
-		sql.append(OparatorTable.API_BLACKLIST_WHITELIST.getTObject());
-		sql.append(" WHERE 1=1 ");
-		sql.append(" AND API_ID LIKE ? ");
-		sql.append(" AND APP_ID LIKE ? ");
-		sql.append(" AND ACTION = ? ");
-		sql.append(" AND SERVICE_PROVIDER LIKE ? ");
-
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
@@ -220,7 +268,7 @@ public class BlackListWhiteListDAO {
 
 		try {
 			conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
-			ps = conn.prepareStatement(sql.toString());
+			ps = conn.prepareStatement(blacklistCountQuery);
 			ps.setString(1, dto.getApiID());
 			ps.setString(2,dto.getAppId());
 			ps.setString(3,dto.getAction());
@@ -241,35 +289,13 @@ public class BlackListWhiteListDAO {
 	}
 
 	public void streamBlacklistByApi(BlacklistWhitelistDTO dto,int offset, int limit, OutputStream out) throws Exception {
-		StringBuilder sql = new StringBuilder();
-
-		sql.append("SELECT apis.API_NAME, apps.NAME, apps.CREATED_BY, bw.MSISDN, bw.ACTION, bw.user, bw.CREATED, bw.LAST_MODIFIED");
-		sql.append(" FROM ");
-		sql.append(OparatorTable.API_BLACKLIST_WHITELIST.getTObject());
-		sql.append(" AS bw, ");
-		sql.append(DbUtils.getDbNames().get(DataSourceNames.WSO2AM_DB));
-		sql.append( ".am_application " );
-		sql.append(" AS apps, ");
-		sql.append(DbUtils.getDbNames().get(DataSourceNames.WSO2AM_DB));
-		sql.append( ".am_api " );
-		sql.append(" AS apis ");
-		sql.append(" WHERE 1=1 ");
-		sql.append(" AND bw.API_ID LIKE ? ");
-		sql.append(" AND bw.APP_ID LIKE ? ");
-		sql.append(" AND bw.SERVICE_PROVIDER LIKE ? ");
-		sql.append(" AND bw.ACTION = ? ");
-		sql.append(" AND apps.application_id = app_id ");
-		sql.append(" AND apis.API_ID = bw.API_ID ");
-		sql.append(" LIMIT ?");
-		sql.append(" OFFSET ?");
-
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
 		try {
 			conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
-			ps = conn.prepareStatement(sql.toString(),ResultSet.TYPE_FORWARD_ONLY,
+			ps = conn.prepareStatement(streamBlacklistQuery,ResultSet.TYPE_FORWARD_ONLY,
 					ResultSet.CONCUR_READ_ONLY);
 			ps.setFetchSize(Integer.MIN_VALUE);
 
@@ -331,23 +357,10 @@ public class BlackListWhiteListDAO {
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 
-		StringBuilder sb = new StringBuilder();
-		sb.append("SELECT EXISTS(SELECT 1 FROM ");
-		sb.append(OparatorTable.API_BLACKLIST_WHITELIST.getTObject());
-		sb.append(" WHERE ");
-		sb.append("MSISDN = ? ");
-		sb.append(" AND ");
-		sb.append(" API_ID LIKE ? ");
-		sb.append(" AND ");
-		sb.append(" APP_ID LIKE ?");
-		sb.append(" AND SERVICE_PROVIDER LIKE ?");
-		sb.append(" AND ");
-		sb.append(" action = ?) AS result");
-
 		try {
 			conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
 
-			ps = conn.prepareStatement(sb.toString());
+			ps = conn.prepareStatement(checkIfbwExistsQuery);
 			ps.setString(1, dto.getMsisdnList().get(0));
 			ps.setString(2, dto.getApiID());
 			ps.setString(3, dto.getAppId());
@@ -369,19 +382,7 @@ public class BlackListWhiteListDAO {
 	}
 
 	public BlacklistWhitelistCountResponseDTO getCount(BlacklistWhitelistDTO dto) throws Exception {
-
-		StringBuilder sb = new StringBuilder();
 		BlacklistWhitelistCountResponseDTO responseDTO = new BlacklistWhitelistCountResponseDTO();
-
-		sb.append("SELECT count(*) AS count FROM ");
-		sb.append(OparatorTable.API_BLACKLIST_WHITELIST.getTObject());
-		sb.append(" WHERE ");
-		sb.append(" API_ID LIKE ? ");
-		sb.append(" AND ");
-		sb.append(" APP_ID LIKE ? ");
-		sb.append(" AND SERVICE_PROVIDER LIKE ?");
-		sb.append(" AND ");
-		sb.append(" action = ?");
 
 		Connection conn = null;
 		PreparedStatement ps = null;
@@ -390,7 +391,7 @@ public class BlackListWhiteListDAO {
 		try {
 			conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
 
-			ps = conn.prepareStatement(sb.toString());
+			ps = conn.prepareStatement(getCountQuery);
 			ps.setString(1, dto.getApiID());
 			ps.setString(2, dto.getAppId());
 			ps.setString(3, dto.getServiceProvider());
@@ -414,21 +415,12 @@ public class BlackListWhiteListDAO {
 
 	public void remove(BlacklistWhitelistDTO dto) throws Exception {
 
-		StringBuilder sql = new StringBuilder();
-		sql.append("DELETE FROM ");
-		sql.append(OparatorTable.API_BLACKLIST_WHITELIST.getTObject());
-		sql.append(" WHERE API_ID LIKE ?");
-		sql.append(" AND APP_ID LIKE ?");
-		sql.append(" AND MSISDN = ?");
-		sql.append(" AND ACTION = ?");
-		sql.append(" AND SERVICE_PROVIDER LIKE ?");
-
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet rs = null;
 		try {
 			conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
-			ps = conn.prepareStatement(sql.toString());
+			ps = conn.prepareStatement(deleteBwQuery);
 
 			ps.setString(1, dto.getApiID());
 			ps.setString(2, dto.getAppId());
