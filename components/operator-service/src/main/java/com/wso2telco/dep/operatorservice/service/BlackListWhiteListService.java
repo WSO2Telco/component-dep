@@ -312,7 +312,7 @@ public class BlackListWhiteListService {
 		double factor = (double)count / (double)limit;
 		int index = 0;
 
-		List<PaginationDTO> blacklistPages = new ArrayList<PaginationDTO>();
+		List<PaginationDTO> blacklistPages = new ArrayList<>();
 
 		while (index < (int) factor) {
 			blacklistPages.add(new PaginationDTO(limit, (index * limit)));
