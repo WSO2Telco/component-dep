@@ -204,7 +204,7 @@ public class Queries {
 				return Response.status(Response.Status.OK).entity(stream).build();
 			} catch (Exception e) {
 				LOG.error("Error building zip file",e);
-				return Response.status(Response.Status.BAD_REQUEST).entity(e.getMessage()).build();
+				return Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(e.getMessage()).build();
 			}
 	}
 
