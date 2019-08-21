@@ -130,14 +130,6 @@ public class Queries {
 		}
 	}
 
-
-
-	private String[] removeNullMsisdnValues(String[] msisdnList) {
-		List<String> list = new ArrayList<String>(Arrays.asList(msisdnList));
-		list.removeAll(Collections.singleton(null));
-		return list.toArray(new String[list.size()]);
-	}
-
 	/**
 	 * Returns the count per app per api
 	 *
