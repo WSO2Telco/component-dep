@@ -26,17 +26,9 @@ public class BlacklistWhitelistDTO {
     private String apiID;
     private String appId;
     private String serviceProvider;
-    private List<String> msisdnList;
+    private List<String> msisdnList = new ArrayList<>();
     private String action;
     private String user;
-
-    public BlacklistWhitelistDTO() {
-        this.apiID = null;
-        this.appId = null;
-        this.serviceProvider = null;
-        this.msisdnList = new ArrayList<>();
-        this.action = null;
-    }
 
     public String getApiID() {
         return apiID;
