@@ -4,9 +4,9 @@ package com.wso2telco.dep.operatorservice.model;
  * DTO class for blacklist whitelist service response
  */
 public class APIBlacklistWhitelistResponseDTO {
-    boolean validationError;
-    int processed;
-    int failed;
+    private boolean validationError;
+    private int processed;
+    private int failed;
 
     public APIBlacklistWhitelistResponseDTO() {
         this.processed = 0;
