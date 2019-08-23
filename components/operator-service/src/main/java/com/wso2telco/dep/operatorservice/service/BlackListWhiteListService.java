@@ -22,14 +22,10 @@ import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.exception.GenaralError;
 import com.wso2telco.dep.oneapivalidation.util.MsisdnDTO;
 import com.wso2telco.dep.operatorservice.dao.BlackListWhiteListDAO;
-import com.wso2telco.dep.operatorservice.exception.BlacklistException;
 import com.wso2telco.dep.operatorservice.exception.NumberBlackListException;
 import com.wso2telco.dep.operatorservice.exception.SubscriptionWhiteListException;
 import com.wso2telco.dep.operatorservice.exception.SubscriptionWhiteListException.SubscriptionWhiteListErrorType;
-import com.wso2telco.dep.operatorservice.model.BlackListDTO;
-import com.wso2telco.dep.operatorservice.model.MSISDNSearchDTO;
-import com.wso2telco.dep.operatorservice.model.MSISDNValidationDTO;
-import com.wso2telco.dep.operatorservice.model.WhiteListDTO;
+import com.wso2telco.dep.operatorservice.model.*;
 import edu.emory.mathcs.backport.java.util.Arrays;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -37,14 +33,21 @@ import org.wso2.carbon.apimgt.api.dto.UserApplicationAPIUsage;
 import org.wso2.carbon.apimgt.api.model.APIIdentifier;
 import org.wso2.carbon.apimgt.api.model.SubscribedAPI;
 
+import java.io.BufferedOutputStream;
+import java.io.OutputStream;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.zip.ZipEntry;
+import java.util.zip.ZipOutputStream;
 
 public class BlackListWhiteListService {
 	Log LOG = LogFactory.getLog(BlackListWhiteListService.class);
 	private BlackListWhiteListDAO dao;
+	private Pattern bwRegex = Pattern.compile("\\d+");
 
 	public BlackListWhiteListService()
 	{
@@ -56,68 +59,73 @@ public class BlackListWhiteListService {
 	 * sign if not all the process fails. The entire process run as a single
 	 * transaction .
 	 */
-	public void blacklist(BlackListDTO dto) throws BusinessException {
+	public APIBlacklistWhitelistResponseDTO blacklist(BlacklistWhitelistDTO dto) throws BusinessException {
 
-		String[] msisdns = dto.getUserMSISDN();
-		MSISDNValidationDTO msisdnValidationDTO = new MSISDNValidationDTO();
+		List<String> valid = new ArrayList<>();
+		List<String> invalid = new ArrayList<>();
+		APIBlacklistWhitelistResponseDTO responseDTO = new APIBlacklistWhitelistResponseDTO();
+		int success = 0;
 
-		final String apiID_ = dto.getApiID();
-		final String apiName_ = dto.getApiName();
-		final String userId_ = dto.getUserID();
-
-
-			try{
-
-				msisdnValidationDTO.setValid(Arrays.asList(msisdns));
-				msisdnValidationDTO.setValidationRegex(dto.getValidationRegex());
-				msisdnValidationDTO.setValidationPrefixGroup(dto.getValidationPrefixGroup());
-				msisdnValidationDTO.setValidationDigitsGroup(dto.getValidationDigitsGroup());
-				msisdnValidationDTO.process();
-
-
-				// load already black listed numbers
-				List<MsisdnDTO> alreadyBlacklisted;
-
-				alreadyBlacklisted = dao.getBlacklisted(apiID_);
-
-				// Remove already black listed from the list
-				for (MsisdnDTO msisdn : alreadyBlacklisted) {
-					msisdnValidationDTO.getValidProcessed().remove(msisdn);
-				}
-
-			} catch (Exception e){
-				LOG.error("Error while getting already blacklisted users",e);
-				throw new BlacklistException(BlacklistException.BlacklistErrorType.INTERNAL_SERVER_ERROR);
-			}
-
-
-			if (msisdnValidationDTO.getValidProcessed().isEmpty()) {
-				LOG.debug(" All the numbers already black listed");
-				throw new BlacklistException(BlacklistException.BlacklistErrorType.USER_ALREADY_BLACKLISTED);
-			}
-
+		Matcher matcher;
 		try {
-			dao.blacklist(msisdnValidationDTO, apiID_, apiName_, userId_);
+
+			for (String m : dto.getMsisdnList()) {
+				matcher = bwRegex.matcher(m);
+				if (matcher.matches()) {
+					valid.add(m);
+				} else {
+					invalid.add(m);
+				}
+			}
+
+			if (!valid.isEmpty()) {
+				dto.setMsisdnList(valid);
+				success = dao.blacklist(dto);
+			}
+
+			responseDTO.setProcessed(success);
+			responseDTO.setFailed(invalid.size() + (valid.size() - success));
+
 		} catch (Exception e) {
-			LOG.error("blacklist ", e);
+			LOG.error("Unable to process blacklist", e);
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
+
+		if(invalid.isEmpty()){
+			LOG.error("Could not process due to invalid format: " + invalid);
+		}
+
+		return responseDTO;
     }
 
-	public String[] loadBlacklisted(MSISDNSearchDTO searchDTO) throws BusinessException {
+	/**
+	 * Returns the count of a entries for blacklist whitelist combination
+	 * @param dto BlacklistWhiltelistDTO
+	 * @return BlacklistWhitelistCountResponseDTO
+	 * @throws BusinessException
+	 */
+	public BlacklistWhitelistCountResponseDTO count(BlacklistWhitelistDTO dto) throws BusinessException {
 		try {
-			return dao.getBlacklisted(searchDTO);
+			return dao.getCount(dto);
 		} catch (Exception e) {
 			LOG.error("loadBlacklisted", e);
 			throw new NumberBlackListException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
 	}
 
-	public void removeBlacklist(int apiId, final String userMSISDN) throws BusinessException {
+	/**
+	 * Removes a blacklist whitelist entry
+	 * @param dto BlacklistWhitelistDTO
+	 * @throws BusinessException
+	 */
+	public void remove(BlacklistWhitelistDTO dto) throws BusinessException {
 		try {
-			dao.removeBlacklist(apiId, userMSISDN);
+			Matcher matcher = bwRegex.matcher(dto.getMsisdnList().get(0));
+			if (matcher.matches()) {
+				dao.remove(dto);
+			}
 		} catch (Exception e) {
-			LOG.error("removeBlacklist", e);
+			LOG.error("remove", e);
 			throw new NumberBlackListException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
 	}
@@ -290,5 +298,82 @@ public class BlackListWhiteListService {
 
 	public String[] getAPIInfo(int apiId) throws BusinessException {
 		return dao.getAPIInfo(apiId);
+	}
+
+	/**
+	 * Returns the offset and limit required for pagination of blacklisted APIs
+	 *
+	 * @param apiId apiId API ID of blacklisted numbers to get count of
+	 * @param limit maximum number of records per page
+	 * @return
+	 */
+	private List<PaginationDTO> getBlacklistPages(BlacklistWhitelistDTO dto, int limit) throws Exception {
+		int count = dao.getBlacklistCountByApi(dto);
+		int factor = count / limit ;
+		int remainder = count % limit;
+		int index = 0;
+
+		List<PaginationDTO> blacklistPages = new ArrayList<>();
+
+		for ( ; index < factor; index++ ) {
+			blacklistPages.add(new PaginationDTO(limit, (index * limit)));
+		}
+
+		if (remainder > 0) {
+			blacklistPages.add(new PaginationDTO(limit, (index * limit)));
+		}
+
+		return blacklistPages;
+	}
+
+	/**
+	 * Writes the blacklist whitelist entries to the given output stream as a zip file
+	 * @param dto BlacklistWhitelistDTO
+	 * @param out Outputstream
+	 * @throws Exception
+	 */
+	public void getBlacklistAsZip(BlacklistWhitelistDTO dto, OutputStream out) throws Exception {
+		List<PaginationDTO> pages = getBlacklistPages(dto,1000000);
+		int index = 1;
+
+		ZipOutputStream zipOut = new ZipOutputStream(new BufferedOutputStream(out));
+		//for each page create new entry and write to stream
+
+		for(PaginationDTO p : pages){
+			zipOut.putNextEntry(new ZipEntry("blacklist-whitelist-numbers-" + index + ".csv"));
+			dao.streamBlacklistByApi(dto,p.getOffset(),p.getLimit(),zipOut);
+			zipOut.closeEntry();
+			index++;
+		}
+
+		zipOut.close();
+		out.flush();
+		out.close();
+	}
+
+	/**
+	 * Searches for a valid blacklist whitelist entry
+	 * @param dto BlacklistWhitelistDTO
+	 * @return
+	 * @throws Exception
+	 */
+	public BlacklistWhitelistSearchResponseDTO search(BlacklistWhitelistDTO dto) throws Exception {
+		BlacklistWhitelistSearchResponseDTO responseDTO = new BlacklistWhitelistSearchResponseDTO();
+		//validate
+		Matcher matcher = bwRegex.matcher(dto.getMsisdnList().get(0));
+		if (matcher.matches()) {
+			boolean exists = dao.checkIfBlacklistWhitelistExists(dto);
+			responseDTO.setExists(exists);
+
+			if (!exists) {
+				responseDTO.setError("MSISDN not found");
+			}
+
+			return responseDTO;
+		} else{
+			responseDTO.setExists(false);
+			responseDTO.setError("Validation Error: Invalid format!");
+			return responseDTO;
+		}
 	}
 }

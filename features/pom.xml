@@ -53,6 +53,7 @@
 		<module>com.wso2telco.dep.quota.service.feature</module>
         <module>com.wso2telco.dep.ratecard.service.feature</module>
 		<module>com.wso2telco.dep.workflow.core.feature</module>
+        <module>com.wso2telco.dep.usermasking.feature</module>
     </modules>
 </project>
 

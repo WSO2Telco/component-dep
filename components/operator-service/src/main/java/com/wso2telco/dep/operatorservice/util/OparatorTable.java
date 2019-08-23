@@ -21,6 +21,7 @@ public enum OparatorTable {
 	OPERATORS("operators"),
 	MERCHANT_OPCO_BLACKLIST("merchantopco_blacklist"),
 	BLACKLIST_MSISDN("blacklistmsisdn"),
+	API_BLACKLIST_WHITELIST("api_blacklist_whitelist"),
 	SUBSCRIPTION_WHITELIST("subscription_WhiteList"),
 	SUB_APPROVAL_OPERATORS("sub_approval_operators"),
 	OPERATOR_ENDPOINTS("operatorendpoints"),
