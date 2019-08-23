@@ -309,19 +309,18 @@ public class BlackListWhiteListService {
 	 */
 	private List<PaginationDTO> getBlacklistPages(BlacklistWhitelistDTO dto, int limit) throws Exception {
 		int count = dao.getBlacklistCountByApi(dto);
-		double factor = (double)count / (double)limit;
+		int factor = count / limit ;
+		int remainder = count % limit;
 		int index = 0;
 
 		List<PaginationDTO> blacklistPages = new ArrayList<>();
 
-		while (index < (int) factor) {
+		for ( ; index < factor; index++ ) {
 			blacklistPages.add(new PaginationDTO(limit, (index * limit)));
-			index++;
 		}
 
-		//handles records less than limit i.e: not divisible by limit
-		if (factor - (int) factor > 0.0) {
-			blacklistPages.add(new PaginationDTO(limit, (int) factor * limit));
+		if (remainder > 0) {
+			blacklistPages.add(new PaginationDTO(limit, (index * limit)));
 		}
 
 		return blacklistPages;
