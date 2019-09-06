@@ -26,7 +26,8 @@ public enum HistoryVariable {
     ID("applicationId"),
     SP("serviceProvider"),
     STATUS("status"),
-    CREATED_BY("createdBy");
+    CREATED_BY("createdBy"),
+    DESCRIPTION("description");
 
 
     private String varName;

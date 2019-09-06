@@ -180,7 +180,7 @@ public class DatabaseHandler {
         return historyResponse;
     }
 
-    public HistoryResponse getApprovalHistoryWithPendingJobs(String subscriber, String applicationName, int applicationId, String createdby, String status, int offset, int count) throws BusinessException {
+    public HistoryResponse getApprovalHistoryWithPendingJobs(String subscriber, String applicationName, int applicationId, String createdby, String description, String status, int offset, int count) throws BusinessException {
 
         Connection conn = null;
         PreparedStatement ps = null;
@@ -194,7 +194,7 @@ public class DatabaseHandler {
                 " 'Not Specified', app.description) AS description" +
                 ",ELT(FIELD(application_status, 'CREATED', 'APPROVED', 'REJECTED'), 'PENDING APPROVE', 'APPROVED', 'REJECTED') " +
                 "as app_status, null as oparators FROM " + apimgtDB + ".am_application app " +
-                "WHERE app.APPLICATION_ID LIKE ? AND app.NAME LIKE ? AND app.CREATED_BY LIKE ? ");
+                "WHERE app.APPLICATION_ID LIKE ? AND app.NAME LIKE ? AND app.CREATED_BY LIKE ? AND app.description LIKE ? ");
 
         if (status != null && !status.isEmpty() && !status.equals(ALL)) {
             sql.append("AND app.application_status LIKE ? ");
@@ -225,18 +225,24 @@ public class DatabaseHandler {
                 ps.setString(3, createdby);
             }
 
+            if (description.equals(ALL)) {
+                ps.setString(4, "%");
+            } else {
+                ps.setString(4, "%" + description + "%");
+            }
+
             if (status != null && !status.isEmpty() && !status.equals(ALL)) {
                if(status.toLowerCase().startsWith("pending")){
                     status = createdStatus.toLowerCase();
-                    ps.setString(4, status);
+                    ps.setString(5, status);
                 } else {
-                    ps.setString(4, status);
+                    ps.setString(5, status);
                 }
+                ps.setInt(6, offset);
+                ps.setInt(7, count);
+            } else {
                 ps.setInt(5, offset);
                 ps.setInt(6, count);
-            } else {
-                ps.setInt(4, offset);
-                ps.setInt(5, count);
             }
 
             int size = 0;
