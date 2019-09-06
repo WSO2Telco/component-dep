@@ -322,7 +322,8 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
         filter.put("id", HistoryVariable.ID.key());
         filter.put("operator",HistoryVariable.OPARATOR.key());
         filter.put("status", HistoryVariable.STATUS.key());
-        filter.put("createdby", HistoryVariable.SP.key());
+        filter.put("createdby", HistoryVariable.CREATED_BY.key());
+        filter.put("created", HistoryVariable.CREATED_BY.key());
         return filter;
     }
 

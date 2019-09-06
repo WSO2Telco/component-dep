@@ -169,9 +169,9 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
         return handler.getApprovalHistory(subscriber, applicationName, applicationId, operator, status, offset, count);
     }
 
-    public HistoryResponse getApprovalHistoryWithPendingJobs(String subscriber, String applicationName, int applicationId, String operator, String status, int offset, int count) throws BusinessException {
+    public HistoryResponse getApprovalHistoryWithPendingJobs(String subscriber, String applicationName, int applicationId, String createdby, String status, int offset, int count) throws BusinessException {
         DatabaseHandler handler = new DatabaseHandler();
-        return handler.getApprovalHistoryWithPendingJobs(subscriber, applicationName, applicationId, operator, status, offset, count);
+        return handler.getApprovalHistoryWithPendingJobs(subscriber, applicationName, applicationId, createdby, status, offset, count);
     }
 
     @Override
