@@ -102,6 +102,7 @@ public class IntGtwAppRequestBuilder extends AbstractAppRequestBuilder {
         String operator = ALL;
         String status = ALL;
         String createdBy = ALL;
+        String description = ALL;
         int applicationId;
         String applicationName =ALL;
 
@@ -134,8 +135,12 @@ public class IntGtwAppRequestBuilder extends AbstractAppRequestBuilder {
             createdBy = varMap.get(HistoryVariable.CREATED_BY.key());
         }
 
+        if (varMap.containsKey(HistoryVariable.DESCRIPTION.key())) {
+        	description = varMap.get(HistoryVariable.DESCRIPTION.key());
+        }
+
         try {
-            HistoryResponse apiRequests = getApprovalHistoryWithPendingJobs( subscriber, applicationName, applicationId, createdBy, status, searchDTO.getStart(), searchDTO.getBatchSize());
+            HistoryResponse apiRequests = getApprovalHistoryWithPendingJobs( subscriber, applicationName, applicationId, createdBy, description, status, searchDTO.getStart(), searchDTO.getBatchSize());
             returnCall = new Callback().setPayload(apiRequests).setSuccess(true).setMessage(Messages.APPLICATION_HISTORY_SUCCESS.getValue());
         } catch (Exception e) {
             returnCall = new Callback().setPayload(e.getMessage()).setSuccess(false).setMessage(Messages.APPLICATION_HISTORY_FAILED.getValue());
