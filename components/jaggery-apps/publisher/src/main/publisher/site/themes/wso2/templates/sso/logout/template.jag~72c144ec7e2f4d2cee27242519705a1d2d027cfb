@@ -1,0 +1,121 @@
+<% jagg.template("sso/logout", function(inputs, outputs, jagg) { %>
+ 
+<%
+    //jagg.setUser(null);
+    //response.sendRedirect("site/pages/list-apis.jag");
+	var log = new Log();
+	var security =require("sso");
+	var site = require("/site/conf/site.json");
+
+	var ssoRelyingParty = new security.SSORelyingParty(site.ssoConfiguration.issuer);
+	
+	if(site.ssoConfiguration.externalLogoutPage != null
+			&& site.ssoConfiguration.externalLogoutPage != ""){
+		ssoRelyingParty.invalidateSessionBySessionId(session.getId());
+		
+		response.sendRedirect(site.ssoConfiguration.externalLogoutPage);
+		return;
+
+	} else {		
+		
+		//check whether session is expired
+                var user = jagg.getUser();
+                if (!user) {
+                        if (log.isDebugEnabled()) {
+                            log.debug("User information not avaialble, so invalidating session");
+                        }
+                        response.sendRedirect(jagg.getHttpsUrl("/"));
+                        return;
+                }
+
+                //Trying to get logut request
+                log.debug("User found, and starting logout request process");
+                var samlLogoutRequest = ssoRelyingParty.getSAMLLogoutRequest(session.get("LOGGED_IN_USER"),session.getId());
+                var idpURL = "" ;
+
+                if(samlLogoutRequest==null){
+                        //logout request failed because there is no session details in anymore. Here trying to do a login request.
+                        if (log.isDebugEnabled()) {
+                            log.debug("logout request failed because there is no session details in SAMLSSORelyingPartyObject. Here it is trying to do a login request");
+                        }
+                        samlLogoutRequest = ssoRelyingParty.getSAMLAuthRequest();
+                        idpURL = site.ssoConfiguration.identityProviderLogoutURL ;
+                            if(idpURL == null){
+                                idpURL = site.ssoConfiguration.identityProviderURL ;
+                                if (log.isDebugEnabled()) {
+                                    log.debug("Identity Provider logout URL: " + idpURL);
+                                }
+                            }
+                }else{
+                        if (log.isDebugEnabled()) {
+                            log.debug("doing logout request");
+                        }
+                        idpURL = site.ssoConfiguration.identityProviderLogoutURL ;
+                            if(idpURL == null){
+                                idpURL = ssoRelyingParty.getProperty("identityProviderURL");
+
+                                if (!Boolean(idpURL)) {
+                                    idpURL = site.ssoConfiguration.identityProviderURL ;
+                                }
+                        }
+                }
+
+                var encodedRequest = ssoRelyingParty.encode(samlLogoutRequest);
+                var relayState = ssoRelyingParty.getUUID();
+
+		
+
+%>
+
+		<div>
+ <div align="center" class="spinner"style="margin-top:22%;"></div>
+                <style>
+                .spinner {
+                 width: 100px;
+                 height: 100px;
+                 background-color: orange;
+
+                 margin: 100px auto;
+                 -webkit-animation: sk-rotateplane 1.2s infinite ease-in-out;
+                 animation: sk-rotateplane 1.2s infinite ease-in-out;
+                }
+
+                @-webkit-keyframes sk-rotateplane {
+                 0% { -webkit-transform: perspective(120px) }
+                 50% { -webkit-transform: perspective(120px) rotateY(180deg) }
+                 100% { -webkit-transform: perspective(120px) rotateY(180deg)  rotateX(180deg) }
+                }
+
+                @keyframes sk-rotateplane {
+                 0% {
+                   transform: perspective(120px) rotateX(0deg) rotateY(0deg);
+                   -webkit-transform: perspective(120px) rotateX(0deg) rotateY(0deg)
+                 } 50% {
+                   transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg);
+                   -webkit-transform: perspective(120px) rotateX(-180.1deg) rotateY(0deg)
+                 } 100% {
+                   transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+                   -webkit-transform: perspective(120px) rotateX(-180deg) rotateY(-179.9deg);
+                 }
+                }
+            </style>
+
+			<form id="logoutForm" method="post" action="<%=idpURL%>" style="visibility: hidden;">
+			<p>
+				<input type="hidden" name="SAMLRequest"
+					  value="<%= encodedRequest %>"/>
+				<input type="hidden" name="RelayState" value="<%= relayState %>"/>
+				<button type="submit"><%=i18n.localize("POST")%></button>
+			</p>
+			</form>
+		</div>
+		<script type = "text/javascript" >
+					   document.forms[0].submit();
+		//        $(document).onload(function(){$('#logoutForm').submit();});
+
+		</script>
+<%
+	}
+%>
+       
+<% }); %>

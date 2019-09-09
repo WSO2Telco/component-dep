@@ -761,7 +761,7 @@
 							                    <div class="form-actions" id="saveButtons">
 							                        <button type="submit" class="btn btn-secondary manageSaveButton has-spinner" id="saveBtn" ><%=i18n.localize("Save")%></button>
 							                        <input type="hidden" id="hiddenGoToManage" value=""/>
-							                        <button id="go_to_manage" class="btn btn-primary manageSaveButton has-spinner"><%=i18n.localize("Next: Manage")%></button>
+							                        <button type="button" id="go_to_manage" class="btn btn-primary manageSaveButton has-spinner"><%=i18n.localize("Next: Manage")%></button>
 							                    </div>
 							                    </form>
 							                </div>
@@ -887,6 +887,16 @@
 								            </div>
 
 							            </div>
+
+								    <div id="save-prototype-success" class="alert alert-success" role="alert" style="display:none">
+									<i class="icon fw fw-success fade out"></i><strong><%=i18n.localize("Success!")%></strong>
+                    							<%=i18n.localize("You have successfully saved the API.")%>
+								    	<button type="button" class="close" aria-label="close" data-dismiss="alert">
+										<span aria-hidden="true">
+									    		<i class="fw fw-cancel"></i>
+										</span>
+								    	</button>
+								    </div>
 
 							            <div id="prototype-success" class="modal fade">
 							            <div class="modal-dialog">
@@ -1139,14 +1149,16 @@
 <table style="width:100%; table-layout:fixed">
 {{#each doc.paths}}
     {{# each this}}
-        <tr class="resource_container" data-path="$.paths.{{ path }}.{{@key}}">
-            <td class="resource-method-td resource_expand" data-path="$.paths.{{ path}}.{{ @key }}">
-                <span class=" resource-method resource-method-{{ @key }}">{{ @key }}</span>
-            </td>
-            <td class="resource_expand"><a class="resource-path" title="{{ path }}">{{ path }}</a></td>
-            <td  width="99%"><span class="operation-summary change_summary" data-path="$.paths.{{ path }}.{{@key}}" data-attr="summary" >{{ summary }}</span></td>
-        </tr>
-        <tr><td colspan="3" class="resource_body " data-path="$.paths.{{ path }}.{{@key}}"></td></tr>
+		{{#if this.responses}}
+            <tr class="resource_container" data-path="$.paths.{{ path }}.{{@key}}">
+                <td class="resource-method-td resource_expand" data-path="$.paths.{{ path}}.{{ @key }}">
+                    <span class=" resource-method resource-method-{{ @key }}">{{ @key }}</span>
+                </td>
+                <td class="resource_expand"><a class="resource-path" title="{{ path }}">{{ path }}</a></td>
+                <td  width="99%"><span class="operation-summary change_summary" data-path="$.paths.{{ path }}.{{@key}}" data-attr="summary" >{{ summary }}</span></td>
+            </tr>
+            <tr><td colspan="3" class="resource_body " data-path="$.paths.{{ path }}.{{@key}}"></td></tr>
+        {{/if}}
     {{/each}}
 {{/each}}
 </table>

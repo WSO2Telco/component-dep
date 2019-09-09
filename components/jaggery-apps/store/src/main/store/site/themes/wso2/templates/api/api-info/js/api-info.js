@@ -1,7 +1,7 @@
 function triggerSubscribe(deploymentType) {
 
 
-    $.ajaxSetup({
+	$.ajaxSetup({
         contentType: "application/x-www-form-urlencoded; charset=utf-8"
     });
     jagg.sessionAwareJS({redirect:'/site/pages/index.jag'});
@@ -164,7 +164,7 @@ function triggerSubscribe(deploymentType) {
                     window.location.reload();
                 });
                 $('#messageModal a.btn-primary').click(function() {
-                    urlPrefix = "name=" + applicationName + "&" + urlPrefix;
+                    urlPrefix = "name=" + applicationName + "&appId=" + applicationId + "&" + urlPrefix;
                     location.href = "../site/pages/application.jag?" + urlPrefix+"#subscription";
                  });
                    $('#messageModal').modal();

@@ -549,7 +549,9 @@
     "Visible to my Domain": "Visible to my Domain",
     "WADL": "WADL",
     "WSDL": "WSDL",
+    "WSDL Archive/File": "WSDL Archive/File",
     "WSDL Endpoint": "WSDL Endpoint",
+    "WSDL Url" : "WSDL Url",
     "WSO2 API Manager uses HTTP Head to check the validity of the endpoint.": "WSO2 API Manager uses HTTP Head to check the validity of the endpoint.",
     "WSO2 API Publisher Home": "WSO2 API Publisher Home",
     "WSO2 copyright": "WSO2 copyright",
@@ -645,5 +647,7 @@
     "Delete Task" : "Delete Task",
     "Authorization Header": "Authorization Header",
     "Here a custom authorization header can be defined as a replacement to the default <strong>Authorization</strong> header used to send a request. If a value is specified here, that will be used as the header field to send the access token in a request to consume the API": "A custom authorization header can be defined here as a replacement to the default <strong>Authorization</strong> header used to send a request. If a value is specified here, it will be used as the header field to send the access token in a request to consume the API",
-    "You have selected Microgateways for this API. The mediation policies selected here will not be applied in Microgateway environments.":"You have selected Microgateways for this API. The mediation policies selected here will not be applied in Microgateway environments."
+    "You have selected Microgateways for this API. The mediation policies selected here will not be applied in Microgateway environments.":"You have selected Microgateways for this API. The mediation policies selected here will not be applied in Microgateway environments.",
+    "Deprecate old versions after publish the API": "Deprecate old versions after publish the API",
+    "Requires re-subscription when publish the API": "Requires re-subscription when publish the API"
 }
