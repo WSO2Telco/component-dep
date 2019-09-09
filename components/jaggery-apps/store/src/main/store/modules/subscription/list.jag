@@ -45,6 +45,30 @@ var getAllSubscriptionsOfApplication = function (username, selectedAppName, star
     }
 };
 
+
+var getAllSubscriptionsOfApplicationById = function (username, selectedAppId, startSubIndex, endSubIndex)  {
+    var result,
+    log = new Log(),
+    store = jagg.module("manager").getAPIStoreObj();
+    try {
+        var groupingId = session.get("groupId");
+	    result = store.getAllSubscriptionsOfApplicationById(username , selectedAppId, String(startSubIndex), String(endSubIndex),groupingId);
+	    if (log.isDebugEnabled()) {
+            log.debug("getAllSubscriptionsOfApplicationById : " + stringify(result));
+        }
+        return {
+            error:false,
+            result:result
+        };
+    } catch (e) {
+        log.error(e);
+        return {
+            error:true,
+            result:e
+        };
+    }
+};
+
 var getAPISubscriptions = function (api, username) {
     var subscriptions,
             log = new Log(),
@@ -69,13 +93,12 @@ var getAPISubscriptions = function (api, username) {
     }
 };
 
-var getAPISubscriptionsForApplication = function (username, appName) {
+var getAPISubscriptionsForApplication = function (username, appName, groupingId) {
     var subscriptions,
             log = new Log(),
             store = jagg.module("manager").getAPIStoreObj();
 
     try {
-        var groupingId = session.get("groupId");
         subscriptions = store.getSubscriptionsByApplication(appName, username, groupingId);
         if (log.isDebugEnabled()) {
             log.debug("getSubscriptions : " + stringify(subscriptions));
@@ -92,6 +115,31 @@ var getAPISubscriptionsForApplication = function (username, appName) {
         };
     }
 };
+
+var getAllSubscriptionsOfApplicationById = function (username, selectedAppId, startSubIndex, endSubIndex)  {
+    var result,
+    log = new Log(),
+    store = jagg.module("manager").getAPIStoreObj();
+    try {
+        var groupingId = session.get("groupId");
+	    result = store.getAllSubscriptionsOfApplicationById(username , selectedAppId, String(startSubIndex), String(endSubIndex),groupingId);
+	    if (log.isDebugEnabled()) {
+            log.debug("getAllSubscriptionsOfApplicationById : " + stringify(result));
+        }
+        return {
+            error:false,
+            result:result
+        };
+    } catch (e) {
+        log.error(e);
+        return {
+            error:true,
+            result:e
+        };
+    }
+};
+
+
 var generateClientSdk = function (appName,language,userName,groupId){
     var sdkGen = Packages.org.wso2.carbon.apimgt.impl.APIClientGenerationManager;
     var generator = new sdkGen();
@@ -159,5 +207,28 @@ var getSupportedLanguages = function()  {
         }
     }
 
+};
+
+
+var getAPISubscriptionsForApplicationById = function (username, appName, groupingId, appId) {
+    var subscriptions,
+    log = new Log(),
+    store = jagg.module("manager").getAPIStoreObj();
+    try {
+        subscriptions = store.getSubscriptionsByApplication(appName, username, groupingId, appId);
+        if (log.isDebugEnabled()) {
+            log.debug("getSubscriptions : " + stringify(subscriptions));
+        }
+        return {
+            error:false,
+            subscriptions:subscriptions
+        };
+    } catch (e) {
+        log.error(e.message);
+        return {
+            error : e,
+            subscriptions:null
+        };
+    }
 };
 %>

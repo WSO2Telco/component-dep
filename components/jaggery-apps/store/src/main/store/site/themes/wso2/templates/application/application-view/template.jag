@@ -1,6 +1,10 @@
 <% jagg.template("application/application-view", function(inputs, outputs, jagg) {
  var application = outputs.application;
  var oauthapp = outputs.oauthapp;
+ var gatewayUrlEndpointType = outputs.gatewayTypeurl;
+ var gatewayUrlEndpointProduction = gatewayUrlEndpointType['production'];
+ var gatewayUrlEndpointSandbox = gatewayUrlEndpointType['sandbox'];
+ var gatewayUrlEndpointHybrid = gatewayUrlEndpointType['hybrid'];
  jagg.log(outputs.tiers);
  var user = jagg.getUser();
 var app_tier;
@@ -63,7 +67,7 @@ for(var i=0;i < outputs.tiers.length; i++){
 <%}%>
   <%
     var applicationUtils = Packages.org.wso2.carbon.apimgt.impl.utils.ApplicationUtils;
-    var result = applicationUtils.retrieveApplication(application.name, user.username, session.get("groupId"));
+    var result = applicationUtils.retrieveApplicationById(application.id);
 
     var isOwner = true;
     if (!result.getSubscriber().getName().equalsIgnoreCase(user.username)) {
@@ -117,6 +121,19 @@ for(var i=0;i < outputs.tiers.length; i++){
           prodGrants = tmp["grant_types"];
           redirect_uris = tmp["redirect_uris"];          
         }
+
+        var urlEndpoint = "";
+
+        // Order of precedence when selecting Production URL is;
+        // Prod Env URL > Hybrid Env URL > Sandbox Env URL
+        if (gatewayUrlEndpointProduction != null) {
+            urlEndpoint = gatewayUrlEndpointProduction;
+        } else if (gatewayUrlEndpointHybrid != null) {
+            urlEndpoint = gatewayUrlEndpointHybrid;
+        } else if (gatewayUrlEndpointSandbox != null) {
+            urlEndpoint = gatewayUrlEndpointSandbox;
+        }
+
         var prodapp = {
             name: application.name,
             callbackUrl:redirect_uris,
@@ -128,7 +145,9 @@ for(var i=0;i < outputs.tiers.length; i++){
             ValidityTime: oauthapp.prodValidityTime,
             keyState: oauthapp.prodKeyState,
             grants: prodGrants,
-            tokenType: application.tokenType
+            tokenType: application.tokenType,
+            gatewayurlendpoint: urlEndpoint,
+            id:application.id
 
         }
       %>
@@ -142,7 +161,20 @@ for(var i=0;i < outputs.tiers.length; i++){
           var sandboxJson = parse(oauthapp.sandboxJsonString);
           sandboxGrants = sandboxJson["grant_types"];
           redirect_uris = sandboxJson["redirect_uris"];
-        }        
+        }
+
+        var urlEndpoint = "";
+
+        // Order of precedence when selecting Sandbox URL is;
+        // Sandbox Env URL > Hybrid Env URL > Prod Env URL
+        if (gatewayUrlEndpointSandbox != null) {
+            urlEndpoint = gatewayUrlEndpointSandbox;
+        } else if (gatewayUrlEndpointHybrid != null) {
+            urlEndpoint = gatewayUrlEndpointHybrid;
+        } else if (gatewayUrlEndpointProduction != null) {
+            urlEndpoint = gatewayUrlEndpointProduction;
+        }
+ 
         var sandapp = {
             name: application.name,
             callbackUrl: redirect_uris,            
@@ -154,7 +186,9 @@ for(var i=0;i < outputs.tiers.length; i++){
             ValidityTime: oauthapp.sandValidityTime,
             keyState: oauthapp.sandboxKeyState,
             grants:sandboxGrants,
-            tokenType: application.tokenType
+            tokenType: application.tokenType,
+            gatewayurlendpoint: urlEndpoint,
+            id:application.id
         }
       %>      
       <div role="tabpanel" class="tab-pane fade sandbox-keys" id="sandbox">
@@ -219,6 +253,6 @@ for(var i=0;i < outputs.tiers.length; i++){
       }
     }
   </script>
-  <% jagg.includeBlock("application/application-keys", { "app" : prodapp, "type": "" , "gatewayurl":outputs.gatewayurl} ); %>
+  <% jagg.includeBlock("application/application-keys", { "app" : prodapp, "type": "" , "gatewayurl":outputs.gatewayurl, "gatewayTypeurl":outputs.gatewayTypeurl} ); %>
   <% } %>
 <% }); %>

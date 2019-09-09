@@ -12,7 +12,7 @@ $(document).ready(function () {
     //var application = $("#application-name").val("");
 
      $.validator.addMethod('validateSpecialChars', function(value, element) {
-        return !/(["\'])/g.test(value);
+        return /(^[a-zA-Z0-9 ._-]*$)/g.test(value);
      }, i18n.t("The Name contains one or more illegal characters") + '( &nbsp;&nbsp; " &nbsp;&nbsp; \' &nbsp;&nbsp; )');
 
     $.validator.addMethod('checkForSpaces', function(value, element) {
@@ -29,6 +29,7 @@ $(document).ready(function () {
 
     var updateApplication = function(){
         var application = $("#application-name").val();
+        var appId = $("#appId").val();
         var tier = $("#appTier").val();
         var apiPath = $("#apiPath").val();
         var goBack = $("#goBack").val();
@@ -48,8 +49,8 @@ $(document).ready(function () {
             applicationAttributesNew[attributeKeyNew] = attributeNew;
         }
         var tokenType = $("#tokenType").val();
-        jagg.post("/site/blocks/application/application-update/ajax/application-update.jag", {
-            action:"updateApplication",
+        jagg.post("/site/blocks/application/application-update/ajax/application-update.jag?name=" + application + "&appId=" + appId, {
+            action:"updateApplicationById",
             applicationNew:application,
             applicationOld:applicationOld,
             tier:tier,
@@ -61,7 +62,7 @@ $(document).ready(function () {
             tokenType:tokenType
         }, function (result) {
             if (result.error == false) {                
-                window.location = jagg.url("/site/pages/application.jag?name="+application);
+                window.location = jagg.url("/site/pages/application.jag?name=" + application + "&appId=" + appId);
             } else {
                 jagg.message({content:result.message,type:"error"});
             }

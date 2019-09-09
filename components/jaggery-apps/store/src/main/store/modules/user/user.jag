@@ -105,9 +105,9 @@ var getUserLastLoginTime = function () {
     userstore = realmService.getTenantUserRealm(tenantId).getUserStoreManager();
     var result = 0;
     try {
-        result = userstore.getUserClaimValue(username, "http://wso2.org/claims/prelastLoginTime", null);
+        result = userstore.getUserClaimValue(username, "http://wso2.org/claims/lastLoginTime", null);
     } catch (error) {
-        log.error("Claim http://wso2.org/claims/prelastLoginTime not set");
+        log.error("Claim http://wso2.org/claims/lastLoginTime not set");
         return "";
     }
     var resultUtc = "+00:00";
