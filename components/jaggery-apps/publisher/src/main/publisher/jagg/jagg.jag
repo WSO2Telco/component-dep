@@ -1,5 +1,5 @@
 <%
- var site = require("/site/conf/site.json");
+var site = require("/site/conf/site.json");
 //TODO : remove this when log configs are implemented
 //Log.prototype.isDebugEnabled = function () {
 //    return false;
@@ -33,7 +33,7 @@ var jagg = jagg || (function () {
 
     var data;
 
-    var reverse_proxy;    
+    var reverse_proxy;
 
     var setData = function (d) {
         data = d;
@@ -80,10 +80,10 @@ var jagg = jagg || (function () {
         return session.put("showStoreURL",showStoreURL);
     };
     var getShowStoreURL = function () {
-            return session.get("showStoreURL");
+        return session.get("showStoreURL");
     };
 
-var getThemeFile = function (path) {
+    var getThemeFile = function (path) {
         var p, index, theme = getUserTheme();
         if(theme.subtheme) {
             p = getThemePath() + "subthemes/" + theme.subtheme + "/" + path;
@@ -93,7 +93,7 @@ var getThemeFile = function (path) {
             }
         }
         return getThemePath() + path;
-};
+    };
 
     var getThemesPath = function () {
         return "/site/themes/";
@@ -113,7 +113,7 @@ var getThemeFile = function (path) {
 
     var getTemplateFile = function (name) {
         return getThemeFile("templates/" + name + "/template.jag");
-     };
+    };
 
     var getTemplatePath = function(themeDir, name) {
         return themeDir + "templates/" + name + "/template.jag";
@@ -137,18 +137,18 @@ var getThemeFile = function (path) {
     };
 
     var getTheme = function () {
-       var site = require("/site/conf/site.json"),
-       theme = request.getParameter("theme"),
-       subtheme = request.getParameter("subtheme");
-       return {
-             base : theme ? theme : site.theme.base,
-             subtheme : subtheme ? subtheme : site.theme.subtheme
+        var site = require("/site/conf/site.json"),
+            theme = request.getParameter("theme"),
+            subtheme = request.getParameter("subtheme");
+        return {
+            base : theme ? theme : site.theme.base,
+            subtheme : subtheme ? subtheme : site.theme.subtheme
         };
     };
 
-     var getUserTheme = function () {
+    var getUserTheme = function () {
         return session.get("theme") ? session.get("theme") : getTheme();
-     };
+    };
 
     var mergeParams = function (extInputs, defInputs) {
         var key, obj;
@@ -213,7 +213,7 @@ var getThemeFile = function (path) {
             return;
         }
         var extInputs, defInputs, parent, tmpl, inputBlocks, outputBlocks, outputs, tmplInitializer, bloks, i, length,
-                name = obj.name, blok = block(name), log = new Log();
+            name = obj.name, blok = block(name), log = new Log();
 
         template(name);
         extInputs = obj.inputs || (obj.inputs = {});
@@ -353,13 +353,13 @@ var getThemeFile = function (path) {
     };
 
     var getAbsoluteUrl = function (path) {
-        var host = "" 
+        var host = ""
         if(isReverseProxyEnabled()){
             host = "https://" + site.reverseProxy.host ;
         }
         return host + url(path);
     };
-    
+
     var getAbsoluteReqUrl = function (path) {
         var host = "";
         if(isReverseProxyEnabled()){
@@ -393,22 +393,22 @@ var getThemeFile = function (path) {
 
     var getHttpsUrl = function(path){
         var hostname = "";
-        var requestSegments = getRequestSegments();     
+        var requestSegments = getRequestSegments();
         mod = jagg.module("manager");
         hostname = mod.getHTTPsURL();
         hostname = hostname.replace("https://","");
 
         // if the site is fronted by a proxy server
         if(isReverseProxyEnabled()){
-             hostname = site.reverseProxy.host ;
-             //if a custom https port is used
-             if(site.reverseProxy.hosts_port){
+            hostname = site.reverseProxy.host ;
+            //if a custom https port is used
+            if(site.reverseProxy.hosts_port){
                 hostname = hostname + ":" + site.reverseProxy.hosts_port;
-             }
-        }        
+            }
+        }
 
         return "https://" + hostname + url(path);
-    }    
+    }
 
     var url = function(path,parameters){
         var params = ""
@@ -428,7 +428,7 @@ var getThemeFile = function (path) {
         if(context != null)
             return context;
         else
-            return '';    
+            return '';
     };
 
     var isReverseProxyEnabled = function(){
@@ -439,21 +439,21 @@ var getThemeFile = function (path) {
             if(site.reverseProxy.enabled == "auto"){
                 var xfwd = request.getHeader("X-Forwarded-Host");
                 if(xfwd != null){
-                    var xfwd = xfwd.split(",")[0];   
+                    var xfwd = xfwd.split(",")[0];
                     if(xfwd.trim() == site.reverseProxy.host){
-                        reverse_proxy = true;                
-                    }                                 
+                        reverse_proxy = true;
+                    }
                 }else{
-                    reverse_proxy = false;                
-                }                    
+                    reverse_proxy = false;
+                }
             }
             else{
                 reverse_proxy = true;
-            }            
+            }
         }
         else{
             reverse_proxy = false;
-        }        
+        }
         return reverse_proxy;
     };
 
@@ -463,7 +463,7 @@ var getThemeFile = function (path) {
         }
 
         var proxyContext = getCarbonProxyContextPath();
-        return proxyContext + site.context;        
+        return proxyContext + site.context;
     };
 
     var getRegistryPath = function(path){
@@ -688,7 +688,7 @@ var getThemeFile = function (path) {
         var extention = name.match( /\.[0-9a-z]{1,5}$/im )[0];
         extention = extention.replace(".","");
 
-        
+
         if(allowedImageUploads.indexOf(extention) == -1){
             return false;
         }
@@ -709,14 +709,14 @@ var getThemeFile = function (path) {
         var user = jagg.getUser(), username;
         if(user != null) {
             username = user.username;
-        	var MultitenantUtils = Packages.org.wso2.carbon.utils.multitenancy.MultitenantUtils;
-           	var domainName = MultitenantUtils.getTenantDomain(username);
-           	return domainName;
+            var MultitenantUtils = Packages.org.wso2.carbon.utils.multitenancy.MultitenantUtils;
+            var domainName = MultitenantUtils.getTenantDomain(username);
+            return domainName;
         }
     };
 
     var setCSRFToken = function(){
-        var cookie = request.getCookie("csrftoken");         
+        var cookie = request.getCookie("csrftoken");
         var user = jagg.getUser();
         var csrfuser =  session.get('csrfuser');
         //set CSRF if it is not set + you need to refresh the token if the user has changed.
@@ -730,7 +730,7 @@ var getThemeFile = function (path) {
             var cookie = {'name': 'csrftoken', 'value': token, 'path': "/", "secure": true, "maxAge": -1};
             session.put('csrfuser',user);
             response.addCookie(cookie);
-        }     
+        }
     }
 
     var isCSRFTokenValid = function(){
@@ -744,11 +744,17 @@ var getThemeFile = function (path) {
         else{
             log.info("CSRF Token error at "+request.getRequestURI()+" "+request.getMethod());
             msg = require("/site/conf/ui-messages.jag"),
-            response.contentType = "application/json; charset=UTF-8";
+                response.contentType = "application/json; charset=UTF-8";
             print({ error :true , message:msg.error.csrfError});
             return false;
         }
-    }    
+    }
+
+    var validateForScript = function (content) {
+        var startPattern = /<script.*?>/g;
+        var endPattern = /<\script>/g;
+        return content.replace(startPattern, "&lt;script &gt;").replace(endPattern, "&lt;\script&gt;");
+    };
 
     return {
         setUser:setUser,
@@ -759,8 +765,8 @@ var getThemeFile = function (path) {
         getCreatePermitted:getCreatePermitted,
         setPublishPermitted:setPublishPermitted,
         getPublishPermitted:getPublishPermitted,
-	setManageTierPermitted:setManageTierPermitted,
-	getManageTierPermitted:getManageTierPermitted,
+        setManageTierPermitted:setManageTierPermitted,
+        getManageTierPermitted:getManageTierPermitted,
         block:block,
         module:module,
         initializer:initializer,
@@ -792,10 +798,11 @@ var getThemeFile = function (path) {
         getRegistryPath:getRegistryPath,
         getHttpsUrl:getHttpsUrl,
         getTenantDomain:getTenantDomain,
-		getSiteContext:getSiteContext,
+        getSiteContext:getSiteContext,
         setCSRFToken:setCSRFToken,
         isCSRFTokenValid:isCSRFTokenValid,
-        getAbsoluteReqUrl:getAbsoluteReqUrl
+        getAbsoluteReqUrl:getAbsoluteReqUrl,
+        validateForScript:validateForScript
     };
 
 }());

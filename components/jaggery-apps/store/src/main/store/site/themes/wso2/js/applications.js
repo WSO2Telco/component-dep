@@ -1,23 +1,3 @@
-;(function( $ ) {
-    $.fn.zclip = function() {
-        if(typeof ZeroClipboard == 'function'){
-            var client = new ZeroClipboard( this );
-            client.on( "ready", function( readyEvent ) {
-              client.on( "aftercopy", function( event ) {
-                var target = $(event.target);
-                target.attr("title","Copied!")
-                target.tooltip('enable');
-                target.tooltip("show");
-                target.tooltip('disable');
-              });
-            });
-        }else{
-            console.warn('Warning : Dependency missing - ZeroClipboard Library');
-        }
-        return this;
-    };
-}( jQuery ));
-
 var selectedGrants = "";
 
 var GrantTypes = function (available) {
@@ -25,9 +5,9 @@ var GrantTypes = function (available) {
     this.config = {
         "authorization_code":"Code",
         "implicit":"Implicit",
-        "refresh_token":"Refresh Token", 
-        "password":"Password", 
-        "iwa:ntlm":"IWA-NTLM", 
+        "refresh_token":"Refresh Token",
+        "password":"Password",
+        "iwa:ntlm":"IWA-NTLM",
         "client_credentials":"Client Credentials",
         "urn:ietf:params:oauth:grant-type:saml2-bearer":"SAML2",
         "urn:ietf:params:oauth:grant-type:jwt-bearer":"JWT",
@@ -71,9 +51,9 @@ GrantTypes.prototype.getMap = function(selected){
 
         init: function() {
             this.editor = CodeMirror.fromTextArea(this.element[0], {
-              mode:  "shell",
-              readOnly: true,
-              lineWrapping: true
+                mode:  "shell",
+                readOnly: true,
+                lineWrapping: true
             });
         },
 
@@ -90,7 +70,7 @@ GrantTypes.prototype.getMap = function(selected){
         return this.each(function () {
             if (!$.data(this, "plugin_" + pluginName)) {
                 $.data(this, "plugin_" + pluginName,
-                new Plugin( this, options ));
+                    new Plugin( this, options ));
             }
         });
     };
@@ -100,25 +80,25 @@ GrantTypes.prototype.getMap = function(selected){
 
 ;(function ( $, window, document, undefined ) {
 
-    var source = $("#keys-template").html();    
+    var source = $("#keys-template").html();
     var template;
     if(source != undefined && source !="" ){
         template = Handlebars.compile(source);
-    }   
+    }
 
     var jwt_source = $('#jwt-modal').html();
-    var jwt_template;    
+    var jwt_template;
 
     if (jwt_source != undefined && jwt_source !="" ) {
         jwt_template = Handlebars.compile(jwt_source);
-    }  
+    }
 
     var Base64={_keyStr:"ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=",encode:function(e){var t="";var n,r,i,s,o,u,a;var f=0;e=Base64._utf8_encode(e);while(f<e.length){n=e.charCodeAt(f++);r=e.charCodeAt(f++);i=e.charCodeAt(f++);s=n>>2;o=(n&3)<<4|r>>4;u=(r&15)<<2|i>>6;a=i&63;if(isNaN(r)){u=a=64}else if(isNaN(i)){a=64}t=t+this._keyStr.charAt(s)+this._keyStr.charAt(o)+this._keyStr.charAt(u)+this._keyStr.charAt(a)}return t},decode:function(e){var t="";var n,r,i;var s,o,u,a;var f=0;e=e.replace(/[^A-Za-z0-9\+\/\=]/g,"");while(f<e.length){s=this._keyStr.indexOf(e.charAt(f++));o=this._keyStr.indexOf(e.charAt(f++));u=this._keyStr.indexOf(e.charAt(f++));a=this._keyStr.indexOf(e.charAt(f++));n=s<<2|o>>4;r=(o&15)<<4|u>>2;i=(u&3)<<6|a;t=t+String.fromCharCode(n);if(u!=64){t=t+String.fromCharCode(r)}if(a!=64){t=t+String.fromCharCode(i)}}t=Base64._utf8_decode(t);return t},_utf8_encode:function(e){e=e.replace(/\r\n/g,"\n");var t="";for(var n=0;n<e.length;n++){var r=e.charCodeAt(n);if(r<128){t+=String.fromCharCode(r)}else if(r>127&&r<2048){t+=String.fromCharCode(r>>6|192);t+=String.fromCharCode(r&63|128)}else{t+=String.fromCharCode(r>>12|224);t+=String.fromCharCode(r>>6&63|128);t+=String.fromCharCode(r&63|128)}}return t},_utf8_decode:function(e){var t="";var n=0;var r=c1=c2=0;while(n<e.length){r=e.charCodeAt(n);if(r<128){t+=String.fromCharCode(r);n++}else if(r>191&&r<224){c2=e.charCodeAt(n+1);t+=String.fromCharCode((r&31)<<6|c2&63);n+=2}else{c2=e.charCodeAt(n+1);c3=e.charCodeAt(n+2);t+=String.fromCharCode((r&15)<<12|(c2&63)<<6|c3&63);n+=3}}return t}}
     // Create the defaults once
     var pluginName = "keyWidget",
         defaults = {
             username: "Username",
-            password: "Password"           
+            password: "Password"
         };
 
     Handlebars.registerHelper('ifCond', function(v1, v2, options) {
@@ -314,10 +294,13 @@ GrantTypes.prototype.getMap = function(selected){
         generateKeys: function(){
             var validity_time = this.element.find(".validity_time").val();
             var selected = this.element.find(".grants:checked")
-                           .map(function(){ return $( this ).val();}).get().join(",");
-	        selectedGrants = selected;
-            var scopes = $('#scopes option:selected')
-                            .map(function(){ return $( this ).val();}).get().join(" ");
+                .map(function(){ return $( this ).val();}).get().join(",");
+            selectedGrants = selected;
+            var scopes = "";
+
+            if(this.element.find("select.scope_select").val() != null) {
+                scopes = this.element.find("select.scope_select").val().join(" ");
+            }
 
             this.element.find('.generatekeys').buttonLoader('start');
             jagg.post("/site/blocks/subscription/subscription-add/ajax/subscription-add.jag", {
@@ -368,7 +351,7 @@ GrantTypes.prototype.getMap = function(selected){
                 scopes = this.element.find("select.scope_select").val().join(" ");
             }
             var selected = this.element.find(".grants:checked")
-                           .map(function(){ return $( this ).val();}).get().join(",");
+                .map(function(){ return $( this ).val();}).get().join(",");
             selectedGrants = selected;
 
             this.element.find('.regenerate').buttonLoader('start');
@@ -387,7 +370,6 @@ GrantTypes.prototype.getMap = function(selected){
                     this.app.Key = result.data.key.accessToken;
                     this.app.ValidityTime = result.data.key.validityTime;
                     this.app.KeyScope = result.data.key.tokenScope.join();
-                    this.app.grants = this.grants.getMap(selectedGrants.split(",").join(" "));
                     var i;
                     for (i = 0; i < this.app.grants.length; ++i) {
                         if(this.app.grants[i].key == "client_credentials" && this.app.grants[i].selected == true){
@@ -420,7 +402,7 @@ GrantTypes.prototype.getMap = function(selected){
                 this.element.find('.regenerate_consumer_secret').buttonLoader('stop');
                 if (!result.error) {
                     this.app.ConsumerSecret = result.data.key,
-                    this.render();
+                        this.render();
                     if (isHashEnabled == 'true') {
                         $('#regenerateModal').modal('show');
                     }
@@ -440,7 +422,7 @@ GrantTypes.prototype.getMap = function(selected){
         updateGrants: function(){
             this.element.find('.update_grants').buttonLoader('start');
             var selected = this.element.find(".grants:checked")
-                           .map(function(){ return $( this ).val();}).get().join(",");
+                .map(function(){ return $( this ).val();}).get().join(",");
             selectedGrants = selected;
             jagg.post("/site/blocks/subscription/subscription-add/ajax/subscription-add.jag", {
                 action:"updateClientApplicationByAppId",
@@ -471,6 +453,15 @@ GrantTypes.prototype.getMap = function(selected){
             this.element.html(template(this.app));
             this.element.find(".selectpicker").selectpicker({dropupAuto:false});
             this.element.find(".curl_command").codeHighlight();
+
+            var isClientCredentialsSelected = this.app.grants.filter(function (item) {
+                return (item.key === "client_credentials" && item.selected === true)
+            }).length !== 0;
+            if (isClientCredentialsSelected) {
+                $(this.element.find('.regenerate')).attr("disabled", false);
+            } else {
+                $(this.element.find('.regenerate')).attr("disabled", true);
+            }
         }
     };
 
@@ -480,7 +471,7 @@ GrantTypes.prototype.getMap = function(selected){
         return this.each(function () {
             if (!$.data(this, "plugin_" + pluginName)) {
                 $.data(this, "plugin_" + pluginName,
-                new Plugin( this, options ));
+                    new Plugin( this, options ));
             }
         });
     };
@@ -488,210 +479,195 @@ GrantTypes.prototype.getMap = function(selected){
 })( jQuery, window, document );
 
 $(document).ready(function() {
-$("#subscription-actions").each(function(){
-    var source   = $("#subscription-actions").html();
-    var subscription_actions = Handlebars.compile(source);
-    source   = $("#subscription-api-name").html();
-    var subscription_api_name = Handlebars.compile(source);    
+    $("#subscription-actions").each(function(){
+        var source   = $("#subscription-actions").html();
+        var subscription_actions = Handlebars.compile(source);
+        source   = $("#subscription-api-name").html();
+        var subscription_api_name = Handlebars.compile(source);
 
-    var sub_list = $('#subscription-table').datatables_extended({
-        "ajax": {
-            "url": jagg.getBaseUrl()+ "/site/blocks/subscription/subscription-list/ajax/subscription-list.jag?action=getSubscriptionForApplicationById&app=" +
-                $("#subscription-table").attr('data-app') + "&appId=" + $("#subscription-table").attr('data-appid') +
-                "&groupId=" + $("#subscription-table").attr('data-grp'),
-            "dataSrc": function ( json ) {
-            	if(json.apis.length > 0){
-            		$('#subscription-table-wrap').removeClass("hide");            		
-            	}
-            	else{
-            		$('#subscription-table-nodata').removeClass("hide"); 
-            	}
-            	return json.apis
-            }
-        },
-        initComplete: function(settings, json){
-            var api = new $.fn.dataTable.Api(settings);
-            if(json && json.depType){
-                if (json.depType == 'internal_gateway_type2'){
-                    api.columns([2,3,5]).visible(false); 
-                }else if(json.depType == 'external_gateway'){
-                    api.columns([2,3,4]).visible(false); 
-                }else{
-                    api.columns([4,5]).visible(false); // Hide Publisher Status column
+        var sub_list = $('#subscription-table').datatables_extended({
+            "ajax": {
+                "url": jagg.getBaseUrl()+ "/site/blocks/subscription/subscription-list/ajax/subscription-list.jag?action=getSubscriptionForApplicationById&app=" +
+                    $("#subscription-table").attr('data-app') + "&appId=" + $("#subscription-table").attr('data-appid') +
+                    "&groupId=" + $("#subscription-table").attr('data-grp'),
+                "dataSrc": function ( json ) {
+                    if(json.apis.length > 0){
+                        $('#subscription-table-wrap').removeClass("hide");
+                    }
+                    else{
+                        $('#subscription-table-nodata').removeClass("hide");
+                    }
+                    return json.apis
                 }
-            }
-         },
-        "columns": [
-            { "data": "apiName", 
-              "render": function ( data, type, rec, meta ) {
-                  return subscription_api_name(rec);
-              }
-			},
-            { "data": "subscribedTier" },
-            { "data": "subStatus" }, //Hub Admin Status
-            { "data": "operators" }, // Operator Status
-            { "data": "subStatus" }, // Publisher Status
-            { "data": "subStatus" }, // Admin Status
-            { "data": "apiName",
-              "render": function ( data, type, rec, meta ) {
-                  return subscription_actions(rec);
-              }
-            }
-    	],  
+            },
+            "columns": [
+                { "data": "apiName",
+                    "render": function ( data, type, rec, meta ) {
+                        return subscription_api_name(rec);
+                    }
+                },
+                { "data": "subscribedTier" },
+                { "data": "subStatus" },
+                { "data": "apiName",
+                    "render": function ( data, type, rec, meta ) {
+                        return subscription_actions(rec);
+                    }
+                }
+            ],
+        });
+
+        $('#subscription-table').on( 'click', 'a.deleteApp', function () {
+            var row = sub_list.row( $(this).parents('tr') );
+            var record = row.data();
+            $('#messageModal').html($('#confirmation-data').html());
+            $('#messageModal h3.modal-title').html(i18n.t("Confirm Delete"));
+            $('#messageModal div.modal-body').html('\n\n'+i18n.t("Are you sure you want to unsubscribe from ") +'<b>"' + record.apiName + '-' + record.apiVersion + '</b>"?');
+            $('#messageModal a.btn-primary').html(i18n.t("Yes"));
+            $('#messageModal a.btn-other').html(i18n.t("No"));
+            $('#messageModal a.btn-primary').click(function() {
+                jagg.post("/site/blocks/subscription/subscription-remove/ajax/subscription-remove.jag", {
+                    action:"removeSubscription",
+                    name: record.apiName,
+                    version: record.apiVersion,
+                    provider:record.apiProvider,
+                    applicationId: $("#subscription-table").attr('data-appid')
+                }, function (result) {
+                    if (!result.error) {
+                        window.location.reload(true);
+                        urlPrefix = "name=" + $("#subscription-table").attr('data-app') + "&appId="
+                            + $("#subscription-table").attr('data-appid') + "&" + urlPrefix;
+                        location.href = "../../site/pages/application.jag?" + urlPrefix+"#subscription";
+                    } else {
+                        jagg.message({content:result.message,type:"error"});
+                    }
+                }, "json"); });
+            $('#messageModal a.btn-other').click(function() {
+                return;
+            });
+            $('#messageModal').modal();
+        });
     });
 
-    $('#subscription-table').on( 'click', 'a.deleteApp', function () {
-        var row = sub_list.row( $(this).parents('tr') );
-        var record = row.data();
-        $('#messageModal').html($('#confirmation-data').html());
-        $('#messageModal h3.modal-title').html(i18n.t("Confirm Delete"));
-        $('#messageModal div.modal-body').html('\n\n'+i18n.t("Are you sure you want to unsubscribe from ") +'<b>"' + record.apiName + '-' + record.apiVersion + '</b>"?');
-        $('#messageModal a.btn-primary').html(i18n.t("Yes"));
-        $('#messageModal a.btn-other').html(i18n.t("No"));
-        $('#messageModal a.btn-primary').click(function() {
-	        jagg.post("/site/blocks/subscription/subscription-remove/ajax/subscription-remove.jag", {
-	            action:"removeSubscription",
-	            name: record.apiName,
-	            version: record.apiVersion,
-	            provider:record.apiProvider,
-	            applicationId: $("#subscription-table").attr('data-appid')
-	           }, function (result) {
-	            if (!result.error) {
-	            	window.location.reload(true);
-	            	urlPrefix = "name=" + $("#subscription-table").attr('data-app') + "&appId="
-	            	    + $("#subscription-table").attr('data-appid') + "&" + urlPrefix;
-                    location.href = "../../site/pages/application.jag?" + urlPrefix+"#subscription";
-	            } else {
-	                jagg.message({content:result.message,type:"error"});
-	            }
-	        }, "json"); });
-        $('#messageModal a.btn-other').click(function() {
-            return;
+    $("#application-actions").each(function(){
+        var source   = $("#application-actions").html();
+        var application_actions = Handlebars.compile(source);
+
+        source   = $("#application-name").html();
+        var application_name = Handlebars.compile(source);
+
+        var grpIdList = false;
+
+        var app_list = $('#application-table').datatables_extended({
+            serverSide: true,
+            processing: true,
+            paging: true,
+            "ajax": {
+                "url": jagg.url("/site/blocks/application/application-list/ajax/application-list.jag?action=getApplicationsWithPagination"),
+                "dataSrc": function ( json ) {
+                    if(json.applications.length > 0){
+                        $('#application-table-wrap').removeClass("hide");
+                    }
+                    else{
+                        $('#application-table-nodata').removeClass("hide");
+                    }
+                    grpIdList = json.grpIdList;
+                    return json.applications
+                }
+            },
+            "columns": [
+                { "data": "name",
+                    "render": function(data, type, rec, meta){
+                        var context = rec ;
+                        context.grpIdList = grpIdList;
+                        if(rec.groupId !="" && rec.groupId != undefined && !context.grpIdList)
+                            context.shared = true;
+                        else
+                            context.shared = false;
+                        var value = application_name(context);
+                        if(rec.isBlacklisted == 'true' || rec.isBlacklisted == true){
+                            value = value.replace((">"+rec.name+"<"),("><font color='red'>"+rec.name+ i18n.t(" (Blacklisted)") + "<"));
+
+                        }
+
+                        value = value.replace("> "+rec.owner+"/","> <font color=\"#00008b\">"+rec.owner+"/</font>");
+                        return  value;
+                    }
+                },
+                { "data": "tier",
+                    "render": function(tier, type, rec, meta){
+                        tier = Handlebars.Utils.escapeExpression(tier)
+                        return new Handlebars.SafeString(tier);
+                    }
+                },
+                { "data": "status",
+                    "render": function(status, type, rec, meta){
+                        var result;
+                        if(status=='APPROVED'){
+                            result='ACTIVE';
+                        } else if(status=='REJECTED') {
+                            result='REJECTED';
+                        } else{
+                            result='INACTIVE <p><i>Waiting for approval</i></p>';
+                        }
+                        return new Handlebars.SafeString(result);
+                    }
+                },
+                { "data": "apiCount" },
+                { "data": "name",
+                    "render": function ( data, type, rec, meta ) {
+                        rec.isOwner = true;
+                        if (loggedInUser.toLowerCase() !== rec.owner.toLowerCase()) {
+                            rec.isOwner = false;
+                        }
+
+                        rec.isActive = false;
+                        if(rec.status=='APPROVED'){
+                            rec.isActive = true;
+                        }
+                        return application_actions(rec);
+                    }
+                },
+            ],
         });
-        $('#messageModal').modal();
-    });        
-});    
 
-$("#application-actions").each(function(){
-    var source   = $("#application-actions").html();
-    var application_actions = Handlebars.compile(source);
-
-    source   = $("#application-name").html();
-    var application_name = Handlebars.compile(source);    
-
-    var grpIdList = false;
-
-    var app_list = $('#application-table').datatables_extended({
-        serverSide: true,
-        processing: true,
-        paging: true,
-        "ajax": {
-            "url": jagg.url("/site/blocks/application/application-list/ajax/application-list.jag?action=getApplicationsWithPagination"),
-            "dataSrc": function ( json ) {
-                if(json.applications.length > 0){
-                    $('#application-table-wrap').removeClass("hide");
-                }
-                else{
-                    $('#application-table-nodata').removeClass("hide");
-                }
-                grpIdList = json.grpIdList;
-                return json.applications
+        $('#application-table').on( 'click', 'a.deleteApp', function () {
+            var appName = $(this).attr("data-id");
+            var appId = $(this).attr("data-appId");
+            var apiCount = $(this).attr("data-count");
+            $('#messageModal').html($('#confirmation-data').html());
+            if(apiCount > 0){
+                $('#messageModal h3.modal-title').html(i18n.t("Confirm Delete"));
+                $('#messageModal div.modal-body').text('\n\n' +i18n.t("This application is subscribed to ")
+                    + apiCount + i18n.t(" APIs. ") +i18n.t("Are you sure you want to remove the application ")+'"' + appName + '"'+i18n.t("? This will cancel all the existing subscriptions and keys associated with the application. "));
+            } else {
+                $('#messageModal h3.modal-title').html(i18n.t("Confirm Delete"));
+                $('#messageModal div.modal-body').text('\n\n'+i18n.t("Are you sure you want to remove the application ")+'"' + appName + '" ?');
             }
-        },
-        "columns": [
-            { "data": "name",
-              "render": function(data, type, rec, meta){
-                var context = rec ;
-                context.grpIdList = grpIdList;
-                if(rec.groupId !="" && rec.groupId != undefined && !context.grpIdList)
-                    context.shared = true;
-                else
-                    context.shared = false;
-                var value = application_name(context);
-                if(rec.isBlacklisted == 'true' || rec.isBlacklisted == true){
-                    value = value.replace((">"+rec.name+"<"),("><font color='red'>"+rec.name+ i18n.t(" (Blacklisted)") + "<"));
+            $('#messageModal a.btn-primary').html(i18n.t("Yes"));
+            $('#messageModal a.btn-other').html(i18n.t("No"));
+            $('#messageModal a.btn-primary').click(function() {
+                jagg.post("/site/blocks/application/application-remove/ajax/application-remove.jag", {
+                    action:"removeApplicationById",
+                    appId:appId
+                }, function (result) {
+                    if (!result.error) {
+                        window.location.reload(true);
+                    } else {
+                        jagg.message({content:result.message,type:"error"});
+                    }
+                }, "json");
+            });
+            $('#messageModal a.btn-other').click(function() {
+                window.location.reload(true);
+            });
+            $('#messageModal').modal();
 
-                }
 
-                  value = value.replace("> "+rec.owner+"/","> <font color=\"#00008b\">"+rec.owner+"/</font>");
-                return  value;
-              }
-            },
-            { "data": "tier",
-              "render": function(tier, type, rec, meta){
-                tier = Handlebars.Utils.escapeExpression(tier)
-                return new Handlebars.SafeString(tier);  
-              }
-            },
-            { "data": "status",
-              "render": function(status, type, rec, meta){
-                var result;        
-                if(status=='APPROVED'){
-                    result='ACTIVE';
-                } else if(status=='REJECTED') {
-                    result='REJECTED';
-                } else{
-                    result='INACTIVE <p><i>Waiting for approval</i></p>';
-                }
-                return new Handlebars.SafeString(result);  
-              }
-            },
-            { "data": "apiCount" },
-            { "data": "name",
-              "render": function ( data, type, rec, meta ) {
-                  rec.isOwner = true;
-                  if (loggedInUser.toLowerCase() !== rec.owner.toLowerCase()) {
-                      rec.isOwner = false;
-                  }
-
-                  rec.isActive = false;
-                  if(rec.status=='APPROVED'){
-                      rec.isActive = true;
-                  }
-                  return application_actions(rec);
-              }
-            },
-        ],  
+        });
     });
 
-    $('#application-table').on( 'click', 'a.deleteApp', function () {
-    	var appName = $(this).attr("data-id");
-    	var appId = $(this).attr("data-appId");
-    	var apiCount = $(this).attr("data-count");
-    	$('#messageModal').html($('#confirmation-data').html());
-        if(apiCount > 0){
-            $('#messageModal h3.modal-title').html(i18n.t("Confirm Delete"));
-            $('#messageModal div.modal-body').text('\n\n' +i18n.t("This application is subscribed to ")
-                + apiCount + i18n.t(" APIs. ") +i18n.t("Are you sure you want to remove the application ")+'"' + appName + '"'+i18n.t("? This will cancel all the existing subscriptions and keys associated with the application. "));
-        } else {
-            $('#messageModal h3.modal-title').html(i18n.t("Confirm Delete"));
-            $('#messageModal div.modal-body').text('\n\n'+i18n.t("Are you sure you want to remove the application ")+'"' + appName + '" ?');
-        }
-        $('#messageModal a.btn-primary').html(i18n.t("Yes"));
-        $('#messageModal a.btn-other').html(i18n.t("No"));
-        $('#messageModal a.btn-primary').click(function() {
-            jagg.post("/site/blocks/application/application-remove/ajax/application-remove.jag", {
-                action:"removeApplicationById",
-                appId:appId
-            }, function (result) {
-                if (!result.error) {
-                	window.location.reload(true);
-                } else {
-                    jagg.message({content:result.message,type:"error"});
-                }
-            }, "json");
-        });
-        $('#messageModal a.btn-other').click(function() {
-            window.location.reload(true);
-        });
-        $('#messageModal').modal();
-        
-        
-    });    
-});
-
-$(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
-    $(".curl_command").each(function(){ $(this).data("plugin_codeHighlight").editor.refresh()});
-});
+    $(document).on('shown.bs.tab', 'a[data-toggle="tab"]', function (e) {
+        $(".curl_command").each(function(){ $(this).data("plugin_codeHighlight").editor.refresh()});
+    });
 
 });
