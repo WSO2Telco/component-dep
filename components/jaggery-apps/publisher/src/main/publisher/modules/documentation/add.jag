@@ -1,10 +1,10 @@
 <%
 var addDocumentation = function (api, doc) {
     var log = new Log(),
-            provider = jagg.module("manager").getAPIProviderObj();
+        provider = jagg.module("manager").getAPIProviderObj();
     try {
         var success = provider.addDocumentation(api.provider, api.name, api.version,
-                                                doc.name, doc.type, doc.summary, doc.sourceType, doc.sourceUrl, doc.fileContent, doc.otherTypeName, doc.mimeType,doc.visibility);
+            doc.name, doc.type, doc.summary, doc.sourceType, doc.sourceUrl, doc.fileContent, doc.otherTypeName, doc.mimeType,doc.visibility);
         if (log.isDebugEnabled()) {
             log.debug("addNewDocumentation : " + doc.sourceType);
         }
@@ -36,9 +36,9 @@ var addDocumentation = function (api, doc) {
 
 var addInlineContent = function (api, doc) {
     var log = new Log(),
-            provider = jagg.module("manager").getAPIProviderObj();
+        provider = jagg.module("manager").getAPIProviderObj();
     try {
-        provider.addInlineContent(api.provider, api.name, api.version, doc.name, doc.content);
+        provider.addInlineContent(api.provider, api.name, api.version, doc.name, jagg.validateForScript(doc.content));
         if (log.isDebugEnabled()) {
             log.debug("addInlineContent for : " + doc.name + "with the content : " + doc.content);
         }

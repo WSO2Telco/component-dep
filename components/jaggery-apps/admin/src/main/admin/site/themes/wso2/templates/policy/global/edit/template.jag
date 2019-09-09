@@ -1,7 +1,7 @@
 <% jagg.template("policy/global/edit", function(inputs, outputs, jagg) { %>
 <%
     var policyName = request.getParameter("policyName");
-    var pageTitle = i18n.localize("Add Custom Rule");
+    var pageTitle = i18n.localize("Add Custom Policy");
     var nameFieldDisableStatus = "";
     var streamParameters = "apiContext,apiVersion,resourceKey,userId,appId,apiTenant,appTenant";
 
@@ -21,12 +21,12 @@
         var siddhiQuery = globalPolicy.getSiddhiQuery() == null ? "" : globalPolicy.getSiddhiQuery();
         var keyTemplate = globalPolicy.getKeyTemplate() == null ? "" : globalPolicy.getKeyTemplate();
     }
-%>
+    %>
 
-<div id='tier-add-container' class="row-fluid"  style="display:inline">
+    <div id='tier-add-container' class="row-fluid"  style="display:inline">
 
-    <div class="page-header">
-        <h2><%=pageTitle%></h2>
+        <div class="page-header">
+            <h2><%=pageTitle%></h2>
     </div>
 
     <div class="content-section shadow-up">
@@ -36,7 +36,7 @@
                 <input type='hidden' id='errorMessageInvalid' name='errorMessageInvalid'
                 value='<%=i18n.localize("Invalid")%>'/>
                 <input type='hidden' id='errorMessageIllegalChar' name='errorMessageIllegalChar'
-                value='<%=i18n.localize("Name contains one or more illegal characters ")%> ( [ ~ ! & @ # ; % ^ * + = { } | <> \"  , ] ).'/>
+                value='<%=i18n.localize("Name contains one or more illegal characters ")%> ( [ ~ ! & @ # ; % ^ & * + = { } | <> \"  , ] ).'/>
                 <input type='hidden' id='errorMessageSpaces' name='errorMessageSpaces' value='<%=i18n.localize("Name contains spaces")%>'/>
             <div class="row-fluid">
                 <form class="form-horizontal" method="POST" id="tier_form" enctype="multipart/form-data"
@@ -45,7 +45,7 @@
                         <div class="form-group">
                             <label class="control-label col-sm-3"><%=i18n.localize("Name")%> <span class="requiredAstrix">*</span></label>
                             <div class="col-md-9">
-                                <input class="form-control" type="text" id="policyName" name="policyName" value="<%=nameFieldDisableStatus%>"/>
+                                <input class="form-control" type="text" id="policyName" name="policyName" <%=encode.forHtml(String(nameFieldDisableStatus))%>/>
                             </div>
                         </div>
                         <div class="form-group">
@@ -110,12 +110,12 @@
         </div>
     </div>
 </div>
- 
+
 <script>
 var isNewPolicy = true;
 
     $(document).ready(function(){
-        $('#cancel-add-custom-rule-btn').on('click',function(){         
+        $('#cancel-add-custom-rule-btn').on('click',function(){
              location.href = "<%= jagg.url('/global-policy-manage')%>";
         });
 
@@ -130,7 +130,7 @@ var isNewPolicy = true;
         } else {
             $('#description').val('');
         }
-      
+
       var parameterArray = ("<%=streamParameters%>").split(',');
       jQuery('input#keyTemplate').bind('input propertychange', function() {
 
@@ -142,10 +142,10 @@ var isNewPolicy = true;
             if (value.indexOf("\$") == 0) {
                 value = value.replace(/\$/gi, "");
                 if($.inArray( value, parameterArray ) == -1 ){
-                    validated = false; 
+                    validated = false;
                 }
             }else{
-                validated = false; 
+                validated = false;
             }
         });
 
@@ -174,13 +174,13 @@ var isNewPolicy = true;
         if(validated){
             jQuery(this).css({ 'color': 'green', 'font-size': '1 px' });
 
-            jQuery(this).removeClass('has-error').addClass('has-success'); 
+            jQuery(this).removeClass('has-error').addClass('has-success');
 
             jQuery('button.validate').prop("disabled",false);
             $('#formValidated').val("true");
             $('#invalidSiddhiQuery').hide();
           }else{
-            jQuery(this).removeClass('has-success').addClass('has-error'); 
+            jQuery(this).removeClass('has-success').addClass('has-error');
             jQuery(this).css({  'color': 'red', 'font-size': '1 px' });
             jQuery('button.validate').prop("disabled",true);
             $('#formValidated').val("false");

@@ -3,7 +3,7 @@
 <%var tenant= encode.forUriComponent(request.getParameter("tenant"));%>
 <%  if(api.endpointConfig){
     var endpoint_config = parse(api.endpointConfig);
-  }
+}
     var mod = jagg.module("api");
     var isPublisherAccessControlEnabled = mod.isPublisherAccessControlEnabled();
     var apiAdditionalProperties = parse(api.additionalProperties);
@@ -37,88 +37,88 @@
                 <td id="inUrl">
                     <%if(api.visibility == "restricted"){%>
                         <%=i18n.localize("Restricted by roles, only visible to ") + api.roles +"."%><%}
-                    else{%><%=i18n.localize(api.visibility,api.visibility)%><%}%>
+    else{%><%=i18n.localize(api.visibility,api.visibility)%><%}%>
                 </td>
             </tr>
             <tr>
                 <td class="col-sm-3"><%=i18n.localize("Context")%></td>
-                <td id="inUrl"><%=api.context%></td>
+                <td id="inUrl"><%=encode.forHtml(api.context)%></td>
             </tr>
             <% if(endpoint_config && (endpoint_config.production_endpoints != undefined)){ %>
             <tr>
                 <td class="col-sm-3"><%=i18n.localize("Production URL")%></td>
                 <td id="inUrl">
                 <%
-                    if(endpoint_config.production_endpoints instanceof Array){
-                        print('<ul class="endpoint_list">');
-                        for(var index = 0; index < endpoint_config.production_endpoints.length; index++){
-                        %>
-                            <li><%= encode.forHtml(endpoint_config.production_endpoints[index].url) %></li>
-                        <%
-                        }
-                        print('</ul>');
-                    }
-                    else{
-                        print(encode.forHtml(endpoint_config.production_endpoints.url));
-                    }
+        if(endpoint_config.production_endpoints instanceof Array){
+            print('<ul class="endpoint_list">');
+            for(var index = 0; index < endpoint_config.production_endpoints.length; index++){
                 %>
-                </td>
-            </tr>
-            <% } %>
+                    <li><%= encode.forHtml(endpoint_config.production_endpoints[index].url) %></li>
+                        <%
+            }
+            print('</ul>');
+        }
+        else{
+            print(encode.forHtml(endpoint_config.production_endpoints.url));
+        }
+        %>
+        </td>
+    </tr>
+    <% } %>
             <% if(endpoint_config && (endpoint_config.production_failovers != undefined)){ %>
             <tr>
                 <td><%=i18n.localize("Production Fail-over Endpoint(s)")%></td>
                 <td>
                 <%
-                        print('<ul class="endpoint_list">');
-                        for(var index = 0; index < endpoint_config.production_failovers.length; index++){
-                        %>
-                            <li><%= encode.forHtml(endpoint_config.production_failovers[index].url) %></li>
+        print('<ul class="endpoint_list">');
+        for(var index = 0; index < endpoint_config.production_failovers.length; index++){
+            %>
+                <li><%= encode.forHtml(endpoint_config.production_failovers[index].url) %></li>
                         <%
-                        }
-                        print('</ul>');
+        }
+        print('</ul>');
 
-                %>
-                </td>
-            </tr>
-            <% } %>
+        %>
+        </td>
+    </tr>
+    <% } %>
             <%if(endpoint_config && (endpoint_config.sandbox_endpoints != undefined)){%>
             <tr>
                 <td><%=i18n.localize("Sandbox URL")%></td>
                 <td id="sandbox">
                 <%
-                    if(endpoint_config.sandbox_endpoints instanceof Array){
-                        print('<ul class="endpoint_list">');
-                        for(var index = 0; index < endpoint_config.sandbox_endpoints.length; index++){
-                        %>
-                            <li><%= encode.forHtml(endpoint_config.sandbox_endpoints[index].url) %></li>
-                        <%
-                        }
-                        print('</ul>');
-                    }
-                    else{
-                        print(encode.forHtml(endpoint_config.sandbox_endpoints.url));
-                    }
+        if(endpoint_config.sandbox_endpoints instanceof Array){
+            print('<ul class="endpoint_list">');
+            for(var index = 0; index < endpoint_config.sandbox_endpoints.length; index++){
                 %>
-                </td>
-            </tr>
-            <% if(endpoint_config && (endpoint_config.sandbox_failovers != undefined)){ %>
+                    <li><%= encode.forHtml(endpoint_config.sandbox_endpoints[index].url) %></li>
+                        <%
+            }
+            print('</ul>');
+        }
+        else{
+            print(encode.forHtml(endpoint_config.sandbox_endpoints.url));
+        }
+        %>
+        </td>
+    </tr>
+    <% if(endpoint_config && (endpoint_config.sandbox_failovers != undefined)){ %>
             <tr>
                 <td><%=i18n.localize("Sandbox Fail-over Endpoint(s)")%></td>
                 <td>
                 <%
-                        print('<ul class="endpoint_list">');
-                        for(var index = 0; index < endpoint_config.sandbox_failovers.length; index++){
-                        %>
-                            <li><%= encode.forHtml(endpoint_config.sandbox_failovers[index].url) %></li>
-                        <%
-                        }
-                        print('</ul>');
-
+            print('<ul class="endpoint_list">');
+            for(var index = 0; index < endpoint_config.sandbox_failovers.length; index++){
                 %>
-                </td>
-            </tr>
-            <% } %>
+                    <li><%= encode.forHtml(endpoint_config.sandbox_failovers[index].url) %></li>
+                        <%
+            }
+            print('</ul>');
+
+            %>
+            </td>
+        </tr>
+        <% } %>
             <%}%>
             <%if(api.wsdl!=''){%>
             <tr>
@@ -130,7 +130,7 @@
                 </td>
             </tr>
             <%}
-            if(api.wadl!=''){%>
+    if(api.wadl!=''){%>
             <tr>
                 <td><%=i18n.localize("WADL")%></td>
                 <td id="wadl"><a title="<%=i18n.localize("WADL")%>" href="<%= encode.forHtmlAttribute(api.wadl)%>"
@@ -150,10 +150,10 @@
                 <td><%=i18n.localize("Default API Version")%></td>
                 <td id="defaultAPIVersion">
                     <%if(api.hasDefaultVersion){
-                        print(api.currentDefaultVersion);
-                    }else{
-                        print("None");
-                    }%>
+        print(api.currentDefaultVersion);
+    }else{
+        print("None");
+    }%>
                 </td>
 
             </tr>
@@ -163,7 +163,7 @@
                 <td id="tags"><%=api.tags%></td>
             </tr>
              <%
-            }if(api.bizOwner!=''){%>
+    }if(api.bizOwner!=''){%>
              <tr>
                 <td><%=i18n.localize("Business Owner")%></td>
                 <td id="bizOwnerData"><%=encode.forHtml(api.bizOwner)%> <% if(api.bizOwnerMail!=''){%>
@@ -172,7 +172,7 @@
                 </td>
             </tr>
              <%
-             }if(api.techOwner!=''){%>
+    }if(api.techOwner!=''){%>
              <tr>
                 <td><%=i18n.localize("Technical Owner")%></td>
                 <td id="techOwnerData"><%=encode.forHtml(api.techOwner)%><% if(api.techOwnerMail!=''){%>
@@ -185,12 +185,12 @@
                             <td>Published Environments</td>
                             <td>
            <% var publishedEnvironments = api.environments;
-              var publishedElement="";
-           for(i=0 ;i<publishedEnvironments.split(",").length;i++){
-               publishedElement += publishedEnvironments.split(",")[i]+"</br>";
-               }
-               %>
-               <%=publishedElement%>
+    var publishedElement="";
+    for(i=0 ;i<publishedEnvironments.split(",").length;i++){
+        publishedElement += publishedEnvironments.split(",")[i]+"</br>";
+    }
+    %>
+    <%=publishedElement%>
                             </td>
                         </tr>
             </tbody>
@@ -242,4 +242,3 @@
     </div>
 </div>
 <% }); %>
-
