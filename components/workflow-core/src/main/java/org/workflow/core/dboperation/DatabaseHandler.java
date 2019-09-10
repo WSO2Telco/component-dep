@@ -346,6 +346,7 @@ public class DatabaseHandler {
         String applicationName = filterObject.getAppName();
         String tier = filterObject.getTierId();
         String createdBy = filterObject.getCreatedBy();
+        int apiId = filterObject.getApiId();
 
         sql = "SELECT sub.SUBSCRIPTION_ID, sub.TIER_ID, sub.API_ID, api.API_NAME, api.API_VERSION, api.API_PROVIDER, sub.APPLICATION_ID, app.NAME as application_name, sub.SUB_STATUS, sub.CREATED_BY " +
                 "FROM " +
@@ -362,6 +363,7 @@ public class DatabaseHandler {
                 "INNER JOIN " +
                 statDB + "." + Tables.AM_SUB_APPROVAL_AUDIT.getTObject() + " audit " +
                 "ON audit.APP_ID = sub.APPLICATION_ID WHERE audit.COMPLETED_BY_USER = ?) " +
+                "AND api.API_ID LIKE ? " +
                 "ORDER BY SUBSCRIPTION_ID " +
                 " LIMIT ?,?";
 
@@ -400,8 +402,15 @@ public class DatabaseHandler {
             }
 
             ps.setString(6, operator);
-            ps.setInt(7, offset);
-            ps.setInt(8, count);
+
+			if (apiId == 0) {
+				ps.setString(7, "%");
+			} else {
+				ps.setInt(7, apiId);
+			}
+
+            ps.setInt(8, offset);
+            ps.setInt(9, count);
 
             int size = 0;
             rs = ps.executeQuery();
