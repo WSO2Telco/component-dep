@@ -338,6 +338,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
         filter.put("applicationname", SubscriptionHistoryVariable.APPNAME.key());
         filter.put("api", SubscriptionHistoryVariable.APINAME.key());
         filter.put("apiname", SubscriptionHistoryVariable.APINAME.key());
+        filter.put("apiid", SubscriptionHistoryVariable.APIID.key());
         filter.put("tier", SubscriptionHistoryVariable.TIER.key());
         filter.put("createdby", SubscriptionHistoryVariable.CREATED_BY.key());
         filter.put("created", SubscriptionHistoryVariable.CREATED_BY.key());

@@ -25,6 +25,7 @@ public enum SubscriptionHistoryVariable {
     APPNAME("applicationName"),
     OPERATOR("operator"),
     APINAME("apiName"),
+    APIID("apiId"),
     TIER("tier"),
     CREATED_BY("createdBy");
 

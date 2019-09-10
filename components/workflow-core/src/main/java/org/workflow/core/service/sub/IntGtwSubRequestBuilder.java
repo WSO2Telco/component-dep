@@ -110,6 +110,7 @@ public class IntGtwSubRequestBuilder extends AbstractSubRequestBuilder {
         String tier = ALL;
         String operator = userProfile.getUserName().toUpperCase();
         String createdBy = ALL;
+        int apiId;
 
         if (varMap.containsKey(SubscriptionHistoryVariable.ID.key())) {
             subscriptionId = Integer.parseInt(varMap.get(SubscriptionHistoryVariable.ID.key()));
@@ -134,12 +135,19 @@ public class IntGtwSubRequestBuilder extends AbstractSubRequestBuilder {
             createdBy = varMap.get(SubscriptionHistoryVariable.CREATED_BY.key());
         }
 
+		if (varMap.containsKey(SubscriptionHistoryVariable.APIID.key())) {
+			apiId = Integer.parseInt(varMap.get(SubscriptionHistoryVariable.APIID.key()));
+		} else {
+			apiId = 0;
+		}
+
         SubscriptionFilter filterObject = new SubscriptionFilter();
         filterObject.setSubscriptionId(subscriptionId);
         filterObject.setApiName(apiName);
         filterObject.setAppName(applicationName);
         filterObject.setTierId(tier);
         filterObject.setCreatedBy(createdBy);
+        filterObject.setApiId(apiId);
 
         try {
             SubscriptionHistoryResponse apiRequests = getSubscriptionApprovalHistory(filterObject,operator, searchDTO.getStart(), searchDTO.getBatchSize());
