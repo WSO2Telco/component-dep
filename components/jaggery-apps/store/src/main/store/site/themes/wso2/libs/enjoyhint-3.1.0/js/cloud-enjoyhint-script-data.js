@@ -188,7 +188,7 @@ var api_store_select_one_api = [
     {
         selector : '.page-header',
         event: 'click',
-        description: 'Welcome to WSO2 API Store. In this interactive tutorial, you see how to invoke  APIs. Click the highlighted area to  get started.' 
+        description: 'Welcome to Apigate API Store. In this interactive tutorial, you see how to invoke  APIs. Click the highlighted area to  get started.' 
         + "<p> Go through these steps to complete the tutorial:," 
         + "<ul> "
         + "<li> <b class='enjoy_hint_emphasize_text'>STEP 1 : </b>Create an application or use the default application to subscribe to an API.  </li>"
