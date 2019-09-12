@@ -18,7 +18,7 @@
 
 var item_listing_with_worldbank_script_data = [
     {
-        'click #listing-title': 'Welcome to WSO2 API Manager. In this tutorial, we will lead you through' +
+        'click #listing-title': 'Welcome to Apigate API Manager. In this tutorial, we will lead you through' +
                                 ' publishing and invoking an API based on World Banks country statistics data. As you already ' +
                                 'have an API named WorldBank, let\'s use a different name and a context when creating the API.' +
                                 ' Click the highlighted area to continue the interactive tutorial.',
@@ -32,7 +32,7 @@ var item_listing_with_worldbank_script_data = [
 
 var item_listing_with_apis_script_data = [
     {
-        'click #top-menu-api-add': 'Welcome to WSO2 API Manager. In this tutorial, we will lead you through' +
+        'click #top-menu-api-add': 'Welcome to Apigate API Manager. In this tutorial, we will lead you through' +
                                    ' publishing and invoking an API based on World Bank\'s country statistics data. Click <b>Add</b> ' +
                                    'to get started',
         'showSkip' : false
@@ -42,7 +42,7 @@ var item_listing_with_apis_script_data = [
 
 var item_listing_script_data = [
     {
-        'click #listing': 'Welcome to WSO2 API Manager. In this tutorial, we will lead you through ' +
+        'click #listing': 'Welcome to Apigate API Manager. In this tutorial, we will lead you through ' +
                           'publishing and invoking an API based on World Banks country statistics data. Click the ' +
                           'highlighted area to continue the interactive tutorial.',
         'showSkip' : false
