@@ -49,7 +49,7 @@ $.validator.setDefaults({
 			var maxLength = 30;
             var passwordStrength   = 0;
 
-			if (password.length >= minLength && password.length <= maxlength) passwordStrength++;
+			if (password.length >= minLength && password.length <= maxLength) passwordStrength++;
 
 			if ((password.match(/[a-z]/)) && (password.match(/[A-Z]/)) ) passwordStrength++;
 
