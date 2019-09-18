@@ -346,7 +346,7 @@ else if (action == "getSubscriptionForApplicationById") {
 
         var storeMod = jagg.module("manager").getStoreHostObject();
 
-        result = mod.getAPISubscriptionsForApplication(username,appname);
+        result = mod.getAPISubscriptionsForApplicationById(username, appname, groupId, appId);
 
         var APIUtil = Packages.org.wso2.carbon.apimgt.impl.utils.APIUtil;
         var applicationId = APIUtil.getApplicationId(appname,username);
