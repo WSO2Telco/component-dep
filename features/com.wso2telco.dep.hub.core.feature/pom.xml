@@ -64,7 +64,6 @@
                                         <include>config/workflow-configuration.xml</include>
                                         <include>config/workflow.properties</include>
                                         <include>config/user-masking.properties</include>
-                                        <include>modules/executorservice</include>
                                         <include>modules/operatorservice</include>
                                         <include>modules/reportservice</include>
                                         <include>sql/*.sql</include>
