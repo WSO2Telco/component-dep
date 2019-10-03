@@ -20,7 +20,6 @@ import com.wso2telco.dep.oneapivalidation.delegator.ValidationDelegator;
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
 import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.dep.oneapivalidation.util.UrlValidator;
-import com.wso2telco.dep.oneapivalidation.util.Validation;
 import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -118,7 +117,7 @@ public class ValidateRefund implements IServiceValidate {
             }
             if (this.userAnonymization) {
                 endUserId = nullOrTrimmed(this.unmaskedEndUserId);
-            } else {
+            } else if (!objAmountTransaction.isNull("endUserId")) {
                 endUserId = nullOrTrimmed(objAmountTransaction.getString("endUserId"));
             }
             if (!objAmountTransaction.isNull("callbackData") ) {
