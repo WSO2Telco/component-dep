@@ -44,7 +44,7 @@ public class UrlValidator {
         if (requestParts == null || requestParts.length < validationRules.length) {
             valid = false;
             //sendError(response, BAD_REQUEST, RequestError.SERVICEEXCEPTION, "SVC0002", "Request is missing required URI components", null);
-            throw new CustomException("SVC0002", "Request is missing required URI components", new String[]{null});
+            throw new CustomException("SVC0002", "Invalid input value for message part %1", new String[]{"Request is missing required URI components"});
         } else {
             String errorMessage = null;
             for (int i = 0; i < validationRules.length; i++) {
