@@ -194,7 +194,7 @@ public class DatabaseHandler {
                 " 'Not Specified', app.description) AS description" +
                 ",ELT(FIELD(application_status, 'CREATED', 'APPROVED', 'REJECTED'), 'PENDING APPROVE', 'APPROVED', 'REJECTED') " +
                 "as app_status, null as oparators FROM " + apimgtDB + ".am_application app " +
-                "WHERE app.APPLICATION_ID LIKE ? AND app.NAME LIKE ? AND app.CREATED_BY LIKE ? AND app.description LIKE ? ");
+                "WHERE app.APPLICATION_ID LIKE ? AND app.NAME LIKE ? AND app.CREATED_BY LIKE ? AND app.description LIKE ? AND app.NAME != 'DefaultApplication' ");
 
         if (status != null && !status.isEmpty() && !status.equals(ALL)) {
             sql.append("AND app.application_status LIKE ? ");
