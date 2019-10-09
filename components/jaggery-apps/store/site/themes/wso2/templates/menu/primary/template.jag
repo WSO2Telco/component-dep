@@ -1,0 +1,122 @@
+<% jagg.template("menu/primary", function(inputs, outputs, jagg) { 
+  var tenant = jagg.getTenantDomain();
+  var user = jagg.getUser();
+  var reqUrl = request.getRequestURI();
+
+  if (jagg.getUser() != null) {
+  	isSuperTenant = jagg.getUser().isSuperTenant;
+  	var MultitenantUtils = Packages.org.wso2.carbon.utils.multitenancy.MultitenantUtils;
+  	tenantDomain = MultitenantUtils.getTenantDomain(jagg.getUser().username);
+  	uname = jagg.getUser().username;
+  }
+
+
+%>
+
+   <!-- START LEFT SIDEBAR NAV-->
+             <aside id="left-sidebar-nav">
+                 <ul id="slide-out" class="side-nav fixed leftside-navigation">
+                 <li class="user-details cyan darken-2">
+                 <div class="row">
+                  <% if (jagg.getUser() != null) { %>
+                     <div class="col col s4 m4 l4">
+                         <img src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("images/avatar.jpg"))%>" alt="" class="circle responsive-img valign profile-image">
+                     </div>
+                     <div class="col col s8 m8 l8">
+                        <a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn" href="#" data-activates="profile-dropdown"><%=uname%></a>
+                        <p class="user-roal">Administrator</p>
+                     </div>
+                  <% } else {  %>
+                     <div class="col col s4 m4 l4">
+                         <img src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("images/avatar-default-icon.png"))%>" alt="" class="circle responsive-img valign profile-image">
+                      </div>
+                     <div class="col col s8 m8 l8">
+                        <a class="btn-flat dropdown-button waves-effect waves-light white-text profile-btn" href="#" data-activates="profile-dropdown">Not logged in</a>
+                        <p class="user-roal">Default User</p>
+                     </div>
+                  <% }  %>
+                 </div>
+             </li>
+
+				<%if(inputs.pagePath == "api/listing" || inputs.pagePath == "api/api-listing-prototyped" || inputs.pagePath == "api/api-info" || inputs.pagePath == "api/documentation/view") { %>
+                 <li class="bold"><a title="Home" href="<%= jagg.urlTenanted("/")%>" class="waves-effect waves-cyan"><i class="mdi-action-home"></i> Home</a>
+                 </li>
+                 <li class="bold active"><a title="APIs" href="<%= jagg.urlTenanted("/apis/list")%>" class="waves-effect waves-cyan"><i class="mdi-action-settings-input-component"></i> <%=i18n.localize("APIs")%></a>
+                 </li>
+                 <li class="bold"><a title="Applications" href="<%= jagg.urlTenanted("/site/pages/applications.jag")%>" class="waves-effect waves-cyan <%= "link-myapplications" + (user ? "" : " need-login") %>"><i class="mdi-av-my-library-books"></i><%=i18n.localize("Applications")%></a>
+                 </li>
+ 				<% if (outputs.isForumEnabled && (!outputs.tenantDomains || outputs.tenantDomains.indexOf(tenant) == -1 || tenant =="carbon.super")) { %>
+ 	            <li><a title="Forum" href="<%= jagg.urlTenanted("/forum")%>"><i class="mdi-action-verified-user"></i> <%=i18n.localize("Forum")%>  <span class="new badge"></span></a>
+                 </li>
+ 				<%} %>
+				  <%} else if (inputs.pagePath == "home") { %>
+
+				 <li class="bold active"><a title="Home" href="<%= jagg.urlTenanted("/")%>" class="waves-effect waves-cyan"><i class="mdi-action-home"></i> Home</a>
+                 </li>
+                 <li class="bold"><a title="APIs" href="<%= jagg.urlTenanted("/apis/list")%>" class="waves-effect waves-cyan"><i class="mdi-action-settings-input-component"></i> <%=i18n.localize("APIs")%></a>
+                 </li>
+                 <li class="bold"><a title="Applications" href="<%= jagg.urlTenanted("/site/pages/applications.jag")%>" class="waves-effect waves-cyan <%= "link-myapplications" + (user ? "" : " need-login") %>"><i class="mdi-av-my-library-books"></i><%=i18n.localize("Applications")%></a>
+                 </li>
+ 				<% if (outputs.isForumEnabled && (!outputs.tenantDomains || outputs.tenantDomains.indexOf(tenant) == -1 || tenant =="carbon.super")) { %>
+ 	            <li><a title="Forum" href="<%= jagg.urlTenanted("/forum")%>"><i class="mdi-action-verified-user"></i> <%=i18n.localize("Forum")%>  <span class="new badge"></span></a>
+                 </li>
+ 				<%} %>
+				  <%} else if (inputs.pagePath == "application/application-list" || inputs.pagePath == "application/application-add" || inputs.pagePath == "application/application-view" || inputs.pagePath == "application/application-edit") { %>
+
+				 <li class="bold"><a title="Home" href="<%= jagg.urlTenanted("/")%>" class="waves-effect waves-cyan"><i class="mdi-action-home"></i> Home</a>
+                 </li>
+                 <li class="bold"><a title="APIs" href="<%= jagg.urlTenanted("/apis/list")%>" class="waves-effect waves-cyan"><i class="mdi-action-settings-input-component"></i> <%=i18n.localize("APIs")%></a>
+                 </li>
+                 <li class="bold active"><a title="Applications" href="<%= jagg.urlTenanted("/site/pages/applications.jag")%>" class="waves-effect waves-cyan <%= "link-myapplications" + (user ? "" : " need-login") %>"><i class="mdi-av-my-library-books"></i><%=i18n.localize("Applications")%></a>
+                 </li>
+ 				<% if (outputs.isForumEnabled && (!outputs.tenantDomains || outputs.tenantDomains.indexOf(tenant) == -1 || tenant =="carbon.super")) { %>
+ 	            <li><a title="Forum" href="<%= jagg.urlTenanted("/forum")%>"><i class="mdi-action-verified-user"></i> <%=i18n.localize("Forum")%>  <span class="new badge"></span></a>
+                 </li>
+ 				<%} %>
+				  <%} else if (inputs.pagePath == "forum/forum-list" || inputs.pagePath == "forum/forum-new" || inputs.pagePath == "forum/forum-topic") { %>
+
+				   <li class="bold"><a title="Home" href="<%= jagg.urlTenanted("/")%>" class="waves-effect waves-cyan"><i class="mdi-action-home"></i> Home</a>
+                 </li>
+                 <li class="bold"><a title="APIs" href="<%= jagg.urlTenanted("/apis/list")%>" class="waves-effect waves-cyan"><i class="mdi-action-settings-input-component"></i> <%=i18n.localize("APIs")%></a>
+                 </li>
+                 <li class="bold"><a title="Applications" href="<%= jagg.urlTenanted("/site/pages/applications.jag")%>" class="waves-effect waves-cyan <%= "link-myapplications" + (user ? "" : " need-login") %>"><i class="mdi-av-my-library-books"></i><%=i18n.localize("Applications")%></a>
+                 </li>
+ 				<% if (outputs.isForumEnabled && (!outputs.tenantDomains || outputs.tenantDomains.indexOf(tenant) == -1 || tenant =="carbon.super")) { %>
+ 	            <li class="bold active"><a title="Forum" href="<%= jagg.urlTenanted("/forum")%>"><i class="mdi-action-verified-user"></i> <%=i18n.localize("Forum")%>  <span class="new badge"></span></a>
+                 </li>
+ 				<%} %>
+				 <%} else { %>
+
+				  <li class="bold"><a title="Home" href="<%= jagg.urlTenanted("/")%>" class="waves-effect waves-cyan"><i class="mdi-action-home"></i> Home</a>
+                 </li>
+                 <li class="bold"><a title="APIs" href="<%= jagg.urlTenanted("/apis/list")%>" class="waves-effect waves-cyan"><i class="mdi-action-settings-input-component"></i> <%=i18n.localize("APIs")%></a>
+                 </li>
+                 <li class="bold"><a title="Applications" href="<%= jagg.urlTenanted("/site/pages/applications.jag")%>" class="waves-effect waves-cyan <%= "link-myapplications" + (user ? "" : " need-login") %>"><i class="mdi-av-my-library-books"></i><%=i18n.localize("Applications")%></a>
+                 </li>
+ 				<% if (outputs.isForumEnabled && (!outputs.tenantDomains || outputs.tenantDomains.indexOf(tenant) == -1 || tenant =="carbon.super")) { %>
+ 	            <li><a title="Forum" href="<%= jagg.urlTenanted("/forum")%>"><i class="mdi-action-verified-user"></i> <%=i18n.localize("Forum")%>  <span class="new badge"></span></a>
+                 </li>
+ 				<%} %>
+				  <%} %>
+
+                 <li class="li-hover"><div class="divider"></div></li>
+                 <li class="li-hover"><p class="ultra-small margin more-text">About Store</p></li>
+                 <li class="li-hover">
+                     <div class="row">
+                     <div class="col s12 m6 grid">
+                                                <figure class="effect-ruby">
+                                                  <img src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("images/gallary/29.jpg"))%>"src="images/gallary/13.jpg" alt="img13"/>
+                                                  <figcaption>
+                                                    <h3>API Store</h3>
+                                                    <p>Version V1</p>
+                                                    <a href="#">View more</a>
+                                                  </figcaption>
+                                                </figure>
+                         </div>
+                     </div>
+                 </li>
+             </ul>
+                 <a href="#" data-activates="slide-out" class="sidebar-collapse btn-floating btn-medium waves-effect waves-light hide-on-large-only cyan"><i class="mdi-navigation-menu"></i></a>
+             </aside>
+             <!-- END LEFT SIDEBAR NAV-->
+<%  }); %>

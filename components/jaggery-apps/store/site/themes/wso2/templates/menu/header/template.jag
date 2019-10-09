@@ -1,0 +1,273 @@
+<% jagg.template("menu/header", function(inputs, outputs, jagg) { %>
+<% 
+var user = outputs.user; 
+var i18n = require("i18n");var publisherUrl;
+var localeResourcesBasePath="/site/conf/locales/jaggery/";
+i18n.init(request,localeResourcesBasePath);
+
+var mod = jagg.module("manager");
+var isSelfSignupEnabled = mod.isSelfSignupEnabledForTenantUser(request_tenant);
+var tenantDomains = mod.getActiveTenantDomains().tenantDomains;
+
+var currentURL = request.getRequestURI();
+if(request.getQueryString()){
+    currentURL += "?" + request.getQueryString();
+}
+
+var isSuperTenant, tenantDomain;
+var tenant = request_tenant;
+if (jagg.getUser() != null) {
+	isSuperTenant = jagg.getUser().isSuperTenant;
+	var MultitenantUtils = Packages.org.wso2.carbon.utils.multitenancy.MultitenantUtils;
+	tenantDomain = MultitenantUtils.getTenantDomain(jagg.getUser().username);
+}
+
+%>
+<!-- custom code --->
+<!-- //////////////////////////////////////////////////////////////////////////// -->
+
+    <!-- START HEADER -->
+    <header id="header" class="page-topbar">
+        <!-- start header nav-->
+        <div class="navbar-fixed">
+            <nav class="navbar-color">
+                <div class="nav-wrapper">
+                    <ul class="left">
+                      <li><h1 class="logo-wrapper"><a href="<%=jagg.getMappedUrl("")%>" title="API Store" class="brand-logo darken-1"> <img src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("images/logo-apigate.png"))%>" class="logo" alt="<%=i18n.localize("APIStore Home")%>"/></a> <span class="logo-text"><%=i18n.localize("API Store")%></span></h1></li>
+                    </ul>
+                    <!-- div class="header-search-wrapper hide-on-med-and-down">
+                        <i class="mdi-action-search"></i>
+                        <input type="text" name="Search" class="header-search-input z-depth-2" placeholder="Explore Materialize"/>
+                    </div -->
+                    <ul class="right hide-on-med-and-down">
+                        <!--li><a href="javascript:void(0);" class="waves-effect waves-block waves-light translation-button"  data-activates="translation-dropdown"><img src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("images/flag-icons/United-States.png"))%>" alt="USA" /></a>
+                        </li-->
+                        <li><a href="javascript:void(0);" class="waves-effect waves-block waves-light toggle-fullscreen"><i class="mdi-action-settings-overscan"></i></a>
+                        </li>
+                        <!--li><a href="javascript:void(0);" class="waves-effect waves-block waves-light notification-button" data-activates="notifications-dropdown"><i class="mdi-social-notifications"><small class="notification-badge">5</small></i>
+                        </a>
+                        </li>
+                        <li><a href="#" data-activates="chat-out" class="waves-effect waves-block waves-light chat-collapse"><i class="mdi-communication-chat"></i></a>
+                        </li-->
+						       <% if(user){ %>
+       		<%if (tenant == null && isSuperTenant != null && !isSuperTenant && site.showPublicStoreURL) {%>
+						<li class="visible-inline-block">
+			                <a id="register-link" title="APIStore" href="<%=jagg.getAbsoluteUrl("/")%><%="?tenant=" + tenantDomain%>">
+			                  <span class="icon fw-stack fw-lg">
+			                  <i class="fw fw-circle-outline fw-stack-2x"></i>
+			                  <i class="fw fw-store fw-stack-1x"></i>
+			                  </span>
+			                    <span class="hidden-xs"> <%=i18n.localize("Go to")%> <%=tenantDomain%><%=i18n.localize("'s API Store")%></span>
+			                </a>
+			            </li>
+				<%} else if ((tenant != null) && site.showPublicStoreURL && (tenantDomains != null && tenantDomains.length  > 0)){%>
+						<li class="visible-inline-block">
+			                <a id="register-link" title="<%=i18n.localize("Public API Store")%>" href="<%=jagg.getAbsoluteUrl("/")%>">
+			                  <span class="icon fw-stack fw-lg">
+			                  <i class="fw fw-circle-outline fw-stack-2x"></i>
+			                  <i class="fw fw-store fw-stack-1x"></i>
+			                  </span>
+			                    <span class="hidden-xs"> <%=i18n.localize("Go to")%> <%=i18n.localize("Public API Store")%></span>
+			                </a>
+			            </li>
+				<%}%>
+
+				<%if (site.showThemesMenu) { %>
+						<!-- Themes Menu -->
+						<li class="visible-inline-block">
+					         <a title="theme" href="#" class="dropdown" data-toggle="dropdown">
+					            <span class="icon fw-stack fw-lg">
+					               <i class="fw fw-circle-outline fw-stack-2x"></i>
+					               <i class="fw fw-pages fw-stack-1x"></i>
+					            </span>
+					            <span class="hidden-xs"> &nbsp; <%=i18n.localize("Themes")%><span class="caret"></span></span>
+					         </a>
+					         <ul class="dropdown-menu dropdown-menu-right float-remove-xs position-static-xs text-center-xs remove-margin-xs slideInDown" role="menu">
+					           <li>
+					           <form id="themeSelectForm" action="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("templates/user/theme/template.jag?theme=modern"))%>">
+                        <input type="hidden" id="themeToApply" name="themeToApply" />
+                        <input type="hidden" id="subthemeToApply" name="subthemeToApply" />
+                        <input type="hidden" id="pathToSend" name="pathToSend" value="<%= encode.forHtmlAttribute(currentURL)%>" />
+                        <table class="table">
+                            <tr>
+                                <td>
+                                    <div class="thumbnail <% if(jagg.getUserTheme().base == "wso2" && jagg.getUserTheme().subtheme == null) { %>currentTheme<% } %>">
+                                        <a data-theme="wso2" title="WSO2 theme" data-subtheme="" class="badge themeLabel" onclick="applyTheme(this)">
+                                            <img alt="WSO2 thumb" src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("images/thumb-wso2.png"))%>" />
+                                            <br /><div class="themeName">WSO2</div>
+                                        </a>
+                                    </div>
+
+                                </td>
+                              </tr>
+                              <tr>
+                                <td>
+                                    <div class="thumbnail <% if(jagg.getUserTheme().base == "dark" && jagg.getUserTheme().subtheme == null) { %>currentTheme<% } %>">
+                                        <a data-theme="wso2" data-subtheme="dark" title="dark theme" class="badge themeLabel" onclick="applyTheme(this)">
+                                            <img alt="dark thumb" src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("images/thumb-dark.png"))%>" />
+                                            <br /><div class="themeName"><%=i18n.localize("Dark")%></div>
+                                        </a>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+                    </form>
+
+					           </li>
+					         </ul>
+				      </li>
+						<!-- End Themes Menu -->
+						<%} %>
+					<li><a href="javascript:void(0);" class="waves-effect waves-block waves-light notification-button profile-btn" data-activates="notifications-dropdown"><i class="mdi-action-assignment-ind"><span class="uname"> <%=user.username%> </span><span class="caret"></span></i></a></li>
+				       <li class="waves-effect waves-block waves-light">
+					      <!-- notifications-dropdown -->
+                    <ul id="notifications-dropdown" class="dropdown-content">
+                      <li>
+                        <h5>NOTIFICATIONS</h5>
+                      </li>
+                      <li class="divider"></li>
+
+					   <li class="dropdown-header visible-xs">&nbsp; <%=user.username%> <span class="caret"></span></li>
+					           <% if(isSelfSignupEnabled && isSuperTenant) { %>
+					           <li><a title="<%=i18n.localize("My Account","My Account")%>" href="<%= jagg.urlTenanted('/site/pages/user-info.jag')%>"><i class="mdi-action-settings"></i> &nbsp; <%=i18n.localize("My Account","My Account")%></a></li>
+					           <% } %>
+					           <li class="divider visible-xs"></li>
+					           <li><a title="<%=i18n.localize("Sign Out")%>" href="#" id="logout-link"><i class="mdi-action-stars"></i> &nbsp; <%=i18n.localize("Sign Out")%></a></li>
+
+                    </ul>
+				      </li>
+
+<% } else { %>
+
+				<%if (tenant == null && isSuperTenant != null && !isSuperTenant && site.showPublicStoreURL) {%>
+						<li class="waves-effect waves-block waves-light ">
+			                <a title="<%=i18n.localize("s API Store")%>" id="register-link" href="<%=jagg.getAbsoluteUrl("/")%><%="?tenant=" + tenantDomain%>">
+			                  <i class="mdi-action-store"> <span class="hidden-xs"> <%=i18n.localize("Go to")%> <%=tenantDomain%><%=i18n.localize("s API Store")%></span></i>
+
+			                </a>
+			            </li>
+				<%} else if ((tenant != null) && site.showPublicStoreURL){%>
+						<li class="waves-effect waves-block waves-light ">
+			                <a title="<%=i18n.localize("Go to")%> <%=i18n.localize("Public API Store")%>" id="register-link" href="<%=jagg.getAbsoluteUrl("/")%>">
+			                    <i class="mdi-action-trending-neutral">   <span class="hidden-xs"> <%=i18n.localize("Go to")%> <%=i18n.localize("Public API Store")%></span></i>
+			                </a>
+			            </li>
+				<%}%>
+
+			<%if(isSelfSignupEnabled){%>
+	            <li class="waves-effect waves-block waves-light ">
+	            <a title="<%=i18n.localize("Sign-up")%>" id="register-link1" href="<%= jagg.urlTenanted('/site/pages/sign-up.jag')%>">
+                	                  <span class="icon fw-stack fw-lg">
+                	                  <i class="fw fw-circle-outline fw-stack-2x"></i>
+                	                  <i class="fw fw-register fw-stack-1x"></i>
+                	                  </span>
+                	                    <span class="hidden-xs"> Sign-up</span>
+                	                </a>
+	            </li>
+	          <% } %>
+	          <li class="waves-effect waves-block waves-light ">
+	          <a class="need-login" title="Sign-in" href="<%= jagg.urlTenanted('/')%>">
+	          <span class="icon fw-stack fw-lg">
+              	 <i class="fw fw-circle-outline fw-stack-2x"></i>
+              	 <i class="fw fw-sign-in fw-stack-1x"></i>
+                 </span>
+                 <span class="hidden-xs"> Sign-in</span>
+              </a>
+              </li>
+
+<% } %>
+
+<!-- TODO: Check and include relevant -->
+<% /*
+        var isSuperTenant, tenantDomain;
+        var httpsUrl= mod.getHTTPsURL();
+
+		var tenantDomains = mod.getActiveTenantDomains().tenantDomains;
+    var log = new Log();
+
+        var currentURL = request.getRequestURI();
+        if(request.getQueryString()){
+            currentURL += "?" + request.getQueryString();
+        }
+        var tenant=request_tenant;
+        var urlPrefix = jagg.getTenantURLPrefix();
+
+        if (jagg.getUser() != null) {
+        	isSuperTenant = jagg.getUser().isSuperTenant;
+		var MultitenantUtils = Packages.org.wso2.carbon.utils.multitenancy.MultitenantUtils;
+    		tenantDomain = MultitenantUtils.getTenantDomain(jagg.getUser().username);
+        }
+
+
+
+%>
+
+<ul class="nav navbar-nav navbar-right">
+<%if ((jagg.getTenantDomain() != null)&& site.showPublicStoreURL){%>
+<li class="dropdown">
+  <a title="<%=i18n.localize("Public API Store")%>" href="#" class="dropdown-toggle" data-toggle="dropdown" role="button" aria-expanded="false"><i class="fa fa-external-link"></i> <%=i18n.localize("Go to")%> <span class="caret"></span></a>
+  <ul class="dropdown-menu" role="menu">
+    <li><a title="<%=i18n.localize("Public API Store")%>" href="<%=jagg.getAbsoluteUrl("/")%>"><i class="fa fa-globe"></i> <%=i18n.localize("Public API Store")%></a></li>
+  </ul>
+</li>
+<%}%>
+
+
+<%if(jagg.getUser().hasPublisherAccess){%>
+<%publisherUrl = jagg.module("manager").getAPIPublisherURL().url;
+<%}%>
+
+
+</ul>
+<% /*%>
+<!--Links to Access Tenant Store and Public Store-->
+<div class="tenant-position-setter">
+<%if(jagg.getUser()!=null){%>
+	<!--Links to Access Tenant Store and Public Store-->
+		<%if (jagg.getUser().hasPublisherAccess) {%>
+			<%=i18n.localize("Go to")%> <a title="<%=i18n.localize("API Publisher")%>" href="<%=publisherUrl%>" target="_blank" ><%=i18n.localize("API Publisher")%></a>
+           <%if(site.showPublicStoreURL){%>
+           |
+
+		<%}}%>
+	<%}%>
+
+		<%if (tenant == null && isSuperTenant != null && !isSuperTenant && site.showPublicStoreURL) {%>
+				<%=i18n.localize("Go to ")%><a title="<%=i18n.localize("'s API Store")%>" href="<%=jagg.getAbsoluteUrl("/")%><%="?tenant=" + tenantDomain%>"><%=tenantDomain%><%=i18n.localize("'s API Store")%></a>
+		<%} else if ((tenant != null)&& site.showPublicStoreURL){%>
+			  <%=i18n.localize("Go to ")%><a title="<%=i18n.localize("Public API Store")%>" href="<%=jagg.getAbsoluteUrl("/")%>"><%=i18n.localize("Public API Store")%></a>
+		<%}%>
+
+
+	</div>
+<% */%>
+<!--  -->
+                    </ul>
+                    <!-- translation-button -->
+                    <ul id="translation-dropdown" class="dropdown-content">
+                      <li>
+                        <a href="#!"><img src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("images/flag-icons/United-States.png"))%>" />  <span class="language-select">English</span></a>
+                      </li>
+                      <li>
+                        <a href="#!"><img src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("images/flag-icons/France.png"))%>" alt="French" />  <span class="language-select">French</span></a>
+                      </li>
+                      <li>
+                        <a href="#!"><img src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("images/flag-icons/China.png"))%>" alt="Chinese" />  <span class="language-select">Chinese</span></a>
+                      </li>
+                      <li>
+                        <a href="#!"><img src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("images/flag-icons/Germany.png"))%>" alt="German" />  <span class="language-select">German</span></a>
+                      </li>
+
+                    </ul>
+
+                </div>
+            </nav>
+        </div>
+        <!-- end header nav-->
+    </header>
+    <!-- END HEADER -->
+
+    <!-- //////////////////////////////////////////////////////////////////////////// -->
+<!---- end custom code -->
+
+<% }); %>
