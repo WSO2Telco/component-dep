@@ -101,7 +101,7 @@ public class DatabaseHandler {
                 .append("WHERE EXISTS( SELECT 1 FROM " + depDB + "." + Tables.DEP_OPERATOR_APPS.getTObject() + " opcoApp ")
                 .append("INNER JOIN " + depDB + "." + Tables.DEP_OPERATORS.getTObject() + " opco ON opcoApp.operatorid = opco.id ")
                 .append("WHERE opcoApp.isactive LIKE ? AND opcoApp.applicationid = amapp.application_id AND ")
-                .append("opco.operatorname LIKE ? AND amapp.application_id LIKE ? AND amapp.name LIKE ? AND amapp.subscriber_id LIKE ? ) ");
+                .append("opco.operatorname LIKE ? AND amapp.application_id LIKE ? AND amapp.name LIKE ? AND amapp.subscriber_id LIKE ? AND amapp.NAME != 'DefaultApplication' ) ");
 
         if (status != null && !status.isEmpty() && !status.equals(ALL)) {
             sql.append("AND amapp.application_status LIKE ? ");
@@ -159,11 +159,9 @@ public class DatabaseHandler {
             int size = 0;
             rs = ps.executeQuery();
             while (rs.next()) {
-                /** Does not consider default application */
-                if (!rs.getString("name").equalsIgnoreCase("DefaultApplication")) {
-                    applist.add(new HistoryDetails(rs));
-                    size++;
-                }
+                /** Does not consider default application. Filtered in the query */
+                applist.add(new HistoryDetails(rs));
+                size++;
             }
 
             historyResponse.setApplications(applist);
@@ -242,11 +240,9 @@ public class DatabaseHandler {
             int size = 0;
             rs = ps.executeQuery();
             while (rs.next()) {
-                /** Does not consider default application */
-                if (!rs.getString("name").equalsIgnoreCase("DefaultApplication")) {
-                    applist.add(new HistoryDetails(rs));
-                    size++;
-                }
+                /** Does not consider default application. Filtered in the query*/
+                applist.add(new HistoryDetails(rs));
+                size++;
             }
 
             historyResponse.setApplications(applist);
