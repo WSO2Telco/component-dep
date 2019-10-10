@@ -21,9 +21,10 @@ import com.wso2telco.core.dbutils.util.AssignRequest;
 import com.wso2telco.core.dbutils.util.Callback;
 import com.wso2telco.core.userprofile.UserProfileRetriever;
 import com.wso2telco.core.userprofile.dto.UserProfileDTO;
+import com.wso2telco.workflow.model.SubscriptionEditDTO;
+import com.wso2telco.workflow.service.SubscriptionService;
 import org.workflow.core.model.TaskSearchDTO;
 import org.workflow.core.service.WorkFlowDelegator;
-
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
@@ -33,6 +34,8 @@ import javax.ws.rs.core.Response;
 @Produces(MediaType.APPLICATION_JSON)
 public class SubscriptionRest {
 
+	SubscriptionService subscriptionService = new SubscriptionService();
+	
     @GET
     @Path("/search")
     public Response load(@HeaderParam("user-name") String userName,
@@ -146,4 +149,17 @@ public class SubscriptionRest {
         return response;
     }
 
+    @PUT
+	public Response editSubscription(SubscriptionEditDTO subscription) {
+
+		try {
+
+			subscriptionService.editSubscriptionTier(subscription);
+
+			return Response.status(Response.Status.OK).entity(subscription).build();
+		} catch (Exception e) {
+			
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+	}
 }
