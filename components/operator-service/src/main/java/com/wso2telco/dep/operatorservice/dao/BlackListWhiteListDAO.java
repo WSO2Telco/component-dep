@@ -537,7 +537,7 @@ public class BlackListWhiteListDAO {
 		ResultSet result = null;
 
 		try {
-			java.lang.String sqlQuery = SQLConstants.GET_APP_USER_SUBSCRIPTION_SQL;
+			java.lang.String sqlQuery = SQLConstants.GET_APP_USER_TIER_STATUS_SUBSCRIPTION_SQL;
 			connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
 
 			ps = connection.prepareStatement(sqlQuery);
@@ -548,7 +548,9 @@ public class BlackListWhiteListDAO {
 			while (result.next()) {
 				String appName = result.getString(BlacklistWhitelistConstants.DAOConstants.APPNAME);
 				int appID = result.getInt(BlacklistWhitelistConstants.DAOConstants.APPLICATION_ID);
-				String appUniqueID = appID + ":" + appName;
+				String appTier = result.getString(BlacklistWhitelistConstants.DAOConstants.APPLICATION_TIER);
+				String appStatus = result.getString(BlacklistWhitelistConstants.DAOConstants.APPLICATION_STATUS);
+				String appUniqueID = appID + ":" + appName + ":" + appTier + ":" + appStatus;
 				appUniqueIDList.add(appUniqueID);
 			}
 
@@ -568,7 +570,7 @@ public class BlackListWhiteListDAO {
 		ResultSet result = null;
 
 		try {
-			String sqlQuery = SQLConstants.GET_APP_USER_OPERATOR_SUBSCRIPTION_SQL;
+			String sqlQuery = SQLConstants.GET_APP_USER_TIER_STATUS_OPERATOR_SUBSCRIPTION_SQL;
 			connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
 
 			ps = connection.prepareStatement(sqlQuery);
@@ -580,7 +582,9 @@ public class BlackListWhiteListDAO {
 			while (result.next()) {
 				String appName = result.getString(BlacklistWhitelistConstants.DAOConstants.APPNAME);
 				int appID = result.getInt(BlacklistWhitelistConstants.DAOConstants.APPLICATION_ID);
-				String appUniqueID = appID + ":" + appName;
+				String appTier = result.getString(BlacklistWhitelistConstants.DAOConstants.APPLICATION_TIER);
+				String appStatus = result.getString(BlacklistWhitelistConstants.DAOConstants.APPLICATION_STATUS);
+				String appUniqueID = appID + ":" + appName + ":" + appTier + ":" + appStatus;
 				appUniqueIDList.add(appUniqueID);
 			}
 
