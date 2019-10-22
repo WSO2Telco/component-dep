@@ -8,6 +8,12 @@ $(document).ready(function() {
             return !/\s/g.test(value);
     }, i18n.t('The name contains white spaces.'));
 
+    $.validator.addMethod("passwordValidate",function(value){
+        var maxLength = 30;
+        var minLength = 6;
+        return (value.length >= minLength && value.length <= maxLength) && value.match(/[a-z]/) && value.match(/[A-Z]/) && value.match(/\d+/) && value.match(/.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/)
+    },i18n.t('Minimum system requirements not met'));
+
     var purposes = document.getElementById("consentPurposes").value;
     if (purposes != undefined && purposes != null && purposes != "") {
       purposes = JSON.parse(document.getElementById("consentPurposes").value);
