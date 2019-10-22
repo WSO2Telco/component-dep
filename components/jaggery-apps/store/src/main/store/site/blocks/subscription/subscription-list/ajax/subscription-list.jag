@@ -356,15 +356,6 @@ else if (action == "getSubscriptionForApplicationById") {
         
         for(var i =0;i<result.subscriptions.length;i++){
 
-            if((result.subscriptions[i]['subStatus']).toUpperCase()=="ON_HOLD")
-            {
-                result.subscriptions[i]['subStatus']="PENDING APPROVAL"
-            }
-            else
-            {
-                result.subscriptions[i]['subStatus']=result.subscriptions[i]['apiProvider']+"-"+result.subscriptions[i]['subStatus']
-            }
-
             result.subscriptions[i]['operators'] = '';
             var api = result.subscriptions[i].apiName;
 
