@@ -45,11 +45,10 @@ $.validator.setDefaults({
 	}
 	
 	$.validator.passwordRating = function(password, username) {
-			var minLength = 6;
-			var maxLength = 30;
+            var minLength = 6;
             var passwordStrength   = 0;
 
-			if (password.length >= minLength && password.length <= maxLength) passwordStrength++;
+			if (password.length >= minLength) passwordStrength++;
 
 			if ((password.match(/[a-z]/)) && (password.match(/[A-Z]/)) ) passwordStrength++;
 
@@ -57,7 +56,7 @@ $.validator.setDefaults({
 
 			if (password.match(/.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/))	passwordStrength++;
 
-		//	if (password.length > 12) passwordStrength++;
+			if (password.length > 12) passwordStrength++;
 
 			if ((password.length >0) && (password.length <=5)) passwordStrength=0;
 
@@ -116,7 +115,7 @@ $.validator.setDefaults({
 		.addClass("password-meter-message-" + rating.messageKey)
 		.text($.validator.passwordRating.messages[rating.messageKey]);
 		// display process bar instead of error message
-		return rating.rate > 3;
+		return rating.rate > 2;
 	}, "Minimum system requirements not met");
 	// manually add class rule, to make username param optional
 	$.validator.classRuleSettings.password = { password: true };
