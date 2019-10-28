@@ -340,9 +340,11 @@ public class DatabaseHandler {
         int subscriptionId = filterObject.getSubscriptionId();
         String apiName = filterObject.getApiName();
         String applicationName = filterObject.getAppName();
+        int applicationId = filterObject.getAppId();
         String tier = filterObject.getTierId();
         String createdBy = filterObject.getCreatedBy();
         int apiId = filterObject.getApiId();
+        String subStatus = filterObject.getSubStatus();
 
         sql = "SELECT sub.SUBSCRIPTION_ID, sub.TIER_ID, sub.API_ID, api.API_NAME, api.API_VERSION, api.API_PROVIDER, sub.APPLICATION_ID, app.NAME as application_name, sub.SUB_STATUS, sub.CREATED_BY " +
                 "FROM " +
@@ -360,6 +362,8 @@ public class DatabaseHandler {
                 statDB + "." + Tables.AM_SUB_APPROVAL_AUDIT.getTObject() + " audit " +
                 "ON audit.APP_ID = sub.APPLICATION_ID WHERE audit.COMPLETED_BY_USER = ?) " +
                 "AND api.API_ID LIKE ? " +
+                "AND sub.SUB_STATUS LIKE ? " +
+                "AND sub.APPLICATION_ID LIKE ? " +
                 "ORDER BY SUBSCRIPTION_ID " +
                 " LIMIT ?,?";
 
@@ -405,8 +409,20 @@ public class DatabaseHandler {
 				ps.setInt(7, apiId);
 			}
 
-            ps.setInt(8, offset);
-            ps.setInt(9, count);
+            if (subStatus.equals(ALL)) {
+                ps.setString(8, "%");
+            } else {
+                ps.setString(8, subStatus);
+            }
+
+            if (applicationId == 0) {
+                ps.setString(9, "%");
+            } else {
+                ps.setInt(9, applicationId);
+            }
+
+            ps.setInt(10, offset);
+            ps.setInt(11, count);
 
             int size = 0;
             rs = ps.executeQuery();

@@ -107,10 +107,12 @@ public class IntGtwSubRequestBuilder extends AbstractSubRequestBuilder {
         int subscriptionId;
         String apiName = ALL;
         String applicationName =ALL;
+        int applicationId;
         String tier = ALL;
         String operator = userProfile.getUserName().toUpperCase();
         String createdBy = ALL;
         int apiId;
+        String subStatus = ALL;
 
         if (varMap.containsKey(SubscriptionHistoryVariable.ID.key())) {
             subscriptionId = Integer.parseInt(varMap.get(SubscriptionHistoryVariable.ID.key()));
@@ -127,6 +129,13 @@ public class IntGtwSubRequestBuilder extends AbstractSubRequestBuilder {
             applicationName = varMap.get(SubscriptionHistoryVariable.APPNAME.key());
         }
 
+        if (varMap.containsKey(SubscriptionHistoryVariable.APPID.key())) {
+        	applicationId = Integer.parseInt(varMap.get(SubscriptionHistoryVariable.APPID.key()));
+        }
+        else {
+        	applicationId = 0;
+        }
+
         if (varMap.containsKey(SubscriptionHistoryVariable.TIER.key())) {
             tier = varMap.get(SubscriptionHistoryVariable.TIER.key());
         }
@@ -141,13 +150,19 @@ public class IntGtwSubRequestBuilder extends AbstractSubRequestBuilder {
 			apiId = 0;
 		}
 
+        if (varMap.containsKey(SubscriptionHistoryVariable.STATUS.key())) {
+            subStatus = varMap.get(SubscriptionHistoryVariable.STATUS.key());
+        }
+
         SubscriptionFilter filterObject = new SubscriptionFilter();
         filterObject.setSubscriptionId(subscriptionId);
         filterObject.setApiName(apiName);
         filterObject.setAppName(applicationName);
+        filterObject.setAppId(applicationId);
         filterObject.setTierId(tier);
         filterObject.setCreatedBy(createdBy);
         filterObject.setApiId(apiId);
+        filterObject.setSubStatus(subStatus);
 
         try {
             SubscriptionHistoryResponse apiRequests = getSubscriptionApprovalHistory(filterObject,operator, searchDTO.getStart(), searchDTO.getBatchSize());
