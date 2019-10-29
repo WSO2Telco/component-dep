@@ -79,7 +79,7 @@
 		<org.wso2.carbon.analytics.version>1.0.6-SNAPSHOT</org.wso2.carbon.analytics.version>
 		<activiti-version>5.18.0</activiti-version>
 		<feign.version>9.3.1</feign.version>
-		<jackson.version>2.6.4</jackson.version>
+		<jackson.version>2.10.0</jackson.version>
 		<groovy.version>2.4.3</groovy.version>
 		<h2.version>1.3.168</h2.version>
 		<slf4j.version>1.7.6</slf4j.version>
