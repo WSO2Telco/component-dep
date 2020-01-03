@@ -48,6 +48,12 @@ public class UrlValidator {
             throw new CustomException("SVC0002", "Invalid input value for message part %1", new String[]{"Request is missing required URI components"});
         } else {
             String errorMessage = null;
+           /* 
+            * commonCount will use To validate following kind of validation rule
+            * (which is having 2 * validations, and need to skip non-msisdn parameters as msisdn).
+            *
+            * EX:{"outbound", "*", "requests", "*", "deliveryInfos"}
+            */
             int commonCount=0;
             for (int i = 0; i < validationRules.length; i++) {
                 logger.debug("Validation of " + requestParts[i] + " against " + validationRules[i]);
