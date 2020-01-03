@@ -16,6 +16,7 @@
 package com.wso2telco.dep.oneapivalidation.util;
 
 import com.wso2telco.dep.oneapivalidation.exceptions.CustomException;
+
 import org.apache.log4j.Logger;
 
 import static com.wso2telco.dep.oneapivalidation.util.Validation.isCorrectlyFormattedNumber;
@@ -47,13 +48,23 @@ public class UrlValidator {
             throw new CustomException("SVC0002", "Invalid input value for message part %1", new String[]{"Request is missing required URI components"});
         } else {
             String errorMessage = null;
+           /* 
+            * commonCount will use To validate following kind of validation rule
+            * (which is having 2 * validations, and need to skip non-msisdn parameters as msisdn).
+            *
+            * EX:{"outbound", "*", "requests", "*", "deliveryInfos"}
+            */
+            int commonCount=0;
             for (int i = 0; i < validationRules.length; i++) {
                 logger.debug("Validation of " + requestParts[i] + " against " + validationRules[i]);
+                
+                
                 if (validationRules[i].equals("*")) {
+                	commonCount++;
                     if (requestParts[i] == null || requestParts[i].isEmpty()) {
                         errorMessage = "parameter" + " at component [" + i + "] ";
                         valid = false;
-                    } else if (!isCorrectlyFormattedNumber(requestParts[i])) {
+                    } else if (!isCorrectlyFormattedNumber(requestParts[i]) && commonCount!=2) {
 
                         throw new CustomException("SVC0004", "endUserId format invalid. %1",
                                 new String[]{requestParts[i]});
