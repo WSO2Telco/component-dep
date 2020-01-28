@@ -139,7 +139,7 @@ if (<%=isEnabledTutorialForThisTenant%>) {
             	}
              } else{
          %>
-    			<h2 style="margin-top:20px">APIs</h2>
+    			<h2>APIs</h2>
    			 <% } %>
    			 </div>
 
@@ -271,9 +271,27 @@ if (<%=isEnabledTutorialForThisTenant%>) {
                		</div>
 
                 <%} else {%>
-<li>
-   <div class="cbp-vm-blockmain" onclick="myhref('<%=path%>');" >
-	<div class="thumbnail icon">
+                    <script>
+                    query = "<%=query%>";
+                    if (query != null && query != "null" && (query.indexOf(":") == -1)) {
+                        $(".page-header h2").html("Search Results");
+                    }
+                    </script>
+
+                	<div class="col-xs-6 col-sm-4 col-md-3 col-lg-2">
+                            <div class="white-wrapper add-margin-bottom-4x">
+                            	<%if(outputs.isMonetizationEnabled && (api.resultType == null && api.resultType == "API")) {%>
+				                    <div class="ribbon-wrapper">
+				                    <%if (api.monetizationCategory.equalsIgnoreCase("Freemium")) { %>
+				                        <div class="ribbon-yellow">FREEMIUM</div>
+				                    <%} else if (api.monetizationCategory.equalsIgnoreCase("Free")) { %>
+				                        <div class="ribbon-green">FREE</div>
+				                    <%} else { %>
+				                        <div class="ribbon-blue">PAID</div>
+				                    <%}%>
+				                    </div>
+				                <%}%>
+                                <div class="thumbnail icon">
                                 	<% if(thumbURL == null) { %>
                                 		<div class="square-element setbgcolor">
                                 		    <%if(api.resultType != null && api.resultType == "Document"){%>
@@ -309,28 +327,36 @@ if (<%=isEnabledTutorialForThisTenant%>) {
 	                                    </div>
 	                                   </a>
                                 </div>
-	<h3 class="cbp-vm-title"><a href="<%=path%>" title="<%=i18n.localize("API Name")%>: <%=encode.forHtml(api.name)%>"><%=encode.forHtml(api.name)%></a></h3>
-	<div class="cbp-vm-version"><a href="<%=path%>" title="<%=i18n.localize("Version")%>"><%=api.version%></a></div>
-	<div class="cbp-vm-details">
-		<%if(api.isAdvertiseOnly) {%>
-		<%=encode.forHtml(api.apiOwner)%>
-		<%} else if(api.apiBusinessOwner != null && api.apiBusinessOwner.trim() != "") {%>
-			<%=encode.forHtml(api.apiBusinessOwner)%>
-		<%} else { %>
-			<%=encode.forHtml(api.provider)%>
-		<% } %>
-	</div>
-	<% if(isRatingActivated){ %>
-	<div class="cbp-vm-rating">
-		<input type="hidden" class="rating cbp-vm-icon cbp-vm-add" disabled="disabled" value="<%=encode.forHtmlAttribute(api.rates)%>" />
-	</div>
-	<% } %>
-   </div>
-</li>
+                                <div class="add-padding-2x app-data ">
+                                    <%if(api.resultType == null || api.resultType == "API"){%>
+                                        <h4 class="truncate"><a href="<%=path%>" title="<%=i18n.localize("API Name")%>: <%=encode.forHtml(api.name)%>"><%=encode.forHtml(api.name)%></a></h4>
+                                        <h5><a href="<%=path%>" title="<%=i18n.localize("Version")%>"><%=api.version%></a></h5>
+                                        <%if(api.isAdvertiseOnly) {%>
+                                            <p class="truncate"><%=encode.forHtml(api.apiOwner)%></p>
+                                        <%} else if(api.apiBusinessOwner != null && api.apiBusinessOwner.trim() != "") {%>
+                                            <p class="truncate"><%=encode.forHtml(api.apiBusinessOwner)%></p>
+                                        <%} else { %>
+                                            <p class="truncate"><%=encode.forHtml(api.provider)%></p>
+                                        <% } %>
+                                        <% if(isRatingActivated){ %>
+                                            <input type="hidden" class="rating" disabled="disabled" value="<%=encode.forHtmlAttribute(api.rates)%>" />
+                                        <% } %>
+                                        <%if (api.resultType != null && api.resultType == "API") {%>
+                                            <p class="no-bottom-margin empty-line">&nbsp<p>
+                                        <%}%>
+                                    <%}else if(api.resultType != null && api.resultType == "Document"){%>
+                                        <h4 id="doc-name" class="truncate"><a href="<%=docPath%>" title="<%=i18n.localize("Document Name")%>: <%=encode.forHtml(api.docName)%>"><%=encode.forHtml(api.docName)%></a></h4>
+                                        <h5 id="document-type-label"><%=api.docSourceType.toLowerCase()%> <%=i18n.localize("Document")%></h5>
+                                        <p class="no-bottom-margin empty-line">&nbsp<p>
+                                        <p class="truncate"><a href="<%=path%>" title="<%=i18n.localize("API Name")%>: <%=encode.forHtml(api.name)%>"><%=encode.forHtml(api.name)%></a></p>
+                                        <p class="no-bottom-margin"><a href="<%=path%>" title="<%=i18n.localize("Version")%>"><%=api.version%></a></p>
+                                    <%}%>
+                                </div>
+                            </div>
+                        </div>
                 <%}%>
                 <% } %>
-</ul>
-	</div>
+
 
 
             <!-- Pagination Start -->
@@ -486,9 +512,9 @@ $(window).load(function(){
 function catchTheFirstAPINameForTutorial() {
     var isNewUserInteractiveTutorialStarted = localStorage.getItem("isNewUserInteractiveTutorialStarted");
     if (isNewUserInteractiveTutorialStarted) {
-      var apiName = $('.page-content').parent().find('.white-wrapper').children().find('.truncate')[0];
+      var apiName = $('.page-content').parent().find('.white-wrapper').children().find('.truncate')[0].textContent;
       if (apiName == 'undefined') {
-          apiName = $('.page-content').parent().find('.white-wrapper').children().find('.apiNameWrap')[0];
+          apiName = $('.page-content').parent().find('.white-wrapper').children().find('.apiNameWrap')[0].textContent;
 
       }
       localStorage.setItem("selectedAPIName", apiName);

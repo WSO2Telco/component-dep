@@ -13,7 +13,7 @@ $('#summernote').summernote({
                         var docName = json.doc.provider.docName;
                         var apiName = json.doc.provider.apiName;
                         var docContent = json.doc.provider.content;
-                        $('#apiDeatils').empty().html('<p><h1> ' + docName + '</h1></p>');
+                        $('#apiDeatils').empty().html('<p><h1> ' + encodeURIComponent(docName) + '</h1></p>');
                         if(localStorage.getItem("doc_auto_save"+apiName+provider+version+docName+"draft") == null) {
                             $("#summernote").summernote("code", docContent);
                         }else{
