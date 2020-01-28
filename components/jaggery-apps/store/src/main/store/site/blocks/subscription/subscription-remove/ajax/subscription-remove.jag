@@ -46,61 +46,7 @@ var log = new Log();
 
         username = user.username;
 
-        var applicationName = request.getParameter("applicationName");
-
-        if (null != applicationName) {
-            var groupId = session.get("groupId");
-
-            mod = jagg.module("application");
-            result = mod.getApplicationByName(username,applicationName,groupId);
-
-            if (result.error) {
-                print({
-                    error:result.error,
-                    message:msg.error.authError(action, username)
-                });
-
-                return;
-            }
-
-            if (result.application) {
-                applicationId = result.application.id;
-            } else {
-                print({
-                    error:true,
-                    message:msg.error.appNameError(applicationName)
-                });
-
-                return;
-            }
-        }
-        else {
-            applicationId = parseInt(request.getParameter("applicationId"), 10);
-        }
-
-        //this is a new code added remove dep database endpointapps tabale data
-        var mod = jagg.module("manager");
-        var storeHostObject = mod.getStoreHostObject(); //get getstoreObj
-        storeHostObject.removeAPISubscription(applicationId.toString(),apiName);
-        storeHostObject.removeAPISubscriptionFromStatDB(applicationId.toString(),apiName, version);
-        storeHostObject.removeSubApprovalOperators(applicationId.toString());
-
-        var workflowRef=storeHostObject.getWorkflowRef(applicationId.toString(),apiName,version);
-        var businessProcessEngineUrl = workflowRef.workflowServiceURL;
-
-        if(null != businessProcessEngineUrl){
-
-            var encodedString = encode('admin:admin');//this username and password hardcoded because activiti engine on same sarver
-            var headers = {"Authorization":"Basic " + encodedString};
-            var applicationData = get( businessProcessEngineUrl+ "runtime/process-instances?businessKey="+workflowRef.workflowRef,null, headers,"json" ).data;
-
-            if(applicationData.size!=0){
-            log.info("application data :"+JSON.stringify(applicationData));
-            del(businessProcessEngineUrl + "runtime/process-instances/"+applicationData.data[0].id,null, headers,"json" ).data;
-            }
-
-        }
-
+        applicationId = parseInt(request.getParameter("applicationId"), 10);
         mod = jagg.module("subscription");
         result = mod.removeAPISubscription(username,applicationId,{
             apiName:apiName,
@@ -110,7 +56,7 @@ var log = new Log();
 
         if (result.error) {
             obj = {
-                error:result.error,
+                error: true,
                 message:msg.error.authError(action, username)
             };
         } else {

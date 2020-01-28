@@ -39,6 +39,9 @@ jagg.module("subscription", {
     getAPISubscriptionsForApplicationById:function () {
             return jagg.require(jagg.getModulesDir() + "subscription/list.jag").getAPISubscriptionsForApplicationById.apply(this, arguments);
     },
+    getAllScopesOfApplicationSubscription:function () {
+    	return jagg.require(jagg.getModulesDir() + "subscription/list.jag").getAllScopesOfApplicationSubscription.apply(this, arguments);
+    },
     generateAPIKey:function () {
         return jagg.require(jagg.getModulesDir() + "subscription/key.jag").generateAPIKey.apply(this, arguments);
     },

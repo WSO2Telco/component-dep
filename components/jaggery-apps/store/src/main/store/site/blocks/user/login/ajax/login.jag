@@ -51,7 +51,7 @@ include("/jagg/jagg.jag");
                  result = mod.loginWithSAMLToken(samlToken);
             if (result.error) {
                  obj = {
-                     error:result.error,
+                     error: true,
                      message:result.message
                  };
              } else {
