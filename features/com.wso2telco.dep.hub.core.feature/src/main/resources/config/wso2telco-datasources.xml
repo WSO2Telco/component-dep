@@ -1,0 +1,11 @@
+<telcoDatasources>
+	<telcoDatasource>
+		<name>jdbc/WSO2TELCO_DEP_DB</name>
+		<query>SELECT * FROM operators</query>
+	</telcoDatasource>
+	<telcoDatasource>
+		<name>jdbc/WSO2TELCO_RATE_DB</name>
+		<query>SELECT * FROM api</query>
+	</telcoDatasource>
+</telcoDatasources>
+

@@ -52,6 +52,29 @@
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
+                    <url>jdbc:h2:repository/database/WSO2AM_DB;DB_CLOSE_ON_EXIT=FALSE</url>
+                    <username>wso2carbon</username>
+                    <password>wso2carbon</password>
+                    <defaultAutoCommit>false</defaultAutoCommit>
+                    <driverClassName>org.h2.Driver</driverClassName>
+                    <maxActive>50</maxActive>
+                    <maxWait>60000</maxWait>
+                    <testOnBorrow>true</testOnBorrow>
+                    <validationQuery>SELECT 1</validationQuery>
+                    <validationInterval>30000</validationInterval>
+                </configuration>
+            </definition>
+        </datasource>
+
+        <!-- For mysql -->
+        <!-- <datasource>
+            <name>WSO2AM_DB</name>
+            <description>The datasource used for API Manager database</description>
+            <jndiConfig>
+                <name>jdbc/WSO2AM_DB</name>
+            </jndiConfig>
+            <definition type="RDBMS">
+                <configuration>
                     <url>jdbc:mysql://{database host}:{port}/prodapimgtdb?autoReconnect=true&amp;relaxAutoCommit=true&amp;useSSL=false&amp;</url>
                     <username>{username}</username>
                     <password>{password}</password>
@@ -63,7 +86,7 @@
                     <validationInterval>30000</validationInterval>
                 </configuration>
             </definition>
-        </datasource>
+        </datasource> -->
 
         <datasource>
             <name>WSO2AM_STATS_DB</name>
@@ -157,6 +180,29 @@
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
+                    <url>jdbc:h2:repository/database/WSO2TELCO_DEP_DB;DB_CLOSE_ON_EXIT=FALSE</url>
+                    <username>wso2carbon</username>
+                    <password>wso2carbon</password>
+                    <defaultAutoCommit>false</defaultAutoCommit>
+                    <driverClassName>org.h2.Driver</driverClassName>
+                    <maxActive>50</maxActive>
+                    <maxWait>60000</maxWait>
+                    <testOnBorrow>true</testOnBorrow>
+                    <validationQuery>SELECT 1</validationQuery>
+                    <validationInterval>30000</validationInterval>
+                </configuration>
+            </definition>
+        </datasource>
+
+        <!-- For mysql -->
+        <!-- <datasource>
+            <name>WSO2TELCO_DEP_DB</name>
+            <description>The custom datasource used for DEP database</description>
+            <jndiConfig>
+                <name>jdbc/WSO2TELCO_DEP_DB</name>
+            </jndiConfig>
+            <definition type="RDBMS">
+                <configuration>
                     <url>jdbc:mysql://{database host}:{port}/proddepdb?autoReconnect=true&amp;useSSL=false&amp;</url>
                     <username>{username}</username>
                     <password>{password}</password>
@@ -168,7 +214,7 @@
                     <validationInterval>30000</validationInterval>
                 </configuration>
             </definition>
-        </datasource>
+        </datasource> -->
 
         <datasource>
             <name>ACTIVITI_DB</name>
@@ -220,6 +266,29 @@
             </jndiConfig>
             <definition type="RDBMS">
                 <configuration>
+                    <url>jdbc:h2:repository/database/WSO2TELCO_RATE_DB;DB_CLOSE_ON_EXIT=FALSE</url>
+                    <username>wso2carbon</username>
+                    <password>wso2carbon</password>
+                    <defaultAutoCommit>false</defaultAutoCommit>
+                    <driverClassName>org.h2.Driver</driverClassName>
+                    <maxActive>50</maxActive>
+                    <maxWait>60000</maxWait>
+                    <testOnBorrow>true</testOnBorrow>
+                    <validationQuery>SELECT 1</validationQuery>
+                    <validationInterval>30000</validationInterval>
+                </configuration>
+            </definition>
+        </datasource>
+        
+        <!-- For mysql -->
+        <!-- <datasource>
+            <name>WSO2TELCO_RATE_DB</name>
+            <description>The custom datasource used for rate database</description>
+            <jndiConfig>
+                <name>jdbc/WSO2TELCO_RATE_DB</name>
+            </jndiConfig>
+            <definition type="RDBMS">
+                <configuration>
                     <url>jdbc:mysql://{database host}:{port}/prodratedb?autoReconnect=true&amp;useSSL=false&amp;</url>
                     <username>{username}</username>
                     <password>{password}</password>
@@ -231,7 +300,7 @@
                     <validationInterval>30000</validationInterval>
                 </configuration>
             </definition>
-        </datasource>
+        </datasource> -->
 
         <!--datasource>
             <name>WSO2_SOCIAL_DB</name>
