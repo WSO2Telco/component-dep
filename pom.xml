@@ -152,6 +152,7 @@
 		<module>components/workflow-core</module>
 		<module>components/apim-loghandler</module>
 		<module>components/api-invocation-handler</module>
+		<module>components/database-creator</module>
 		<module>features</module>
 	</modules>
 
