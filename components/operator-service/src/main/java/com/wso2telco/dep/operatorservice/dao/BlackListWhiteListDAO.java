@@ -563,6 +563,41 @@ public class BlackListWhiteListDAO {
             DbUtils.closeAllConnections(ps, connection, result);
         }
 	}
+	
+	public List<String> getAllAplicationsByUserWithoutSub(String userID) throws BusinessException {
+		Connection connection = null;
+		PreparedStatement ps = null;
+		ResultSet result = null;
+
+		try {
+			java.lang.String sqlQuery = SQLConstants.GET_ALL_APPS_BY_SP_SQL;
+			connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+
+			ps = connection.prepareStatement(sqlQuery);
+			ps.setString(1, stripDomain(userID));
+			result = ps.executeQuery();
+
+			List<String> appUniqueIDList = new ArrayList<String>();
+			while (result.next()) {
+				String appName = result.getString(BlacklistWhitelistConstants.DAOConstants.NAME);
+				int appID = result.getInt(BlacklistWhitelistConstants.DAOConstants.APPLICATION_ID);
+				String appTier = result.getString(BlacklistWhitelistConstants.DAOConstants.APPLICATION_TIER);
+				String appStatus = result.getString(BlacklistWhitelistConstants.DAOConstants.APPLICATION_STATUS);
+				String updateTime = result.getString(BlacklistWhitelistConstants.DAOConstants.UPDATED_TIME);
+				updateTime = updateTime.replace(":", ".");
+				String appUniqueID = appID + ":" + appName + ":" + appTier + ":" + appStatus + ":" + updateTime;
+				appUniqueIDList.add(appUniqueID);
+			}
+
+			return appUniqueIDList;
+		} catch (SQLException e) {
+			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
+		} catch (Exception e) {
+			throw new BusinessException(OparatorError.INVALID_OPARATOR_ID);
+		} finally {
+            DbUtils.closeAllConnections(ps, connection, result);
+        }
+	}
 
 	public List<String> getAllAplicationsByUserAndOperator(String userID, String operator) throws BusinessException {
 		Connection connection = null;

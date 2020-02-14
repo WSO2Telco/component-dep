@@ -432,6 +432,19 @@ public class Queries {
 
 		return Response.status(Response.Status.OK).entity(jsonString).build();
 	}
+	
+	@GET
+	@Path("/apps/{userId}")
+	@Produces("application/json")
+	public Response getAllApplicationsByUserOnly(@PathParam("userId") String userId) throws SQLException, BusinessException {
+
+		//Gson gson = new GsonBuilder().serializeNulls().create();
+		//Id userID = gson.fromJson(jsonBody, Id.class);
+		String jsonString = blackListWhiteListService.getAllApplicationsByUserOnly(userId);
+		
+
+		return Response.status(Response.Status.OK).entity(jsonString).build();
+	}
 
 
 	@GET

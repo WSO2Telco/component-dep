@@ -29,6 +29,8 @@ public class BlacklistWhitelistConstants {
 		public static final String MSISDN = "MSISDN";
 		public static final String API_PROVIDER = "API_PROVIDER";
 		public static final String APPNAME = "APPNAME";
+		public static final String NAME = "NAME";
+		public static final String UPDATED_TIME="UPDATED_TIME";
 		public static final String APPLICATION_ID = "APPLICATION_ID";
 		public static final String APPLICATION_TIER = "APPLICATION_TIER";
 		public static final String APPLICATION_STATUS = "APPLICATION_STATUS";
