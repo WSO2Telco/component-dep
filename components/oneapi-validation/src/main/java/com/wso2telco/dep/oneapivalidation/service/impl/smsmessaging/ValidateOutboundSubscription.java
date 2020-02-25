@@ -47,6 +47,7 @@ public class ValidateOutboundSubscription implements IServiceValidate {
         String callbackData = null;
         String filterCriteria = null;
         String clientCorrelator = null;
+        JSONObject objCallbackReference = null;
        
         try {
 
@@ -63,19 +64,18 @@ public class ValidateOutboundSubscription implements IServiceValidate {
 			if (!objDeliveryReceiptSubscription.isNull("clientCorrelator")) {
 				clientCorrelator = nullOrTrimmed(objDeliveryReceiptSubscription.getString("clientCorrelator"));
 			}
-			JSONObject objCallbackReference = (JSONObject) objDeliveryReceiptSubscription.get("callbackReference");
-            
+			if (!objDeliveryReceiptSubscription.isNull("callbackReference")) {
+				objCallbackReference = (JSONObject) objDeliveryReceiptSubscription.get("callbackReference");
+			}
 			
-			
-			
-			if (!objCallbackReference.isNull("callbackData")) {
+			if (objCallbackReference != null && !objCallbackReference.isNull("callbackData")) {
 				callbackData = nullOrTrimmed(objCallbackReference.getString("callbackData"));
 				/*rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY,"callbackData", callbackData));
 			} else {
 				rules.add(new ValidationRule(
 						ValidationRule.VALIDATION_TYPE_MANDATORY,"callbackData", callbackData));*/
 			}
-			if (!objCallbackReference.isNull("notifyURL")) {
+			if (objCallbackReference != null && !objCallbackReference.isNull("notifyURL")) {
 				notifyURL = nullOrTrimmed(objCallbackReference.getString("notifyURL"));
 				/*rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_URL,"notifyURL", notifyURL));
 			} else {
