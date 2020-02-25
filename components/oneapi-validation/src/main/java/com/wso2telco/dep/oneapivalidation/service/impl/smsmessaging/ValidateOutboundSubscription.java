@@ -24,7 +24,8 @@ import com.wso2telco.dep.oneapivalidation.util.UrlValidator;
 import com.wso2telco.dep.oneapivalidation.util.Validation;
 import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
 
-
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
  
 // TODO: Auto-generated Javadoc
 /**
@@ -32,6 +33,7 @@ import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
  */
 public class ValidateOutboundSubscription implements IServiceValidate {
 
+	Log log = LogFactory.getLog(ValidateOutboundSubscription.class);
     /** The validation rules. */
     private final String[] validationRules = {"outbound", "*", "subscriptions"};
 
@@ -83,7 +85,7 @@ public class ValidateOutboundSubscription implements IServiceValidate {
 			rules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY,"filterCriteria", filterCriteria));
 */
 		} catch (Exception e) {
-			System.out.println("Manipulating recived JSON Object: " + e);
+			log.error("Manipulating recived JSON Object: " + e);
 			throw new CustomException("POL0299", "Unexpected Error",new String[] { "" });
 		}
 
