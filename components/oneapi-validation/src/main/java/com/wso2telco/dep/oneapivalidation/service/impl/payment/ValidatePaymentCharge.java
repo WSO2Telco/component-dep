@@ -163,12 +163,17 @@ public class ValidatePaymentCharge  implements IServiceValidate {
                         channel = nullOrTrimmed(chargingMetaData.getString("channel"));
                     }
                     if (!chargingMetaData.isNull("taxAmount")) {
-                        if (!chargingMetaData.get("taxAmount").toString().matches(quadrupleValidationRegex)) {
-                            throw new CustomException("SVC0002", "Invalid input value for message part %1",
-                                    new String[]{"taxAmount should be a whole or four digit decimal positive number"});
-                        }
-                        taxAmount = Double.parseDouble(nullOrTrimmed(String.valueOf(chargingMetaData.get("taxAmount"))));
+                        String taxNullCheck = nullOrTrimmed(chargingMetaData.getString("taxAmount"));
 
+                        if (taxNullCheck != null) {
+                            if (!chargingMetaData.get("taxAmount").toString().matches(quadrupleValidationRegex)) {
+                                throw new CustomException("SVC0002", "Invalid input value for message part %1",
+                                        new String[]{"taxAmount should be a whole or four digit decimal positive number"});
+                            }
+                            taxAmount = Double.parseDouble((String.valueOf(taxNullCheck)));
+                        } else {
+                            taxAmount = null;
+                        }
                     }
                 }
 
