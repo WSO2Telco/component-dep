@@ -20,6 +20,9 @@ import com.wso2telco.dep.oneapivalidation.service.IServiceValidate;
 import com.wso2telco.dep.oneapivalidation.util.UrlValidator;
 import com.wso2telco.dep.oneapivalidation.util.Validation;
 import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.json.JSONException;
 import org.json.JSONObject;
 
 import static com.wso2telco.dep.oneapi.constant.ussd.USSDValueConstants.*;
@@ -30,6 +33,9 @@ import static com.wso2telco.dep.oneapi.constant.ussd.USSDValueConstants.*;
  * The Class ValidateUssdSend.
  */
 public class ValidateUssdSend implements IServiceValidate {
+
+    /** The log. */
+    private Log log = LogFactory.getLog(ValidateUssdSend.class);
 
     /** The validation rules. */
     private final String[] validationRules = {"outbound", "*"};
@@ -58,7 +64,7 @@ public class ValidateUssdSend implements IServiceValidate {
                 shortCode = nullOrTrimmed(requestData.getString("shortCode"));
             }
 
-            if (!requestData.isNull("keyword")) {
+            if (requestData.has("keyword") && !requestData.isNull("keyword")) {
                 keyword = nullOrTrimmed(requestData.getString("keyword"));
             }
             if (!requestData.isNull("outboundUSSDMessage")) {
@@ -69,11 +75,14 @@ public class ValidateUssdSend implements IServiceValidate {
             }
             if (!requestData.isNull("ussdAction")) {
                 ussdAction = nullOrTrimmed(requestData.getString("ussdAction"));
-            }
-
-            if (!(MTINIT.equals(ussdAction))) {
-                throw new CustomException("SVC0002", "Invalid input value for message part %1",
-                        new String[]{"Invalid ussdAction"});
+                switch (ussdAction){
+                    case MTINIT:
+                    case MTCONT:
+                    case MTFIN:
+                        break;
+                    default: throw new CustomException("SVC0002", "Invalid input value for message part %1",
+                            new String[]{"Invalid ussdAction"});
+                }
             }
 
             if (!requestData.isNull("responseRequest")) {
@@ -86,8 +95,8 @@ public class ValidateUssdSend implements IServiceValidate {
                 }
             }
 
-        } catch (Exception e) {
-            System.out.println("Manipulating recived JSON Object: " + e);
+        } catch (JSONException e) {
+            log.error("Manipulating recived JSON Object: " + e);
             throw new CustomException("POL0299", "Unexpected Error", new String[]{""});
         }
 
