@@ -21,6 +21,9 @@ import com.wso2telco.dep.oneapivalidation.util.UrlValidator;
 import com.wso2telco.dep.oneapivalidation.util.Validation;
 import com.wso2telco.dep.oneapivalidation.util.ValidationRule;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 import org.json.JSONObject;
 
  
@@ -29,6 +32,8 @@ import org.json.JSONObject;
  * The Class ValidateSBSubscription.
  */
 public class ValidateSBSubscription implements IServiceValidate{
+
+	private static Log log = LogFactory.getLog(ValidateSBSubscription.class);
 
     /** The validation rules. */
     private final String[] validationRules = {"inbound", "subscriptions"};
@@ -80,7 +85,7 @@ public class ValidateSBSubscription implements IServiceValidate{
                 clientCorrelator = nullOrTrimmed(objSubscription.getString("clientCorrelator"));
             }
         } catch (Exception e) {
-            System.out.println("Manipulating recived JSON Object: " + e);
+            log.error("Manipulating recived JSON Object: " + e);
             throw new CustomException("POL0299", "Unexpected Error", new String[]{""});
         }
 
