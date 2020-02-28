@@ -44,6 +44,7 @@ public class ValidateSBSubscription implements IServiceValidate{
         String notificationFormat = null;
         String clientCorrelator = null;
         String callbackData = null;
+        JSONObject objCallbackReference = null;
 
         try {
 
@@ -51,14 +52,15 @@ public class ValidateSBSubscription implements IServiceValidate{
 
             JSONObject objSubscription = (JSONObject) objJSONObject.get("subscription");
 
-            JSONObject objCallbackReference = (JSONObject) objSubscription.get("callbackReference");
-            if (!objCallbackReference.isNull("callbackData")) {
+            if (!objSubscription.isNull("callbackReference")) {
+                objCallbackReference = (JSONObject) objSubscription.get("callbackReference");
 
-                callbackData = nullOrTrimmed(objCallbackReference.getString("callbackData"));
-            }
-            if (!objCallbackReference.isNull("notifyURL")) {
-
-                notifyURL = nullOrTrimmed(objCallbackReference.getString("notifyURL"));
+                if (!objCallbackReference.isNull("callbackData")) {
+                    callbackData = nullOrTrimmed(objCallbackReference.getString("callbackData"));
+                }
+                if (!objCallbackReference.isNull("notifyURL")) {
+                    notifyURL = nullOrTrimmed(objCallbackReference.getString("notifyURL"));
+                }
             }
 
             if (!objSubscription.isNull("criteria")) {
