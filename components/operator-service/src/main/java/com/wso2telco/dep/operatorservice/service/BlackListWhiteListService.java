@@ -91,7 +91,7 @@ public class BlackListWhiteListService {
 			throw new BusinessException(GenaralError.INTERNAL_SERVER_ERROR);
 		}
 
-		if(invalid.isEmpty()){
+		if(invalid.size() > 0){
 			LOG.error("Could not process due to invalid format: " + invalid);
 		}
 
