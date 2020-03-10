@@ -22,6 +22,8 @@ import com.wso2telco.core.dbutils.util.AssignRequest;
 import com.wso2telco.core.dbutils.util.Callback;
 import com.wso2telco.core.userprofile.UserProfileRetriever;
 import com.wso2telco.core.userprofile.dto.UserProfileDTO;
+import com.wso2telco.workflow.model.ApplicationEditDTO;
+import com.wso2telco.workflow.service.ApplicationService;
 import org.workflow.core.model.TaskSearchDTO;
 import org.workflow.core.service.WorkFlowDelegator;
 
@@ -36,6 +38,8 @@ import javax.ws.rs.core.Response;
 
 
 public class ApplicationRest {
+
+	ApplicationService applicationService = new ApplicationService();
 
     @GET
     @Path("/search")
@@ -151,4 +155,18 @@ public class ApplicationRest {
         }
         return response;
     }
+
+    @PUT
+	public Response editApplication(ApplicationEditDTO application) {
+
+		try {
+
+			applicationService.editApplicationTier(application);
+
+			return Response.status(Response.Status.OK).entity(application).build();
+		} catch (Exception e) {
+
+			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+		}
+	}
 }
