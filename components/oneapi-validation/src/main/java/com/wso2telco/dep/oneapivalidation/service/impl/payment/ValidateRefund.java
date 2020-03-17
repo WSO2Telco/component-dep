@@ -176,12 +176,7 @@ public class ValidateRefund implements IServiceValidate {
                     channel = nullOrTrimmed(objChargingMetaData.get("channel").toString());
                 }
                 if (!objChargingMetaData.isNull("taxAmount")) {
-                    if (!objChargingMetaData.get("taxAmount").toString().matches(quadrupleValidationRegex)) {
-                        throw new CustomException("SVC0002", "Invalid input value for message part %1",
-                                new String[]{"taxAmount should be a whole or four digit decimal positive number"});
-                    }
                     taxAmount = Double.parseDouble(nullOrTrimmed(String.valueOf(objChargingMetaData.get("taxAmount"))));
-
                 }
                 if (!objChargingMetaData.isNull("mandateId")) {
                     mandateId = nullOrTrimmed(objChargingMetaData.get("mandateId").toString());
