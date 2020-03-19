@@ -229,6 +229,7 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	        String apiName = arg0.getVariable(Constants.API_NAME) != null ? arg0.getVariable(Constants.API_NAME).toString() : null;
 	        String apiVersion = arg0.getVariable(Constants.API_VERSION) != null ? arg0.getVariable(Constants.API_VERSION).toString() : null;
 	        String selectedTier = arg0.getVariable(Constants.SELECTED_TIER) != null ? arg0.getVariable(Constants.SELECTED_TIER).toString() : null;
+	        if(selectedTier == null) selectedTier = arg0.getVariable(Constants.ADMIN_SELECTED_TIER) != null ? arg0.getVariable(Constants.ADMIN_SELECTED_TIER).toString() : null;
 	        String logEntry = "Subscription approval operator admin :"
 	        		+ " Completed by - " + completedByUser
 	        		+ ", Application name - " + applicationName
@@ -242,5 +243,4 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 			throw new ApprovalWorkflowException(errorMessage, e);
 		}
 	}
-
 }
