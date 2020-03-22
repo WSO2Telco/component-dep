@@ -63,6 +63,7 @@ public class Queries {
 
 		app = replaceAllWithWildcard(app);
 		api = replaceAllWithWildcard(api);
+		sp = replaceAllWithWildcard(sp);
 
 		dto.setAppId(app);
 		dto.setApiID(api);
