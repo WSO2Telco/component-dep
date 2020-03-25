@@ -2783,7 +2783,7 @@ select[multiple].input-lg,
   touch-action: manipulation;
   cursor: pointer;
   background-image: none;
-  border: 1px solid transparent;
+  border: none;
   white-space: nowrap;
   padding: 6px 12px;
   font-size: 14px;
@@ -9296,6 +9296,9 @@ a.list-group-item:hover {
 .btn, a.btn {
   /*background-color: #0E75DC;
   color: #fff;*/
+  box-shadow: 0px 3px 1px -2px rgba(0, 0, 0, 0.2), 0px 2px 2px 0px rgba(0, 0, 0, 0.14), 0px 1px 5px 0px rgba(0, 0, 0, 0.12);
+  transform: translate3d(0, 0, 0);
+  transition: background 400ms cubic-bezier(0.25, 0.8, 0.25, 1),box-shadow 280ms cubic-bezier(0.4, 0, 0.2, 1);
 }
 
 .btn .disabled, a.btn .disabled {
@@ -9840,7 +9843,7 @@ a.list-group-item:hover {
  * Login
  * ================================================================== */
 .data-container {
-  border-left: 3px solid #E38E4A;
+  border-left: 3px solid #009deb;
   border-right: 1px solid #E2E2E2;
   border-bottom: 1px solid #E2E2E2;
   border-top: 1px solid #E2E2E2;
@@ -9860,14 +9863,13 @@ a.list-group-item:hover {
 
 .data-container .btn-primary {
   color: #ffffff;
-  background-color: #F27B21;
-  border: 1px solid #F27B21;
-}
+  background-color: #009deb;
+  }
 
 .data-container .btn-secondary {
   color: #ffffff;
   background-color: #595959;
-  border: 1px solid #595959;
+  border: none;
 }
 
 .data-container .checkbox > input[type=checkbox]:checked + .helper:after {
