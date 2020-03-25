@@ -1,7 +1,7 @@
 <% jagg.template("footer", function(inputs, outputs, jagg) { %>
     <footer class="footer">
         <div class="container-fluid">
-            <p style='text-align: center;'>Copyright &copy; <script>document.write(new Date().getFullYear());</script> <a href="https://apigate.com/" target="_blank"><i class="icon fw fw-wso2"></i>.Telco Inc</a>.</p>
+            <p><%=i18n.localize("WSO2 API Manager")%> | &copy; <script>document.write(new Date().getFullYear());</script> <a href="http://apigate.com/" target="_blank"><span class="copyright_logo"></span></a></p>
         </div>
     </footer>
 <% }); %>
