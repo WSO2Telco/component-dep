@@ -14,6 +14,7 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.stream.Collectors;
 
 /**
  * Copyright (c) 2016, WSO2.Telco Inc. (http://www.wso2telco.com) All Rights Reserved.
@@ -599,4 +600,74 @@ public class DatabaseHandler {
 
         return count;
     }
+
+    public String getAllSubscriptionThrottling() throws  BusinessException {
+
+        String sql = null;
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String apimgtDB = DbUtils.getDbNames().get(DataSourceNames.WSO2AM_DB);
+
+
+        sql = "SELECT (NAME)  " +
+                "FROM " +
+                apimgtDB + "." + Tables.AM_SUBSCRIPTION_POLICY.getTObject();
+
+        List<String> allvales = new ArrayList<String>();
+
+        try {
+            conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                String val = rs.getString("NAME");
+                allvales.add(val);
+            }
+
+        } catch (Exception e) {
+            handleException("getSubscriptionThrottleDB ERROR", e);
+        } finally {
+            DbUtils.closeAllConnections(ps, conn, rs);
+        }
+
+        return allvales.stream().collect(Collectors.joining(","));
+
+    }
+
+
+    public String getAllApplicationThrottling() throws  BusinessException {
+
+        String sql = null;
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        String apimgtDB = DbUtils.getDbNames().get(DataSourceNames.WSO2AM_DB);
+
+
+        sql = "SELECT (NAME)  " +
+                "FROM " +
+                apimgtDB + "." + Tables.AM_APPLICATION_POLICY.getTObject();
+
+        List<String> allvales = new ArrayList<String>();
+
+        try {
+            conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+            ps = conn.prepareStatement(sql);
+            rs = ps.executeQuery();
+            while (rs.next()) {
+                String val = rs.getString("NAME");
+                allvales.add(val);
+            }
+
+        } catch (Exception e) {
+            handleException("getApplicationThrottleDB ERROR", e);
+        } finally {
+            DbUtils.closeAllConnections(ps, conn, rs);
+        }
+
+        return allvales.stream().collect(Collectors.joining(","));
+
+    }
+
 }
