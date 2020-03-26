@@ -16,10 +16,12 @@
 
 package org.workflow.core.service;
 
+import com.wso2telco.core.dbutils.DbUtils;
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.util.ApprovalRequest;
 import com.wso2telco.core.dbutils.util.AssignRequest;
 import com.wso2telco.core.dbutils.util.Callback;
+import com.wso2telco.core.dbutils.util.DataSourceNames;
 import com.wso2telco.core.userprofile.dto.UserProfileDTO;
 import org.apache.commons.logging.Log;
 import org.workflow.core.activity.*;
@@ -94,6 +96,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 
             if(APIUtil.isAdvanceThrottlingEnabled() && workflowType.equals("APPLICATION")){
                 String APiTiers = getTiersFromDB(workflowType);
+
                 for (Task task : taskList.getData()) {
                     TaskVariableResponse[] vars = activityClient.getVariables(String.valueOf(task.getId()));
                     task.setVariables(replaceiActivitiTiers(vars,APiTiers));
@@ -122,6 +125,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
             taskList = activityClient.getTasks(processRequest);
             if(APIUtil.isAdvanceThrottlingEnabled() && workflowType.equals("APPLICATION")){
                 String APiTiers = getTiersFromDB(workflowType);
+
                 for (Task task : taskList.getData()) {
                     TaskVariableResponse[] vars = activityClient.getVariables(String.valueOf(task.getId()));
                     task.setVariables(replaceiActivitiTiers(vars,APiTiers));
@@ -390,11 +394,12 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
     }
 
 
-    public TaskVariableResponse[] replaceiActivitiTiers(TaskVariableResponse[] vars , String ApiTiers) throws  BusinessException {
+    public TaskVariableResponse[] replaceiActivitiTiers(TaskVariableResponse[] vars , String TiersStr) throws  BusinessException {
 
         for(int j=0;j< vars.length;j++){
-            if(vars[j].getName().equals("apiTiers")){
-                vars[j].setValue(ApiTiers);
+            if(vars[j].getName().equals("tiersStr")){
+                vars[j].setValue(TiersStr);
+
             }
         }
 
@@ -417,10 +422,12 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 
     public String getTiersFromDB(String workFlowType) throws BusinessException {
         String ApiTiers = null;
+        String apimgtDB = DbUtils.getDbNames().get(DataSourceNames.WSO2AM_DB);
+
         DatabaseHandler handler = new DatabaseHandler();
-        if(workFlowType.equals(WorkFlowType.APPLICATION)){
+        if(workFlowType.equals(WorkFlowType.APPLICATION.toString()) && apimgtDB != null){
             ApiTiers = handler.getAllApplicationThrottling();
-        }else if(workFlowType.equals(WorkFlowType.SUBSCRIPTION)){
+        }else if(workFlowType.equals(WorkFlowType.SUBSCRIPTION.toString()) && apimgtDB != null){
             ApiTiers = handler.getAllSubscriptionThrottling();
         }
         return ApiTiers;
