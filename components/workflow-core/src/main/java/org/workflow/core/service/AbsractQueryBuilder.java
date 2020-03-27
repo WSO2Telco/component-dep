@@ -99,7 +99,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 
                 for (Task task : taskList.getData()) {
                     TaskVariableResponse[] vars = activityClient.getVariables(String.valueOf(task.getId()));
-                    task.setVariables(replaceiActivitiTiers(vars,APiTiers));
+                    task.setVariables(replaceiActivitiTiers(vars,APiTiers,workflowType));
                 }
             }else{
                 for (Task task : taskList.getData()) {
@@ -128,7 +128,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 
                 for (Task task : taskList.getData()) {
                     TaskVariableResponse[] vars = activityClient.getVariables(String.valueOf(task.getId()));
-                    task.setVariables(replaceiActivitiTiers(vars,APiTiers));
+                    task.setVariables(replaceiActivitiTiers(vars,APiTiers,workflowType));
                 }
             }else{
                 for (Task task : taskList.getData()) {
@@ -393,27 +393,19 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
         return false;
     }
 
+    public TaskVariableResponse[] replaceiActivitiTiers(TaskVariableResponse[] vars , String TiersStr , String workflowType) throws  BusinessException {
 
-    public TaskVariableResponse[] replaceiActivitiTiers(TaskVariableResponse[] vars , String TiersStr) throws  BusinessException {
-
-        for(int j=0;j< vars.length;j++){
-            if(vars[j].getName().equals("tiersStr")){
-                vars[j].setValue(TiersStr);
-
+        if(workflowType.equals(WorkFlowType.APPLICATION.toString())){
+            for(int j=0;j< vars.length;j++){
+                if(vars[j].getName().equals("tiersStr")){
+                    vars[j].setValue(TiersStr);
+                }
             }
-        }
-
-        return vars;
-    }
-
-    public TaskVariableResponse[] replaceApplicationTiers(TaskVariableResponse[] vars) throws  BusinessException {
-
-        DatabaseHandler handler = new DatabaseHandler();
-        String SubscriptionTiers = handler.getAllSubscriptionThrottling();
-
-        for(int j=0;j< vars.length;j++){
-            if(vars[j].getName().equals("apiTiers")){
-                vars[j].setValue(SubscriptionTiers);
+        }else if(workflowType.equals(WorkFlowType.SUBSCRIPTION.toString())){
+            for(int j=0;j< vars.length;j++){
+                if(vars[j].getName().equals("apiTiers")){
+                    vars[j].setValue(TiersStr);
+                }
             }
         }
 
