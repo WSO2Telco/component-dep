@@ -171,7 +171,7 @@ public class WorkflowHistoryDAO {
 					"       api.api_id, " +
 					"       sub.tier_id, " +
 					"       sub.sub_status AS 'admin_approval', " +
-					"       (select operatorname from egw_proddepdb.operators where ID = 1) AS 'operator_name', " +
+					"       (select operatorname from "+ depDB +".operators where ID = 1) AS 'operator_name', " +
 					"       1 AS 'operator_approval', " +
 					"       sub.updated_time " +
 					"FROM   " + apimgtDB + ".am_api api, " +
@@ -179,7 +179,7 @@ public class WorkflowHistoryDAO {
 					"WHERE  sub.application_id = ? " +
 					"       AND sub.sub_status = 'UNBLOCKED' " +
 					"       AND api.api_id = sub.api_id " +
-					"       AND api.api_name NOT IN (select api from egw_proddepdb.operatorendpoints) " +
+					"       AND api.api_name NOT IN (select api from "+ depDB +".operatorendpoints) " +
 					"ORDER BY api_name";
 
 			ps = conn.prepareStatement(sql);
