@@ -22,6 +22,7 @@ public class WorkflowHistoryService {
 		try {
 			app = dao.getApplicationStatus(appID);
 			dao.getSubscribedAPIs(appID, app);
+			dao.setSubscribedAPIsWithoutOperators(appID, app);
 		} catch (Exception e) {
 			throw new WorkflowServiceException(e);
 		}
