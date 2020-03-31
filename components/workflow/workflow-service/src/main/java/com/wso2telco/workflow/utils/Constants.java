@@ -29,6 +29,7 @@ public class Constants {
 	public static final String SUBJECT_SUB_APPROVAL_STATUS_SP_NOTIFICATION = "Subscription Approval Status Notification";
     public static final String SUBJECT_PUBLISHER_SUB_APPROVAL_NOTIFICATION= "Publisher Subscription Approval Request";
     public static final String SUBJECT_OPE_ADMIN_SUB_APPROVAL_NOTIFICATION = "Subscription Approval Request";
+    public static final String SUBJECT_INT_ADMIN_APP_APPROVAL_NOTIFICATION = "Application Approval Request";
 	
 	// workflow.properties file entries: Email sending configs.
 	public static final String WORKFLOW_PROPERTIES_FILE = "workflow.properties";

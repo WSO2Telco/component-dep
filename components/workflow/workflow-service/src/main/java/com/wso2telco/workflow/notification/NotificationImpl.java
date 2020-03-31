@@ -285,6 +285,40 @@ public class NotificationImpl implements Notification {
         }
     }
 
+    @Override
+    public void sendInternalAdminAppApprovalNotification(NotificationRequest request) {
+        String role = request.getReceiverRole();
+        String applicationName = request.getApplicationName();
+        String applicationTier = request.getApplicationTier();
+        String applicationDescription = request.getApplicationDescription();
+        String userName = request.getUserName();
+
+        log.debug("role : " + role);
+        log.debug("applicationName : " + applicationName);
+        log.debug("applicationTier : " + applicationTier);
+        log.debug("applicationDescription : " + applicationDescription);
+        log.debug("userName : " + userName);
+
+        if (role != null && !role.isEmpty()) {
+            RemoteUserStoreManager userStoreManager = new RemoteUserStoreManagerImpl();
+            String[] users = userStoreManager.getUserListOfRole(role);
+            if (users != null && users.length > 0) {
+                String content = EmailNotificationUtil.getAppPluginApproverEmailContent(applicationName, applicationTier, applicationDescription, userName);
+                if (!content.isEmpty()) {
+                    for (String user : users) {
+                        String email = userStoreManager.getUserClaimValue(user, Constants.CLAIM_EMAIL);
+                        emailService.sendEmail(email, Constants.SUBJECT_INT_ADMIN_APP_APPROVAL_NOTIFICATION, content);
+                    }
+                } else {
+                    log.error("Email content is either null or empty. [ content : " + content + " ]");
+                }
+            } else {
+                log.info("User list is either null or empty. [ users : " + users + " ]");
+            }
+        } else {
+            log.error("The specified role is either null or empty. [ role : " + role + " ]");
+        }
+    }
 
     @Override
     public void sendInternalAdminSubrovalNotification(NotificationRequest request) {

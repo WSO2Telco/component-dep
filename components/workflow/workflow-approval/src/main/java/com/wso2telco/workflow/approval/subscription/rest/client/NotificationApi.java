@@ -45,6 +45,10 @@ public interface NotificationApi {
     @Headers("Content-Type: application/json")
     void sendHUBAdminAppApprovalNotification(NotificationRequest notificationRequest) throws SubscriptionApprovalWorkflowException;
 
+    @RequestLine("POST workflow/notification/application/gateway")
+    @Headers("Content-Type: application/json")
+    void sendInternalAdminAppApprovalNotification(NotificationRequest notificationRequest) throws SubscriptionApprovalWorkflowException;
+
     @RequestLine("POST workflow/notification/application/plugin")
     @Headers("Content-Type: application/json")
     void sendPLUGINAdminAppApprovalNotification(NotificationRequest notificationRequest) throws SubscriptionApprovalWorkflowException;

@@ -104,6 +104,18 @@ public class NotificationAPI {
     }}
 
     @POST
+    @Path("application/gateway")
+    @Consumes(MediaType.APPLICATION_JSON)
+    public Response sendInternalAdminAppApprovalNotification(NotificationRequest request){
+        try {
+            notification.sendInternalAdminAppApprovalNotification(request);
+            return Response.status(Response.Status.OK).build();
+        }catch(Exception ex){
+            return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+        }
+    }
+
+    @POST
     @Path("subscription/gateway")
     @Consumes(MediaType.APPLICATION_JSON)
     public Response sendSubApprovalStatusGatewayNotification(NotificationRequest request){
