@@ -136,7 +136,7 @@ public class NotifyApprovalTask implements WorkflowApprovalTask {
 	public void executeOperatorAdminApplicationApproval(DelegateExecution arg0) throws ApprovalWorkflowException {
 		try {
 			String deploymentType = arg0.getVariable(Constants.DEPLOYMENT_TYPE) != null ? arg0.getVariable(Constants.DEPLOYMENT_TYPE).toString() : null;
-			if (deploymentType.equals(Constants.HUB)) {
+			if (Constants.HUB.equalsIgnoreCase(deploymentType) || Constants.INTERNAL_GATEWAY_TYPE2.equalsIgnoreCase(deploymentType)) {
 		        String applicationName = arg0.getVariable(Constants.APPLICATION_NAME) != null ? arg0.getVariable(Constants.APPLICATION_NAME).toString() : null;
 		        String adminSelectedTier = arg0.getVariable(Constants.ADMIN_SELECTED_TIER) != null ? arg0.getVariable(Constants.ADMIN_SELECTED_TIER).toString() : null;
 		        String applicationDescription = arg0.getVariable(Constants.DESCRIPTION) != null ? arg0.getVariable(Constants.DESCRIPTION).toString() : null;
