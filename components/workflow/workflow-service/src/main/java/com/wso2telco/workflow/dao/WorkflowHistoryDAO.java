@@ -172,12 +172,12 @@ public class WorkflowHistoryDAO {
 					"       sub.tier_id, " +
 					"       sub.sub_status AS 'admin_approval', " +
 					"       (select operatorname from "+ depDB +".operators where ID = 1) AS 'operator_name', " +
-					"       1 AS 'operator_approval', " +
+					"       '' AS 'operator_approval', " +
 					"       sub.updated_time " +
 					"FROM   " + apimgtDB + ".am_api api, " +
 					" " + apimgtDB + ".am_subscription sub " +
 					"WHERE  sub.application_id = ? " +
-					"       AND sub.sub_status = 'UNBLOCKED' " +
+					"       AND sub.sub_status IN ('UNBLOCKED', 'REJECTED') " +
 					"       AND api.api_id = sub.api_id " +
 					"       AND api.api_name NOT IN (select api from "+ depDB +".operatorendpoints) " +
 					"ORDER BY api_name";
@@ -193,7 +193,11 @@ public class WorkflowHistoryDAO {
 				subscription.setVersion(rs.getString("api_version"));
 				subscription.setTier(rs.getString("tier_id"));
 				subscription.setAdminApprovalStatus(rs.getString("admin_approval"));
-				subscription.addOperator(rs.getString(OPERATOR_NAME), rs.getString(OPERATOR_APPROVAL));
+				if (rs.getString("admin_approval").equals("UNBLOCKED")) {
+					subscription.addOperator(rs.getString(OPERATOR_NAME), "1");
+				} else {
+					subscription.addOperator(rs.getString(OPERATOR_NAME), "2");
+				}
 				subscription.setLastUpdated(rs.getDate("updated_time").toString() + " " + rs.getTime("updated_time"));
 				app.addSubscription(subscription);
 			}
