@@ -10,8 +10,8 @@ import org.workflow.core.model.TaskSearchDTO;
 
 public interface WorkFlowProcessor {
 	ProcessSearchRequest buildSearchRequest(final TaskSearchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException;
-	public Callback searchPending(TaskSearchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException ;
-	public Callback searchPending(TaskSearchDTO searchDTO, final UserProfileDTO userProfile, String assigenee) throws BusinessException ;
+	public Callback searchPending(TaskSearchDTO searchDTO, final UserProfileDTO userProfile, String workflowType) throws BusinessException ;
+	public Callback searchPending(TaskSearchDTO searchDTO, final UserProfileDTO userProfile, String assigenee, String workflowType) throws BusinessException ;
 	public Callback getGraphData(final UserProfileDTO userProfile) throws BusinessException;
 	public Callback getHistoryData(final TaskSearchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException;
 	public Callback approveTask(final ApprovalRequest approvalRequest, final UserProfileDTO userProfile) throws BusinessException;

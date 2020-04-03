@@ -1,18 +1,22 @@
 package org.workflow.core.service;
 
+import com.wso2telco.core.dbutils.DbUtils;
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.util.ApprovalRequest;
 import com.wso2telco.core.dbutils.util.AssignRequest;
 import com.wso2telco.core.dbutils.util.Callback;
+import com.wso2telco.core.dbutils.util.DataSourceNames;
 import com.wso2telco.core.userprofile.dto.UserProfileDTO;
 import org.apache.commons.logging.Log;
 import org.workflow.core.activity.ActivityRestClient;
 import org.workflow.core.activity.ProcessSearchRequest;
 import org.workflow.core.activity.RestClientFactory;
 import org.workflow.core.activity.TaskAssignRequest;
+import org.workflow.core.dboperation.DatabaseHandler;
 import org.workflow.core.execption.WorkflowExtensionException;
 import org.workflow.core.model.*;
 import org.workflow.core.util.*;
+import org.wso2.carbon.apimgt.impl.utils.APIUtil;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -49,31 +53,40 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 
     protected abstract String getCandidateGroup(UserProfileDTO userProfileDTO);
 
-    public Callback searchPending(TaskSearchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException {
+    public Callback searchPending(TaskSearchDTO searchDTO, final UserProfileDTO userProfile, String workflowType) throws BusinessException {
         ProcessSearchRequest processRequest = buildSearchRequest(searchDTO, userProfile);
         processRequest.setCandidateGroup(getCandidateGroup(userProfile));
-        TaskList taskList = executeRequest(processRequest);
+        TaskList taskList = executeRequest(processRequest, workflowType);
         return buildAllTaskResponse(searchDTO, taskList, userProfile);
     }
 
     @Override
-    public Callback searchPending(TaskSearchDTO searchDTO, UserProfileDTO userProfile, String assigenee) throws BusinessException {
+    public Callback searchPending(TaskSearchDTO searchDTO, UserProfileDTO userProfile, String assigenee, String workflowType) throws BusinessException {
         ProcessSearchRequest processRequest = buildSearchRequest(searchDTO, userProfile);
         processRequest.setAssignee(assigenee);
-        TaskList taskList = executeRequest(processRequest);
+        TaskList taskList = executeRequest(processRequest,workflowType);
         return buildMyTaskResponse(searchDTO, taskList, userProfile);
     }
 
-    public TaskList executeRequest(ProcessSearchRequest processRequest) throws BusinessException {
+    public TaskList executeRequest(ProcessSearchRequest processRequest, String workflowType) throws BusinessException {
         TaskList taskList = null;
         ActivityRestClient activityClient = RestClientFactory.getInstance().getClient(getProcessDefinitionKey());
 
         try {
             taskList = activityClient.getTasks(processRequest);
 
-            for (Task task : taskList.getData()) {
-                TaskVariableResponse[] vars = activityClient.getVariables(String.valueOf(task.getId()));
-                task.setVariables(vars);
+            if(APIUtil.isAdvanceThrottlingEnabled() && workflowType.equals("APPLICATION")){
+                String APiTiers = getTiersFromDB(workflowType);
+
+                for (Task task : taskList.getData()) {
+                    TaskVariableResponse[] vars = activityClient.getVariables(String.valueOf(task.getId()));
+                    task.setVariables(replaceiActivitiTiers(vars,APiTiers,workflowType));
+                }
+            }else{
+                for (Task task : taskList.getData()) {
+                    TaskVariableResponse[] vars = activityClient.getVariables(String.valueOf(task.getId()));
+                    task.setVariables(vars);
+                }
             }
 
         } catch (WorkflowExtensionException e) {
@@ -255,5 +268,36 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
             }
         }
         return isAdmin;
+    }
+    public TaskVariableResponse[] replaceiActivitiTiers(TaskVariableResponse[] vars , String TiersStr , String workflowType) throws  BusinessException {
+
+        if(workflowType.equals(WorkFlowType.APPLICATION.toString())){
+            for(int j=0;j< vars.length;j++){
+                if(vars[j].getName().equals("tiersStr")){
+                    vars[j].setValue(TiersStr);
+                }
+            }
+        }else if(workflowType.equals(WorkFlowType.SUBSCRIPTION.toString())){
+            for(int j=0;j< vars.length;j++){
+                if(vars[j].getName().equals("apiTiers")){
+                    vars[j].setValue(TiersStr);
+                }
+            }
+        }
+
+        return vars;
+    }
+
+    public String getTiersFromDB(String workFlowType) throws BusinessException {
+        String ApiTiers = null;
+        String apimgtDB = DbUtils.getDbNames().get(DataSourceNames.WSO2AM_DB);
+
+        DatabaseHandler handler = new DatabaseHandler();
+        if(workFlowType.equals(WorkFlowType.APPLICATION.toString()) && apimgtDB != null){
+            ApiTiers = handler.getAllApplicationThrottling();
+        }else if(workFlowType.equals(WorkFlowType.SUBSCRIPTION.toString()) && apimgtDB != null){
+            ApiTiers = handler.getAllSubscriptionThrottling();
+        }
+        return ApiTiers;
     }
 }
