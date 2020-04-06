@@ -492,3 +492,24 @@ CREATE TABLE `operator_brands` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `operatorcode` (`operatorcode`)
 ) ENGINE=InnoDB;
+
+--
+-- Tables for app-store
+--
+CREATE TABLE `forum_replies` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `replyText` varchar(1000) DEFAULT NULL,
+    `replyUsername` varchar(45) DEFAULT NULL,
+    `datetime` varchar(45) DEFAULT NULL,
+    `topicId` int(11) DEFAULT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `forum_topics` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `title` varchar(250) DEFAULT NULL,
+    `author` varchar(45) DEFAULT NULL,
+    `date` varchar(45) DEFAULT NULL,
+    `content` varchar(1000) DEFAULT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
