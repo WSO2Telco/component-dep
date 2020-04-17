@@ -66,7 +66,7 @@
   <div class="nano">
     <div class="nano-content">
       <ul class="nav nav-pills nav-stacked pages">
-        <li class="sidebar-brand nav-header">
+        <li class="sidebar-brand nav-header" style="display:none">
           <a href="#"><i class="fw fw-task fw-2x" style="font-size:22px;"></i><%=i18n.localize("Tasks")%><i class="fw fw-down fw-stack-1x toggle-icon-down toggle-caret  remove-float"></i></a>
           <ul class="nav nav-pills secondary-nav collapse">
             <li
@@ -194,7 +194,7 @@
             </li>
           </ul>
         </li>
-        <li class="nav-header">
+        <li class="nav-header" style="display:none">
           <a href="#"><i class="fw fw-statistics fw-2x" style="font-size:22px;"></i><%=i18n.localize("Analytics")%><i class="fw fw-down fw-stack-1x toggle-icon-down toggle-caret remove-float"></i></a>
           <ul class="nav nav-pills secondary-nav collapse">
             <li  <%if (reqUrl.match("analytics-api-availability")){%> class="active" <% } %>><a href="<%=apiAvailability%>"
