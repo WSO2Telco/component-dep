@@ -306,11 +306,28 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
     @Override
     public WorkflowResponse complete(WorkflowDTO workFlowDTO) throws WorkflowException {
         workFlowDTO.setUpdatedTime(System.currentTimeMillis());
+        ApiMgtDAO dao = ApiMgtDAO.getInstance();
         super.complete(workFlowDTO);
-        String logm = "Subscription Creation [Complete] Workflow Invoked. Workflow ID : " +
-                workFlowDTO.getExternalWorkflowReference() + "Workflow State : " + workFlowDTO.getStatus();
-        log.info(logm);
-        auditLog.info(logm);
+
+        /**
+         * Log improvement : Subscription Approval details
+         */
+        try {
+            SubscribedAPI subscription = dao.getSubscriptionById(Integer.parseInt(workFlowDTO.getExternalWorkflowReference()));
+            String logm =
+                    "Subscription Creation [Complete] Workflow Invoked. Workflow ID : " + workFlowDTO.getExternalWorkflowReference() +
+                            " | Workflow State : " + workFlowDTO.getStatus() +
+                            " | API ID : " + subscription.getApiId() +
+                            " | UUID : " + subscription.getUUID() +
+                            " | Subscriber : " + subscription.getSubscriber().getName() +
+                            " | Application : " + subscription.getApplication() +
+                            " | Approved Tier : " + subscription.getTier();
+            log.info(logm);
+            auditLog.info(logm);
+        } catch (APIManagementException e) {
+            e.printStackTrace();
+        }
+
 
         if (WorkflowStatus.APPROVED.equals(workFlowDTO.getStatus()) ||
                 WorkflowStatus.REJECTED.equals(workFlowDTO.getStatus())) {
