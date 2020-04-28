@@ -313,15 +313,17 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
          * Log improvement : Subscription Approval details
          */
         try {
-            SubscribedAPI subscription = dao.getSubscriptionById(Integer.parseInt(workFlowDTO.getExternalWorkflowReference()));
+            SubscribedAPI subscription = dao.getSubscriptionById(Integer.parseInt(workFlowDTO.getWorkflowReference()));
             String logm =
                     "Subscription Creation [Complete] Workflow Invoked. Workflow ID : " + workFlowDTO.getExternalWorkflowReference() +
                             " | Workflow State : " + workFlowDTO.getStatus() +
                             " | API ID : " + subscription.getApiId() +
                             " | UUID : " + subscription.getUUID() +
                             " | Subscriber : " + subscription.getSubscriber().getName() +
-                            " | Application : " + subscription.getApplication() +
-                            " | Approved Tier : " + subscription.getTier();
+                            " | Application : " + subscription.getApplication().getName() +
+                            " | Application Tier : " + subscription.getApplication().getTier() +
+                            " | Application Owner : " + subscription.getApplication().getOwner() +
+                            " | Approved Tier : " + subscription.getTier().getName();
             log.info(logm);
             auditLog.info(logm);
         } catch (APIManagementException e) {
