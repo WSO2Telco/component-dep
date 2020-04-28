@@ -263,10 +263,25 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
             throw new WorkflowException(msg, e);
         }
 
-        String msgOnCompletion = "Application Creation approval process completed. Workflow ID : " + workFlowDTO
-                .getExternalWorkflowReference() + " Workflow State : " + workFlowDTO.getStatus();
-        log.info(msgOnCompletion);
-        auditLog.info(msgOnCompletion);
+        /**
+         * Log improvement : Application Approval details
+         */
+        try {
+            Application application = dao.getApplicationById(Integer.parseInt(workFlowDTO.getWorkflowReference()));
+
+            String msgOnCompletion =
+                    " Application Creation approval process completed. Workflow ID : " + workFlowDTO.getExternalWorkflowReference() +
+                            " | Workflow State : " + workFlowDTO.getStatus() +
+                            " | Application name : " + application.getName() +
+                            " | UUID : " + application.getUUID() +
+                            " | Subscriber : " + application.getSubscriber().getName() +
+                            " | Owner : " + application.getOwner() +
+                            " | Approved Tier : " + application.getTier();
+            log.info(msgOnCompletion);
+            auditLog.info(msgOnCompletion);
+        } catch (APIManagementException e) {
+            e.printStackTrace();
+        }
 
         return new GeneralWorkflowResponse();
     }
