@@ -74,7 +74,7 @@ public class ValidateUssdSend implements IServiceValidate {
                 clientCorrelator = nullOrTrimmed(requestData.getString("clientCorrelator"));
             }
             if (!requestData.isNull("ussdAction")) {
-                ussdAction = nullOrTrimmed(requestData.getString("ussdAction"));
+                ussdAction = emptyOrTrimmed(requestData.getString("ussdAction"));
                 switch (ussdAction){
                     case MTINIT:
                     case MTCONT:
@@ -145,6 +145,14 @@ public class ValidateUssdSend implements IServiceValidate {
      */
     private static String nullOrTrimmed(String s) {
         String rv = null;
+        if (s != null && s.trim().length() > 0) {
+            rv = s.trim();
+        }
+        return rv;
+    }
+
+    private static String emptyOrTrimmed(String s) {
+        String rv = "";
         if (s != null && s.trim().length() > 0) {
             rv = s.trim();
         }
