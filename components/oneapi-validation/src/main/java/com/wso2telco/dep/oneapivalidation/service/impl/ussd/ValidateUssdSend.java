@@ -73,16 +73,14 @@ public class ValidateUssdSend implements IServiceValidate {
             if (!requestData.isNull("clientCorrelator")) {
                 clientCorrelator = nullOrTrimmed(requestData.getString("clientCorrelator"));
             }
+
             if (!requestData.isNull("ussdAction")) {
-                ussdAction = emptyOrTrimmed(requestData.getString("ussdAction"));
-                switch (ussdAction){
-                    case MTINIT:
-                    case MTCONT:
-                    case MTFIN:
-                        break;
-                    default: throw new CustomException("SVC0002", "Invalid input value for message part %1",
-                            new String[]{"Invalid ussdAction"});
-                }
+                ussdAction = nullOrTrimmed(requestData.getString("ussdAction"));
+            }
+
+            if (!(MTINIT.equals(ussdAction))) {
+                throw new CustomException("SVC0002", "Invalid input value for message part %1",
+                        new String[]{"Invalid ussdAction"});
             }
 
             if (!requestData.isNull("responseRequest")) {
@@ -145,14 +143,6 @@ public class ValidateUssdSend implements IServiceValidate {
      */
     private static String nullOrTrimmed(String s) {
         String rv = null;
-        if (s != null && s.trim().length() > 0) {
-            rv = s.trim();
-        }
-        return rv;
-    }
-
-    private static String emptyOrTrimmed(String s) {
-        String rv = "";
         if (s != null && s.trim().length() > 0) {
             rv = s.trim();
         }
