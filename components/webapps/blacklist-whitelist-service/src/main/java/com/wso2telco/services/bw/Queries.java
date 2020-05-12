@@ -244,8 +244,12 @@ public class Queries {
 		br = new BufferedReader(new InputStreamReader(uploadedInputStream, StandardCharsets.UTF_8));
 
 		try {
+			String currentLine;
 			while (br.ready() && limit > 0) {
-				msisdnList.add(br.readLine());
+				currentLine =  br.readLine();
+                	if (!currentLine.isEmpty()){
+                   		 msisdnList.add(currentLine);
+                	}
 				limit--;
 			}
 			Response.Status status = Response.Status.CREATED;
