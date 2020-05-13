@@ -24,8 +24,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.json.JSONException;
 import org.json.JSONObject;
-
-import static com.wso2telco.dep.oneapi.constant.ussd.USSDValueConstants.*;
+import static com.wso2telco.dep.oneapi.constant.ussd.USSDValueConstants.MTINIT;
 
 
 // TODO: Auto-generated Javadoc
@@ -116,16 +115,34 @@ public class ValidateUssdSend implements IServiceValidate {
      * @see com.wso2telco.oneapivalidation.service.IServiceValidate#validateUrl(java.lang.String)
      */
     public void validateUrl(String pathInfo) throws CustomException {
-        String[] requestParts = null;
-        if (pathInfo != null) {
-            if (pathInfo.startsWith("/")) {
-                pathInfo = pathInfo.substring(1);
-            }
-            requestParts = pathInfo.split("/");
-        }
-
+        String[] requestParts = extractUrlParts(pathInfo);
         UrlValidator.validateRequest(requestParts, validationRules);
 
+    }
+
+    private String[] extractUrlParts(String resourcePath) {
+        String[] urlParts = null;
+        if (resourcePath != null) {
+            if (resourcePath.startsWith("/")) {
+                resourcePath = resourcePath.substring(1);
+            }
+            urlParts = resourcePath.split("/");
+        }
+        return urlParts;
+    }
+
+    public void compareMsisdn(String resourcePath, JSONObject json) {
+        final String[] urlParts = extractUrlParts(resourcePath);
+        final String payloadMsisdn = json.getJSONObject("outboundUSSDMessageRequest").getString("address");
+
+        if (urlParts == null ||
+            urlParts[1] == null ||
+            !urlParts[1].trim().equalsIgnoreCase(payloadMsisdn)) {
+
+            log.error("msisdn in resourceURL and payload msisdn are not same");
+            throw new CustomException("SVC0002", "Invalid input value for message part %1",
+                    new String[] { "Two different endUserId provided" });
+        }
     }
 
     /* (non-Javadoc)
