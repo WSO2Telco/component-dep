@@ -244,6 +244,7 @@ public class Queries {
 		br = new BufferedReader(new InputStreamReader(uploadedInputStream, StandardCharsets.UTF_8));
 
 		try {
+			String currentLine;
 			while (br.ready() && limit > 0) {
 				currentLine =  br.readLine();
                 	   if (!currentLine.isEmpty()){
