@@ -33,7 +33,7 @@ if (blackListedTenantDomains_forTutorial.indexOf(tenantDomain)>0) {
 <header class="header header-default">
     <div class="container-fluid">
        <div class="pull-left brand float-remove-xs text-center-xs">
-          <a href="<%=jagg.getMappedUrl("")%>" title="API Store">
+          <a href="<%=jagg.getMappedUrl("/site/pages/index.jag")%>" title="API Store">
               <img src="<%=jagg.getAbsoluteUrl(jagg.getThemeFile("libs/theme-wso2_1.0/images/logo-inverse.svg"))%>" class="logo" alt="<%=i18n.localize("API Store Home")%>"/>
               <h1 class="display-block-xs"><%=i18n.localize("API Store")%></h1>
           </a>
@@ -141,9 +141,9 @@ if (blackListedTenantDomains_forTutorial.indexOf(tenantDomain)>0) {
 					         </a>
 					         <ul class="dropdown-menu dropdown-menu-right float-remove-xs position-static-xs text-center-xs remove-margin-xs slideInDown" role="menu">
 					           <li class="dropdown-header visible-xs">&nbsp; <%=user.username%> <span class="caret"></span></li>
-					    
+					           <% if(isSelfSignupEnabled && isSuperTenant) { %>
 					           <li><a title="<%=i18n.localize("My Account","My Account")%>" href="<%= jagg.urlTenanted('/site/pages/user-info.jag')%>"><i class="fw fw-settings"></i> &nbsp; <%=i18n.localize("My Account","My Account")%></a></li>
-					               
+					           <% } %>           
 					           <li class="divider visible-xs"></li>
 					           <li><a title="<%=i18n.localize("Sign Out")%>" href="#" id="logout-link"><i class="fw fw-sign-out"></i> &nbsp; <%=i18n.localize("Sign Out")%></a></li>
 					         </ul>
