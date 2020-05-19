@@ -88,7 +88,7 @@ if(app.tokenType != null ){
         <label class="col-md-3 col-lg-3 control-label" for="appTier"><%=i18n.localize("Per Token Quota")%></label>
      <% } %>
     <div class="col-md-9 col-lg-9">
-        <select id="appTier" name="appTier" disabled  onChange="tierChanged(this)">
+        <select id="appTier" name="appTier" onChange="tierChanged(this)">
           <%
           var tierDescriptions = "";
           var unlimitedTierDesc = "";
