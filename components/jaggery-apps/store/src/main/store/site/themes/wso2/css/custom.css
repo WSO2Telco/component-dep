@@ -29,7 +29,6 @@ a.btn .icon-caret, .btn .icon-caret {
     color: #FFF;
     height: 40px;
     margin-top:-3px;
-    line-height:0px;
 }
 .search-wrap>.form-control::-webkit-input-placeholder {
     color: #fff;
@@ -78,11 +77,6 @@ nav.navigation .left-menu-item i {
     .navbar-right{
         margin-left:-15px;
         margin-right:-15px;
-    }
-
-
-    body.sticky-footer {
-        padding-bottom: 293px !important;
     }
 }
 
@@ -346,10 +340,6 @@ a.remove_rating:hover{
     .navbar-menu-toggle.active + form .search-wrap{
         display:none;
     }
-
- /*   body.sticky-footer {
-        padding-bottom: 290px !important;
-    }  */
 }
 
 .tenent-store-list .list-group-item{
@@ -680,127 +670,3 @@ a.remove_rating:hover{
 .scope-selection-form div.btn-group.scope_select{
     height: auto;
 }
-
-
-
-/* =============================================================================
- * Wso2.telco styles
- * ============================================================================= */
-
-
-.footer-main {
-    padding: 10px 0;
-    width: 100%;
-    z-index: -1;
-    min-height: 68px;
-    color: #9f9f9f;
-    border-top: solid 1px #ccc;
-}
-
-
-.powered-by-logo {
-    background: transparent url(../images/poweredBy.png) no-repeat scroll 0px 0px;
-    display: block;
-    width: 100px;
-    height: 40px;
-    cursor: pointer;
-    padding-right: 10px;
-}
-
-
-.help-links {
-    border-left: solid 1px #fff;
-    padding-left: 10px !important;
-   /* height: 90px; */
-}
-
-.help-links li {
-    list-style-type: none;
-}
-
-/*.first-link{ border: none;} */
-
-.share-pane a.facebook{
-    background:transparent url(../images/facebook_16.png) no-repeat left top;
-    display: block;
-    width: 16px;
-    margin-right: 3px;
-    height: 16px;
-    margin-bottom:6px;
-}
-.share-pane a.linkedin{
-    background:transparent url(../images/linkedin_16.png) no-repeat left top;
-    display: block;
-    width: 16px;
-    margin-right: 3px;
-    height: 16px;
-    margin-bottom:6px;
-}
-.share-pane a.twitter{
-    background:transparent url(../images/twitter_16.png) no-repeat left top;
-    display: block;
-    width: 16px;
-    margin-right: 3px;
-    height: 16px;
-    margin-bottom:6px;
-}
-
-
-.copyright_logo {
-    background: transparent url("../images/logo-inverse.svg") no-repeat scroll left bottom;
-    display: inline-block;
-    height: 17px;
-    margin-bottom: 6px;
-    vertical-align: middle;
-    width: 65px;
-}
-
-.custom_hr {
-    margin-top: 7px;
-    margin-bottom: 7px;
-    border: 0;
-    border-top: 1px solid #F47B20;
-}
-
-.footer p{ margin: 0px !important;}
-
-body.sticky-footer {
-    padding-bottom: 140px;
-}
-
-.btn-home {
-    background: transparent url("../images/home-btn-back.png") no-repeat scroll left top;
-    border: medium none;
-    color: #f7941e;
-    font-size: 18px;
-    height: 53px;
-    text-align: center;
-    text-shadow: none;
-    width: 182px;
-}
-
-p.intro_text {
-    margin-bottom: 10px;
-    margin-top: 10px;
-    text-align: justify;
-}
-
-.title-section h2 {
-    border: medium none;
-    color: #666666;
-    font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
-    font-size: 36px;
-    font-weight: 200;
-    line-height: 30px;
-    margin: 0 0 10px;
-    padding: 0 0 10px;
-}
-
-.content_underline{border-color: #ffffff; border-width: thin;}
-
-
-.page-content-wrapper, .page-content-wrapper[data-container-behaviour=static] {
-    margin-bottom: 2%;
-}
-
-.hm-btn-container{ padding-left:0px !important;}

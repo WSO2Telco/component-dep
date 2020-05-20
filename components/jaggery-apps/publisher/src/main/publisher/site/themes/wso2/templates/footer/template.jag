@@ -1,72 +1,7 @@
-<% jagg.template("footer", function(inputs, outputs, jagg) {
-
-    var user = jagg.getUser();
-    %>
-
+<% jagg.template("footer", function(inputs, outputs, jagg) { %>
     <footer class="footer">
         <div class="container-fluid">
-
-
-        <div class="row-fluid">
-
-                       <div class="col-xs-12 col-sm-12 col-md-12 col-lg-12 help-and-links">
-
-                       <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2 col-lg-offset-2 col-md-offset-2 footer-left-most">
-                                             <ul class="help-links first-link">
-                                                  <li><h5><a href="https://apigate.com/en/company/who-we-are" target="_blank">About Us</a></h5></li>
-                                          </ul>
-                                       </div>
-
-
-                        <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2">
-                                              <ul class="help-links">
-                                              <%if (!user) { %>
-                                                    <li><h5><a class="disabled" href="https://apigate.com/en/privacy-policy" target="_blank">Privacy Policy</a></h5></li>
-                                                    <li><h5><a class="disabled" href="<%=jagg.getAbsoluteUrl("/site/pages/branding.jag?pageId=terms-conditions")%>" target="_blank">Terms and Conditions</a></h5></li>
-
-                                                <% } else { %>
-                                                    <li><h5><a href="https://apigate.com/en/privacy-policy" target="_blank">Privacy Policy</a></h5></li>
-                                                    <li><h5><a href="<%=jagg.getAbsoluteUrl("/site/pages/branding.jag?pageId=terms-conditions")%>" target="_blank">Terms and Conditions</a></h5></li>
-                                                    <% }%>
-                                              </ul>
-                                            </div>
-
-                       <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2">
-                                              <ul class="help-links">
-                                                    <li><h5><a href="https://apigate.com/en/contact" target="_blank">Contact Us</a></h5></li>
-                                                    <li><h5><a href="<%=jagg.getAbsoluteUrl("/site/pages/branding.jag?pageId=support")%>" target="_blank">Support</a></h5></li>
-                                              </ul>
-                                            </div>
-                       <div class="col-xs-6 col-sm-6 col-md-2 col-lg-2">
-                                              <ul class="help-links">
-                                                  <li><h5>Social Networking</h5></li>
-                                                  <li>
-                                                  <h5>
-                                                  <table class="share-pane">
-                                                      <td><a class="facebook" target="_blank" rel="external nofollow" href="https://www.facebook.com/TeamApigate" title="Share with your friends on Facebook"></a></td>
-                                                      <td><a class="twitter" target="_blank" rel="external nofollow" href="https://twitter.com/TeamApigate" title="Twitter"></a></td>
-                                                      <td><a class="linkedin" target="_blank" rel="external nofollow" href="https://www.linkedin.com/company/apigateplatformandservices"></a></td>
-                                                  </tr>
-                                                </table>
-                                                </h5>
-                                               </li>
-
-                           </ul>
-                         </div>
-
-                             <div  style="clear:both"></div>
-                              <hr class="custom_hr" />
-
-                               <p style="text-align: center"> &copy; <script>document.write(new Date().getFullYear());</script> <a title="WSO2.Telco" href="https://apigate.com/" target="_blank"><span class="copyright_logo"></span></a></p>
-
-                               <!-- <a class="powered-by-logo pull-right" href="http://wso2telco.com" target="_blank"></a> -->
-
-                         </div>
-
-                            </div>
+            <p>WSO2 API Manager | &copy; <script>document.write(new Date().getFullYear());</script> <a href="http://wso2.com/" target="_blank" title="<%=i18n.localize('WSO2 copyright')%>"><i class="icon fw fw-wso2" title="<%=i18n.localize('WSO2 copyright')%>"></i> Inc</a>.</p>
         </div>
     </footer>
 <% }); %>
-
-
-
