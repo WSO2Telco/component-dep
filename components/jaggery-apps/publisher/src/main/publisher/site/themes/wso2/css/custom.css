@@ -159,29 +159,6 @@ input.ep-field{
 .btn-sequenceUpload{
     min-width:155px;
 }
-.sidebar-wrapper .nav i{
-    margin-left: 0;
-}
-.sub-menu li a{
-    text-indent: 10px;
-    color: #666;
-}
-.sub-sub-menu li a{
-    font-size: 13px;
-    text-indent: 35px;
-    color: #999;
-}
-
-.sidebar-wrapper { z-index: 1000; position: absolute; left: -350px; width: 350px; height: 100%; overflow-y: auto; -webkit-transition: left 0.5s ease, right 0.5s ease; -o-transition: left 0.5s ease, right 0.5s ease; transition: left 0.5s ease, right 0.5s ease; }
-.sidebar-nav ul :not(collapsed) .arrow:before, .sidebar-nav li :not(collapsed) .arrow:before { font-family: "font-wso2"; content: '\e684'; display: inline-block; vertical-align: middle; float: right; font-size: 10px; }
-.sidebar-nav ul .collapsed .arrow:before, .sidebar-nav li .collapsed .arrow:before {font-family: "font-wso2";content: '\e685';display: inline-block;vertical-align: middle;float: right;}
-.sidebar-nav .sub-menu ul :not(collapsed) .arrow:before,
-.sidebar-nav .sub-menu li :not(collapsed) .arrow:before{
-    font-size: 6px;
-}
-.nav-pills.pages > li:last-child{
-    margin-bottom: 30px;
-}
 
 .document-match-icon {
     position:center;
@@ -226,43 +203,129 @@ input.ep-field{
     text-transform: capitalize;
 }
 
-/* Styles for sequence download button. */
-.btn-sequenceDownload:hover {
-    color: white; !important;
-    background-color: #5b5b5b !important;
+
+
+
+
+
+/* =============================================================================
+ * Wso2.telco styles
+ * ============================================================================= */
+
+
+.footer-main {
+    padding: 10px 0;
+    width: 100%;
+    z-index: -1;
+    min-height: 68px;
+    color: #9f9f9f;
+    border-top: solid 1px #ccc;
 }
 
-.btn-sequenceDownload {
-    border: none;
-    color: white;
-    background-color: #888888;
+
+.powered-by-logo {
+    background: transparent url(../images/poweredBy.png) no-repeat scroll 0px 0px;
+    display: block;
+    width: 100px;
+    height: 40px;
+    cursor: pointer;
+    padding-right: 10px;
 }
 
-.subs-block-unblock-link {
+
+.help-links {
+    border-left: solid 1px #fff;
+    padding-left: 10px !important;
+   /* height: 90px; */
+}
+
+.help-links li {
+    list-style-type: none;
+}
+
+/*.first-link{ border: none;} */
+
+.share-pane a.facebook{
+    background:transparent url(../images/facebook_16.png) no-repeat left top;
+    display: block;
+    width: 16px;
+    margin-right: 3px;
+    height: 16px;
+    margin-bottom:6px;
+}
+.share-pane a.linkedin{
+    background:transparent url(../images/linkedin_16.png) no-repeat left top;
+    display: block;
+    width: 16px;
+    margin-right: 3px;
+    height: 16px;
+    margin-bottom:6px;
+}
+.share-pane a.twitter{
+    background:transparent url(../images/twitter_16.png) no-repeat left top;
+    display: block;
+    width: 16px;
+    margin-right: 3px;
+    height: 16px;
+    margin-bottom:6px;
+}
+
+
+.copyright_logo {
+    background: transparent url("../images/logo-inverse.svg") no-repeat scroll left bottom;
     display: inline-block;
-    padding-left: 10px;
-}
-.subs-block-unblock {
-    display: flex;
+    height: 17px;
+    margin-bottom: 6px;
+    vertical-align: middle;
+    width: 65px;
 }
 
-@font-face {
-    font-family: 'Glyphicons Halflings';
-  
-    src: url('../libs/bootstrap_3.3.5/fonts/glyphicons-halflings-regular.eot');
-    src: url('../libs/bootstrap_3.3.5/fonts/glyphicons-halflings-regular.eot?#iefix') format('embedded-opentype'), url('../libs/bootstrap_3.3.5/fonts/glyphicons-halflings-regular.woff2') format('woff2'), url('../libs/bootstrap_3.3.5/fonts/glyphicons-halflings-regular.woff') format('woff'), url('../libs/bootstrap_3.3.5/fonts/glyphicons-halflings-regular.ttf') format('truetype'), url('../libs/bootstrap_3.3.5/fonts/glyphicons-halflings-regular.svg#glyphicons_halflingsregular') format('svg');
-  }
-  .glyphicon {
-    position: relative;
-    top: 1px;
-    display: inline-block;
-    font-family: 'Glyphicons Halflings';
-    font-style: normal;
-    font-weight: normal;
-    line-height: 1;
-  
-    -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-  }
+.custom_hr {
+    margin-top: 7px;
+    margin-bottom: 7px;
+    border: 0;
+    border-top: 1px solid #F47B20;
+}
 
-/*---------------------------------------*/
+.footer p{ margin: 0px !important;}
+
+body.sticky-footer {
+    padding-bottom: 140px;
+}
+
+.btn-home {
+    background: transparent url("../images/home-btn-back.png") no-repeat scroll left top;
+    border: medium none;
+    color: #f7941e;
+    font-size: 18px;
+    height: 53px;
+    text-align: center;
+    text-shadow: none;
+    width: 182px;
+}
+
+p.intro_text {
+    margin-bottom: 10px;
+    margin-top: 10px;
+    text-align: justify;
+}
+
+.title-section h2 {
+    border: medium none;
+    color: #666666;
+    font-family: "Open Sans","Helvetica Neue",Helvetica,Arial,sans-serif;
+    font-size: 36px;
+    font-weight: 200;
+    line-height: 30px;
+    margin: 0 0 10px;
+    padding: 0 0 10px;
+}
+
+.content_underline{border-color: #ffffff; border-width: thin;}
+
+
+.page-content-wrapper, .page-content-wrapper[data-container-behaviour=static] {
+    margin-bottom: 2%;
+}
+
+.hm-btn-container{ padding-left:0px !important;}

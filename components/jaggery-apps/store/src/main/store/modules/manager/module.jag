@@ -51,6 +51,9 @@ jagg.module("manager", {
     isForumEnabled:function () {
         return jagg.require(jagg.getModulesDir() + "manager/manager.jag").isForumEnabled.apply(this, arguments);
     },
+    getStoreHostObject:function () {
+        return jagg.require(jagg.getModulesDir() + "manager/manager.jag").getStoreHostObject.apply(this, arguments);
+    },
     getAPIProviderObj:function () {
         return jagg.require(jagg.getModulesDir() + "manager/manager.jag").getAPIProviderObj.apply(this, arguments);
      },

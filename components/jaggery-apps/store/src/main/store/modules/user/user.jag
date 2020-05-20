@@ -86,4 +86,165 @@ var updatePasswordWithUserInput = function (userName, newPassword, confirmationK
         };
     }
 };
+
+
+var getUserLastLoginTime = function () {
+    loggeduser = session.get("logged.user");
+    var username = loggeduser.username;
+    lastlogintime = "";
+    
+    var carbon = require('carbon');
+    
+    var MultitenantUtils = Packages.org.wso2.carbon.utils.multitenancy.MultitenantUtils;
+    var tenantDomain = MultitenantUtils.getTenantDomain(username);
+    var tenantManagerService = new Packages.org.wso2.carbon.um.ws.service.TenantManagerService();
+    var tenantId = tenantManagerService.getTenantId(tenantDomain);
+
+    var userstore = Packages.org.wso2.carbon.user.api.UserStoreManager;
+    var realmService = carbon.server.osgiService('org.wso2.carbon.user.core.service.RealmService');
+    userstore = realmService.getTenantUserRealm(tenantId).getUserStoreManager();
+    var result = 0;
+    try {
+        result = userstore.getUserClaimValue(username, "http://wso2.org/claims/lastLoginTime", null);
+    } catch (error) {
+        log.error("Claim http://wso2.org/claims/lastLoginTime not set");
+        return "";
+    }
+    var resultUtc = "+00:00";
+    try {
+        resultUtc = userstore.getUserClaimValue(username, "http://wso2.org/claims/utcOffset", null);
+        if (!resultUtc) {
+            log.error("Claim http://wso2.org/claims/utcOffset not set. Default value set +00:00");
+            resultUtc = "+00:00";
+        }
+    } catch (error) {
+        log.error("Claim http://wso2.org/claims/utcOffset not set. Default value set +00:00");
+    }
+    var resultDst = "+00:00";
+    try {
+        resultDst = userstore.getUserClaimValue(username, "http://wso2.org/claims/dstOffset", null);
+        if (!resultDst) {
+            log.error("Claim http://wso2.org/claims/dstOffset not set. Default value set +00:00");
+            resultDst = "+00:00";
+        }
+    } catch (error) {
+        log.error("Claim http://wso2.org/claims/dstOffset not set. Default value set +00:00");
+    }
+    
+    var time = Number(result);
+    var date = new Date(time);
+    lastlogintime = date.toUTCString();
+    
+    var changedTime = getTimeZoneChangedMilliseconds(time, resultUtc, resultDst);
+    var changedDate = new Date(changedTime);
+    changedlastlogintime = formatDateUTC(changedDate);
+    log.info("lastlogintime:" + lastlogintime + "|resultUtc:" + resultUtc + "|resultDst:"+ resultDst);
+    return changedlastlogintime;
+};
+
+var formatDate = function(d) {
+    var datestring = ("0" + d.getDate()).slice(-2)
+                    + "/" + ("0"+(d.getMonth()+1)).slice(-2)
+                    + "/" + d.getFullYear()
+                    + " " + ("0" + d.getHours()).slice(-2)
+                    + ":" + ("0" + d.getMinutes()).slice(-2)
+                    + ":" + ("0" + d.getSeconds()).slice(-2);
+    return datestring;
+};
+
+var formatDateUTC = function(d) {
+    var datestring = ("0" + d.getUTCDate()).slice(-2)
+                + "/" + ("0"+(d.getUTCMonth()+1)).slice(-2)
+                + "/" + d.getUTCFullYear()
+                + " " + ("0" + d.getUTCHours()).slice(-2)
+                + ":" + ("0" + d.getUTCMinutes()).slice(-2)
+                + ":" + ("0" + d.getUTCSeconds()).slice(-2);
+    return datestring;
+};
+
+var getTimeZoneChangedMilliseconds = function(prelastLoginMills, utcOffset, dstOffset) {
+    var changedTime = prelastLoginMills;
+
+    var utcSign = utcOffset.substr(0,1);
+    utcSign = validateSign(utcSign);
+    var utcHours = Number(utcOffset.substr(1).split(":")[0]);
+    utcHours = validateHours(utcHours);
+    var utcMins = Number(utcOffset.substr(1).split(":")[1]);
+    utcMins = validateMins(utcMins);
+    var utcMills = ((utcHours * 60) + utcMins) * 60 * 1000;
+    if (utcMills) {
+        if (utcSign == "-") {
+            changedTime -= utcMills;
+        } else {
+            changedTime += utcMills;
+        }
+    }
+    var dstSign = dstOffset.substr(0,1);
+    dstSign = validateSign(dstSign);
+    var dstHours = Number(dstOffset.substr(1).split(":")[0]);
+    dstHours = validateHours(dstHours);
+    var dstMins = Number(dstOffset.substr(1).split(":")[1]);
+    dstMins = validateMins(dstMins);
+    var dstMills = ((dstHours * 60) + dstMins) * 60 * 1000;
+    if (dstMills) {
+        if (dstSign == "-") {
+            changedTime -= dstMills;
+        } else {
+            changedTime += dstMills;
+        }
+    }
+    return changedTime;
+};
+
+var validateSign = function(inSign) {
+    var resultSign = "+";
+    if (inSign == "-") {
+        resultSign = "-";
+    }
+    return resultSign;
+}
+
+var validateHours = function(inHours) {
+    var resultHours = inHours;
+    var maxHours = 14;
+    if (inHours) {
+        if (inHours > maxHours) {
+            resultHours = maxHours;
+        }
+        else if (inHours < 0) {
+            resultHours *= -1;
+            if (resultHours > maxHours) {
+                resultHours = maxHours;
+            }
+        }
+    } else {
+        resultHours = 0;
+    }
+    return resultHours;
+}
+
+var validateMins = function(inMins) {
+    var resultMins = inMins;
+    var maxMins = 59;
+    if (inMins) {
+        if (inMins > maxMins) {
+            resultMins = maxMins;
+        }
+        else if (inMins < 0) {
+            resultMins *= -1;
+            if (resultMins > maxMins) {
+                resultMins = maxMins;
+            }
+        }
+    } else {
+        resultMins = 0;
+    }
+    return resultMins;
+}
+
+
+
+
+
+
 %>
