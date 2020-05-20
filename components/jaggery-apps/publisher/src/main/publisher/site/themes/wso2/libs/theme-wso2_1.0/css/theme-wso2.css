@@ -3227,7 +3227,15 @@ footer .icon {
   vertical-align: middle;
   color: #cbcbcb;
 }
-footer a, footer a:hover {
+footer a {
+  color: #cbcbcb;
+}
+
+footer a:hover {
+  color: #d9edf7 !important;
+}
+
+footer a:visited {
   color: #cbcbcb;
 }
 
@@ -3238,6 +3246,7 @@ body.sticky-footer footer {
   position: absolute;
   bottom: 0;
   z-index: 1000;
+  border-top: 1px solid #ffffff;
 }
 
 .fade {
@@ -7694,7 +7703,7 @@ body.inverse .fade-edge:after {
   width: 350px;
   height: 100%;
   overflow-y: auto;
-  background: #222;
+  background: #333;
   color: #ffffff;
   -webkit-transition: all 0.5s ease;
   -o-transition: all 0.5s ease;

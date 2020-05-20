@@ -36,8 +36,14 @@
     	}
 	
     var  mod,isPermitted, isManageTierPermitted;
-    isPermitted = (jagg.getCreatePermitted().permitted || jagg.getPublishPermitted().permitted);
-    isManageTierPermitted = jagg.getManageTierPermitted().permitted;
+    if(jagg.getCreatePermitted() !== null) {
+        isPermitted = (jagg.getCreatePermitted().permitted || jagg.getPublishPermitted().permitted);
+        isManageTierPermitted = jagg.getManageTierPermitted().permitted;
+    }
+    else{
+        isPermitted = false;
+        isManageTierPermitted = false;
+    }
 
     //Deside the show  hide options for each sub section base on the page
 

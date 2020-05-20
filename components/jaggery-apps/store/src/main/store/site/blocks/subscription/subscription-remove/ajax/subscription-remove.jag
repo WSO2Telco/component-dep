@@ -1,5 +1,7 @@
 <%
 include("/jagg/jagg.jag");
+var site = require("/site/conf/site.json");
+var log = new Log();
 (function () {
     var site = require("/site/conf/site.json");
     var ssoEnabled = site.ssoConfiguration.enabled;
@@ -44,7 +46,58 @@ include("/jagg/jagg.jag");
 
         username = user.username;
 
-        applicationId = parseInt(request.getParameter("applicationId"), 10);
+        var applicationName = request.getParameter("applicationName");
+
+        if (null != applicationName) {
+            var groupId = session.get("groupId");
+
+            mod = jagg.module("application");
+            result = mod.getApplicationByName(username,applicationName,groupId);
+
+            if (result.error) {
+                print({
+                    error:result.error,
+                    message:msg.error.authError(action, username)
+                });
+
+                return;
+            }
+
+            if (result.application) {
+                applicationId = result.application.id;
+            } else {
+                print({
+                    error:true,
+                    message:msg.error.appNameError(applicationName)
+                });
+
+                return;
+            }
+        }
+        else {
+            applicationId = parseInt(request.getParameter("applicationId"), 10);
+        }
+
+        //this is a new code added remove dep database endpointapps tabale data
+        var mod = jagg.module("manager");
+        var storeHostObject = mod.getStoreHostObject(); //get getstoreObj
+        storeHostObject.removeAPISubscription(applicationId.toString(),apiName);
+        storeHostObject.removeAPISubscriptionFromStatDB(applicationId.toString(),apiName, version);
+        storeHostObject.removeSubApprovalOperators(applicationId.toString());
+
+        var workflowRef=storeHostObject.getWorkflowRef(applicationId.toString(),apiName,version);
+        var businessProcessEngineUrl = workflowRef.workflowServiceURL;
+		if (null != businessProcessEngineUrl) {
+			var encodedString = encode('admin:admin');//this username and password hardcoded because activiti engine on same sarver
+			var headers = {"Authorization":"Basic " + encodedString};
+			var applicationData = get( businessProcessEngineUrl+ "runtime/process-instances?businessKey="+workflowRef.workflowRef,null, headers,"json" ).data;
+
+			if(applicationData.size!=0){
+			log.info("application data :"+JSON.stringify(applicationData));
+			del(businessProcessEngineUrl + "runtime/process-instances/"+applicationData.data[0].id,null, headers,"json" ).data;
+			}
+		}
+
         mod = jagg.module("subscription");
         result = mod.removeAPISubscription(username,applicationId,{
             apiName:apiName,
@@ -54,7 +107,7 @@ include("/jagg/jagg.jag");
 
         if (result.error) {
             obj = {
-                error: true,
+                error:result.error,
                 message:msg.error.authError(action, username)
             };
         } else {
@@ -71,4 +124,38 @@ include("/jagg/jagg.jag");
         });
     }
 }());
+
+function encode(data) {
+  var b64 = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=';
+  var o1, o2, o3, h1, h2, h3, h4, bits, i = 0,
+    ac = 0,
+    enc = '',
+    tmp_arr = [];
+
+  if (!data) {
+    return data;
+  }
+
+  do { // pack three octets into four hexets
+    o1 = data.charCodeAt(i++);
+    o2 = data.charCodeAt(i++);
+    o3 = data.charCodeAt(i++);
+
+    bits = o1 << 16 | o2 << 8 | o3;
+
+    h1 = bits >> 18 & 0x3f;
+    h2 = bits >> 12 & 0x3f;
+    h3 = bits >> 6 & 0x3f;
+    h4 = bits & 0x3f;
+
+    // use hexets to index into b64, and append result to encoded string
+    tmp_arr[ac++] = b64.charAt(h1) + b64.charAt(h2) + b64.charAt(h3) + b64.charAt(h4);
+  } while (i < data.length);
+
+  enc = tmp_arr.join('');
+
+  var r = data.length % 3;
+
+  return (r ? enc.slice(0, r - 3) : enc) + '==='.slice(r || 3);
+}
 %>
