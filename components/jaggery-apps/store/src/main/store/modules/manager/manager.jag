@@ -138,6 +138,7 @@ var getApplicationId = function(applicationName, username, groupId) {
     var util = Packages.org.wso2.carbon.apimgt.impl.utils.APIUtil;
     return util.getApplicationId(applicationName, username, groupId);
 };
+
 var getAPIUtil = function() {
     return Packages.org.wso2.carbon.apimgt.impl.utils.APIUtil;
 };
@@ -206,6 +207,22 @@ var getActiveTenantDomains=function(){
     }
 
 };
+
+
+var getStoreHostObject = function() {
+
+    var tenantDomain = request.getParameter("tenant");
+    var user = jagg.getUser();
+    var storeHostObject;
+    if (user == null) {
+        storeHostObject = require('operatorservice');
+        return storeHostObj;
+    } else {
+        storeHostObject = require('operatorservice');
+         return new storeHostObject.StoreHostObject(user.username);
+    }
+};
+
 
 var getUsageClient = function() {
     var user = jagg.getUser();

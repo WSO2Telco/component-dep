@@ -36,6 +36,8 @@ jagg.block("api/api-info", {
         var isGlobalCEPEnabled;
         var mod = jagg.module("manager");
         var isForumEnabled = mod.isForumEnabled();
+        var store = null;
+        var operators, operatorsOut = null;
         var supportedLangs = jagg.module("sdk").getSupportedLanguages();
 
         if (api != null) {
@@ -96,6 +98,9 @@ jagg.block("api/api-info", {
             result = jagg.module("tiers").getDeniedTiers();
             deniedTiers = result.tiers;
             isGlobalCEPEnabled = jagg.module("tiers").isGlobalCEPThrottlingEnabled();
+            // Retrieve the list of operators.
+        store = jagg.module("manager").getStoreHostObject();
+        operators = store.retrieveOperatorList();
 
         }
         if (!isAdvertiseOnly) {
@@ -111,6 +116,7 @@ jagg.block("api/api-info", {
                             "uriTemplates": uriTemplates,
                             "isRatingActivated": isRatingActivated,
                             "isGlobalCEPEnabled": isGlobalCEPEnabled,
+                        "operators":operators,
                             "tabs": {
                                 "tabs": [
                                     {
