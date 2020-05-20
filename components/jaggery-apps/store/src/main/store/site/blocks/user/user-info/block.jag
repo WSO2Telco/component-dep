@@ -4,12 +4,14 @@ jagg.block("user/user-info", {
 
     },
 
-	getOutputs:function () {
+    getOutputs:function () {
         var result, fields, user = jagg.module("user");
         result = user.getUserFields();
         fields = result.fields;
+        lastlogintime = user.getUserLastLoginTime();
         return {
-            "fields":fields
+            "fields":fields,
+            "lastlogintime":lastlogintime
         };
     },
     
