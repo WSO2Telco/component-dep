@@ -1,6 +1,4 @@
-function triggerSubscribe(deploymentType) {
-
-
+function triggerSubscribe() {
 	$.ajaxSetup({
         contentType: "application/x-www-form-urlencoded; charset=utf-8"
     });
@@ -16,66 +14,22 @@ function triggerSubscribe(deploymentType) {
     }
     var api = jagg.api;
     var tier = $("#tiers-list").val();
-    $(this).html(i18n.t('Please wait...')).attr('disabled', 'disabled');
+    var subscribeButtonIconHtml = '<span class="icon fw-stack"><i class="fw fw-subscribe fw-stack-1x"></i><i class="fw fw-circle-outline fw-stack-2x"></i></span>';
+    $("#subscribe-button").html(
+        subscribeButtonIconHtml + i18n.t('Subscribing...')
+        + '<span class="spinner"><i class="fw fw-loader5" title="button-loader"></i></span>'
+    ).attr('disabled', 'disabled');
 
-
-
-    var operators = $("#operators").val();
-    var operatorList, operatorStr = "";
-
-
-    if (deploymentType == "hub") {
-        if (operators == null || operators.length == 0) {
-            jagg.message({
-                content: i18n.t('Please select atleast one operator'),
-                type: "info"
-            });
-            return;
-        }
-    }
-
-
-    jagg.post("/site/blocks/subscription/subscription-add/ajax/subscription-add.jag", {
-        action:"addSubscription",
-        applicationId:applicationId,
+    jagg.post("/site/blocks/subscription/subscription-add/ajax/subscription-add.jag?applicationName=" + applicationName + "&applicationId=" + applicationId, {
+        action:"addAPISubscriptionByAppId",
+        appId:applicationId,
         name:api.name,
         version:api.version,
         provider:api.provider,
         tier:tier,
         tenant: jagg.site.tenant
-    }, function(result) {
-
-
-
-        if (deploymentType == "hub") {
-
-            // Persist the selected list of operators.
-
-
-            for (var i = 0; i < operators.length; i++) {
-                if (operatorStr.length > 0) {
-                    operatorStr = operatorStr + "," + operators[i];
-                } else {
-                    operatorStr = operators[i];;
-                }
-            }
-            jagg.post("/site/blocks/workflow/workflow-operator/ajax/workflow-operator.jag", {
-                action: "addSubOperators",
-                applicationId: applicationId,
-                apiName: api.name,
-                apiVersion: api.version,
-                apiProvider: api.provider,
-                operatorList: operatorStr
-            }, function(result) {
-                if (result.error == false) {
-
-                }
-            }, "json");
-        }
-
-
-
-        $("#subscribe-button").html('Subscribe');
+    }, function (result) {
+        $("#subscribe-button").html(subscribeButtonIconHtml + i18n.t('Subscribe'));
         $("#subscribe-button").removeAttr('disabled');
         if (result.error == false) {
             if(result.status.subscriptionStatus == 'REJECTED')    {
@@ -90,7 +44,7 @@ function triggerSubscribe(deploymentType) {
                 var jsonPayload = result.status.workflowResponse.jsonPayload;
                 if(jsonPayload != null && jsonPayload != ""){
                    var jsonObj = JSON.parse(jsonPayload);
-                   var additionalParameters = jsonObj.additionalParameters; 
+                   var additionalParameters = jsonObj.additionalParameters;
                        //add another condition to prevent unnecessary redirection
 		   if (jsonObj.redirectUrl != null) {
 		      if(jsonObj.redirectConfirmationMsg == null){
@@ -144,7 +98,7 @@ function triggerSubscribe(deploymentType) {
                             }
                           }, "json");;
                        });
-                         $('#messageModal').modal(); 
+                         $('#messageModal').modal();
                      }
                   }
                }else {
@@ -170,7 +124,7 @@ function triggerSubscribe(deploymentType) {
                    $('#messageModal').modal();
                 }
               }
-        
+
        } else {
           jagg.message({content:result.message,type:"error"});
         //$('#messageModal').html($('#confirmation-data').html());
@@ -245,7 +199,7 @@ $('input.rate_save').on('change', function () {
         } else {
             jagg.message({content:result.message,type:"error"});
         }
-    }, "json");  
+    }, "json");
 });
 
 $('.remove_rating').on("click",function(){
@@ -264,7 +218,7 @@ $('.remove_rating').on("click",function(){
         } else {
             jagg.message({content:result.message,type:"error"});
         }
-    }, "json");    
+    }, "json");
 });
 
 $('.rating-tooltip-manual').rating({

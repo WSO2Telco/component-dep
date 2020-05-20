@@ -1,7 +1,6 @@
 <%
 include("/jagg/jagg.jag");
 (function () {
-    var log = new Log();
     var site = require("/site/conf/site.json");
     var ssoEnabled = site.ssoConfiguration.enabled;
     response.contentType = "application/json; charset=UTF-8";
@@ -26,68 +25,7 @@ include("/jagg/jagg.jag");
             error:true,
             message: msg.error.invalidInputs(validation_errors)
         });
-    } else if (action == "generateSdk"){
-        if (!user) {
-            if(!ssoEnabled){
-                print({
-                    error:true,
-                    message:msg.error.loginRequired(action)
-                });
-            }
-            return;
-        }
-
-        if(request.getParameter('selectedApp')!=null){
-            selectedApp = request.getParameter('selectedApp');
-        }
-        //else if we have selected app in session we will use it.
-        // ** Should not use session to get selected value
-        else if(session.get('selectedApp')!=null){
-            selectedApp = session.get('selectedApp');
-        }
-        //if not pass blank string because host object is waiting for string args..
-        else{
-            selectedApp= "";
-        }
-        //which sdk user wants to generate
-        if(request.getParameter('language')!=null){
-            language = request.getParameter('language');
-        }
-        else {
-            language=null;
-        }
-
-        var groupId = session.get("groupId");
-        mod = jagg.module("subscription");
-        result = mod.generateClientSdk(selectedApp,language,user.username,groupId);
-
-        if (result.error) {
-            if (result.error.javaException instanceof org.wso2.carbon.apimgt.api.ApplicationNotFoundException) {
-                obj = {
-                    "subscriptionCallbackResponse" : {
-                        "error" : "true",
-                        "message" : result.error.javaException.message
-                    }
-                };
-                response.status = 404;
-                response.contentType = "application/json";
-            } else {
-                obj = {
-                    error:result.error,
-                    message:result.message
-                };
-            }
-        } else {
-            var file = new File("file:///" + result.path);
-            file.open("r");
-            response.contentType = "application/force-download";
-            response.addHeader("Content-Disposition","attachment; filename = \"" + result.fileName + "\"");
-            print(file.getStream());
-            file.close();
-            file.del();
-        }
-        print(obj);
-    }else if (action == "getAllSubscriptions") {
+    } else if (action == "getAllSubscriptions") {
         /*
          This will be called when the user calls listAllSubscription via the Rest API.
          */
@@ -154,7 +92,7 @@ include("/jagg/jagg.jag");
                 response.contentType = "application/json";
             } else {
                 obj = {
-                    error:result.error,
+                    error: true,
                     message:msg.error.authError(action, username)
                 };
             }
@@ -232,7 +170,7 @@ include("/jagg/jagg.jag");
                 response.contentType = "application/json";
             } else {
                 obj = {
-                    error:result.error,
+                    error: true,
                     message:msg.error.authError(action, username)
                 };
             }
@@ -245,7 +183,7 @@ include("/jagg/jagg.jag");
         print(obj);
     }else if (action == "getSubscriptionByApplication") {
         var appname = request.getParameter("app");
-	var appId = request.getParameter("appId");
+        var appId = request.getParameter("appId");
         if (!user) {
             if(!ssoEnabled){
                 print({
@@ -258,43 +196,13 @@ include("/jagg/jagg.jag");
         username = user.username;
 
         mod = jagg.module("subscription");
-        
-        var storeMod = jagg.module("manager").getStoreHostObject();
 
-        result = mod.getAPISubscriptionsForApplication(username,appname);
-
-        var APIUtil = Packages.org.wso2.carbon.apimgt.impl.utils.APIUtil;
-        var applicationId = APIUtil.getApplicationId(appname,username);
-
-        var historyMod = jagg.module("approval-history");
-        var historyResult = historyMod.getOperatorApprovedSubscriptionsByApplicationId(applicationId);
-        
-        for(var i =0;i<result.subscriptions.length;i++){
-
-            result.subscriptions[i]['operators'] = '';
-            var api = result.subscriptions[i].apiName;
-
-            if(historyResult.data.operatorSubsApprovedHistory.length == 0){
-
-                result.subscriptions[i]['operators'] = 'PENDING';
-            } else {
-
-                for(var j =0;j<historyResult.data.operatorSubsApprovedHistory.length;j++){
-
-                    if(api == historyResult.data.operatorSubsApprovedHistory[j][0].apiName){
-
-                        if(result.subscriptions[i]['operators'] == ''){
-
-                            result.subscriptions[i]['operators'] = historyResult.data.operatorSubsApprovedHistory[j][0].operatorname + ' - ' + historyResult.data.operatorSubsApprovedHistory[j][0].substatus;
-                        } else {
-
-                            result.subscriptions[i]['operators'] = result.subscriptions[i]['operators'] + "<br>" + historyResult.data.operatorSubsApprovedHistory[j][0].operatorname + ' - ' + historyResult.data.operatorSubsApprovedHistory[j][0].substatus;
-                        }
-                        
-                    }
-                }
-            }
+        var groupId = session.get("groupId");
+        if (jagg.isMultiGroupEnabled()) {
+            groupId = request.getParameter("groupId");
         }
+
+        result = mod.getAPISubscriptionsForApplication(username, appname, groupId);
 
         if (result.error) {
             if (result.error.javaException instanceof org.wso2.carbon.apimgt.api.ApplicationNotFoundException) {
@@ -308,22 +216,18 @@ include("/jagg/jagg.jag");
                 response.contentType = "application/json";
             } else {
                 obj = {
-                    error:result.error,
+                    error: true,
                     message:result.message
                 };
             }
         } else {
             obj = {
                 error:false,
-                apis:result.subscriptions,
-                depType:storeMod.getDeploymentType()
+                apis:result.subscriptions
             }
         }
         print(obj);
-    } 
-
-
-else if (action == "getSubscriptionForApplicationById") {
+    } else if (action == "getSubscriptionForApplicationById") {
         var appname = request.getParameter("app");
         var appId = request.getParameter("appId");
         if (!user) {
@@ -344,49 +248,14 @@ else if (action == "getSubscriptionForApplicationById") {
             groupId = request.getParameter("groupId");
         }
 
-        var storeMod = jagg.module("manager").getStoreHostObject();
-
         result = mod.getAPISubscriptionsForApplicationById(username, appname, groupId, appId);
-
-        var APIUtil = Packages.org.wso2.carbon.apimgt.impl.utils.APIUtil;
-        var applicationId = APIUtil.getApplicationId(appname,username);
-
-        var historyMod = jagg.module("approval-history");
-        var historyResult = historyMod.getOperatorApprovedSubscriptionsByApplicationId(applicationId);
-        
-        for(var i =0;i<result.subscriptions.length;i++){
-
-            result.subscriptions[i]['operators'] = '';
-            var api = result.subscriptions[i].apiName;
-
-            if(historyResult.data.operatorSubsApprovedHistory.length == 0){
-
-                result.subscriptions[i]['operators'] = 'PENDING';
-            } else {
-
-                for(var j =0;j<historyResult.data.operatorSubsApprovedHistory.length;j++){
-
-                    if(api == historyResult.data.operatorSubsApprovedHistory[j][0].apiName){
-
-                        if(result.subscriptions[i]['operators'] == ''){
-
-                            result.subscriptions[i]['operators'] = historyResult.data.operatorSubsApprovedHistory[j][0].operatorname + ' - ' + historyResult.data.operatorSubsApprovedHistory[j][0].substatus;
-                        } else {
-
-                            result.subscriptions[i]['operators'] = result.subscriptions[i]['operators'] + "<br>" + historyResult.data.operatorSubsApprovedHistory[j][0].operatorname + ' - ' + historyResult.data.operatorSubsApprovedHistory[j][0].substatus;
-                        }
-                        
-                    }
-                }
-            }
-        }
 
         if (result.error) {
             if (result.error.javaException instanceof org.wso2.carbon.apimgt.api.ApplicationNotFoundException) {
                 obj = {
                     "subscriptionCallbackResponse" : {
-                        "error" : "true",
-                        "message" : result.error.javaException.message
+                    "error" : "true",
+                    "message" : result.error.javaException.message
                     }
                 };
                 response.status = 404;
@@ -400,15 +269,11 @@ else if (action == "getSubscriptionForApplicationById") {
         } else {
             obj = {
                 error:false,
-                apis:result.subscriptions,
-                depType:storeMod.getDeploymentType()
+                apis:result.subscriptions
             }
         }
         print(obj);
-    }
-
-
-else if (action == "getSubscriptionByAPI") {
+    } else if (action == "getSubscriptionByAPI") {
 
         var appname = request.getParameter("app");
 
@@ -439,7 +304,7 @@ else if (action == "getSubscriptionByAPI") {
 
             if (result.error) {
                 obj = {
-                    error:result.error,
+                    error: true,
                     message:msg.error.authError(action, username)
                 };
             } else {
@@ -450,7 +315,7 @@ else if (action == "getSubscriptionByAPI") {
             }
         } else {
             obj = {
-                error:result.error,
+                error: true,
                 message:msg.error.invalidInput(action, username)
             };
         }
