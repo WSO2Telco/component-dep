@@ -80,7 +80,7 @@ public class ValidateUssdSubscription implements IServiceValidate {
 
             ValidationRule[] rules = new ValidationRule[]{
                     new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "clientCorrelator", clientCorrelator),
-                    new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "notifyURL", notifyUrl),
+                    new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_URL, "notifyURL", notifyUrl),
                     new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, USSDKeyConstants.CALLBACK_DATA, callbackData),
                     new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, USSDKeyConstants.KEYWORD, keyword),
                     new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, USSDKeyConstants.SHORT_CODE, shortCode)};
