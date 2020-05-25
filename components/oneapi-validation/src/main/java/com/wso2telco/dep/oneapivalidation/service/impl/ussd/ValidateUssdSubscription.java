@@ -87,7 +87,7 @@ public class ValidateUssdSubscription implements IServiceValidate {
 
             Validation.checkRequestParams(rules);
 
-            if (requestData.isNull("shortCodes")) {
+            if (!requestData.isNull("shortCodes")) {
                 JSONArray shortCodesArray = requestData.getJSONArray("shortCodes");
 
                 if (shortCodesArray.length() != 0) {
@@ -115,7 +115,7 @@ public class ValidateUssdSubscription implements IServiceValidate {
                 } else {
                     throw new CustomException("SVC0002", "Invalid input value for message part %1", new String[]{"Empty sortcodes list"});
                 }
-            } else if (requestData.isNull("shortCode")) {
+            } else if (!requestData.isNull("shortCode")) {
                 ValidationRule[] shortCodeRules = new ValidationRule[2];
 
                 String sCode = null;
