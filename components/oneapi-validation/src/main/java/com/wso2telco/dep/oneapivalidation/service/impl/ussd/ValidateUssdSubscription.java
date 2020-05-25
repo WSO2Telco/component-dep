@@ -65,9 +65,6 @@ public class ValidateUssdSubscription implements IServiceValidate {
                 if (!callbackReference.isNull("notifyURL")) {
                     notifyUrl = nullOrTrimmed(callbackReference.getString("notifyURL"));
                 }
-            } else {
-                throw new CustomException("SVC0002", "Invalid input value for message part %1",
-                        new String[]{"Missing mandatory parameter: callbackReference"});
             }
 
             if (!requestData.isNull(USSDKeyConstants.SHORT_CODE)) {
