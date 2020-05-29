@@ -49,56 +49,48 @@ public class ValidateReceiveUssd implements IServiceValidate {
         String callbackData = null;
         String ussdAction = null;
 
+        JSONObject requestData;
+
         try {
-            JSONObject objJSONObject = new JSONObject(json);
-            JSONObject requestData = objJSONObject.getJSONObject("inboundUSSDMessageRequest");
-
-            if (!requestData.isNull("address")) {
-                address = nullOrTrimmed(requestData.getString("address"));
-            }
-            if (!requestData.isNull("shortCode")) {
-                shortCode = nullOrTrimmed(requestData.getString("shortCode"));
-            }
-
-            if (!requestData.isNull("keyword")) {
-                keyword = nullOrTrimmed(requestData.getString("keyword"));
-            }
-            if (!requestData.isNull("inboundUSSDMessage")) {
-                message = nullOrTrimmed(requestData.getString("inboundUSSDMessage"));
-            }
-            if (!requestData.isNull("clientCorrelator")) {
-                clientCorrelator = nullOrTrimmed(requestData.getString("clientCorrelator"));
-            }
-            if (!requestData.isNull("sessionID")) {
-                sessionID = nullOrTrimmed(requestData.getString("sessionID"));
-            }
-            if (!requestData.isNull("ussdAction")) {
-                ussdAction = nullOrTrimmed(requestData.getString("ussdAction"));
-            }
-
-            if (!(MTCONT.equals(ussdAction) || MOINIT.equals(ussdAction) || MOCONT.equals(ussdAction))) {
-
-                throw new CustomException("SVC0002", "Invalid input value for message part %1",
-                        new String[]{"Invalid ussdAction"});
-            }
-
-            if (!requestData.isNull("responseRequest")) {
-                JSONObject responseRequest = requestData.getJSONObject("responseRequest");
-                if (!responseRequest.isNull("notifyURL")) {
-                    notifyUrl = nullOrTrimmed(responseRequest.getString("notifyURL"));
-                }
-                if (!responseRequest.isNull("callbackData")) {
-                    callbackData = nullOrTrimmed(responseRequest.getString("callbackData"));
-                }
-            }
+            requestData = new JSONObject(json).getJSONObject("inboundUSSDMessageRequest");
         } catch (Exception e) {
-
             throw new CustomException("POL0299", "Unexpected Error", new String[]{"Incorrect JSON Object received"});
         }
 
-        ValidationRule[] rules = null;
+        if (!requestData.isNull("address")) {
+            address = nullOrTrimmed(requestData.getString("address"));
+        }
+        if (!requestData.isNull("shortCode")) {
+            shortCode = nullOrTrimmed(requestData.getString("shortCode"));
+        }
 
-        rules = new ValidationRule[]{
+        if (!requestData.isNull("keyword")) {
+            keyword = nullOrTrimmed(requestData.getString("keyword"));
+        }
+        if (!requestData.isNull("inboundUSSDMessage")) {
+            message = nullOrTrimmed(requestData.getString("inboundUSSDMessage"));
+        }
+        if (!requestData.isNull("clientCorrelator")) {
+            clientCorrelator = nullOrTrimmed(requestData.getString("clientCorrelator"));
+        }
+        if (!requestData.isNull("sessionID")) {
+            sessionID = nullOrTrimmed(requestData.getString("sessionID"));
+        }
+        if (!requestData.isNull("ussdAction")) {
+            ussdAction = nullOrTrimmed(requestData.getString("ussdAction"));
+        }
+
+        if (!requestData.isNull("responseRequest")) {
+            JSONObject responseRequest = requestData.getJSONObject("responseRequest");
+            if (!responseRequest.isNull("notifyURL")) {
+                notifyUrl = nullOrTrimmed(responseRequest.getString("notifyURL"));
+            }
+            if (!responseRequest.isNull("callbackData")) {
+                callbackData = nullOrTrimmed(responseRequest.getString("callbackData"));
+            }
+        }
+
+        ValidationRule[] rules = new ValidationRule[]{
             new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY_TEL_END_USER_ID, "address", address),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "shortCode", shortCode),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "keyword", keyword),
@@ -110,6 +102,11 @@ public class ValidateReceiveUssd implements IServiceValidate {
             new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "callbackData", callbackData),};
 
         Validation.checkRequestParams(rules);
+
+        if (!(MTCONT.equals(ussdAction) || MOINIT.equals(ussdAction) || MOCONT.equals(ussdAction))) {
+            throw new CustomException("SVC0002", "Invalid input value for message part %1",
+                    new String[]{"Invalid ussdAction"});
+        }
     }
 
     /* (non-Javadoc)
