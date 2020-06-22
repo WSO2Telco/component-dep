@@ -157,6 +157,7 @@
 		<module>components/apim-loghandler</module>
 		<module>features</module>
 		<module>components/oneapi</module>
+		<module>components/ipvalidate-handler</module>
 	</modules>
 
 	<scm>
@@ -828,6 +829,12 @@
 				<artifactId>oneapi</artifactId>
 				<version>${com.wso2telco.dep.version}</version>
 				<scope>compile</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.wso2telco.dep</groupId>
+				<artifactId>ipvalidate-handler</artifactId>
+				<version>${com.wso2telco.dep.version}</version>
+				<scope>provided</scope>
 			</dependency>
 			<!--Unit test dependencies -->
 			<dependency>
