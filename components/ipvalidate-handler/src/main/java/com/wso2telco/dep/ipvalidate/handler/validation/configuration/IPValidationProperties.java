@@ -13,7 +13,6 @@ public class IPValidationProperties {
 	
 	private static boolean isCustomValidationEnabled;
 	private static String validatorClasses;
-	private static String inbuildToken;
 	private static Long cacheModExpiretime;
 	private static Long cacheAccessExpiretime;
 	public static int invalidClientErrCode;
@@ -30,7 +29,6 @@ public class IPValidationProperties {
 		
 		isCustomValidationEnabled = Boolean.valueOf(props.getProperty(IPValidationUtil.IS_IP_VALIDATION_ENABLED));
 		validatorClasses = props.getProperty(IPValidationUtil.IP_VALIDATION_CLASSES);
-		inbuildToken = props.getProperty(IPValidationUtil.IP_VALIDATION_INBUILD_TOKEN);
 		cacheModExpiretime = Long.parseLong(props.getProperty(IPValidationUtil.IP_VALIDATION_CACHE_MOD_EXPIRE));
 		cacheAccessExpiretime = Long.parseLong(props.getProperty(IPValidationUtil.IP_VALIDATION_CACHE_ACCESS_EXPIRE));
 		
@@ -43,25 +41,57 @@ public class IPValidationProperties {
 		validationFalidErrMsg = props.getProperty(IPValidationUtil.IP_VALIDATION_ERROR_MSG_VALIDATION_FAILURE);
 	}
 
+
 	public static boolean isCustomValidationEnabled() {
 		return isCustomValidationEnabled;
 	}
+
 
 	public static String getValidatorClasses() {
 		return validatorClasses;
 	}
 
-	public static String getInbuildToken() {
-		return inbuildToken;
-	}
 
 	public static Long getCacheModExpiretime() {
 		return cacheModExpiretime;
 	}
 
+
 	public static Long getCacheAccessExpiretime() {
 		return cacheAccessExpiretime;
 	}
+
+
+	public static int getInvalidClientErrCode() {
+		return invalidClientErrCode;
+	}
+
+
+	public static int getInvalidHostErrCode() {
+		return invalidHostErrCode;
+	}
+
+
+	public static int getValidationFalidErrCode() {
+		return validationFalidErrCode;
+	}
+
+
+	public static String getInvalidClientErrMsg() {
+		return invalidClientErrMsg;
+	}
+
+
+	public static String getInvalidHostErrMsg() {
+		return invalidHostErrMsg;
+	}
+
+
+	public static String getValidationFalidErrMsg() {
+		return validationFalidErrMsg;
+	}
+
+	
 
 	
 }

@@ -158,6 +158,7 @@
 		<module>features</module>
 		<module>components/oneapi</module>
 		<module>components/ipvalidate-handler</module>
+		<module>components/noauth-handler</module>
 	</modules>
 
 	<scm>

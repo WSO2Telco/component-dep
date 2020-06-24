@@ -4,7 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import com.wso2telco.dep.ipvalidate.handler.validation.dao.IPValidationDao;
-import com.wso2telco.dep.ipvalidate.handler.validation.dto.ClientIPSummary;
+import com.wso2telco.dep.ipvalidate.handler.validation.dto.ClientIDSummary;
 import com.wso2telco.dep.ipvalidate.handler.validation.dto.ClientKeyIPData;
 
 import org.apache.commons.logging.Log;
@@ -24,7 +24,7 @@ public class IPValidationDBUtils {
 		log.debug("Get client key list");
 		ArrayList<String> clientKeyList = new ArrayList<String>();
 		try {
-			clientKeyList = ipValidationdao.getClientIdList();
+			clientKeyList = ipValidationdao.getClientKeyList();
 		} catch (Exception e) {
 			log.error("error while getting client key list " + e);
 			throw e;
@@ -32,20 +32,20 @@ public class IPValidationDBUtils {
 		return clientKeyList;
 	}
 
-	public List<ClientKeyIPData> getValidIPListForClient(String clientId) throws Exception {
-		log.debug("Get valid IP list for client : " + clientId);
-		log.info("Get valid IP list for client : " + clientId);
+	public List<ClientKeyIPData> getValidIPListForClient(String clientKey) throws Exception {
+		log.debug("Get valid IP list for client : " + clientKey);
+		log.info("Get valid IP list for client : " + clientKey);
 		List<ClientKeyIPData> clientIPDataList = new ArrayList<ClientKeyIPData>();
 		try {
-			List<ClientIPSummary> summaryIdList = ipValidationdao.getSumaryListForClient(clientId);
+			List<ClientIDSummary> summaryIdList = ipValidationdao.getSumaryListForClient(clientKey);
 			
-			for (ClientIPSummary clientIPSummary : summaryIdList) {				
+			for (ClientIDSummary clientIPSummary : summaryIdList) {				
 				ClientKeyIPData clientKeyIPData = new ClientKeyIPData();
 
-				clientKeyIPData.setClientId(clientId);
+				clientKeyIPData.setClientId(clientIPSummary.getClientId());
 				clientKeyIPData.setSummaryId(clientIPSummary.getSummaryId());
 				clientKeyIPData.setValidationEnabled(clientIPSummary.isValidationEnabled());
-				clientKeyIPData.setClientToken(clientIPSummary.getClientToken());
+				clientKeyIPData.setClientToken(ipValidationdao.getClientToken(clientIPSummary.getClientId()));
 				clientKeyIPData.setPoolIpList(ipValidationdao.getPoolIPListBySummaryId(clientIPSummary.getSummaryId()));
 				clientKeyIPData
 						.setRangeIpList(ipValidationdao.getRangeIPListBySummaryId(clientIPSummary.getSummaryId()));

@@ -14,27 +14,27 @@ import com.wso2telco.core.dbutils.DbUtils;
 import com.wso2telco.core.dbutils.util.DataSourceNames;
 import com.wso2telco.dep.ipvalidate.handler.validation.dto.ClientIPPool;
 import com.wso2telco.dep.ipvalidate.handler.validation.dto.ClientIPRange;
-import com.wso2telco.dep.ipvalidate.handler.validation.dto.ClientIPSummary;
+import com.wso2telco.dep.ipvalidate.handler.validation.dto.ClientIDSummary;
 
 public class IPValidationDao {
 
 	private static final Log log = LogFactory.getLog(IPValidationDao.class);
 
-	public ArrayList<String> getClientIdList() throws Exception {
+	public ArrayList<String> getClientKeyList() throws Exception {
 		log.debug("Get Client id list ");
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet results = null;
 		ArrayList<String> clientKeyList = new ArrayList<String>();
 
-		String sql = "select distinct client_id from client_id_summary";
+		String sql = "select distinct client_key from client_id_summary";
 		try {
 			conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 			ps = conn.prepareStatement(sql);
 			results = ps.executeQuery();
 
 			while (results.next()) {
-				clientKeyList.add(results.getString("client_id"));
+				clientKeyList.add(results.getString("client_key"));
 			}
 		} catch (Exception e) {
 			log.error("Error while getting id list " + e);
@@ -45,25 +45,25 @@ public class IPValidationDao {
 		return clientKeyList;
 	}
 
-	public List<ClientIPSummary> getSumaryListForClient(String clientId) throws Exception {
-		log.debug("Get summary ID list for client : " + clientId);
+	public List<ClientIDSummary> getSumaryListForClient(String clientKey) throws Exception {
+		log.debug("Get summary ID list for client : " + clientKey);
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet results = null;
-		List<ClientIPSummary> clientIPSummaryList = new ArrayList<ClientIPSummary>();
-		String sql = "select * from client_id_summary where client_id = ?";
+		List<ClientIDSummary> clientIPSummaryList = new ArrayList<ClientIDSummary>();
+		String sql = "select * from client_id_summary where client_key = ?";
 		try {
 			conn = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
 			ps = conn.prepareStatement(sql);
-			ps.setString(1, clientId);
+			ps.setString(1, clientKey);
 			results = ps.executeQuery();
 
 			while (results.next()) {
-				ClientIPSummary clientIpSummary = new ClientIPSummary();
+				ClientIDSummary clientIpSummary = new ClientIDSummary();
 
 				clientIpSummary.setClientId(results.getString("client_id"));
 				clientIpSummary.setSummaryId(results.getInt("ID"));
-				clientIpSummary.setClientToken(results.getString("client_token"));
+				clientIpSummary.setClientKey(results.getString("client_key"));
 				clientIpSummary.setValidationEnabled(results.getBoolean("ip_validation_enabled"));
 
 				clientIPSummaryList.add(clientIpSummary);
@@ -75,6 +75,32 @@ public class IPValidationDao {
 			APIMgtDBUtil.closeAllConnections(ps, conn, results);
 		}
 		return clientIPSummaryList;
+	}
+	
+	public String getClientToken(String clientId) throws Exception {
+		log.debug("get Client Token " + clientId);
+		Connection conn = null;
+		PreparedStatement ps = null;
+		ResultSet results = null;
+		String clientIdToken = null;
+
+		String sql = "select ACCESS_TOKEN from idn_oauth2_access_token where CONSUMER_KEY_ID = ? and TOKEN_STATE = 'ACTIVE';";
+		try {
+			conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+			ps = conn.prepareStatement(sql);
+			ps.setString(1, clientId);
+			results = ps.executeQuery();
+
+			while (results.next()) {
+				clientIdToken = results.getString("ACCESS_TOKEN");
+			}
+		} catch (Exception e) {
+			log.error("Error while getting summary ID list for client " + e);
+			throw e;
+		} finally {
+			APIMgtDBUtil.closeAllConnections(ps, conn, results);
+		}
+		return clientIdToken;
 	}
 
 	public ClientIPPool getPoolIPListBySummaryId(int summaryId) throws Exception {

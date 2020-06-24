@@ -33,25 +33,7 @@ import com.wso2telco.dep.ipvalidate.handler.validation.service.ValidationCacheSe
 public class IPValidateHandler extends APIAuthenticationHandler {
 
 	private static final Log log = LogFactory.getLog(IPValidateHandler.class);
-	private String client_key = null;
-	private String client_ip = null;
-
-	public String getClient_key() {
-		return client_key;
-	}
-
-	public void setClient_key(String client_key) {
-		this.client_key = client_key;
-	}
-
-	public String getClient_ip() {
-		return client_ip;
-	}
-
-	public void setClient_ip(String client_ip) {
-		this.client_ip = client_ip;
-	}
-
+	
 	public boolean handleRequest(MessageContext messageContext) {
 		log.debug("Request received : " + messageContext);
 		log.info("Request received : " + messageContext);
@@ -65,8 +47,7 @@ public class IPValidateHandler extends APIAuthenticationHandler {
 
 			String urlPath = messageContext.getTo().toString().split("[?]")[1];
 			requestData.setClientkey(urlPath.split("=")[1]);
-			requestData.setHostip((String) ((Axis2MessageContext) messageContext).getAxis2MessageContext()
-					.getProperty(org.apache.axis2.context.MessageContext.REMOTE_ADDR));
+			requestData.setHostip(getHostIP(headers));
 
 			if (IPValidationProperties.isCustomValidationEnabled()) {
 				ClientValidator clientvalidator = new ClientValidatorImpl();
@@ -76,12 +57,12 @@ public class IPValidateHandler extends APIAuthenticationHandler {
 					if (clientToken != null) {
 						setTokentoContext(messageContext, clientToken);
 					} else {
-						throw new APISecurityException(IPValidationProperties.validationFalidErrCode,
-								IPValidationProperties.validationFalidErrMsg);
+						throw new APISecurityException(IPValidationProperties.getValidationFalidErrCode(),
+								IPValidationProperties.getValidationFalidErrMsg());
 					}
 				} else {
-					throw new APISecurityException(IPValidationProperties.invalidHostErrCode,
-							IPValidationProperties.invalidHostErrMsg);
+					throw new APISecurityException(IPValidationProperties.getInvalidHostErrCode(),
+							IPValidationProperties.getInvalidHostErrMsg());
 				}
 			}
 			return super.handleRequest(messageContext);
@@ -109,32 +90,6 @@ public class IPValidateHandler extends APIAuthenticationHandler {
 
 		return hostIp;
 	}
-
-//	private void hadleIPValidationResponse(MessageContext messageContext, APISecurityException ex) {
-//		messageContext.setProperty(SynapseConstants.ERROR_CODE, ex.getErrorCode());
-//		messageContext.setProperty(SynapseConstants.ERROR_MESSAGE, ex.getMessage());
-//		int status = 400;
-//		OMElement faultPayload = getFaultPayload(ex);
-//
-//		org.apache.axis2.context.MessageContext axis2MC = ((Axis2MessageContext) messageContext)
-//				.getAxis2MessageContext();
-//		try {
-//			RelayUtils.buildMessage(axis2MC);
-//		} catch (IOException e) {
-//			log.error("Error occurred while building the message", e);
-//		} catch (XMLStreamException e) {
-//			log.error("Error occurred while building the message", e);
-//		}
-//		axis2MC.setProperty(Constants.Configuration.MESSAGE_TYPE, "application/soap+xml");
-//		if (messageContext.isDoingPOX() || messageContext.isDoingGET()) {
-//			Utils.setFaultPayload(messageContext, faultPayload);
-//		} else {
-//			Utils.setSOAPFault(messageContext, "Client", "Authentication Failure", ex.getMessage());
-//		}
-//
-//		messageContext.setProperty("error_message_type", "application/json");
-//		Utils.sendFault(messageContext, status);
-//	}
 	
 	private void handleIPValidateFailure(MessageContext messageContext, APISecurityException e) {
         messageContext.setProperty(SynapseConstants.ERROR_CODE, e.getErrorCode());
@@ -197,7 +152,7 @@ public class IPValidateHandler extends APIAuthenticationHandler {
 
 		if (headers != null && headers instanceof Map) {
 			Map headersMap = (Map) headers;
-			headersMap.put("Authorization", token);
+			headersMap.put("Authorization", "Bearer " + token);
 			axis2MessageCtx.setProperty(org.apache.axis2.context.MessageContext.TRANSPORT_HEADERS, headersMap);
 		}
 	}
