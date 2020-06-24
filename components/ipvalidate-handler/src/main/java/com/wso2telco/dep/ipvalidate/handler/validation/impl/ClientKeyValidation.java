@@ -22,10 +22,12 @@ public class ClientKeyValidation extends CustomValidator {
 		log.debug("Client key validation : " + requestData);
 
 		List<ClientKeyIPData> clientIpSummaryList = ValidationCacheService.getCache().get(requestData.getClientkey());
+		
+		System.out.println("================clientIpSummaryList " + clientIpSummaryList);
 
 		if (clientIpSummaryList == null) {
-			throw new APISecurityException(IPValidationProperties.invalidClientErrCode,
-					IPValidationProperties.invalidClientErrMsg);
+			throw new APISecurityException(IPValidationProperties.getInvalidClientErrCode(),
+					IPValidationProperties.getInvalidClientErrMsg());
 		} else if (nextValidator != null) {
 			return nextValidator.doValidation(requestData);
 		}

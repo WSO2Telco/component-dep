@@ -1,10 +1,10 @@
 package com.wso2telco.dep.ipvalidate.handler.validation.dto;
 
-public class ClientIPSummary {
+public class ClientIDSummary {
 
 	private int summaryId = 0;
 	private String clientId = null;
-	private String clientToken = null;
+	private String clientKey = null;
 	private boolean isValidationEnabled = false;
 
 	public int getSummaryId() {
@@ -23,12 +23,12 @@ public class ClientIPSummary {
 		this.clientId = clientId;
 	}
 
-	public String getClientToken() {
-		return clientToken;
+	public String getClientKey() {
+		return clientKey;
 	}
 
-	public void setClientToken(String clientToken) {
-		this.clientToken = clientToken;
+	public void setClientKey(String clientKey) {
+		this.clientKey = clientKey;
 	}
 
 	public boolean isValidationEnabled() {
@@ -41,7 +41,7 @@ public class ClientIPSummary {
 
 	@Override
 	public String toString() {
-		return "ClientIPSummary [summaryId=" + summaryId + ", clientId=" + clientId + ", clientToken=" + clientToken
+		return "ClientIDSummary [summaryId=" + summaryId + ", clientId=" + clientId + ", clientKey=" + clientKey
 				+ ", isValidationEnabled=" + isValidationEnabled + "]";
 	}
 

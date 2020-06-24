@@ -45,16 +45,16 @@ public class ClientValidatorImpl implements ClientValidator {
 			throw e;
 		} catch (InstantiationException e) {
 			log.error(e);
-			throw new APISecurityException(IPValidationProperties.validationFalidErrCode,
-					IPValidationProperties.validationFalidErrMsg);
+			throw new APISecurityException(IPValidationProperties.getValidationFalidErrCode(),
+					IPValidationProperties.getValidationFalidErrMsg());
 		} catch (IllegalAccessException e) {
 			log.error(e);
-			throw new APISecurityException(IPValidationProperties.validationFalidErrCode,
-					IPValidationProperties.validationFalidErrMsg);
+			throw new APISecurityException(IPValidationProperties.getValidationFalidErrCode(),
+					IPValidationProperties.getValidationFalidErrMsg());
 		} catch (ClassNotFoundException e) {
 			log.error(e);
-			throw new APISecurityException(IPValidationProperties.validationFalidErrCode,
-					IPValidationProperties.validationFalidErrMsg);
+			throw new APISecurityException(IPValidationProperties.getValidationFalidErrCode(),
+					IPValidationProperties.getValidationFalidErrMsg());
 		}
 
 		return true;

@@ -51,7 +51,7 @@ public class HostIpValidation extends CustomValidator {
 
 			if(!status)
 			{
-				throw new APISecurityException(IPValidationProperties.invalidHostErrCode, IPValidationProperties.invalidHostErrMsg);
+				throw new APISecurityException(IPValidationProperties.getInvalidHostErrCode(), IPValidationProperties.getInvalidHostErrMsg());
 			}
 			else if (nextValidator != null) {
 				nextValidator.doValidation(requestData);
@@ -61,7 +61,7 @@ public class HostIpValidation extends CustomValidator {
 			throw e;
 		} catch (Exception e) {
 			log.error(e);
-			throw new APISecurityException(IPValidationProperties.invalidHostErrCode, IPValidationProperties.invalidHostErrMsg);
+			throw new APISecurityException(IPValidationProperties.getInvalidHostErrCode(), IPValidationProperties.getInvalidHostErrMsg());
 		}
 		return status;
 	}
