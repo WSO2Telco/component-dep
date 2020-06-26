@@ -20,18 +20,21 @@ public class ClientKeyValidation extends CustomValidator {
 	@Override
 	public boolean doValidation(RequestData requestData) throws APISecurityException {
 		log.debug("Client key validation : " + requestData);
+		boolean status = false;
 
 		List<ClientKeyIPData> clientIpSummaryList = ValidationCacheService.getCache().get(requestData.getClientkey());
-		
+
 		System.out.println("================clientIpSummaryList " + clientIpSummaryList);
 
-		if (clientIpSummaryList == null) {
-			throw new APISecurityException(IPValidationProperties.getInvalidClientErrCode(),
-					IPValidationProperties.getInvalidClientErrMsg());
-		} else if (nextValidator != null) {
-			return nextValidator.doValidation(requestData);
+		if (clientIpSummaryList != null) {
+			status = true;
 		}
-		return true;
+
+		if (status && nextValidator != null) {
+			nextValidator.doValidation(requestData);
+		}
+
+		return status;
 	}
 
 }

@@ -16,6 +16,8 @@ public class ClientValidatorImpl implements ClientValidator {
 	@Override
 	public boolean validateRequest(RequestData requestData) throws APISecurityException {
 
+		boolean status = false;
+
 		try {
 
 			log.debug("Start validate request : " + requestData);
@@ -24,21 +26,22 @@ public class ClientValidatorImpl implements ClientValidator {
 			String validationclasses = IPValidationProperties.getValidatorClasses();
 			String[] strValidationClassList = validationclasses.split(",");
 			CustomValidator previousValidation = null;
-			for (int i = 0; i < strValidationClassList.length; i++) {
-				String strvalidationclass = strValidationClassList[i];
+			for (String strvalidationclass : strValidationClassList) {				
 				log.debug("Validate class " + strvalidationclass);
 				log.info("Validate class " + strvalidationclass);
 				CustomValidator nextValidation = (CustomValidator) Class.forName(strvalidationclass).newInstance();
 				if (previousValidation != null) {
 					previousValidation.setNextValidator(nextValidation);
-				} else {
-					previousValidation = nextValidation;
 				}
 				previousValidation = nextValidation;
 
-				boolean stat = previousValidation.doValidation(requestData);
-				log.debug("Validate class " + strvalidationclass + " response : " + stat);
-				log.info("Validate class " + strvalidationclass + " response : " + stat);
+				status = previousValidation.doValidation(requestData);
+				log.debug("Validate class " + strvalidationclass + " response : " + status);
+				log.info("Validate class " + strvalidationclass + " response : " + status);
+				if(!status)
+				{
+					break;
+				}
 			}
 		} catch (APISecurityException e) {
 			log.error(e);
@@ -57,7 +60,7 @@ public class ClientValidatorImpl implements ClientValidator {
 					IPValidationProperties.getValidationFalidErrMsg());
 		}
 
-		return true;
+		return status;
 	}
 
 }

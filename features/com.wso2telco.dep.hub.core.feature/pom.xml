@@ -69,6 +69,8 @@
                                         <include>sql/*.sql</include>
                                         <include>p2.inf</include>
                                         <include>build.properties</include>
+					<include>config/ip-validation.properties</include>
+					<include>config/noauth-validation.properties</include>
                                     </includes>
                                 </resource>
                             </resources>

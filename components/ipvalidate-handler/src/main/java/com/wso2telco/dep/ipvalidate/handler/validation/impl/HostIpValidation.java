@@ -27,7 +27,7 @@ public class HostIpValidation extends CustomValidator {
 		log.debug("Host IP validation : " + requestData);
 		boolean status = false;
 
-		try {			
+		try {
 			List<ClientKeyIPData> clientIpSummaryList = ValidationCacheService.getCache()
 					.get(requestData.getClientkey());
 
@@ -38,22 +38,18 @@ public class HostIpValidation extends CustomValidator {
 
 			for (ClientKeyIPData clientIpSummary : clientIpSummaryList) {
 				ClientIPPool clientIPPool = clientIpSummary.getPoolIpList();
-				
+
 				List<ClientIPRange> clientIPRangeList = clientIpSummary.getRangeIpList();
 				if (isValidPoolIP(clientIPPool.getIp(), requestData.getHostip())) {
 					status = true;
-					return true;
+					break;
 				} else if (isIPinValidRange(clientIPRangeList, requestData.getHostip())) {
 					status = true;
-					return true;
-				} 
+					break;
+				}
 			}
 
-			if(!status)
-			{
-				throw new APISecurityException(IPValidationProperties.getInvalidHostErrCode(), IPValidationProperties.getInvalidHostErrMsg());
-			}
-			else if (nextValidator != null) {
+			if (status && nextValidator != null) {
 				nextValidator.doValidation(requestData);
 			}
 
@@ -61,31 +57,34 @@ public class HostIpValidation extends CustomValidator {
 			throw e;
 		} catch (Exception e) {
 			log.error(e);
-			throw new APISecurityException(IPValidationProperties.getInvalidHostErrCode(), IPValidationProperties.getInvalidHostErrMsg());
+			throw new APISecurityException(IPValidationProperties.getInvalidHostErrCode(),
+					IPValidationProperties.getInvalidHostErrMsg());
 		}
 		return status;
 	}
 
 	public boolean isValidPoolIP(ArrayList<String> strings, String searchString) {
-
 		log.debug("Check is valid pool IP :" + strings + " ; " + searchString);
 		log.info("Check is valid pool IP :" + strings + " ; " + searchString);
-		if (strings.contains(searchString))
-			return true;
-
-		return false;
+		boolean isIPValid = false;
+		if (strings.contains(searchString)) {
+			isIPValid = true;
+		}
+		return isIPValid;
 	}
 
 	public boolean isIPinValidRange(List<ClientIPRange> clientIPRangeList, String ip) {
 		log.debug("Check is isIPinValidRange :" + clientIPRangeList + " , " + ip + " ; ");
 		log.info("Check isIPinValidRange :" + clientIPRangeList + " , " + ip + " ; ");
+		boolean isIPValid = false;
 		for (ClientIPRange clientIpRange : clientIPRangeList) {
-			log.info("Check clientIpRange :" + clientIpRange );
+			log.info("Check clientIpRange :" + clientIpRange);
 			if (isValidRangeIP(clientIpRange.getStartIP(), clientIpRange.getEndIP(), ip)) {
-				return true;
+				isIPValid = true;
+				break;
 			}
 		}
-		return false;
+		return isIPValid;
 	}
 
 	public static boolean isValidRangeIP(String ipStart, String ipEnd, String ipToCheck) {
