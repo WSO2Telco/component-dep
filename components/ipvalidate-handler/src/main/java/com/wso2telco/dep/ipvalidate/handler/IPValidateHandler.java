@@ -33,6 +33,7 @@ import com.wso2telco.dep.ipvalidate.handler.validation.service.ValidationCacheSe
 public class IPValidateHandler extends APIAuthenticationHandler {
 
 	private static final Log log = LogFactory.getLog(IPValidateHandler.class);
+	private ClientValidator clientvalidator = null;	
 	
 	public boolean handleRequest(MessageContext messageContext) {
 		log.debug("Request received : " + messageContext);
@@ -45,12 +46,11 @@ public class IPValidateHandler extends APIAuthenticationHandler {
 			log.info("headers : " + headers);
 			RequestData requestData = new RequestData();
 
-			String urlPath = messageContext.getTo().toString().split("[?]")[1];
-			requestData.setClientkey(urlPath.split("=")[1]);
+			requestData.setClientkey(getClientKey(messageContext));
 			requestData.setHostip(getHostIP(headers));
 
 			if (IPValidationProperties.isCustomValidationEnabled()) {
-				ClientValidator clientvalidator = new ClientValidatorImpl();
+				clientvalidator = new ClientValidatorImpl();
 				if (clientvalidator.validateRequest(requestData)) {
 					ValidationCacheService validationCacheService = new ValidationCacheService();
 					String clientToken = validationCacheService.getTokenfromCache(requestData.getClientkey());
@@ -89,6 +89,24 @@ public class IPValidateHandler extends APIAuthenticationHandler {
 		}
 
 		return hostIp;
+	}
+	
+	private String getClientKey(MessageContext messageContext) throws APISecurityException
+	{
+		String clientKey = null;
+		
+		try
+		{
+			String urlPath = messageContext.getTo().toString().split("[?]")[1];
+			clientKey = urlPath.split("=")[1];
+		}
+		catch(Exception e)
+		{
+			log.error("Error occurred while geting client key " + e);
+			throw new APISecurityException(IPValidationProperties.getValidationFalidErrCode(),
+					IPValidationProperties.getValidationFalidErrMsg());
+		}
+		return clientKey;
 	}
 	
 	private void handleIPValidateFailure(MessageContext messageContext, APISecurityException e) {

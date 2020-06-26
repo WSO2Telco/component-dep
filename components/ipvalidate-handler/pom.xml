@@ -83,7 +83,7 @@
                         <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
                         <Bundle-Name>${project.artifactId}</Bundle-Name>
                        <Export-Package>
-                            com.wso2telco.dep.operatorservice.*
+                            com.wso2telco.dep.ipvalidate.handler.*
                         </Export-Package>
                         <Import-Package>
                             *;resolution:=optional
