@@ -18,7 +18,6 @@ public class NoAuthDBUtils {
 	public String getToken(Long clientKey) throws Exception
 	{
 		log.debug("Get token " + clientKey);
-		log.info("Get token " + clientKey);
 		String token = null;
 		try {
 			token = clientTokenDao.getClientToken(clientKey);

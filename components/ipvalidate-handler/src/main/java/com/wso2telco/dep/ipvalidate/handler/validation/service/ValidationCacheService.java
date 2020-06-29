@@ -60,7 +60,6 @@ public class ValidationCacheService {
 	
 	public String getTokenfromCache(String clientKey)
 	{
-		log.info("get Token from Cache " + clientKey);
 		String clientToken = null;
 		List<ClientKeyIPData> clientIpSummaryList = ValidationCacheService.getCache()
 				.get(clientKey);		
@@ -68,7 +67,7 @@ public class ValidationCacheService {
 		{
 			clientToken = clientIpSummaryList.get(0).getClientToken();
 		}
-		
+		log.info("return Token from Cache " + clientKey + " ; " + clientToken);
 		return clientToken;
 	}
 }

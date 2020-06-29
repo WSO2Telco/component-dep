@@ -27,7 +27,7 @@
 
     <artifactId>com.wso2telco.dep.noauth.handler.feature</artifactId>
     <packaging>pom</packaging>
-    <name>WSO2.Telco Operator Service</name>
+    <name>WSO2.Telco No Auth Handler Service</name>
     <description>This feature contains the server bundles required for no authontication handler</description>
 
     <build>

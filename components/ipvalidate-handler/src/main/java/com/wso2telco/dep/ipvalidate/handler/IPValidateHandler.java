@@ -1,11 +1,7 @@
 package com.wso2telco.dep.ipvalidate.handler;
 
-import java.io.IOException;
 import java.util.Map;
 
-import javax.xml.stream.XMLStreamException;
-
-import org.apache.axiom.om.OMElement;
 import org.apache.axis2.AxisFault;
 import org.apache.axis2.Constants;
 import org.apache.commons.httpclient.HttpStatus;
@@ -18,11 +14,9 @@ import org.apache.synapse.SynapseConstants;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.apache.synapse.transport.passthru.PassThroughConstants;
 import org.apache.synapse.transport.passthru.util.RelayUtils;
-import org.wso2.carbon.apimgt.gateway.handlers.Utils;
 import org.wso2.carbon.apimgt.gateway.handlers.security.APIAuthenticationHandler;
 import org.wso2.carbon.apimgt.gateway.handlers.security.APISecurityConstants;
 import org.wso2.carbon.apimgt.gateway.handlers.security.APISecurityException;
-import org.wso2.carbon.apimgt.impl.utils.APIUtil;
 
 import com.wso2telco.dep.ipvalidate.handler.validation.ClientValidator;
 import com.wso2telco.dep.ipvalidate.handler.validation.configuration.IPValidationProperties;
@@ -37,13 +31,11 @@ public class IPValidateHandler extends APIAuthenticationHandler {
 	
 	public boolean handleRequest(MessageContext messageContext) {
 		log.debug("Request received : " + messageContext);
-		log.info("Request received : " + messageContext);
-
+		
 		try {
 
 			Map headers = getTransportHeaders(messageContext);
 			log.debug("headers : " + headers);
-			log.info("headers : " + headers);
 			RequestData requestData = new RequestData();
 
 			requestData.setClientkey(getClientKey(messageContext));
@@ -68,7 +60,6 @@ public class IPValidateHandler extends APIAuthenticationHandler {
 			return super.handleRequest(messageContext);
 		} catch (APISecurityException e) {
 			log.error("Error : " + e);
-			log.info("Error : " + e);
 			handleIPValidateFailure(messageContext, e);
 			return false;
 		}
@@ -82,10 +73,10 @@ public class IPValidateHandler extends APIAuthenticationHandler {
 	private String getHostIP(Map headers) {
 		String hostIp = null;
 
-		if (headers.get("X-Forwarded-For") != null) {
-			hostIp = String.valueOf(headers.get("X-Forwarded-For")).split(",")[0];
-		} else if (headers.get("Host") != null) {
-			hostIp = String.valueOf(headers.get("Host")).split(":")[0];
+		if (headers.get(IPValidationProperties.getIpHeaderName()) != null) {
+			hostIp = String.valueOf(headers.get(IPValidationProperties.getIpHeaderName())).split(",")[0];
+		} else if (headers.get(IPValidationProperties.getHostHeaderName()) != null) {
+			hostIp = String.valueOf(IPValidationProperties.getHostHeaderName()).split(":")[0];
 		}
 
 		return hostIp;

@@ -15,7 +15,6 @@ public class NoAuthCacheService {
 
 	static {
 		log.debug("initialize no auth cache");
-		log.info("initialize no auth cache");
 		try {
 			NoAuthCacheOperation.createNoAuthCache();
 			loadCache();
@@ -26,7 +25,6 @@ public class NoAuthCacheService {
 	}
 
 	public static Cache<Long, String> getCache() {
-		log.info("get cache ");
 		Cache<Long, String> noAuthCache = NoAuthCacheOperation
 				.getCache(NoAuthValidationUtil.NOAUTH_CACHE_NAME);
 		
@@ -39,13 +37,12 @@ public class NoAuthCacheService {
 			log.error("Error while initializing cache : " + ex);
 			ex.printStackTrace();
 		}
-
+		log.debug("return no auth cache " + noAuthCache);		
 		return noAuthCache;
 	}
 
 	public static void loadCache() throws Exception {
 		log.debug("load no auth Cache");
-		log.info("load no auth Cache");
 		NoAuthDBUtils noauthDBUtils = new NoAuthDBUtils();
 		String token = noauthDBUtils.getToken(NoAuthValidationProperties.getNoauthClientId());
 		log.info("token" + token);

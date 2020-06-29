@@ -21,32 +21,18 @@ import org.wso2.carbon.apimgt.gateway.handlers.security.APISecurityException;
 import com.wso2telco.dep.noauth.handler.validation.configuration.NoAuthValidationProperties;
 import com.wso2telco.dep.noauth.handler.validation.service.NoAuthCacheService;
 
-//import com.wso2telco.dep.ipvalidate.handler.validation.ClientValidator;
-//import com.wso2telco.dep.ipvalidate.handler.validation.configuration.IPValidationProperties;
-//import com.wso2telco.dep.ipvalidate.handler.validation.dto.RequestData;
-//import com.wso2telco.dep.ipvalidate.handler.validation.impl.ClientValidatorImpl;
-//import com.wso2telco.dep.ipvalidate.handler.validation.service.ValidationCacheService;
-
 public class APINoAuthenticationHandler extends APIAuthenticationHandler {
 
 	private static final Log log = LogFactory.getLog(APINoAuthenticationHandler.class);
 
 	public boolean handleRequest(MessageContext messageContext) {
-		log.debug("Request received : " + messageContext);
-		log.info("Request received : " + messageContext);
-
+		log.debug("Request received : " + messageContext);		
 		try {
-
 			Map headers = getTransportHeaders(messageContext);
-			log.debug("headers : " + headers);
-			log.info("headers : " + headers);
-
+			log.debug("headers : " + headers);			
 			String clientToken = NoAuthCacheService.getCache().get(NoAuthValidationProperties.getNoauthClientId());
-
 			if (clientToken != null) {
-
 				setTokentoContext(messageContext, clientToken);
-
 			} else {
 				throw new APISecurityException(NoAuthValidationProperties.getValidationFalidErrCode(),
 						NoAuthValidationProperties.getValidationFalidErrMsg());
@@ -55,7 +41,6 @@ public class APINoAuthenticationHandler extends APIAuthenticationHandler {
 			return super.handleRequest(messageContext);
 		} catch (APISecurityException e) {
 			log.error("Error : " + e);
-			log.info("Error : " + e);
 			handleIPValidateFailure(messageContext, e);
 			return false;
 		} catch (Exception ex) {

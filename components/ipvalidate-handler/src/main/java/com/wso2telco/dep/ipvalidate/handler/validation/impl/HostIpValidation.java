@@ -25,6 +25,7 @@ public class HostIpValidation extends CustomValidator {
 	@Override
 	public boolean doValidation(RequestData requestData) throws APISecurityException {
 		log.debug("Host IP validation : " + requestData);
+		log.info("Validate IP for client : " + requestData.getClientkey() + " IP : " + requestData.getHostip());
 		boolean status = false;
 
 		try {
@@ -60,12 +61,12 @@ public class HostIpValidation extends CustomValidator {
 			throw new APISecurityException(IPValidationProperties.getInvalidHostErrCode(),
 					IPValidationProperties.getInvalidHostErrMsg());
 		}
+		log.info("responce for IP validation : " + status);
 		return status;
 	}
 
 	public boolean isValidPoolIP(ArrayList<String> strings, String searchString) {
 		log.debug("Check is valid pool IP :" + strings + " ; " + searchString);
-		log.info("Check is valid pool IP :" + strings + " ; " + searchString);
 		boolean isIPValid = false;
 		if (strings.contains(searchString)) {
 			isIPValid = true;
@@ -75,7 +76,6 @@ public class HostIpValidation extends CustomValidator {
 
 	public boolean isIPinValidRange(List<ClientIPRange> clientIPRangeList, String ip) {
 		log.debug("Check is isIPinValidRange :" + clientIPRangeList + " , " + ip + " ; ");
-		log.info("Check isIPinValidRange :" + clientIPRangeList + " , " + ip + " ; ");
 		boolean isIPValid = false;
 		for (ClientIPRange clientIpRange : clientIPRangeList) {
 			log.info("Check clientIpRange :" + clientIpRange);
@@ -90,7 +90,6 @@ public class HostIpValidation extends CustomValidator {
 	public static boolean isValidRangeIP(String ipStart, String ipEnd, String ipToCheck) {
 
 		log.debug("Check is valid range IP :" + ipStart + " , " + ipEnd + " ; " + ipToCheck);
-		log.info("Check is valid range IP :" + ipStart + " , " + ipEnd + " ; " + ipToCheck);
 		try {
 			long ipLo = ipToLong(InetAddress.getByName(ipStart));
 			long ipHi = ipToLong(InetAddress.getByName(ipEnd));

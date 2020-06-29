@@ -34,7 +34,6 @@ public class IPValidationDBUtils {
 
 	public List<ClientKeyIPData> getValidIPListForClient(String clientKey) throws Exception {
 		log.debug("Get valid IP list for client : " + clientKey);
-		log.info("Get valid IP list for client : " + clientKey);
 		List<ClientKeyIPData> clientIPDataList = new ArrayList<ClientKeyIPData>();
 		try {
 			List<ClientIDSummary> summaryIdList = ipValidationdao.getSumaryListForClient(clientKey);
