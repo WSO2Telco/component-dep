@@ -76,9 +76,8 @@ public class IPValidateHandler extends APIAuthenticationHandler {
 		if (headers.get(IPValidationProperties.getIpHeaderName()) != null) {
 			hostIp = String.valueOf(headers.get(IPValidationProperties.getIpHeaderName())).split(",")[0];
 		} else if (headers.get(IPValidationProperties.getHostHeaderName()) != null) {
-			hostIp = String.valueOf(IPValidationProperties.getHostHeaderName()).split(":")[0];
+			hostIp = String.valueOf(headers.get(IPValidationProperties.getHostHeaderName())).split(":")[0];
 		}
-
 		return hostIp;
 	}
 	

@@ -133,7 +133,6 @@ public class IPValidationDao {
 
 	public List<ClientIPRange> getRangeIPListBySummaryId(int summaryId) throws Exception {
 		log.debug("Get get range IP list for summary id : " + summaryId);
-		log.info("Get get range IP list for summary id : " + summaryId);
 		Connection conn = null;
 		PreparedStatement ps = null;
 		ResultSet results = null;
