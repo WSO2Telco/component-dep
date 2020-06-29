@@ -20,6 +20,7 @@ public class ClientKeyValidation extends CustomValidator {
 	@Override
 	public boolean doValidation(RequestData requestData) throws APISecurityException {
 		log.debug("Client key validation : " + requestData);
+		log.info("Client key validation : " + requestData.getClientkey());
 		boolean status = false;
 
 		List<ClientKeyIPData> clientIpSummaryList = ValidationCacheService.getCache().get(requestData.getClientkey());
@@ -32,6 +33,7 @@ public class ClientKeyValidation extends CustomValidator {
 			nextValidator.doValidation(requestData);
 		}
 
+		log.info("Client key validation status : " + status);
 		return status;
 	}
 

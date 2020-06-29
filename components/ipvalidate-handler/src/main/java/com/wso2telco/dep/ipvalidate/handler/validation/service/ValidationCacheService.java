@@ -56,6 +56,7 @@ public class ValidationCacheService {
 			List<ClientKeyIPData> clientIpSummaryList = ipvalidationDBUtils.getValidIPListForClient(clientKey);
 			clienIPCache.put(clientKey, clientIpSummaryList);
 		}
+		log.debug("clienIPCache : " + clienIPCache);
 	}
 	
 	public String getTokenfromCache(String clientKey)
