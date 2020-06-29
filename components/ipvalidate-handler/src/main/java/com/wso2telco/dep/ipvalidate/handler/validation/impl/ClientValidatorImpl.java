@@ -19,25 +19,21 @@ public class ClientValidatorImpl implements ClientValidator {
 		boolean status = false;
 
 		try {
-
 			log.debug("Start validate request : " + requestData);
-			log.info("Start validate request : " + requestData);
-
+			log.info("Validate client : " + requestData.getClientkey());
+			
 			String validationclasses = IPValidationProperties.getValidatorClasses();
 			String[] strValidationClassList = validationclasses.split(",");
 			CustomValidator previousValidation = null;
 			for (String strvalidationclass : strValidationClassList) {				
 				log.debug("Validate class " + strvalidationclass);
-				log.info("Validate class " + strvalidationclass);
 				CustomValidator nextValidation = (CustomValidator) Class.forName(strvalidationclass).newInstance();
 				if (previousValidation != null) {
 					previousValidation.setNextValidator(nextValidation);
 				}
 				previousValidation = nextValidation;
-
 				status = previousValidation.doValidation(requestData);
 				log.debug("Validate class " + strvalidationclass + " response : " + status);
-				log.info("Validate class " + strvalidationclass + " response : " + status);
 				if(!status)
 				{
 					break;
@@ -59,7 +55,7 @@ public class ClientValidatorImpl implements ClientValidator {
 			throw new APISecurityException(IPValidationProperties.getValidationFalidErrCode(),
 					IPValidationProperties.getValidationFalidErrMsg());
 		}
-
+		log.info("responce for validation : " + status);
 		return status;
 	}
 

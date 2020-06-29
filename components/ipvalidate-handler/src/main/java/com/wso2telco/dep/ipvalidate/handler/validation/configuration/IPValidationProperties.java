@@ -15,12 +15,14 @@ public class IPValidationProperties {
 	private static String validatorClasses;
 	private static Long cacheModExpiretime;
 	private static Long cacheAccessExpiretime;
-	public static int invalidClientErrCode;
-	public static int invalidHostErrCode;
-	public static int validationFalidErrCode;
-	public static String invalidClientErrMsg;
-	public static String invalidHostErrMsg;
-	public static String validationFalidErrMsg;
+	private static int invalidClientErrCode;
+	private static int invalidHostErrCode;
+	private static int validationFalidErrCode;
+	private static String invalidClientErrMsg;
+	private static String invalidHostErrMsg;
+	private static String validationFalidErrMsg;
+	private static String ipHeaderName;
+	private static String hostHeaderName;
 	
 	
 	private static void loadValidationProperties()
@@ -39,6 +41,8 @@ public class IPValidationProperties {
 		invalidClientErrMsg = props.getProperty(IPValidationUtil.IP_VALIDATION_ERROR_MSG_INVALID_CLIENT);
 		invalidHostErrMsg = props.getProperty(IPValidationUtil.IP_VALIDATION_ERROR_MSG_INVALID_HOST);
 		validationFalidErrMsg = props.getProperty(IPValidationUtil.IP_VALIDATION_ERROR_MSG_VALIDATION_FAILURE);
+		ipHeaderName = props.getProperty(IPValidationUtil.IP_VALIDATION_HEADER_NAME);
+		hostHeaderName = props.getProperty(IPValidationUtil.IP_VALIDATION_HOST_HEADER_NAME);
 	}
 
 
@@ -91,7 +95,12 @@ public class IPValidationProperties {
 		return validationFalidErrMsg;
 	}
 
-	
+	public static String getIpHeaderName() {
+		return ipHeaderName;
+	}
 
-	
+
+	public static String getHostHeaderName() {
+		return hostHeaderName;
+	}
 }

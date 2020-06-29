@@ -27,8 +27,8 @@
 
     <artifactId>com.wso2telco.dep.ipvalidate.handler.feature</artifactId>
     <packaging>pom</packaging>
-    <name>WSO2.Telco Operator Service</name>
-    <description>This feature contains the server bundles required for operator service</description>
+    <name>WSO2.Telco Custom Handler Service</name>
+    <description>This feature contains the server bundles required for custom handler service</description>
 
     <build>
         <plugins>

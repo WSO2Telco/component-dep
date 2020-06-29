@@ -21,6 +21,8 @@ public class IPValidationUtil {
 	public static final String IP_VALIDATION_ERROR_MSG_INVALID_CLIENT = "ip.validation.error.msg.invalid.client";
 	public static final String IP_VALIDATION_ERROR_MSG_INVALID_HOST = "ip.validation.error.msg.invalid.host";
 	public static final String IP_VALIDATION_ERROR_MSG_VALIDATION_FAILURE = "ip.validation.error.msg.validate.failed";
+	public static final String IP_VALIDATION_HEADER_NAME = "ip.validation.header.name";
+	public static final String IP_VALIDATION_HOST_HEADER_NAME = "ip.validation.host.header.name";
 	private static Properties props = null;
 	
 	public static Properties loadUserMaskingProperties(){

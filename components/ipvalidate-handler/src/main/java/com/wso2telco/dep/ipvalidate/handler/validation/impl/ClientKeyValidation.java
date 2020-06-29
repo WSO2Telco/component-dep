@@ -24,8 +24,6 @@ public class ClientKeyValidation extends CustomValidator {
 
 		List<ClientKeyIPData> clientIpSummaryList = ValidationCacheService.getCache().get(requestData.getClientkey());
 
-		System.out.println("================clientIpSummaryList " + clientIpSummaryList);
-
 		if (clientIpSummaryList != null) {
 			status = true;
 		}
