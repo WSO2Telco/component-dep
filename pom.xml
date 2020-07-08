@@ -155,10 +155,10 @@
 		<module>components/webapps/quota-service</module>
 		<module>components/workflow-core</module>
 		<module>components/apim-loghandler</module>
-		<module>features</module>
-		<module>components/oneapi</module>
 		<module>components/ipvalidate-handler</module>
 		<module>components/noauth-handler</module>
+		<module>features</module>
+		<module>components/oneapi</module>		
 	</modules>
 
 	<scm>
