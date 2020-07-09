@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<project
+	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd"
+	xmlns="http://maven.apache.org/POM/4.0.0"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+	<modelVersion>4.0.0</modelVersion>
+	<parent>
+		<groupId>com.wso2telco.dep</groupId>
+		<artifactId>component-dep</artifactId>
+		<version>3.0.2-SNAPSHOT</version>
+		<relativePath>../../pom.xml</relativePath>
+	</parent>
+
+	<artifactId>ipvalidate-handler</artifactId>
+	<packaging>bundle</packaging>
+	<name>ipvalidate-handler</name>
+	<version>3.0.2-SNAPSHOT</version>
+	<url>http://maven.apache.org</url>
+	<properties>
+		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
+	</properties>
+	<dependencies>
+		<dependency>
+			<groupId>org.apache.synapse</groupId>
+			<artifactId>synapse-core</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.wso2.carbon.apimgt</groupId>
+			<artifactId>org.wso2.carbon.apimgt.gateway</artifactId>
+		</dependency>
+		<dependency>
+			<groupId>org.wso2.carbon.apimgt</groupId>
+			<artifactId>org.wso2.carbon.apimgt.gateway</artifactId>
+		</dependency>
+		<dependency>
+            <groupId>com.wso2telco.core</groupId>
+            <artifactId>dbutils</artifactId>
+        </dependency>
+		<dependency>
+            <groupId>javax.cache</groupId>
+            <artifactId>cache-api</artifactId>
+            <version>1.0.0</version>
+        </dependency>
+        <dependency>
+            <groupId>org.wso2.carbon.caching</groupId>
+            <artifactId>org.wso2.carbon.caching</artifactId>
+            <version>1.1.4-SNAPSHOT</version>
+        </dependency>
+		
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>3.8.1</version>
+			<scope>test</scope>
+		</dependency>
+	</dependencies>
+	
+	
+	<build>
+        <plugins>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-scr-plugin</artifactId>
+                <version>1.7.2</version>
+                <executions>
+                    <execution>
+                        <id>generate-scr-scrdescriptor</id>
+                        <goals>
+                            <goal>scr</goal>
+                        </goals>
+                    </execution>
+                </executions>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.felix</groupId>
+                <artifactId>maven-bundle-plugin</artifactId>
+                <extensions>true</extensions>
+                <version>2.3.5</version>
+                <configuration>
+                    <obrRepository>NONE</obrRepository>
+                    <instructions>
+                        <Bundle-SymbolicName>${project.groupId}.${project.artifactId}</Bundle-SymbolicName>
+                        <Bundle-Name>${project.artifactId}</Bundle-Name>
+                       <Export-Package>
+                            com.wso2telco.dep.ipvalidate.handler.*
+                        </Export-Package>
+                        <Import-Package>
+                            *;resolution:=optional
+                        </Import-Package>
+                        <Embed-Dependency>
+                            scribe;scope=compile|runtime;inline=false;
+                        </Embed-Dependency>
+                        <DynamicImport-Package>*</DynamicImport-Package>
+                        <Carbon-Component>UIBundle</Carbon-Component>
+
+                    </instructions>
+                </configuration>
+            </plugin>
+            <plugin>
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-compiler-plugin</artifactId>
+                <configuration>
+                    <source>8</source>
+                    <target>8</target>
+                </configuration>
+            </plugin>
+        </plugins>
+    </build>
+</project>
