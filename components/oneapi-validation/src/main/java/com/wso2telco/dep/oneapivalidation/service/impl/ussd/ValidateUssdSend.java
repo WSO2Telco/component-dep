@@ -26,6 +26,9 @@ import org.json.JSONException;
 import org.json.JSONObject;
 import static com.wso2telco.dep.oneapi.constant.ussd.USSDValueConstants.MTINIT;
 
+import java.io.UnsupportedEncodingException;
+import java.net.URLDecoder;
+
 
 // TODO: Auto-generated Javadoc
 /**
@@ -132,6 +135,16 @@ public class ValidateUssdSend implements IServiceValidate {
     }
 
     public void compareMsisdn(String resourcePath, JSONObject json) {
+    	if (!resourcePath.contains("+")) {
+    		if (resourcePath.contains("tel")) {
+    			// tel: | tel%3A%2B | tel%3A
+    			try {
+    				resourcePath = URLDecoder.decode(resourcePath, "UTF-8");
+    			} catch (UnsupportedEncodingException e) {
+    				log.debug("Url MSISDN can not be decoded ");
+    			}
+    		}
+    	}
         final String[] urlParts = extractUrlParts(resourcePath);
         final String payloadMsisdn = json.getJSONObject("outboundUSSDMessageRequest").getString("address");
 
