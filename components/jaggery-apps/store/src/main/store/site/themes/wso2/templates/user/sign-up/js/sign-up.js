@@ -25,40 +25,58 @@ $(document).ready(function() {
 		} else {
 			allFieldsValues = allFieldsValues + "|" + value;
 		}
-	}
-        var tenantDomain = document.getElementById('hiddenTenantDomain').value;
-        var fullUserName;
-        if(tenantDomain == "null" || tenantDomain == "carbon.super") {
-            fullUserName = document.getElementById('newUsername').value;
-        } else {
-            fullUserName = document.getElementById('newUsername').value + "@" 
-                    + tenantDomain;
-        }
+    }
+         var tenantDomain = document.getElementById('hiddenTenantDomain').value;
+         var fullUserName;
+         if (tenantDomain == "null" || tenantDomain == "carbon.super") {
+             fullUserName = document.getElementById('newUsername').value;
+         } else {
+             fullUserName = document.getElementById('newUsername').value + "@"
+                 + tenantDomain;
+         }
 
-    	jagg.post("/site/blocks/user/sign-up/ajax/user-add.jag", {
-            action:"addUser",
-            username:fullUserName,
-            password:$('#newPassword').val(),
-            allFieldsValues:allFieldsValues
-        }, function (result) {
-            if (result.error == false) {
-                    jagg.message({content: i18n.t("User added successfully. You can now sign into the API store using the new user account."), type:"info",
-                        cbk:function() {
-                            if (hasPurposes == 'true') {
-                                var receipt = addReceiptInformation(container);
-                                $('<input />').attr('type', 'hidden')
-                                    .attr('name', "consent")
-                                    .attr('value', JSON.stringify(receipt))
-                                    .appendTo('#signUpRedirectForm');
-                            }
-                            $('#signUpRedirectForm').submit();
-                        }
-                    });
-                }
-            else {
-                jagg.message({content:result.message,type:"error"});
-            }
-        }, "json");
+         jagg.post("/site/blocks/user/sign-up/ajax/user-add.jag", {
+             action: "addUser",
+             username: fullUserName,
+             password: $('#newPassword').val(),
+             allFieldsValues: allFieldsValues
+         }, function (result) {
+             if (result.error == false) {
+                 if (result.showWorkflowTip) {
+                     jagg.message({
+                         content: i18n.t("User added successfully. You can now sign into the API store using the new user account."),
+                         type: "info",
+                         cbk: function () {
+                             if (hasPurposes == 'true') {
+                                 var receipt = addReceiptInformation(container);
+                                 $('<input />').attr('type', 'hidden')
+                                     .attr('name', "consent")
+                                     .attr('value', JSON.stringify(receipt))
+                                     .appendTo('#signUpRedirectForm');
+                             }
+                             $('#signUpRedirectForm').submit();
+                         }
+                     });
+                 } else {
+                     jagg.message({
+                         content: i18n.t("User added successfully. You can now sign into the API store using the new user account."),
+                         type: "info",
+                         cbk: function () {
+                             if (hasPurposes == 'true') {
+                                 var receipt = addReceiptInformation(container);
+                                 $('<input />').attr('type', 'hidden')
+                                     .attr('name', "consent")
+                                     .attr('value', JSON.stringify(receipt))
+                                     .appendTo('#signUpRedirectForm');
+                             }
+                             $('#signUpRedirectForm').submit();
+                         }
+                     });
+                 }
+             } else {
+                 jagg.message({content: result.message, type: "error"});
+             }
+         }, "json");
      }
     });
     $("#newPassword").keyup(function() {
