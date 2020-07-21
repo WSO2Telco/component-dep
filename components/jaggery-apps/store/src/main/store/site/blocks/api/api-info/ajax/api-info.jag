@@ -54,7 +54,7 @@ include("/jagg/jagg.jag");
 
         if (result.error) {
             obj = {
-                error:true,
+                error: true,
                 message:msg.error.authError(action, username)
             };
         } else {
@@ -89,7 +89,7 @@ include("/jagg/jagg.jag");
 
         if (result.error) {
             obj = {
-                error:result.error,
+                error: true,
                 message:msg.error.authError(action, username)
             };
         } else {
@@ -100,13 +100,13 @@ include("/jagg/jagg.jag");
         }
         print(obj);
     }  else  if (action == "isRatingActivated") {
-        
+
         mod = jagg.module("rating");
         result = mod.isRatingActivated();
 
         if (result.error) {
             obj = {
-                error:result.error               
+                error: true 
             };
         } else {
             obj = {
@@ -140,7 +140,7 @@ include("/jagg/jagg.jag");
 	
 	   if (result.error) {
             	obj = {
-                	error:result.error,
+                	error: result.error,
                 	message:msg.error.authError(action, username)
             	};
            } else {
