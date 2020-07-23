@@ -452,3 +452,51 @@ CREATE TABLE `operator_brands` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `operatorcode` (`operatorcode`)
 ) ENGINE=InnoDB;
+
+
+/**
+*Custom IP validation related tables
+**/
+
+CREATE TABLE IF NOT EXISTS `client_id_summary` (
+  `ID` int(20) NOT NULL AUTO_INCREMENT,
+  `client_id` varchar(255) NOT NULL,
+  `client_key` varchar(255) NOT NULL,
+  `ip_mapping_type_id` int(11) DEFAULT NULL,
+  `ip_validation_enabled` boolean DEFAULT false,
+  PRIMARY KEY (`ID`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `ip_mapping_type` (
+  `ID` int(20) NOT NULL AUTO_INCREMENT,
+  `Description` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `client_ip_pool_mapping` (
+  `summary_id` int(20) NOT NULL,
+  `ip_pool_id` int(11) DEFAULT NULL
+);
+
+
+CREATE TABLE IF NOT EXISTS `ip_pool` (
+  `ip_pool_id` int(20) NOT NULL AUTO_INCREMENT,
+  `ip` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`ip_pool_id`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `client_ip_range_mapping` (
+  `summary_id` int(20) NOT NULL,
+  `ip_range_id` int(11) DEFAULT NULL
+);
+
+
+CREATE TABLE IF NOT EXISTS `ip_range` (
+  `ip_range_id` int(20) NOT NULL AUTO_INCREMENT,
+  `start_ip` varchar(255) DEFAULT NULL,
+  `end_ip` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`ip_range_id`)
+);
