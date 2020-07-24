@@ -175,7 +175,7 @@ public class ValidateRefund implements IServiceValidate {
                 if (!objChargingMetaData.isNull("channel")) {
                     channel = nullOrTrimmed(objChargingMetaData.get("channel").toString());
                 }
-                if (!objChargingMetaData.isNull("taxAmount")) {
+                if (!objChargingMetaData.isNull("taxAmount") && !String.valueOf(objChargingMetaData.get("taxAmount")).isEmpty()) {
                     taxAmount = Double.parseDouble(nullOrTrimmed(String.valueOf(objChargingMetaData.get("taxAmount"))));
                 }
                 if (!objChargingMetaData.isNull("mandateId")) {
