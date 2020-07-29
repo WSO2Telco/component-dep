@@ -1,0 +1,13 @@
+<% jagg.template("swagger-gen", function(inputs, outputs, jagg) { %>
+	<div class="page-header">
+		<h2>Swagger Gen</h2>
+	</div>
+	<% /*
+
+	Comments
+
+	*/ %>
+	<div>
+		<swagger-gen></swagger-gen>
+	</div>
+<%});%>
