@@ -499,3 +499,17 @@ CREATE TABLE IF NOT EXISTS `ip_range` (
   `end_ip` varchar(255) DEFAULT NULL,
   PRIMARY KEY (`ip_range_id`)
 );
+
+--
+-- Tables for Response Filtering
+--
+CREATE TABLE `response_filter` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `sp` varchar(255) NULL,
+    `application` varchar(255) NULL,
+    `api` varchar(255) NULL,
+    `operation` varchar(255) NULL,
+    `fields` varchar(2048) NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `response_filter_uindex` (`sp`, `application`, `api`, `operation`)
+    );
