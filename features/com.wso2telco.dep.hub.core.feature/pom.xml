@@ -71,6 +71,7 @@
                                         <include>build.properties</include>
 					<include>config/ip-validation.properties</include>
 					<include>config/noauth-validation.properties</include>
+                                        <include>config/super-token-conf.properties</include>
                                     </includes>
                                 </resource>
                             </resources>
