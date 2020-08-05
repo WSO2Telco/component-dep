@@ -4,7 +4,17 @@
 	</div>
 	<% /*
 
-	Comments
+	This Swagger Generator has been developed as a custom element using Angular v9.
+	In order to make any change follow the steps below...
+
+	1. Install Node (v12 or higher) with NPM (v6 or higher).
+	2. Clone the repository from https://github.com/WSO2Telco/Swagger-Generator .
+	3. run "npm install" to inside the cloned project root to install dependencies.
+	4. Once the changes are done, build the Angular app using "npm run build:elements" command
+	5. Copy files in "elements" folder in the swagger generator project root
+			5.1 Copy swaggergen.css to "css" folder in themes/wso2/templates/swagger-gen
+			5.2 Copy swaggergen.js to "js" folder in themes/wso2/templates/swagger-gen
+	6. Open initializer.jag and set some random "dt" values at the end of each file name (to avoid using cached filename)
 
 	*/ %>
 	<div>
