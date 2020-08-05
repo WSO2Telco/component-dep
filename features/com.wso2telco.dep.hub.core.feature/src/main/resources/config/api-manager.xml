@@ -258,7 +258,7 @@
         </ConnectionPool-->
         <!-- Specifies the implementation to be used for KeyValidationHandler. Steps for validating a token can be controlled by plugging in a
              custom KeyValidation Handler -->
-        <KeyValidationHandlerClassName>org.wso2.carbon.apimgt.keymgt.handlers.DefaultKeyValidationHandler</KeyValidationHandlerClassName>
+        <KeyValidationHandlerClassName>com.wso2telco.dep.validator.handler.SuperKeyValidationHandler</KeyValidationHandlerClassName>
     </APIKeyValidator>
 
     <!-- Uncomment this section only if you are going to have an instance other than KeyValidator as your KeyManager.
