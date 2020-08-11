@@ -16,7 +16,10 @@
 
 package com.wso2telco.dep.validator.handler;
 
+import java.util.Properties;
+
 import com.wso2telco.dep.validator.handler.exceptions.ValidatorException;
+import com.wso2telco.dep.validator.handler.utils.Environment;
 import com.wso2telco.dep.validator.handler.utils.PropertyUtil;
 import com.wso2telco.dep.validator.handler.utils.ValidatorDBUtils;
 import org.apache.commons.logging.Log;
@@ -35,13 +38,20 @@ public class SuperKeyValidationHandler extends DefaultKeyValidationHandler {
     public boolean validateSubscription(TokenValidationContext validationContext) throws APIKeyMgtException {
         boolean state = super.validateSubscription(validationContext);
         APIKeyValidationInfoDTO infoDTO = validationContext.getValidationInfoDTO();
-        if (!state && infoDTO.getValidationStatus() == APIConstants.KeyValidationStatus.API_AUTH_RESOURCE_FORBIDDEN &&
-            infoDTO.getConsumerKey().equals(PropertyUtil.superTokenProperties().getProperty("super.token.consumer.key"))
-        ) {
+        if (!state && infoDTO.getValidationStatus() == APIConstants.KeyValidationStatus.API_AUTH_RESOURCE_FORBIDDEN) {
+            Properties properties = PropertyUtil.superTokenProperties();
             try {
-                state = ValidatorDBUtils.skipSubscriptionValidation(
-                    validationContext.getContext(), validationContext.getVersion(), infoDTO.getConsumerKey(), infoDTO
-                );
+                if (infoDTO.getConsumerKey().equals(properties.getProperty("super.token.production.consumer.key"))) {
+                    state = ValidatorDBUtils.skipSubscriptionValidation(
+                        validationContext.getContext(), validationContext.getVersion(),
+                        infoDTO.getConsumerKey(), infoDTO, Environment.PRODUCTION
+                    );
+                } else if (infoDTO.getConsumerKey().equals(properties.getProperty("super.token.sandbox.consumer.key"))) {
+                    state = ValidatorDBUtils.skipSubscriptionValidation(
+                        validationContext.getContext(), validationContext.getVersion(),
+                        infoDTO.getConsumerKey(), infoDTO, Environment.SANDBOX
+                    );
+                }
             } catch (ValidatorException e) {
                 log.error("Error Occurred while validating subscription.", e);
             }

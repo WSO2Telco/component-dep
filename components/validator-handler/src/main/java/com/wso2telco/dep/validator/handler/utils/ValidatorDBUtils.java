@@ -114,7 +114,7 @@ public class ValidatorDBUtils {
     }
 
     public static boolean skipSubscriptionValidation(String context, String version, String consumerKey,
-                                                     APIKeyValidationInfoDTO infoDTO) throws ValidatorException {
+        APIKeyValidationInfoDTO infoDTO, Environment environment) throws ValidatorException {
         boolean defaultVersionInvoked = false;
         if (version != null && version.startsWith(APIConstants.DEFAULT_VERSION_PREFIX)) {
             defaultVersionInvoked = true;
@@ -140,7 +140,7 @@ public class ValidatorDBUtils {
                 ps.setString(3, version);
             }
             rs = ps.executeQuery();
-            if (rs.next()) {
+            if (rs.next() && environment.name().equals(rs.getString("KEY_TYPE"))) {
                 infoDTO.setSubscriber(rs.getString("USER_ID"));
                 infoDTO.setApplicationId(rs.getString("APPLICATION_ID"));
                 infoDTO.setApiName(rs.getString("API_NAME"));
