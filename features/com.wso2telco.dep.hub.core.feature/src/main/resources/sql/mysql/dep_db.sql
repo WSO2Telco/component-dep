@@ -513,3 +513,17 @@ CREATE TABLE `forum_topics` (
     `content` varchar(1000) DEFAULT NULL,
     PRIMARY KEY (`id`)
 ) ENGINE=InnoDB;
+
+--
+-- Tables for Response Filtering
+--
+CREATE TABLE `response_filter` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `sp` varchar(255) NULL,
+    `application` varchar(255) NULL,
+    `api` varchar(255) NULL,
+    `operation` varchar(255) NULL,
+    `fields` varchar(2048) NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `response_filter_uindex` (`sp`, `application`, `api`, `operation`)
+);
