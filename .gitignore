@@ -26,3 +26,5 @@ target
 *pom.xml.tag
 *release.properties
 *.DS_STORE
+
+dependency-reduced-pom.xml
