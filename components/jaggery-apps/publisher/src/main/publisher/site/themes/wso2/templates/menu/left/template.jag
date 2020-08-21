@@ -24,6 +24,8 @@
     var statsMappedUrl=jagg.getMappedUrl("/site/pages/statistics.jag");
     var allStatsUrl=jagg.getAbsoluteUrl("/site/pages/all-statistics.jag");
     var allStatsMappedUrl=jagg.getMappedUrl("/site/pages/all-statistics.jag");
+    var swaggerGenUrl=jagg.getAbsoluteUrl("/site/pages/swagger-gen.jag");
+    var swaggerGenMappedUrl=jagg.getMappedUrl("/site/pages/swagger-gen.jag");
     var tierPermissionsUrl=jagg.getAbsoluteUrl("/site/pages/tiers.jag");
     var tierPermissionsMappedUrl=jagg.getMappedUrl("/site/pages/tiers.jag");
     var manageAlertTypesUrl =jagg.getAbsoluteUrl("/site/pages/manage-alert-type.jag");
@@ -34,7 +36,7 @@
     	if(page == null ) {
     	    page = "";
     	}
-	
+
     var  mod,isPermitted, isManageTierPermitted;
     if(jagg.getCreatePermitted() !== null) {
         isPermitted = (jagg.getCreatePermitted().permitted || jagg.getPublishPermitted().permitted);
@@ -72,9 +74,18 @@
 		<div class="nano">
 			<div class="nano-content">
 				<ul class="nav nav-pills  nav-stacked pages">
-					<li <%if(reqUrl.equals(jagg.url(""))||reqUrl.equals(jagg.url("/"))||reqUrl.indexOf(listUrl)>=0 || reqUrl.indexOf(listMappedUrl)>=0||reqUrl.indexOf(infoUrl)>=0 || reqUrl.indexOf(infoMappedUrl)>=0){%>class="active"<% } %>><a
-						href="<%=listMappedUrl%>?page=1<%=urlPostfix%>" title="<%=i18n.localize("APIs")%>"
-						onclick="jagg.sessionAwareJS({redirect:'<%=listMappedUrl%>?page=1<%=urlPostfix%>',e:event,ssoEnabled:<%=ssoEnabled%>})"><i class="fw fw-api fw-2x" title="<%=i18n.localize("APIs")%>" style="font-size:22px;"></i> <%=i18n.localize("APIs")%></a></li>
+					<li <%if(reqUrl.equals(jagg.url(""))||reqUrl.equals(jagg.url("/"))||reqUrl.indexOf(listUrl)>=0 || reqUrl.indexOf(listMappedUrl)>=0||reqUrl.indexOf(infoUrl)>=0 || reqUrl.indexOf(infoMappedUrl)>=0){%>class="active"<% } %>>
+            <a href="<%=listMappedUrl%>?page=1<%=urlPostfix%>" title="<%=i18n.localize("APIs")%>" onclick="jagg.sessionAwareJS({redirect:'<%=listMappedUrl%>?page=1<%=urlPostfix%>',e:event,ssoEnabled:<%=ssoEnabled%>})">
+              <i class="fw fw-api fw-2x" title="<%=i18n.localize("APIs")%>" style="font-size:22px;"></i> <%=i18n.localize("APIs")%>
+            </a>
+          </li>
+
+          <li <%if(reqUrl.indexOf(swaggerGenUrl)>=0 || reqUrl.indexOf(swaggerGenMappedUrl)>=0){%>class="active"<% } %>>
+            <a href="<%=swaggerGenMappedUrl%>" title="Swagger Generator" onclick="jagg.sessionAwareJS({redirect:'<%=swaggerGenMappedUrl%>',e:event,ssoEnabled:<%=ssoEnabled%>})">
+              <i class="fw fw-pages fw-2x" style="font-size:22px;"></i> Swagger Generator
+            </a>
+          </li>
+
 					<li>
 					<a title="<%=i18n.localize("Statistics")%>" data-toggle="collapse" data-target="#analytics"
 					            <% if(!showAPI || !showApplications || !showSubscriptions){ %> class="collapsed" <% } %> >
@@ -202,4 +213,3 @@
 		</div>
 </div>
 <%});%>
-
