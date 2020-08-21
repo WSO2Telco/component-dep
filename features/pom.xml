@@ -55,6 +55,7 @@
 		<module>com.wso2telco.dep.workflow.core.feature</module>
         <module>com.wso2telco.dep.usermasking.feature</module>
 	<module>com.wso2telco.dep.ipvalidate.handler.feature</module>
+	<module>com.wso2telco.dep.custom.jwt.feature</module>
 	<module>com.wso2telco.dep.noauth.handler.feature</module>
     </modules>
 </project>
