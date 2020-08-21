@@ -2,8 +2,8 @@
 jagg.initializer("swagger-gen", {
 
      preInitialize:function () {
-         jagg.addHeaderJS("swagger-gen", "swagger-gen", "templates/swagger-gen/js/swaggergen.js?dt=805");
-         jagg.addFooterCSS("swagger-gen", "swagger-gen", "templates/swagger-gen/css/swaggergen.css?dt=805");
+         jagg.addHeaderJS("swagger-gen", "swagger-gen", "templates/swagger-gen/js/swaggergen.js?dt=821");
+         jagg.addFooterCSS("swagger-gen", "swagger-gen", "templates/swagger-gen/css/swaggergen.css?dt=821");
      }
 });
 %>
