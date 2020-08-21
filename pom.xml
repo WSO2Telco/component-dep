@@ -157,6 +157,7 @@
 		<module>components/workflow-core</module>
 		<module>components/apim-loghandler</module>
 		<module>components/ipvalidate-handler</module>
+		<module>components/custom-jwt-generator</module>
 		<module>components/noauth-handler</module>
 		<module>features</module>
 		<module>components/oneapi</module>
@@ -835,6 +836,12 @@
 			<dependency>
 				<groupId>com.wso2telco.dep</groupId>
 				<artifactId>ipvalidate-handler</artifactId>
+				<version>${com.wso2telco.dep.version}</version>
+				<scope>provided</scope>
+			</dependency>
+			<dependency>
+				<groupId>com.wso2telco.dep</groupId>
+				<artifactId>custom-jwt-generator</artifactId>
 				<version>${com.wso2telco.dep.version}</version>
 				<scope>provided</scope>
 			</dependency>
