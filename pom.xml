@@ -129,6 +129,7 @@
 		<module>components/verification-handler</module>
 		<module>components/validator-handler</module>
 		<module>components/user-masking</module>
+		<module>components/response-filter</module>
 		<module>components/operator-service</module>
 		<!--module>components/publish-events/publish-events-data</module> <module>components/publish-events/publish-events-extensions</module -->
 		<module>components/workflow/workflow-approval</module>
@@ -158,7 +159,7 @@
 		<module>components/ipvalidate-handler</module>
 		<module>components/noauth-handler</module>
 		<module>features</module>
-		<module>components/oneapi</module>		
+		<module>components/oneapi</module>
 	</modules>
 
 	<scm>
@@ -855,6 +856,13 @@
 				<artifactId>mockito-all</artifactId>
 				<version>1.10.19</version>
 				<scope>test</scope>
+			</dependency>
+			<dependency>
+				<groupId>org.wso2.carbon.apimgt</groupId>
+				<artifactId>org.wso2.carbon.apimgt.keymgt</artifactId>
+				<version>${org.wso2.carbon.apimgt.version}</version>
+				<type>jar</type>
+				<scope>provided</scope>
 			</dependency>
 		</dependencies>
 	</dependencyManagement>

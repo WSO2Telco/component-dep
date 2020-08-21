@@ -22,7 +22,9 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.apimgt.api.APIManagementException;
 import org.wso2.carbon.apimgt.api.model.APIIdentifier;
+import org.wso2.carbon.apimgt.impl.APIConstants;
 import org.wso2.carbon.apimgt.impl.dao.ApiMgtDAO;
+import org.wso2.carbon.apimgt.impl.dto.APIKeyValidationInfoDTO;
 import org.wso2.carbon.apimgt.impl.utils.APIMgtDBUtil;
 
 import java.sql.Connection;
@@ -109,6 +111,56 @@ public class ValidatorDBUtils {
             APIMgtDBUtil.closeAllConnections(ps, conn, results);
         }
         return validatorClass;
+    }
+
+    public static boolean skipSubscriptionValidation(String context, String version, String consumerKey,
+        APIKeyValidationInfoDTO infoDTO, Environment environment) throws ValidatorException {
+        boolean defaultVersionInvoked = false;
+        if (version != null && version.startsWith(APIConstants.DEFAULT_VERSION_PREFIX)) {
+            defaultVersionInvoked = true;
+            version = version.split(APIConstants.DEFAULT_VERSION_PREFIX)[1];
+        }
+        String sql;
+        if (defaultVersionInvoked) {
+            sql = SQLConstants.API_INFO_DEFAULT_SQL;
+        } else {
+            sql = SQLConstants.API_INFO_VERSION_SQL;
+        }
+
+        Connection conn = null;
+        PreparedStatement ps = null;
+        ResultSet rs = null;
+        try {
+            conn = APIMgtDBUtil.getConnection();
+            conn.setAutoCommit(true);
+            ps = conn.prepareStatement(sql);
+            ps.setString(1, context);
+            ps.setString(2, consumerKey);
+            if (!defaultVersionInvoked) {
+                ps.setString(3, version);
+            }
+            rs = ps.executeQuery();
+            if (rs.next() && environment.name().equals(rs.getString("KEY_TYPE"))) {
+                infoDTO.setSubscriber(rs.getString("USER_ID"));
+                infoDTO.setApplicationId(rs.getString("APPLICATION_ID"));
+                infoDTO.setApiName(rs.getString("API_NAME"));
+                infoDTO.setApiPublisher(rs.getString("API_PROVIDER"));
+                infoDTO.setApplicationName(rs.getString("NAME"));
+                infoDTO.setApplicationTier(rs.getString("APPLICATION_TIER"));
+                infoDTO.setType(rs.getString("KEY_TYPE"));
+                infoDTO.setAuthorized(true);
+                infoDTO.setValidationStatus(0);
+                return true;
+            }
+            infoDTO.setAuthorized(false);
+            infoDTO.setValidationStatus(APIConstants.KeyValidationStatus.API_AUTH_RESOURCE_FORBIDDEN);
+        } catch (SQLException e) {
+            handleException("Exception occurred while validating Subscription.", e);
+        } finally {
+            try { if (conn!=null) conn.setAutoCommit(false); } catch (SQLException ignored){}
+            APIMgtDBUtil.closeAllConnections(ps, conn, rs);
+        }
+        return false;
     }
 
     /**
