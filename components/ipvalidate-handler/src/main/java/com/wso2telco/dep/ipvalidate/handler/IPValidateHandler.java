@@ -38,6 +38,7 @@ public class IPValidateHandler extends APIAuthenticationHandler {
 			log.debug("headers : " + headers);
 			RequestData requestData = new RequestData();
 
+
 			requestData.setClientkey(getClientKey(messageContext));
 			requestData.setHostip(getHostIP(headers));
 
@@ -88,7 +89,16 @@ public class IPValidateHandler extends APIAuthenticationHandler {
 		try
 		{
 			String urlPath = messageContext.getTo().toString().split("[?]")[1];
-			clientKey = urlPath.split("=")[1];
+			String keyParam = urlPath.split("=")[0];
+			if(keyParam.equalsIgnoreCase(IPValidationProperties.getClientKeyParamName()))
+			{
+				clientKey = urlPath.split("=")[1];
+			} else
+			{
+				log.error("Invalid query parameter ");
+				throw new APISecurityException(IPValidationProperties.getValidationFalidErrCode(),
+						IPValidationProperties.getValidationFalidErrMsg());
+			}
 		}
 		catch(Exception e)
 		{

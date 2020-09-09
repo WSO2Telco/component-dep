@@ -23,12 +23,14 @@ public class IPValidationProperties {
 	private static String validationFalidErrMsg;
 	private static String ipHeaderName;
 	private static String hostHeaderName;
+	private static String clientKeyParamName;
 	
 	
 	private static void loadValidationProperties()
 	{
 		Properties props = PropertyFileReader.getFileReader().getProperties(IPValidationUtil.IP_VALIDATION_PROPERTIES_FILE);
-		
+
+
 		isCustomValidationEnabled = Boolean.valueOf(props.getProperty(IPValidationUtil.IS_IP_VALIDATION_ENABLED));
 		validatorClasses = props.getProperty(IPValidationUtil.IP_VALIDATION_CLASSES);
 		cacheModExpiretime = Long.parseLong(props.getProperty(IPValidationUtil.IP_VALIDATION_CACHE_MOD_EXPIRE));
@@ -43,6 +45,7 @@ public class IPValidationProperties {
 		validationFalidErrMsg = props.getProperty(IPValidationUtil.IP_VALIDATION_ERROR_MSG_VALIDATION_FAILURE);
 		ipHeaderName = props.getProperty(IPValidationUtil.IP_VALIDATION_HEADER_NAME);
 		hostHeaderName = props.getProperty(IPValidationUtil.IP_VALIDATION_HOST_HEADER_NAME);
+		clientKeyParamName = props.getProperty(IPValidationUtil.IP_VALIDATION_KEY_PARAM_NAME);
 	}
 
 
@@ -98,7 +101,11 @@ public class IPValidationProperties {
 	public static String getIpHeaderName() {
 		return ipHeaderName;
 	}
+	
 
+	public static String getClientKeyParamName() {
+		return clientKeyParamName;
+	}
 
 	public static String getHostHeaderName() {
 		return hostHeaderName;
