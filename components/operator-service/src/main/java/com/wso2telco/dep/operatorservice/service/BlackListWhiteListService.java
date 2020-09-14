@@ -245,6 +245,14 @@ public class BlackListWhiteListService {
 		Gson gson = new GsonBuilder().create();
 		return gson.toJson(appUniqueIDList);
 	}
+	
+	public  String getAllApplicationsByUserOnly(String userID) throws BusinessException {
+
+		List<String> appUniqueIDList = dao.getAllAplicationsByUserWithoutSub(userID);
+
+		Gson gson = new GsonBuilder().create();
+		return gson.toJson(appUniqueIDList);
+	}
 
 	public  String getAllApplicationsByUserAndOperator(String userID, String operator) throws BusinessException {
 
