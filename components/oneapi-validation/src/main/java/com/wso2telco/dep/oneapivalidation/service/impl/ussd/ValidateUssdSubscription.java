@@ -71,8 +71,8 @@ public class ValidateUssdSubscription implements IServiceValidate {
                 shortCode = nullOrTrimmed(requestData.getString(USSDKeyConstants.SHORT_CODE));
             }
 
-            if (!requestData.isNull("keyword")) {
-                keyword = nullOrTrimmed(requestData.getString("keyword"));
+            if (!requestData.isNull("keyword") ) {
+                keyword = nullOrTrimmed(requestData.get("keyword").toString());
             }
 
             ValidationRule[] rules = new ValidationRule[]{
@@ -120,8 +120,8 @@ public class ValidateUssdSubscription implements IServiceValidate {
                     sCode = nullOrTrimmed(requestData.getString("shortCode"));
                 }
                 shortCodeRules[0] = new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "shortCode", sCode);
-                if (requestData.has("keyword")) {
-                    keyword = nullOrTrimmed(requestData.getString("keyword"));
+                if (requestData.has("keyword") && !requestData.isNull("keyword")) {
+                    keyword = nullOrTrimmed(requestData.get("keyword").toString());
                 }
                 shortCodeRules[1] = new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "keyword", keyword);
 
