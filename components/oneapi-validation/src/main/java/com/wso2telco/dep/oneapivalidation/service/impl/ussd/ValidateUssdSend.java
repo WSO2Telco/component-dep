@@ -80,11 +80,6 @@ public class ValidateUssdSend implements IServiceValidate {
                 ussdAction = nullOrTrimmed(requestData.getString("ussdAction"));
             }
 
-            if (!(MTINIT.equals(ussdAction))) {
-                throw new CustomException("SVC0002", "Invalid input value for message part %1",
-                        new String[]{"Invalid ussdAction"});
-            }
-
             if (!requestData.isNull("responseRequest")) {
                 JSONObject responseRequest = requestData.getJSONObject("responseRequest");
                 if (!responseRequest.isNull("notifyURL")) {
@@ -112,6 +107,11 @@ public class ValidateUssdSend implements IServiceValidate {
             new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "notifyURL", notifyUrl),
             new ValidationRule(ValidationRule.VALIDATION_TYPE_OPTIONAL, "callbackData", callbackData),};
         Validation.checkRequestParams(rules);
+
+        if (!(MTINIT.equals(ussdAction))) {
+            throw new CustomException("SVC0002", "Invalid input value for message part %1",
+                    new String[]{"Invalid ussdAction"});
+        }
     }
 
     /* (non-Javadoc)
