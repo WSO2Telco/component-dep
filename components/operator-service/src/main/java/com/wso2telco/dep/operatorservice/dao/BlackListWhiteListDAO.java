@@ -50,7 +50,7 @@ public class BlackListWhiteListDAO {
 
 	private static final Log log = LogFactory.getLog(BlackListWhiteListDAO.class);
 
-	private static final String streamBlacklistQuery = "SELECT apis.API_NAME, apps.NAME, apps.CREATED_BY, bw.MSISDN, " +
+	private static final String streamBlacklistQueryCommonPart = "SELECT apis.API_NAME, apps.NAME, apps.CREATED_BY, bw.MSISDN, " +
 			"bw.ACTION, bw.user, bw.CREATED, bw.LAST_MODIFIED" +
 			" FROM " +
 			OparatorTable.API_BLACKLIST_WHITELIST.getTObject() +
@@ -67,7 +67,41 @@ public class BlackListWhiteListDAO {
 			" AND bw.SERVICE_PROVIDER LIKE ? " +
 			" AND bw.ACTION = ? " +
 			" AND apps.application_id = app_id " +
-			" AND apis.API_ID = bw.API_ID " +
+			" AND apis.API_ID = bw.API_ID ";
+
+	private static final String streamBlacklistQuery = streamBlacklistQueryCommonPart +
+			" LIMIT ?" +
+			" OFFSET ?";
+
+	private static final String streamBlacklistQueryAllSpAllAppAllApi = "(" + streamBlacklistQueryCommonPart +") " +
+			" UNION (SELECT '%', '%', '', bw.MSISDN, bw.ACTION, bw.user, bw.CREATED, bw.LAST_MODIFIED " +
+			" FROM api_blacklist_whitelist AS bw " +
+			" WHERE bw.API_ID = '%' AND bw.APP_ID = '%' AND bw.SERVICE_PROVIDER = 'All' AND bw.ACTION = ?) " +
+			" LIMIT ?" +
+			" OFFSET ?";
+
+	private static final String streamBlacklistQueryAllAppAllApi = "(" + streamBlacklistQueryCommonPart +") " +
+			" UNION (SELECT '%', '%', '', bw.MSISDN, bw.ACTION, bw.user, bw.CREATED, bw.LAST_MODIFIED " +
+			" FROM api_blacklist_whitelist AS bw " +
+			" WHERE bw.API_ID = '%' AND bw.APP_ID = '%' AND bw.SERVICE_PROVIDER = ? AND bw.ACTION = ?) " +
+			" LIMIT ?" +
+			" OFFSET ?";
+
+	private static final String streamBlacklistQueryAllApi = "(" + streamBlacklistQueryCommonPart +") " +
+			" UNION (SELECT '%', apps.NAME, apps.CREATED_BY, bw.MSISDN, " +
+			" bw.ACTION, bw.user, bw.CREATED, bw.LAST_MODIFIED" +
+			" FROM " +
+			OparatorTable.API_BLACKLIST_WHITELIST.getTObject() +
+			" AS bw, " +
+			DbUtils.getDbNames().get(DataSourceNames.WSO2AM_DB) +
+			".am_application " +
+			" AS apps " +
+			" WHERE 1=1 " +
+			" AND bw.API_ID = '%' " +
+			" AND bw.APP_ID LIKE ? " +
+			" AND bw.SERVICE_PROVIDER LIKE ? " +
+			" AND bw.ACTION = ? " +
+			" AND apps.application_id = app_id) " +
 			" LIMIT ?" +
 			" OFFSET ?";
 
@@ -295,16 +329,48 @@ public class BlackListWhiteListDAO {
 
 		try {
 			conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_STATS_DB);
-			ps = conn.prepareStatement(streamBlacklistQuery,ResultSet.TYPE_FORWARD_ONLY,
-					ResultSet.CONCUR_READ_ONLY);
+			if (dto.getApiID().equals("%") && dto.getAppId().equals("%")) {
+				if (dto.getServiceProvider().equals("%")) {
+					ps = conn.prepareStatement(streamBlacklistQueryAllSpAllAppAllApi,ResultSet.TYPE_FORWARD_ONLY,
+							ResultSet.CONCUR_READ_ONLY);
+				} else {
+					ps = conn.prepareStatement(streamBlacklistQueryAllAppAllApi,ResultSet.TYPE_FORWARD_ONLY,
+							ResultSet.CONCUR_READ_ONLY);
+				}
+			} else if (dto.getApiID().equals("%") && !dto.getAppId().equals("%")) {
+				ps = conn.prepareStatement(streamBlacklistQueryAllApi,ResultSet.TYPE_FORWARD_ONLY,
+						ResultSet.CONCUR_READ_ONLY);
+			} else {
+				ps = conn.prepareStatement(streamBlacklistQuery,ResultSet.TYPE_FORWARD_ONLY,
+						ResultSet.CONCUR_READ_ONLY);
+			}
 			ps.setFetchSize(Integer.MIN_VALUE);
 
 			ps.setString(1, dto.getApiID());
 			ps.setString(2,dto.getAppId());
 			ps.setString(3,dto.getServiceProvider());
 			ps.setString(4,dto.getAction());
-			ps.setInt(5, limit);
-			ps.setInt(6, offset);
+			if (dto.getApiID().equals("%") && dto.getAppId().equals("%")) {
+				if (dto.getServiceProvider().equals("%")) {
+					ps.setString(5, dto.getAction());
+					ps.setInt(6, limit);
+					ps.setInt(7, offset);
+				} else {
+					ps.setString(5, dto.getServiceProvider());
+					ps.setString(6, dto.getAction());
+					ps.setInt(7, limit);
+					ps.setInt(8, offset);
+				}
+			} else if (dto.getApiID().equals("%") && !dto.getAppId().equals("%")) {
+				ps.setString(5, dto.getAppId());
+				ps.setString(6, dto.getServiceProvider());
+				ps.setString(7, dto.getAction());
+				ps.setInt(8, limit);
+				ps.setInt(9, offset);
+			} else {
+				ps.setInt(5, limit);
+				ps.setInt(6, offset);
+			}
 
 			rs = ps.executeQuery();
 
