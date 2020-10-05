@@ -74,21 +74,21 @@ public class BlackListWhiteListDAO {
 			" OFFSET ?";
 
 	private static final String streamBlacklistQueryAllSpAllAppAllApi = "(" + streamBlacklistQueryCommonPart +") " +
-			" UNION (SELECT '%', '%', '', bw.MSISDN, bw.ACTION, bw.user, bw.CREATED, bw.LAST_MODIFIED " +
+			" UNION (SELECT 'All', 'All', '', bw.MSISDN, bw.ACTION, bw.user, bw.CREATED, bw.LAST_MODIFIED " +
 			" FROM api_blacklist_whitelist AS bw " +
-			" WHERE bw.API_ID = '%' AND bw.APP_ID = '%' AND bw.SERVICE_PROVIDER = 'All' AND bw.ACTION = ?) " +
+			" WHERE bw.API_ID = '%' AND bw.APP_ID = '%' AND bw.SERVICE_PROVIDER IN ('%', 'All', '_ALL_') AND bw.ACTION = ?) " +
 			" LIMIT ?" +
 			" OFFSET ?";
 
 	private static final String streamBlacklistQueryAllAppAllApi = "(" + streamBlacklistQueryCommonPart +") " +
-			" UNION (SELECT '%', '%', '', bw.MSISDN, bw.ACTION, bw.user, bw.CREATED, bw.LAST_MODIFIED " +
+			" UNION (SELECT 'All', 'All', '', bw.MSISDN, bw.ACTION, bw.user, bw.CREATED, bw.LAST_MODIFIED " +
 			" FROM api_blacklist_whitelist AS bw " +
 			" WHERE bw.API_ID = '%' AND bw.APP_ID = '%' AND bw.SERVICE_PROVIDER = ? AND bw.ACTION = ?) " +
 			" LIMIT ?" +
 			" OFFSET ?";
 
 	private static final String streamBlacklistQueryAllApi = "(" + streamBlacklistQueryCommonPart +") " +
-			" UNION (SELECT '%', apps.NAME, apps.CREATED_BY, bw.MSISDN, " +
+			" UNION (SELECT 'All', apps.NAME, apps.CREATED_BY, bw.MSISDN, " +
 			" bw.ACTION, bw.user, bw.CREATED, bw.LAST_MODIFIED" +
 			" FROM " +
 			OparatorTable.API_BLACKLIST_WHITELIST.getTObject() +
@@ -377,7 +377,7 @@ public class BlackListWhiteListDAO {
 			if(rs.next()){
 				StringBuilder sb = new StringBuilder();
 
-				sb.append("API_NAME, NAME, CREATED_BY, MSISDN, ACTION, ADDED_BY, CREATED, LAST_MODIFIED");
+				sb.append("API_NAME, APP_NAME, CREATED_BY, MSISDN, ACTION, ADDED_BY, CREATED, LAST_MODIFIED");
 				//MOVE WRITING TO STREAM TO SELF CONTAINED METHOD??
 				out.write((sb.toString().getBytes()));
 				out.write("\n".getBytes());
