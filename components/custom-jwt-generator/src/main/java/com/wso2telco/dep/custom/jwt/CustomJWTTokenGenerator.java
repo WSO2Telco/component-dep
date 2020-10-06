@@ -7,6 +7,7 @@ import org.apache.commons.logging.LogFactory;
 import org.wso2.carbon.apimgt.api.APIManagementException;
 import org.wso2.carbon.apimgt.impl.dto.APIKeyValidationInfoDTO;
 import org.wso2.carbon.apimgt.impl.internal.ServiceReferenceHolder;
+import org.wso2.carbon.apimgt.impl.token.ClaimsRetriever;
 import org.wso2.carbon.apimgt.impl.utils.APIUtil;
 import org.wso2.carbon.apimgt.keymgt.service.TokenValidationContext;
 import org.wso2.carbon.apimgt.keymgt.token.JWTGenerator;
@@ -48,17 +49,31 @@ public class CustomJWTTokenGenerator extends JWTGenerator {
 
     private Map<String, String> getStandardClaims(TokenValidationContext validationContext, long currentTime) throws APIManagementException {
 
+    	String dialect;
         APIKeyValidationInfoDTO apiKeyValidationInfoDTO = validationContext.getValidationInfoDTO();
         String endUserName = apiKeyValidationInfoDTO.getEndUserName();
+        String subscriber = apiKeyValidationInfoDTO.getSubscriber();
+        String applicationId = apiKeyValidationInfoDTO.getApplicationId();
         int tenantId = APIUtil.getTenantId(endUserName);
         String accessToken = validationContext.getAccessToken();
+        
+        ClaimsRetriever claimsRetriever = getClaimsRetriever();
+        if (claimsRetriever != null) {
+            dialect = claimsRetriever.getDialectURI(validationContext.getValidationInfoDTO().getEndUserName());
+        } else {
+            dialect = getDialectURI();
+        }
 
-        Map<String, String> claims = new LinkedHashMap(4);
+        Map<String, String> claims = new LinkedHashMap(8);
 
         claims.put("sub", "apigw_proxy");
         claims.put("iss", CustomAPIUtil.getIssuerDomainName());
         claims.put("jti", accessToken + String.valueOf(currentTime));
         claims.put("tenid", String.valueOf(tenantId));
+        claims.put(dialect + "/subscriber", subscriber);
+        claims.put(dialect + "/applicationid", applicationId);
+        claims.put(dialect + "/version", validationContext.getVersion());
+        claims.put(dialect + "/enduser", APIUtil.getUserNameWithTenantSuffix(endUserName));
         return claims;
     }
 
