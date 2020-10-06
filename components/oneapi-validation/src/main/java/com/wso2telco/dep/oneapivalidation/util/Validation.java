@@ -467,7 +467,7 @@ public class Validation {
                                             valid = false;
                                             logger.debug("Num of addresses in array" + sa.length);
                                             //sendError(response, FORBIDDEN, RequestError.POLICYEXCEPTION, "POL0003", "Too many addresses specified in message part %1", current.parameterName);
-                                            throw new CustomException("POL0003", "Too many addresses specified in message part %1", (String[]) current.parameterValue);
+                                            throw new CustomException("POL0003", "Too many addresses specified in message part %1", new String[]{current.parameterName + ". Note: Limit exceeded " + propertyUtils.getSMSBatchSize()});
                                         } else if (duplicatedAddress != "false") {
 
                                             valid = false;
