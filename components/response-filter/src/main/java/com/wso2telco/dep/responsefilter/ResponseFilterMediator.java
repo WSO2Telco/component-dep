@@ -21,6 +21,7 @@ import java.sql.ResultSet;
 
 import com.wso2telco.core.dbutils.DbUtils;
 import com.wso2telco.core.dbutils.util.DataSourceNames;
+import lk.chathurabuddi.json.schema.constants.FreeFormAction;
 import lk.chathurabuddi.json.schema.filter.JsonSchemaFilter;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -39,7 +40,7 @@ public class ResponseFilterMediator extends AbstractMediator {
         String userId = messageContext.getProperty("api.ut.userId").toString().split("@")[0];
         String appName = messageContext.getProperty("api.ut.application.name").toString();
 
-        log.info("API : " + api + " | USER : " + userId + " | APP_NAME : " + appName + " | OPERATION : " + operation);
+        log.debug("API : " + api + " | USER : " + userId + " | APP_NAME : " + appName + " | OPERATION : " + operation);
 
         org.apache.axis2.context.MessageContext axis2MessageContext = ((Axis2MessageContext) messageContext)
                 .getAxis2MessageContext();
@@ -49,7 +50,7 @@ public class ResponseFilterMediator extends AbstractMediator {
             if (jsonString != null && !"".equals(jsonString.trim())){
                 String filterSchema = findFilterSchema(userId, appName, api, operation);
                 if (filterSchema != null) {
-                    String filteredJson = new JsonSchemaFilter(filterSchema, jsonString).filter();
+                    String filteredJson = new JsonSchemaFilter(filterSchema, jsonString, FreeFormAction.DETACH).filter();
                     JsonUtil.getNewJsonPayload(axis2MessageContext, filteredJson, true, true);
                 }
             }
