@@ -4,6 +4,7 @@ public class SubscriptionEditDTO {
 
 	private Integer applicationId;
 	private String applicationName;
+	private String existingTier;
 	private String subscriptionTier;
 	private String apiName;
 	private String user;
@@ -24,6 +25,14 @@ public class SubscriptionEditDTO {
 
 	public void setApplicationName(String applicationName) {
 		this.applicationName = applicationName;
+	}
+
+	public String getExistingTier() {
+		return existingTier;
+	}
+
+	public void setExistingTier(String existingTier) {
+		this.existingTier = existingTier;
 	}
 
 	public String getSubscriptionTier() {
