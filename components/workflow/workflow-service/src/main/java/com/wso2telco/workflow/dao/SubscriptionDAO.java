@@ -33,12 +33,17 @@ public class SubscriptionDAO {
 			StringBuilder updatetSubscriptionTierQueryString = new StringBuilder("UPDATE ");
 			updatetSubscriptionTierQueryString.append(APIMgtDatabaseTables.AM_SUBSCRIPTION.getTableName());
 			updatetSubscriptionTierQueryString.append(" SET TIER_ID = ? ");
+			updatetSubscriptionTierQueryString.append(", UPDATED_TIME = ?");
 			updatetSubscriptionTierQueryString.append("WHERE APPLICATION_ID = ?");
+			updatetSubscriptionTierQueryString.append(" AND API_ID = ?");
 
 			updateSubscriptionTierStatement = con.prepareStatement(updatetSubscriptionTierQueryString.toString());
-
+			java.util.Date date = new java.util.Date();
+            java.sql.Timestamp timestamp = new java.sql.Timestamp(date.getTime());
 			updateSubscriptionTierStatement.setString(1, subscription.getSubscriptionTier());
-			updateSubscriptionTierStatement.setInt(2, subscription.getApplicationId());
+			updateSubscriptionTierStatement.setTimestamp(2, timestamp);
+			updateSubscriptionTierStatement.setInt(3, subscription.getApplicationId());
+			updateSubscriptionTierStatement.setInt(4, subscription.getApiID());
 
 			log.debug("sql query in editSubscriptionTier : " + updateSubscriptionTierStatement);
 

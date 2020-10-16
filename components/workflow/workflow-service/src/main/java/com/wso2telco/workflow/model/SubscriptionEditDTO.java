@@ -8,6 +8,7 @@ public class SubscriptionEditDTO {
 	private String apiName;
 	private String user;
 	private String department;
+	private int apiId;
 
 	public Integer getApplicationId() {
 		return applicationId;
@@ -56,4 +57,12 @@ public class SubscriptionEditDTO {
 	public void setDepartment(String department) {
 		this.department = department;
 	}
+
+	public int getApiID() {
+        return apiId;
+    }
+
+    public void setApiID(int apiId) {
+        this.apiId = apiId;
+    }
 }
