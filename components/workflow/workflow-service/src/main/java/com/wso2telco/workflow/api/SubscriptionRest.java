@@ -22,6 +22,8 @@ import com.wso2telco.core.dbutils.util.Callback;
 import com.wso2telco.core.userprofile.UserProfileRetriever;
 import com.wso2telco.core.userprofile.dto.UserProfileDTO;
 import com.wso2telco.workflow.model.SubscriptionEditDTO;
+import com.wso2telco.workflow.notification.Notification;
+import com.wso2telco.workflow.notification.NotificationImpl;
 import com.wso2telco.workflow.service.SubscriptionService;
 import org.workflow.core.model.TaskSearchDTO;
 import org.workflow.core.service.WorkFlowDelegator;
@@ -153,8 +155,9 @@ public class SubscriptionRest {
 	public Response editSubscription(SubscriptionEditDTO subscription) {
 
 		try {
-
+            Notification notification = new NotificationImpl();
 			subscriptionService.editSubscriptionTier(subscription);
+            notification.sendsubscriptionTierEditNotification(subscription);
 
 			return Response.status(Response.Status.OK).entity(subscription).build();
 		} catch (Exception e) {
