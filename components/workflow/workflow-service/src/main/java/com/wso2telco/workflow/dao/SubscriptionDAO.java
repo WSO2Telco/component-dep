@@ -2,7 +2,10 @@ package com.wso2telco.workflow.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.text.SimpleDateFormat;
+
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.wso2telco.core.dbutils.DbUtils;
@@ -61,4 +64,54 @@ public class SubscriptionDAO {
 			DbUtils.closeAllConnections(updateSubscriptionTierStatement, con, null);
 		}
 	}
+
+
+	public String getUpdatedTime(SubscriptionEditDTO subscription)throws SQLException, BusinessException {
+
+		Connection con = null;
+		PreparedStatement getUpdatedTimeStatement = null;
+		ResultSet rs = null;
+		String updatedTime= null;
+
+		try {
+
+			con = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+
+			if (con == null) {
+
+				throw new Exception("Connection not found");
+			}
+
+			StringBuilder getUpdatedTimeQueryString = new StringBuilder("SELECT UPDATED_TIME FROM ");
+			getUpdatedTimeQueryString.append(APIMgtDatabaseTables.AM_SUBSCRIPTION.getTableName());
+			getUpdatedTimeQueryString.append(" WHERE APPLICATION_ID = ?");
+			getUpdatedTimeQueryString.append(" AND API_ID = ?");
+
+
+			getUpdatedTimeStatement = con.prepareStatement(getUpdatedTimeQueryString.toString());
+			getUpdatedTimeStatement.setInt(1, subscription.getApplicationId());
+			getUpdatedTimeStatement.setInt(2, subscription.getApiID());
+			rs = getUpdatedTimeStatement.executeQuery();
+
+			while (rs.next()) {
+
+				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
+				updatedTime =formatter.format(rs.getTimestamp("UPDATED_TIME"));
+
+			}
+
+		}catch (SQLException e) {
+			log.error("database operation error in getUpdatedTime : ", e);
+			throw e;
+		}catch (Exception e) {
+			e.printStackTrace();
+			log.error("error in getUpdatedTime : ", e);
+			throw new BusinessException(GenaralError.UNDEFINED);
+		} finally {
+			DbUtils.closeAllConnections(getUpdatedTimeStatement, con, rs);
+		}
+
+		return updatedTime;
+	}
+
 }
