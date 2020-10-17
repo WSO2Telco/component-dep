@@ -29,5 +29,7 @@ public interface Notification {
     public void sendInternalAdminAppApprovalNotification(NotificationRequest request);
     public void sendInternalAdminSubrovalNotification(NotificationRequest request);
     public void sendPublisherSubApprovalNotification(NotificationRequest request);
+    public void sendApplicationTierEditNotification(ApplicationEditDTO applicationDTO);
+    public void sendsubscriptionTierEditNotification(SubscriptionEditDTO subscriptionEditDTO);
 
 }
