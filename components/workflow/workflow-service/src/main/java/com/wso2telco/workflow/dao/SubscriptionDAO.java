@@ -24,11 +24,8 @@ public class SubscriptionDAO {
 		PreparedStatement updateSubscriptionTierStatement = null;
 
 		try {
-
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
-
 			if (con == null) {
-
 				throw new Exception("Connection not found");
 			}
 
@@ -90,7 +87,6 @@ public class SubscriptionDAO {
 				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 				updatedTime =formatter.format(rs.getTimestamp("UPDATED_TIME"));
 			}
-
 		}catch (SQLException e) {
 			log.error("database operation error in getUpdatedTime : ", e);
 			throw e;
