@@ -1491,6 +1491,15 @@ $(document).ready(function(){
                         $('.tags-error').html('The tag contains one or more illegal characters  (~ ! @ #  ; % ^ & * + = { } | &lt; &gt;, \' " \\ \/ ) .');
                         return '';
                 }));
+                  } else if (/([A-Z])/.test(tagName)) {
+                $tag.val($tag.val().replace(/[^a-z0-9_ -]/g, function (str) {
+                    $('.tags-error').show();
+                    $('.add-tags-error').hide();
+                    $('.add-tags-error').html('');
+                    // @todo: param_string
+                    $('.tags-error').html('The tag cannot contain Uppercase Letters');
+                    return '';
+                }));
             }
 
             if(tagName.length > 30){
