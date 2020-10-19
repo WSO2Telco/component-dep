@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.wso2telco.core.dbutils.DbUtils;
@@ -65,7 +64,6 @@ public class SubscriptionDAO {
 		}
 	}
 
-
 	public String getUpdatedTime(SubscriptionEditDTO subscription)throws SQLException, BusinessException {
 
 		Connection con = null;
@@ -74,11 +72,8 @@ public class SubscriptionDAO {
 		String updatedTime= null;
 
 		try {
-
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
-
 			if (con == null) {
-
 				throw new Exception("Connection not found");
 			}
 
@@ -86,18 +81,14 @@ public class SubscriptionDAO {
 			getUpdatedTimeQueryString.append(APIMgtDatabaseTables.AM_SUBSCRIPTION.getTableName());
 			getUpdatedTimeQueryString.append(" WHERE APPLICATION_ID = ?");
 			getUpdatedTimeQueryString.append(" AND API_ID = ?");
-
-
 			getUpdatedTimeStatement = con.prepareStatement(getUpdatedTimeQueryString.toString());
 			getUpdatedTimeStatement.setInt(1, subscription.getApplicationId());
 			getUpdatedTimeStatement.setInt(2, subscription.getApiID());
 			rs = getUpdatedTimeStatement.executeQuery();
 
 			while (rs.next()) {
-
 				SimpleDateFormat formatter = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss");
 				updatedTime =formatter.format(rs.getTimestamp("UPDATED_TIME"));
-
 			}
 
 		}catch (SQLException e) {
@@ -110,7 +101,6 @@ public class SubscriptionDAO {
 		} finally {
 			DbUtils.closeAllConnections(getUpdatedTimeStatement, con, rs);
 		}
-
 		return updatedTime;
 	}
 

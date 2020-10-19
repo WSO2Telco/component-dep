@@ -9,7 +9,6 @@ import org.apache.commons.logging.LogFactory;
 
 public class SubscriptionService {
 
-
 	private static Log log = LogFactory.getLog(SubscriptionService.class);
 
 	SubscriptionDAO subscriptionDAO;
@@ -20,18 +19,14 @@ public class SubscriptionService {
 	
 	public void editSubscriptionTier(SubscriptionEditDTO subscription) throws SQLException, BusinessException {
 
-		String previousTier = subscription.getExistingTier();
-
 		subscriptionDAO.editSubscriptionTier(subscription);
-
 		String logEntry = "Subscription tier edited :"
 				+ " Completed by - " + subscription.getUser()
 				+ ", Application name - " + subscription.getApplicationName()
 				+ ", API name - " + subscription.getApiName()
-				+ ", Previous tier - "+ previousTier
+				+ ", Previous tier - "+ subscription.getExistingTier()
 				+ ", New tier - " + subscription.getSubscriptionTier()
 				+ ", Date & Time - " + subscriptionDAO.getUpdatedTime(subscription);
-
 		log.info(logEntry);
 	}
 }

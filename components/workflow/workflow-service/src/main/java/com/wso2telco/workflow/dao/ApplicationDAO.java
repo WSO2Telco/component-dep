@@ -5,7 +5,6 @@ import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.SimpleDateFormat;
-
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 import com.wso2telco.core.dbutils.DbUtils;
@@ -24,13 +23,9 @@ public class ApplicationDAO {
 		Connection con = null;
 		PreparedStatement updateApplicationTierStatement = null;
 
-
 		try {
-
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
-
 			if (con == null) {
-
 				throw new Exception("Connection not found");
 			}
 
@@ -38,9 +33,7 @@ public class ApplicationDAO {
 			updatetApplicationTierQueryString.append(APIMgtDatabaseTables.AM_APPLICATION.getTableName());
 			updatetApplicationTierQueryString.append(" SET APPLICATION_TIER = ? ");
 			updatetApplicationTierQueryString.append("WHERE APPLICATION_ID = ?");
-
 			updateApplicationTierStatement = con.prepareStatement(updatetApplicationTierQueryString.toString());
-
 			updateApplicationTierStatement.setString(1, application.getApplicationTier());
 			updateApplicationTierStatement.setInt(2, application.getApplicationId());
 
@@ -48,15 +41,12 @@ public class ApplicationDAO {
 
 			updateApplicationTierStatement.executeUpdate();
 		} catch (SQLException e) {
-
 			log.error("database operation error in editApplicationTier : ", e);
 			throw new SQLException();
 		} catch (Exception e) {
-
 			log.error("error in editApplicationTier : ", e);
 			throw new BusinessException(GenaralError.UNDEFINED);
 		} finally {
-
 			DbUtils.closeAllConnections(updateApplicationTierStatement, con, null);
 		}
 	}
@@ -71,25 +61,19 @@ public class ApplicationDAO {
 		try {
 
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
-
 			if (con == null) {
-
 				throw new Exception("Connection not found");
 			}
-
 
 			StringBuilder getApplicationTierQueryString = new StringBuilder("SELECT UPDATED_TIME FROM ");
 			getApplicationTierQueryString.append(APIMgtDatabaseTables.AM_APPLICATION.getTableName());
 			getApplicationTierQueryString.append(" WHERE APPLICATION_ID = ?");
-
 			getApplicationTierStatement = con.prepareStatement(getApplicationTierQueryString.toString());
 			getApplicationTierStatement.setInt(1, application.getApplicationId());
 			rs = getApplicationTierStatement.executeQuery();
 
 			while (rs.next()) {
-
 				updatedTime = new SimpleDateFormat("yyyy-MM-dd hh:mm:ss").format(rs.getTimestamp("UPDATED_TIME"));
-
 			}
 
 		}catch (SQLException e) {
@@ -102,7 +86,6 @@ public class ApplicationDAO {
 		} finally {
 			DbUtils.closeAllConnections(getApplicationTierStatement, con, rs);
 		}
-
 		return updatedTime;
 	}
 
