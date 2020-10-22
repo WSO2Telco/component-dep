@@ -583,7 +583,8 @@ public class BlackListWhiteListDAO {
 				int appID = result.getInt(BlacklistWhitelistConstants.DAOConstants.APPLICATION_ID);
 				String appTier = result.getString(BlacklistWhitelistConstants.DAOConstants.APPLICATION_TIER);
 				String appStatus = result.getString(BlacklistWhitelistConstants.DAOConstants.APPLICATION_STATUS);
-				String updateTime = result.getString(BlacklistWhitelistConstants.DAOConstants.UPDATED_TIME);
+				// Use "CREATED_TIME" DB column to retrive updatedtime Since it's the one updating when tier modification happen.
+				String updateTime = result.getString(BlacklistWhitelistConstants.DAOConstants.CREATED_TIME);
 				updateTime = updateTime.replace(":", ".");
 				String appUniqueID = appID + ":" + appName + ":" + appTier + ":" + appStatus + ":" + updateTime;
 				appUniqueIDList.add(appUniqueID);
