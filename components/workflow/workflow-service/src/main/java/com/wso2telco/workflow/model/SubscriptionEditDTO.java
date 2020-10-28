@@ -6,8 +6,11 @@ public class SubscriptionEditDTO {
 	private Integer applicationId;
 	private String applicationName;
 	private String subscriptionTier;
+	private String existingTier;
 	private String apiName;
+	private String apiVersion;
 	private String user;
+	private String serviceProvider;
 	private String department;
 
 	public Integer getApplicationId() {
@@ -38,9 +41,17 @@ public class SubscriptionEditDTO {
 		return apiName;
 	}
 
+	public String getExistingTier() { return existingTier; }
+
+	public void setExistingTier(String existingTier) { this.existingTier = existingTier; }
+
 	public void setApiName(String apiName) {
 		this.apiName = apiName;
 	}
+
+	public String getApiVersion() { return apiVersion; }
+
+	public void setApiVersion(String apiVersion) { this.apiVersion = apiVersion; }
 
 	public String getUser() {
 		return user;
@@ -57,4 +68,9 @@ public class SubscriptionEditDTO {
 	public void setDepartment(String department) {
 		this.department = department;
 	}
+
+	public String getServiceProvider() { return serviceProvider; }
+
+	public void setServiceProvider(String serviceProvider) { this.serviceProvider = serviceProvider; }
+
 }
