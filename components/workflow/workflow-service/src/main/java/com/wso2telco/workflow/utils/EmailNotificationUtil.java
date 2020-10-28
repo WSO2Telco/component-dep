@@ -83,7 +83,80 @@ public class EmailNotificationUtil {
 		
 		return content;
 	}
-	
+
+	public static String getAppTierChangeSPEmailNotificationContent(String serviceProvider, String applicationName,
+																	String existingApplicationTier, String newApplicationTier) {
+
+		String content = "";
+
+		content = "<div style='margin: 0 0 3px 0;padding: 5px;border-style: solid;border-width: 1px 1px 1px 11px;border-color:#e46c0a;color: #525863;line-height: normal;font-weight: bold;'>" +
+				"<h2> Application Tier Status</h2>" +
+				"</div>" +
+				"<div style='border-style:solid;border-width:1px 1px 1px 1px;border-color:#e46c0a;color:#525863;'>" +
+				"<table border='0'>" +
+				"<tr>" +
+				"<td><b> Application User : </b></td>" +
+				"<td>" + serviceProvider + "</td>" +
+				"</tr>" +
+				"<tr>" +
+				"<td><b> Application Name : </b></td>" +
+				"<td>" + applicationName + "</td>" +
+				"</tr>" +
+				"<tr>" +
+				"<td><b> Existing Application Tier : </b></td>" +
+				"<td>" + existingApplicationTier + "</td>" +
+				"</tr>" +
+				"<tr>" +
+				"<td><b> New Application Tier : </b></td>" +
+				"<td>" + newApplicationTier + "</td>" +
+				"</tr>" +
+				"</table>" +
+				"</div>";
+
+		return content;
+	}
+
+	public static String getSubscriptionTierChangeSPEmailNotificationContent(String serviceProvider, String apiName, String apiVersion, String applicationName,
+																		String existingSubscriptionTier, String newSubscriptionTier) {
+
+		String content = "";
+
+		content = "<div style='margin: 0 0 3px 0;padding: 5px;border-style: solid;border-width: 1px 1px 1px 11px;border-color:#e46c0a;color: #525863;line-height: normal;font-weight: bold;'>" +
+				"<h2> Subscription Tier Status</h2>" +
+				"</div>" +
+				"<div style='border-style:solid;border-width:1px 1px 1px 1px;border-color:#e46c0a;color:#525863;'>" +
+				"<table border='0'>" +
+				"<tr>" +
+				"<td><b> Application User : </b></td>" +
+				"<td>" + serviceProvider + "</td>" +
+				"</tr>" +
+				"<tr>" +
+				"<td><b> Application Name : </b></td>" +
+				"<td>" + applicationName + "</td>" +
+				"</tr>" +
+				"<tr>" +
+				"<td><b> API Name : </b></td>" +
+				"<td>" + apiName + "</td>" +
+				"</tr>" +
+				"<tr>" +
+				"<td><b> API Version : </b></td>" +
+				"<td>" + apiVersion + "</td>" +
+				"</tr>" +
+				"<tr>" +
+				"<td><b> Existing Subscription Tier : </b></td>" +
+				"<td>" + existingSubscriptionTier + "</td>" +
+				"</tr>" +
+				"<tr>" +
+				"<td><b> New Subscription Tier : </b></td>" +
+				"<td>" + newSubscriptionTier + "</td>" +
+				"</tr>" +
+				"</table>" +
+				"</div>";
+
+		return content;
+
+	}
+
 	public static String getSubPluginApproverEmailContent(
 			String apiName, String apiVersion, String apiContext, String apiProvider, 
 			String subscriber, String tierName, String applicationName, String applicationDescription) {

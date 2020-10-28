@@ -374,4 +374,60 @@ public class NotificationImpl implements Notification {
         }
 
     }
+
+    public void sendApplicationTierEditNotification(ApplicationEditDTO applicationDTO) {
+        String applicationName = applicationDTO.getApplicationName();
+        String existingApplicationTier = applicationDTO.getExistingTier();
+        String newApplicationTier = applicationDTO.getApplicationTier();
+        String serviceProvider = applicationDTO.getServiceProvider();
+
+        log.debug("applicationName : " + applicationName);
+        log.debug("existingApplicationTier : " + existingApplicationTier);
+        log.debug("newApplicationTier : " + newApplicationTier);
+        log.debug("serviceProvider : " + serviceProvider);
+
+        RemoteUserStoreManager remoteUserStoreManager = new RemoteUserStoreManagerImpl();
+
+        if (serviceProvider != null) {
+
+            String email = remoteUserStoreManager.getUserClaimValue(serviceProvider, Constants.CLAIM_EMAIL);
+            String subject = Constants.SUBJECT_APP_TIER_CHANGE_SP_NOTIFICATION;
+            String content = EmailNotificationUtil.getAppTierChangeSPEmailNotificationContent(serviceProvider, applicationName,
+                    existingApplicationTier, newApplicationTier);
+            emailService.sendEmail(email, subject, content);
+        } else {
+            log.info("serviceProvider is either null or empty. [ serviceProvider : " + serviceProvider + " ]");
+        }
+    }
+
+    public void sendsubscriptionTierEditNotification(SubscriptionEditDTO subscriptionEditDTO) {
+        String applicationName = subscriptionEditDTO.getApplicationName();
+        String newSubscriptionTier = subscriptionEditDTO.getSubscriptionTier();
+        String existingSubscriptionTier = subscriptionEditDTO.getExistingTier();
+        String apiName = subscriptionEditDTO.getApiName();
+        String apiVersion = subscriptionEditDTO.getApiVersion();
+        String serviceProvider = subscriptionEditDTO.getServiceProvider();
+
+        log.debug("applicationName : " + applicationName);
+        log.debug("existingSubscriptionTier : " + existingSubscriptionTier);
+        log.debug("newSubscriptionTier : " + newSubscriptionTier);
+        log.debug("apiName : " + apiName);
+        log.debug("apiVersion : " + apiVersion);
+        log.debug("serviceProvider : " + serviceProvider);
+
+        RemoteUserStoreManager remoteUserStoreManager = new RemoteUserStoreManagerImpl();
+
+        if (serviceProvider != null) {
+
+            String email = remoteUserStoreManager.getUserClaimValue(serviceProvider, Constants.CLAIM_EMAIL);
+            String subject = Constants.SUBJECT_SUBSCRIPTION_TIER_CHANGE_SP_NOTIFICATION;
+            String content = EmailNotificationUtil.getSubscriptionTierChangeSPEmailNotificationContent(serviceProvider, apiName, apiVersion,
+                    applicationName, existingSubscriptionTier, newSubscriptionTier);
+            emailService.sendEmail(email, subject, content);
+
+        } else {
+            log.info("serviceProvider is either null or empty. [ serviceProvider : " + serviceProvider + " ]");
+        }
+    }
+
 }

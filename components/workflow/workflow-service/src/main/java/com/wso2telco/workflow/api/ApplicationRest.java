@@ -23,6 +23,8 @@ import com.wso2telco.core.dbutils.util.Callback;
 import com.wso2telco.core.userprofile.UserProfileRetriever;
 import com.wso2telco.core.userprofile.dto.UserProfileDTO;
 import com.wso2telco.workflow.model.ApplicationEditDTO;
+import com.wso2telco.workflow.notification.Notification;
+import com.wso2telco.workflow.notification.NotificationImpl;
 import com.wso2telco.workflow.service.ApplicationService;
 import org.workflow.core.model.TaskSearchDTO;
 import org.workflow.core.service.WorkFlowDelegator;
@@ -159,7 +161,10 @@ public class ApplicationRest {
     @PUT
 	public Response editApplication(ApplicationEditDTO application) {
 		try {
+            Notification notification = new NotificationImpl();
 			applicationService.editApplicationTier(application);
+            notification.sendApplicationTierEditNotification(application);
+
 			return Response.status(Response.Status.OK).entity(application).build();
 		} catch (Exception e) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
