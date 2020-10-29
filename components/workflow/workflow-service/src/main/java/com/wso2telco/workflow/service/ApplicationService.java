@@ -24,27 +24,17 @@ public class ApplicationService {
 	public void editApplicationTier(ApplicationEditDTO application) throws SQLException, BusinessException {
 		String currentTier = applicationDAO.getApplicationTier(application.getApplicationId());
 		applicationDAO.editApplicationTier(application);
-
-		editApplicationLog(currentTier,application);
-		editApplicationAuditLog(currentTier, application);
-	}
-
-	private void editApplicationLog(String currentTier, ApplicationEditDTO application) {
-		String logMessage = "Application tier edited :"
-				+ " Completed by - " + application.getUser()
-				+ ", Application name - " + application.getApplicationName()
-				+ ", Previous tier - " + currentTier
-				+ ", New tier - " + application.getApplicationTier();
-		LOG.info(logMessage);
+		this.editApplicationAuditLog(currentTier, application);
 	}
 
 	private void editApplicationAuditLog(String currentTier, ApplicationEditDTO application) {
 		String logMessage = "Application Updated." +
-				" | Application: " + application.getApplicationId() + ":" + currentTier +
+				" | Application: " + application.getApplicationId() + ":" + application.getExistingTier() +
 				" | SP: " + application.getServiceProvider() +
 				" | Previous Tier: " + currentTier +
 				" | Updated Tier: " + application.getApplicationTier() +
 				" | User: " + application.getUser();
 		AUDIT_LOG.info(logMessage);
+		LOG.info(logMessage);
 	}
 }
