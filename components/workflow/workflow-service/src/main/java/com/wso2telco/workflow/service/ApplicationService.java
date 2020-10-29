@@ -46,6 +46,5 @@ public class ApplicationService {
 				" | Updated Tier: " + application.getApplicationTier() +
 				" | User: " + application.getUser();
 		AUDIT_LOG.info(logMessage);
-		LOG.info(logMessage);
 	}
 }
