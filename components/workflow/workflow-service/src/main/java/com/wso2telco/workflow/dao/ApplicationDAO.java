@@ -51,7 +51,7 @@ public class ApplicationDAO {
 		}
 	}
 
-	public String getSubscriptionTier(int applicationId) throws SQLException, BusinessException {
+	public String getApplicationTier(int applicationId) throws SQLException, BusinessException {
 		StringBuilder appTierQry = new StringBuilder("SELECT APPLICATION_TIER FROM ");
 		appTierQry.append(APIMgtDatabaseTables.AM_APPLICATION.getTableName());
 		appTierQry.append(" WHERE APPLICATION_ID = ? LIMIT 1");
@@ -66,7 +66,7 @@ public class ApplicationDAO {
 			}
 			appTierStmnt = connection.prepareStatement(appTierQry.toString());
 			appTierStmnt.setInt(1, applicationId);
-			log.debug("sql query in getSubscriptionTier: " + appTierStmnt);
+			log.debug("sql query in getApplicationTier: " + appTierStmnt);
 
 			resultSet = appTierStmnt.executeQuery();
 			if (resultSet.next()) {

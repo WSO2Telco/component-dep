@@ -20,7 +20,7 @@ public class ApplicationService {
 	}
 	
 	public void editApplicationTier(ApplicationEditDTO application) throws SQLException, BusinessException {
-		String currentTier = applicationDAO.getSubscriptionTier(application.getApplicationId());
+		String currentTier = applicationDAO.getApplicationTier(application.getApplicationId());
 		applicationDAO.editApplicationTier(application);
 		this.editApplicationAuditLog(currentTier, application);
 	}
