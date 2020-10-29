@@ -2,6 +2,7 @@ package com.wso2telco.workflow.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
@@ -22,7 +23,6 @@ public class ApplicationDAO {
 		PreparedStatement updateApplicationTierStatement = null;
 
 		try {
-
 			con = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
 
 			if (con == null) {
@@ -54,6 +54,41 @@ public class ApplicationDAO {
 		} finally {
 
 			DbUtils.closeAllConnections(updateApplicationTierStatement, con, null);
+		}
+	}
+
+	public String getApplicationTier(int applicationId) throws SQLException, BusinessException {
+		StringBuilder appTierQry = new StringBuilder("SELECT APPLICATION_TIER FROM ");
+		appTierQry.append(APIMgtDatabaseTables.AM_APPLICATION.getTableName());
+		appTierQry.append(" WHERE APPLICATION_ID = ? LIMIT 1");
+
+		Connection connection = null;
+		PreparedStatement appTierStmnt = null;
+		ResultSet resultSet = null;
+		try {
+			connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+			if (connection == null) {
+				throw new Exception("Connection not found");
+			}
+			appTierStmnt = connection.prepareStatement(appTierQry.toString());
+			appTierStmnt.setInt(1, applicationId);
+			log.debug("sql query in getApplicationTier: " + appTierStmnt);
+
+			resultSet = appTierStmnt.executeQuery();
+			if (resultSet.next()) {
+				return resultSet.getString("APPLICATION_TIER");
+			} else {
+				log.error("No application tiers found for application: " + applicationId);
+				throw new BusinessException(GenaralError.UNDEFINED);
+			}
+		} catch (SQLException sqlException) {
+			log.error("database operation error while fetching current application tier: ", sqlException);
+			throw new SQLException();
+		} catch (Exception exception) {
+			log.error("error while fetching current application tier: ", exception);
+			throw new BusinessException(GenaralError.UNDEFINED);
+		} finally {
+			DbUtils.closeAllConnections(appTierStmnt, connection, resultSet);
 		}
 	}
 }
