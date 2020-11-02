@@ -12,6 +12,7 @@ public class SubscriptionEditDTO {
 	private String user;
 	private String serviceProvider;
 	private String department;
+	private int apiId;
 
 	public Integer getApplicationId() {
 		return applicationId;
@@ -73,4 +74,11 @@ public class SubscriptionEditDTO {
 
 	public void setServiceProvider(String serviceProvider) { this.serviceProvider = serviceProvider; }
 
+	public int getApiID() {
+		return apiId;
+	}
+
+	public void setApiID(int apiId) {
+		this.apiId = apiId;
+	}
 }
