@@ -230,8 +230,8 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
         try {
             if (dao.getApplicationById(Integer.parseInt(workFlowDTO.getWorkflowReference())) != null) {
                 super.complete(workFlowDTO);
-                String msgm ="Application Creation [Complete] Workflow Invoked. Workflow ID : " + workFlowDTO
-                        .getExternalWorkflowReference() + "Workflow State : " + workFlowDTO.getStatus();
+                String msgm ="Application Creation [Complete] Workflow Invoked. Workflow ID: " + workFlowDTO
+                        .getExternalWorkflowReference() + " | Workflow State: " + workFlowDTO.getStatus();
                 log.info(msgm);
                 auditLog.info(msgm);
 
@@ -261,26 +261,6 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
                     .getWorkflowReference();
             log.error(msg, e);
             throw new WorkflowException(msg, e);
-        }
-
-        /**
-         * Log improvement : Application Approval details
-         */
-        try {
-            Application application = dao.getApplicationById(Integer.parseInt(workFlowDTO.getWorkflowReference()));
-
-            String msgOnCompletion =
-                    " Application Creation approval process completed. Workflow ID : " + workFlowDTO.getExternalWorkflowReference() +
-                            " | Workflow State : " + workFlowDTO.getStatus() +
-                            " | Application name : " + application.getName() +
-                            " | UUID : " + application.getUUID() +
-                            " | Subscriber : " + application.getSubscriber().getName() +
-                            " | Owner : " + application.getOwner() +
-                            " | Approved Tier : " + application.getTier();
-            log.info(msgOnCompletion);
-            auditLog.info(msgOnCompletion);
-        } catch (APIManagementException e) {
-            e.printStackTrace();
         }
 
         return new GeneralWorkflowResponse();
