@@ -212,8 +212,16 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
                 auditLog.debug("Process definition url: " + processInstanceResponse.getProcessDefinitionUrl());
             }
 
-            auditLog.info("Application Creation approval process instance task with business key " +
-                    appWorkFlowDTO.getExternalWorkflowReference() + " created successfully");
+            String logMsg = "Subscription creation approval workflow submitted." +
+                    " | Workflow ID: " + appWorkFlowDTO.getExternalWorkflowReference() +
+                    " | Workflow Status: " + appWorkFlowDTO.getStatus() +
+                    " | Application Name: " + appWorkFlowDTO.getApplication().getName() +
+                    " | Application ID: " + appWorkFlowDTO.getApplication().getId() +
+                    " | Subscriber: " + appWorkFlowDTO.getUserName() +
+                    " | Requested Tier: " + appWorkFlowDTO.getApplication().getTier();
+            log.info(logMsg);
+            auditLog.info(logMsg);
+
         } catch (APIManagementException e) {
             log.error("Error in obtaining APIConsumer", e);
             throw new WorkflowException("Error in obtaining APIConsumer", e);
@@ -230,10 +238,6 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
         try {
             if (dao.getApplicationById(Integer.parseInt(workFlowDTO.getWorkflowReference())) != null) {
                 super.complete(workFlowDTO);
-                String msgm ="Application Creation [Complete] Workflow Invoked. Workflow ID: " + workFlowDTO
-                        .getExternalWorkflowReference() + " | Workflow State: " + workFlowDTO.getStatus();
-                log.info(msgm);
-                auditLog.info(msgm);
 
                 String status = null;
                 if (WorkflowStatus.CREATED.equals(workFlowDTO.getStatus())) {
