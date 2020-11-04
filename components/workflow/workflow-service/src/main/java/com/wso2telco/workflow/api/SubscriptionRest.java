@@ -175,6 +175,7 @@ public class SubscriptionRest {
                     " | Workflow State: " + (success ? "APPROVED" : "FAILED") +
                     " | API: " + subscriptionTask.getApiName() + ":" + subscriptionTask.getApiVersion() +
                     " | Application: " + subscriptionTask.getApplicationName() +
+                    " | Application ID: " + subscriptionTask.getApplicationId() +
                     " | Subscriber: " + subscriptionTask.getUserName() +
                     " | Requested Tier: " + subscriptionTask.getTier() +
                     " | Approved Tier: " + approvalRequest.getSelectedTier() +
