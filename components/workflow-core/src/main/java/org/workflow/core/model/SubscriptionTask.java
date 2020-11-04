@@ -1,6 +1,7 @@
 package org.workflow.core.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -63,6 +64,8 @@ public class SubscriptionTask {
     private List<RelevantRate> relevantRates;
     @JsonProperty("selectedRate")
     private String selectedRate;
+    @JsonIgnore
+    private String workflowRefId;
 
     public SubscriptionTask(Map<AppVariable, TaskVariableResponse> varMap) {
         this.applicationDescription = (varMap.containsKey(AppVariable.APPLICATION_DESCRIPTION))?varMap.get(AppVariable.APPLICATION_DESCRIPTION).getValue():"";
@@ -74,6 +77,7 @@ public class SubscriptionTask {
         this.apiName = (varMap.containsKey(AppVariable.API_NAME))?varMap.get(AppVariable.API_NAME).getValue():"";
         this.apiVersion = (varMap.containsKey(AppVariable.API_VERSION))?varMap.get(AppVariable.API_VERSION).getValue():"";
         this.selectedRate = "";
+        this.workflowRefId = (varMap.containsKey(AppVariable.WORKFLOWREFID))?varMap.get(AppVariable.WORKFLOWREFID).getValue():"";
     }
 
     @JsonProperty("id")
@@ -191,4 +195,7 @@ public class SubscriptionTask {
         return selectedRate;
     }
 
+    public String getWorkflowRefId() {
+        return workflowRefId;
+    }
 }
