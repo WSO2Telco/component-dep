@@ -5,14 +5,14 @@
 	<parent>
 		<groupId>com.wso2telco.dep</groupId>
 		<artifactId>component-dep</artifactId>
-		<version>3.0.2</version>
+		<version>3.0.3-SNAPSHOT</version>
 		<relativePath>../../pom.xml</relativePath>
 	</parent>
 
 	<artifactId>custom-jwt-generator</artifactId>
 	<packaging>bundle</packaging>
 	<name>custom-jwt-generator</name>
-	<version>3.0.2</version>
+	<version>3.0.3-SNAPSHOT</version>
 	<url>http://maven.apache.org</url>
 	<properties>
 		<project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
