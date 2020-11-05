@@ -20,7 +20,7 @@
 	<groupId>com.wso2telco.dep</groupId>
 	<artifactId>component-dep</artifactId>
 	<packaging>pom</packaging>
-	<version>3.0.2-SNAPSHOT</version>
+	<version>3.0.2</version>
 	<name>WSO2Telco -Digital Enable Platform Component</name>
 	<description>WSO2Telco DEP Aggregate Pom</description>
 	<url>http://wso2telco.com</url>
@@ -33,7 +33,7 @@
 
 	<properties>
 		<!-- WSO2.Telco versions -->
-		<com.wso2telco.dep.version>3.0.2-SNAPSHOT</com.wso2telco.dep.version>
+		<com.wso2telco.dep.version>3.0.2</com.wso2telco.dep.version>
 		<com.wso2telco.core.version>2.4.6</com.wso2telco.core.version>
 		<log4j.version>1.2.13</log4j.version>
 		<com.google.code.gson.version>2.3.1</com.google.code.gson.version>
@@ -167,7 +167,7 @@
 		<url>https://github.com/WSO2Telco/component-dep.git</url>
 		<developerConnection>scm:git:https://github.com/WSO2Telco/component-dep.git</developerConnection>
 		<connection>scm:git:https://github.com/WSO2Telco/component-dep.git</connection>
-		<tag>33</tag>
+		<tag>v3_0_2</tag>
 	</scm>
 
 	<repositories>
