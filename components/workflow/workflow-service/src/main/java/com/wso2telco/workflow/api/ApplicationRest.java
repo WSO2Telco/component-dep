@@ -17,6 +17,9 @@
 package com.wso2telco.workflow.api;
 
 
+import java.nio.charset.StandardCharsets;
+import java.util.StringTokenizer;
+
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.util.ApprovalRequest;
 import com.wso2telco.core.dbutils.util.AssignRequest;
@@ -38,6 +41,7 @@ import org.wso2.carbon.CarbonConstants;
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.bind.DatatypeConverter;
 
 
 @Path("/applications")
@@ -131,7 +135,9 @@ public class ApplicationRest {
 
     @POST
     @Path("/approve")
-    public Response approve(@HeaderParam("user-name") String userName, ApprovalRequest approvalRequest) {
+    public Response approve(@HeaderParam("user-name") String userName,
+                            @HeaderParam("Authorization") String authString,
+                            ApprovalRequest approvalRequest) {
         Response response;
         try {
             UserProfileRetriever userProfileRetriever = new UserProfileRetriever();
@@ -139,8 +145,11 @@ public class ApplicationRest {
             Object appSearchResponse = loadByTaskId(approvalRequest.getTaskId(), userProfile).getPayload();
             WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
             Callback callback = workFlowDelegator.approveApplication(approvalRequest, userProfile);
-            this.appApprovalAuditLog(approvalRequest, appSearchResponse, callback.getSuccess());
             response = Response.status(Response.Status.OK).entity(callback).build();
+
+            this.appApprovalAuditLog(
+                approvalRequest, appSearchResponse, callback.getSuccess(), extractLoggedInUser(authString)
+            );
         } catch (Exception e) {
             response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
             LOG.error("error while executing application approval task: " + approvalRequest.getTaskId() +
@@ -154,17 +163,29 @@ public class ApplicationRest {
         return workFlowDelegator.getPendingApplicationApproval(taskId, userProfile);
     }
 
-    private void appApprovalAuditLog(ApprovalRequest approvalRequest, Object payload, boolean success) {
+    private String extractLoggedInUser(String authString) {
+        final String AUTH_STR_DELIMITER_REGX = "\\s+";
+        final String UN_PW_DELIMITER = ":";
+
+        return new StringTokenizer(new String(
+            DatatypeConverter.parseBase64Binary(authString.split(AUTH_STR_DELIMITER_REGX)[1]),
+            StandardCharsets.UTF_8
+        ), UN_PW_DELIMITER ).nextToken();
+    }
+
+    private void appApprovalAuditLog(
+            ApprovalRequest approvalRequest, Object payload, boolean success, String loggedInUser) {
         if (payload instanceof AppSearchResponse) {
             ApplicationTask applicationTask = ((AppSearchResponse) payload).getApplicationTasks().get(0);
             String msgOnCompletion = "Application creation approval process completed." +
                 " | Workflow ID: " + applicationTask.getWorkflowRefId() +
                 " | Workflow State: " + (success ? "APPROVED" : "FAILED") +
-                " | Application: [" + applicationTask.getApplicationId() + "] " + applicationTask.getApplicationName() +
+                " | Application Name: " + applicationTask.getApplicationName() +
+                " | Application ID: " + applicationTask.getApplicationId() +
                 " | Subscriber: " + applicationTask.getUserName() +
-                " | Assignee: " + applicationTask.getAssignee() +
                 " | Requested Tier: " + applicationTask.getTier() +
-                " | Approved Tier: " + approvalRequest.getSelectedTier();
+                " | Approved Tier: " + approvalRequest.getSelectedTier() +
+                " | Performed By: " + loggedInUser;
             AUDIT_LOG.info(msgOnCompletion);
             LOG.info(msgOnCompletion);
         } else {
