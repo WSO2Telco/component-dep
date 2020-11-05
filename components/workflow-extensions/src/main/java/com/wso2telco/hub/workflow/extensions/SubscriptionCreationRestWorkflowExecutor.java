@@ -294,6 +294,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
                     " | Workflow Status: " + subscriptionWorkFlowDTO.getStatus() +
                     " | API: " + subscriptionWorkFlowDTO.getApiName() + ":" + subscriptionWorkFlowDTO.getApiVersion() +
                     " | Application: " + subscriptionWorkFlowDTO.getApplicationName() +
+                    " | Application ID: " + subscriptionWorkFlowDTO.getApplicationId() +
                     " | Subscriber: " + subscriptionWorkFlowDTO.getSubscriber() +
                     " | Requested Tier: " + subscriptionWorkFlowDTO.getTierName();
             log.info(logMsg);
