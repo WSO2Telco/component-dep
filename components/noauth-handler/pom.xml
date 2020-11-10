@@ -4,13 +4,13 @@
   <parent>
     <groupId>com.wso2telco.dep</groupId>
     <artifactId>component-dep</artifactId>
-    <version>3.0.3</version>
+    <version>3.0.4-SNAPSHOT</version>
     <relativePath>../../pom.xml</relativePath>
   </parent>
   <groupId>com.wso2telco.dep</groupId>
   <artifactId>noauth-handler</artifactId>
   <packaging>bundle</packaging>
-  <version>3.0.3</version>
+  <version>3.0.4-SNAPSHOT</version>
   <name>noauth-handler</name>
   <url>http://maven.apache.org</url>
   <properties>
