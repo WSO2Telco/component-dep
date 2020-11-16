@@ -905,7 +905,7 @@ INSERT INTO REG_LOG (REG_PATH, REG_USER_ID, REG_ACTION, REG_ACTION_DATA, REG_TEN
 VALUES ('/_system/governance/permission/UI Module Permission/Quota', 'admin', 1, NULL, -1234);
 
 ###################################################################################33
-#add sub collections of rate collection
+#add sub collections of Quota collection
 
 SET @REG_PATH_PARENT_ID_Quota := (SELECT REG_PATH_ID
                                   FROM REG_PATH
@@ -1173,7 +1173,7 @@ VALUES ('/_system/governance/permission/UI Module Permission/Whitelist', 'admin'
 ###############################################################################################################################
 
 
-### for edit-subscription
+### for edit-tiers-rates
 
 INSERT INTO REG_PATH (REG_PATH_VALUE, REG_PATH_PARENT_ID, REG_TENANT_ID)
 VALUES ('/_system/governance/permission/UI Module Permission/edit-subscription', (SELECT @REG_PATH_PARENT_ID_UI_MODULE), -1234);
@@ -1219,4 +1219,111 @@ VALUES ((SELECT @REG_PROPERTY_ID), (SELECT @REG_VERSION), -1234);
 
 INSERT INTO REG_LOG (REG_PATH, REG_USER_ID, REG_ACTION, REG_ACTION_DATA, REG_TENANT_ID)
 VALUES ('/_system/governance/permission/UI Module Permission/edit-subscription', 'admin', 1, NULL, -1234);
+
+###################################################################################33
+#add sub collections of edit tiers and rates
+
+SET @REG_PATH_PARENT_ID_EditTier := (SELECT REG_PATH_ID
+                                  FROM REG_PATH
+                                  WHERE REG_PATH_VALUE = '/_system/governance/permission/UI Module Permission/edit-subscription');
+
+#############################################################
+
+#to show edit tiers/rates sub menu
+
+INSERT INTO REG_PATH (REG_PATH_VALUE, REG_PATH_PARENT_ID, REG_TENANT_ID)
+VALUES ('/_system/governance/permission/UI Module Permission/edit-subscription/Edit Application Tiers', (SELECT @REG_PATH_PARENT_ID_EditTier), -1234);
+
+INSERT INTO REG_RESOURCE (REG_PATH_ID, REG_NAME, REG_MEDIA_TYPE, REG_CREATOR, REG_LAST_UPDATOR, REG_DESCRIPTION, REG_TENANT_ID, REG_UUID)
+VALUES ((SELECT REG_PATH_ID
+         FROM REG_PATH
+         WHERE REG_PATH_VALUE = '/_system/governance/permission/UI Module Permission/edit-subscription/Edit Application Tiers'), NULL, NULL,
+        'admin', 'admin', 'fjo', -1234,
+        UUID());
+
+INSERT INTO REG_LOG (REG_PATH, REG_USER_ID, REG_ACTION, REG_ACTION_DATA, REG_TENANT_ID)
+VALUES ('/_system/governance/permission/UI Module Permission/edit-subscription/Edit Application Tiers', 'admin', 0, NULL, -1234);
+
+
+DELETE FROM REG_RESOURCE
+WHERE REG_PATH_ID = (SELECT REG_PATH_ID
+                     FROM REG_PATH
+                     WHERE REG_PATH_VALUE = '/_system/governance/permission/UI Module Permission/edit-subscription/Edit Application Tiers') AND
+      REG_NAME IS NULL AND
+      REG_TENANT_ID = -1234;
+
+
+INSERT INTO REG_RESOURCE (REG_PATH_ID, REG_NAME, REG_MEDIA_TYPE, REG_CREATOR, REG_LAST_UPDATOR, REG_DESCRIPTION, REG_TENANT_ID, REG_UUID)
+VALUES ((SELECT REG_PATH_ID
+         FROM REG_PATH
+         WHERE REG_PATH_VALUE = '/_system/governance/permission/UI Module Permission/edit-subscription/Edit Application Tiers'), NULL, NULL,
+        'admin', 'admin', 'fjo', -1234,
+        UUID());
+
+INSERT INTO REG_PROPERTY (REG_NAME, REG_VALUE, REG_TENANT_ID) VALUES ('name', 'edit-app-tiers', -1234);
+SET @REG_PROPERTY_ID := (SELECT LAST_INSERT_ID());
+SET @REG_VERSION := (SELECT REG_VERSION
+                     FROM REG_RESOURCE
+                     WHERE REG_PATH_ID = (SELECT REG_PATH_ID
+                                          FROM REG_PATH
+                                          WHERE REG_PATH_VALUE =
+                                                '/_system/governance/permission/UI Module Permission/edit-subscription/Edit Application Tiers'));
+
+
+INSERT INTO REG_RESOURCE_PROPERTY (REG_PROPERTY_ID, REG_VERSION, REG_TENANT_ID)
+VALUES ((SELECT @REG_PROPERTY_ID), (SELECT @REG_VERSION), -1234);
+
+INSERT INTO REG_LOG (REG_PATH, REG_USER_ID, REG_ACTION, REG_ACTION_DATA, REG_TENANT_ID)
+VALUES ('/_system/governance/permission/UI Module Permission/edit-subscription/Edit Application Tiers', 'admin', 1, NULL, -1234);
+
+# to show hide operator dropdown
+
+
+INSERT INTO REG_PATH (REG_PATH_VALUE, REG_PATH_PARENT_ID, REG_TENANT_ID)
+VALUES ('/_system/governance/permission/UI Module Permission/edit-subscription/Edit Subscription Tiers and Rates', (SELECT @REG_PATH_PARENT_ID_EditTier),
+        -1234);
+
+INSERT INTO REG_RESOURCE (REG_PATH_ID, REG_NAME, REG_MEDIA_TYPE, REG_CREATOR, REG_LAST_UPDATOR, REG_DESCRIPTION, REG_TENANT_ID, REG_UUID)
+VALUES ((SELECT REG_PATH_ID
+         FROM REG_PATH
+         WHERE REG_PATH_VALUE = '/_system/governance/permission/UI Module Permission/edit-subscription/Edit Subscription Tiers and Rates'), NULL, NULL,
+        'admin', 'admin', 'fjo', -1234,
+        UUID());
+
+INSERT INTO REG_LOG (REG_PATH, REG_USER_ID, REG_ACTION, REG_ACTION_DATA, REG_TENANT_ID)
+VALUES ('/_system/governance/permission/UI Module Permission/edit-subscription/Edit Subscription Tiers and Rates', 'admin', 0, NULL, -1234);
+
+
+DELETE FROM REG_RESOURCE
+WHERE REG_PATH_ID = (SELECT REG_PATH_ID
+                     FROM REG_PATH
+                     WHERE REG_PATH_VALUE = '/_system/governance/permission/UI Module Permission/edit-subscription/Edit Subscription Tiers and Rates')
+      AND REG_NAME IS NULL AND
+      REG_TENANT_ID = -1234;
+
+
+INSERT INTO REG_RESOURCE (REG_PATH_ID, REG_NAME, REG_MEDIA_TYPE, REG_CREATOR, REG_LAST_UPDATOR, REG_DESCRIPTION, REG_TENANT_ID, REG_UUID)
+VALUES ((SELECT REG_PATH_ID
+         FROM REG_PATH
+         WHERE REG_PATH_VALUE = '/_system/governance/permission/UI Module Permission/edit-subscription/Edit Subscription Tiers and Rates'), NULL, NULL,
+        'admin', 'admin', 'fjo', -1234,
+        UUID());
+
+INSERT INTO REG_PROPERTY (REG_NAME, REG_VALUE, REG_TENANT_ID) VALUES ('name', 'edit-subscription-tier-rate', -1234);
+SET @REG_PROPERTY_ID := (SELECT LAST_INSERT_ID());
+SET @REG_VERSION := (SELECT REG_VERSION
+                     FROM REG_RESOURCE
+                     WHERE REG_PATH_ID = (SELECT REG_PATH_ID
+                                          FROM REG_PATH
+                                          WHERE REG_PATH_VALUE =
+                                                '/_system/governance/permission/UI Module Permission/edit-subscription/Edit Subscription Tiers and Rates'));
+
+
+INSERT INTO REG_RESOURCE_PROPERTY (REG_PROPERTY_ID, REG_VERSION, REG_TENANT_ID)
+VALUES ((SELECT @REG_PROPERTY_ID), (SELECT @REG_VERSION), -1234);
+
+INSERT INTO REG_LOG (REG_PATH, REG_USER_ID, REG_ACTION, REG_ACTION_DATA, REG_TENANT_ID)
+VALUES ('/_system/governance/permission/UI Module Permission/edit-subscription/Edit Subscription Tiers and Rates', 'admin', 1, NULL, -1234);
+
+####
 

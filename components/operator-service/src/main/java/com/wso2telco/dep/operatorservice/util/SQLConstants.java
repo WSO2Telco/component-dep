@@ -78,12 +78,55 @@ public class SQLConstants {
 			"     AND SUB.USER_ID = ? " +
 			"   ORDER BY APP.NAME) AS apps";
 
+	public static final String GET_APP_USER_TIER_STATUS_SUBSCRIPTION_SQL = "SELECT DISTINCT (APPNAME), APPLICATION_ID, APPLICATION_TIER, APPLICATION_STATUS " +
+			"FROM " +
+			"  (SELECT APP.NAME AS APPNAME, " +
+			"          API.API_NAME, " +
+			"          SUB.USER_ID, " +
+			"          APP.APPLICATION_ID AS APPLICATION_ID, " +
+			"          APP.APPLICATION_TIER AS APPLICATION_TIER, " +
+			"          APP.APPLICATION_STATUS AS APPLICATION_STATUS " +
+			"   FROM AM_SUBSCRIPTION SUBS, " +
+			"        AM_APPLICATION APP, " +
+			"        AM_SUBSCRIBER SUB, " +
+			"        AM_API API " +
+			"   WHERE SUBS.APPLICATION_ID = APP.APPLICATION_ID " +
+			"     AND APP .SUBSCRIBER_ID = SUB.SUBSCRIBER_ID " +
+			"     AND API.API_ID = SUBS.API_ID " +
+			"     AND SUBS.SUB_STATUS != 'REJECTED' " +
+			"     AND SUB.USER_ID = ? " +
+			"   ORDER BY APP.NAME) AS apps";
+
 	public static final String GET_APP_USER_OPERATOR_SUBSCRIPTION_SQL = "SELECT DISTINCT (APPNAME), APPLICATION_ID " +
 			"FROM " +
 			"(SELECT APP.NAME AS APPNAME, " +
 			" API.API_NAME, " +
 			" SUB.USER_ID, " +
 			"       APP.APPLICATION_ID AS APPLICATION_ID " +
+			"FROM AM_SUBSCRIPTION SUBS, " +
+			"     AM_APPLICATION APP, " +
+			"     AM_SUBSCRIBER SUB, " +
+			"     AM_API API, " +
+			"     "+ DbUtils.getDbNames().get(DataSourceNames.WSO2TELCO_DEP_DB)+".operators o, " +
+			"     "+ DbUtils.getDbNames().get(DataSourceNames.WSO2TELCO_DEP_DB)+".operatorapps oa " +
+			"WHERE SUBS.APPLICATION_ID = APP.APPLICATION_ID " +
+			"  AND APP .SUBSCRIBER_ID = SUB.SUBSCRIBER_ID " +
+			"  AND API.API_ID = SUBS.API_ID " +
+			"  AND SUBS.SUB_STATUS != 'REJECTED' " +
+			"  AND SUB.USER_ID = ? " +
+			"  AND o.ID = oa.operatorid " +
+			"  AND o.operatorname = ? " +
+			"  AND APP.APPLICATION_ID = oa.applicationid " +
+			"ORDER BY APP.NAME) AS apps";
+
+	public static final String GET_APP_USER_TIER_STATUS_OPERATOR_SUBSCRIPTION_SQL = "SELECT DISTINCT (APPNAME), APPLICATION_ID, APPLICATION_TIER, APPLICATION_STATUS " +
+			"FROM " +
+			"(SELECT APP.NAME AS APPNAME, " +
+			" 		API.API_NAME, " +
+			" 		SUB.USER_ID, " +
+			" 		APP.APPLICATION_ID AS APPLICATION_ID, " +
+			"       APP.APPLICATION_TIER AS APPLICATION_TIER, " +
+			"       APP.APPLICATION_STATUS AS APPLICATION_STATUS " +
 			"FROM AM_SUBSCRIPTION SUBS, " +
 			"     AM_APPLICATION APP, " +
 			"     AM_SUBSCRIBER SUB, " +
@@ -133,6 +176,9 @@ public class SQLConstants {
 
 	public static final String GET_API_INFO_SQL =
 			" SELECT API_PROVIDER, API_NAME, API_VERSION FROM  AM_API WHERE API_ID = ?";
+
+	public static final String GET_ALL_APPS_BY_SP_SQL =
+			"  SELECT NAME, APPLICATION_ID, APPLICATION_TIER, APPLICATION_STATUS, CREATED_TIME FROM  AM_APPLICATION  WHERE CREATED_BY = ? AND APPLICATION_STATUS!='CREATED' AND APPLICATION_STATUS!='REJECTED'";
 
 
 	public static final String GET_MSISDN_FOR_WHITELIST =

@@ -587,7 +587,7 @@ APIDesigner.prototype.init_controllers = function(){
                             for(var method in pathObj){
                                 if(pathObj.hasOwnProperty(method)){
                                     var methodObj = pathObj[method];
-                                    
+
                                     //If the scope is added to the resource, remove it.
                                     if(methodObj['x-scope'] && methodObj['x-scope'] === scopeKeyToDelete){
                                         methodObj['x-scope'] = "";
@@ -662,7 +662,7 @@ APIDesigner.prototype.init_controllers = function(){
 				}
                 if (result.isRoleExist == false) {
                     jagg.message({
-                        content : "Role '" + $("#scopeRoles").val() + "' Does not exist.",
+                        content : "Role '" + encodeURIComponent($("#scopeRoles").val()) + "' Does not exist.",
                         type : "error"
                     });
                     return;
@@ -1330,11 +1330,29 @@ $(document).ready(function(){
                 if((m = json.exec(jsonFile.file_name)) !== null){
                     var data = JSON.parse(jsonFile.result); //swagger file content
                 }
-                var designer = APIDesigner();
-                designer.load_api_document(data);
-                $('#import_swagger').buttonLoader('stop');
-                $("#swaggerUpload").modal('hide');
+
+                jagg.post("/site/blocks/item-design/ajax/add.jag", {
+                    action: "validateSwagger",
+                    swaggerDefinition: jsonFile.result
+                }, function (result) {
+                    if (result.error) {
+                        jagg.message({
+                            content: i18n.t("API swagger definition is invalid. Please re-import valid swagger definition"),
+                            type: "error"
+                        });
+                        $('#import_swagger').buttonLoader('stop');
+                    } else {
+                        var designer = APIDesigner();
+                        designer.load_api_document(data);
+                        $('#import_swagger').buttonLoader('stop');
+                        $("#swaggerUpload").modal('hide');
+                    }
+                }, "json");
             } catch (err){
+                jagg.message({
+                    content:i18n.t("API swagger definition is invalid JSON. Please re-import valid swagger definition"),
+                    type: "error"
+                });
                 $('#swagger_file_help').show();
                 $('#import_swagger').buttonLoader('stop');
                 $('#fileErrorMsgClose').on('click', function (e) {
@@ -1472,6 +1490,15 @@ $(document).ready(function(){
                         // @todo: param_string
                         $('.tags-error').html('The tag contains one or more illegal characters  (~ ! @ #  ; % ^ & * + = { } | &lt; &gt;, \' " \\ \/ ) .');
                         return '';
+                }));
+                  } else if (/([A-Z])/.test(tagName)) {
+                $tag.val($tag.val().replace(/[^a-z0-9_ -]/g, function (str) {
+                    $('.tags-error').show();
+                    $('.add-tags-error').hide();
+                    $('.add-tags-error').html('');
+                    // @todo: param_string
+                    $('.tags-error').html('The tag cannot contain Uppercase Letters');
+                    return '';
                 }));
             }
 

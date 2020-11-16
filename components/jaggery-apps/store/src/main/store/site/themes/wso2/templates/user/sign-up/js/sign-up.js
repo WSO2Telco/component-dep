@@ -1,85 +1,83 @@
 var container;
 $(document).ready(function() {
-    $.validator.addMethod("matchPasswords", function(value) {
-		return value == $("#newPassword").val();
-	}, i18n.t("The passwords you entered do not match."));
+    $.validator.addMethod("matchPasswords", function (value) {
+        return value == $("#newPassword").val();
+    }, i18n.t("The passwords you entered do not match."));
 
     $.validator.addMethod('noSpace', function(value, element) {
-            return !/\s/g.test(value);
+        return !/\s/g.test(value);
     }, i18n.t('The name contains white spaces.'));
-
-    $.validator.addMethod("passwordValidate",function(value){
-        var maxLength = 30;
-        var minLength = 6;
-        return (value.length >= minLength && value.length <= maxLength) && value.match(/[a-z]/) && value.match(/[A-Z]/) && value.match(/\d+/) && value.match(/.[!,@,#,$,%,^,&,*,?,_,~,-,(,)]/)
-    },i18n.t('Minimum system requirements not met'));
 
     var purposes = document.getElementById("consentPurposes").value;
     if (purposes != undefined && purposes != null && purposes != "") {
-      purposes = JSON.parse(document.getElementById("consentPurposes").value);
+        purposes = JSON.parse(document.getElementById("consentPurposes").value);
     }
     var hasPurposes = document.getElementById("hasConsentPurposes").value;
 
     $("#sign-up").validate({
-     submitHandler: function(form) {
-    	var fieldCount = document.getElementById('fieldCount').value;
-	var allFieldsValues;
- 	for(var i = 0; i < fieldCount; i++) {
-		var value = document.getElementById( i + '.0cliamUri').value;
-		if ( i == 0) {
-			allFieldsValues = value;
-		} else {
-			allFieldsValues = allFieldsValues + "|" + value;
-		}
-	}
-        var tenantDomain = document.getElementById('hiddenTenantDomain').value;
-        var fullUserName;
-        if(tenantDomain == "null" || tenantDomain == "carbon.super") {
-            fullUserName = document.getElementById('newUsername').value;
-        } else {
-            fullUserName = document.getElementById('newUsername').value + "@" 
-                    + tenantDomain;
-        }
-
-    	jagg.post("/site/blocks/user/sign-up/ajax/user-add.jag", {
-            action:"addUser",
-            username:fullUserName,
-            password:$('#newPassword').val(),
-            allFieldsValues:allFieldsValues
-        }, function (result) {
-            if (result.error == false) {
-                if(result.showWorkflowTip) {
-                    jagg.message({content: i18n.t("User account awaiting Administrator approval.") ,type:"info",
-                        cbk:function() {
-                            if (hasPurposes == 'true') {
-                                var receipt = addReceiptInformation(container);
-                                $('<input />').attr('type', 'hidden')
-                                    .attr('name', "consent")
-                                    .attr('value', JSON.stringify(receipt))
-                                    .appendTo('#signUpRedirectForm');
-                            }
-                            $('#signUpRedirectForm').submit();
-                        }
-                    });
+        submitHandler: function (form) {
+            var fieldCount = document.getElementById('fieldCount').value;
+            var allFieldsValues;
+            for (var i = 0; i < fieldCount; i++) {
+                var value = document.getElementById(i + '.0cliamUri').value;
+                if (i == 0) {
+                    allFieldsValues = value;
                 } else {
-                    jagg.message({content: i18n.t("User added successfully. You can now sign into the API store using the new user account."), type:"info",
-                        cbk:function() {
-                            if (hasPurposes == 'true') {
-                                var receipt = addReceiptInformation(container);
-                                $('<input />').attr('type', 'hidden')
-                                    .attr('name', "consent")
-                                    .attr('value', JSON.stringify(receipt))
-                                    .appendTo('#signUpRedirectForm');
-                            }
-                            $('#signUpRedirectForm').submit();
-                        }
-                    });
+                    allFieldsValues = allFieldsValues + "|" + value;
                 }
-            } else {
-                jagg.message({content:result.message,type:"error"});
             }
-        }, "json");
-     }
+            var tenantDomain = document.getElementById('hiddenTenantDomain').value;
+            var fullUserName;
+            if (tenantDomain == "null" || tenantDomain == "carbon.super") {
+                fullUserName = document.getElementById('newUsername').value;
+            } else {
+                fullUserName = document.getElementById('newUsername').value + "@"
+                    + tenantDomain;
+            }
+
+            jagg.post("/site/blocks/user/sign-up/ajax/user-add.jag", {
+                action: "addUser",
+                username: fullUserName,
+                password: $('#newPassword').val(),
+                allFieldsValues: allFieldsValues
+            }, function (result) {
+                if (result.error == false) {
+                    if (result.showWorkflowTip) {
+                        jagg.message({
+                            content: i18n.t("User added successfully. You can now sign into the API store using the new user account."),
+                            type: "info",
+                            cbk: function () {
+                                if (hasPurposes == 'true') {
+                                    var receipt = addReceiptInformation(container);
+                                    $('<input />').attr('type', 'hidden')
+                                        .attr('name', "consent")
+                                        .attr('value', JSON.stringify(receipt))
+                                        .appendTo('#signUpRedirectForm');
+                                }
+                                $('#signUpRedirectForm').submit();
+                            }
+                        });
+                    } else {
+                        jagg.message({
+                            content: i18n.t("User added successfully. You can now sign into the API store using the new user account."),
+                            type: "info",
+                            cbk: function () {
+                                if (hasPurposes == 'true') {
+                                    var receipt = addReceiptInformation(container);
+                                    $('<input />').attr('type', 'hidden')
+                                        .attr('name', "consent")
+                                        .attr('value', JSON.stringify(receipt))
+                                        .appendTo('#signUpRedirectForm');
+                                }
+                                $('#signUpRedirectForm').submit();
+                            }
+                        });
+                    }
+                } else {
+                    jagg.message({content: result.message, type: "error"});
+                }
+            }, "json");
+        }
     });
     $("#newPassword").keyup(function() {
         $(this).valid();
@@ -99,16 +97,16 @@ $(document).ready(function() {
     if (agreementChk.length > 0) {
         registrationBtn.prop("disabled", true).addClass("disabled");
     }
-    agreementChk.click(function() {
+    agreementChk.click(function () {
         if ($(this).is(":checked")) {
             registrationBtn.prop("disabled", false).removeClass("disabled");
         } else {
-           registrationBtn.prop("disabled", true).addClass("disabled");
+            registrationBtn.prop("disabled", true).addClass("disabled");
         }
-   });
-   if (hasPurposes == 'true') {
-    renderReceiptDetails(purposes);
-   }
+    });
+    if (hasPurposes == 'true') {
+        renderReceiptDetails(purposes);
+    }
 });
 
 function renderReceiptDetails(data) {
@@ -209,12 +207,12 @@ function unflatten(arr) {
 }
 
 var showMoreFields = function () {
-	$('#moreFields').show();
-	$('#moreFieldsLink').hide();
-	$('#hideFieldsLink').show();
+    $('#moreFields').show();
+    $('#moreFieldsLink').hide();
+    $('#hideFieldsLink').show();
 }
 var hideMoreFields = function () {
-	$('#moreFields').hide();
-	$('#hideFieldsLink').hide();
-	$('#moreFieldsLink').show();
+    $('#moreFields').hide();
+    $('#hideFieldsLink').hide();
+    $('#moreFieldsLink').show();
 }

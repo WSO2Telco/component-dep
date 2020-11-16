@@ -26,7 +26,10 @@ public interface Notification {
     public void sendPLUGINAdminSubApprovalNotification(NotificationRequest request);
     public void sendAppApprovalStatusSPNotification(NotificationRequest request);
     public void sendSubApprovalStatusSPNotification(NotificationRequest request);
+    public void sendInternalAdminAppApprovalNotification(NotificationRequest request);
     public void sendInternalAdminSubrovalNotification(NotificationRequest request);
     public void sendPublisherSubApprovalNotification(NotificationRequest request);
+    public void sendApplicationTierEditNotification(ApplicationEditDTO applicationDTO);
+    public void sendsubscriptionTierEditNotification(SubscriptionEditDTO subscriptionEditDTO);
 
 }

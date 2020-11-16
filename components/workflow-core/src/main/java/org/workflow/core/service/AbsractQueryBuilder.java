@@ -16,16 +16,20 @@
 
 package org.workflow.core.service;
 
+import com.wso2telco.core.dbutils.DbUtils;
 import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.util.ApprovalRequest;
 import com.wso2telco.core.dbutils.util.AssignRequest;
 import com.wso2telco.core.dbutils.util.Callback;
+import com.wso2telco.core.dbutils.util.DataSourceNames;
 import com.wso2telco.core.userprofile.dto.UserProfileDTO;
 import org.apache.commons.logging.Log;
 import org.workflow.core.activity.*;
+import org.workflow.core.dboperation.DatabaseHandler;
 import org.workflow.core.execption.WorkflowExtensionException;
 import org.workflow.core.model.*;
 import org.workflow.core.util.*;
+import org.wso2.carbon.apimgt.impl.utils.APIUtil;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -62,7 +66,7 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
 
     protected abstract String getCandidateGroup(UserProfileDTO userProfileDTO);
 
-    public Callback searchPending(TaskSearchDTO searchDTO, final UserProfileDTO userProfile) throws BusinessException {
+    public Callback searchPending(TaskSearchDTO searchDTO, final UserProfileDTO userProfile, String workflowType) throws BusinessException {
         ProcessAllTaskSearchRequest processRequest = buildAllTaskSearchRequest(searchDTO, userProfile);
         if(getCandidateGroup(userProfile).equals(WorkFlowVariables.GATEWAY_ADMIN_ROLE.getValue())){
             processRequest.setUnassigned(true);
@@ -71,29 +75,61 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
         else{
             processRequest.setCandidateGroup(getCandidateGroup(userProfile));
         }
-        TaskList taskList = executeAllTaskRequest(processRequest);
+        TaskList taskList = executeAllTaskRequest(processRequest, workflowType);
         return buildAllTaskResponse(searchDTO, taskList, userProfile);
     }
 
     @Override
-    public Callback searchPending(TaskSearchDTO searchDTO, UserProfileDTO userProfile, String assigenee) throws BusinessException {
+    public Callback searchPending(TaskSearchDTO searchDTO, UserProfileDTO userProfile, String assigenee, String workflowType) throws BusinessException {
         ProcessSearchRequest processRequest = buildSearchRequest(searchDTO, userProfile);
         processRequest.setAssignee(assigenee);
-        TaskList taskList = executeRequest(processRequest);
+        TaskList taskList = executeRequest(processRequest,workflowType);
         return buildMyTaskResponse(searchDTO, taskList, userProfile);
     }
 
-    public TaskList executeRequest(ProcessSearchRequest processRequest) throws BusinessException {
+    @Override
+    public Callback searchPendingById(String taskId, final UserProfileDTO userProfile, String workflowType) throws BusinessException {
+        Task task = new Task();
+        ActivityRestClient activityClient = RestClientFactory.getInstance().getClient(getProcessDefinitionKey());
+        try {
+            if (APIUtil.isAdvanceThrottlingEnabled() && "APPLICATION".equals(workflowType)) {
+                String apiTiers = getTiersFromDB(workflowType);
+                TaskVariableResponse[] vars = activityClient.getVariables(taskId);
+                task.setVariables(replaceiActivitiTiers(vars, apiTiers, workflowType));
+            } else {
+                TaskVariableResponse[] vars = activityClient.getVariables(taskId);
+                task.setVariables(vars);
+            }
+        } catch (WorkflowExtensionException e) {
+            log.error(e.getMessage(), e);
+            throw new BusinessException(e);
+        }
+        TaskList taskList = new TaskList();
+        taskList.setData(Collections.singletonList(task));
+        return buildMyTaskResponse(null, taskList, userProfile);
+    }
+
+    public TaskList executeRequest(ProcessSearchRequest processRequest, String workflowType) throws BusinessException {
         TaskList taskList = null;
         ActivityRestClient activityClient = RestClientFactory.getInstance().getClient(getProcessDefinitionKey());
 
         try {
             taskList = activityClient.getTasks(processRequest);
 
-            for (Task task : taskList.getData()) {
-                TaskVariableResponse[] vars = activityClient.getVariables(String.valueOf(task.getId()));
-                task.setVariables(vars);
+            if(APIUtil.isAdvanceThrottlingEnabled() && workflowType.equals("APPLICATION")){
+                String APiTiers = getTiersFromDB(workflowType);
+
+                for (Task task : taskList.getData()) {
+                    TaskVariableResponse[] vars = activityClient.getVariables(String.valueOf(task.getId()));
+                    task.setVariables(replaceiActivitiTiers(vars,APiTiers,workflowType));
+                }
+            }else{
+                for (Task task : taskList.getData()) {
+                    TaskVariableResponse[] vars = activityClient.getVariables(String.valueOf(task.getId()));
+                    task.setVariables(vars);
+                }
             }
+
 
         } catch (WorkflowExtensionException e) {
             log.error("", e);
@@ -103,16 +139,24 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
         return taskList;
     }
 
-    public TaskList executeAllTaskRequest(ProcessAllTaskSearchRequest processRequest) throws BusinessException {
+    public TaskList executeAllTaskRequest(ProcessAllTaskSearchRequest processRequest, String workflowType) throws BusinessException {
         TaskList taskList;
         ActivityRestClient activityClient = RestClientFactory.getInstance().getClient(getProcessDefinitionKey());
 
         try {
             taskList = activityClient.getTasks(processRequest);
+            if(APIUtil.isAdvanceThrottlingEnabled() && workflowType.equals("APPLICATION")){
+                String APiTiers = getTiersFromDB(workflowType);
 
-            for (Task task : taskList.getData()) {
-                TaskVariableResponse[] vars = activityClient.getVariables(String.valueOf(task.getId()));
-                task.setVariables(vars);
+                for (Task task : taskList.getData()) {
+                    TaskVariableResponse[] vars = activityClient.getVariables(String.valueOf(task.getId()));
+                    task.setVariables(replaceiActivitiTiers(vars,APiTiers,workflowType));
+                }
+            }else{
+                for (Task task : taskList.getData()) {
+                    TaskVariableResponse[] vars = activityClient.getVariables(String.valueOf(task.getId()));
+                    task.setVariables(vars);
+                }
             }
 
         } catch (WorkflowExtensionException e) {
@@ -369,5 +413,37 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
             }
         }
         return false;
+    }
+
+    public TaskVariableResponse[] replaceiActivitiTiers(TaskVariableResponse[] vars , String TiersStr , String workflowType) throws  BusinessException {
+
+        if(workflowType.equals(WorkFlowType.APPLICATION.toString())){
+            for(int j=0;j< vars.length;j++){
+                if(vars[j].getName().equals("tiersStr")){
+                    vars[j].setValue(TiersStr);
+                }
+            }
+        }else if(workflowType.equals(WorkFlowType.SUBSCRIPTION.toString())){
+            for(int j=0;j< vars.length;j++){
+                if(vars[j].getName().equals("apiTiers")){
+                    vars[j].setValue(TiersStr);
+                }
+            }
+        }
+
+        return vars;
+    }
+
+    public String getTiersFromDB(String workFlowType) throws BusinessException {
+        String ApiTiers = null;
+        String apimgtDB = DbUtils.getDbNames().get(DataSourceNames.WSO2AM_DB);
+
+        DatabaseHandler handler = new DatabaseHandler();
+        if(workFlowType.equals(WorkFlowType.APPLICATION.toString()) && apimgtDB != null){
+            ApiTiers = handler.getAllApplicationThrottling();
+        }else if(workFlowType.equals(WorkFlowType.SUBSCRIPTION.toString()) && apimgtDB != null){
+            ApiTiers = handler.getAllSubscriptionThrottling();
+        }
+        return ApiTiers;
     }
 }

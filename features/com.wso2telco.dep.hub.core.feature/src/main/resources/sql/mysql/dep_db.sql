@@ -492,3 +492,85 @@ CREATE TABLE `operator_brands` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `operatorcode` (`operatorcode`)
 ) ENGINE=InnoDB;
+
+--
+-- Tables for app-store
+--
+CREATE TABLE `forum_replies` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `replyText` varchar(1000) DEFAULT NULL,
+    `replyUsername` varchar(45) DEFAULT NULL,
+    `datetime` varchar(45) DEFAULT NULL,
+    `topicId` int(11) DEFAULT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+CREATE TABLE `forum_topics` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `title` varchar(250) DEFAULT NULL,
+    `author` varchar(45) DEFAULT NULL,
+    `date` varchar(45) DEFAULT NULL,
+    `content` varchar(1000) DEFAULT NULL,
+    PRIMARY KEY (`id`)
+) ENGINE=InnoDB;
+
+--
+-- Tables for Response Filtering
+--
+CREATE TABLE `response_filter` (
+    `id` int(11) NOT NULL AUTO_INCREMENT,
+    `sp` varchar(255) NULL,
+    `application` varchar(255) NULL,
+    `api` varchar(255) NULL,
+    `operation` varchar(255) NULL,
+    `fields` varchar(2048) NULL,
+    PRIMARY KEY (`id`),
+    UNIQUE KEY `response_filter_uindex` (`sp`, `application`, `api`, `operation`)
+);
+
+--
+-- Custom IP validation related tables
+--
+
+CREATE TABLE IF NOT EXISTS `client_id_summary` (
+  `ID` int(20) NOT NULL AUTO_INCREMENT,
+  `client_id` varchar(255) NOT NULL,
+  `client_key` varchar(255) NOT NULL,
+  `ip_mapping_type_id` int(11) DEFAULT NULL,
+  `ip_validation_enabled` boolean DEFAULT false,
+  PRIMARY KEY (`ID`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `ip_mapping_type` (
+  `ID` int(20) NOT NULL AUTO_INCREMENT,
+  `Description` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`ID`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `client_ip_pool_mapping` (
+  `summary_id` int(20) NOT NULL,
+  `ip_pool_id` int(11) DEFAULT NULL
+);
+
+
+CREATE TABLE IF NOT EXISTS `ip_pool` (
+  `ip_pool_id` int(20) NOT NULL AUTO_INCREMENT,
+  `ip` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`ip_pool_id`)
+);
+
+
+CREATE TABLE IF NOT EXISTS `client_ip_range_mapping` (
+  `summary_id` int(20) NOT NULL,
+  `ip_range_id` int(11) DEFAULT NULL
+);
+
+
+CREATE TABLE IF NOT EXISTS `ip_range` (
+  `ip_range_id` int(20) NOT NULL AUTO_INCREMENT,
+  `start_ip` varchar(255) DEFAULT NULL,
+  `end_ip` varchar(255) DEFAULT NULL,
+  PRIMARY KEY (`ip_range_id`)
+);

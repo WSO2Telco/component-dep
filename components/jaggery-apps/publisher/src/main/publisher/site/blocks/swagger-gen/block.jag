@@ -1,0 +1,26 @@
+<%
+include("/jagg/jagg.jag");
+
+
+
+jagg.block("swagger-gen", {
+
+    initializer: function (data) {
+
+
+    },
+
+    getInputs: function () {
+        return {
+            "subscribers": null
+        };
+    },
+    getOutputs: function () {
+
+        return {
+        };
+    }
+
+
+});
+%>

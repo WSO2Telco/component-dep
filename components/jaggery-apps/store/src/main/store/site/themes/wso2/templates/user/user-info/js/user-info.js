@@ -24,23 +24,29 @@ $(document).ready(function() {
                     + tenantDomain;
         }
 
-    	jagg.post("/site/blocks/user/user-info/ajax/user-info.jag", {
-            action:"changePassword",
-            username:fullUserName,
-            currentPassword:$('#currentPassword').val(),
-            newPassword:$('#newPassword').val()
-        }, function (result) {
-            if (result.error == false) {
-            	$('#logoutForm').submit();
+        var newPass = $('#newPassword').val();
+
+        if(newPass.includes(fullUserName)) {
+            jagg.message({content:"Password cannot contain the User Name",type:"error"});
+        } else {
+            jagg.post("/site/blocks/user/user-info/ajax/user-info.jag", {
+                action:"changePassword",
+                username:fullUserName,
+                currentPassword:$('#currentPassword').val(),
+                newPassword:$('#newPassword').val()
+            }, function (result) {
+                if (result.error == false) {
+                    $('#logoutForm').submit();
                     jagg.message({content:i18n.t("User password changed successfully. You can now sign in to the API store using the new password."),type:"info",
                         cbk:function() {
                             $('#signUpRedirectForm').submit();
                         }
                     });
-            } else {
-                jagg.message({content:result.message,type:"error"});
-            }
-        }, "json");
+                } else {
+                    jagg.message({content:result.message,type:"error"});
+                }
+            }, "json");
+        }
      }
     });
     

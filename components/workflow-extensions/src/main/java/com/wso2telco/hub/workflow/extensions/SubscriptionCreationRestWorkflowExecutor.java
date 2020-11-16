@@ -93,7 +93,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
     private static final String PUBLISHER_ROLE_START_WITH = "workflow.Publisher.role.start.with";
     private static final String PUBLISHER_ROLE_END_WITH = "workflow.Publisher.role.end.with";
     private static final String API_PUB_DEPARTMENT = "department";
-    private static Log auditLog = CarbonConstants.AUDIT_LOG;
+    private static final Log auditLog = CarbonConstants.AUDIT_LOG;
 
     private String serviceEndpoint;
     private String username;
@@ -289,10 +289,16 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
                 auditLog.debug(msg);
             }
 
-            String logmessage = "Subscription Creation approval process instance task with Id " +
-                    processInstanceResponse.getId() + " created successfully";
-            log.info(logmessage);
-            auditLog.info(logmessage);
+            String logMsg = "Subscription creation approval workflow submitted." +
+                    " | Workflow ID: " + processInstanceResponse.getBusinessKey() +
+                    " | Workflow Status: " + subscriptionWorkFlowDTO.getStatus() +
+                    " | API: " + subscriptionWorkFlowDTO.getApiName() + ":" + subscriptionWorkFlowDTO.getApiVersion() +
+                    " | Application: " + subscriptionWorkFlowDTO.getApplicationName() +
+                    " | Application ID: " + subscriptionWorkFlowDTO.getApplicationId() +
+                    " | Subscriber: " + subscriptionWorkFlowDTO.getSubscriber() +
+                    " | Requested Tier: " + subscriptionWorkFlowDTO.getTierName();
+            log.info(logMsg);
+            auditLog.info(logMsg);
         } catch (APIManagementException e) {
             throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
         } catch (UserStoreException e) {
@@ -307,11 +313,6 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
     public WorkflowResponse complete(WorkflowDTO workFlowDTO) throws WorkflowException {
         workFlowDTO.setUpdatedTime(System.currentTimeMillis());
         super.complete(workFlowDTO);
-        String logm = "Subscription Creation [Complete] Workflow Invoked. Workflow ID : " +
-                workFlowDTO.getExternalWorkflowReference() + "Workflow State : " + workFlowDTO.getStatus();
-        log.info(logm);
-        auditLog.info(logm);
-
         if (WorkflowStatus.APPROVED.equals(workFlowDTO.getStatus()) ||
                 WorkflowStatus.REJECTED.equals(workFlowDTO.getStatus())) {
             String status = null;
@@ -328,14 +329,18 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
                 try {
                     apiMgtDAO.updateSubscriptionStatus(Integer.parseInt(workFlowDTO.getWorkflowReference()), status);
                 } catch (APIManagementException e) {
-                    log.error("Could not complete subscription creation workflow", e);
-                    auditLog.error("Could not complete subscription creation workflow", e);
-                    throw new WorkflowException("Could not complete subscription creation workflow", e);
+                    String errorMsg = "Could not complete subscription approval workflow." +
+                            " | Workflow ID: " + workFlowDTO.getExternalWorkflowReference();
+                    log.error(errorMsg, e);
+                    auditLog.error(errorMsg, e);
+                    throw new WorkflowException(errorMsg, e);
                 }
 
             } else {
-                log.error("Could not complete subscription creation workflow. Approval status is invalid.");
-                auditLog.error("Could not complete subscription creation workflow. Approval status is invalid.");
+                final String errorMsg = "Could not complete subscription approval workflow. " +
+                        "Approval status is invalid. | Workflow ID: " + workFlowDTO.getExternalWorkflowReference();
+                log.error(errorMsg);
+                auditLog.error(errorMsg);
             }
         }
         return null;

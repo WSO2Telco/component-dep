@@ -1473,7 +1473,7 @@
                 $('#sandboxTps').val(null);
             }
             thisID=$(this).attr('id');
-            $("#apiSaved").attr("style", "display: block ; position: fixed; height: 50px; width: 90% ; top: 20px; left: 5%; padding: 0px; list-style-type: none; z-index:999999999; text-align: center; padding-top : 15px");
+            $('#apiSaved').show();
             setTimeout("hideMsg()", 3000);
         });
 

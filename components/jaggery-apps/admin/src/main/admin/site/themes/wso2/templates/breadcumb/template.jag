@@ -65,8 +65,9 @@
 
 
 <!-- breadcrumb -->
-    <div class="breadcrumb-wrapper">
+    <div class="breadcrumb-wrapper" style="display:none>
         <ol class="breadcrumb">
+        <!--
 			<% if (reqUrl.indexOf(themeUrl) >= 0 || reqUrl.indexOf(themeMappedUrl) >= 0) { %>
 			 	<li>
 		        	<a href="#"><%=i18n.localize("settings")%> </a>
@@ -227,6 +228,7 @@
 				    </li>
 			    <% } %>
 		      <% } %>
+		      -->
         </ol>
     </div>
 <% }); %>

@@ -23,6 +23,7 @@ import com.wso2telco.workflow.utils.Constants;
 import com.wso2telco.workflow.utils.EmailNotificationUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.apimgt.impl.dto.ApplicationDTO;
 
 import java.util.Collection;
 import java.util.Iterator;
@@ -285,6 +286,40 @@ public class NotificationImpl implements Notification {
         }
     }
 
+    @Override
+    public void sendInternalAdminAppApprovalNotification(NotificationRequest request) {
+        String role = request.getReceiverRole();
+        String applicationName = request.getApplicationName();
+        String applicationTier = request.getApplicationTier();
+        String applicationDescription = request.getApplicationDescription();
+        String userName = request.getUserName();
+
+        log.debug("role : " + role);
+        log.debug("applicationName : " + applicationName);
+        log.debug("applicationTier : " + applicationTier);
+        log.debug("applicationDescription : " + applicationDescription);
+        log.debug("userName : " + userName);
+
+        if (role != null && !role.isEmpty()) {
+            RemoteUserStoreManager userStoreManager = new RemoteUserStoreManagerImpl();
+            String[] users = userStoreManager.getUserListOfRole(role);
+            if (users != null && users.length > 0) {
+                String content = EmailNotificationUtil.getAppPluginApproverEmailContent(applicationName, applicationTier, applicationDescription, userName);
+                if (!content.isEmpty()) {
+                    for (String user : users) {
+                        String email = userStoreManager.getUserClaimValue(user, Constants.CLAIM_EMAIL);
+                        emailService.sendEmail(email, Constants.SUBJECT_INT_ADMIN_APP_APPROVAL_NOTIFICATION, content);
+                    }
+                } else {
+                    log.error("Email content is either null or empty. [ content : " + content + " ]");
+                }
+            } else {
+                log.info("User list is either null or empty. [ users : " + users + " ]");
+            }
+        } else {
+            log.error("The specified role is either null or empty. [ role : " + role + " ]");
+        }
+    }
 
     @Override
     public void sendInternalAdminSubrovalNotification(NotificationRequest request) {
@@ -374,4 +409,60 @@ public class NotificationImpl implements Notification {
         }
 
     }
+
+    public void sendApplicationTierEditNotification(ApplicationEditDTO applicationDTO) {
+        String applicationName = applicationDTO.getApplicationName();
+        String existingApplicationTier = applicationDTO.getExistingTier();
+        String newApplicationTier = applicationDTO.getApplicationTier();
+        String serviceProvider = applicationDTO.getServiceProvider();
+
+        log.debug("applicationName : " + applicationName);
+        log.debug("existingApplicationTier : " + existingApplicationTier);
+        log.debug("newApplicationTier : " + newApplicationTier);
+        log.debug("serviceProvider : " + serviceProvider);
+
+        RemoteUserStoreManager remoteUserStoreManager = new RemoteUserStoreManagerImpl();
+
+        if (serviceProvider != null) {
+
+            String email = remoteUserStoreManager.getUserClaimValue(serviceProvider, Constants.CLAIM_EMAIL);
+            String subject = Constants.SUBJECT_APP_TIER_CHANGE_SP_NOTIFICATION;
+            String content = EmailNotificationUtil.getAppTierChangeSPEmailNotificationContent(serviceProvider, applicationName,
+                    existingApplicationTier, newApplicationTier);
+            emailService.sendEmail(email, subject, content);
+        } else {
+            log.info("serviceProvider is either null or empty. [ serviceProvider : " + serviceProvider + " ]");
+        }
+    }
+
+    public void sendsubscriptionTierEditNotification(SubscriptionEditDTO subscriptionEditDTO) {
+        String applicationName = subscriptionEditDTO.getApplicationName();
+        String newSubscriptionTier = subscriptionEditDTO.getSubscriptionTier();
+        String existingSubscriptionTier = subscriptionEditDTO.getExistingTier();
+        String apiName = subscriptionEditDTO.getApiName();
+        String apiVersion = subscriptionEditDTO.getApiVersion();
+        String serviceProvider = subscriptionEditDTO.getServiceProvider();
+
+        log.debug("applicationName : " + applicationName);
+        log.debug("existingSubscriptionTier : " + existingSubscriptionTier);
+        log.debug("newSubscriptionTier : " + newSubscriptionTier);
+        log.debug("apiName : " + apiName);
+        log.debug("apiVersion : " + apiVersion);
+        log.debug("serviceProvider : " + serviceProvider);
+
+        RemoteUserStoreManager remoteUserStoreManager = new RemoteUserStoreManagerImpl();
+
+        if (serviceProvider != null) {
+
+            String email = remoteUserStoreManager.getUserClaimValue(serviceProvider, Constants.CLAIM_EMAIL);
+            String subject = Constants.SUBJECT_SUBSCRIPTION_TIER_CHANGE_SP_NOTIFICATION;
+            String content = EmailNotificationUtil.getSubscriptionTierChangeSPEmailNotificationContent(serviceProvider, apiName, apiVersion,
+                    applicationName, existingSubscriptionTier, newSubscriptionTier);
+            emailService.sendEmail(email, subject, content);
+
+        } else {
+            log.info("serviceProvider is either null or empty. [ serviceProvider : " + serviceProvider + " ]");
+        }
+    }
+
 }
