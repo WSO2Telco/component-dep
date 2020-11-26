@@ -18,29 +18,29 @@ package com.wso2telco.dep.responsefilter;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
+import java.sql.SQLException;
+import java.util.ArrayList;
 
 import com.wso2telco.core.dbutils.DbUtils;
 import com.wso2telco.core.dbutils.util.DataSourceNames;
 import lk.chathurabuddi.json.schema.constants.FreeFormAction;
 import lk.chathurabuddi.json.schema.filter.JsonSchemaFilter;
-import org.apache.commons.logging.Log;
-import org.apache.commons.logging.LogFactory;
 import org.apache.synapse.MessageContext;
 import org.apache.synapse.commons.json.JsonUtil;
 import org.apache.synapse.core.axis2.Axis2MessageContext;
 import org.apache.synapse.mediators.AbstractMediator;
+import org.glassfish.jersey.uri.UriTemplate;
 
 public class ResponseFilterMediator extends AbstractMediator {
 
-    private static final Log log = LogFactory.getLog(ResponseFilterMediator.class);
-
     public boolean mediate(MessageContext messageContext) {
         String api = messageContext.getProperty("api.ut.api").toString() + ":" + messageContext.getProperty("api.ut.version").toString();
-        String operation = messageContext.getProperty("api.ut.HTTP_METHOD").toString() + " " + messageContext.getProperty("api.ut.resource").toString();
+        String httpVerb = messageContext.getProperty("api.ut.HTTP_METHOD").toString();
+        String resource = messageContext.getProperty("api.ut.resource").toString();
         String userId = messageContext.getProperty("api.ut.userId").toString().split("@")[0];
         String appName = messageContext.getProperty("api.ut.application.name").toString();
 
-        log.debug("API : " + api + " | USER : " + userId + " | APP_NAME : " + appName + " | OPERATION : " + operation);
+        log.debug("API : " + api + " | USER : " + userId + " | APP_NAME : " + appName + " | HTTP_VERB : " + httpVerb + " | RESOURCE : " + resource);
 
         org.apache.axis2.context.MessageContext axis2MessageContext = ((Axis2MessageContext) messageContext)
                 .getAxis2MessageContext();
@@ -48,7 +48,7 @@ public class ResponseFilterMediator extends AbstractMediator {
         try {
             String jsonString = (String) messageContext.getProperty("jsonPayload");
             if (jsonString != null && !"".equals(jsonString.trim())){
-                String filterSchema = findFilterSchema(userId, appName, api, operation);
+                String filterSchema = findFilterSchema(userId, appName, api, httpVerb, resource);
                 if (filterSchema != null) {
                     String filteredJson = new JsonSchemaFilter(filterSchema, jsonString, FreeFormAction.DETACH).filter();
                     JsonUtil.getNewJsonPayload(axis2MessageContext, filteredJson, true, true);
@@ -61,7 +61,7 @@ public class ResponseFilterMediator extends AbstractMediator {
         return true;
     }
 
-    public String findFilterSchema(String sp, String application, String api, String operation) throws Exception {
+    public String findFilterSchema(String sp, String application, String api, String httpVerb, String resource) throws Exception {
         Connection connection = null;
         PreparedStatement statement = null;
         ResultSet resultSet = null;
@@ -70,23 +70,25 @@ public class ResponseFilterMediator extends AbstractMediator {
         try {
             connection = DbUtils.getDbConnection(DataSourceNames.WSO2TELCO_DEP_DB);
             if (connection == null) {
-                throw new Exception("database connection error");
+                throw new SQLException("database connection error");
             }
 
-            StringBuilder query = new StringBuilder("SELECT fields FROM response_filter");
-            query.append(" WHERE sp=? AND application=? AND api=? AND operation=?");
+            StringBuilder query = new StringBuilder("SELECT operation, fields FROM response_filter");
+            query.append(" WHERE sp=? AND application=? AND api=?");
             statement = connection.prepareStatement(query.toString());
             statement.setString(1, sp);
             statement.setString(2, application);
             statement.setString(3, api);
-            statement.setString(4, operation);
             resultSet = statement.executeQuery();
 
-            if (resultSet.next()) {
-                filterSchema = resultSet.getString(1);
+            while (resultSet.next()) {
+                String[] uriTemplateComponents = resultSet.getString(1).split(" ");
+                if (httpVerb != null &&
+                    httpVerb.equals(uriTemplateComponents[0]) &&
+                    new UriTemplate(uriTemplateComponents[1]).match(resource, new ArrayList<String>())) {
+                    filterSchema = resultSet.getString(2);
+                }
             }
-        } catch (Exception e) {
-            throw new Exception(e);
         } finally {
             DbUtils.closeAllConnections(statement, connection, resultSet);
         }
