@@ -1482,7 +1482,7 @@ $(document).ready(function(){
             var tagName = $(this).val();
             $tag = $(this);
 
-            if(/([~!@#;%^&*+=\|\\<>\"\'\/,])/.test(tagName)){
+            if(/([~!@#;{}%^&*+=\|\\<>\"\'\/,])/.test(tagName)){
                 $tag.val( $tag.val().replace(/[^a-zA-Z0-9_ -]/g, function(str) {
                     $('.tags-error').show();
                     $('.add-tags-error').hide();
