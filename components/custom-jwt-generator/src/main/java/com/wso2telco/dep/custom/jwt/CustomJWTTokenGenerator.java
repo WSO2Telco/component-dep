@@ -4,13 +4,21 @@ import com.nimbusds.jwt.JWTClaimsSet;
 import org.apache.commons.codec.binary.Base64;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.simple.JSONObject;
 import org.wso2.carbon.apimgt.api.APIManagementException;
+import org.wso2.carbon.apimgt.api.model.API;
+import org.wso2.carbon.apimgt.impl.APIConstants;
 import org.wso2.carbon.apimgt.impl.dto.APIKeyValidationInfoDTO;
 import org.wso2.carbon.apimgt.impl.internal.ServiceReferenceHolder;
 import org.wso2.carbon.apimgt.impl.token.ClaimsRetriever;
 import org.wso2.carbon.apimgt.impl.utils.APIUtil;
 import org.wso2.carbon.apimgt.keymgt.service.TokenValidationContext;
 import org.wso2.carbon.apimgt.keymgt.token.JWTGenerator;
+import org.wso2.carbon.governance.api.generic.GenericArtifactManager;
+import org.wso2.carbon.governance.api.generic.dataobjects.GenericArtifact;
+import org.wso2.carbon.registry.core.RegistryConstants;
+import org.wso2.carbon.registry.core.Resource;
+import org.wso2.carbon.registry.core.session.UserRegistry;
 import org.wso2.carbon.utils.multitenancy.MultitenantUtils;
 import java.security.*;
 import java.security.cert.Certificate;
@@ -21,12 +29,15 @@ public class CustomJWTTokenGenerator extends JWTGenerator {
 
     private static final Log log = LogFactory.getLog(CustomJWTTokenGenerator.class);
     private String signatureAlgorithm = "SHA256withRSA";
+    private String jwtHeaderName;
 
     public CustomJWTTokenGenerator() {
         this.signatureAlgorithm = ServiceReferenceHolder.getInstance().getAPIManagerConfigurationService().getAPIManagerConfiguration().getFirstProperty("JWTConfiguration.SignatureAlgorithm");
         if (this.signatureAlgorithm == null || !"NONE".equals(this.signatureAlgorithm) && !"SHA256withRSA".equals(this.signatureAlgorithm) && !"ES384".equals(this.signatureAlgorithm)) {
             this.signatureAlgorithm = "SHA256withRSA";
         }
+        
+        this.jwtHeaderName = ServiceReferenceHolder.getInstance().getAPIManagerConfigurationService().getAPIManagerConfiguration().getFirstProperty("JWTConfiguration.JWTHeader");
 
     }
 
@@ -38,9 +49,10 @@ public class CustomJWTTokenGenerator extends JWTGenerator {
         int tenantId = APIUtil.getTenantId(endUserName);
         String tenantName = APIUtil.getTenantDomainFromTenantId(tenantId);
         String[] userRoles = CustomAPIUtil.getUserRoles(tenantName, endUserName);
+        String[] formattedUserRoles = CommonUtils.formatStringsToAlphaNum(userRoles);
         Map<String, Object> claims = new LinkedHashMap(3);
 
-        claims.put("roles", userRoles);
+        claims.put("roles", formattedUserRoles);
         claims.put("exp", new Date(expireIn));
         claims.put("iat", new Date(currentTime));
         claims.put("oit", new Date(currentTime));
@@ -49,27 +61,22 @@ public class CustomJWTTokenGenerator extends JWTGenerator {
 
     private Map<String, String> getStandardClaims(TokenValidationContext validationContext, long currentTime) throws APIManagementException {
 
-    	String dialect;
+    	
         APIKeyValidationInfoDTO apiKeyValidationInfoDTO = validationContext.getValidationInfoDTO();
         String endUserName = apiKeyValidationInfoDTO.getEndUserName();
         String subscriber = apiKeyValidationInfoDTO.getSubscriber();
         String applicationId = apiKeyValidationInfoDTO.getApplicationId();
         int tenantId = APIUtil.getTenantId(endUserName);
-        String accessToken = validationContext.getAccessToken();
-        
-        ClaimsRetriever claimsRetriever = getClaimsRetriever();
-        if (claimsRetriever != null) {
-            dialect = claimsRetriever.getDialectURI(validationContext.getValidationInfoDTO().getEndUserName());
-        } else {
-            dialect = getDialectURI();
-        }
+        String accessToken = validationContext.getAccessToken();        
+        String dialect = getClaimDialect(validationContext);        
 
-        Map<String, String> claims = new LinkedHashMap(8);
+        Map<String, String> claims = new LinkedHashMap(9);
 
         claims.put("sub", "apigw_proxy");
         claims.put("iss", CustomAPIUtil.getIssuerDomainName());
         claims.put("jti", accessToken + String.valueOf(currentTime));
         claims.put("tenid", String.valueOf(tenantId));
+        claims.put("salesChannel", getSalesChannel(validationContext, endUserName));
         claims.put(dialect + "/subscriber", subscriber);
         claims.put(dialect + "/applicationid", applicationId);
         claims.put(dialect + "/version", validationContext.getVersion());
@@ -180,6 +187,8 @@ public class CustomJWTTokenGenerator extends JWTGenerator {
         if (jwtBody != null) {
             base64UrlEncodedBody = this.encode(jwtBody.getBytes());
         }
+        
+        String prefix = appendPrefixIfExist();
 
         if ("SHA256withRSA".equals(this.signatureAlgorithm) || "ES384".equals(this.signatureAlgorithm)) {
             String assertion = base64UrlEncodedHeader + '.' + base64UrlEncodedBody;
@@ -189,9 +198,10 @@ public class CustomJWTTokenGenerator extends JWTGenerator {
             }
 
             String base64UrlEncodedAssertion = this.encode(signedAssertion);
-            return base64UrlEncodedHeader + '.' + base64UrlEncodedBody + '.' + base64UrlEncodedAssertion;
+            return prefix + base64UrlEncodedHeader + '.' + base64UrlEncodedBody + '.' + base64UrlEncodedAssertion;
+            
         } else {
-            return base64UrlEncodedHeader + '.' + base64UrlEncodedBody + '.';
+        	return prefix + base64UrlEncodedHeader + '.' + base64UrlEncodedBody + '.';
         }
     }
 
@@ -225,5 +235,81 @@ public class CustomJWTTokenGenerator extends JWTGenerator {
             throw new APIManagementException(error, ex4);
         }
     }
+    
+    private String appendPrefixIfExist() throws APIManagementException
+    {
+    	String prefix = "";
+    	if(this.jwtHeaderName != null) {
+	    	if(this.jwtHeaderName.equalsIgnoreCase("Authorization")) {
+	    		prefix = "Bearer ";
+	    	}
+    	}
+    	else {
+    		throw new APIManagementException("JWTHeader value is null");
+    	}
+    	
+    	return prefix;
+    }
+    
+    private String getClaimDialect(TokenValidationContext validationContext) throws APIManagementException
+    {
+    	String dialect = null;
+    	ClaimsRetriever claimsRetriever = getClaimsRetriever();
+        if (claimsRetriever != null) {
+            dialect = claimsRetriever.getDialectURI(validationContext.getValidationInfoDTO().getEndUserName());
+        } else {
+            dialect = getDialectURI();
+        }
+        
+        return dialect;
+    }
+    
+    private API getAPI(TokenValidationContext validationContext) throws APIManagementException {
+        API api=null;
+        try {
+            APIKeyValidationInfoDTO apiKeyValidationInfoDTO = validationContext.getValidationInfoDTO();
+            String endUserName = apiKeyValidationInfoDTO.getEndUserName();
+            int tenantId = APIUtil.getTenantId(endUserName);
+            String providerName = apiKeyValidationInfoDTO.getApiPublisher();
+            String apiPath = APIConstants.API_LOCATION + RegistryConstants.PATH_SEPARATOR +
+                    providerName + RegistryConstants.PATH_SEPARATOR +
+                    apiKeyValidationInfoDTO.getApiName() + RegistryConstants.PATH_SEPARATOR +
+                    validationContext.getVersion() + RegistryConstants.PATH_SEPARATOR +
+                    APIConstants.API_KEY;
+            UserRegistry registry = ServiceReferenceHolder.getInstance().getRegistryService().getGovernanceSystemRegistry(tenantId);
+            GenericArtifactManager artifactManager = APIUtil.getArtifactManager(registry, APIConstants.API_KEY);
+            Resource resource = registry.get(apiPath);
+            GenericArtifact artifact = artifactManager.getGenericArtifact(resource.getUUID());
+            api = APIUtil.getAPI(artifact,registry);
+        }catch (Exception e){
+            throw new APIManagementException("Error occurred while fetching the API from registry",e);
+        }
+        return api;
+    }
+    
+    private String getSalesChannel(TokenValidationContext validationContext, String userName) throws APIManagementException
+	{
+		String salesChannel = null;
+		try {
+			API api = getAPI(validationContext);
+			JSONObject additionalProperties = api.getAdditionalProperties();
+			Set<String> propertyKeys = additionalProperties.keySet();
+			Iterator<String> it = propertyKeys.iterator();
+			while (it.hasNext()) {
+				String propertyKey = it.next();
+				if (propertyKey != null && propertyKey.equalsIgnoreCase("SalesChannel")) {
+					salesChannel = additionalProperties.get(propertyKey).toString();
+					break;
+				}
+			}
+		} catch (Exception ex) {
+			log.warn("Error occurred while fetching salesChannel property from API", ex);
+		}
 
+		if (salesChannel == null || salesChannel.trim().isEmpty()) {
+			String claimUrl = getClaimDialect(validationContext) + "/saleschannel";
+			salesChannel = CommonUtils.getClaimValueFromDialect(userName, claimUrl);
+		}
+		return salesChannel;
+	}
 }
