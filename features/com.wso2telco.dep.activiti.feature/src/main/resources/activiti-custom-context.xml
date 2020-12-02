@@ -8,7 +8,7 @@
        http://www.springframework.org/schema/jee http://www.springframework.org/schema/jee/spring-jee-3.0.xsd
        http://www.springframework.org/schema/aop http://www.springframework.org/schema/aop/spring-aop-3.0.xsd">
   
-  <jee:jndi-lookup expected-type="javax.sql.DataSource" jndi-name="jdbc/ACTIVITI" id="dataSource"/>
+  <jee:jndi-lookup expected-type="javax.sql.DataSource" jndi-name="jdbc/ACTIVITI_DB" id="dataSource"/>
 
    <bean id="processEngineConfiguration" class="org.activiti.spring.SpringProcessEngineConfiguration">
       <property name="dataSource" ref="dataSource" />
