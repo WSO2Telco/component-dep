@@ -216,21 +216,6 @@
                                 </copy>
                                 <copy todir="${tempdir}/activiti-rest/WEB-INF/lib" overwrite="true">
                                     <fileset dir="${project.build.directory}/../../../components/workflow/workflow-approval/target/dependencies">
-                                        <include name="jackson-annotations-${jackson.version}.jar" />
-                                    </fileset>
-                                </copy>
-                                <copy todir="${tempdir}/activiti-rest/WEB-INF/lib" overwrite="true">
-                                    <fileset dir="${project.build.directory}/../../../components/workflow/workflow-approval/target/dependencies">
-                                        <include name="jackson-core-${jackson.version}.jar" />
-                                    </fileset>
-                                </copy>
-                                <copy todir="${tempdir}/activiti-rest/WEB-INF/lib" overwrite="true">
-                                    <fileset dir="${project.build.directory}/../../../components/workflow/workflow-approval/target/dependencies">
-                                        <include name="jackson-databind-${jackson.version}.jar" />
-                                    </fileset>
-                                </copy>
-                                <copy todir="${tempdir}/activiti-rest/WEB-INF/lib" overwrite="true">
-                                    <fileset dir="${project.build.directory}/../../../components/workflow/workflow-approval/target/dependencies">
                                         <include name="groovy-all-${groovy.version}.jar" />
                                     </fileset>
                                 </copy>
