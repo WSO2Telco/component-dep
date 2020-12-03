@@ -18,6 +18,8 @@ package com.wso2telco.dep.lifecycleextension.util;
 
 public class EmailNotificationUtil {
 
+    private EmailNotificationUtil(){
+    }
 
     public static String getApiProviderEmailContent(String apiName, String receiverName) {
 

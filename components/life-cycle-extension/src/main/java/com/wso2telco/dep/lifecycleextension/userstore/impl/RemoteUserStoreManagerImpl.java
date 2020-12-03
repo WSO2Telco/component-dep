@@ -25,21 +25,15 @@ import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
 
 public class RemoteUserStoreManagerImpl implements RemoteUserStoreManager{
 
-    private static Log log = LogFactory.getLog(RemoteUserStoreManagerImpl.class);
+    private static final Log log = LogFactory.getLog(RemoteUserStoreManagerImpl.class);
 
     @Override
     public String[] getUserListOfRole(String role) {
-        String[] userList = null;
 
         try {
-            PrivilegedCarbonContext.startTenantFlow();
-            PrivilegedCarbonContext privilegedCarbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
-            privilegedCarbonContext.setTenantId(MultitenantConstants.SUPER_TENANT_ID);
-            privilegedCarbonContext.setTenantDomain(MultitenantConstants.SUPER_TENANT_DOMAIN_NAME);
-            log.info("Getting users for the role : " + role);
-            UserStoreManager userstoremanager = privilegedCarbonContext.getUserRealm().getUserStoreManager();
-            userList = userstoremanager.getUserListOfRole(role);
 
+            log.info("Getting users for the role : " + role);
+            return getUserStoreManager().getUserListOfRole(role);
 
         } catch (Exception ex){
             throw new RuntimeException(ex);
@@ -48,7 +42,6 @@ public class RemoteUserStoreManagerImpl implements RemoteUserStoreManager{
             PrivilegedCarbonContext.endTenantFlow();
         }
 
-        return userList;
     }
 
     @Override
@@ -58,12 +51,8 @@ public class RemoteUserStoreManagerImpl implements RemoteUserStoreManager{
         log.info("Getting claim value for the userName : " + userName + " and claim : " + claim);
 
         try {
-            PrivilegedCarbonContext.startTenantFlow();
-            PrivilegedCarbonContext privilegedCarbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
-            privilegedCarbonContext.setTenantId(MultitenantConstants.SUPER_TENANT_ID);
-            privilegedCarbonContext.setTenantDomain(MultitenantConstants.SUPER_TENANT_DOMAIN_NAME);
-            UserStoreManager userstoremanager = privilegedCarbonContext.getUserRealm().getUserStoreManager();
-            claimValue = userstoremanager.getUserClaimValue(userName, claim, null);
+
+            claimValue = getUserStoreManager().getUserClaimValue(userName, claim, null);
             log.info("Claim value : " + claimValue);
 
         } catch (Exception e) {
@@ -74,5 +63,17 @@ public class RemoteUserStoreManagerImpl implements RemoteUserStoreManager{
         }
 
         return claimValue;
+    }
+
+
+    private UserStoreManager getUserStoreManager()throws Exception{
+
+        PrivilegedCarbonContext.startTenantFlow();
+        PrivilegedCarbonContext privilegedCarbonContext = PrivilegedCarbonContext.getThreadLocalCarbonContext();
+        privilegedCarbonContext.setTenantId(MultitenantConstants.SUPER_TENANT_ID);
+        privilegedCarbonContext.setTenantDomain(MultitenantConstants.SUPER_TENANT_DOMAIN_NAME);
+
+        return privilegedCarbonContext.getUserRealm().getUserStoreManager();
+
     }
 }

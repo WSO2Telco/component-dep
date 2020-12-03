@@ -33,13 +33,11 @@ public class APICustomExecutor extends APIExecutor {
     @Override
     public boolean execute(RequestContext context, String currentState, String targetState) {
 
-            if(super.execute(context, currentState, targetState)){
-                if(currentState.equalsIgnoreCase(Constants.STATE_CREATED) && targetState.equalsIgnoreCase(Constants.STATE_PUBLISHED)){
-                    notificationService.sendApiProviderEmail(context);
-                    return true;
-                }
-                return true;
+        boolean superExecuted = super.execute(context, currentState, targetState);
+        if(superExecuted && currentState.equalsIgnoreCase(Constants.STATE_CREATED) && targetState.equalsIgnoreCase(Constants.STATE_PUBLISHED)){
+            notificationService.sendApiProviderEmail(context);
             }
-            return false;
+
+            return superExecuted;
     }
 }

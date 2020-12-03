@@ -36,7 +36,7 @@ import java.util.List;
 
 public class NotificationServiceImpl implements NotificationService{
 
-    private static Log log = LogFactory.getLog(NotificationServiceImpl.class);
+    private static final Log log = LogFactory.getLog(NotificationServiceImpl.class);
 
     private final RemoteUserStoreManager remoteUserStoreManager;
 
@@ -65,7 +65,7 @@ public class NotificationServiceImpl implements NotificationService{
 
             String subject = Constants.SUBJECT_API_PROVIDER_EMAIL;
 
-            if(userList != null && userList.size() > 0){
+            if(!userList.isEmpty()){
                 for (String user : userList) {
 
                     String content = EmailNotificationUtil.getApiProviderEmailContent(api.getId().getApiName(),
@@ -76,7 +76,7 @@ public class NotificationServiceImpl implements NotificationService{
                             Constants.CLAIM_EMAIL),subject,content);
                 }
             }else{
-                log.info("User list is either null or empty. [ userList : " + userList + " ]");
+                log.info("User list is either empty. [ userList : " + userList + " ]");
             }
         }
 

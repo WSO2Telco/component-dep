@@ -33,7 +33,7 @@ import java.util.Properties;
 
 public class EmailService {
 
-    private static Log log = LogFactory.getLog(EmailService.class);
+    private static final Log log = LogFactory.getLog(EmailService.class);
 
     public void sendEmail(final String emailAddress,final String subject,final String content) {
 
