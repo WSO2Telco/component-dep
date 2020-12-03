@@ -130,6 +130,7 @@
 		<module>components/validator-handler</module>
 		<module>components/user-masking</module>
 		<module>components/response-filter</module>
+		<module>components/life-cycle-extension</module>
 		<module>components/operator-service</module>
 		<!--module>components/publish-events/publish-events-data</module> <module>components/publish-events/publish-events-extensions</module -->
 		<module>components/workflow/workflow-approval</module>
