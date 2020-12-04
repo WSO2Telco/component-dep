@@ -19,7 +19,7 @@
         <Property name="serviceEndpoint">http://localhost:9763/activiti-rest/service/</Property>
         <Property name="username">admin</Property>
         <Property name="password">admin</Property>
-        <Property name="callbackURL">https://localhost:9443/store</Property>
+        <Property name="callbackURL">https://localhost:9443</Property>
     </ApplicationCreation>
     <ProductionApplicationRegistration executor="org.wso2.carbon.apimgt.impl.workflow.ApplicationRegistrationSimpleWorkflowExecutor"/>
     <!--ProductionApplicationRegistration executor="org.wso2.carbon.apimgt.impl.workflow.ApplicationRegistrationWSWorkflowExecutor">
@@ -39,7 +39,7 @@
         <Property name="serviceEndpoint">http://localhost:9763/activiti-rest/service/</Property>
         <Property name="username">admin</Property>
         <Property name="password">admin</Property>
-        <Property name="callbackURL">https://localhost:9443/store</Property>
+        <Property name="callbackURL">https://localhost:9443</Property>
     </SubscriptionCreation>
     <UserSignUp executor="org.wso2.carbon.apimgt.impl.workflow.UserSignUpSimpleWorkflowExecutor"/>
     <!--UserSignUp executor="org.wso2.carbon.apimgt.impl.workflow.UserSignUpWSWorkflowExecutor">

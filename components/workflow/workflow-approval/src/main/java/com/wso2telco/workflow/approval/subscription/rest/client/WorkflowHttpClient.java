@@ -18,13 +18,16 @@ package com.wso2telco.workflow.approval.subscription.rest.client;
 
 import com.wso2telco.workflow.approval.exception.SubscriptionApprovalWorkflowException;
 
+import feign.Body;
 import feign.Headers;
 import feign.Param;
 import feign.RequestLine;
 
 public interface WorkflowHttpClient {
-	@RequestLine("POST site/blocks/workflow/workflow-listener/ajax/workflow-listener.jag?workflowReference={workflowRefId}&status={status}")
-	@Headers("Content-Type: application/x-www-form-urlencoded")
+
+	@RequestLine("POST api/am/admin/v1/workflows/update-workflow-status?workflowReferenceId={workflowRefId}")
+	@Headers("Content-Type: application/json")
+	@Body("%7B\"status\":\"{status}\",\"description\":\"Approve workflow request\"%7D")
 	void invokeCallback (@Param("workflowRefId") String workflowRefId, @Param("status") String status) throws
-	                                                                                                   SubscriptionApprovalWorkflowException;
+			SubscriptionApprovalWorkflowException;
 }
