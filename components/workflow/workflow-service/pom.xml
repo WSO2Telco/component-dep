@@ -77,14 +77,14 @@
 			<artifactId>org.wso2.carbon.utils</artifactId>
 			<scope>provided</scope>
 		</dependency>
-		<dependency>
+		<!--dependency>
 			<groupId>com.wso2telco.dep</groupId>
 			<artifactId>billing-extension</artifactId>
 		</dependency>
 		<dependency>
 			<groupId>com.wso2telco.dep</groupId>
 			<artifactId>billing-service</artifactId>
-		</dependency>
+		</dependency-->
 		<dependency>
 			<groupId>com.wso2telco.dep</groupId>
 			<artifactId>reporting-service</artifactId>
@@ -93,10 +93,10 @@
 			<groupId>com.wso2telco.dep</groupId>
 			<artifactId>workflow-core</artifactId>
 		</dependency>
-		<dependency>
+		<!--dependency>
 			<groupId>com.wso2telco.dep</groupId>
 			<artifactId>operator-service</artifactId>
-		</dependency>
+		</dependency-->
 	</dependencies>
 
 	<build>

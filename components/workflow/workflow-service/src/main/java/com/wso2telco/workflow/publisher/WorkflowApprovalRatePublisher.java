@@ -6,7 +6,7 @@ import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
 
 import com.wso2telco.core.dbutils.exception.BusinessException;
-import com.wso2telco.dep.billingextension.BillingHandlerExtension;
+//import com.wso2telco.dep.billingextension.BillingHandlerExtension;
 
 public class WorkflowApprovalRatePublisher {
 
@@ -14,7 +14,7 @@ public class WorkflowApprovalRatePublisher {
 
 	public void publishHubAPIRate(int servicesRateDid, int applicationDid,String apiVersion) throws BusinessException {
 
-		try {
+		/*try {
 
 			ServiceLoader<BillingHandlerExtension> loader = ServiceLoader.load(BillingHandlerExtension.class);
 
@@ -26,14 +26,14 @@ public class WorkflowApprovalRatePublisher {
 
 			log.error("error occurred in publishHubAPIRate : ", e);
 			throw e;
-		}
+		}*/
 	}
 
 	//TODO:change in here
 	//rateId, appID, operatorId, operationId
 	public void publishOperatorAPIRate(int operatorRateDid, int applicationDid, String apiVersion) throws BusinessException {
 
-		try {
+/*		try {
 
 			ServiceLoader<BillingHandlerExtension> loader = ServiceLoader.load(BillingHandlerExtension.class);
 
@@ -45,6 +45,6 @@ public class WorkflowApprovalRatePublisher {
 
 			log.error("error occurred in publishOperatorAPIRate : ", e);
 			throw e;
-		}
+		}*/
 	}
 }

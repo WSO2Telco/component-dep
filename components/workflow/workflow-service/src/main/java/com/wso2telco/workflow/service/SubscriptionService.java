@@ -28,6 +28,7 @@ public class SubscriptionService {
 		editSubscriptionLog(currentTier,subscription);
 		editSubscriptionAuditLog(currentTier,subscription);
 
+
 	}
 
 	private void editSubscriptionLog(String currentTier, SubscriptionEditDTO subscription) {
@@ -39,6 +40,7 @@ public class SubscriptionService {
 				+ ", New tier - " + subscription.getSubscriptionTier();
 		LOG.info(logMessage);
 	}
+
 
 	private void editSubscriptionAuditLog(String currentTier, SubscriptionEditDTO subscription) {
 		String logMessage = "Subscription Updated." +

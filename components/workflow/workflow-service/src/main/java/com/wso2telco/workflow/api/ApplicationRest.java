@@ -33,16 +33,19 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+
 
 @Path("/applications")
 @Consumes(MediaType.APPLICATION_JSON)
 @Produces(MediaType.APPLICATION_JSON)
-
-
 public class ApplicationRest {
 
 	ApplicationService applicationService = new ApplicationService();
-	
+    private final Log log = LogFactory.getLog(ApplicationRest.class);
+
+
     @GET
     @Path("/search")
     public Response load(@HeaderParam("user-name") String userName, @QueryParam("batchSize") int batchSize,
@@ -51,6 +54,7 @@ public class ApplicationRest {
 
         Response response;
         try {
+
             WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
             TaskSearchDTO searchD = new TaskSearchDTO();
             searchD.setStart(start);
@@ -71,7 +75,7 @@ public class ApplicationRest {
                          @QueryParam("start") int start, @QueryParam("orderBy") String orderBy,
                          @QueryParam("sortBy") String sortBy, @QueryParam("filterBy") String filterBy, @PathParam("assignee") String assignee) {
 
-        Response response;
+        Response response = null;
         try {
             WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
             TaskSearchDTO searchD = new TaskSearchDTO();
@@ -82,7 +86,8 @@ public class ApplicationRest {
             Callback callback = workFlowDelegator.getPendingAssignedApplicationApprovals(searchD, userProfile, assignee);
             response = Response.status(Response.Status.OK).entity(callback).build();
         } catch (Exception e) {
-            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
+            response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).header("error",e.getMessage()).build();
+
         }
         return response;
     }
