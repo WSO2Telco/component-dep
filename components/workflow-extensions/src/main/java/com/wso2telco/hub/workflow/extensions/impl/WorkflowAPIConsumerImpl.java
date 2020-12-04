@@ -22,6 +22,7 @@ import org.wso2.carbon.apimgt.api.APIManagementException;
 import org.wso2.carbon.apimgt.api.model.APIIdentifier;
 import org.wso2.carbon.apimgt.impl.dao.ApiMgtDAO;
 import org.wso2.carbon.apimgt.impl.utils.APIMgtDBUtil;
+import org.wso2.carbon.apimgt.api.model.Identifier;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -31,7 +32,7 @@ public class WorkflowAPIConsumerImpl implements WorkflowAPIConsumer {
 	private static final Log log = LogFactory.getLog(WorkflowAPIConsumerImpl.class);
 
 	@Override
-	public int getAPIID(APIIdentifier apiId) throws APIManagementException {
+	public int getAPIID(Identifier apiId) throws APIManagementException {
 		int id = -1;
 		Connection connection;
 		

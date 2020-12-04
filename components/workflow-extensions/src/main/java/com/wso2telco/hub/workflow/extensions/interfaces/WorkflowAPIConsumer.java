@@ -16,10 +16,10 @@
 package com.wso2telco.hub.workflow.extensions.interfaces;
 
 import org.wso2.carbon.apimgt.api.APIManagementException;
-import org.wso2.carbon.apimgt.api.model.APIIdentifier;
+import org.wso2.carbon.apimgt.api.model.Identifier;
 
 public interface WorkflowAPIConsumer {
 	
-	int getAPIID(APIIdentifier apiId) throws APIManagementException;
+	int getAPIID(Identifier apiId) throws APIManagementException;
 
 }

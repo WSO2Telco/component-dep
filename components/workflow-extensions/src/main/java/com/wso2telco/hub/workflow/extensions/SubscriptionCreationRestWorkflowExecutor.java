@@ -56,6 +56,7 @@ import org.wso2.carbon.user.api.UserStoreException;
 import org.wso2.carbon.user.api.UserStoreManager;
 import org.wso2.carbon.user.core.UserRealm;
 import org.wso2.carbon.user.core.service.RealmService;
+import org.wso2.carbon.apimgt.api.model.Identifier;
 
 import java.util.*;
 
@@ -134,10 +135,11 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
             String apiName = subscriptionWorkFlowDTO.getApiName();
             String version = subscriptionWorkFlowDTO.getApiVersion();
             APIIdentifier apiIdentifier = new APIIdentifier(providerName, apiName, version);
+            Identifier apiIdentifierClone = new APIIdentifier(providerName, apiName, version);
             API api = consumer.getAPI(apiIdentifier);
             //Why apiId is required,WorkflowAPIConsumer hasn't closed the db connections
             WorkflowAPIConsumer workFlowAPIConsumer = new WorkflowAPIConsumerImpl();
-            String apiID = String.valueOf(workFlowAPIConsumer.getAPIID(apiIdentifier));
+            String apiID = String.valueOf(workFlowAPIConsumer.getAPIID(apiIdentifierClone));
             Set<Tier> tierSet = api.getAvailableTiers();
 
             StringBuilder tiersStr = new StringBuilder();
