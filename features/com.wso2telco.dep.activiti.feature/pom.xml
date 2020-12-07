@@ -136,6 +136,9 @@
                                 </unzip>
                                 <!-- delete the existint war fles -->
                                 <delete file="${project.build.directory}/maven-shared-archive-resources/webapps/activiti-explorer.war" />
+                                <delete file="${tempdir}/activiti-explorer/WEB-INF/lib/jackson-core-2.2.3.jar" />
+                                <delete file="${tempdir}/activiti-explorer/WEB-INF/lib/jackson-databind-2.2.3.jar" />
+                                <delete file="${tempdir}/activiti-explorer/WEB-INF/lib/jackson-annotations-2.2.3.jar" />
                                 <delete file="${project.build.directory}/maven-shared-archive-resources/webapps/activiti-rest.war" />
                                 <delete file="${tempdir}/activiti-rest/WEB-INF/lib/jackson-core-2.2.3.jar" />
                                 <delete file="${tempdir}/activiti-rest/WEB-INF/lib/jackson-databind-2.2.3.jar" />

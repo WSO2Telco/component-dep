@@ -49,6 +49,7 @@
 		<commons-io.wso2.version>2.4.0.wso2v1</commons-io.wso2.version>
 		<joda-time.wso2.version>1.6.0.wso2v1</joda-time.wso2.version>
 		<carbon.governance.version>4.5.8</carbon.governance.version>
+
 		<commons-httpclient.wso2.version>3.1.0.wso2v2</commons-httpclient.wso2.version>
 		<org.wso2.orbit.org.apache.httpcomponents.version>4.3.1.wso2v2
 		</org.wso2.orbit.org.apache.httpcomponents.version>
@@ -64,7 +65,7 @@
 		<org.apache.woden.wso2.version>1.0.0.M9-wso2v1</org.apache.woden.wso2.version>
 		<commons-logging.version>1.1.1</commons-logging.version>
 		<org.apache.ws.commons.axiom.wso2.version>1.2.11.wso2v9</org.apache.ws.commons.axiom.wso2.version>
-		<org.wso2.carbon.version>4.4.7</org.wso2.carbon.version>
+		<org.wso2.carbon.version>4.6.0</org.wso2.carbon.version>
 		<synapse.version>2.1.7-wso2v3</synapse.version>
 		<com.h2database.wso2.version>1.2.140.wso2v3</com.h2database.wso2.version>
 		<org.apache.ws.commons.axiom.version>1.2.18</org.apache.ws.commons.axiom.version>

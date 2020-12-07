@@ -12,9 +12,10 @@ import org.activiti.engine.impl.persistence.entity.UserEntity;
 import org.activiti.engine.impl.persistence.entity.UserEntityManager;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.user.core.UserStoreException;
-import org.wso2.carbon.user.core.UserStoreManager;
-import org.wso2.carbon.user.core.claim.Claim;
+import org.wso2.carbon.context.CarbonContext;
+import org.wso2.carbon.user.api.Claim;
+import org.wso2.carbon.user.api.UserStoreException;
+import org.wso2.carbon.user.api.UserStoreManager;
 import org.wso2.carbon.user.core.config.RealmConfiguration;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class WorkflowUserIdentityManager extends UserEntityManager {
     public WorkflowUserIdentityManager() {
         try {
             RealmConfiguration config = new RealmConfiguration();
-            userStoreManager = ServicesHolder.getInstance().getRealmService().getUserRealm(config).getUserStoreManager();
+            userStoreManager = CarbonContext.getThreadLocalCarbonContext().getUserRealm().getUserStoreManager();
         } catch (UserStoreException e) {
             String errorMsg = "Error while initiating UserStoreManager";
             log.error(errorMsg, e);
@@ -53,12 +54,24 @@ public class WorkflowUserIdentityManager extends UserEntityManager {
         throw new UnsupportedOperationException(WorkflowUserIdentityManager.methodNotImplementedError);
     }
 
+    private String[] getUserProfileNames(String userId) throws UserStoreException {
+        return userStoreManager.getProfileNames(userId);
+    }
+
+    private boolean isUserProfileExists(String userId) throws UserStoreException {
+        boolean isProfileExists = false;
+        String[] profileNames = getUserProfileNames(userId);
+        if(profileNames !=null && profileNames.length>0){
+            isProfileExists = true;
+        }
+        return isProfileExists;
+    }
+
     @Override
     public UserEntity findUserById(String userId) {
         try {
-            int id = userStoreManager.getUserId(userId);
 
-            if (id > -1) {
+            if(isUserProfileExists(userId)){
                 UserEntity userEntity = new UserEntity(userId);
 
                 // set userId as first-name by default
@@ -66,7 +79,7 @@ public class WorkflowUserIdentityManager extends UserEntityManager {
                 // set empty value for last-name by default
                 userEntity.setLastName("");
 
-                Claim[] userClaims = userStoreManager.getUserClaimValues(userId, null);
+                Claim[] userClaims = userStoreManager.getUserClaimValues(userId,null);
 
                 for (Claim claim: userClaims) {
                     if (FIRST_NAME_CLAIM_URI.equals(claim.getClaimUri())) {
