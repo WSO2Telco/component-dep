@@ -84,8 +84,6 @@
             <artifactId>cxf-rt-transports-http</artifactId>
             <version>${org.apache.cxf.version}</version>
         </dependency>
-
-
         <dependency>
             <groupId>com.wso2telco.core</groupId>
             <artifactId>dbutils</artifactId>
