@@ -64,12 +64,12 @@
         <dependency>
             <groupId>io.github.openfeign</groupId>
             <artifactId>feign-core</artifactId>
-            <version>10.2.3</version>
+            <version>${feign.version}</version>
         </dependency>
         <dependency>
             <groupId>io.github.openfeign</groupId>
             <artifactId>feign-jackson</artifactId>
-            <version>10.2.3</version>
+            <version>${feign.version}</version>
         </dependency>
         <!--dependency>
             <groupId>com.fasterxml.jackson.core</groupId>

@@ -29,6 +29,10 @@
     <name>WSO2.Telco Aggregator Blacklist Module</name>
     <description>WSO2.Telco Aggregator Blacklist Module</description>
 
+    <properties>
+        <org.apache.cxf.version>3.2.8</org.apache.cxf.version>
+    </properties>
+
     <dependencies>
         <dependency>
             <groupId>log4j</groupId>
@@ -39,17 +43,13 @@
             <artifactId>gson</artifactId>
         </dependency>
         <dependency>
+            <groupId>org.apache.cxf</groupId>
+            <artifactId>cxf-rt-transports-http</artifactId>
+            <version>${org.apache.cxf.version}</version>
+        </dependency>
+        <dependency>
             <groupId>com.wso2telco.core</groupId>
             <artifactId>dbutils</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>javax.servlet</groupId>
-            <artifactId>servlet-api</artifactId>
-        </dependency>
-        <dependency>
-            <groupId>org.wso2.orbit.org.apache.cxf</groupId>
-            <artifactId>cxf-bundle</artifactId>
-            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>com.wso2telco.dep</groupId>
