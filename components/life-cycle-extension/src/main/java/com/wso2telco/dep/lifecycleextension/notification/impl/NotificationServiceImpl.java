@@ -53,9 +53,9 @@ public class NotificationServiceImpl implements NotificationService{
 
         try {
 
-            log.info("Starting email trigger in Api creation ");
             GenericArtifactManager artifactManager = APIUtil.getArtifactManager(context.getSystemRegistry(),
                     APIConstants.API_KEY);
+            log.info("Sending API creation email to all users in " + Constants.ADMIN_ROLE +" role");
             String artifactId = context.getResource().getUUID();
             GenericArtifact apiArtifact = artifactManager.getGenericArtifact(artifactId);
             API api = APIUtil.getAPI(apiArtifact);
