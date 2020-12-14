@@ -55,7 +55,7 @@ public class NotificationServiceImpl implements NotificationService{
 
             GenericArtifactManager artifactManager = APIUtil.getArtifactManager(context.getSystemRegistry(),
                     APIConstants.API_KEY);
-            log.info("Sending API creation email to all users in " + Constants.ADMIN_ROLE +" role");
+            log.info("Starting email trigger functionality in API creation");
             String artifactId = context.getResource().getUUID();
             GenericArtifact apiArtifact = artifactManager.getGenericArtifact(artifactId);
             API api = APIUtil.getAPI(apiArtifact);
@@ -65,6 +65,7 @@ public class NotificationServiceImpl implements NotificationService{
             String subject = Constants.SUBJECT_API_PROVIDER_EMAIL;
 
             if (!userList.isEmpty()) {
+                log.info("Sending API creation email to all users in " + Constants.ADMIN_ROLE +" role");
                 for (String user : userList) {
 
                     String content = EmailNotificationUtil.getApiProviderEmailContent(api.getId().getApiName(),
