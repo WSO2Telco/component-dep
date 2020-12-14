@@ -53,35 +53,40 @@ public class NotificationServiceImpl implements NotificationService{
 
         try {
 
-        GenericArtifactManager artifactManager = APIUtil.getArtifactManager(context.getSystemRegistry(),
+            GenericArtifactManager artifactManager = APIUtil.getArtifactManager(context.getSystemRegistry(),
                     APIConstants.API_KEY);
-        String artifactId = context.getResource().getUUID();
-        GenericArtifact apiArtifact = artifactManager.getGenericArtifact(artifactId);
-        API api = APIUtil.getAPI(apiArtifact);
+            log.info("Starting email trigger functionality in API creation");
+            String artifactId = context.getResource().getUUID();
+            GenericArtifact apiArtifact = artifactManager.getGenericArtifact(artifactId);
+            API api = APIUtil.getAPI(apiArtifact);
 
-        List<String> userList = Arrays.asList(remoteUserStoreManager.getUserListOfRole(Constants.ADMIN_ROLE));
-
-        if(userList.contains(api.getId().getProviderName())){
+            List<String> userList = Arrays.asList(remoteUserStoreManager.getUserListOfRole(Constants.ADMIN_ROLE));
 
             String subject = Constants.SUBJECT_API_PROVIDER_EMAIL;
 
-            if(!userList.isEmpty()){
+            if (!userList.isEmpty()) {
+                log.info("Sending API creation email to all users in " + Constants.ADMIN_ROLE +" role");
                 for (String user : userList) {
 
                     String content = EmailNotificationUtil.getApiProviderEmailContent(api.getId().getApiName(),
                             remoteUserStoreManager.getUserClaimValue(user,
                                     Constants.CLAIM_GIVEN_NAME));
 
-                    emailService.sendEmail(remoteUserStoreManager.getUserClaimValue(user,
-                            Constants.CLAIM_EMAIL),subject,content);
+                    String email = remoteUserStoreManager.getUserClaimValue(user,
+                            Constants.CLAIM_EMAIL);
+
+                    if (email != null) {
+                        emailService.sendEmail(email, subject, content);
+                    } else {
+                        log.error("Failed to send email user " + user + " email is null");
+                    }
                 }
-            }else{
+            } else {
                 log.info("User list is either empty. [ userList : " + userList + " ]");
             }
-        }
 
-        }catch (Exception e){
-            log.error("Failed to validate user details for send email ",e);
+        } catch (Exception e) {
+            log.error("Failed to validate user details for send email ", e);
         }
     }
 }
