@@ -212,7 +212,7 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
                 auditLog.debug("Process definition url: " + processInstanceResponse.getProcessDefinitionUrl());
             }
 
-            String logMsg = "Subscription creation approval workflow submitted." +
+            String logMsg = "Application creation approval workflow submitted." +
                     " | Workflow ID: " + appWorkFlowDTO.getExternalWorkflowReference() +
                     " | Workflow Status: " + appWorkFlowDTO.getStatus() +
                     " | Application Name: " + appWorkFlowDTO.getApplication().getName() +
