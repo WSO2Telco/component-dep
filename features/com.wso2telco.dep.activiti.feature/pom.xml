@@ -143,6 +143,8 @@
                                 <delete file="${tempdir}/activiti-rest/WEB-INF/lib/jackson-core-2.2.3.jar" />
                                 <delete file="${tempdir}/activiti-rest/WEB-INF/lib/jackson-databind-2.2.3.jar" />
                                 <delete file="${tempdir}/activiti-rest/WEB-INF/lib/jackson-annotations-2.2.3.jar" />
+                                <delete file="${tempdir}/activiti-rest/WEB-INF/lib/log4j-1.2.17.jar" />
+                                <delete file="${tempdir}/activiti-rest/WEB-INF/classes/log4j.properties" />
                                 <!-- copy relevant files -->
                                 <copy todir="${tempdir}/activiti-explorer/WEB-INF/classes" overwrite="true">
                                     <fileset dir="${project.build.directory}/../src/main/resources">
@@ -154,7 +156,7 @@
                                         <include name="db.properties" />
                                     </fileset>
                                 </copy>
-                                <copy todir="${tempdir}/activiti-rest/WEB-INF/classes" overwrite="true">
+<!--                                <copy todir="${tempdir}/activiti-rest/WEB-INF/classes" overwrite="true">
                                     <fileset dir="${project.build.directory}/../src/main/resources">
                                         <include name="log4j.properties" />
                                     </fileset>
@@ -163,7 +165,7 @@
                                     <fileset dir="${project.build.directory}/../src/main/resources">
                                         <include name="log4j.properties" />
                                     </fileset>
-                                </copy>
+                                </copy>-->
                                 <copy todir="${tempdir}/activiti-explorer/WEB-INF/classes" overwrite="true">
                                     <fileset dir="${project.build.directory}/../src/main/resources/activiti-explorer">
                                         <include name="engine.properties" />
