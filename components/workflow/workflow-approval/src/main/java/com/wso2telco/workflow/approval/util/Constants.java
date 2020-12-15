@@ -40,6 +40,7 @@ public class Constants {
     public static final String API_PUBLISHER_APPROVAL = "apiPublisherApproval";
     public static final String API_NAME = "apiName";
     public static final String API_ID = "apiId";
+    public static final String STATUS = "status";
     public static final String EXTERNAL_GATEWAY = "external_gateway";
     public static final String INTERNAL_GATEWAY_TYPE1 = "internal_gateway_type1";
     public static final String HUB = "hub";
