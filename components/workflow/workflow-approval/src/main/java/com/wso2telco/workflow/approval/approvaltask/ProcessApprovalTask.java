@@ -38,6 +38,7 @@ import feign.jackson.JacksonEncoder;
 import org.activiti.engine.delegate.DelegateExecution;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.CarbonConstants;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -47,6 +48,7 @@ import java.util.List;
 public class ProcessApprovalTask implements WorkflowApprovalTask {
 
 	private static final Log log = LogFactory.getLog(ProcessApprovalTask.class);
+	private static final Log AUDIT_LOG = LogFactory.getLog("AUDIT_LOG");
 
 	@Override
 	public void executeHubAdminApplicationApproval(DelegateExecution arg0) throws ApprovalWorkflowException {
@@ -194,6 +196,7 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	@Override
 	public void executeOperatorAdminApplicationApproval(DelegateExecution arg0) throws ApprovalWorkflowException {
 		try {
+
 			String deploymentType = arg0.getVariable(Constants.DEPLOYMENT_TYPE) != null ? arg0.getVariable(Constants.DEPLOYMENT_TYPE).toString() : null;
 	        ApplicationTaskFactory applicationTaskFactory = new ApplicationTaskFactory();
 	        ApplicationTask applicationTask = applicationTaskFactory.getInstance(deploymentType);
@@ -208,6 +211,7 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	        		+ ", Application name - " + applicationName
 	        		+ ", Tier - " + selectedTier;
 	        log.info(logEntry);
+			AUDIT_LOG.info(logEntry);
 		} catch (Exception e) {
 			String errorMessage = "Error in ProcessApprovalTask.executeOperatorAdminApplicationApproval";
 			log.error(errorMessage, e);
