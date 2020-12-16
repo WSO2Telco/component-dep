@@ -16,18 +16,34 @@
 
 package com.wso2telco.dep.lifecycleextension.util;
 
+import org.wso2.carbon.apimgt.api.model.APIIdentifier;
+
 public class EmailNotificationUtil {
 
     private EmailNotificationUtil(){
     }
 
-    public static String getApiProviderEmailContent(String apiName, String receiverName) {
+    public static String getApiProviderEmailContent(APIIdentifier api) {
 
-        return "<p>Dear "+receiverName+",</p>" +
-                "    <br>" +
-                "    <p style='margin-left: pxs'>This is to notify you that we have published an API called "+apiName+".</p>" +
-                "    <br>" +
-                "    <p>Thanks</p>";
+        return "<div style='margin: 0 0 3px 0;padding: 5px;border-style: solid;border-width: 1px 1px 1px 11px;border-color:#e46c0a;color: #525863;line-height: normal;font-weight: bold;'>" +
+                "<h2> New API Creation</h2>" +
+                "</div>" +
+                "<div style='border-style:solid;border-width:1px 1px 1px 1px;border-color:#e46c0a;color:#525863;'>" +
+                "<table border='0'>" +
+                "<tr>" +
+                "<td><b> API Name : </b></td>" +
+                "<td>" + api.getApiName() + "</td>" +
+                "</tr>" +
+                "<tr>" +
+                "<td><b> API Publisher : </b></td>" +
+                "<td>" + api.getProviderName() + "</td>" +
+                "</tr>" +
+                "<tr>" +
+                "<td><b> API Version : </b></td>" +
+                "<td>" + api.getVersion() + "</td>" +
+                "</tr>" +
+                "</table>" +
+                "</div>";
 
     }
 }
