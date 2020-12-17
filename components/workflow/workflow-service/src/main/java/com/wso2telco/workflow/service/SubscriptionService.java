@@ -20,24 +20,9 @@ public class SubscriptionService {
 	}
 	
 	public void editSubscriptionTier(SubscriptionEditDTO subscription) throws SQLException, BusinessException {
-
 		String currentTier = subscriptionDAO.getSubscriptionTier(subscription.getApplicationId(), subscription.getApiID());
-
 		subscriptionDAO.editSubscriptionTier(subscription);
-
-		editSubscriptionLog(currentTier,subscription);
-		editSubscriptionAuditLog(currentTier,subscription);
-
-	}
-
-	private void editSubscriptionLog(String currentTier, SubscriptionEditDTO subscription) {
-		String logMessage = "Subscription tier edited :"
-				+ " Completed by - " + subscription.getUser()
-				+ ", Application name - " + subscription.getApplicationName()
-				+ ", API name - " + subscription.getApiName()
-				+ ", Previous tier - "+ currentTier
-				+ ", New tier - " + subscription.getSubscriptionTier();
-		LOG.info(logMessage);
+		this.editSubscriptionAuditLog(currentTier,subscription);
 	}
 
 	private void editSubscriptionAuditLog(String currentTier, SubscriptionEditDTO subscription) {
@@ -48,5 +33,6 @@ public class SubscriptionService {
 				" | Updated Tier: " + subscription.getSubscriptionTier() +
 				" | User: " + subscription.getUser();
 		AUDIT_LOG.info(logMessage);
+		LOG.info(logMessage);
 	}
 }

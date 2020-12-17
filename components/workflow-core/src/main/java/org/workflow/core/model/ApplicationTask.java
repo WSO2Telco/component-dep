@@ -1,6 +1,7 @@
 package org.workflow.core.model;
 
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.fasterxml.jackson.annotation.JsonInclude;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.fasterxml.jackson.annotation.JsonPropertyOrder;
@@ -52,6 +53,8 @@ public class ApplicationTask {
     private String userName;
     @JsonProperty("creditPlan")
     private String creditPlan;
+    @JsonIgnore
+    private String workflowRefId;
 
     public ApplicationTask(Map<AppVariable, TaskVariableResponse> varMap) {
         this.applicationDescription = (varMap.containsKey(AppVariable.DESCRIPTION)) ? varMap.get(AppVariable.DESCRIPTION).getValue() : "";
@@ -61,6 +64,7 @@ public class ApplicationTask {
         this.operators = (varMap.containsKey(AppVariable.OPARATOR)) ? varMap.get(AppVariable.OPARATOR).getValue() : "";
         this.userName = (varMap.containsKey(AppVariable.USERNAME)) ? varMap.get(AppVariable.USERNAME).getValue() : "";
         this.creditPlan = "";
+        this.workflowRefId = (varMap.containsKey(AppVariable.WORKFLOWREFID)) ? varMap.get(AppVariable.WORKFLOWREFID).getValue() : "";
     }
 
     @JsonProperty("id")
@@ -156,5 +160,9 @@ public class ApplicationTask {
     @JsonProperty("creditPlan")
     public String getCreditPlan() {
         return creditPlan;
+    }
+
+    public String getWorkflowRefId() {
+        return workflowRefId;
     }
 }
