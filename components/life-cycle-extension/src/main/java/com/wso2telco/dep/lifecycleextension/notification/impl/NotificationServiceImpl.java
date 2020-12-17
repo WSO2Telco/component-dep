@@ -68,9 +68,7 @@ public class NotificationServiceImpl implements NotificationService{
                 log.info("Sending API creation email to all users in " + Constants.ADMIN_ROLE +" role");
                 for (String user : userList) {
 
-                    String content = EmailNotificationUtil.getApiProviderEmailContent(api.getId().getApiName(),
-                            remoteUserStoreManager.getUserClaimValue(user,
-                                    Constants.CLAIM_GIVEN_NAME));
+                    String content = EmailNotificationUtil.getApiProviderEmailContent(api);
 
                     String email = remoteUserStoreManager.getUserClaimValue(user,
                             Constants.CLAIM_EMAIL);
