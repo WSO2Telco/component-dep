@@ -170,6 +170,7 @@ public class WorkflowHistoryDAO {
 
 			String sqlPredecessor ="SELECT api.api_name, " +
 					"       api.api_version, " +
+					"       api.api_provider," +
 					"       api.api_id, " +
 					"       sub.tier_id, " +
 					"       o.operatorname AS 'operator_name', " +
@@ -224,6 +225,7 @@ public class WorkflowHistoryDAO {
 					subscription.setName(rs.getString(API_NAME));
 					subscription.setId(rs.getString(API_ID));
 					subscription.setVersion(rs.getString("api_version"));
+					subscription.setProvider(rs.getString("api_provider"));
 					subscription.setTier(rs.getString("tier_id"));
 					subscription.setOperatoApprovalStatus(rs.getString(OPERATOR_NAME), rs.getString(OPERATOR_APPROVAL));
 					subscription.setLastUpdated(rs.getDate("updated_time").toString() + " " + rs.getTime("updated_time"));
@@ -256,6 +258,7 @@ public class WorkflowHistoryDAO {
 
 			String sql="SELECT api.api_name, " +
 					"       api.api_version, " +
+					"       api.api_provider," +
 					"       api.api_id, " +
 					"       sub.tier_id, " +
 					"       sub.sub_status AS 'admin_approval', " +
@@ -293,6 +296,7 @@ public class WorkflowHistoryDAO {
 				subscription.setName(rs.getString(API_NAME));
 				subscription.setId(rs.getString(API_ID));
 				subscription.setVersion(rs.getString("api_version"));
+				subscription.setProvider(rs.getString("api_provider"));
 				subscription.setTier(rs.getString("tier_id"));
 				subscription.setAdminApprovalStatus(rs.getString("admin_approval"));
 				subscription.setLastUpdated(rs.getDate("updated_time").toString() + " " + rs.getTime("updated_time"));
