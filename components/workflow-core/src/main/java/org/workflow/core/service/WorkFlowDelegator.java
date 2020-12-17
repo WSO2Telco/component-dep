@@ -32,6 +32,11 @@ public class WorkFlowDelegator {
         return queryBuilder.searchPending(serchD, userProfile,"SUBSCRIPTION");
     }
 
+    public Callback getPendingSubscriptionApproval(final String taskId, UserProfileDTO userProfile) throws BusinessException {
+        WorkFlowProcessor queryBuilder =ActivityProcessFactory.getInstance().getWorkFlowFactory(WorkFlowType.SUBSCRIPTION).getWorkFlowProcessor();
+        return queryBuilder.searchPendingById(taskId, userProfile, "SUBSCRIPTION");
+    }
+
     public Callback getPendingAssignedSubscriptionApprovals(final TaskSearchDTO serchD, UserProfileDTO userProfile, String assignee) throws BusinessException {
         WorkFlowProcessor queryBuilder =ActivityProcessFactory.getInstance().getWorkFlowFactory(WorkFlowType.SUBSCRIPTION).getWorkFlowProcessor();
         return queryBuilder.searchPending(serchD, userProfile,assignee,"SUBSCRIPTION");
