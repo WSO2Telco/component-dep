@@ -18,12 +18,14 @@ package com.wso2telco.workflow.api;
 
 
 import com.google.gson.Gson;
+import com.wso2telco.core.dbutils.exception.BusinessException;
+import com.wso2telco.core.userprofile.UserProfileRetriever;
+import com.wso2telco.core.userprofile.dto.UserProfileDTO;
 import com.wso2telco.dep.operatorservice.service.OparatorService;
 import com.wso2telco.dep.reportingservice.southbound.SbHostObjectUtils;
 import com.wso2telco.workflow.model.APISubscriptionDTO;
 import com.wso2telco.workflow.model.ApprovalDTO;
 import com.wso2telco.workflow.model.ApplicationStatusDTO;
-import com.wso2telco.workflow.model.ApprovalDTO;
 import com.wso2telco.workflow.service.WorkflowHistoryService;
 import com.wso2telco.workflow.utils.WorkflowServiceException;
 
@@ -39,6 +41,7 @@ import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 
+import java.util.ArrayList;
 import java.util.List;
 
 @Path("/history")
@@ -68,20 +71,33 @@ public class WorkflowHistoryAPI {
     @GET
     @Path("/approval/{app_id}/operators/{opId}/apis/{apiid}/start/{start}/size/{size}")
     @Produces("application/json")
-    public Response getAppApprovalHistory(@PathParam("app_id") int appID,@PathParam("opId") String opId,@PathParam("apiid") String apiid, @PathParam("start") int start, @PathParam("size") int size) {
-
+    public Response getAppApprovalHistory(@HeaderParam("user-name") String userName, @PathParam("app_id") int appID,
+                                          @PathParam("opId") String opId,@PathParam("apiid") String apiid,
+                                          @PathParam("start") int start, @PathParam("size") int size) {
         Gson gson = new Gson();
         WorkflowHistoryService service = new WorkflowHistoryService();
-        List<APISubscriptionDTO> apiSubs = null;
         try {
-        	apiSubs = service.getAppApprovalHistoryWithOperators(appID, opId, apiid,start,size);
-        } catch (WorkflowServiceException e) {
-            log.error("", e);
+            List<APISubscriptionDTO> apiSubs = service.getAppApprovalHistoryWithOperators(appID, opId, apiid,start,size);
+            UserProfileRetriever userProfileRetriever = new UserProfileRetriever();
+            UserProfileDTO userProfile = userProfileRetriever.getUserProfile(userName);
+            String department = userProfile.getDepartment();
+            if (department != null && !"".equals(department.trim())) {
+                final String userRole = "hub-" + department + "-publisher";
+                List<String> publishers = userProfileRetriever.getUserNamesByRole(userRole);
+                List<APISubscriptionDTO> filteredApiSubs = new ArrayList<>();
+                for (APISubscriptionDTO dto : apiSubs) {
+                    if (publishers.contains(dto.getProvider())) {
+                        filteredApiSubs.add(dto);
+                    }
+                }
+                return Response.ok().entity(filteredApiSubs).build();
+            } else {
+                return Response.ok().entity(apiSubs).build();
+            }
+        } catch (WorkflowServiceException | BusinessException e) {
+            log.error("An error has occurred. ", e);
             return Response.serverError().entity(gson.toJson("An error has occurred. ")).build();
         }
-        Object responseString = apiSubs;
-
-        return Response.ok().entity(responseString).build();
     }
 
     @GET

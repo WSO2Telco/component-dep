@@ -8,6 +8,7 @@ public class APISubscriptionDTO {
     private String name;
     private String id;
 	private String version;
+	private String provider;
     private String tier;
     private String approvalStatus;
     private String operatorName;
@@ -115,5 +116,12 @@ public class APISubscriptionDTO {
         this.approvalStatus = status;
 
     }
-	
+
+    public String getProvider() {
+        return provider;
+    }
+
+    public void setProvider(String provider) {
+        this.provider = provider;
+    }
 }
