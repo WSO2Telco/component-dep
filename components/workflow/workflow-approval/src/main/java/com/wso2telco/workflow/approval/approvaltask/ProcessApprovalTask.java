@@ -31,14 +31,17 @@ import com.wso2telco.workflow.approval.subscription.rest.client.WorkflowCallback
 import com.wso2telco.workflow.approval.util.AuthRequestInterceptor;
 import com.wso2telco.workflow.approval.util.Constants;
 
+import org.wso2.carbon.apimgt.impl.APIConstants;
+
 import feign.Feign;
 import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
 
 import org.activiti.engine.delegate.DelegateExecution;
+import org.activiti.engine.impl.util.json.JSONObject;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.CarbonConstants;
+import org.wso2.carbon.apimgt.impl.utils.APIUtil;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -48,7 +51,6 @@ import java.util.List;
 public class ProcessApprovalTask implements WorkflowApprovalTask {
 
 	private static final Log log = LogFactory.getLog(ProcessApprovalTask.class);
-	private static final Log AUDIT_LOG = LogFactory.getLog("AUDIT_LOG");
 
 	@Override
 	public void executeHubAdminApplicationApproval(DelegateExecution arg0) throws ApprovalWorkflowException {
@@ -60,6 +62,7 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	        String completedByUser = arg0.getVariable(Constants.COMPLETE_BY_USER) != null ? arg0.getVariable(Constants.COMPLETE_BY_USER).toString() : null;
 	        String completedOn = arg0.getVariable(Constants.COMPLETED_ON) != null ? arg0.getVariable(Constants.COMPLETED_ON).toString() : null;
 	        String applicationName = arg0.getVariable(Constants.APPLICATION_NAME) != null ? arg0.getVariable(Constants.APPLICATION_NAME).toString() : null;
+			String applicatioId = arg0.getVariable(Constants.APPLICATION_ID) != null ? arg0.getVariable(Constants.APPLICATION_ID).toString() : null;
 	        String userName = arg0.getVariable(Constants.USER_NAME) != null ? arg0.getVariable(Constants.USER_NAME).toString() : null;
 	        String adminUserName = arg0.getVariable(Constants.ADMIN_USER_NAME) != null ? arg0.getVariable(Constants.ADMIN_USER_NAME).toString() : null;
 	        String adminPassword = arg0.getVariable(Constants.ADMIN_PASSWORD) != null ? arg0.getVariable(Constants.ADMIN_PASSWORD).toString() : null;
@@ -102,6 +105,8 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	        application.setSelectedTier(selectedTier);
 	        api.applicationApprovalHub(application);
 
+			printAppAuditLog(applicationName, applicatioId, userName, selectedTier, status, adminUserName);
+
 	        //Detailed log entry for the update done
 	        String logEntry = "Application approval hub admin :"
 	        		+ " Completed by - " + adminUserName
@@ -118,7 +123,7 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	@Override
 	public void executeHubAdminSubscriptionApproval(DelegateExecution arg0) throws ApprovalWorkflowException {
 		try {
-	        final String status = arg0.getVariable("status") != null ? arg0.getVariable("status").toString() :null;
+	        final String status = arg0.getVariable(Constants.STATUS) != null ? arg0.getVariable(Constants.STATUS).toString() :null;
 	        final String adminUserName = arg0.getVariable(Constants.ADMIN_USER_NAME) != null ? arg0.getVariable(Constants.ADMIN_USER_NAME).toString() : null;
 	        final String adminPassword = arg0.getVariable(Constants.ADMIN_PASSWORD) != null ? arg0.getVariable(Constants.ADMIN_PASSWORD).toString() : null;
 	        final String serviceUrl = arg0.getVariable(Constants.SERVICE_URL) != null ? arg0.getVariable(Constants.SERVICE_URL).toString() : null;
@@ -127,7 +132,7 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	        final int applicationId = arg0.getVariable(Constants.APPLICATION_ID) != null ? Integer.parseInt(arg0.getVariable(Constants.APPLICATION_ID).toString()) : 0;
 	        final String apiVersion = arg0.getVariable(Constants.API_VERSION) != null ? arg0.getVariable(Constants.API_VERSION).toString() : null;
 	        final String applicationName = arg0.getVariable(Constants.APPLICATION_NAME) != null ? arg0.getVariable(Constants.APPLICATION_NAME).toString() : null;
-	        final String subscriber = arg0.getVariable(Constants.SUBSCRIBER) != null ? arg0.getVariable(Constants.SUBSCRIBER).toString() : null;
+			final String applicatioId = arg0.getVariable(Constants.APPLICATION_ID) != null ? arg0.getVariable(Constants.APPLICATION_ID).toString() : null;
 	        final String apiProvider = arg0.getVariable(Constants.API_PROVIDER)!=null?arg0.getVariable(Constants.API_PROVIDER).toString():null;
 	        final String selectedTier = arg0.getVariable(Constants.SELECTED_TIER)!=null? status.equalsIgnoreCase(Constants.APPROVE)?arg0.getVariable(Constants.SELECTED_TIER).toString():Constants.REJECTED_TIER:null;
 	        final String workflowRefId = arg0.getVariable(Constants.WORK_FLOW_REF)!=null?arg0.getVariable(Constants.WORK_FLOW_REF).toString():null;
@@ -167,15 +172,17 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	        log.info("In HubDataUpdater, Hub admin approval status: " + status);
 
 	        Subscription subscription = new Subscription();
-	            subscription.setApiName(apiName);
-	            subscription.setApplicationID(applicationId);
-	            subscription.setOperatorName(operatorName);
-	            subscription.setWorkflowRefId(workflowRefId);
-	            subscription.setSelectedRate(selectedRate);
-	            subscription.setSelectedTier(selectedTier);
-	            subscription.setApiProvider(apiProvider);
-	            subscription.setApiVersion(apiVersion);
+	        subscription.setApiName(apiName);
+	        subscription.setApplicationID(applicationId);
+	        subscription.setOperatorName(operatorName);
+	        subscription.setWorkflowRefId(workflowRefId);
+	        subscription.setSelectedRate(selectedRate);
+	        subscription.setSelectedTier(selectedTier);
+	        subscription.setApiProvider(apiProvider);
+	        subscription.setApiVersion(apiVersion);
 	        api.subscriptionApprovalHub(subscription);
+
+			printSubAuditLog(apiName, apiVersion, applicationName, applicatioId,selectedTier, selectedRate, status, adminUserName);
 
 	        //Detailed log entry for the update done
 	        String logEntry = "Subscription approval hub admin :"
@@ -203,15 +210,20 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	        applicationTask.execute(arg0);
 
 	        //Detailed log entry for the update done
+			String status = arg0.getVariable(Constants.STATUS) != null ? arg0.getVariable(Constants.STATUS).toString() :null;
 	        String completedByUser = arg0.getVariable(Constants.COMPLETE_BY_USER) != null ? arg0.getVariable(Constants.COMPLETE_BY_USER).toString() : null;
 	        String applicationName = arg0.getVariable(Constants.APPLICATION_NAME) != null ? arg0.getVariable(Constants.APPLICATION_NAME).toString() : null;
+	        String applicatioId = arg0.getVariable(Constants.APPLICATION_ID) != null ? arg0.getVariable(Constants.APPLICATION_ID).toString() : null;
+			String userName = arg0.getVariable(Constants.USER_NAME) != null ? arg0.getVariable(Constants.USER_NAME).toString() : null;
 	        String selectedTier = arg0.getVariable(Constants.SELECTED_TIER) != null ? arg0.getVariable(Constants.SELECTED_TIER).toString() : null;
+
+			printAppAuditLog(applicationName, applicatioId, userName, selectedTier, status, completedByUser);
+
 	        String logEntry = "Application approval operator admin :"
 	        		+ " Completed by - " + completedByUser
 	        		+ ", Application name - " + applicationName
 	        		+ ", Tier - " + selectedTier;
 	        log.info(logEntry);
-			AUDIT_LOG.info(logEntry);
 		} catch (Exception e) {
 			String errorMessage = "Error in ProcessApprovalTask.executeOperatorAdminApplicationApproval";
 			log.error(errorMessage, e);
@@ -228,12 +240,17 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 	        subscriptionTask.execute(arg0);
 
 	        //Detailed log entry for the update done
+			String status = arg0.getVariable(Constants.STATUS) != null ? arg0.getVariable(Constants.STATUS).toString() :null;
 	        String completedByUser = arg0.getVariable(Constants.COMPLETE_BY_USER) != null ? arg0.getVariable(Constants.COMPLETE_BY_USER).toString() : null;
 	        String applicationName = arg0.getVariable(Constants.APPLICATION_NAME) != null ? arg0.getVariable(Constants.APPLICATION_NAME).toString() : null;
+			String applicatioId = arg0.getVariable(Constants.APPLICATION_ID) != null ? arg0.getVariable(Constants.APPLICATION_ID).toString() : null;
 	        String apiName = arg0.getVariable(Constants.API_NAME) != null ? arg0.getVariable(Constants.API_NAME).toString() : null;
 	        String apiVersion = arg0.getVariable(Constants.API_VERSION) != null ? arg0.getVariable(Constants.API_VERSION).toString() : null;
 	        String selectedTier = arg0.getVariable(Constants.SELECTED_TIER) != null ? arg0.getVariable(Constants.SELECTED_TIER).toString() : null;
 	        if(selectedTier == null) selectedTier = arg0.getVariable(Constants.ADMIN_SELECTED_TIER) != null ? arg0.getVariable(Constants.ADMIN_SELECTED_TIER).toString() : null;
+
+			printSubAuditLog(apiName, apiVersion, applicationName, applicatioId, selectedTier, "", status, completedByUser);
+
 	        String logEntry = "Subscription approval operator admin :"
 	        		+ " Completed by - " + completedByUser
 	        		+ ", Application name - " + applicationName
@@ -246,5 +263,31 @@ public class ProcessApprovalTask implements WorkflowApprovalTask {
 			log.error(errorMessage, e);
 			throw new ApprovalWorkflowException(errorMessage, e);
 		}
+	}
+
+	private void printAppAuditLog(String applicationName, String applicatioId, String userName, String selectedTier,
+								  String status, String completedByUser) {
+		JSONObject hubAdminAppApproval = new JSONObject();
+		hubAdminAppApproval.put(APIConstants.AuditLogConstants.APPLICATION_NAME, applicationName);
+		hubAdminAppApproval.put(APIConstants.AuditLogConstants.APPLICATION_ID, applicatioId);
+		hubAdminAppApproval.put(APIConstants.USERNAME, userName);
+		hubAdminAppApproval.put(APIConstants.AuditLogConstants.TIER, selectedTier);
+
+		APIUtil.logAuditMessage(APIConstants.AuditLogConstants.APPLICATION, hubAdminAppApproval.toString(),
+				status, completedByUser);
+	}
+
+	private void printSubAuditLog(String apiName, String apiVersion, String applicationName, String applicatioId,
+								  String selectedTier, String selectedRate, String status, String completedByUser) {
+		JSONObject hubAdminAppApproval = new JSONObject();
+		hubAdminAppApproval.put(APIConstants.AuditLogConstants.API_NAME, apiName);
+		hubAdminAppApproval.put(APIConstants.API_VERSION, apiVersion);
+		hubAdminAppApproval.put(APIConstants.AuditLogConstants.APPLICATION_NAME, applicationName);
+		hubAdminAppApproval.put(APIConstants.AuditLogConstants.APPLICATION_ID, applicatioId);
+		hubAdminAppApproval.put(APIConstants.AuditLogConstants.TIER, selectedTier);
+		hubAdminAppApproval.put(APIConstants.API_DATA_RATES, selectedRate);
+
+		APIUtil.logAuditMessage(APIConstants.AuditLogConstants.SUBSCRIPTION, hubAdminAppApproval.toString(),
+				status, completedByUser);
 	}
 }
