@@ -1,38 +1,10 @@
 
 package com.wso2telco.workflow.model;
 
-public class ApplicationEditDTO {
+public class ApplicationEditDTO extends BaseEditDTO{
 
-	private Integer applicationId;
-	private String applicationName;
-	private String existingTier;
 	private String applicationTier;
-	private String user;
-	private String serviceProvider;
-
-	public Integer getApplicationId() {
-		return applicationId;
-	}
-
-	public void setApplicationId(Integer applicationId) {
-		this.applicationId = applicationId;
-	}
-
-	public String getApplicationName() {
-		return applicationName;
-	}
-
-	public void setApplicationName(String applicationName) {
-		this.applicationName = applicationName;
-	}
-
-	public String getExistingTier() {
-		return existingTier;
-	}
-
-	public void setExistingTier(String existingTier) {
-		this.existingTier = existingTier;
-	}
+	private String tokenType;
 
 	public String getApplicationTier() {
 		return applicationTier;
@@ -42,15 +14,11 @@ public class ApplicationEditDTO {
 		this.applicationTier = applicationTier;
 	}
 
-	public String getServiceProvider() { return serviceProvider; }
-
-	public void setServiceProvider(String serviceProvider) { this.serviceProvider = serviceProvider; }
-
-	public String getUser() {
-		return user;
+	public String getTokenType() {
+		return tokenType;
 	}
 
-	public void setUser(String user) {
-		this.user = user;
+	public void setTokenType(String tokenType) {
+		this.tokenType = tokenType;
 	}
 }

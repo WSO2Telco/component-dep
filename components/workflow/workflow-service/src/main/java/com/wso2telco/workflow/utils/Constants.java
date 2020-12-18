@@ -46,6 +46,10 @@ public class Constants {
 	// workflow.properties file entries: Remote userstore manager service configs.
 	public static final String REMOTE_USERSTORE_MANAGER_HOST = "userstoremanager.service.host";
 	public static final String REMOTE_USERSTORE_MANAGER_USERNAME = "userstoremanager.service.username";
+	public static final String TOKEN_TYPE_JWT = "JWT";
+	public static final String REMOTE_ADMIN_APP_TIER_UPDT_PATH = "api/am/store/v1/applications/";
+	public static final String SECURITY_AUTHORIZATION_HEADER = "Authorization";
+	public static final String SECURITY_AUTHORIZATION_BASIC = "Basic";
 
 	
 }
