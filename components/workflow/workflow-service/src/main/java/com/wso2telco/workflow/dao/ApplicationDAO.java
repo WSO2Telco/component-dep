@@ -91,4 +91,39 @@ public class ApplicationDAO {
 			DbUtils.closeAllConnections(appTierStmnt, connection, resultSet);
 		}
 	}
+
+	public String getUUID(int applicationId) throws SQLException, BusinessException {
+		StringBuilder appTierQry = new StringBuilder("SELECT UUID FROM ");
+		appTierQry.append(APIMgtDatabaseTables.AM_APPLICATION.getTableName());
+		appTierQry.append(" WHERE APPLICATION_ID = ? LIMIT 1");
+
+		Connection connection = null;
+		PreparedStatement appTierStmnt = null;
+		ResultSet resultSet = null;
+		try {
+			connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+			if (connection == null) {
+				throw new Exception("Connection not found");
+			}
+			appTierStmnt = connection.prepareStatement(appTierQry.toString());
+			appTierStmnt.setInt(1, applicationId);
+			log.debug("sql query in getApplicationTier: " + appTierStmnt);
+
+			resultSet = appTierStmnt.executeQuery();
+			if (resultSet.next()) {
+				return resultSet.getString("UUID");
+			} else {
+				log.error("No application tiers found for application: " + applicationId);
+				throw new BusinessException(GenaralError.UNDEFINED);
+			}
+		} catch (SQLException sqlException) {
+			log.error("database operation error while fetching current application tier: ", sqlException);
+			throw new SQLException();
+		} catch (Exception exception) {
+			log.error("error while fetching UUID: ", exception);
+			throw new BusinessException(GenaralError.UNDEFINED);
+		} finally {
+			DbUtils.closeAllConnections(appTierStmnt, connection, resultSet);
+		}
+	}
 }

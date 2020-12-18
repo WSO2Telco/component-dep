@@ -167,12 +167,22 @@ public class ApplicationRest {
 	public Response editApplication(ApplicationEditDTO application) {
 		try {
             Notification notification = new NotificationImpl();
-			applicationService.editApplicationTier(application);
-            notification.sendApplicationTierEditNotification(application);
 
-			return Response.status(Response.Status.OK).entity(application).build();
+			Response response = applicationService.editApplicationTier(application);
+
+			if(Response.Status.OK.getStatusCode() == response.getStatus()) {
+                notification.sendApplicationTierEditNotification(application);
+            } else {
+			    throw new Exception();
+            }
+
+            return Response.status(Response.Status.OK).entity(application).build();
+
 		} catch (Exception e) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}
+
 	}
+
+
 }
