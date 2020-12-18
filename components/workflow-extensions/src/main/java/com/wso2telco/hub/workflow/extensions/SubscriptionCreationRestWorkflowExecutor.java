@@ -330,7 +330,6 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
                 } catch (APIManagementException e) {
                     String errorMsg = "Could not complete subscription approval workflow." +
                             " | Workflow ID: " + workFlowDTO.getExternalWorkflowReference();
-                    log.error(errorMsg, e);
                     auditLog.error(errorMsg, e);
                     throw new WorkflowException(errorMsg, e);
                 }

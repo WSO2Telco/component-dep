@@ -328,7 +328,7 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
             log.info(audit);
 
         } catch (APIManagementException e) {
-            e.printStackTrace();
+            log.error("Error occurred while retrieving the application by appID");
         }
     }
     /**\

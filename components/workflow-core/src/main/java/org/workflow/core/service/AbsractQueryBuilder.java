@@ -82,7 +82,6 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
                 task.setVariables(vars);
             }
         } catch (WorkflowExtensionException e) {
-            log.error(e.getMessage(), e);
             throw new BusinessException(e);
         }
         TaskList taskList = new TaskList();
