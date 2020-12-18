@@ -68,6 +68,27 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
         return buildMyTaskResponse(searchDTO, taskList, userProfile);
     }
 
+    @Override
+    public Callback searchPendingById(String taskId, final UserProfileDTO userProfile, String workflowType) throws BusinessException {
+        Task task = new Task();
+        ActivityRestClient activityClient = RestClientFactory.getInstance().getClient(getProcessDefinitionKey());
+        try {
+            if (APIUtil.isAdvanceThrottlingEnabled() && "APPLICATION".equals(workflowType)) {
+                String apiTiers = getTiersFromDB(workflowType);
+                TaskVariableResponse[] vars = activityClient.getVariables(taskId);
+                task.setVariables(replaceiActivitiTiers(vars, apiTiers, workflowType));
+            } else {
+                TaskVariableResponse[] vars = activityClient.getVariables(taskId);
+                task.setVariables(vars);
+            }
+        } catch (WorkflowExtensionException e) {
+            throw new BusinessException(e);
+        }
+        TaskList taskList = new TaskList();
+        taskList.setData(Collections.singletonList(task));
+        return buildMyTaskResponse(null, taskList, userProfile);
+    }
+
     public TaskList executeRequest(ProcessSearchRequest processRequest, String workflowType) throws BusinessException {
         TaskList taskList = null;
         ActivityRestClient activityClient = RestClientFactory.getInstance().getClient(getProcessDefinitionKey());
