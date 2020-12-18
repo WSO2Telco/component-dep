@@ -29,7 +29,7 @@ public class ApplicationService {
 
 	private void editApplicationAuditLog(String currentTier, ApplicationEditDTO application) {
 		String logMessage = "Application Updated." +
-				" | Application: " + application.getApplicationId() + ":" + application.getExistingTier() +
+				" | Application: " + application.getApplicationId() + ":" + application.getApplicationName() +
 				" | SP: " + application.getServiceProvider() +
 				" | Previous Tier: " + currentTier +
 				" | Updated Tier: " + application.getApplicationTier() +
