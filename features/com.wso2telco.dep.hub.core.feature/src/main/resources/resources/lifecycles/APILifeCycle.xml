@@ -37,7 +37,7 @@
                                        class="org.wso2.carbon.apimgt.impl.executors.APIExecutor">
                             </execution>
                             <execution forEvent="Publish"
-                                       class="org.wso2.carbon.apimgt.impl.executors.APICustomExecutor">
+                                       class="com.wso2telco.dep.lifecycleextension.APICustomExecutor">
                             </execution>
                         </data>
                     </datamodel>
