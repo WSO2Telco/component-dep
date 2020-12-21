@@ -81,7 +81,7 @@
       "Class":"org.wso2.carbon.apimgt.impl.notification.NewAPIVersionEmailNotifier",
       "ClaimsRetrieverImplClass":"org.wso2.carbon.apimgt.impl.token.DefaultClaimsRetriever",
       "Title": "Version $2 of $1 Released",
-      "Template": " <div style='margin: 0 0 3px 0;padding: 5px;border-style: solid;border-width: 1px 1px 1px 11px;border-color:#e46c0a;color: #525863;line-height: normal;font-weight: bold;'><h2> New API Creation</h2></div><div style='border-style:solid;border-width:1px 1px 1px 1px;border-color:#e46c0a;color:#525863;'><table border='0'><tr><td><b> API Name </b></td><td><b> : </b></td><td>$1</td></tr><tr><td><b> API Version </b></td><td><b> : </b></td><td>$2</td></tr></table></div>"
+      "Template": " <div style='margin: 0 0 3px 0;padding: 5px;border-style: solid;border-width: 1px 1px 1px 11px;border-color:#e46c0a;color: #525863;line-height: normal;font-weight: bold;'><h2> New API Version Released </h2></div><div style='border-style:solid;border-width:1px 1px 1px 1px;border-color:#e46c0a;color:#525863;'><table border='0'><tr><td><b> API Name </b></td><td><b> : </b></td><td>$1</td></tr><tr><td><b> API Version </b></td><td><b> : </b></td><td>$2</td></tr></table></div>"
     }]
   }
   ],
