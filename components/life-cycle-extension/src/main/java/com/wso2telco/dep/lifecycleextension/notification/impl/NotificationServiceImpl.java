@@ -23,9 +23,12 @@ import com.wso2telco.dep.lifecycleextension.util.Constants;
 import com.wso2telco.dep.lifecycleextension.util.EmailNotificationUtil;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.wso2.carbon.apimgt.api.APIProvider;
 import org.wso2.carbon.apimgt.api.model.API;
 import org.wso2.carbon.apimgt.impl.APIConstants;
+import org.wso2.carbon.apimgt.impl.APIManagerFactory;
 import org.wso2.carbon.apimgt.impl.utils.APIUtil;
+import org.wso2.carbon.apimgt.impl.utils.APIVersionComparator;
 import org.wso2.carbon.governance.api.generic.GenericArtifactManager;
 import org.wso2.carbon.governance.api.generic.dataobjects.GenericArtifact;
 import org.wso2.carbon.registry.core.jdbc.handlers.RequestContext;
@@ -53,12 +56,8 @@ public class NotificationServiceImpl implements NotificationService{
 
         try {
 
-            GenericArtifactManager artifactManager = APIUtil.getArtifactManager(context.getSystemRegistry(),
-                    APIConstants.API_KEY);
+            API api = getApiDetails(context);
             log.info("Starting email trigger functionality in API creation");
-            String artifactId = context.getResource().getUUID();
-            GenericArtifact apiArtifact = artifactManager.getGenericArtifact(artifactId);
-            API api = APIUtil.getAPI(apiArtifact);
 
             List<String> userList = Arrays.asList(remoteUserStoreManager.getUserListOfRole(Constants.ADMIN_ROLE));
 
@@ -86,5 +85,49 @@ public class NotificationServiceImpl implements NotificationService{
         } catch (Exception e) {
             log.error("Failed to validate user details for send email ", e);
         }
+    }
+
+    @Override
+    public boolean validateIsNotNewApiVersion(RequestContext context) {
+
+        try {
+
+            API api = getApiDetails(context);
+
+            String provider = APIUtil.replaceEmailDomain(api.getId().getProviderName());
+            APIProvider apiProvider = APIManagerFactory.getInstance().getAPIProvider(provider);
+            List<API> oldApiList = apiProvider.getAPIsByProvider(provider);
+
+            if(!oldApiList.isEmpty()){
+                APIVersionComparator versionComparator = new APIVersionComparator();
+                for (API oldApi : oldApiList) {
+                    if(oldApi.getId().getApiName().equalsIgnoreCase(api.getId().getApiName()) && versionComparator.compare(oldApi, api) < 0 &&
+                            (APIConstants.PUBLISHED.equals(oldApi.getStatus()))){
+                        return false;
+                    }
+                }
+            }
+
+            return true;
+        }catch (Exception e){
+            log.error("Failed to validate api version details ", e);
+            return false;
+        }
+    }
+
+    private API getApiDetails(RequestContext context)throws Exception{
+
+        try {
+            GenericArtifactManager artifactManager = APIUtil.getArtifactManager(context.getSystemRegistry(),
+                    APIConstants.API_KEY);
+            String artifactId = context.getResource().getUUID();
+            GenericArtifact apiArtifact = artifactManager.getGenericArtifact(artifactId);
+            return APIUtil.getAPI(apiArtifact);
+
+        }catch (Exception e){
+            log.error("Failed to get request context api details ", e);
+            throw e;
+        }
+
     }
 }

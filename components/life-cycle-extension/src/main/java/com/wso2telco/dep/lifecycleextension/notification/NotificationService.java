@@ -22,4 +22,6 @@ public interface NotificationService {
 
     void sendApiProviderEmail(RequestContext context);
 
+    boolean validateIsNotNewApiVersion(RequestContext context);
+
 }
