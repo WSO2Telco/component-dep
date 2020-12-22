@@ -57,7 +57,8 @@
                                         <include>config/publish-events-data-conf.properties</include>
                                         <include>config/registry.xml</include>
                                         <include>config/user-mgt.xml</include>
-                                        
+                                        <include>resources/lifecycles/APILifeCycle.xml</include>
+                                        <include>resources/tenant-conf.json</include>
                                         <include>synapse-configs/sequences/*.xml</include>
                                                                             
                                         <include>config/workflow-extensions.xml</include>
