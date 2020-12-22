@@ -15,12 +15,16 @@
  */
 package com.wso2telco.dep.responsefilter;
 
+import java.io.IOException;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
+import java.util.Iterator;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
 import com.wso2telco.core.dbutils.DbUtils;
 import com.wso2telco.core.dbutils.util.DataSourceNames;
 import lk.chathurabuddi.json.schema.constants.FreeFormAction;
@@ -51,7 +55,9 @@ public class ResponseFilterMediator extends AbstractMediator {
                 String filterSchema = findFilterSchema(userId, appName, api, httpVerb, resource);
                 if (filterSchema != null) {
                     String filteredJson = new JsonSchemaFilter(filterSchema, jsonString, FreeFormAction.DETACH).filter();
-                    JsonUtil.getNewJsonPayload(axis2MessageContext, filteredJson, true, true);
+                    if (isNonEmptyJson(filteredJson) || isMatchingPayload(jsonString, filterSchema)) {
+                        JsonUtil.getNewJsonPayload(axis2MessageContext, filteredJson, true, true);
+                    }
                 }
             }
         } catch (Exception e) {
@@ -59,6 +65,31 @@ public class ResponseFilterMediator extends AbstractMediator {
             return false;
         }
         return true;
+    }
+
+    // compare the root elements of the payload according to the filter schema
+    private boolean isMatchingPayload(String jsonString, String filterSchema) throws IOException {
+        ObjectMapper mapper = new ObjectMapper();
+        JsonNode json = mapper.readTree(jsonString);
+        JsonNode schema = mapper.readTree(filterSchema);
+        String rootElementType = schema.findPath("type").asText();
+        return !((json.isArray() && !"array".equals(rootElementType)) ||
+                ("object".equals(rootElementType) && !rootElementsMatched(json, schema)));
+    }
+
+    private boolean rootElementsMatched(JsonNode json, JsonNode schema) {
+        Iterator<String> properties = schema.findPath("properties").fieldNames();
+        while (properties.hasNext()) {
+            String property = properties.next();
+            if (json.has(property)) {
+                return true;
+            }
+        }
+        return false;
+    }
+
+    private boolean isNonEmptyJson(String filteredJson) {
+        return filteredJson != null && !filteredJson.isEmpty() && !"{}".equals(filteredJson);
     }
 
     public String findFilterSchema(String sp, String application, String api, String httpVerb, String resource) throws Exception {
