@@ -117,17 +117,10 @@ public class NotificationServiceImpl implements NotificationService{
 
     private API getApiDetails(RequestContext context)throws Exception{
 
-        try {
             GenericArtifactManager artifactManager = APIUtil.getArtifactManager(context.getSystemRegistry(),
                     APIConstants.API_KEY);
             String artifactId = context.getResource().getUUID();
             GenericArtifact apiArtifact = artifactManager.getGenericArtifact(artifactId);
             return APIUtil.getAPI(apiArtifact);
-
-        }catch (Exception e){
-            log.error("Failed to get request context api details ", e);
-            throw e;
-        }
-
     }
 }
