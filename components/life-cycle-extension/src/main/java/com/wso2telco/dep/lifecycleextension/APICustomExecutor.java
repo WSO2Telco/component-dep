@@ -34,9 +34,10 @@ public class APICustomExecutor extends APIExecutor {
     public boolean execute(RequestContext context, String currentState, String targetState) {
 
         boolean superExecuted = super.execute(context, currentState, targetState);
-        if(superExecuted && currentState.equalsIgnoreCase(Constants.STATE_CREATED) && targetState.equalsIgnoreCase(Constants.STATE_PUBLISHED)){
+        if(superExecuted && currentState.equalsIgnoreCase(Constants.STATE_CREATED) && targetState.equalsIgnoreCase(Constants.STATE_PUBLISHED) && notificationService.validateIsNotNewApiVersion(context)){
             notificationService.sendApiProviderEmail(context);
             }
+
 
             return superExecuted;
     }
