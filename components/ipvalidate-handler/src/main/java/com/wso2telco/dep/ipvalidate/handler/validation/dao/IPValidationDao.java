@@ -84,7 +84,7 @@ public class IPValidationDao {
 		ResultSet results = null;
 		String clientIdToken = null;
 
-		String sql = "select ACCESS_TOKEN from idn_oauth2_access_token where CONSUMER_KEY_ID = ? and TOKEN_STATE = 'ACTIVE';";
+		String sql = "select ACCESS_TOKEN from idn_oauth2_access_token where CONSUMER_KEY_ID = ? and TOKEN_STATE = 'ACTIVE' and GRANT_TYPE = 'client_credentials'";
 		try {
 			conn = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
 			ps = conn.prepareStatement(sql);
