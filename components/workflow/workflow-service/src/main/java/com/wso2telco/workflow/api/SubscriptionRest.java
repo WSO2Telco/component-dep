@@ -136,10 +136,15 @@ public class SubscriptionRest {
 	public Response editSubscription(SubscriptionEditDTO subscription) {
 		try {
             Notification notification = new NotificationImpl();
-			subscriptionService.editSubscriptionTier(subscription);
-            notification.sendsubscriptionTierEditNotification(subscription);
+			Response response = subscriptionService.editSubscriptionTier(subscription);
 
-			return Response.status(Response.Status.OK).entity(subscription).build();
+			if (response.getStatus() == Response.Status.OK.getStatusCode()) {
+                notification.sendsubscriptionTierEditNotification(subscription);
+            } else {
+			    throw new Exception();
+            }
+
+            return Response.status(Response.Status.OK).entity(subscription).build();
 		} catch (Exception e) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
 		}

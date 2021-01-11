@@ -36,7 +36,13 @@ public class TierUpdtConnFactory<T extends TierUpdtConnDTO,K extends BaseTierUpd
             tierUpdtConnDTO.setMediaType(MediaType.APPLICATION_JSON_TYPE);
             t = (T) tierUpdtConnDTO;
         } else if(k instanceof SubTierUpdtReq) {
-            //TODO: Implement Subscription flow
+            SubTierUpdtReq subTierUpdtReq = (SubTierUpdtReq) k;
+            TierUpdtConnDTO tierUpdtConnDTO = new TierUpdtConnDTO();
+            tierUpdtConnDTO.setServerEP(getServerEP());
+            tierUpdtConnDTO.setPath(Constants.REMOTE_ADMIN_SUB_TIER_UPDATE_PATH + subTierUpdtReq.getSubscriptionId());
+            tierUpdtConnDTO.setHeaders(getSecurityHeaders());
+            tierUpdtConnDTO.setMediaType(MediaType.APPLICATION_JSON_TYPE);
+            t = (T)tierUpdtConnDTO;
         }
 
         return t;

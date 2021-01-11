@@ -6,6 +6,7 @@ import com.wso2telco.workflow.model.BaseTierUpdtReq;
 import com.wso2telco.workflow.model.TierUpdtConnDTO;
 import com.wso2telco.workflow.service.admin.factory.TierUpdtConnFactory;
 import com.wso2telco.workflow.service.admin.factory.TierUpdtReqestFactory;
+import org.wso2.carbon.apimgt.api.APIManagementException;
 
 import java.sql.SQLException;
 
@@ -17,7 +18,7 @@ public class TierRequst<T extends TierUpdtConnDTO> implements ConstructRequest{
     private TierUpdtConnDTO tierUpdtConnDTO;
 
     @Override
-    public T constructTierUpdtRequsst(BaseEditDTO baseEditDTO)  throws SQLException, BusinessException {
+    public T constructTierUpdtRequsst(BaseEditDTO baseEditDTO)  throws SQLException, BusinessException, APIManagementException {
 
         T t = null;
         factory = new TierUpdtReqestFactory();

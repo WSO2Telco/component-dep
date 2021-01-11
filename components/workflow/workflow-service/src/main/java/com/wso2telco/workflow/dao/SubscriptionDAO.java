@@ -97,4 +97,41 @@ public class SubscriptionDAO {
 		}
 
 	}
+
+	public String getUUID(int applicationId, int apiId) throws SQLException, BusinessException {
+		StringBuilder subTierQry = new StringBuilder("SELECT UUID FROM ");
+		subTierQry.append(APIMgtDatabaseTables.AM_SUBSCRIPTION.getTableName());
+		subTierQry.append(" WHERE APPLICATION_ID = ? AND API_ID = ? LIMIT 1");
+
+		Connection connection = null;
+		PreparedStatement subTierStmnt = null;
+		ResultSet resultSet = null;
+
+		try {
+			connection = DbUtils.getDbConnection(DataSourceNames.WSO2AM_DB);
+			if (connection == null) {
+				throw new Exception("Connection not found");
+			}
+			subTierStmnt = connection.prepareStatement(subTierQry.toString());
+			subTierStmnt.setInt(1, applicationId);
+			subTierStmnt.setInt(2, apiId);
+			log.debug("sql query in getApplicationTier: " + subTierStmnt);
+
+			resultSet = subTierStmnt.executeQuery();
+			if (resultSet.next()) {
+				return resultSet.getString("UUID");
+			} else {
+				log.error("No application tiers found for application: " + applicationId);
+				throw new BusinessException(GenaralError.UNDEFINED);
+			}
+		} catch (SQLException sqlException) {
+			log.error("database operation error while fetching current application tier: ", sqlException);
+			throw new SQLException();
+		} catch (Exception exception) {
+			log.error("error while fetching UUID: ", exception);
+			throw new BusinessException(GenaralError.UNDEFINED);
+		} finally {
+			DbUtils.closeAllConnections(subTierStmnt, connection, resultSet);
+		}
+	}
 }
