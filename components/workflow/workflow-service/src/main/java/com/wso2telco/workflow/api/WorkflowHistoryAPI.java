@@ -159,7 +159,7 @@ public class WorkflowHistoryAPI {
         try {
             APIConsumer apiConsumer = APIManagerFactory.getInstance().getAPIConsumer();
             Subscriber subscriber = new Subscriber(subscriberName);
-            Application[] applicationList = apiConsumer.getApplications(subscriber, "");
+            Application[] applicationList = apiConsumer.getLightWeightApplications(subscriber, "");
             jsonPayload = new Gson().toJson(applicationList);
         } catch (Exception e) {
             log.error(e);
