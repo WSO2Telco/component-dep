@@ -7,13 +7,19 @@ import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.workflow.dao.ApplicationDAO;
 import com.wso2telco.workflow.http.template.AbstractTemplate;
 import com.wso2telco.workflow.http.template.HttpRequestTemplate;
+import com.wso2telco.workflow.model.AppTierUpdtReq;
 import com.wso2telco.workflow.model.ApplicationEditDTO;
 import com.wso2telco.workflow.model.TierUpdtConnDTO;
 import com.wso2telco.workflow.service.admin.build.TierRequst;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.wso2.carbon.CarbonConstants;
+import org.wso2.carbon.apimgt.api.APIConsumer;
 import org.wso2.carbon.apimgt.api.APIManagementException;
+import org.wso2.carbon.apimgt.api.model.Application;
+import org.wso2.carbon.apimgt.api.model.Subscriber;
+import org.wso2.carbon.apimgt.impl.APIConstants;
+import org.wso2.carbon.apimgt.impl.APIManagerFactory;
+
 
 import javax.ws.rs.core.Response;
 
@@ -29,18 +35,38 @@ public class ApplicationService {
 		applicationDAO = new ApplicationDAO();
 		tierRequst = new TierRequst();
 	}
-	
+
+
+
 	public Response editApplicationTier(ApplicationEditDTO application) throws SQLException, BusinessException, APIManagementException {
 
+		Response response = null;
 		TierUpdtConnDTO tierUpdtConnDTO = tierRequst.constructTierUpdtRequsst(application);
 
-		AbstractTemplate template = new HttpRequestTemplate();
-		Response response = template.HTTP_PUT(tierUpdtConnDTO);
+		try{
 
-		if(Response.Status.OK.getStatusCode() == response.getStatus()) {
+			String username = application.getServiceProvider();
+
+			AppTierUpdtReq tierUpdtReq = (AppTierUpdtReq)tierUpdtConnDTO.getTierUpdtReq();
+
+			APIConsumer apiConsumer = APIManagerFactory.getInstance().getAPIConsumer(username);
+			Subscriber subscriber = new Subscriber(username);
+			Application updtApplication = new Application(application.getApplicationName(), subscriber);
+			updtApplication.setTier(tierUpdtReq.getThrottlingPolicy());
+			updtApplication.setUUID(tierUpdtReq.getApplicationId());
+			updtApplication.setTokenType(tierUpdtReq.getTokenType());
+			apiConsumer.updateApplication(updtApplication);
+
+
 			editApplicationLog(application);
 			editApplicationAuditLog(application);
+
+			Response.status(Response.Status.OK).entity(application).build();
+
+		}catch (Exception e){
+			Response.status(Response.Status.INTERNAL_SERVER_ERROR).entity(application).build();
 		}
+
 		return response;
 	}
 

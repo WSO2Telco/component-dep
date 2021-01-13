@@ -51,6 +51,7 @@ public class Constants {
 	public static final String REMOTE_ADMIN_SUB_TIER_UPDATE_PATH = "api/am/store/v1/subscriptions/";
 	public static final String SECURITY_AUTHORIZATION_HEADER = "Authorization";
 	public static final String SECURITY_AUTHORIZATION_BASIC = "Basic";
+	public static final String SUPER_TENENT = "carbon.super";
 
 	
 }
