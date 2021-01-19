@@ -28,8 +28,10 @@ abstract class AbstractAppRequestBuilder extends AbsractQueryBuilder {
         //return userProfileDTO.getUserName();
     	if(isAdmin(userProfileDTO)){
             return WorkFlowVariables.GATEWAY_ADMIN_ROLE.getValue();
-        }else {
-                return userProfileDTO.getOperatorName().toLowerCase();
+        } else if(isPublisher(userProfileDTO)) {
+            return WorkFlowVariables.API_PUBLISHER_APPROVAL.getValue();
+        } else {
+    	    return userProfileDTO.getOperatorName().toLowerCase();
         }
     }
 

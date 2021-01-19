@@ -267,12 +267,26 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
         String[] userRoles = userProfile.getUserRoles();
         boolean isAdmin = false;
         for (String role : userRoles) {
-            if (role.trim().equals(WorkFlowVariables.ADMIN_ROLE.getValue())) {
+            if (role.trim().equals(WorkFlowVariables.SUPER_ADMIN.getValue())) {
                 isAdmin = true;
             }
         }
         return isAdmin;
     }
+
+    protected boolean isPublisher(UserProfileDTO useProfile) {
+
+        String[] userRoles = useProfile.getUserRoles();
+        boolean isPublisher= false;
+        for (String role : userRoles) {
+            if (role.trim().equals("hub-"+useProfile.getDepartment()+"-publisher")) {
+                isPublisher = true;
+            }
+        }
+        return isPublisher;
+
+    }
+
     public TaskVariableResponse[] replaceiActivitiTiers(TaskVariableResponse[] vars , String TiersStr , String workflowType) throws  BusinessException {
 
         if(workflowType.equals(WorkFlowType.APPLICATION.toString())){

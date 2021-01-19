@@ -37,6 +37,7 @@ public enum  WorkFlowVariables {
     STATUS("status"),
     ACTION("complete"),
     ADMIN_ROLE("manage-app-admin"),
+    SUPER_ADMIN("admin"),
     ASSIGN_ACTION("claim");
 
 
