@@ -53,9 +53,9 @@ public class ResponseFilterMediator extends AbstractMediator {
             String jsonString = (String) messageContext.getProperty("jsonPayload");
             if (jsonString != null && !"".equals(jsonString.trim())){
                 String filterSchema = findFilterSchema(userId, appName, api, httpVerb, resource);
-                if (filterSchema != null) {
+                if (filterSchema != null && isMatchingPayload(jsonString, filterSchema)) {
                     String filteredJson = new JsonSchemaFilter(filterSchema, jsonString, FreeFormAction.DETACH).filter();
-                    if (isNonEmptyJson(filteredJson) || isMatchingPayload(jsonString, filterSchema)) {
+                    if (isNonEmptyJson(filteredJson)) {
                         JsonUtil.getNewJsonPayload(axis2MessageContext, filteredJson, true, true);
                     }
                 }
@@ -73,7 +73,7 @@ public class ResponseFilterMediator extends AbstractMediator {
         JsonNode json = mapper.readTree(jsonString);
         JsonNode schema = mapper.readTree(filterSchema);
         String rootElementType = schema.findPath("type").asText();
-        return !((json.isArray() && !"array".equals(rootElementType)) ||
+        return !((json.isArray() != "array".equals(rootElementType)) ||
                 ("object".equals(rootElementType) && !rootElementsMatched(json, schema)));
     }
 
