@@ -44,7 +44,9 @@ public class ResponseFilterMediator extends AbstractMediator {
         String userId = messageContext.getProperty("api.ut.userId").toString().split("@")[0];
         String appName = messageContext.getProperty("api.ut.application.name").toString();
 
-        log.debug("API : " + api + " | USER : " + userId + " | APP_NAME : " + appName + " | HTTP_VERB : " + httpVerb + " | RESOURCE : " + resource);
+        if(log.isDebugEnabled()){
+            log.debug("API : " + api + " | USER : " + userId + " | APP_NAME : " + appName + " | HTTP_VERB : " + httpVerb + " | RESOURCE : " + resource);
+        }
 
         org.apache.axis2.context.MessageContext axis2MessageContext = ((Axis2MessageContext) messageContext)
                 .getAxis2MessageContext();
