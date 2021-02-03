@@ -37,6 +37,7 @@ import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.simple.JSONObject;
 import org.workflow.core.execption.WorkflowExtensionException;
 import org.wso2.carbon.apimgt.api.APIConsumer;
 import org.wso2.carbon.apimgt.api.APIManagementException;
@@ -281,8 +282,16 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
                 log.debug("Process definition url: " + processInstanceResponse.getProcessDefinitionUrl());
             }
 
-            log.info("Subscription Creation approval process instance task with Id " +
-                    processInstanceResponse.getId() + " created successfully");
+            String logMsg = "Subscription creation approval workflow submitted." +
+                    " | Workflow ID: " + processInstanceResponse.getBusinessKey() +
+                    " | Workflow Status: " + subscriptionWorkFlowDTO.getStatus() +
+                    " | API: " + subscriptionWorkFlowDTO.getApiName() + ":" + subscriptionWorkFlowDTO.getApiVersion() +
+                    " | Application: " + subscriptionWorkFlowDTO.getApplicationName() +
+                    " | Application ID: " + subscriptionWorkFlowDTO.getApplicationId() +
+                    " | Subscriber: " + subscriptionWorkFlowDTO.getSubscriber() +
+                    " | Requested Tier: " + subscriptionWorkFlowDTO.getTierName();
+            log.debug(logMsg);
+            appWfAuditLog(subscriptionWorkFlowDTO, APIConstants.AuditLogConstants.CREATED);
         } catch (APIManagementException e) {
             throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
         } catch (UserStoreException e) {
@@ -297,9 +306,6 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
     public WorkflowResponse complete(WorkflowDTO workFlowDTO) throws WorkflowException {
         workFlowDTO.setUpdatedTime(System.currentTimeMillis());
         super.complete(workFlowDTO);
-        log.info("Subscription Creation [Complete] Workflow Invoked. Workflow ID : " +
-                workFlowDTO.getExternalWorkflowReference() + "Workflow State : " + workFlowDTO.getStatus());
-
         if (WorkflowStatus.APPROVED.equals(workFlowDTO.getStatus()) ||
                 WorkflowStatus.REJECTED.equals(workFlowDTO.getStatus())) {
             String status = null;
@@ -316,12 +322,15 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
                 try {
                     apiMgtDAO.updateSubscriptionStatus(Integer.parseInt(workFlowDTO.getWorkflowReference()), status);
                 } catch (APIManagementException e) {
-                    log.error("Could not complete subscription creation workflow", e);
-                    throw new WorkflowException("Could not complete subscription creation workflow", e);
+                    String errorMsg = "Could not complete subscription approval workflow." +
+                            " | Workflow ID: " + workFlowDTO.getExternalWorkflowReference();
+                    throw new WorkflowException(errorMsg, e);
                 }
 
             } else {
-                log.error("Could not complete subscription creation workflow. Approval status is invalid.");
+                final String errorMsg = "Could not complete subscription approval workflow. " +
+                        "Approval status is invalid. | Workflow ID: " + workFlowDTO.getExternalWorkflowReference();
+                log.error(errorMsg);
             }
         }
         return null;
@@ -354,6 +363,13 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
                 .requestInterceptor(new BasicAuthRequestInterceptor(username, password))
                 .target(BusinessProcessApi.class, serviceEndpoint);
 
+        WorkflowDTO workflowDto = null;
+        try {
+            workflowDto = ApiMgtDAO.getInstance().retrieveWorkflow(workflowExtRef);
+        } catch (APIManagementException e) {
+            throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
+        }
+
         ProcessInstanceData instanceData = null;
         try {
             instanceData = api.getProcessInstances(workflowExtRef);
@@ -365,9 +381,12 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
         try {
             if (instanceData.getData().size() != 0) {
                 api.deleteProcessInstance(Integer.toString(instanceData.getData().get(0).getId()));
+                appWfAuditLog((SubscriptionWorkflowDTO) workflowDto, APIConstants.AuditLogConstants.DELETED);
             }
         } catch (WorkflowExtensionException e) {
             throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
+        } catch (Exception e) {
+            log.error(e);
         }
 
         log.info("Application Creation approval process instance task with business key " +
@@ -406,6 +425,25 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    private void appWfAuditLog(SubscriptionWorkflowDTO subWorkFlowDTO, String action) {
+        JSONObject subWorkflow = new JSONObject();
+        subWorkflow.put("workflow_id", subWorkFlowDTO.getExternalWorkflowReference());
+        subWorkflow.put(APIConstants.AuditLogConstants.STATUS, subWorkFlowDTO.getStatus().toString());
+        subWorkflow.put(APIConstants.AuditLogConstants.API_NAME, subWorkFlowDTO.getApiName());
+        subWorkflow.put("api_version", subWorkFlowDTO.getApiVersion());
+        subWorkflow.put(APIConstants.AuditLogConstants.APPLICATION_ID, subWorkFlowDTO.getApplicationId());
+        subWorkflow.put(APIConstants.AuditLogConstants.APPLICATION_NAME, subWorkFlowDTO.getApplicationName());
+        subWorkflow.put(APIConstants.AuditLogConstants.TIER, subWorkFlowDTO.getTierName());
+        subWorkflow.put("subscriber", subWorkFlowDTO.getSubscriber());
+
+        APIUtil.logAuditMessage(
+            "SubscriptionApprovalWorkflow",
+            subWorkflow.toString(),
+            action,
+            subWorkFlowDTO.getSubscriber()
+        );
     }
 
 }

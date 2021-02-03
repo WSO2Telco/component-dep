@@ -16,6 +16,7 @@ import org.workflow.core.dboperation.DatabaseHandler;
 import org.workflow.core.execption.WorkflowExtensionException;
 import org.workflow.core.model.*;
 import org.workflow.core.util.*;
+import org.wso2.carbon.apimgt.impl.utils.APIUtil;
 //import org.wso2.carbon.apimgt.impl.utils.APIUtil;
 
 import java.text.DateFormat;
@@ -66,6 +67,28 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
         processRequest.setAssignee(assigenee);
         TaskList taskList = executeRequest(processRequest,workflowType);
         return buildMyTaskResponse(searchDTO, taskList, userProfile);
+    }
+
+    @Override
+    public Callback searchPendingById(String taskId, final UserProfileDTO userProfile, String workflowType) throws BusinessException {
+        Task task = new Task();
+        ActivityRestClient activityClient = RestClientFactory.getInstance().getClient(getProcessDefinitionKey());
+        try {
+            if (APIUtil.isAdvanceThrottlingEnabled() && "APPLICATION".equals(workflowType)) {
+                String apiTiers = getTiersFromDB(workflowType);
+                TaskVariableResponse[] vars = activityClient.getVariables(taskId);
+                task.setVariables(replaceiActivitiTiers(vars, apiTiers, workflowType));
+            } else {
+                TaskVariableResponse[] vars = activityClient.getVariables(taskId);
+                task.setVariables(vars);
+            }
+        } catch (WorkflowExtensionException e) {
+            log.error(e.getMessage(), e);
+            throw new BusinessException(e);
+        }
+        TaskList taskList = new TaskList();
+        taskList.setData(Collections.singletonList(task));
+        return buildMyTaskResponse(null, taskList, userProfile);
     }
 
     public TaskList executeRequest(ProcessSearchRequest processRequest, String workflowType) throws BusinessException {

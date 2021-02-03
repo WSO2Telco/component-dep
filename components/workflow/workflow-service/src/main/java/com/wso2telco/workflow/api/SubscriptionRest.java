@@ -16,6 +16,10 @@
 
 package com.wso2telco.workflow.api;
 
+import java.nio.charset.StandardCharsets;
+import java.util.StringTokenizer;
+
+import com.wso2telco.core.dbutils.exception.BusinessException;
 import com.wso2telco.core.dbutils.util.ApprovalRequest;
 import com.wso2telco.core.dbutils.util.AssignRequest;
 import com.wso2telco.core.dbutils.util.Callback;
@@ -25,12 +29,20 @@ import com.wso2telco.workflow.model.SubscriptionEditDTO;
 import com.wso2telco.workflow.notification.Notification;
 import com.wso2telco.workflow.notification.NotificationImpl;
 import com.wso2telco.workflow.service.SubscriptionService;
+import org.apache.commons.logging.Log;
+import org.apache.commons.logging.LogFactory;
+import org.json.simple.JSONObject;
+import org.workflow.core.model.SubSearchResponse;
+import org.workflow.core.model.SubscriptionTask;
 import org.workflow.core.model.TaskSearchDTO;
 import org.workflow.core.service.WorkFlowDelegator;
+import org.wso2.carbon.apimgt.impl.APIConstants;
+import org.wso2.carbon.apimgt.impl.utils.APIUtil;
 
 import javax.ws.rs.*;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
+import javax.xml.bind.DatatypeConverter;
 
 @Path("/subscriptions")
 @Consumes(MediaType.APPLICATION_JSON)
@@ -38,6 +50,7 @@ import javax.ws.rs.core.Response;
 public class SubscriptionRest {
 
 	SubscriptionService subscriptionService = new SubscriptionService();
+    private static final Log log = LogFactory.getLog(SubscriptionRest.class);
 
     @GET
     @Path("/search")
@@ -118,18 +131,68 @@ public class SubscriptionRest {
 
     @POST
     @Path("/approve")
-    public Response approve(@HeaderParam("user-name") String userName, ApprovalRequest approvalRequest) {
+    public Response approve(@HeaderParam("user-name") String userName,
+                            @HeaderParam("Authorization") String authString,
+                            ApprovalRequest approvalRequest) {
         Response response;
         try {
-            WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
             UserProfileRetriever userProfileRetriever = new UserProfileRetriever();
             UserProfileDTO userProfile = userProfileRetriever.getUserProfile(userName);
+            Object subSearchResponse = loadByTaskId(approvalRequest.getTaskId(), userProfile).getPayload();
+            WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
             Callback callback = workFlowDelegator.approveSubscription(approvalRequest, userProfile);
             response = Response.status(Response.Status.OK).entity(callback).build();
+
+            this.subscriptionApprovalAuditLog(
+                    approvalRequest, subSearchResponse, callback.getSuccess(), extractLoggedInUser(authString)
+            );
         } catch (Exception e) {
             response = Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
         }
         return response;
+    }
+
+    private Callback loadByTaskId(String taskId, UserProfileDTO userProfile) throws BusinessException {
+        WorkFlowDelegator workFlowDelegator = new WorkFlowDelegator();
+        return workFlowDelegator.getPendingSubscriptionApproval(taskId, userProfile);
+    }
+
+    private String extractLoggedInUser(String authString) {
+        final String AUTH_STR_DELIMITER_REGX = "\\s+";
+        final String UN_PW_DELIMITER = ":";
+
+        return new StringTokenizer(new String(
+                DatatypeConverter.parseBase64Binary(authString.split(AUTH_STR_DELIMITER_REGX)[1]),
+                StandardCharsets.UTF_8
+        ), UN_PW_DELIMITER ).nextToken();
+    }
+
+    private void subscriptionApprovalAuditLog(
+            ApprovalRequest approvalRequest, Object payload, boolean success, String loggedInUser) {
+        if (payload instanceof SubSearchResponse) {
+            SubscriptionTask subscriptionTask = ((SubSearchResponse) payload).getApplicationTasks().get(0);
+            JSONObject subWorkflow = new JSONObject();
+            subWorkflow.put("workflow_id", subscriptionTask.getWorkflowRefId());
+            subWorkflow.put(APIConstants.AuditLogConstants.STATUS, (success ? "APPROVED" : "FAILED"));
+            subWorkflow.put(APIConstants.AuditLogConstants.API_NAME, subscriptionTask.getApiName());
+            subWorkflow.put("api_version", subscriptionTask.getApiVersion());
+            subWorkflow.put(APIConstants.AuditLogConstants.APPLICATION_ID, subscriptionTask.getApplicationId());
+            subWorkflow.put(APIConstants.AuditLogConstants.APPLICATION_NAME, subscriptionTask.getApplicationName());
+            subWorkflow.put("req_tier", subscriptionTask.getTier());
+            subWorkflow.put("approved_tier", approvalRequest.getSelectedTier());
+            subWorkflow.put("subscriber", subscriptionTask.getUserName());
+
+            APIUtil.logAuditMessage(
+                "SubscriptionApprovalWorkflow",
+                subWorkflow.toString(),
+                APIConstants.AuditLogConstants.UPDATED,
+                loggedInUser
+            );
+        } else {
+            String error = "Error logging application approval: task is not an subscription approval task. | expected: "
+                    + SubSearchResponse.class.getName() + ", actual: " + payload.getClass().getName();
+            log.error(error);
+        }
     }
 
     @PUT
@@ -137,13 +200,11 @@ public class SubscriptionRest {
 		try {
             Notification notification = new NotificationImpl();
 			Response response = subscriptionService.editSubscriptionTier(subscription);
-
 			if (response.getStatus() == Response.Status.OK.getStatusCode()) {
                 notification.sendsubscriptionTierEditNotification(subscription);
             } else {
 			    throw new Exception();
             }
-
             return Response.status(Response.Status.OK).entity(subscription).build();
 		} catch (Exception e) {
 			return Response.status(Response.Status.INTERNAL_SERVER_ERROR).build();
