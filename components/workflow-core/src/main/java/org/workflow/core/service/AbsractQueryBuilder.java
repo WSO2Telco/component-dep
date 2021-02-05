@@ -16,8 +16,6 @@ import org.workflow.core.dboperation.DatabaseHandler;
 import org.workflow.core.execption.WorkflowExtensionException;
 import org.workflow.core.model.*;
 import org.workflow.core.util.*;
-import org.wso2.carbon.apimgt.impl.utils.APIUtil;
-//import org.wso2.carbon.apimgt.impl.utils.APIUtil;
 
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -74,14 +72,8 @@ public abstract class AbsractQueryBuilder implements WorkFlowProcessor {
         Task task = new Task();
         ActivityRestClient activityClient = RestClientFactory.getInstance().getClient(getProcessDefinitionKey());
         try {
-            if (APIUtil.isAdvanceThrottlingEnabled() && "APPLICATION".equals(workflowType)) {
-                String apiTiers = getTiersFromDB(workflowType);
-                TaskVariableResponse[] vars = activityClient.getVariables(taskId);
-                task.setVariables(replaceiActivitiTiers(vars, apiTiers, workflowType));
-            } else {
-                TaskVariableResponse[] vars = activityClient.getVariables(taskId);
-                task.setVariables(vars);
-            }
+            TaskVariableResponse[] vars = activityClient.getVariables(taskId);
+            task.setVariables(vars);
         } catch (WorkflowExtensionException e) {
             log.error(e.getMessage(), e);
             throw new BusinessException(e);

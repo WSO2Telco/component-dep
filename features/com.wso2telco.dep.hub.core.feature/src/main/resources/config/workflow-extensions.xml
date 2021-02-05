@@ -57,18 +57,19 @@
     distribution.
     -->
 
-    <SubscriptionDeletion executor="org.wso2.carbon.apimgt.impl.workflow.SubscriptionDeletionSimpleWorkflowExecutor"/>
-    <!--SubscriptionDeletion executor="org.wso2.carbon.apimgt.impl.workflow.SubscriptionDeletionSimpleWorkflowExecutor">
-    <Property name="serviceEndpoint">http://localhost:9765/services/SubscriptionApprovalWorkFlowProcess/</Property>
-    <Property name="username">admin</Property>
-    <Property name="password">admin</Property>
-    <Property name="callbackURL">https://localhost:8243/services/WorkflowCallbackService</Property>
-    </SubscriptionDeletion -->
-    <ApplicationDeletion executor="org.wso2.carbon.apimgt.impl.workflow.ApplicationDeletionSimpleWorkflowExecutor"/>
-    <!--ApplicationDeletion executor="org.wso2.carbon.apimgt.impl.workflow.ApplicationDeletionSimpleWorkflowExecutor">
-    <Property name="serviceEndpoint">http://localhost:9765/services/ApplicationApprovalWorkFlowProcess/</Property>
-    <Property name="username">admin</Property>
-    <Property name="password">admin</Property>
-    <Property name="callbackURL">https://localhost:8243/services/WorkflowCallbackService</Property>
-    </ApplicationDeletion-->
+    <!--SubscriptionDeletion executor="org.wso2.carbon.apimgt.impl.workflow.SubscriptionDeletionSimpleWorkflowExecutor"/-->
+    <SubscriptionDeletion executor="com.wso2telco.hub.workflow.extensions.SubscriptionDeletionRestWorkflowExecutor">
+        <Property name="serviceEndpoint">http://localhost:9763/activiti-rest/service/</Property>
+        <Property name="username">admin</Property>
+        <Property name="password">admin</Property>
+        <Property name="callbackURL">https://localhost:9443</Property>
+    </SubscriptionDeletion>
+
+    <!--ApplicationDeletion executor="org.wso2.carbon.apimgt.impl.workflow.ApplicationDeletionSimpleWorkflowExecutor"/-->
+    <ApplicationDeletion executor="com.wso2telco.hub.workflow.extensions.ApplicationDeletionRestWorkflowExecutor">
+        <Property name="serviceEndpoint">http://localhost:9763/activiti-rest/service/</Property>
+        <Property name="username">admin</Property>
+        <Property name="password">admin</Property>
+        <Property name="callbackURL">https://localhost:9443</Property>
+    </ApplicationDeletion>
 </WorkFlowExtensions>
