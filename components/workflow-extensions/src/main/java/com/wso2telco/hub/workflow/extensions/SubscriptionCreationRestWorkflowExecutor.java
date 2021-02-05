@@ -24,6 +24,7 @@ import com.wso2telco.hub.workflow.extensions.beans.CreateProcessInstanceRequest;
 import com.wso2telco.hub.workflow.extensions.beans.CreateProcessInstanceResponse;
 import com.wso2telco.hub.workflow.extensions.beans.ProcessInstanceData;
 import com.wso2telco.hub.workflow.extensions.beans.Variable;
+import com.wso2telco.hub.workflow.extensions.dao.CustomWorkflowDAO;
 import com.wso2telco.hub.workflow.extensions.impl.OperatorImpl;
 import com.wso2telco.hub.workflow.extensions.impl.WorkflowAPIConsumerImpl;
 import com.wso2telco.hub.workflow.extensions.interfaces.OperatorApi;
@@ -37,6 +38,7 @@ import feign.jackson.JacksonDecoder;
 import feign.jackson.JacksonEncoder;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.simple.JSONObject;
 import org.workflow.core.execption.WorkflowExtensionException;
 import org.wso2.carbon.apimgt.api.APIConsumer;
 import org.wso2.carbon.apimgt.api.APIManagementException;
@@ -111,6 +113,13 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
             if (log.isDebugEnabled()) {
                 log.debug("Service endpoint: " + serviceEndpoint + ", username: " + username);
             }
+            SubscriptionWorkflowDTO subscriptionWorkFlowDTO = (SubscriptionWorkflowDTO) workflowDTO;
+            workflowDTO.setProperties(API_NAME, subscriptionWorkFlowDTO.getApiName());
+            workflowDTO.setProperties(API_VERSION, subscriptionWorkFlowDTO.getApiVersion());
+            workflowDTO.setProperties(SUBSCRIBER, subscriptionWorkFlowDTO.getSubscriber());
+            workflowDTO.setProperties(APPLICATION_ID, String.valueOf(subscriptionWorkFlowDTO.getApplicationId()));
+            workflowDTO.setProperties(APPLICATION_NAME, subscriptionWorkFlowDTO.getApplicationName());
+            workflowDTO.setProperties(TIER_NAME, subscriptionWorkFlowDTO.getTierName());
             super.execute(workflowDTO);
 
             BusinessProcessApi httpClient = Feign.builder().encoder(new JacksonEncoder()).decoder(new JacksonDecoder())
@@ -118,8 +127,6 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
                     .requestInterceptor(
                             new BasicAuthRequestInterceptor(username, password))
                     .target(BusinessProcessApi.class, serviceEndpoint);
-
-            SubscriptionWorkflowDTO subscriptionWorkFlowDTO = (SubscriptionWorkflowDTO) workflowDTO;
 
             String callBackURL = subscriptionWorkFlowDTO.getCallbackUrl();
             int applicationId = APIUtil.getApplicationId(subscriptionWorkFlowDTO.getApplicationName(),
@@ -281,8 +288,16 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
                 log.debug("Process definition url: " + processInstanceResponse.getProcessDefinitionUrl());
             }
 
-            log.info("Subscription Creation approval process instance task with Id " +
-                    processInstanceResponse.getId() + " created successfully");
+            String logMsg = "Subscription creation approval workflow submitted." +
+                    " | Workflow ID: " + processInstanceResponse.getBusinessKey() +
+                    " | Workflow Status: " + subscriptionWorkFlowDTO.getStatus() +
+                    " | API: " + subscriptionWorkFlowDTO.getApiName() + ":" + subscriptionWorkFlowDTO.getApiVersion() +
+                    " | Application: " + subscriptionWorkFlowDTO.getApplicationName() +
+                    " | Application ID: " + subscriptionWorkFlowDTO.getApplicationId() +
+                    " | Subscriber: " + subscriptionWorkFlowDTO.getSubscriber() +
+                    " | Requested Tier: " + subscriptionWorkFlowDTO.getTierName();
+            log.debug(logMsg);
+            subCreateWfAuditLog(subscriptionWorkFlowDTO);
         } catch (APIManagementException e) {
             throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
         } catch (UserStoreException e) {
@@ -297,9 +312,6 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
     public WorkflowResponse complete(WorkflowDTO workFlowDTO) throws WorkflowException {
         workFlowDTO.setUpdatedTime(System.currentTimeMillis());
         super.complete(workFlowDTO);
-        log.info("Subscription Creation [Complete] Workflow Invoked. Workflow ID : " +
-                workFlowDTO.getExternalWorkflowReference() + "Workflow State : " + workFlowDTO.getStatus());
-
         if (WorkflowStatus.APPROVED.equals(workFlowDTO.getStatus()) ||
                 WorkflowStatus.REJECTED.equals(workFlowDTO.getStatus())) {
             String status = null;
@@ -316,12 +328,15 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
                 try {
                     apiMgtDAO.updateSubscriptionStatus(Integer.parseInt(workFlowDTO.getWorkflowReference()), status);
                 } catch (APIManagementException e) {
-                    log.error("Could not complete subscription creation workflow", e);
-                    throw new WorkflowException("Could not complete subscription creation workflow", e);
+                    String errorMsg = "Could not complete subscription approval workflow." +
+                            " | Workflow ID: " + workFlowDTO.getExternalWorkflowReference();
+                    throw new WorkflowException(errorMsg, e);
                 }
 
             } else {
-                log.error("Could not complete subscription creation workflow. Approval status is invalid.");
+                final String errorMsg = "Could not complete subscription approval workflow. " +
+                        "Approval status is invalid. | Workflow ID: " + workFlowDTO.getExternalWorkflowReference();
+                log.error(errorMsg);
             }
         }
         return null;
@@ -350,28 +365,22 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
     @Override
     public void cleanUpPendingTask(String workflowExtRef) throws WorkflowException {
         BusinessProcessApi api = Feign.builder().encoder(new JacksonEncoder()).decoder(new JacksonDecoder())
-                //.errorDecoder(new WorkflowErrorDecoder())
                 .requestInterceptor(new BasicAuthRequestInterceptor(username, password))
                 .target(BusinessProcessApi.class, serviceEndpoint);
-
-        ProcessInstanceData instanceData = null;
         try {
-            instanceData = api.getProcessInstances(workflowExtRef);
-        } catch (WorkflowExtensionException e) {
-            throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
-        }
-
-        // should be only one process instance for this business key, hence get the 0th element
-        try {
-            if (instanceData.getData().size() != 0) {
+            WorkflowDTO workflowDto = CustomWorkflowDAO.getInstance().retrieveWorkflow(workflowExtRef);
+            ProcessInstanceData instanceData = api.getProcessInstances(workflowExtRef);
+            if (instanceData.getData().isEmpty()) {
                 api.deleteProcessInstance(Integer.toString(instanceData.getData().get(0).getId()));
+                subDeleteWfAuditLog(workflowDto);
             }
+        } catch (APIManagementException e) {
+            throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
         } catch (WorkflowExtensionException e) {
             throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
+        } catch (Exception e) {
+            log.error(e);
         }
-
-        log.info("Application Creation approval process instance task with business key " +
-                workflowExtRef + " deleted successfully");
     }
 
     private String getDeploymentType() {
@@ -406,6 +415,44 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    private void subCreateWfAuditLog(SubscriptionWorkflowDTO subWorkFlowDTO) {
+        JSONObject subWorkflow = new JSONObject();
+        subWorkflow.put("workflow_id", subWorkFlowDTO.getExternalWorkflowReference());
+        subWorkflow.put(APIConstants.AuditLogConstants.STATUS, subWorkFlowDTO.getStatus().toString());
+        subWorkflow.put(APIConstants.AuditLogConstants.API_NAME, subWorkFlowDTO.getApiName());
+        subWorkflow.put("api_version", subWorkFlowDTO.getApiVersion());
+        subWorkflow.put(APIConstants.AuditLogConstants.APPLICATION_ID, subWorkFlowDTO.getApplicationId());
+        subWorkflow.put(APIConstants.AuditLogConstants.APPLICATION_NAME, subWorkFlowDTO.getApplicationName());
+        subWorkflow.put(APIConstants.AuditLogConstants.TIER, subWorkFlowDTO.getTierName());
+        subWorkflow.put("subscriber", subWorkFlowDTO.getSubscriber());
+
+        APIUtil.logAuditMessage(
+            "SubscriptionApprovalWorkflow",
+            subWorkflow.toString(),
+            APIConstants.AuditLogConstants.CREATED,
+            subWorkFlowDTO.getSubscriber()
+        );
+    }
+
+    private void subDeleteWfAuditLog(WorkflowDTO subWorkFlowDTO) {
+        JSONObject subWorkflow = new JSONObject();
+        subWorkflow.put("workflow_id", subWorkFlowDTO.getExternalWorkflowReference());
+        subWorkflow.put(APIConstants.AuditLogConstants.STATUS, subWorkFlowDTO.getStatus().toString());
+        subWorkflow.put(APIConstants.AuditLogConstants.API_NAME, subWorkFlowDTO.getProperties(API_NAME));
+        subWorkflow.put("api_version", subWorkFlowDTO.getProperties(API_VERSION));
+        subWorkflow.put(APIConstants.AuditLogConstants.APPLICATION_ID, subWorkFlowDTO.getProperties(APPLICATION_ID));
+        subWorkflow.put(APIConstants.AuditLogConstants.APPLICATION_NAME, subWorkFlowDTO.getProperties(APPLICATION_NAME));
+        subWorkflow.put(APIConstants.AuditLogConstants.TIER, subWorkFlowDTO.getProperties(TIER_NAME));
+        subWorkflow.put("subscriber", subWorkFlowDTO.getProperties(SUBSCRIBER));
+
+        APIUtil.logAuditMessage(
+            "SubscriptionApprovalWorkflow",
+            subWorkflow.toString(),
+            APIConstants.AuditLogConstants.DELETED,
+            subWorkFlowDTO.getProperties(SUBSCRIBER)
+        );
     }
 
 }

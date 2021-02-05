@@ -17,6 +17,11 @@ public class WorkFlowDelegator {
         return queryBuilder.searchPending(serchD, userProfile, "APPLICATION");
     }
 
+    public Callback getPendingApplicationApproval(final String taskId, UserProfileDTO userProfile) throws BusinessException {
+        WorkFlowProcessor queryBuilder =ActivityProcessFactory.getInstance().getWorkFlowFactory(WorkFlowType.APPLICATION).getWorkFlowProcessor();
+        return queryBuilder.searchPendingById(taskId, userProfile, "APPLICATION");
+    }
+
     public Callback getPendingAssignedApplicationApprovals(final TaskSearchDTO serchD, UserProfileDTO userProfile, String assignee) throws BusinessException {
         WorkFlowProcessor queryBuilder =ActivityProcessFactory.getInstance().getWorkFlowFactory(WorkFlowType.APPLICATION).getWorkFlowProcessor();
         return queryBuilder.searchPending(serchD, userProfile,assignee,"APPLICATION");
@@ -25,6 +30,11 @@ public class WorkFlowDelegator {
     public Callback getPendingSubscriptionApprovals(final TaskSearchDTO serchD, UserProfileDTO userProfile) throws BusinessException {
         WorkFlowProcessor queryBuilder =ActivityProcessFactory.getInstance().getWorkFlowFactory(WorkFlowType.SUBSCRIPTION).getWorkFlowProcessor();
         return queryBuilder.searchPending(serchD, userProfile,"SUBSCRIPTION");
+    }
+
+    public Callback getPendingSubscriptionApproval(final String taskId, UserProfileDTO userProfile) throws BusinessException {
+        WorkFlowProcessor queryBuilder =ActivityProcessFactory.getInstance().getWorkFlowFactory(WorkFlowType.SUBSCRIPTION).getWorkFlowProcessor();
+        return queryBuilder.searchPendingById(taskId, userProfile, "SUBSCRIPTION");
     }
 
     public Callback getPendingAssignedSubscriptionApprovals(final TaskSearchDTO serchD, UserProfileDTO userProfile, String assignee) throws BusinessException {

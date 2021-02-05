@@ -1,9 +1,6 @@
 package com.wso2telco.workflow.service;
 
 import com.wso2telco.core.dbutils.exception.BusinessException;
-import com.wso2telco.workflow.dao.SubscriptionDAO;
-import com.wso2telco.workflow.http.template.AbstractTemplate;
-import com.wso2telco.workflow.http.template.HttpRequestTemplate;
 import com.wso2telco.workflow.model.SubTierUpdtReq;
 import com.wso2telco.workflow.model.SubscriptionEditDTO;
 import com.wso2telco.workflow.model.TierUpdtConnDTO;
@@ -11,13 +8,13 @@ import com.wso2telco.workflow.service.admin.build.TierRequst;
 import com.wso2telco.workflow.utils.Constants;
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
+import org.json.simple.JSONObject;
 import org.wso2.carbon.apimgt.api.APIConsumer;
 import org.wso2.carbon.apimgt.api.APIManagementException;
 import org.wso2.carbon.apimgt.api.model.Application;
-import org.wso2.carbon.apimgt.api.model.Subscriber;
-import org.wso2.carbon.apimgt.api.model.SubscriptionResponse;
+import org.wso2.carbon.apimgt.impl.APIConstants;
 import org.wso2.carbon.apimgt.impl.APIManagerFactory;
-import org.wso2.carbon.utils.multitenancy.MultitenantConstants;
+import org.wso2.carbon.apimgt.impl.utils.APIUtil;
 import org.wso2.carbon.apimgt.api.model.ApiTypeWrapper;
 
 import javax.ws.rs.core.Response;
@@ -25,35 +22,31 @@ import java.sql.SQLException;
 
 public class SubscriptionService {
 
-	private static Log LOG = LogFactory.getLog(SubscriptionService.class);
-	private static final Log AUDIT_LOG = LogFactory.getLog("AUDIT_LOG");
-
-	SubscriptionDAO subscriptionDAO;
-	TierRequst tierRequst;
+	private static final Log LOG = LogFactory.getLog(SubscriptionService.class);
+	private final TierRequst<TierUpdtConnDTO> tierRequst;
 
 	{
-		subscriptionDAO = new SubscriptionDAO();
-		tierRequst = new TierRequst();
+		tierRequst = new TierRequst<>();
 	}
 	
 	public Response editSubscriptionTier(SubscriptionEditDTO subscription) throws SQLException, BusinessException, APIManagementException {
 
 		TierUpdtConnDTO tierUpdtConnDTO = tierRequst.constructTierUpdtRequsst(subscription);
-		Response response = null;
+		Response response;
 
 		try {
 
 			String username = subscription.getServiceProvider();
 			SubTierUpdtReq tierUpdtReq = (SubTierUpdtReq) tierUpdtConnDTO.getTierUpdtReq();
 			APIConsumer apiConsumer = APIManagerFactory.getInstance().getAPIConsumer(username);
-			String UUID = tierUpdtReq.getApiId();
+			String uuid = tierUpdtReq.getApiId();
 
-			Subscriber subscriber = new Subscriber(username);
-			ApiTypeWrapper apiTypeWrapper = apiConsumer.getAPIorAPIProductByUUID(UUID, Constants.SUPER_TENENT);
+			ApiTypeWrapper apiTypeWrapper = apiConsumer.getAPIorAPIProductByUUID(uuid, Constants.SUPER_TENENT);
 			Application application = apiConsumer.getApplicationByUUID(tierUpdtReq.getApplicationId());
-			SubscriptionResponse subscriptionResponse = apiConsumer
-					.updateSubscription(apiTypeWrapper, username, application.getId(), tierUpdtReq.getSubscriptionId(),
-							tierUpdtReq.getThrottlingPolicy(), tierUpdtReq.getRequestedThrottlingPolicy());
+			apiConsumer.updateSubscription(
+				apiTypeWrapper, username, application.getId(), tierUpdtReq.getSubscriptionId(),
+				tierUpdtReq.getThrottlingPolicy(), tierUpdtReq.getRequestedThrottlingPolicy()
+			);
 
 			editSubscriptionLog(subscription);
 			editSubscriptionAuditLog(subscription);
@@ -77,12 +70,19 @@ public class SubscriptionService {
 
 
 	private void editSubscriptionAuditLog(SubscriptionEditDTO subscription) {
-		String logMessage = "Subscription Updated." +
-				" | Application: " + subscription.getApplicationId() + ":" + subscription.getApplicationName() +
-				" | API: " + subscription.getApiID() + ":" + subscription.getApiName() + ":" + subscription.getApiVersion() +
-				" | Previous Tier: " + subscription.getExistingTier() +
-				" | Updated Tier: " + subscription.getSubscriptionTier() +
-				" | User: " + subscription.getUser();
-		AUDIT_LOG.info(logMessage);
+		JSONObject subTierEditLog = new JSONObject();
+		subTierEditLog.put(APIConstants.AuditLogConstants.APPLICATION_NAME, subscription.getApplicationName());
+		subTierEditLog.put(APIConstants.AuditLogConstants.APPLICATION_ID, subscription.getApplicationId());
+		subTierEditLog.put(APIConstants.AuditLogConstants.API_NAME, subscription.getApiName());
+		subTierEditLog.put(APIConstants.USERNAME, subscription.getUser());
+		subTierEditLog.put("prev_tier", subscription.getExistingTier());
+		subTierEditLog.put("updated_tier", subscription.getExistingTier());
+
+		APIUtil.logAuditMessage(
+			APIConstants.AuditLogConstants.SUBSCRIPTION,
+			subTierEditLog.toString(),
+			APIConstants.AuditLogConstants.UPDATED,
+			subscription.getUser()
+		);
 	}
 }

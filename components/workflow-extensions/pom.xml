@@ -35,7 +35,7 @@
             <groupId>org.wso2.carbon.apimgt</groupId>
             <artifactId>org.wso2.carbon.apimgt.impl</artifactId>
             <version>6.7.206</version>
-            <!--<scope>provided</scope>-->
+            <scope>provided</scope>
         </dependency>
         <dependency>
             <groupId>commons-logging</groupId>
@@ -82,6 +82,7 @@
             <groupId>org.wso2.carbon.apimgt</groupId>
             <artifactId>org.wso2.carbon.apimgt.api</artifactId>
             <version>6.7.206</version>
+            <scope>provided</scope>
         </dependency>
     </dependencies>
 

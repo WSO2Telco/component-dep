@@ -24,7 +24,7 @@ import java.util.Set;
 
 import org.apache.commons.logging.Log;
 import org.apache.commons.logging.LogFactory;
-import org.workflow.core.WorkflowErrorDecoder;
+import org.json.simple.JSONObject;
 import org.workflow.core.execption.WorkflowExtensionException;
 import org.workflow.core.util.WorkFlowHealper;
 import org.wso2.carbon.apimgt.api.APIConsumer;
@@ -37,6 +37,7 @@ import org.wso2.carbon.apimgt.impl.APIManagerFactory;
 import org.wso2.carbon.apimgt.impl.dao.ApiMgtDAO;
 import org.wso2.carbon.apimgt.impl.dto.ApplicationWorkflowDTO;
 import org.wso2.carbon.apimgt.impl.dto.WorkflowDTO;
+import org.wso2.carbon.apimgt.impl.utils.APIUtil;
 import org.wso2.carbon.apimgt.impl.workflow.GeneralWorkflowResponse;
 import org.wso2.carbon.apimgt.impl.workflow.WorkflowConstants;
 import org.wso2.carbon.apimgt.impl.workflow.WorkflowException;
@@ -46,11 +47,8 @@ import org.wso2.carbon.context.CarbonContext;
 import org.wso2.carbon.context.PrivilegedCarbonContext;
 import org.wso2.carbon.user.api.UserStoreException;
 
-import com.wso2telco.dep.operatorservice.dao.WorkflowDAO;
-import com.wso2telco.dep.operatorservice.model.WorkflowReferenceDTO;
 import com.wso2telco.hub.workflow.extensions.beans.CreateProcessInstanceRequest;
 import com.wso2telco.hub.workflow.extensions.beans.CreateProcessInstanceResponse;
-import com.wso2telco.hub.workflow.extensions.beans.ProcessInstanceData;
 import com.wso2telco.hub.workflow.extensions.beans.Variable;
 import com.wso2telco.hub.workflow.extensions.impl.OperatorImpl;
 import com.wso2telco.hub.workflow.extensions.interfaces.OperatorApi;
@@ -75,6 +73,7 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
     private static final String APPLICATION_CREATION_APPROVAL_PROCESS_NAME = "application_creation_approval_process";
     public static final String APPLICATION_NAME = "applicationName";
     private static final String APPLICATION_ID = "applicationId";
+    private static final String APPLICATION_TIER = "applicationTier";
     private static final String WORKFLOW_REF_ID = "workflowRefId";
     private static final String CALL_BACK_URL = "callBackUrl";
     private static final String OPERATORS = "operators";
@@ -111,6 +110,11 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
         if (log.isDebugEnabled()) {
             log.debug("Service endpoint: " + serviceEndpoint + ", username: " + username);
         }
+        ApplicationWorkflowDTO appWorkFlowDTO = (ApplicationWorkflowDTO) workflowDTO;
+        Application application = appWorkFlowDTO.getApplication();
+        workflowDTO.setProperties(APPLICATION_NAME, application.getName());
+        workflowDTO.setProperties(USER_NAME, appWorkFlowDTO.getUserName());
+        workflowDTO.setProperties(APPLICATION_TIER, application.getTier());
         super.execute(workflowDTO);
         try {
         	WorkFlowHealper.getInstance().setAppCreationServiceEndPoint(serviceEndpoint);
@@ -121,8 +125,7 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
                     .requestInterceptor(new BasicAuthRequestInterceptor(username, password))
                     .target(BusinessProcessApi.class, serviceEndpoint);
 
-            ApplicationWorkflowDTO appWorkFlowDTO = (ApplicationWorkflowDTO) workflowDTO;
-            Application application = appWorkFlowDTO.getApplication();
+
             String callBackURL = appWorkFlowDTO.getCallbackUrl();
 
             CreateProcessInstanceRequest
@@ -206,8 +209,17 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
             if (log.isDebugEnabled()) {
                 log.debug("Process definition url: " + processInstanceResponse.getProcessDefinitionUrl());
             }
-            log.info("Application Creation approval process instance task with business key " +
-                    appWorkFlowDTO.getExternalWorkflowReference() + " created successfully");
+
+            String logMsg = "Application creation approval workflow submitted." +
+                    " | Workflow ID: " + appWorkFlowDTO.getExternalWorkflowReference() +
+                    " | Workflow Status: " + appWorkFlowDTO.getStatus() +
+                    " | Application Name: " + appWorkFlowDTO.getApplication().getName() +
+                    " | Application ID: " + appWorkFlowDTO.getApplication().getId() +
+                    " | Subscriber: " + appWorkFlowDTO.getUserName() +
+                    " | Requested Tier: " + appWorkFlowDTO.getApplication().getTier();
+            log.info(logMsg);
+            appCreateWfAuditLog(appWorkFlowDTO);
+
         } catch (APIManagementException e) {
             log.error("Error in obtaining APIConsumer", e);
             throw new WorkflowException("Error in obtaining APIConsumer", e);
@@ -224,8 +236,6 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
         try {
             if (dao.getApplicationById(Integer.parseInt(workFlowDTO.getWorkflowReference())) != null) {
                 super.complete(workFlowDTO);
-                log.info("Application Creation [Complete] Workflow Invoked. Workflow ID : " + workFlowDTO
-                        .getExternalWorkflowReference() + "Workflow State : " + workFlowDTO.getStatus());
 
                 String status = null;
                 if (WorkflowStatus.CREATED.equals(workFlowDTO.getStatus())) {
@@ -255,61 +265,11 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
             throw new WorkflowException(msg, e);
         }
 
-        log.info("Application Creation approval process completed. Workflow ID : " + workFlowDTO
-                .getExternalWorkflowReference() + " Workflow State : " + workFlowDTO.getStatus());
-
         return new GeneralWorkflowResponse();
     }
 
     public void cleanUpPendingTask(String workflowExtRef) throws WorkflowException {
-        BusinessProcessApi api = Feign.builder()
-                .encoder(new JacksonEncoder())
-                .decoder(new JacksonDecoder())
-                //.errorDecoder(new WorkflowErrorDecoder())
-                .requestInterceptor(new BasicAuthRequestInterceptor(username, password))
-                .target(BusinessProcessApi.class, serviceEndpoint);
-
-        ProcessInstanceData instanceData = null;
-        ApiMgtDAO dao = ApiMgtDAO.getInstance();
-        WorkflowDTO workflowDTO = null;
-        try {
-            workflowDTO = dao.retrieveWorkflow(workflowExtRef);
-        } catch (APIManagementException e) {
-            throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
-        }
-
-        try {
-            instanceData = api.getProcessInstances(workflowExtRef);
-        } catch (WorkflowExtensionException e) {
-            throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
-        }
-        // should be only one process instance for this business key, hence get the 0th element
-        try {
-            if (instanceData != null && instanceData.getData().size() != 0) {
-                api.deleteProcessInstance(Integer.toString(instanceData.getData().get(0).getId()));
-            }
-        } catch (WorkflowExtensionException e) {
-            throw new WorkflowException("WorkflowException: " + e.getMessage(), e);
-        }
-
-        // if application has a subscription task clean
-        try {
-            String applicationId = workflowDTO.getWorkflowReference();
-            WorkflowDAO workflowDAO = new WorkflowDAO();
-            List<WorkflowReferenceDTO> workflowByAppId = workflowDAO.findWorkflowByAppId(applicationId);
-            for (WorkflowReferenceDTO workflowReferenceDTO : workflowByAppId) {
-                instanceData = api.getProcessInstances(workflowReferenceDTO.getWorkflowRef());
-                if (instanceData != null && instanceData.getData().size() != 0) {
-                    api.deleteProcessInstance(Integer.toString(instanceData.getData().get(0).getId()));
-                }
-            }
-        } catch (Exception e) {
-            log.error(e);
-        }
-
-        log.info("Application Creation approval process instance task with business key " +
-                workflowExtRef + " deleted successfully");
-
+        super.cleanUpPendingTask(workflowExtRef);
     }
     /**\
      * replaced by WorkFlowHealper.getDeploymentType()
@@ -349,5 +309,22 @@ public class ApplicationCreationRestWorkflowExecutor extends WorkflowExecutor {
 
     public void setPassword(String password) {
         this.password = password;
+    }
+
+    private void appCreateWfAuditLog(ApplicationWorkflowDTO appWorkFlowDTO) {
+        JSONObject appWorkflow = new JSONObject();
+        appWorkflow.put("workflow_id", appWorkFlowDTO.getExternalWorkflowReference());
+        appWorkflow.put(APIConstants.AuditLogConstants.STATUS, appWorkFlowDTO.getStatus().toString());
+        appWorkflow.put(APIConstants.AuditLogConstants.APPLICATION_ID, appWorkFlowDTO.getApplication().getId());
+        appWorkflow.put(APIConstants.AuditLogConstants.APPLICATION_NAME, appWorkFlowDTO.getApplication().getName());
+        appWorkflow.put(APIConstants.AuditLogConstants.TIER, appWorkFlowDTO.getApplication().getTier());
+        appWorkflow.put("subscriber", appWorkFlowDTO.getUserName());
+
+        APIUtil.logAuditMessage(
+            "ApplicationApprovalWorkflow",
+            appWorkflow.toString(),
+            APIConstants.AuditLogConstants.CREATED,
+            appWorkFlowDTO.getUserName()
+        );
     }
 }
