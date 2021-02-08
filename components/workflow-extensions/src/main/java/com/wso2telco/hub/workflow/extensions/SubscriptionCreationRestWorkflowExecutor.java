@@ -17,6 +17,7 @@
 package com.wso2telco.hub.workflow.extensions;
 
 import com.wso2telco.core.dbutils.exception.BusinessException;
+import com.wso2telco.core.dbutils.exception.GenaralError;
 import com.wso2telco.core.userprofile.UserProfileRetriever;
 import com.wso2telco.core.userprofile.dto.UserProfileDTO;
 import com.wso2telco.dep.operatorservice.dao.WorkflowDAO;
@@ -25,6 +26,7 @@ import com.wso2telco.hub.workflow.extensions.beans.CreateProcessInstanceResponse
 import com.wso2telco.hub.workflow.extensions.beans.ProcessInstanceData;
 import com.wso2telco.hub.workflow.extensions.beans.Variable;
 import com.wso2telco.hub.workflow.extensions.dao.CustomWorkflowDAO;
+import com.wso2telco.hub.workflow.extensions.dao.RestWorkflowDao;
 import com.wso2telco.hub.workflow.extensions.impl.OperatorImpl;
 import com.wso2telco.hub.workflow.extensions.impl.WorkflowAPIConsumerImpl;
 import com.wso2telco.hub.workflow.extensions.interfaces.OperatorApi;
@@ -60,6 +62,7 @@ import org.wso2.carbon.user.core.UserRealm;
 import org.wso2.carbon.user.core.service.RealmService;
 import org.wso2.carbon.apimgt.api.model.Identifier;
 
+import java.sql.SQLException;
 import java.util.*;
 
 public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
@@ -82,6 +85,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
     private static final String WORKFLOW_REF_ID = "workflowRefId";
     private static final String CALL_BACK_URL = "callBackUrl";
     private static final String OPERATORS = "operators";
+    private static final String OPERATOR = "operator";
     private static final String DEPLOYMENT_TYPE = "deployment_type";
     private static final String OPERATORS_SYSTEM_PARAM = "OPERATORS";
     private static final String DEPLOYMENT_TYPE_SYSTEM_PARAM = "DEPLOYMENT_TYPE";
@@ -108,6 +112,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
 
         OperatorApi operatorApi = new OperatorImpl();
         WorkflowDAO workflowDAO = new WorkflowDAO();
+        RestWorkflowDao restWorkflowDao = new RestWorkflowDao();
 
         try {
             if (log.isDebugEnabled()) {
@@ -220,6 +225,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
             Variable operators = new Variable(OPERATORS, operatorApi.getOperators());
             Variable apiProviderRole = new Variable(API_PROVIDER_ROLE, null);
             Variable apiPubDepartment = new Variable(API_PUB_DEPARTMENT, null);
+            Variable operatorName = new Variable(OPERATOR, null);
 
             if (operators == null) {
                 throw new WorkflowException("No operator(s) defined!!");
@@ -247,6 +253,16 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
 
                 apiProviderRole = new Variable(API_PROVIDER_ROLE, publisherRole);
                 apiPubDepartment = new Variable(API_PUB_DEPARTMENT, getDepartment(publisherName));
+
+                String opName = null;
+                try {
+                    opName = restWorkflowDao.getOperatorName(applicationId);
+                } catch (Exception e) {
+                    log.error("ERROR: Exception. " + e);
+                    throw new WorkflowException("Operator Name retrieving fail");
+                }
+
+                operatorName = new Variable(OPERATOR, opName.toLowerCase());
             }
 
             List<Variable> variables = new ArrayList<Variable>();
@@ -271,6 +287,7 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
             variables.add(adminPassword);
             variables.add(apiProviderRole);
             variables.add(apiPubDepartment);
+            variables.add(operatorName);
 
             processInstanceRequest.setVariables(variables);
 
@@ -386,7 +403,6 @@ public class SubscriptionCreationRestWorkflowExecutor extends WorkflowExecutor {
     private String getDeploymentType() {
         return System.getProperty(DEPLOYMENT_TYPE_SYSTEM_PARAM, DeploymentTypes.HUB.getDeploymentType());
     }
-
 
     public List<WorkflowDTO> getWorkflowDetails(String s) throws WorkflowException {
         // not implemented
