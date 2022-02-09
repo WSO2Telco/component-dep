@@ -88,7 +88,7 @@
 		<maven-scr-plugin.version>1.7.2</maven-scr-plugin.version>
 		<maven-bundle-plugin.version>2.5.3</maven-bundle-plugin.version>
 		<carbon.identity.version>5.1.1</carbon.identity.version>
-		<org.hibernate.version>5.2.1.Final</org.hibernate.version>
+		<org.hibernate.version>5.4.24.Final</org.hibernate.version>
 
 		<!-- Analytic Commons version -->
 		<carbon.analytics.common.version>5.1.0</carbon.analytics.common.version>
