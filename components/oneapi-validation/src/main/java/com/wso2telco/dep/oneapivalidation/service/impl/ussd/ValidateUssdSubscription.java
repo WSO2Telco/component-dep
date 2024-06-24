@@ -85,13 +85,13 @@ public class ValidateUssdSubscription implements IServiceValidate {
                         JSONObject shortCode = shortCodesArray.getJSONObject(i);
 
                         String sCode = null;
-                        if (shortCode.has("shortCode")) {
+                        if (shortCode.has("shortCode") && !shortCode.isNull("shortCode")) {
                             sCode = nullOrTrimmed(shortCode.getString("shortCode"));
                         }
                         shortCodeListRules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "shortCode" + i, sCode));
 
                         String oCode = null;
-                        if (shortCode.has("operatorCode")) {
+                        if (shortCode.has("operatorCode") && !shortCode.isNull("operatorCode")) {
                             oCode = nullOrTrimmed(shortCode.getString("operatorCode"));
                         }
                         shortCodeListRules.add(new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "operatorCode" + i, oCode));
@@ -105,7 +105,7 @@ public class ValidateUssdSubscription implements IServiceValidate {
                 ValidationRule[] shortCodeRules = new ValidationRule[2];
 
                 String sCode = null;
-                if (requestData.has("shortCode")) {
+                if (requestData.has("shortCode") && !requestData.isNull("shortCode")) {
                     sCode = nullOrTrimmed(requestData.getString("shortCode"));
                 }
                 shortCodeRules[0] = new ValidationRule(ValidationRule.VALIDATION_TYPE_MANDATORY, "shortCode", sCode);
@@ -122,9 +122,7 @@ public class ValidateUssdSubscription implements IServiceValidate {
             }
 
         } catch (Exception e) {
-
-            System.out.println("Manipulating received JSON Object: " + e);
-
+            
             if (e instanceof CustomException)
                 throw new CustomException(((CustomException) e).getErrcode(), ((CustomException) e).getErrmsg(), ((CustomException) e).getErrvar());
             else
